@@ -1,0 +1,77 @@
+<script type="text/javascript" src="s/jquery/jquery.min.js"></script>
+<script type="text/javascript">
+
+function testUser() {
+	var username = $('#username').val();
+	var appId = $('#appId').val();
+	var repoCode = $('#repoCode').val();
+
+	$.ajax({
+		url: 'rs/authority/user',
+		data: {
+			username: username,
+			appId: appId,
+			repoCode: repoCode
+		},
+		success: function(data, status, response) {
+			$('#result').html(response.responseText);
+		}
+	});
+}
+
+function testResc() {
+	var appId = $('#appId').val();
+
+	$.ajax({
+		url: 'rs/authority/resource',
+		data: {
+			appId: appId
+		},
+		success: function(data, status, response) {
+			$('#result').html(response.responseText);
+		}
+	});
+}
+
+</script>
+
+
+<form name="f">
+  <fieldset>
+    <table>
+	  <tbody>
+	    <tr>
+		  <td>username</td>
+		  <td><input type="text" id="username" value=""></td>
+		</tr>
+	    <tr>
+		  <td>appId</td>
+		  <td>
+		    <select id="appId">
+			  <option value="0">auth(0)</option>
+			  <option value="1">taoli(1)</option>
+			  <option value="2">plan a(2)</option>
+			  <option value="3">sem(3)</option>
+			  <option value="4">platform(4)</option>
+			</select>
+		  </td>
+		</tr>
+	    <tr>
+		  <td>repoCode</td>
+		  <td>
+		    <select id="repoCode">
+			  <option value="1">local(1)</option>
+			  <option value="2">uc(2)</option>
+			  <option value="3">passport(3)</option>
+			  <option value="4">uuap(4)</option>
+			</select>
+		  </td>
+		</tr>
+	  </tbody>
+	</table>
+	<button onclick="testUser()" type="button">test user</button>
+	<button onclick="testResc()" type="button">test resc</button>
+  </fieldset>
+</form>
+
+<div id="result">loading...</div>

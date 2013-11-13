@@ -1,0 +1,37 @@
+th.sorting {
+	background: no-repeat url(sorting.png) #308CBB;
+	background-position: -10px -50px;
+	padding-left: 20px;
+	cursor: pointer;
+}
+
+th.sorting-asc {
+	background-position: -10px -25px;
+}
+
+th.sorting-desc {
+	background-position: -10px 0px;
+}
+
+.pagination-wrapper {
+	margin-top: 2px;
+	margin-bottom: 2px;
+}
+
+.pageContent {
+	border: 1px solid #CCCCCC;
+	margin-top: 5px;
+}
+
+.pageInfo {
+	margin-top: 5px;
+	float: left;
+}
+
+.pagination {
+	float: right;
+}
+
+.pagination span, .pagination a {
+	margin-bottom: 0px;
+}

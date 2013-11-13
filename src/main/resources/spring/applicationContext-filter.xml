@@ -1,0 +1,196 @@
+<?xml version="1.0" encoding="UTF-8"?>
+<beans xmlns="http://www.springframework.org/schema/beans"
+	    xmlns:xsi="http://www.w3.org/2001/XMLSchema-instance"
+	    xsi:schemaLocation="http://www.springframework.org/schema/beans http://www.springframework.org/schema/beans/spring-beans.xsd">
+
+	<bean id="compositeFilter" class="com.mossle.core.servlet.CompositeFilter">
+		<property name="filters">
+			<list>
+				<ref bean="characterEncodingFilter"/>
+				<ref bean="acceptLanguageHeaderFilter"/>
+				<ref bean="javasimonFilter"/>
+				<ref bean="scopeFilter"/>
+				<ref bean="springSecurityFilterChainProxy"/>
+				<ref bean="openSessionInViewFilter"/>
+				<ref bean="auditTrailFilter"/>
+				<ref bean="strutsFilter"/>
+				<ref bean="servletFilter"/>
+			</list>
+		</property>
+	</bean>
+
+	<bean id="characterEncodingFilter" class="com.mossle.core.servlet.ProxyFilter">
+		<property name="name" value="encode"/>
+		<property name="filter">
+			<bean class="org.springframework.web.filter.CharacterEncodingFilter">
+				<property name="encoding" value="UTF-8"/>
+				<property name="forceEncoding" value="true"/>
+			</bean>
+		</property>
+	</bean>
+
+	<bean id="acceptLanguageHeaderFilter" class="com.mossle.core.servlet.ProxyFilter">
+		<property name="name" value="i18n"/>
+		<property name="filter">
+			<bean class="com.mossle.core.i18n.AcceptLanguageHeaderFilter"/>
+		</property>
+	</bean>
+
+	<bean id="javasimonFilter" class="com.mossle.core.servlet.ProxyFilter">
+		<property name="name" value="javasimon"/>
+		<property name="filter">
+			<bean class="org.javasimon.javaee.SimonServletFilter"/>
+		</property>
+	</bean>
+
+<!--
+	<filter>
+                <filter-name>simon-filter</filter-name>
+                <filter-class>org.javasimon.javaee.SimonServletFilter</filter-class>
+                <init-param>
+                        <param-name>prefix</param-name>
+                        <param-value>com.my.app.web</param-value>
+                </init-param>
+                <init-param>
+                        <param-name>console-path</param-name>
+                        <param-value>/simon-filter</param-value>
+                </init-param>
+                <init-param>
+                        <param-name>report-threshold-ms</param-name>
+                        <param-value>1000</param-value>
+                </init-param>
+                <init-param>
+                        <param-name>request-reporter-class</param-name>
+                        <param-value>org.javasimon.javaee.reqreporter.StandardRequestReporter</param-value>
+                </init-param>
+        </filter>
+-->
+
+	<bean id="scopeFilter" class="com.mossle.core.servlet.ProxyFilter">
+		<property name="name" value="scope"/>
+		<property name="filter">
+			<bean class="com.mossle.core.scope.ScopeFilter">
+				<property name="excludes">
+					<set>
+						<value>s</value>
+						<value>common</value>
+						<value>gef</value>
+						<value>xform</value>
+						<value>rs</value>
+						<value>h2database</value>
+					</set>
+				</property>
+			</bean>
+		</property>
+		<property name="enable" value="${filter.scope.enable}"/>
+	</bean>
+
+	<bean id="springSecurityFilterChainProxy" class="com.mossle.core.servlet.ProxyFilter">
+		<property name="name" value="security"/>
+		<property name="filter" ref="springSecurityFilterChain"/>
+	</bean>
+
+	<bean id="openSessionInViewFilter" class="com.mossle.core.servlet.ProxyFilter">
+		<property name="name" value="hibernate"/>
+		<property name="filter">
+			<bean class="org.springframework.orm.hibernate4.support.OpenSessionInViewFilter"/>
+		</property>
+		<property name="excludePatterns" value="/common/util/*"/>
+	</bean>
+
+	<bean id="auditTrailFilter" class="com.mossle.core.servlet.ProxyFilter">
+		<property name="name" value="inspektr"/>
+		<property name="filter">
+			<bean class="com.github.inspektr.common.web.ClientInfoThreadLocalFilter"/>
+		</property>
+		<property name="enable" value="${filter.inspektr.enable}"/>
+	</bean>
+
+	<bean id="strutsFilter" class="com.mossle.core.servlet.ProxyFilter">
+		<property name="name" value="struts"/>
+		<property name="filter">
+			<bean class="org.apache.struts2.dispatcher.ng.filter.StrutsPrepareAndExecuteFilter"/>
+		</property>
+		<property name="urlPattern" value="/*"/>
+		<property name="excludePatterns" value="/h2database/*"/>
+	</bean>
+
+	<bean id="servletFilter" class="com.mossle.core.servlet.ServletFilter">
+		<property name="name" value="servlet"/>
+		<property name="servletMap">
+			<map>
+				<entry key="/jolokia/*">
+					<ref bean="jolokia"/>
+				</entry>
+				<entry key="/rs/*">
+					<ref bean="jersey2"/>
+				</entry>
+				<entry key="/h2database/*">
+					<ref bean="h2database"/>
+				</entry>
+				<entry key="/javasimon/*">
+					<ref bean="javasimon"/>
+				</entry>
+			</map>
+		</property>
+	</bean>
+
+	<bean id="jolokia" class="com.mossle.core.servlet.ProxyServlet">
+		<constructor-arg index="0" value="jolokia"/>
+		<constructor-arg index="1">
+			<bean class="org.jolokia.http.AgentServlet"/>
+		</constructor-arg>
+		<constructor-arg index="2" value="${servlet.jolokia.enable}"/>
+	</bean>
+<!--
+	<bean id="jersey" class="com.mossle.core.servlet.ProxyServlet">
+		<constructor-arg index="0" value="jersey"/>
+		<constructor-arg index="1">
+			<bean class="com.sun.jersey.spi.spring.container.servlet.SpringServlet"/>
+		</constructor-arg>
+	</bean>
+-->
+	<bean id="jersey2" class="com.mossle.core.servlet.ProxyServlet">
+		<constructor-arg index="0" value="jersey"/>
+		<constructor-arg index="1">
+			<bean class="org.glassfish.jersey.servlet.ServletContainer"/>
+		</constructor-arg>
+		<constructor-arg index="2">
+			<map>
+				<entry key="javax.ws.rs.Application">
+					<value>com.mossle.core.jersey.SpringApplication</value>
+				</entry>
+			</map>
+		</constructor-arg>
+	</bean>
+
+	<bean id="h2database" class="com.mossle.core.servlet.ProxyServlet">
+		<constructor-arg index="0" value="h2database"/>
+		<constructor-arg index="1">
+			<bean class="org.h2.server.web.WebServlet"/>
+		</constructor-arg>
+		<constructor-arg index="2">
+			<map>
+				<entry key="webAllowOthers">
+					<value>true</value>
+				</entry>
+			</map>
+		</constructor-arg>
+		<constructor-arg index="3" value="${servlet.h2database.enable}"/>
+	</bean>
+
+	<bean id="javasimon" class="com.mossle.core.servlet.ProxyServlet">
+		<constructor-arg index="0" value="javasimon"/>
+		<constructor-arg index="1">
+			<bean class="org.javasimon.console.SimonConsoleServlet"/>
+		</constructor-arg>
+		<constructor-arg index="2">
+			<map>
+				<entry key="url-prefix">
+					<value>/javasimon</value>
+				</entry>
+			</map>
+		</constructor-arg>
+	</bean>
+
+</beans>

@@ -1,0 +1,17 @@
+<included>
+    <appender name="CONSOLE" class="ch.qos.logback.core.ConsoleAppender">
+		<withJansi>${log.console.jansi}</withJansi>
+        <encoder>
+            <Pattern>
+				<if condition='${log.console.jansi}'>
+					<then>
+						%cyan(%date{HH:mm:ss.SSS}) %highlight(%5level) %cyan([%thread] %logger:%line) %white(- %msg%n)
+					</then>
+					<else>
+						${log.pattern.default}
+					</else>
+				</if>
+			</Pattern>
+        </encoder>
+    </appender>
+</included>

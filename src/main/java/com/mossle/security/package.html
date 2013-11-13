@@ -1,0 +1,6 @@
+<body>
+client部分是与springsecurity的集成部分
+假设client与server端是分离的，client端只负责两件事情
+	1.用户成功登录以后，根据username和ip(或者appId)获得对应的权限（json array）
+	2.在server端更新用户的权限之后，需要同步更新client端的权限设置缓存（Listener）
+</body>

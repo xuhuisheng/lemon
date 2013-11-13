@@ -1,0 +1,98 @@
+<?xml version="1.0" encoding="UTF-8"?>
+<project xmlns="http://maven.apache.org/POM/4.0.0" xmlns:xsi="http://www.w3.org/2001/XMLSchema-instance" xsi:schemaLocation="http://maven.apache.org/POM/4.0.0 http://maven.apache.org/maven-v4_0_0.xsd">
+  <modelVersion>4.0.0</modelVersion>
+  <parent>
+    <groupId>com.mossle</groupId>
+    <artifactId>mossle-parent</artifactId>
+    <version>0.0.19</version>
+  </parent>
+  <groupId>com.mossle</groupId>
+  <artifactId>mossle-app-oa</artifactId>
+  <version>0.0.1-SNAPSHOT</version>
+  <packaging>war</packaging>
+  <name>mossle app oa</name>
+
+  <scm>
+    <connection>scm:git:http://m1-xuexi-dev02.vm.baidu.com:8400/git/mossle-app-oa.git</connection>
+    <developerConnection>scm:git:http://m1-xuexi-dev02.vm.baidu.com:8400/git/mossle-app-oa.git</developerConnection>
+    <url>http://m1-xuexi-dev02.vm.baidu.com:8400/git/mossle-app-oa.git</url>
+  </scm>
+
+  <dependencies>
+    <dependency>
+      <groupId>com.mossle</groupId>
+      <artifactId>mossle-lib-core</artifactId>
+	  <version>0.0.32</version>
+    </dependency>
+    <dependency>
+      <groupId>com.mossle</groupId>
+      <artifactId>mossle-lib-security</artifactId>
+	  <version>0.0.22-SNAPSHOT</version>
+    </dependency>
+
+    <dependency>
+      <groupId>com.mossle</groupId>
+      <artifactId>mossle-com-bridge</artifactId>
+	  <version>0.0.1-SNAPSHOT</version>
+    </dependency>
+    <dependency>
+      <groupId>com.mossle</groupId>
+      <artifactId>mossle-com-scope</artifactId>
+	  <version>0.0.1-SNAPSHOT</version>
+    </dependency>
+    <dependency>
+      <groupId>com.mossle</groupId>
+      <artifactId>mossle-com-auth</artifactId>
+	  <version>0.0.19-SNAPSHOT</version>
+    </dependency>
+    <dependency>
+      <groupId>com.mossle</groupId>
+      <artifactId>mossle-com-user</artifactId>
+	  <version>0.0.1-SNAPSHOT</version>
+    </dependency>
+    <dependency>
+      <groupId>com.mossle</groupId>
+      <artifactId>mossle-com-group</artifactId>
+	  <version>0.0.1-SNAPSHOT</version>
+    </dependency>
+    <dependency>
+      <groupId>com.mossle</groupId>
+      <artifactId>mossle-com-party</artifactId>
+	  <version>0.0.1-SNAPSHOT</version>
+    </dependency>
+    <dependency>
+      <groupId>com.mossle</groupId>
+      <artifactId>mossle-com-acl</artifactId>
+	  <version>0.0.1-SNAPSHOT</version>
+    </dependency>
+    <dependency>
+      <groupId>com.mossle</groupId>
+      <artifactId>mossle-com-bpm</artifactId>
+	  <version>0.0.1-SNAPSHOT</version>
+    </dependency>
+    <dependency>
+      <groupId>com.mossle</groupId>
+      <artifactId>mossle-com-form</artifactId>
+	  <version>0.0.1-SNAPSHOT</version>
+    </dependency>
+  </dependencies>
+
+  <build>
+    <defaultGoal>jetty:run</defaultGoal>
+    <plugins>
+      <plugin>
+        <groupId>org.apache.maven.plugins</groupId>
+        <artifactId>maven-antrun-plugin</artifactId>
+      </plugin>
+      <plugin>
+        <groupId>org.codehaus.mojo</groupId>
+        <artifactId>native2ascii-maven-plugin</artifactId>
+      </plugin>
+	</plugins>
+  </build>
+
+  <properties>
+    <activiti.version>5.14</activiti.version>
+  </properties>
+
+</project>

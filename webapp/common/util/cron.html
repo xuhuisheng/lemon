@@ -1,0 +1,144 @@
+<html>
+  <head>
+    <meta charset="utf-8">
+	<title>cron</title>
+    <script>
+function $(id) {
+    return document.getElementById(id);
+}
+
+function explainCron() {
+	var text = $('cronText').value;
+	$('result').innerHTML = text;
+}
+
+window.onload = function() {
+	$('cronText').onkeypress = explainCron;
+}
+    </script>
+  </head>
+  <body>
+    <input type="text" id="cronText" name="cronText" value="" size="40">
+	<span id="result"></span>
+	<table border="1">
+	  <tr>
+	    <td>30 * * * * ?</td>
+		<td>每半分钟触发任务</td>
+	  </tr>
+	  <tr>
+	    <td>30 10 * * * ?</td>
+		<td>每小时的10分30秒触发任务</td>
+	  </tr>
+	  <tr>
+	    <td>30 10 1 * * ?</td>
+		<td>每天1点10分30秒触发任务</td>
+	  </tr>
+	  <tr>
+	    <td>30 10 1 20 * ?</td>
+		<td>每月20号1点10分30秒触发任务</td>
+	  </tr>
+	  <tr>
+	    <td>30 10 1 20 10 ?</td>
+		<td>每月20号1点10分30秒触发任务</td>
+	  </tr>
+	  <tr>
+	    <td>30 10 1 20 10 ? 2011</td>
+		<td>每年10月20号1点10分30秒触发任务</td>
+	  </tr>
+	  <tr>
+	    <td>30 10 1 20 10 ? 2011</td>
+		<td>2011年10月20号1点10分30秒触发任务</td>
+	  </tr>
+	  <tr>
+	    <td>30 10 1 ? 10 * 2011</td>
+		<td>2011年10月每天1点10分30秒触发任务</td>
+	  </tr>
+	  <tr>
+	    <td>30 10 1 ? 10 SUN 2011</td>
+		<td>2011年10月每周日1点10分30秒触发任务</td>
+	  </tr>
+	  <tr>
+	    <td>15,30,45 * * * * ?</td>
+		<td>每15秒，30秒，45秒时触发任务</td>
+	  </tr>
+	  <tr>
+	    <td>15-45 * * * * ?</td>
+		<td>15到45秒内，每秒都触发任务</td>
+	  </tr>
+	  <tr>
+	    <td>15/5 * * * * ?</td>
+		<td>每分钟的每15秒开始触发，每隔5秒触发一次</td>
+	  </tr>
+	  <tr>
+	    <td>15-30/5 * * * * ?</td>
+		<td>每分钟的15秒到30秒之间开始触发，每隔5秒触发一次</td>
+	  </tr>
+	  <tr>
+	    <td>0 0/3 * * * ?</td>
+		<td>每小时的第0分0秒开始，每三分钟触发一次</td>
+	  </tr>
+	  <tr>
+		<td>0 15 10 ? * MON-FRI</td>
+		<td>星期一到星期五的10点15分0秒触发任务</td>
+	  </tr>
+	  <tr>
+		<td>0 15 10 L * ?</td>
+		<td>每个月最后一天的10点15分0秒触发任务</td>
+	  </tr>
+	  <tr>
+		<td>0 15 10 LW * ?</td>
+		<td>每个月最后一个工作日的10点15分0秒触发任务</td>
+	  </tr>
+	  <tr>
+		<td>0 15 10 ? * 5L</td>
+		<td>每个月最后一个星期四的10点15分0秒触发任务</td>
+	  </tr>
+	  <tr>
+		<td>0 15 10 ? * 5#3</td>
+		<td>每个月第三周的星期四的10点15分0秒触发任务</td>
+	  </tr>
+	</table>
+	<table border="1">
+	  <tr>
+		<td style="text-align:center;">特殊字符</td>
+		<td>说明</td>
+	  </tr>
+	  <tr>
+	    <td style="text-align:center;">*</td>
+        <td>通配符，任意值</td>
+      </tr>
+      <tr>
+        <td style="text-align:center;">?</td>
+        <td>无特定值。通常和其他指定的值一起使用，表示必须显示该值但不能检查</td>
+      </tr>
+      <tr>
+        <td style="text-align:center;">-</td>
+        <td>范围。e.g.小时部分10-12表示10:00，11:00，12:00</td>
+      </tr>
+      <tr>
+        <td style="text-align:center;">,</td>
+        <td>列分隔符。可以让你指定一系列的值。e.g.在星期域中指定MON、TUE和WED</td>
+      </tr>
+      <tr>
+        <td style="text-align:center;">/</td>
+        <td>增量。表示一个值的增量，e.g.分钟域中0/1表示从0开始，每次增加1min</td>
+      </tr>
+      <tr>
+        <td style="text-align:center;">L</td>
+        <td>表示</span>Last</span></span>。它在日期和星期域中表示有所不同。在日期域中，表示这个月的最后一天，而在星期域中，它永远是</span>7</span></span>（星期六）。当你希望使用星期中某一天时，</span>L</span></span>字符非常有用。</span>e.g.</span></span>星期域中</span>6L</span></span>表示每一个月的最后一个星期五</td>
+	  </tr>
+	  <tr>
+		<td style="text-align:center;">W</td>
+		<td>在本月内离当天最近的工作日触发，所谓的最近工作日，即当天到工作日的前后最短距离，如果当天即为工作日，则距离是</span>0</span></span>；所谓本月内指的是不能跨月取到最近工作日，即使前/后月份的最后一天/第一天确实满足最近工作日。e.g. LW表示本月的最后一个工作日触发，W强烈依赖月份。</td>
+	  </tr>
+	  <tr>
+		<td style="text-align:center;">#</td>
+		<td>表示该月的第几个星期，e.g. 1#2表示每一个月的第一个星期一</td>
+	  </tr>
+	  <tr>
+		<td style="text-align:center;">C</td>
+		<td>日历值。日期值是根据一个给定的日历计算出来的。在日期域中给定一个20C将在20日（日历包括20日）或20日后日历中包含的第一天（不包括20日）激活触发器。例如在一个星期域中使用6C表示日历中星期五（日历包括星期五）或者第一天（日历不包括星期五）</td>
+	  </tr>
+    </table>
+  </body>
+</html>

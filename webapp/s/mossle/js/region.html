@@ -1,0 +1,7 @@
+<script type="text/javascript" src="region.js"></script>
+<script>
+console.info(region.havePermission("user:read", "*:*"));
+console.info(region.havePermission("user:read", "xxx:xx"));
+console.info(region.havePermission("user:read", "user:*"));
+console.info(region.havePermission("*:read", "user:read"));
+</script>

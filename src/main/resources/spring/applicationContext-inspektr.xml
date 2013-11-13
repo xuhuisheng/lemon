@@ -1,0 +1,18 @@
+<?xml version="1.0" encoding="UTF-8"?>
+<beans xmlns="http://www.springframework.org/schema/beans"
+	xmlns:xsi="http://www.w3.org/2001/XMLSchema-instance"
+	xsi:schemaLocation="http://www.springframework.org/schema/beans http://www.springframework.org/schema/beans/spring-beans.xsd">
+
+	<bean id="auditTrailManager" class="com.github.inspektr.audit.support.Slf4jLoggingAuditTrailManager" />
+
+<!--
+	<bean id="auditTrailManager" class="com.github.inspektr.audit.support.JdbcAuditTrailManager">
+		<constructor-arg index="0">
+			<bean class="org.springframework.transaction.support.TransactionTemplate">
+				<property name="transactionManager" ref="transactionManager"/>
+			</bean>
+		</constructor-arg>
+		<property name="dataSource" ref="dataSource"/>
+	</bean>
+-->
+</beans>

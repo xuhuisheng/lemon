@@ -1,0 +1,22 @@
+<?xml version="1.0" encoding="UTF-8"?>
+<beans xmlns="http://www.springframework.org/schema/beans"
+	xmlns:xsi="http://www.w3.org/2001/XMLSchema-instance"
+	xsi:schemaLocation="http://www.springframework.org/schema/beans http://www.springframework.org/schema/beans/spring-beans.xsd">
+
+	<bean id="javaMailSender" class="org.springframework.mail.javamail.JavaMailSenderImpl">
+		<property name="host" value="${mail.host}" />
+		<property name="username" value="${mail.username}" />
+		<property name="password" value="${mail.password}" />
+		<property name="defaultEncoding" value="UTF-8"/>
+		<property name="javaMailProperties" ref="applicationProperties"/>
+	</bean>
+
+	<bean id="mailService" class="com.mossle.core.mail.MailService">
+		<property name="defaultFrom" value="demo.mossle@gmail.com" />
+		<property name="defaultTo" value="demo.mossle@gmail.com" />
+		<property name="defaultSubject" value="Hello Demo Mossle" />
+		<property name="defaultContent" value="Hello Demo Mossle"/>
+		<property name="javaMailSender" ref="javaMailSender"/>
+	</bean>
+
+</beans>

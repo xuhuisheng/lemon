@@ -1,0 +1,96 @@
+<?xml version="1.0" encoding="UTF-8"?>
+<beans xmlns="http://www.springframework.org/schema/beans"
+	    xmlns:xsi="http://www.w3.org/2001/XMLSchema-instance"
+	    xsi:schemaLocation="http://www.springframework.org/schema/beans http://www.springframework.org/schema/beans/spring-beans.xsd">
+
+	<bean id="userCache" class="org.springframework.security.core.userdetails.cache.EhCacheBasedUserCache">
+		<property name="cache" ref="userEhCache"/>
+	</bean>
+
+	<bean id="userEhCache" class="org.springframework.cache.ehcache.EhCacheFactoryBean">
+		<property name="cacheManager" ref="ehcacheManager"/>
+		<property name="cacheName" value="userCache"/>
+	</bean>
+
+	<bean id="accessDecisionManager" class="org.springframework.security.access.vote.AffirmativeBased">
+		<constructor-arg>
+			<list>
+				<bean class="com.mossle.security.client.AuthenticatedVoter"/>
+				<bean class="com.mossle.security.perm.PermissionVoter">
+					<property name="permissionChecker" ref="permissionChecker"/>
+				</bean>
+			</list>
+		</constructor-arg>
+	</bean>
+
+	<bean id="authenticationProvider" class="org.springframework.security.authentication.dao.DaoAuthenticationProvider">
+		<property name="userDetailsService" ref="userDetailsService"/>
+		<property name="userCache" ref="userCache"/>
+		<property name="passwordEncoder" ref="passwordEncoder"/>
+	</bean>
+
+	<bean id="userDetailsService" class="com.mossle.security.client.DefaultUserDetailsService">
+		<property name="userFetcher" ref="${security.user.fetcher.type}UserFetcher"/>
+	</bean>
+
+	<bean id="passwordEncoder" class="com.mossle.security.util.PasswordEncoderFactoryBean">
+		<property name="type" value="${security.passwordencoder.type}"/>
+	</bean>
+
+	<bean id="simplePasswordEncoder" factory-bean="&amp;passwordEncoder" factory-method="getSimplePasswordEncoder"/>
+
+    <bean id="autoLoginFilter" class="com.mossle.security.client.AutoLoginFilter">
+		<property name="enabled" value="${security.autologin.enabled}" />
+		<property name="defaultUserName" value="${security.autologin.username}" />
+		<property name="userDetailsService" ref="userDetailsService" />
+    </bean>
+
+	<bean id="switchUserFilter" class="org.springframework.security.web.authentication.switchuser.SwitchUserFilter">
+		<property name="userDetailsService" ref="userDetailsService" />
+		<property name="targetUrl" value="/common/util/switchUser.jsp" />
+	</bean>
+
+	<bean id="permissionChecker" class="com.mossle.security.perm.PermissionChecker"/>
+
+    <bean id="resourceDetailsMonitor" class="com.mossle.security.client.ResourceDetailsMonitor">
+		<property name="debug" value="${security.resource.debug}"/>
+		<property name="filterSecurityInterceptor"
+			ref="org.springframework.security.web.access.intercept.FilterSecurityInterceptor#0"/>
+		<property name="urlSourceFetcher" ref="${security.url.fetcher.type}UrlSourceFetcher"/>
+		<property name="delegatingMethodSecurityMetadataSource"
+			ref="org.springframework.security.access.method.DelegatingMethodSecurityMetadataSource#0"/>
+		<property name="methodSourceFetcher" ref="${security.method.fetcher}MethodSourceFetcher"/>
+    </bean>
+
+	<bean class="org.springframework.security.authentication.event.LoggerListener"/>
+
+	<bean class="org.springframework.security.access.event.LoggerListener"/>
+
+	<!-- user fetcher -->
+	<bean id="mockUserFetcher" class="com.mossle.security.impl.MockUserFetcher"/>
+
+	<bean id="httpUserFetcher" class="com.mossle.security.impl.HttpUserFetcher">
+		<property name="url" value="${security.user.fetcher.url}"/>
+		<property name="defaultAppId" value="${security.defaultAppId}"/>
+	</bean>
+
+	<bean id="databaseUserFetcher" class="com.mossle.security.impl.DatabaseUserFetcher">
+		<property name="jdbcTemplate" ref="jdbcTemplate"/>
+	</bean>
+
+	<!-- url fetcher -->
+	<bean id="databaseUrlSourceFetcher" class="com.mossle.security.impl.DatabaseUrlSourceFetcher">
+		<property name="jdbcTemplate" ref="jdbcTemplate"/>
+	</bean>
+
+	<bean id="httpUrlSourceFetcher" class="com.mossle.security.impl.HttpUrlSourceFetcher">
+		<property name="url" value="${security.url.fetcher.url}"/>
+		<property name="appId" value="${security.defaultAppId}"/>
+	</bean>
+
+	<!-- method fetcher -->
+	<bean id="databaseMethodSourceFetcher" class="com.mossle.security.impl.DatabaseMethodSourceFetcher">
+		<property name="jdbcTemplate" ref="jdbcTemplate"/>
+	</bean>
+
+</beans>

@@ -1,0 +1,118 @@
+<?xml version="1.0" encoding="UTF-8"?>
+<beans xmlns="http://www.springframework.org/schema/beans"
+	xmlns:xsi="http://www.w3.org/2001/XMLSchema-instance"
+	xsi:schemaLocation="http://www.springframework.org/schema/beans http://www.springframework.org/schema/beans/spring-beans.xsd">
+
+	<bean id="processEngineConfiguration" class="org.activiti.spring.SpringProcessEngineConfiguration" depends-on="databaseMigrator">
+		<property name="dataSource" ref="dataSource" />
+		<!-- Database configurations -->
+		<property name="databaseSchemaUpdate" value="true" />
+		<!-- job executor configurations -->
+		<property name="jobExecutorActivate" value="false" />
+		<!-- mail server configurations -->
+		<property name="mailServerPort" value="5025" />
+		<property name="history" value="full" />
+
+ 		<property name="customDefaultBpmnParseHandlers">
+    	 	<list>
+				<bean class="com.mossle.bpm.handler.ProxyUserTaskBpmnParseHandler"/>
+    	 	</list>
+		</property>
+
+		<property name="bpmnParser">
+			<bean class="com.mossle.bpm.parser.CustomBpmnParser" />
+		</property>
+
+
+		<property name="transactionManager" ref="transactionManager"/>
+		<!-- (databaseType 不用修改,即使连接其他类型数据库)  act引擎会自动替换成相应的type,这里加上是因为act不识别hsqldb类型,故直接映射成H2-->
+		<property name="databaseType" value="h2"/>
+
+		<!-- 生成流程图的字体 -->
+        <property name="activityFontName" value="宋体"/>
+        <property name="labelFontName" value="宋体"/>
+
+        <!-- 缓存支持
+        <property name="processDefinitionCache">
+            <bean class="me.kafeitu.demo.activiti.util.cache.DistributedCache" />
+        </property>-->
+
+        <!-- 自定义表单字段类型 -->
+        <property name="customFormTypes">
+            <list>
+                <bean class="com.mossle.bpm.support.UsersFormType"/>
+            </list>
+        </property>
+        <property name="customSessionFactories">
+			<list>
+				<bean class="com.mossle.bpm.CustomGroupEntityManagerFactory" >
+					<property name="groupEntityManager">
+						<bean class="com.mossle.bpm.CustomGroupEntityManager">
+							<property name="jdbcTemplate" ref="jdbcTemplate"/>
+						</bean>
+                    </property>
+               </bean>
+           </list>
+		</property>
+
+		<property name="businessCalendarManager" ref="businessCalendarManager"/>
+
+        <!-- 自动部署 -->
+		<!--
+        <property name="deploymentResources">
+            <list>
+                <value>classpath*:/bpmn2/*</value>
+            </list>
+        </property>
+		-->
+		<!-- //更换id生成策略
+		<property name="idGenerator">
+			<bean class="org.activiti.engine.impl.persistence.StrongUuidGenerator" />
+		</property>
+		-->
+	</bean>
+
+	<bean id="processEngine" class="org.activiti.spring.ProcessEngineFactoryBean">
+		<property name="processEngineConfiguration" ref="processEngineConfiguration"/>
+	</bean>
+    <bean id="repositoryService" factory-bean="processEngine" factory-method="getRepositoryService"/>
+    <bean id="runtimeService" factory-bean="processEngine" factory-method="getRuntimeService"/>
+    <bean id="formService" factory-bean="processEngine" factory-method="getFormService"/>
+    <bean id="identityService" factory-bean="processEngine" factory-method="getIdentityService"/>
+    <bean id="taskService" factory-bean="processEngine" factory-method="getTaskService"/>
+    <bean id="historyService" factory-bean="processEngine" factory-method="getHistoryService"/>
+    <bean id="managementService" factory-bean="processEngine" factory-method="getManagementService"/>
+
+	<!-- 自动部署 -->
+	<bean id="autoDeployer" class="com.mossle.bpm.support.AutoDeployer">
+		<property name="processEngine" ref="processEngine"/>
+        <property name="deploymentResources">
+            <list>
+                <value>classpath*:/bpmn2/*</value>
+            </list>
+        </property>
+	</bean>
+
+	<!-- 全局任务监听器 -->
+	<bean id="proxyTaskListener" class="com.mossle.bpm.handler.ProxyTaskListener">
+		<property name="taskListeners">
+			<list>
+				<bean class="com.mossle.bpm.delegate.DelegateTaskListener"/>
+				<bean class="com.mossle.bpm.handler.AutoCompleteFirstTaskListener"/>
+				<bean class="com.mossle.bpm.handler.AssigneeAliasTaskListener"/>
+			</list>
+		</property>
+	</bean>
+
+	<!-- 工作日历 -->
+	<bean id="businessCalendarManager" class="com.mossle.bpm.calendar.AdvancedBusinessCalendarManagerFactoryBean">
+		<property name="sunday" value="9:00-12:00 and 13:00-18:00"/>
+		<property name="monday" value="9:00-12:00 and 13:00-18:00"/>
+		<property name="tuesday" value="9:00-12:00 and 13:00-18:00"/>
+		<property name="wednesday" value="9:00-12:00 and 13:00-18:00"/>
+		<property name="thursday" value="9:00-12:00 and 13:00-18:00"/>
+		<property name="friday" value="9:00-12:00 and 13:00-18:00"/>
+		<property name="saturday" value="9:00-12:00 and 13:00-18:00"/>
+		<property name="holiday" value="01/07/2008 - 31/08/2008"/>
+	</bean>
+</beans>

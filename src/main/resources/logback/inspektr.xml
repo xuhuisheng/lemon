@@ -1,0 +1,16 @@
+<included>
+    <appender name="inspektrFileAppender" class="ch.qos.logback.core.rolling.RollingFileAppender">
+        <File>${log.base}.inspektr</File>
+        <rollingPolicy class="ch.qos.logback.core.rolling.TimeBasedRollingPolicy">
+            <FileNamePattern>${log.base}.inspektr.%d{yyyy-MM-dd}.zip</FileNamePattern>
+        </rollingPolicy>
+        <encoder>
+            <pattern>%m%n</pattern>
+        </encoder>
+    </appender>
+
+    <logger name="com.github.inspektr.audit.support.Slf4jLoggingAuditTrailManager" additivity="false">
+        <level value="INFO" />
+        <appender-ref ref="inspektrFileAppender"/>
+    </logger>
+</included>

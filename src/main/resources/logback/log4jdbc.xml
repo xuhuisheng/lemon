@@ -1,0 +1,22 @@
+<included>
+	<appender name="JDBC_SQLTIME_FILE" class="ch.qos.logback.core.rolling.RollingFileAppender">
+        <File>${log.base}.jdbc-sqltiming</File>
+        <encoder>
+            <Pattern>%d %m%n%n</Pattern>
+        </encoder>
+        <rollingPolicy class="ch.qos.logback.core.rolling.TimeBasedRollingPolicy">
+            <FileNamePattern>${log.base}.jdbc-sqltiming.%d{yyyy-MM-dd}.zip</FileNamePattern>
+        </rollingPolicy>
+    </appender>
+
+    <logger name="jdbc.audit" level="OFF"/>
+    <logger name="jdbc.connection" level="OFF"/>
+    <logger name="jdbc.resultset" level="OFF"/>
+    <logger name="jdbc.resultsettable" level="OFF"/>
+
+    <logger name="jdbc.sqlonly" level="INFO"/>
+
+    <logger name="jdbc.sqltiming" additivity="false">
+        <appender-ref ref="JDBC_SQLTIME_FILE" />
+    </logger>
+</included>

@@ -1,0 +1,80 @@
+
+div.xf-right {
+    width: 200px;
+    float: right;
+    -moz-user-select: none;
+}
+
+div.xf-right span {
+    cursor: pointer;
+}
+
+div.xf-center {
+    text-align: center;
+}
+
+div.xf-layer-form {
+    /*
+	position: absolute;
+    left: 0px;
+    top: 0px;
+    width: 800px;
+    height: 400px;
+	*/
+    text-align: center;
+    padding: 10px;
+}
+
+div.xf-layer-mask {
+    position: absolute;
+    background-color: white;
+    left: 0px;
+    top: 0px;
+    width: 800px;
+    height: 600px;
+    opacity: 0;
+    filter: alpha(opacity = 0);
+}
+
+form.xf-form {
+}
+
+form.xf-form input,
+form.xf-form select,
+form.xf-form textarea {
+    border: 1px solid gray;
+	margin: 0px;
+}
+
+form.xf-form input[type=submit] {
+    background-color: #EEEEEE;
+}
+
+table.xf-form-table {
+    margin: 0px;
+    width: 80%;
+    border-collapse: collapse;
+    border: none;
+}
+
+table.xf-form-table th {
+    background-color: #EEFFCC;
+}
+
+table.xf-form-table tfoot td {
+    background-color: #DDEEFF;
+}
+
+table.xf-form-table th,
+table.xf-form-table td {
+    border: solid #999 1px;
+    padding: 3px 4px 3px 4px;
+}
+
+table.xf-form-table tr.odd {
+    background-color: #EEEEEE;
+}
+
+table.xf-form-table tr.even {
+    background-color: #CCCCCC;
+}

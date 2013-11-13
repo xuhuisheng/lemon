@@ -1,0 +1,104 @@
+package com.mossle.bpm.cmd;
+
+import java.sql.SQLException;
+
+import java.util.List;
+
+import com.mossle.bpm.FormInfo;
+
+import org.activiti.engine.ActivitiException;
+import org.activiti.engine.delegate.Expression;
+import org.activiti.engine.history.HistoricActivityInstance;
+import org.activiti.engine.impl.bpmn.parser.BpmnParse;
+import org.activiti.engine.impl.context.Context;
+import org.activiti.engine.impl.form.DefaultFormHandler;
+import org.activiti.engine.impl.interceptor.Command;
+import org.activiti.engine.impl.interceptor.CommandContext;
+import org.activiti.engine.impl.persistence.entity.HistoricActivityInstanceEntity;
+import org.activiti.engine.impl.persistence.entity.HistoricTaskInstanceEntity;
+import org.activiti.engine.impl.persistence.entity.ProcessDefinitionEntity;
+import org.activiti.engine.impl.persistence.entity.TaskEntity;
+import org.activiti.engine.impl.pvm.PvmActivity;
+import org.activiti.engine.impl.pvm.PvmTransition;
+import org.activiti.engine.impl.pvm.process.ActivityImpl;
+import org.activiti.engine.impl.pvm.process.TransitionImpl;
+import org.activiti.engine.impl.task.TaskDefinition;
+
+import org.slf4j.Logger;
+import org.slf4j.LoggerFactory;
+
+public class FindStartFormCmd implements Command<FormInfo> {
+    private static Logger logger = LoggerFactory
+            .getLogger(FindStartFormCmd.class);
+    private String processDefinitionId;
+
+    public FindStartFormCmd(String processDefinitionId) {
+        this.processDefinitionId = processDefinitionId;
+    }
+
+    public FormInfo execute(CommandContext commandContext) {
+        ProcessDefinitionEntity processDefinitionEntity = Context
+                .getProcessEngineConfiguration().getProcessDefinitionCache()
+                .get(processDefinitionId);
+        FormInfo formInfo = new FormInfo();
+        formInfo.setProcessDefinitionId(processDefinitionId);
+
+        if (processDefinitionEntity.hasStartFormKey()) {
+            formInfo.setAutoCompleteFirstTask(false);
+
+            DefaultFormHandler formHandler = (DefaultFormHandler) processDefinitionEntity
+                    .getStartFormHandler();
+
+            if (formHandler.getFormKey() != null) {
+                String formKey = formHandler.getFormKey().getExpressionText();
+                formInfo.setFormKey(formKey);
+            }
+        } else {
+            formInfo.setAutoCompleteFirstTask(true);
+
+            ActivityImpl startActivity = processDefinitionEntity.getInitial();
+
+            if (startActivity.getOutgoingTransitions().size() != 1) {
+                throw new IllegalStateException(
+                        "start activity outgoing transitions cannot more than 1, now is : "
+                                + startActivity.getOutgoingTransitions().size());
+            }
+
+            PvmTransition pvmTransition = startActivity
+                    .getOutgoingTransitions().get(0);
+            PvmActivity targetActivity = pvmTransition.getDestination();
+
+            if (!"userTask".equals(targetActivity.getProperty("type"))) {
+                logger.info("first activity is not userTask, just skip");
+            } else {
+                String taskDefinitionKey = targetActivity.getId();
+                logger.info("activityId : {}", targetActivity.getId());
+
+                TaskDefinition taskDefinition = processDefinitionEntity
+                        .getTaskDefinitions().get(taskDefinitionKey);
+
+                Expression expression = taskDefinition.getAssigneeExpression();
+                String expressionText = expression.getExpressionText();
+                logger.info("{}", expressionText);
+                logger.info("{}", startActivity.getProperties());
+                logger.info("{}", processDefinitionEntity.getProperties());
+
+                String initiatorVariableName = (String) processDefinitionEntity
+                        .getProperty(BpmnParse.PROPERTYNAME_INITIATOR_VARIABLE_NAME);
+
+                if (("${" + initiatorVariableName + "}").equals(expressionText)) {
+                    DefaultFormHandler formHandler = (DefaultFormHandler) taskDefinition
+                            .getTaskFormHandler();
+
+                    if (formHandler.getFormKey() != null) {
+                        String formKey = formHandler.getFormKey()
+                                .getExpressionText();
+                        formInfo.setFormKey(formKey);
+                    }
+                }
+            }
+        }
+
+        return formInfo;
+    }
+}

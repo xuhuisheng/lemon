@@ -1,0 +1,11 @@
+<included>
+    <appender name="FILE" class="ch.qos.logback.core.rolling.RollingFileAppender">
+        <File>${log.base}</File>
+        <encoder>
+            <Pattern>${log.pattern.default}</Pattern>
+        </encoder>
+        <rollingPolicy class="ch.qos.logback.core.rolling.TimeBasedRollingPolicy">
+            <FileNamePattern>${log.base}.%d{yyyy-MM-dd}</FileNamePattern>
+        </rollingPolicy>
+    </appender>
+</included>
