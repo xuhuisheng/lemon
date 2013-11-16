@@ -29,6 +29,13 @@
   <prerequisites>
     <maven>3.0</maven>
   </prerequisites>
+
+  <repositories>
+    <repository>
+	  <id>local-file</id>
+	  <url>file://${basedir}/repositories/</url>
+	</repository>
+  </repositories>
   <dependencies>
     <dependency>
       <groupId>junit</groupId>
