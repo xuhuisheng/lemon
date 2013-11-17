@@ -1005,7 +1005,7 @@
   </reporting>
 
   <properties>
-    <java.version>1.5</java.version>
+    <java.version>1.6</java.version>
     <project.build.sourceEncoding>UTF-8</project.build.sourceEncoding>
     <project.reporting.outputEncoding>UTF-8</project.reporting.outputEncoding>
     <tagBase>svn://localhost/mossle/tags</tagBase>
