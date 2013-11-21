@@ -4,16 +4,16 @@ import java.util.ArrayList;
 import java.util.Date;
 import java.util.List;
 
-import com.mossle.api.ScopeConnector;
 import com.mossle.api.UserConnector;
 import com.mossle.api.UserDTO;
+import com.mossle.api.scope.ScopeConnector;
+import com.mossle.api.scope.ScopeHolder;
 
 import com.mossle.core.export.Exportor;
 import com.mossle.core.export.TableModel;
 import com.mossle.core.hibernate.PropertyFilter;
 import com.mossle.core.mapper.BeanMapper;
 import com.mossle.core.page.Page;
-import com.mossle.core.scope.ScopeHolder;
 import com.mossle.core.struts2.BaseAction;
 
 import com.mossle.forum.domain.ForumTopic;
@@ -57,10 +57,9 @@ public class ForumTopicAction extends BaseAction implements
     public String list() {
         List<PropertyFilter> propertyFilters = PropertyFilter
                 .buildFromHttpRequest(ServletActionContext.getRequest());
-        Long globalId = scopeConnector
-                .findGlobalId(ScopeHolder.getGlobalCode());
         String userId = userConnector.findByUsername(
-                SpringSecurityUtils.getCurrentUsername(), globalId).getId();
+                SpringSecurityUtils.getCurrentUsername(),
+                ScopeHolder.getUserRepoRef()).getId();
         propertyFilters.add(new PropertyFilter("EQS_senderUsername",
                 SpringSecurityUtils.getCurrentUsername()));
         page = forumTopicManager.pagedQuery(page, propertyFilters);
@@ -71,10 +70,9 @@ public class ForumTopicAction extends BaseAction implements
     public String listReceived() {
         List<PropertyFilter> propertyFilters = PropertyFilter
                 .buildFromHttpRequest(ServletActionContext.getRequest());
-        Long globalId = scopeConnector
-                .findGlobalId(ScopeHolder.getGlobalCode());
         String userId = userConnector.findByUsername(
-                SpringSecurityUtils.getCurrentUsername(), globalId).getId();
+                SpringSecurityUtils.getCurrentUsername(),
+                ScopeHolder.getUserRepoRef()).getId();
         propertyFilters.add(new PropertyFilter("EQS_receiverUsername",
                 SpringSecurityUtils.getCurrentUsername()));
         page = forumTopicManager.pagedQuery(page, propertyFilters);
@@ -85,10 +83,9 @@ public class ForumTopicAction extends BaseAction implements
     public String listSent() {
         List<PropertyFilter> propertyFilters = PropertyFilter
                 .buildFromHttpRequest(ServletActionContext.getRequest());
-        Long globalId = scopeConnector
-                .findGlobalId(ScopeHolder.getGlobalCode());
         String userId = userConnector.findByUsername(
-                SpringSecurityUtils.getCurrentUsername(), globalId).getId();
+                SpringSecurityUtils.getCurrentUsername(),
+                ScopeHolder.getUserRepoRef()).getId();
         propertyFilters.add(new PropertyFilter("EQS_receiverUsername",
                 SpringSecurityUtils.getCurrentUsername()));
         page = forumTopicManager.pagedQuery(page, propertyFilters);
@@ -109,10 +106,9 @@ public class ForumTopicAction extends BaseAction implements
         } else {
             dest = model;
 
-            Long globalId = scopeConnector.findGlobalId(ScopeHolder
-                    .getGlobalCode());
             String userId = userConnector.findByUsername(
-                    SpringSecurityUtils.getCurrentUsername(), globalId).getId();
+                    SpringSecurityUtils.getCurrentUsername(),
+                    ScopeHolder.getUserRepoRef()).getId();
             dest.setUserId(Long.parseLong(userId));
             dest.setCreateTime(new Date());
         }
@@ -171,10 +167,9 @@ public class ForumTopicAction extends BaseAction implements
     }
 
     public String createTopic() throws Exception {
-        Long globalId = scopeConnector
-                .findGlobalId(ScopeHolder.getGlobalCode());
         String userId = userConnector.findByUsername(
-                SpringSecurityUtils.getCurrentUsername(), globalId).getId();
+                SpringSecurityUtils.getCurrentUsername(),
+                ScopeHolder.getUserRepoRef()).getId();
         model.setUserId(Long.parseLong(userId));
         model.setCreateTime(new Date());
         forumTopicManager.save(model);

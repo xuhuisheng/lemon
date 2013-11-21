@@ -14,8 +14,9 @@ import javax.ws.rs.Produces;
 import javax.ws.rs.QueryParam;
 import javax.ws.rs.core.MediaType;
 
-import com.mossle.api.ScopeConnector;
 import com.mossle.api.UserConnector;
+import com.mossle.api.scope.ScopeConnector;
+import com.mossle.api.scope.ScopeHolder;
 
 import com.mossle.auth.domain.Access;
 import com.mossle.auth.domain.Role;
@@ -26,7 +27,6 @@ import com.mossle.auth.manager.UserStatusManager;
 import com.mossle.auth.service.AuthService;
 
 import com.mossle.core.jdbc.DataSourceService;
-import com.mossle.core.scope.ScopeHolder;
 
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
@@ -43,7 +43,7 @@ public class AuthResource {
             + " where u.id=? and r.localId=?";
     public static final String HQL_ATTRIBUTE = "select r.name from Role r join r.userStatuses u"
             + " where u.id=? and r.localId=?";
-    public static final String HQL_ACCESS = "from Access where localId=? order by priority";
+    public static final String HQL_ACCESS = "from Access where scopeId=? order by priority";
     private UserStatusManager userStatusManager;
     private AccessManager accessManager;
     private UserConnector userConnector;
@@ -63,11 +63,6 @@ public class AuthResource {
             return null;
         }
 
-        Long globalId = scopeConnector
-                .findGlobalId(ScopeHolder.getGlobalCode());
-        Long localId = scopeConnector.findLocalId(ScopeHolder.getGlobalCode(),
-                ScopeHolder.getLocalCode());
-
         try {
             com.mossle.api.UserDTO apiUserDto = userConnector.findById(userId);
 
@@ -84,9 +79,9 @@ public class AuthResource {
                 return userDto;
             }
 
-            String hql = "from UserStatus where username=? and globalId=?";
+            String hql = "from UserStatus where username=? and userRepoRef=?";
             UserStatus userStatus = userStatusManager.findUnique(hql,
-                    apiUserDto.getUsername(), globalId);
+                    apiUserDto.getUsername(), ScopeHolder.getUserRepoRef());
 
             if (userStatus == null) {
                 logger.debug("user has no authorities : [{}]", userId);
@@ -96,7 +91,6 @@ public class AuthResource {
 
                 if ((userDto.getUsername() == null)
                         || "".equals(userDto.getUsername())) {
-                    // userDto.setUsername((String) remoteMap.get("email"));
                     userDto.setUsername(apiUserDto.getId());
                 }
 
@@ -105,18 +99,16 @@ public class AuthResource {
                 userDto.setAttributes(Collections.EMPTY_LIST);
                 logger.debug("username : [{}]", userDto.getUsername());
                 logger.debug("password : [{}]", userDto.getPassword());
-
-                // logger.debug("remoteMap : {}", remoteMap);
             } else {
                 userDto.setUsername(userStatus.getUsername());
                 userDto.setPassword(userStatus.getPassword());
 
                 List<String> authorties = userStatusManager.find(HQL_AUTHORITY,
-                        userStatus.getId(), localId);
+                        userStatus.getId(), ScopeHolder.getScopeId());
                 userDto.setAuthorities(authorties);
 
                 List<String> roles = userStatusManager.find(HQL_ATTRIBUTE,
-                        userStatus.getId(), localId);
+                        userStatus.getId(), ScopeHolder.getScopeId());
                 List<String> attributes = new ArrayList<String>();
 
                 for (String role : roles) {
@@ -149,14 +141,9 @@ public class AuthResource {
 
         logger.debug("username : {}", username);
 
-        Long globalId = scopeConnector
-                .findGlobalId(ScopeHolder.getGlobalCode());
-        Long localId = scopeConnector.findLocalId(ScopeHolder.getGlobalCode(),
-                ScopeHolder.getLocalCode());
-
         try {
             com.mossle.api.UserDTO apiUserDto = userConnector.findByUsername(
-                    username, globalId);
+                    username, ScopeHolder.getUserRepoRef());
 
             UserDTO userDto = new UserDTO();
 
@@ -171,9 +158,9 @@ public class AuthResource {
                 return userDto;
             }
 
-            String hql = "from UserStatus where username=? and globalId=?";
+            String hql = "from UserStatus where username=? and userRepoRef=?";
             UserStatus userStatus = userStatusManager.findUnique(hql,
-                    apiUserDto.getUsername(), globalId);
+                    apiUserDto.getUsername(), ScopeHolder.getUserRepoRef());
 
             if (userStatus == null) {
                 logger.debug("user has no authorities : [{}]", username);
@@ -186,12 +173,12 @@ public class AuthResource {
                 userDto.setAppId("0");
 
                 List<String> authorties = userStatusManager.find(HQL_AUTHORITY,
-                        userStatus.getId(), localId);
+                        userStatus.getId(), ScopeHolder.getScopeId());
                 logger.debug("authorties : {}", authorties);
                 userDto.setAuthorities(authorties);
 
                 List<String> roles = userStatusManager.find(HQL_ATTRIBUTE,
-                        userStatus.getId(), localId);
+                        userStatus.getId(), ScopeHolder.getScopeId());
                 logger.debug("roles : {}", roles);
 
                 List<String> attributes = new ArrayList<String>();
@@ -218,11 +205,8 @@ public class AuthResource {
     @Path("resource")
     @Produces(MediaType.APPLICATION_JSON)
     public List<AccessDTO> getResource() {
-        // Long globalId = scopeConnector
-        // .findGlobalId(ScopeHolder.getGlobalCode());
-        Long localId = scopeConnector.findLocalId(ScopeHolder.getGlobalCode(),
-                ScopeHolder.getLocalCode());
-        List<Access> accesses = accessManager.find(HQL_ACCESS, localId);
+        List<Access> accesses = accessManager.find(HQL_ACCESS,
+                ScopeHolder.getScopeId());
         List<AccessDTO> accessDtos = new ArrayList<AccessDTO>();
 
         for (Access access : accesses) {
@@ -325,8 +309,8 @@ public class AuthResource {
             userStatus.setReference(userId);
             userStatus.setUsername(username);
             userStatus.setStatus(1);
-            userStatus.setGlobalId(globalId);
-            userStatus.setLocalId(localId);
+            userStatus.setUserRepoRef(ScopeHolder.getUserRepoRef());
+            userStatus.setScopeId(ScopeHolder.getScopeId());
             userStatusManager.save(userStatus);
         }
 
@@ -353,12 +337,8 @@ public class AuthResource {
         logger.info("userId : {}", userId);
         logger.info("roleIds : {}", roleIds);
 
-        Long globalId = scopeConnector
-                .findGlobalId(ScopeHolder.getGlobalCode());
-        Long localId = scopeConnector.findLocalId(ScopeHolder.getGlobalCode(),
-                ScopeHolder.getLocalCode());
-
-        authService.configUserRole(userId, roleIds, globalId, localId, true);
+        authService.configUserRole(userId, roleIds,
+                ScopeHolder.getUserRepoRef(), ScopeHolder.getScopeId(), true);
 
         return true;
     }

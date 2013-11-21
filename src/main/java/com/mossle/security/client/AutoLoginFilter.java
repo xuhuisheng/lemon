@@ -12,6 +12,7 @@ import com.mossle.security.util.SpringSecurityUtils;
 
 import org.springframework.security.core.userdetails.UserDetails;
 import org.springframework.security.core.userdetails.UserDetailsService;
+import org.springframework.security.core.userdetails.UsernameNotFoundException;
 
 import org.springframework.web.filter.GenericFilterBean;
 
@@ -27,8 +28,7 @@ public class AutoLoginFilter extends GenericFilterBean {
                     .loadUserByUsername(defaultUserName);
 
             if (userDetails == null) {
-                throw new RuntimeException("defaultUser [" + defaultUserName
-                        + "] didn't exists.");
+                throw new UsernameNotFoundException(defaultUserName);
             }
 
             SpringSecurityUtils.saveUserDetailsToContext(userDetails,

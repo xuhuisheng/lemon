@@ -48,12 +48,15 @@ public class UserAttr implements java.io.Serializable {
     /** null. */
     private String stringValue;
 
+    /** null. */
+    private String scopeId;
+
     public UserAttr() {
     }
 
     public UserAttr(UserBase userBase, UserSchema userSchema,
             Integer booleanValue, Date dateValue, Long longValue,
-            Double doubleValue, String stringValue) {
+            Double doubleValue, String stringValue, String scopeId) {
         this.userBase = userBase;
         this.userSchema = userSchema;
         this.booleanValue = booleanValue;
@@ -61,6 +64,7 @@ public class UserAttr implements java.io.Serializable {
         this.longValue = longValue;
         this.doubleValue = doubleValue;
         this.stringValue = stringValue;
+        this.scopeId = scopeId;
     }
 
     /** @return null. */
@@ -178,5 +182,19 @@ public class UserAttr implements java.io.Serializable {
      */
     public void setStringValue(String stringValue) {
         this.stringValue = stringValue;
+    }
+
+    /** @return null. */
+    @Column(name = "SCOPE_ID", length = 50)
+    public String getScopeId() {
+        return this.scopeId;
+    }
+
+    /**
+     * @param scopeId
+     *            null.
+     */
+    public void setScopeId(String scopeId) {
+        this.scopeId = scopeId;
     }
 }

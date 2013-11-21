@@ -14,23 +14,25 @@ import com.mossle.security.api.UserInfo;
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
 
+import org.springframework.security.core.userdetails.UsernameNotFoundException;
+
 public class HttpUserFetcher implements UserFetcher {
     private static Logger logger = LoggerFactory
             .getLogger(HttpUserFetcher.class);
     private HttpHandler httpHandler = new HttpHandlerImpl();
     private String url;
-    private Long defaultAppId = 1L;
-    private Long defaultRepoCode = 1L;
+    private String defaultAppId = "1";
+    private String defaultRepoCode = "1";
 
     public UserInfo getUserInfo(String username) {
         return getUserInfo(username, defaultAppId, defaultRepoCode);
     }
 
-    public UserInfo getUserInfo(String username, Long appId) {
+    public UserInfo getUserInfo(String username, String appId) {
         return getUserInfo(username, appId, defaultRepoCode);
     }
 
-    public UserInfo getUserInfo(String username, Long appId, Long repoCode) {
+    public UserInfo getUserInfo(String username, String appId, String repoCode) {
         Map<String, Object> parameterMap = new HashMap<String, Object>();
         parameterMap.put("username", username);
         parameterMap.put("appId", appId);
@@ -59,8 +61,8 @@ public class HttpUserFetcher implements UserFetcher {
 
             return userInfo;
         } catch (Exception ex) {
-            logger.error("", ex);
-            throw new RuntimeException(ex);
+            logger.error(ex.getMessage(), ex);
+            throw new UsernameNotFoundException(username, ex);
         }
     }
 
@@ -68,11 +70,11 @@ public class HttpUserFetcher implements UserFetcher {
         this.url = url;
     }
 
-    public void setDefaultAppId(Long defaultAppId) {
+    public void setDefaultAppId(String defaultAppId) {
         this.defaultAppId = defaultAppId;
     }
 
-    public void setDefaultRepoCode(Long defaultRepoCode) {
+    public void setDefaultRepoCode(String defaultRepoCode) {
         this.defaultRepoCode = defaultRepoCode;
     }
 

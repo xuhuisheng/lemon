@@ -10,11 +10,11 @@ public class MockUserFetcher implements UserFetcher {
         return getUserInfo(username, null, null);
     }
 
-    public UserInfo getUserInfo(String username, Long appId) {
+    public UserInfo getUserInfo(String username, String appId) {
         return getUserInfo(username, appId, null);
     }
 
-    public UserInfo getUserInfo(String username, Long appId, Long repoCode) {
+    public UserInfo getUserInfo(String username, String appId, String repoCode) {
         UserInfoImpl userInfo = new UserInfoImpl();
 
         userInfo.setUsername(username);

@@ -7,15 +7,14 @@ import java.util.HashMap;
 import java.util.List;
 import java.util.Map;
 
-import com.mossle.api.ScopeConnector;
 import com.mossle.api.UserProcessor;
+import com.mossle.api.scope.ScopeHolder;
 
 import com.mossle.core.export.Exportor;
 import com.mossle.core.export.TableModel;
 import com.mossle.core.hibernate.PropertyFilter;
 import com.mossle.core.mapper.BeanMapper;
 import com.mossle.core.page.Page;
-import com.mossle.core.scope.ScopeHolder;
 import com.mossle.core.struts2.BaseAction;
 import com.mossle.core.util.ServletUtils;
 
@@ -48,8 +47,6 @@ public class UserBaseAction extends BaseAction implements
         ModelDriven<UserBase>, Preparable {
     public static final String RELOAD = "reload";
     private UserBaseManager userBaseManager;
-    private UserSchemaManager userSchemaManager;
-    private UserAttrManager userAttrManager;
     private UserRepoManager userRepoManager;
     private MessageSourceAccessor messages;
     private Page page = new Page();
@@ -62,7 +59,6 @@ public class UserBaseAction extends BaseAction implements
     private BeanMapper beanMapper = new BeanMapper();
     private SimplePasswordEncoder simplePasswordEncoder;
     private UserBaseWrapper userBaseWrapper;
-    private ScopeConnector scopeConnector;
     private UserService userService;
     private long userRepoId;
 
@@ -73,10 +69,10 @@ public class UserBaseAction extends BaseAction implements
     public String list() {
         List<PropertyFilter> propertyFilters = PropertyFilter
                 .buildFromHttpRequest(ServletActionContext.getRequest());
-        Long globalId = scopeConnector
-                .findGlobalId(ScopeHolder.getGlobalCode());
+        UserRepo userRepo = userRepoManager.findUniqueBy("code",
+                ScopeHolder.getScopeCode());
         propertyFilters.add(new PropertyFilter("EQL_userRepo.id", Long
-                .toString(globalId)));
+                .toString(userRepo.getId())));
         page = userBaseManager.pagedQuery(page, propertyFilters);
 
         List<UserBase> userBases = (List<UserBase>) page.getResult();
@@ -153,9 +149,8 @@ public class UserBaseAction extends BaseAction implements
         } else {
             model = new UserBase();
 
-            Long globalId = scopeConnector.findGlobalId(ScopeHolder
-                    .getGlobalCode());
-            UserRepo userRepo = userRepoManager.get(globalId);
+            UserRepo userRepo = userRepoManager.findUniqueBy("code",
+                    ScopeHolder.getScopeCode());
             model.setUserRepo(userRepo);
             userBaseWrapper = new UserBaseWrapper(model);
         }
@@ -225,14 +220,6 @@ public class UserBaseAction extends BaseAction implements
         this.userBaseManager = userBaseManager;
     }
 
-    public void setUserSchemaManager(UserSchemaManager userSchemaManager) {
-        this.userSchemaManager = userSchemaManager;
-    }
-
-    public void setUserAttrManager(UserAttrManager userAttrManager) {
-        this.userAttrManager = userAttrManager;
-    }
-
     public void setUserRepoManager(UserRepoManager userRepoManager) {
         this.userRepoManager = userRepoManager;
     }
@@ -272,10 +259,6 @@ public class UserBaseAction extends BaseAction implements
     }
 
     // ~ ======================================================================
-    public void setScopeConnector(ScopeConnector scopeConnector) {
-        this.scopeConnector = scopeConnector;
-    }
-
     public void setUserService(UserService userService) {
         this.userService = userService;
     }

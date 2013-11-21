@@ -32,10 +32,7 @@ public class Resc implements java.io.Serializable {
     private String descn;
 
     /** null. */
-    private Long globalId;
-
-    /** null. */
-    private Long localId;
+    private String scopeId;
 
     /** . */
     private Set<Perm> perms = new HashSet<Perm>(0);
@@ -43,12 +40,10 @@ public class Resc implements java.io.Serializable {
     public Resc() {
     }
 
-    public Resc(String name, String descn, Long globalId, Long localId,
-            Set<Perm> perms) {
+    public Resc(String name, String descn, String scopeId, Set<Perm> perms) {
         this.name = name;
         this.descn = descn;
-        this.globalId = globalId;
-        this.localId = localId;
+        this.scopeId = scopeId;
         this.perms = perms;
     }
 
@@ -97,31 +92,17 @@ public class Resc implements java.io.Serializable {
     }
 
     /** @return null. */
-    @Column(name = "GLOBAL_ID")
-    public Long getGlobalId() {
-        return this.globalId;
+    @Column(name = "SCOPE_ID", length = 50)
+    public String getScopeId() {
+        return this.scopeId;
     }
 
     /**
-     * @param globalId
+     * @param scopeId
      *            null.
      */
-    public void setGlobalId(Long globalId) {
-        this.globalId = globalId;
-    }
-
-    /** @return null. */
-    @Column(name = "LOCAL_ID")
-    public Long getLocalId() {
-        return this.localId;
-    }
-
-    /**
-     * @param localId
-     *            null.
-     */
-    public void setLocalId(Long localId) {
-        this.localId = localId;
+    public void setScopeId(String scopeId) {
+        this.scopeId = scopeId;
     }
 
     /** @return . */

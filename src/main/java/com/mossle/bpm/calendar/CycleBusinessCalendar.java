@@ -1,14 +1,9 @@
 package com.mossle.bpm.calendar;
 
-import java.text.ParseException;
-
 import java.util.Date;
-
-import javax.xml.datatype.Duration;
 
 import org.activiti.engine.ActivitiException;
 import org.activiti.engine.impl.calendar.CronExpression;
-import org.activiti.engine.impl.calendar.DurationHelper;
 import org.activiti.engine.impl.util.ClockUtil;
 
 public class CycleBusinessCalendar extends AdvancedBusinessCalendar {

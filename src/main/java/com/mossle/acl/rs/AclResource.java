@@ -49,7 +49,7 @@ public class AclResource {
             @QueryParam("resourceId") long resourceId,
             @QueryParam("resourceType") String resourceType,
             @QueryParam("mask") int mask) {
-        UserDTO userDto = aclService.getUserDTO("" + userId);
+        UserDTO userDto = aclService.getUserDTO(Long.toString(userId));
 
         if (userDto == null) {
             logger.info("user [{}] is null", userId);
@@ -62,7 +62,7 @@ public class AclResource {
         }
 
         AclObjectIdentity aclObjectIdentity = aclService.findAclObjectIdentity(
-                "" + resourceId, resourceType);
+                Long.toString(resourceId), resourceType);
 
         if (aclObjectIdentity == null) {
             logger.info("object identity [{},{}] is null", resourceId,
@@ -85,8 +85,8 @@ public class AclResource {
         boolean canAccess = false;
 
         if ((aclEntry != null)
-                && this.isTimeValid(aclEntry.getStartTime(), aclEntry
-                        .getEndTime())) {
+                && this.isTimeValid(aclEntry.getStartTime(),
+                        aclEntry.getEndTime())) {
             canAccess = Integer.valueOf(1).equals(aclEntry.getGranting());
         }
 
@@ -108,7 +108,8 @@ public class AclResource {
             @FormParam("mask") int mask) {
         Long sidId = aclService.getSidId(entityId, entityType);
         AclObjectIdentity aclObjectIdentity = aclService
-                .createOrFindAclObjectIdentity("" + resourceId, resourceType);
+                .createOrFindAclObjectIdentity(Long.toString(resourceId),
+                        resourceType);
 
         AclEntry aclEntry = aclService.createOrFindAclEntry(sidId,
                 aclObjectIdentity, mask);
@@ -135,7 +136,7 @@ public class AclResource {
             @FormParam("mask") int mask) {
         Long sidId = aclService.getSidId(entityId, entityType);
         AclObjectIdentity aclObjectIdentity = aclService.findAclObjectIdentity(
-                "" + resourceId, resourceType);
+                Long.toString(resourceId), resourceType);
 
         if (aclObjectIdentity == null) {
             logger.info("object identity [{},{}] is null", resourceId,
@@ -210,9 +211,6 @@ public class AclResource {
             aclService.removeAclEntry(aceId);
         }
 
-        // aclObjectIdentity = aclService.findAclObjectIdentity(resourceId,
-        // resourceType);
-
         // 操作完成后，返回当前设置的资源是否设置了数据权限
         // 有则返回true
         // 无则返回false
@@ -273,9 +271,6 @@ public class AclResource {
         for (Long aceId : aceIds) {
             aclService.removeAclEntry(aceId);
         }
-
-        // aclObjectIdentity = aclService.findAclObjectIdentity(resourceId,
-        // resourceType);
 
         // 操作完成后，返回当前设置的资源是否设置了数据权限
         // 有则返回true
@@ -420,25 +415,11 @@ public class AclResource {
             }
         }
 
-        // for (Long entityId : entityIdList) {
-        // AclEntry aclEntry = aclService.createOrFindAclEntry(entityId,
-        // aclObjectIdentity, mask);
-        // aclEntry.setGranting(1);
-        // aclService.saveAclEntry(aclEntry);
-        // aceIds.remove(aclEntry.getId());
-        // }
-
-        // for (Long aceId : aceIds) {
-        // aclService.removeAclEntry(aceId);
-        // }
         for (Long entityId : entityIdList) {
             AclEntry aclEntry = aclService.createOrFindAclEntry(entityId,
                     aclObjectIdentity, mask);
             aclService.removeAclEntry(aclEntry.getId());
         }
-
-        // aclObjectIdentity = aclService.findAclObjectIdentity(resourceId,
-        // resourceType);
 
         // 操作完成后，返回当前设置的资源是否设置了数据权限
         // 有则返回true

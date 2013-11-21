@@ -27,20 +27,14 @@ import org.activiti.bpmn.constants.BpmnXMLConstants;
 import org.activiti.bpmn.model.*;
 import org.activiti.bpmn.model.BpmnModel;
 
-import org.activiti.engine.HistoryService;
-import org.activiti.engine.RepositoryService;
-import org.activiti.engine.RuntimeService;
 import org.activiti.engine.history.*;
 import org.activiti.engine.history.HistoricActivityInstance;
 import org.activiti.engine.impl.*;
-import org.activiti.engine.impl.RepositoryServiceImpl;
 import org.activiti.engine.impl.cmd.GetBpmnModelCmd;
 import org.activiti.engine.impl.context.Context;
-import org.activiti.engine.impl.interceptor.CommandContext;
 import org.activiti.engine.impl.persistence.entity.*;
 import org.activiti.engine.impl.persistence.entity.ProcessDefinitionEntity;
 import org.activiti.engine.impl.pvm.process.ActivityImpl;
-import org.activiti.engine.runtime.ProcessInstance;
 
 import org.apache.commons.io.FilenameUtils;
 

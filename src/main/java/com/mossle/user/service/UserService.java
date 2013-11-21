@@ -7,11 +7,7 @@ import java.util.Map;
 
 import javax.annotation.Resource;
 
-import javax.inject.Inject;
-
-import com.mossle.api.ScopeConnector;
-
-import com.mossle.core.scope.ScopeHolder;
+import com.mossle.api.scope.ScopeHolder;
 
 import com.mossle.user.notification.DefaultUserNotification;
 import com.mossle.user.notification.UserNotification;
@@ -37,7 +33,6 @@ import org.springframework.transaction.annotation.Transactional;
 @Transactional(rollbackFor = Exception.class)
 public class UserService {
     private static Logger logger = LoggerFactory.getLogger(UserService.class);
-    private ScopeConnector scopeConnector;
     private UserBaseManager userBaseManager;
     private UserRepoManager userRepoManager;
     private UserAttrManager userAttrManager;
@@ -47,14 +42,9 @@ public class UserService {
     public void insertUser(UserBase userBase, Long userRepoId,
             Map<String, Object> parameters) {
         // user repo
-        Long globalId = scopeConnector
-                .findGlobalId(ScopeHolder.getGlobalCode());
-        userBase.setUserRepo(userRepoManager.get(globalId));
+        userBase.setUserRepo(userRepoManager.get(userRepoId));
 
-        userBase.setGlobalId(scopeConnector.findGlobalId(ScopeHolder
-                .getGlobalCode()));
-        userBase.setLocalId(scopeConnector.findLocalId(
-                ScopeHolder.getGlobalCode(), ScopeHolder.getLocalCode()));
+        userBase.setScopeId(ScopeHolder.getScopeId());
         userBaseManager.save(userBase);
 
         for (Map.Entry<String, Object> entry : parameters.entrySet()) {
@@ -67,6 +57,7 @@ public class UserService {
             UserAttr userAttr = new UserAttr();
             userAttr.setUserSchema(userSchema);
             userAttr.setUserBase(userBase);
+            userAttr.setScopeId(ScopeHolder.getScopeId());
             userAttrManager.save(userAttr);
 
             String type = userSchema.getType();
@@ -100,9 +91,7 @@ public class UserService {
     public void updateUser(UserBase userBase, Long userRepoId,
             Map<String, Object> parameters) {
         // user repo
-        Long globalId = scopeConnector
-                .findGlobalId(ScopeHolder.getGlobalCode());
-        userBase.setUserRepo(userRepoManager.get(globalId));
+        userBase.setUserRepo(userRepoManager.get(userRepoId));
         userBaseManager.save(userBase);
 
         for (Map.Entry<String, Object> entry : parameters.entrySet()) {
@@ -120,6 +109,7 @@ public class UserService {
                 userAttr = new UserAttr();
                 userAttr.setUserSchema(userSchema);
                 userAttr.setUserBase(userBase);
+                userAttr.setScopeId(ScopeHolder.getScopeId());
             }
 
             String type = userSchema.getType();
@@ -154,11 +144,6 @@ public class UserService {
         userBaseManager.removeAll(userBase.getUserAttrs());
         userBaseManager.remove(userBase);
         userNotification.removeUser(userBase);
-    }
-
-    @Resource
-    public void setScopeConnector(ScopeConnector scopeConnector) {
-        this.scopeConnector = scopeConnector;
     }
 
     @Resource

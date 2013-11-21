@@ -64,10 +64,7 @@ public class UserSchema implements java.io.Serializable {
     private String enumerationValues;
 
     /** null. */
-    private Long globalId;
-
-    /** null. */
-    private Long localId;
+    private String scopeId;
 
     /** . */
     private Set<UserAttr> userAttrs = new HashSet<UserAttr>(0);
@@ -78,8 +75,8 @@ public class UserSchema implements java.io.Serializable {
     public UserSchema(UserRepo userRepo, String code, String name, String type,
             Integer readOnly, Integer notNull, Integer uniqueConstraint,
             String validator, String conversionPattern, Integer multiple,
-            String enumerationKeys, String enumerationValues, Long globalId,
-            Long localId, Set<UserAttr> userAttrs) {
+            String enumerationKeys, String enumerationValues, String scopeId,
+            Set<UserAttr> userAttrs) {
         this.userRepo = userRepo;
         this.code = code;
         this.name = name;
@@ -92,8 +89,7 @@ public class UserSchema implements java.io.Serializable {
         this.multiple = multiple;
         this.enumerationKeys = enumerationKeys;
         this.enumerationValues = enumerationValues;
-        this.globalId = globalId;
-        this.localId = localId;
+        this.scopeId = scopeId;
         this.userAttrs = userAttrs;
     }
 
@@ -283,31 +279,17 @@ public class UserSchema implements java.io.Serializable {
     }
 
     /** @return null. */
-    @Column(name = "GLOBAL_ID")
-    public Long getGlobalId() {
-        return this.globalId;
+    @Column(name = "SCOPE_ID", length = 50)
+    public String getScopeId() {
+        return this.scopeId;
     }
 
     /**
-     * @param globalId
+     * @param scopeId
      *            null.
      */
-    public void setGlobalId(Long globalId) {
-        this.globalId = globalId;
-    }
-
-    /** @return null. */
-    @Column(name = "LOCAL_ID")
-    public Long getLocalId() {
-        return this.localId;
-    }
-
-    /**
-     * @param localId
-     *            null.
-     */
-    public void setLocalId(Long localId) {
-        this.localId = localId;
+    public void setScopeId(String scopeId) {
+        this.scopeId = scopeId;
     }
 
     /** @return . */

@@ -8,10 +8,8 @@ import org.activiti.bpmn.model.BpmnModel;
 
 import org.activiti.engine.impl.bpmn.diagram.ProcessDiagramGenerator;
 import org.activiti.engine.impl.cmd.GetBpmnModelCmd;
-import org.activiti.engine.impl.context.Context;
 import org.activiti.engine.impl.interceptor.Command;
 import org.activiti.engine.impl.interceptor.CommandContext;
-import org.activiti.engine.impl.persistence.entity.ProcessDefinitionEntity;
 
 public class ProcessDefinitionDiagramCmd implements Command<InputStream> {
     protected String processDefinitionId;

@@ -9,7 +9,6 @@ import javax.ws.rs.GET;
 import javax.ws.rs.Path;
 import javax.ws.rs.Produces;
 import javax.ws.rs.QueryParam;
-import javax.ws.rs.core.GenericEntity;
 import javax.ws.rs.core.MediaType;
 
 import com.fasterxml.jackson.databind.util.JSONPObject;
@@ -17,16 +16,14 @@ import com.fasterxml.jackson.databind.util.JSONPObject;
 import com.mossle.core.page.Page;
 
 import com.mossle.party.domain.PartyEntity;
-import com.mossle.party.domain.PartyType;
 import com.mossle.party.manager.PartyEntityManager;
-import com.mossle.party.manager.PartyTypeManager;
 
 import org.springframework.stereotype.Component;
 
 @Component
 @Path("partyjsonp")
 public class PartyJsonpResource {
-    private PartyTypeManager partyTypeManager;
+    public static final int DFAULT_PAGE_SIZE = 10;
     private PartyEntityManager partyEntityManager;
 
     /**
@@ -39,8 +36,8 @@ public class PartyJsonpResource {
             @QueryParam("callback") String callback,
             @QueryParam("typeId") long typeId, @QueryParam("q") String q) {
         String hql = "from PartyEntity where partyType.id=? and name like ? order by name";
-        Page page = partyEntityManager.pagedQuery(hql, 1, 10, typeId,
-                q.replace("_", "\\_") + "%");
+        Page page = partyEntityManager.pagedQuery(hql, 1, DFAULT_PAGE_SIZE,
+                typeId, q.replace("_", "\\_") + "%");
         List<PartyEntity> partyEntities = (List<PartyEntity>) page.getResult();
 
         List<PartyEntityDTO> partyEntityDtos = new ArrayList<PartyEntityDTO>();
@@ -49,16 +46,11 @@ public class PartyJsonpResource {
             PartyEntityDTO partyEntityDto = new PartyEntityDTO();
             partyEntityDto.setId(partyEntity.getId());
             partyEntityDto.setName(partyEntity.getName());
-            // partyEntityDto.setReference(partyEntity.getReference());
+
             partyEntityDtos.add(partyEntityDto);
         }
 
         return new JSONPObject(callback, partyEntityDtos);
-    }
-
-    @Resource
-    public void setPartyTypeManager(PartyTypeManager partyTypeManager) {
-        this.partyTypeManager = partyTypeManager;
     }
 
     @Resource

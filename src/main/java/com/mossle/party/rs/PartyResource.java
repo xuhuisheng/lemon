@@ -21,11 +21,15 @@ import com.mossle.party.manager.PartyEntityManager;
 import com.mossle.party.manager.PartyStructManager;
 import com.mossle.party.manager.PartyTypeManager;
 
+import org.slf4j.Logger;
+import org.slf4j.LoggerFactory;
+
 import org.springframework.stereotype.Component;
 
 @Component
 @Path("party")
 public class PartyResource {
+    private static Logger logger = LoggerFactory.getLogger(PartyResource.class);
     private PartyTypeManager partyTypeManager;
     private PartyEntityManager partyEntityManager;
     private PartyStructManager partyStructManager;
@@ -96,9 +100,8 @@ public class PartyResource {
 
             return list;
         } catch (Exception ex) {
-            System.out.println("19 : " + ex);
+            logger.error(ex.getMessage(), ex);
 
-            // ex.printStackTrace();
             return list;
         }
     }
@@ -137,8 +140,7 @@ public class PartyResource {
 
             return map;
         } catch (Exception ex) {
-            ex.printStackTrace();
-            System.out.println("35 : " + ex);
+            logger.error(ex.getMessage(), ex);
 
             return map;
         }

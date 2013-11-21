@@ -36,8 +36,6 @@ import org.apache.struts2.ServletActionContext;
 import org.apache.struts2.convention.annotation.Result;
 import org.apache.struts2.convention.annotation.Results;
 
-import org.springframework.jdbc.core.JdbcTemplate;
-
 @Results({
         @Result(name = ConsoleAction.RELOAD_DEPLOYMENT, location = "console!listDeployments.do?operationMode=RETRIEVE", type = "redirect"),
         @Result(name = ConsoleAction.RELOAD_PROCESS_DEFINITION, location = "console!listProcessDefinitions.do?operationMode=RETRIEVE", type = "redirect"),

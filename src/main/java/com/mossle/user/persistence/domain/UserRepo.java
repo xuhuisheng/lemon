@@ -32,10 +32,10 @@ public class UserRepo implements java.io.Serializable {
     private String name;
 
     /** null. */
-    private Long globalId;
+    private String reference;
 
     /** null. */
-    private Long localId;
+    private String scopeId;
 
     /** . */
     private Set<UserBase> userBases = new HashSet<UserBase>(0);
@@ -46,12 +46,12 @@ public class UserRepo implements java.io.Serializable {
     public UserRepo() {
     }
 
-    public UserRepo(String code, String name, Long globalId, Long localId,
+    public UserRepo(String code, String name, String reference, String scopeId,
             Set<UserBase> userBases, Set<UserSchema> userSchemas) {
         this.code = code;
         this.name = name;
-        this.globalId = globalId;
-        this.localId = localId;
+        this.reference = reference;
+        this.scopeId = scopeId;
         this.userBases = userBases;
         this.userSchemas = userSchemas;
     }
@@ -101,31 +101,31 @@ public class UserRepo implements java.io.Serializable {
     }
 
     /** @return null. */
-    @Column(name = "GLOBAL_ID")
-    public Long getGlobalId() {
-        return this.globalId;
+    @Column(name = "REFERENCE", length = 50)
+    public String getReference() {
+        return this.reference;
     }
 
     /**
-     * @param globalId
+     * @param reference
      *            null.
      */
-    public void setGlobalId(Long globalId) {
-        this.globalId = globalId;
+    public void setReference(String reference) {
+        this.reference = reference;
     }
 
     /** @return null. */
-    @Column(name = "LOCAL_ID")
-    public Long getLocalId() {
-        return this.localId;
+    @Column(name = "SCOPE_ID", length = 50)
+    public String getScopeId() {
+        return this.scopeId;
     }
 
     /**
-     * @param localId
+     * @param scopeId
      *            null.
      */
-    public void setLocalId(Long localId) {
-        this.localId = localId;
+    public void setScopeId(String scopeId) {
+        this.scopeId = scopeId;
     }
 
     /** @return . */

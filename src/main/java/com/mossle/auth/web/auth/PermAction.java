@@ -3,7 +3,8 @@ package com.mossle.auth.web.auth;
 import java.util.ArrayList;
 import java.util.List;
 
-import com.mossle.api.ScopeConnector;
+import com.mossle.api.scope.ScopeConnector;
+import com.mossle.api.scope.ScopeHolder;
 
 import com.mossle.auth.domain.Oper;
 import com.mossle.auth.domain.Perm;
@@ -17,7 +18,6 @@ import com.mossle.core.export.TableModel;
 import com.mossle.core.hibernate.PropertyFilter;
 import com.mossle.core.mapper.BeanMapper;
 import com.mossle.core.page.Page;
-import com.mossle.core.scope.ScopeHolder;
 import com.mossle.core.struts2.BaseAction;
 
 import com.opensymphony.xwork2.ModelDriven;
@@ -57,10 +57,8 @@ public class PermAction extends BaseAction implements ModelDriven<Perm>,
     public String list() {
         List<PropertyFilter> propertyFilters = PropertyFilter
                 .buildFromHttpRequest(ServletActionContext.getRequest());
-        Long localId = scopeConnector.findLocalId(ScopeHolder.getGlobalCode(),
-                ScopeHolder.getLocalCode());
-        propertyFilters.add(new PropertyFilter("EQL_localId", Long
-                .toString(localId)));
+        propertyFilters.add(new PropertyFilter("EQS_scopeId", ScopeHolder
+                .getScopeId()));
         page = permManager.pagedQuery(page, propertyFilters);
 
         return SUCCESS;
@@ -93,10 +91,7 @@ public class PermAction extends BaseAction implements ModelDriven<Perm>,
         }
 
         if (id == 0) {
-            dest.setGlobalId(scopeConnector.findGlobalId(ScopeHolder
-                    .getGlobalCode()));
-            dest.setLocalId(scopeConnector.findLocalId(
-                    ScopeHolder.getGlobalCode(), ScopeHolder.getLocalCode()));
+            dest.setScopeId(ScopeHolder.getScopeId());
         }
 
         permManager.save(dest);
@@ -119,10 +114,8 @@ public class PermAction extends BaseAction implements ModelDriven<Perm>,
             model = permManager.get(id);
         }
 
-        Long localId = scopeConnector.findLocalId(ScopeHolder.getGlobalCode(),
-                ScopeHolder.getLocalCode());
-        rescs = rescManager.findBy("localId", localId);
-        opers = operManager.findBy("localId", localId);
+        rescs = rescManager.findBy("scopeId", ScopeHolder.getScopeId());
+        opers = operManager.findBy("scopeId", ScopeHolder.getScopeId());
 
         return INPUT;
     }

@@ -20,6 +20,9 @@ import org.slf4j.LoggerFactory;
 public class RestUtils {
     private static Logger logger = LoggerFactory.getLogger(RestUtils.class);
 
+    protected RestUtils() {
+    }
+
     public static Response returnFile(File file, String ifModifiedSince) {
         if (!file.exists()) {
             return Response.status(Status.NOT_FOUND).build();

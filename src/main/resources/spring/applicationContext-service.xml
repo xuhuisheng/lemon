@@ -3,7 +3,9 @@
 	    xmlns:xsi="http://www.w3.org/2001/XMLSchema-instance"
 	    xsi:schemaLocation="http://www.springframework.org/schema/beans http://www.springframework.org/schema/beans/spring-beans.xsd">
 
-	<bean id="scopeConnector" class="com.mossle.bridge.DatabaseScopeConnector"/>
+	<bean id="scopeConnector" class="com.mossle.bridge.scope.DatabaseScopeConnector"/>
+
+	<bean id="userRepoConnector" class="com.mossle.bridge.DatabaseUserRepoConnector"/>
 
 	<bean id="userConnector" class="com.mossle.bridge.DatabaseUserConnector"/>
 

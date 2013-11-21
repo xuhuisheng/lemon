@@ -50,9 +50,8 @@ public class DefaultUserDetailsService implements UserDetailsService {
 
             return userDetails;
         } catch (Exception ex) {
-            logger.error("", ex);
-
-            throw new RuntimeException(ex);
+            logger.error(ex.getMessage(), ex);
+            throw new UsernameNotFoundException(username, ex);
         }
     }
 

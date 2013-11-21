@@ -36,6 +36,12 @@ public class PartyEntity implements java.io.Serializable {
     /** null. */
     private String reference;
 
+    /** null. */
+    private String userRepoRef;
+
+    /** null. */
+    private String scopeId;
+
     /** . */
     private Set<PartyStruct> parentStructs = new HashSet<PartyStruct>(0);
 
@@ -46,10 +52,13 @@ public class PartyEntity implements java.io.Serializable {
     }
 
     public PartyEntity(PartyType partyType, String name, String reference,
-            Set<PartyStruct> parentStructs, Set<PartyStruct> childStructs) {
+            String userRepoRef, String scopeId, Set<PartyStruct> parentStructs,
+            Set<PartyStruct> childStructs) {
         this.partyType = partyType;
         this.name = name;
         this.reference = reference;
+        this.userRepoRef = userRepoRef;
+        this.scopeId = scopeId;
         this.parentStructs = parentStructs;
         this.childStructs = childStructs;
     }
@@ -111,6 +120,34 @@ public class PartyEntity implements java.io.Serializable {
      */
     public void setReference(String reference) {
         this.reference = reference;
+    }
+
+    /** @return null. */
+    @Column(name = "USER_REPO_REF", length = 50)
+    public String getUserRepoRef() {
+        return this.userRepoRef;
+    }
+
+    /**
+     * @param userRepoRef
+     *            null.
+     */
+    public void setUserRepoRef(String userRepoRef) {
+        this.userRepoRef = userRepoRef;
+    }
+
+    /** @return null. */
+    @Column(name = "SCOPE_ID", length = 50)
+    public String getScopeId() {
+        return this.scopeId;
+    }
+
+    /**
+     * @param scopeId
+     *            null.
+     */
+    public void setScopeId(String scopeId) {
+        this.scopeId = scopeId;
     }
 
     /** @return . */

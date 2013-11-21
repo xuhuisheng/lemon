@@ -3,14 +3,13 @@ package com.mossle.user.web.user;
 import java.util.ArrayList;
 import java.util.List;
 
-import com.mossle.api.ScopeConnector;
+import com.mossle.api.scope.ScopeHolder;
 
 import com.mossle.core.export.Exportor;
 import com.mossle.core.export.TableModel;
 import com.mossle.core.hibernate.PropertyFilter;
 import com.mossle.core.mapper.BeanMapper;
 import com.mossle.core.page.Page;
-import com.mossle.core.scope.ScopeHolder;
 import com.mossle.core.struts2.BaseAction;
 
 import com.mossle.user.persistence.domain.UserRepo;
@@ -41,7 +40,6 @@ public class UserSchemaAction extends BaseAction implements
     private List<Long> selectedItem = new ArrayList<Long>();
     private Exportor exportor = new Exportor();
     private BeanMapper beanMapper = new BeanMapper();
-    private ScopeConnector scopeConnector;
     private long userRepoId;
 
     public String execute() {
@@ -74,10 +72,7 @@ public class UserSchemaAction extends BaseAction implements
         }
 
         if (id == 0) {
-            dest.setGlobalId(scopeConnector.findGlobalId(ScopeHolder
-                    .getGlobalCode()));
-            dest.setLocalId(scopeConnector.findLocalId(
-                    ScopeHolder.getGlobalCode(), ScopeHolder.getLocalCode()));
+            dest.setScopeId(ScopeHolder.getScopeId());
         }
 
         UserRepo userRepo = userRepoManager.get(userRepoId);
@@ -166,10 +161,6 @@ public class UserSchemaAction extends BaseAction implements
     }
 
     // ~ ======================================================================
-    public void setScopeConnector(ScopeConnector scopeConnector) {
-        this.scopeConnector = scopeConnector;
-    }
-
     public long getUserRepoId() {
         return userRepoId;
     }

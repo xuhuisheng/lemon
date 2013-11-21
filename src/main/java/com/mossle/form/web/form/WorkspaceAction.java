@@ -4,8 +4,6 @@ import java.util.HashMap;
 import java.util.List;
 import java.util.Map;
 
-import javax.annotation.Resource;
-
 import com.mossle.bpm.FormInfo;
 import com.mossle.bpm.cmd.FindStartFormCmd;
 
@@ -52,8 +50,8 @@ public class WorkspaceAction extends BaseAction {
     private List<DynamicModel> dynamicModels;
 
     public String loadForm() throws Exception {
-        FormTemplate formTemplate = formTemplateManager.get(id);
-        json = jsonMapper.toJson(formTemplate);
+        FormTemplate theFormTemplate = formTemplateManager.get(id);
+        json = jsonMapper.toJson(theFormTemplate);
 
         return "loadForm";
     }
@@ -101,19 +99,20 @@ public class WorkspaceAction extends BaseAction {
         }
 
         String businessKeyString = parameters.get("businessKey");
-        Long businessKey = null;
+        Long businessKeyLong = null;
 
         if ((businessKeyString != null) && (!"".equals(businessKeyString))) {
-            businessKey = Long.parseLong(businessKeyString);
+            businessKeyLong = Long.parseLong(businessKeyString);
         }
 
         if ((taskId != null) && (!"".equals(taskId))) {
             Task task = processEngine.getTaskService().createTaskQuery()
                     .taskId(taskId).singleResult();
             String executionId = task.getExecutionId();
-            modelService.saveTaskDraft(businessKey, executionId, parameters);
+            modelService
+                    .saveTaskDraft(businessKeyLong, executionId, parameters);
         } else {
-            modelService.saveProcessInstanceDraft(businessKey,
+            modelService.saveProcessInstanceDraft(businessKeyLong,
                     processDefinitionId, parameters);
         }
 
@@ -150,7 +149,6 @@ public class WorkspaceAction extends BaseAction {
         identityService.setAuthenticatedUserId(SpringSecurityUtils
                 .getCurrentUsername());
 
-        // this.saveDraft();
         Map<String, String[]> parameterMap = ServletActionContext.getRequest()
                 .getParameterMap();
         Map<String, Object> parameters = new HashMap<String, Object>();
@@ -171,13 +169,13 @@ public class WorkspaceAction extends BaseAction {
 
         // ~
         String businessKeyString = modelParameters.get("businessKey");
-        Long businessKey = null;
+        Long businessKeyLong = null;
 
         if ((businessKeyString != null) && (!"".equals(businessKeyString))) {
-            businessKey = Long.parseLong(businessKeyString);
+            businessKeyLong = Long.parseLong(businessKeyString);
         }
 
-        modelService.saveProcessInstance(businessKey, processDefinitionId,
+        modelService.saveProcessInstance(businessKeyLong, processDefinitionId,
                 processInstance.getId(), modelParameters);
 
         return "startProcessInstance";

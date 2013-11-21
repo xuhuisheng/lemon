@@ -1,7 +1,6 @@
 package com.mossle.bridge;
 
 import java.util.ArrayList;
-import java.util.HashMap;
 import java.util.List;
 import java.util.Map;
 
@@ -17,15 +16,13 @@ import org.springframework.dao.EmptyResultDataAccessException;
 
 import org.springframework.jdbc.core.JdbcTemplate;
 
-import org.springframework.security.core.userdetails.UsernameNotFoundException;
-
 public class DatabaseUserRepoConnector implements UserRepoConnector {
     private static Logger logger = LoggerFactory
             .getLogger(DatabaseUserRepoConnector.class);
     private JdbcTemplate jdbcTemplate;
-    private String sqlFindById = "select id,code,name from u_user_repo where id=?";
-    private String sqlFindByCode = "select id,code,name from u_user_repo where code=?";
-    private String sqlFindAll = "select id,code,name from u_user_repo";
+    private String sqlFindById = "select id,code,name from user_repo where id=?";
+    private String sqlFindByCode = "select id,code,name from user_repo where code=?";
+    private String sqlFindAll = "select id,code,name from user_repo";
 
     public UserRepoDTO findById(String id) {
         try {

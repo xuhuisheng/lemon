@@ -7,7 +7,6 @@ import java.util.HashMap;
 import java.util.List;
 import java.util.Map;
 
-import com.mossle.api.ScopeConnector;
 import com.mossle.api.UserProcessor;
 
 import com.mossle.core.export.Exportor;
@@ -15,7 +14,6 @@ import com.mossle.core.export.TableModel;
 import com.mossle.core.hibernate.PropertyFilter;
 import com.mossle.core.mapper.BeanMapper;
 import com.mossle.core.page.Page;
-import com.mossle.core.scope.ScopeHolder;
 import com.mossle.core.struts2.BaseAction;
 import com.mossle.core.util.ServletUtils;
 
@@ -51,18 +49,12 @@ public class ProfileAction extends BaseAction implements ModelDriven<UserBase>,
     private UserBaseManager userBaseManager;
     private UserSchemaManager userSchemaManager;
     private UserAttrManager userAttrManager;
-    private UserRepoManager userRepoManager;
     private MessageSourceAccessor messages;
     private Page page = new Page();
     private UserBase model;
     private long id;
-    private String username;
-    private String confirmPassword;
-    private List<Long> selectedItem = new ArrayList<Long>();
-    private Exportor exportor = new Exportor();
     private BeanMapper beanMapper = new BeanMapper();
     private UserBaseWrapper userBaseWrapper;
-    private ScopeConnector scopeConnector;
     private UserService userService;
     private long userRepoId;
 
@@ -125,19 +117,11 @@ public class ProfileAction extends BaseAction implements ModelDriven<UserBase>,
         return page;
     }
 
-    public void setSelectedItem(List<Long> selectedItem) {
-        this.selectedItem = selectedItem;
-    }
-
     public UserBaseWrapper getUserBaseWrapper() {
         return userBaseWrapper;
     }
 
     // ~ ======================================================================
-    public void setScopeConnector(ScopeConnector scopeConnector) {
-        this.scopeConnector = scopeConnector;
-    }
-
     public void setUserService(UserService userService) {
         this.userService = userService;
     }

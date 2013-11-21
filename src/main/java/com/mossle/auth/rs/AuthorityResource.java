@@ -133,18 +133,10 @@ public class AuthorityResource {
                 userDto.setAttributes(Collections.EMPTY_LIST);
                 logger.debug("username : [{}]", userDto.getUsername());
                 logger.debug("password : [{}]", userDto.getPassword());
-
-                // logger.debug("remoteMap : {}", remoteMap);
             } else {
                 userDto.setUsername(userStatus.getUsername());
                 userDto.setPassword(userStatus.getPassword());
 
-                // TODO: skip localId
-                /*
-                 * List<String> authorities = userStatusManager.find( HQL_AUTHORITY, userStatus.getId(), localId);
-                 * userDto.setAuthorities(authorities); List<String> roles = userStatusManager.find(HQL_ATTRIBUTE,
-                 * userStatus.getId(), localId);
-                 */
                 List<String> authorities = userStatusManager
                         .find("select p.name from Perm p join p.roleDefs rd join rd.roles r join r.userStatuses u"
                                 + " where u.id=?", userStatus.getId());
@@ -252,16 +244,12 @@ public class AuthorityResource {
                 userDto.setPassword(userStatus.getPassword());
                 userDto.setAppId("0");
 
-                // List<String> authorities = userStatusManager.find(
-                // HQL_AUTHORITY, userStatus.getId(), localId);
                 List<String> authorities = userStatusManager
                         .find("select p.name from Perm p join p.roleDefs rd join rd.roles r join r.userStatuses u"
                                 + " where u.id=?", userStatus.getId());
                 logger.debug("authorties : {}", authorities);
                 userDto.setAuthorities(authorities);
 
-                // List<String> roles = userStatusManager.find(HQL_ATTRIBUTE,
-                // userStatus.getId(), localId);
                 List<String> roles = userStatusManager.find(
                         "select r.name from Role r join r.userStatuses u"
                                 + " where u.id=?", userStatus.getId());

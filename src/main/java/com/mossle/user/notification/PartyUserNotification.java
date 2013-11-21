@@ -17,7 +17,6 @@ public class PartyUserNotification implements UserNotification {
     // insert
     private String insertPartyEntitySql = "insert into party_entity(name,reference,type_id) values(?,?,?)";
     private String selectPartyEntitySql = "select id from party_entity where reference=? and type_id=?";
-    private String insertPartyStructSql = "insert into party_struct(STRUCT_TYPE_ID,PARENT_ENTITY_ID,CHILD_ENTITY_ID) values(?,?,?)";
 
     // update
     private String updatePartyEntitySql = "update party_entity set name=? where reference=? and type_id=?";
@@ -31,11 +30,6 @@ public class PartyUserNotification implements UserNotification {
 
         jdbcTemplate.update(insertPartyEntitySql, userBase.getUsername(),
                 userBase.getId(), typeId);
-
-        // Long entityId = this.getPartyEntityId(userBase.getId(), typeId);
-        // Long structTypeId = 1L;
-        // jdbcTemplate.update(insertPartyStructSql, structTypeId, entityId,
-        // entityId);
     }
 
     public void updateUser(UserBase userBase) {

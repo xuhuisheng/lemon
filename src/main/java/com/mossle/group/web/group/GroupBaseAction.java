@@ -5,16 +5,15 @@ import java.util.HashMap;
 import java.util.List;
 import java.util.Map;
 
-import com.mossle.api.ScopeConnector;
 import com.mossle.api.UserConnector;
 import com.mossle.api.UserDTO;
+import com.mossle.api.scope.ScopeHolder;
 
 import com.mossle.core.export.Exportor;
 import com.mossle.core.export.TableModel;
 import com.mossle.core.hibernate.PropertyFilter;
 import com.mossle.core.mapper.BeanMapper;
 import com.mossle.core.page.Page;
-import com.mossle.core.scope.ScopeHolder;
 import com.mossle.core.struts2.BaseAction;
 
 import com.mossle.group.domain.GroupBase;
@@ -23,8 +22,12 @@ import com.mossle.group.manager.GroupBaseManager;
 import com.mossle.group.manager.GroupTypeManager;
 import com.mossle.group.service.GroupService;
 
-import com.mossle.party.domain.*;
-import com.mossle.party.manager.*;
+import com.mossle.party.domain.PartyEntity;
+import com.mossle.party.domain.PartyStruct;
+import com.mossle.party.domain.PartyStructId;
+import com.mossle.party.manager.PartyEntityManager;
+import com.mossle.party.manager.PartyStructManager;
+import com.mossle.party.manager.PartyTypeManager;
 import com.mossle.party.service.PartyService;
 
 import com.opensymphony.xwork2.ModelDriven;
@@ -58,7 +61,6 @@ public class GroupBaseAction extends BaseAction implements
     private List<Long> selectedItem = new ArrayList<Long>();
     private Exportor exportor = new Exportor();
     private BeanMapper beanMapper = new BeanMapper();
-    private ScopeConnector scopeConnector;
     private List<GroupType> groupTypes;
     private Long groupTypeId;
     private GroupService groupService;
@@ -74,10 +76,8 @@ public class GroupBaseAction extends BaseAction implements
     public String list() {
         List<PropertyFilter> propertyFilters = PropertyFilter
                 .buildFromHttpRequest(ServletActionContext.getRequest());
-        Long globalId = scopeConnector
-                .findGlobalId(ScopeHolder.getGlobalCode());
-        propertyFilters.add(new PropertyFilter("EQL_globalId", Long
-                .toString(globalId)));
+        propertyFilters.add(new PropertyFilter("EQS_userRepoRef", ScopeHolder
+                .getUserRepoRef()));
         page = groupBaseManager.pagedQuery(page, propertyFilters);
 
         return SUCCESS;
@@ -116,10 +116,8 @@ public class GroupBaseAction extends BaseAction implements
         dest.setGroupType(groupTypeManager.get(groupTypeId));
 
         if (id == 0) {
-            dest.setGlobalId(scopeConnector.findGlobalId(ScopeHolder
-                    .getGlobalCode()));
-            dest.setLocalId(scopeConnector.findLocalId(
-                    ScopeHolder.getGlobalCode(), ScopeHolder.getLocalCode()));
+            dest.setUserRepoRef(ScopeHolder.getUserRepoRef());
+            dest.setScopeId(ScopeHolder.getScopeId());
             groupService.insert(dest);
         } else {
             groupService.update(dest);
@@ -147,9 +145,8 @@ public class GroupBaseAction extends BaseAction implements
             model = groupBaseManager.get(id);
         }
 
-        Long globalId = scopeConnector
-                .findGlobalId(ScopeHolder.getGlobalCode());
-        groupTypes = groupTypeManager.findBy("globalId", globalId);
+        groupTypes = groupTypeManager.findBy("userRepoRef",
+                ScopeHolder.getUserRepoRef());
 
         return INPUT;
     }
@@ -202,9 +199,8 @@ public class GroupBaseAction extends BaseAction implements
             model = groupBaseManager.get(id);
         }
 
-        Long globalId = scopeConnector
-                .findGlobalId(ScopeHolder.getGlobalCode());
-        groupTypes = groupTypeManager.findBy("globalId", globalId);
+        groupTypes = groupTypeManager.findBy("userRepoRef",
+                ScopeHolder.getUserRepoRef());
 
         return "inputChild";
     }
@@ -222,10 +218,8 @@ public class GroupBaseAction extends BaseAction implements
         dest.setGroupType(groupTypeManager.get(groupTypeId));
 
         if (id == 0) {
-            dest.setGlobalId(scopeConnector.findGlobalId(ScopeHolder
-                    .getGlobalCode()));
-            dest.setLocalId(scopeConnector.findLocalId(
-                    ScopeHolder.getGlobalCode(), ScopeHolder.getLocalCode()));
+            dest.setUserRepoRef(ScopeHolder.getUserRepoRef());
+            dest.setScopeId(ScopeHolder.getScopeId());
             groupService.insert(dest);
         } else {
             groupService.update(dest);
@@ -300,9 +294,8 @@ public class GroupBaseAction extends BaseAction implements
     }
 
     public String saveUser() throws Exception {
-        Long globalId = scopeConnector
-                .findGlobalId(ScopeHolder.getGlobalCode());
-        UserDTO userDto = userConnector.findByUsername(username, globalId);
+        UserDTO userDto = userConnector.findByUsername(username,
+                ScopeHolder.getUserRepoRef());
         PartyEntity child = partyEntityManager.findUnique(
                 "from PartyEntity where partyType.id=1 and reference=?",
                 userDto.getId());
@@ -345,9 +338,8 @@ public class GroupBaseAction extends BaseAction implements
             model = groupBaseManager.get(groupBaseId);
         }
 
-        Long globalId = scopeConnector
-                .findGlobalId(ScopeHolder.getGlobalCode());
-        groupTypes = groupTypeManager.findBy("globalId", globalId);
+        groupTypes = groupTypeManager.findBy("userRepoRef",
+                ScopeHolder.getUserRepoRef());
 
         PartyEntity child = partyEntityManager.findUnique(
                 "from PartyEntity where partyType.id<>1 and reference=?",
@@ -373,10 +365,8 @@ public class GroupBaseAction extends BaseAction implements
         dest.setGroupType(groupTypeManager.get(groupTypeId));
 
         if (id == 0) {
-            dest.setGlobalId(scopeConnector.findGlobalId(ScopeHolder
-                    .getGlobalCode()));
-            dest.setLocalId(scopeConnector.findLocalId(
-                    ScopeHolder.getGlobalCode(), ScopeHolder.getLocalCode()));
+            dest.setUserRepoRef(ScopeHolder.getUserRepoRef());
+            dest.setScopeId(ScopeHolder.getScopeId());
             groupService.insert(dest);
         } else {
             groupService.update(dest);
@@ -391,9 +381,8 @@ public class GroupBaseAction extends BaseAction implements
         partyStructManager.removeAll(partyStructs);
 
         if (!"".equals(username)) {
-            Long globalId = scopeConnector.findGlobalId(ScopeHolder
-                    .getGlobalCode());
-            UserDTO userDto = userConnector.findByUsername(username, globalId);
+            UserDTO userDto = userConnector.findByUsername(username,
+                    ScopeHolder.getUserRepoRef());
             PartyEntity parent = partyEntityManager.findUnique(
                     "from PartyEntity where partyType.id=1 and reference=?",
                     userDto.getId());
@@ -412,9 +401,8 @@ public class GroupBaseAction extends BaseAction implements
 
     // ~ ======================================================================
     public String inputRoot() {
-        Long globalId = scopeConnector
-                .findGlobalId(ScopeHolder.getGlobalCode());
-        groupTypes = groupTypeManager.findBy("globalId", globalId);
+        groupTypes = groupTypeManager.findBy("userRepoRef",
+                ScopeHolder.getUserRepoRef());
 
         return "inputRoot";
     }
@@ -426,10 +414,8 @@ public class GroupBaseAction extends BaseAction implements
 
         dest.setGroupType(groupTypeManager.get(groupTypeId));
 
-        dest.setGlobalId(scopeConnector.findGlobalId(ScopeHolder
-                .getGlobalCode()));
-        dest.setLocalId(scopeConnector.findLocalId(ScopeHolder.getGlobalCode(),
-                ScopeHolder.getLocalCode()));
+        dest.setUserRepoRef(ScopeHolder.getUserRepoRef());
+        dest.setScopeId(ScopeHolder.getScopeId());
         groupService.insert(dest);
 
         PartyEntity child = new PartyEntity();
@@ -481,10 +467,6 @@ public class GroupBaseAction extends BaseAction implements
     }
 
     // ~ ======================================================================
-    public void setScopeConnector(ScopeConnector scopeConnector) {
-        this.scopeConnector = scopeConnector;
-    }
-
     public void setGroupService(GroupService groupService) {
         this.groupService = groupService;
     }

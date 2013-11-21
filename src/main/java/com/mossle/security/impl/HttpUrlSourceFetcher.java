@@ -51,8 +51,8 @@ public class HttpUrlSourceFetcher implements UrlSourceFetcher {
 
             return resourceMap;
         } catch (Exception ex) {
-            logger.error("", ex);
-            throw new RuntimeException(ex);
+            logger.error(ex.getMessage(), ex);
+            throw new IllegalStateException("error on fetch url source", ex);
         }
     }
 

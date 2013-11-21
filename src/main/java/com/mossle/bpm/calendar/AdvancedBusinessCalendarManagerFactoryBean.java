@@ -1,11 +1,5 @@
 package com.mossle.bpm.calendar;
 
-import java.util.HashMap;
-import java.util.Map;
-
-import org.activiti.engine.impl.calendar.BusinessCalendar;
-import org.activiti.engine.impl.calendar.BusinessCalendarManager;
-
 import org.springframework.beans.factory.FactoryBean;
 import org.springframework.beans.factory.InitializingBean;
 

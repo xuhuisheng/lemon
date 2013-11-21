@@ -1,13 +1,8 @@
 package com.mossle.bpm.rs;
 
 import java.util.ArrayList;
-import java.util.ArrayList;
-import java.util.Collections;
-import java.util.HashMap;
 import java.util.HashMap;
 import java.util.List;
-import java.util.List;
-import java.util.Map;
 import java.util.Map;
 
 import javax.annotation.Resource;
@@ -49,11 +44,15 @@ import org.activiti.engine.runtime.ProcessInstance;
 
 import org.apache.commons.lang3.StringUtils;
 
+import org.slf4j.Logger;
+import org.slf4j.LoggerFactory;
+
 import org.springframework.stereotype.Component;
 
 @Component
 @Path("bpm")
 public class BpmResource {
+    private static Logger logger = LoggerFactory.getLogger(BpmResource.class);
     private ProcessEngine processEngine;
     private RuntimeService runtimeService;
     private RepositoryServiceImpl repositoryService;
@@ -65,8 +64,6 @@ public class BpmResource {
     private List<String> highLightedFlows;
     private List<String> highLightedActivities;
     private Map<String, ObjectNode> subProcessInstanceMap;
-
-    // List<Object> sequenceFlowList = new ArrayList<Object>();
     private List<String> historicActivityInstanceList;
 
     private void init() {
@@ -187,8 +184,9 @@ public class BpmResource {
                 activityArray.add(activityName);
             }
 
-            for (String flow : highLightedFlows)
+            for (String flow : highLightedFlows) {
                 flowsArray.add(flow);
+            }
 
             responseJSON.put("highLightedActivities", activityArray);
             responseJSON.put("highLightedFlows", flowsArray);
@@ -305,7 +303,7 @@ public class BpmResource {
         }
 
         // add current activities to list
-        List<String> highLightedActivities = runtimeService
+        highLightedActivities = runtimeService
                 .getActiveActivityIds(processInstanceId);
         historicActivityInstanceList.addAll(highLightedActivities);
 
@@ -463,7 +461,7 @@ public class BpmResource {
                                 timerDeclaration.getJobHandlerType());
                         timerDeclarationJSON.put("configuration",
                                 timerDeclaration.getJobHandlerConfiguration());
-                        // timerDeclarationJSON.put("expression", timerDeclaration.getDescription());
+
                         timerDeclarationArray.add(timerDeclarationJSON);
                     }
                 }
@@ -677,16 +675,19 @@ public class BpmResource {
             responseJSON.put("processDefinitionId",
                     processInstance.getProcessDefinitionId());
 
-            List<String> highLightedActivities = runtimeService
+            highLightedActivities = runtimeService
                     .getActiveActivityIds(processInstanceId);
+
             List<String> highLightedFlows = getHighLightedFlows(
                     processDefinition, processInstanceId);
 
-            for (String activityId : highLightedActivities)
+            for (String activityId : highLightedActivities) {
                 activitiesArray.add(activityId);
+            }
 
-            for (String flow : highLightedFlows)
+            for (String flow : highLightedFlows) {
                 flowsArray.add(flow);
+            }
 
             for (String activityId : highLightedActivities) {
                 Execution execution = runtimeService
@@ -698,7 +699,7 @@ public class BpmResource {
                 executionEntity.getProcessDefinitionId();
             }
         } catch (Exception e) {
-            e.printStackTrace();
+            logger.error(e.getMessage(), e);
         }
 
         responseJSON.put("activities", activitiesArray);
@@ -721,7 +722,7 @@ public class BpmResource {
         }
 
         // add current activities to list
-        List<String> highLightedActivities = runtimeService
+        highLightedActivities = runtimeService
                 .getActiveActivityIds(processInstanceId);
         historicActivityInstanceList.addAll(highLightedActivities);
 

@@ -43,13 +43,10 @@ public class UserBase implements java.io.Serializable {
     private Integer status;
 
     /** null. */
-    private Long globalId;
-
-    /** null. */
-    private Long localId;
-
-    /** null. */
     private String reference;
+
+    /** null. */
+    private String scopeId;
 
     /** . */
     private Set<UserAttr> userAttrs = new HashSet<UserAttr>(0);
@@ -58,16 +55,15 @@ public class UserBase implements java.io.Serializable {
     }
 
     public UserBase(UserRepo userRepo, String username, String displayName,
-            String password, Integer status, Long globalId, Long localId,
-            String reference, Set<UserAttr> userAttrs) {
+            String password, Integer status, String reference, String scopeId,
+            Set<UserAttr> userAttrs) {
         this.userRepo = userRepo;
         this.username = username;
         this.displayName = displayName;
         this.password = password;
         this.status = status;
-        this.globalId = globalId;
-        this.localId = localId;
         this.reference = reference;
+        this.scopeId = scopeId;
         this.userAttrs = userAttrs;
     }
 
@@ -159,34 +155,6 @@ public class UserBase implements java.io.Serializable {
     }
 
     /** @return null. */
-    @Column(name = "GLOBAL_ID")
-    public Long getGlobalId() {
-        return this.globalId;
-    }
-
-    /**
-     * @param globalId
-     *            null.
-     */
-    public void setGlobalId(Long globalId) {
-        this.globalId = globalId;
-    }
-
-    /** @return null. */
-    @Column(name = "LOCAL_ID")
-    public Long getLocalId() {
-        return this.localId;
-    }
-
-    /**
-     * @param localId
-     *            null.
-     */
-    public void setLocalId(Long localId) {
-        this.localId = localId;
-    }
-
-    /** @return null. */
     @Column(name = "REFERENCE", length = 200)
     public String getReference() {
         return this.reference;
@@ -198,6 +166,20 @@ public class UserBase implements java.io.Serializable {
      */
     public void setReference(String reference) {
         this.reference = reference;
+    }
+
+    /** @return null. */
+    @Column(name = "SCOPE_ID", length = 50)
+    public String getScopeId() {
+        return this.scopeId;
+    }
+
+    /**
+     * @param scopeId
+     *            null.
+     */
+    public void setScopeId(String scopeId) {
+        this.scopeId = scopeId;
     }
 
     /** @return . */

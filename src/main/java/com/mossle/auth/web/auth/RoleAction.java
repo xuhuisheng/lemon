@@ -3,8 +3,9 @@ package com.mossle.auth.web.auth;
 import java.util.ArrayList;
 import java.util.List;
 
-import com.mossle.api.LocalScopeDTO;
-import com.mossle.api.ScopeConnector;
+import com.mossle.api.scope.ScopeConnector;
+import com.mossle.api.scope.ScopeHolder;
+import com.mossle.api.scope.ScopeInfo;
 
 import com.mossle.auth.component.RoleChecker;
 import com.mossle.auth.domain.Role;
@@ -18,7 +19,6 @@ import com.mossle.core.export.TableModel;
 import com.mossle.core.hibernate.PropertyFilter;
 import com.mossle.core.mapper.BeanMapper;
 import com.mossle.core.page.Page;
-import com.mossle.core.scope.ScopeHolder;
 import com.mossle.core.struts2.BaseAction;
 
 import com.opensymphony.xwork2.ModelDriven;
@@ -57,10 +57,8 @@ public class RoleAction extends BaseAction implements ModelDriven<Role>,
     public String list() {
         List<PropertyFilter> propertyFilters = PropertyFilter
                 .buildFromHttpRequest(ServletActionContext.getRequest());
-        Long localId = scopeConnector.findLocalId(ScopeHolder.getGlobalCode(),
-                ScopeHolder.getLocalCode());
-        propertyFilters.add(new PropertyFilter("EQL_localId", Long
-                .toString(localId)));
+        propertyFilters.add(new PropertyFilter("EQS_scopeId", ScopeHolder
+                .getScopeId()));
         page = roleManager.pagedQuery(page, propertyFilters);
 
         return SUCCESS;
@@ -86,10 +84,7 @@ public class RoleAction extends BaseAction implements ModelDriven<Role>,
             }
 
             if (id == 0) {
-                dest.setGlobalId(scopeConnector.findGlobalId(ScopeHolder
-                        .getGlobalCode()));
-                dest.setLocalId(scopeConnector.findLocalId(
-                        ScopeHolder.getGlobalCode(), ScopeHolder.getLocalCode()));
+                dest.setScopeId(ScopeHolder.getScopeId());
             }
 
             dest.setName(roleDefManager.get(roleDefId).getName());
@@ -129,19 +124,18 @@ public class RoleAction extends BaseAction implements ModelDriven<Role>,
             model = roleManager.get(id);
         }
 
-        Long localId = scopeConnector.findLocalId(ScopeHolder.getGlobalCode(),
-                ScopeHolder.getLocalCode());
-        roleDefs = roleDefManager.find("from RoleDef where localId=?", localId);
+        roleDefs = roleDefManager.find("from RoleDef where scopeId=?",
+                ScopeHolder.getScopeId());
 
-        List<LocalScopeDTO> localScopeDtos = scopeConnector
-                .findSharedLocalScopes();
+        List<ScopeInfo> scopeInfos = scopeConnector.findSharedScopes();
 
-        for (LocalScopeDTO localScopeDto : localScopeDtos) {
-            roleDefs.addAll(roleDefManager.find("from RoleDef where localId=?",
-                    localScopeDto.getId()));
+        for (ScopeInfo scopeInfo : scopeInfos) {
+            roleDefs.addAll(roleDefManager.find(
+                    "from RoleDef where scopeInfo=?", scopeInfo.getId()));
         }
 
-        List<Role> roles = roleManager.findBy("localId", localId);
+        List<Role> roles = roleManager.findBy("scopeId",
+                ScopeHolder.getScopeId());
         List<RoleDef> removedRoleDefs = new ArrayList<RoleDef>();
 
         for (Role role : roles) {
@@ -173,13 +167,12 @@ public class RoleAction extends BaseAction implements ModelDriven<Role>,
     }
 
     public void checkName() throws Exception {
-        Long localId = scopeConnector.findLocalId(ScopeHolder.getGlobalCode(),
-                ScopeHolder.getLocalCode());
-        String hql = "from Role where localId=" + localId + " and name=?";
+        String hql = "from Role where scopeId=" + ScopeHolder.getScopeId()
+                + " and name=?";
         Object[] params = { name };
 
         if (id != 0L) {
-            hql = "from Role where localId=" + localId
+            hql = "from Role where scopeId=" + ScopeHolder.getScopeId()
                     + " and name=? and id<>?";
             params = new Object[] { name, id };
         }

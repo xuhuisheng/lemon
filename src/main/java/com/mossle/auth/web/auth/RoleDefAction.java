@@ -3,8 +3,9 @@ package com.mossle.auth.web.auth;
 import java.util.ArrayList;
 import java.util.List;
 
-import com.mossle.api.LocalScopeDTO;
-import com.mossle.api.ScopeConnector;
+import com.mossle.api.scope.ScopeConnector;
+import com.mossle.api.scope.ScopeHolder;
+import com.mossle.api.scope.ScopeInfo;
 
 import com.mossle.auth.component.RoleDefChecker;
 import com.mossle.auth.domain.Role;
@@ -19,7 +20,6 @@ import com.mossle.core.export.TableModel;
 import com.mossle.core.hibernate.PropertyFilter;
 import com.mossle.core.mapper.BeanMapper;
 import com.mossle.core.page.Page;
-import com.mossle.core.scope.ScopeHolder;
 import com.mossle.core.struts2.BaseAction;
 
 import com.opensymphony.xwork2.ModelDriven;
@@ -50,8 +50,8 @@ public class RoleDefAction extends BaseAction implements ModelDriven<RoleDef>,
     private RoleDefChecker roleDefChecker;
     private Exportor exportor = new Exportor();
     private BeanMapper beanMapper = new BeanMapper();
-    private ScopeConnector scopeConnector;
     private List<RoleDTO> roleDtos = new ArrayList<RoleDTO>();
+    private ScopeConnector scopeConnector;
 
     public String execute() {
         return list();
@@ -60,10 +60,8 @@ public class RoleDefAction extends BaseAction implements ModelDriven<RoleDef>,
     public String list() {
         List<PropertyFilter> propertyFilters = PropertyFilter
                 .buildFromHttpRequest(ServletActionContext.getRequest());
-        Long localId = scopeConnector.findLocalId(ScopeHolder.getGlobalCode(),
-                ScopeHolder.getLocalCode());
-        propertyFilters.add(new PropertyFilter("EQL_localId", Long
-                .toString(localId)));
+        propertyFilters.add(new PropertyFilter("EQS_scopeId", ScopeHolder
+                .getScopeId()));
         page = roleDefManager.pagedQuery(page, propertyFilters);
 
         return SUCCESS;
@@ -89,10 +87,7 @@ public class RoleDefAction extends BaseAction implements ModelDriven<RoleDef>,
             }
 
             if (id == 0) {
-                dest.setGlobalId(scopeConnector.findGlobalId(ScopeHolder
-                        .getGlobalCode()));
-                dest.setLocalId(scopeConnector.findLocalId(
-                        ScopeHolder.getGlobalCode(), ScopeHolder.getLocalCode()));
+                dest.setScopeId(ScopeHolder.getScopeId());
             }
 
             roleDefManager.save(dest);
@@ -146,13 +141,12 @@ public class RoleDefAction extends BaseAction implements ModelDriven<RoleDef>,
     }
 
     public void checkName() throws Exception {
-        Long localId = scopeConnector.findLocalId(ScopeHolder.getGlobalCode(),
-                ScopeHolder.getLocalCode());
-        String hql = "from RoleDef where localId=" + localId + " and name=?";
+        String hql = "from RoleDef where scopeId=" + ScopeHolder.getScopeId()
+                + " and name=?";
         Object[] params = { name };
 
         if (id != 0L) {
-            hql = "from RoleDef where localId=" + localId
+            hql = "from RoleDef where scopeId=" + ScopeHolder.getScopeId()
                     + " and name=? and id<>?";
             params = new Object[] { name, id };
         }
@@ -166,24 +160,21 @@ public class RoleDefAction extends BaseAction implements ModelDriven<RoleDef>,
         RoleDef roleDef = roleDefManager.get(id);
         List<Role> roles = roleManager.findBy("roleDef.id", id);
 
-        Long localScopeId = scopeConnector.findLocalId(
-                ScopeHolder.getGlobalCode(), ScopeHolder.getLocalCode());
-        LocalScopeDTO currentLocalScope = scopeConnector
-                .getLocalScope(localScopeId);
-        List<LocalScopeDTO> localScopeDtos;
+        ScopeInfo currentScope = ScopeHolder.getScopeInfo();
+        List<ScopeInfo> scopeInfos;
 
-        if (currentLocalScope.isShared()) {
-            localScopeDtos = scopeConnector.findLocalScopes();
+        if (currentScope.isShared()) {
+            scopeInfos = scopeConnector.findAll();
         } else {
-            localScopeDtos = new ArrayList<LocalScopeDTO>();
-            localScopeDtos.add(currentLocalScope);
+            scopeInfos = new ArrayList<ScopeInfo>();
+            scopeInfos.add(currentScope);
         }
 
-        for (LocalScopeDTO localScopeDto : localScopeDtos) {
+        for (ScopeInfo scopeInfo : scopeInfos) {
             Role existedRole = null;
 
             for (Role role : roles) {
-                if (role.getLocalId().equals(localScopeDto.getId())) {
+                if (role.getScopeId().equals(scopeInfo.getId())) {
                     existedRole = role;
 
                     break;
@@ -193,14 +184,14 @@ public class RoleDefAction extends BaseAction implements ModelDriven<RoleDef>,
             if (existedRole == null) {
                 RoleDTO roleDto = new RoleDTO();
                 roleDto.setName(roleDef.getName());
-                roleDto.setLocalId(localScopeDto.getId());
+                roleDto.setScopeId(scopeInfo.getId());
                 roleDto.setStatus("added");
                 roleDtos.add(roleDto);
             } else {
                 RoleDTO roleDto = new RoleDTO();
                 roleDto.setName(roleDef.getName());
                 roleDto.setId(existedRole.getId());
-                roleDto.setLocalId(localScopeDto.getId());
+                roleDto.setScopeId(scopeInfo.getId());
                 roleDto.setStatus("existed");
                 roleDtos.add(roleDto);
             }
@@ -209,8 +200,8 @@ public class RoleDefAction extends BaseAction implements ModelDriven<RoleDef>,
         for (Role role : roles) {
             boolean existed = false;
 
-            for (LocalScopeDTO localScopeDto : localScopeDtos) {
-                if (role.getLocalId().equals(localScopeDto.getId())) {
+            for (ScopeInfo scopeInfo : scopeInfos) {
+                if (role.getScopeId().equals(scopeInfo.getId())) {
                     existed = true;
 
                     break;
@@ -221,7 +212,7 @@ public class RoleDefAction extends BaseAction implements ModelDriven<RoleDef>,
                 RoleDTO roleDto = new RoleDTO();
                 roleDto.setName(roleDef.getName());
                 roleDto.setId(role.getId());
-                roleDto.setLocalId(role.getLocalId());
+                roleDto.setScopeId(role.getScopeId());
                 roleDto.setStatus("removed");
                 roleDtos.add(roleDto);
             }
@@ -234,24 +225,21 @@ public class RoleDefAction extends BaseAction implements ModelDriven<RoleDef>,
         RoleDef roleDef = roleDefManager.get(id);
         List<Role> roles = roleManager.findBy("roleDef.id", id);
 
-        Long localScopeId = scopeConnector.findLocalId(
-                ScopeHolder.getGlobalCode(), ScopeHolder.getLocalCode());
-        LocalScopeDTO currentLocalScope = scopeConnector
-                .getLocalScope(localScopeId);
-        List<LocalScopeDTO> localScopeDtos;
+        ScopeInfo currentScope = ScopeHolder.getScopeInfo();
+        List<ScopeInfo> scopeInfos;
 
-        if (currentLocalScope.isShared()) {
-            localScopeDtos = scopeConnector.findLocalScopes();
+        if (currentScope.isShared()) {
+            scopeInfos = scopeConnector.findAll();
         } else {
-            localScopeDtos = new ArrayList<LocalScopeDTO>();
-            localScopeDtos.add(currentLocalScope);
+            scopeInfos = new ArrayList<ScopeInfo>();
+            scopeInfos.add(currentScope);
         }
 
-        for (LocalScopeDTO localScopeDto : localScopeDtos) {
+        for (ScopeInfo scopeInfo : scopeInfos) {
             Role existedRole = null;
 
             for (Role role : roles) {
-                if (role.getLocalId().equals(localScopeDto.getId())) {
+                if (role.getScopeId().equals(scopeInfo.getId())) {
                     existedRole = role;
 
                     break;
@@ -262,30 +250,16 @@ public class RoleDefAction extends BaseAction implements ModelDriven<RoleDef>,
                 Role role = new Role();
                 role.setName(roleDef.getName());
                 role.setRoleDef(roleDef);
-                role.setGlobalId(localScopeDto.getGlobalId());
-                role.setLocalId(localScopeDto.getId());
+                role.setScopeId(scopeInfo.getId());
                 roleManager.save(role);
-
-                // RoleDTO roleDto = new RoleDTO();
-                // roleDto.setName(roleDef.getName());
-                // roleDto.setLocalId(localScopeDto.getId());
-                // roleDto.setStatus("added");
-                // roleDtos.add(roleDto);
-            } else {
-                // RoleDTO roleDto = new RoleDTO();
-                // roleDto.setName(roleDef.getName());
-                // roleDto.setId(existedRole.getId());
-                // roleDto.setLocalId(localScopeDto.getId());
-                // roleDto.setStatus("existed");
-                // roleDtos.add(roleDto);
             }
         }
 
         for (Role role : roles) {
             boolean existed = false;
 
-            for (LocalScopeDTO localScopeDto : localScopeDtos) {
-                if (role.getLocalId().equals(localScopeDto.getId())) {
+            for (ScopeInfo scopeInfo : scopeInfos) {
+                if (role.getScopeId().equals(scopeInfo.getId())) {
                     existed = true;
 
                     break;
@@ -294,13 +268,6 @@ public class RoleDefAction extends BaseAction implements ModelDriven<RoleDef>,
 
             if (!existed) {
                 roleManager.remove(role);
-
-                // RoleDTO roleDto = new RoleDTO();
-                // roleDto.setName(roleDef.getName());
-                // roleDto.setId(role.getId());
-                // roleDto.setLocalId(role.getLocalId());
-                // roleDto.setStatus("removed");
-                // roleDtos.add(roleDto);
             }
         }
 

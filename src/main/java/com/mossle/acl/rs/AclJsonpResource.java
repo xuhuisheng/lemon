@@ -45,7 +45,7 @@ public class AclJsonpResource {
      */
     @Path("getAccess")
     @GET
-    @Produces( { MediaType.APPLICATION_JSON, "application/x-javascript" })
+    @Produces({ MediaType.APPLICATION_JSON, "application/x-javascript" })
     public JSONPObject getAccess(@QueryParam("callback") String callback,
             @QueryParam("resourceId") String resourceId,
             @QueryParam("resourceType") String resourceType,

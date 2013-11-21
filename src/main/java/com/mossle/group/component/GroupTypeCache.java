@@ -8,8 +8,8 @@ import java.util.Map;
 import javax.annotation.PostConstruct;
 import javax.annotation.Resource;
 
-import com.mossle.api.GlobalScopeDTO;
-import com.mossle.api.ScopeConnector;
+import com.mossle.api.UserRepoConnector;
+import com.mossle.api.UserRepoDTO;
 
 import com.mossle.group.domain.GroupType;
 import com.mossle.group.manager.GroupTypeManager;
@@ -18,33 +18,26 @@ import org.springframework.stereotype.Component;
 
 @Component
 public class GroupTypeCache {
-    private Map<Long, List<GroupTypeDTO>> groupTypeDtoMap = new HashMap<Long, List<GroupTypeDTO>>();
+    private Map<String, List<GroupTypeDTO>> groupTypeDtoMap = new HashMap<String, List<GroupTypeDTO>>();
     private GroupTypeManager groupTypeManager;
-    private ScopeConnector scopeConnector;
+    private UserRepoConnector userRepoConnector;
 
-    public List<GroupTypeDTO> getGroupTypeDtos(Long globalId) {
-        return groupTypeDtoMap.get(globalId);
-    }
-
-    public List<GroupTypeDTO> getGroupTypeDtos(String globalCode) {
-        Long globalId = scopeConnector.findGlobalId(globalCode);
-
-        return getGroupTypeDtos(globalId);
+    public List<GroupTypeDTO> getGroupTypeDtos(String userRepoRef) {
+        return groupTypeDtoMap.get(userRepoRef);
     }
 
     @PostConstruct
     public void refresh() {
-        List<GlobalScopeDTO> globalScopeDtos = scopeConnector
-                .findGlobalScopes();
+        List<UserRepoDTO> userRepoDtos = userRepoConnector.findAll();
 
-        for (GlobalScopeDTO globalScopeDTO : globalScopeDtos) {
-            refreshScope(globalScopeDTO.getId());
+        for (UserRepoDTO userRepoDto : userRepoDtos) {
+            refreshScope(userRepoDto.getId());
         }
     }
 
-    public void refreshScope(Long globalId) {
+    public void refreshScope(String userRepoRef) {
         List<GroupType> groupTypes = groupTypeManager.find(
-                "from GroupType where globalId=?", globalId);
+                "from GroupType where userRepoRef=?", userRepoRef);
         List<GroupTypeDTO> groupTypeDtos = new ArrayList<GroupTypeDTO>();
 
         for (GroupType groupType : groupTypes) {
@@ -54,7 +47,7 @@ public class GroupTypeCache {
             groupTypeDtos.add(groupTypeDto);
         }
 
-        groupTypeDtoMap.put(globalId, groupTypeDtos);
+        groupTypeDtoMap.put(userRepoRef, groupTypeDtos);
     }
 
     @Resource
@@ -63,7 +56,7 @@ public class GroupTypeCache {
     }
 
     @Resource
-    public void setScopeConnector(ScopeConnector scopeConnector) {
-        this.scopeConnector = scopeConnector;
+    public void setUserRepoConnector(UserRepoConnector userRepoConnector) {
+        this.userRepoConnector = userRepoConnector;
     }
 }

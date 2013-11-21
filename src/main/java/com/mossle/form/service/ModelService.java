@@ -57,12 +57,6 @@ public class ModelService {
             Map<String, String> parameters) {
         DynamicModel dynamicModel = createOrGetDynamicModel(businessKey);
 
-        // for (DynamicModelData dynamicModelData : dynamicModel
-        // .getDynamicModelDatas()) {
-        // dynamicModelManager.remove(dynamicModelData);
-        // }
-        // dynamicModel.getDynamicModelDatas().clear();
-        // dynamicModelManager.save(dynamicModel);
         for (Map.Entry<String, String> entry : parameters.entrySet()) {
             DynamicModelData dynamicModelData = this
                     .createOrGetDynamicModelData(entry.getKey(), dynamicModel);

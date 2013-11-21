@@ -14,6 +14,13 @@ tbody tr:nth-child(odd) th {
     </style>
   </head>
   <body>
+    <p>
+	  <sec:authentication property="principal"/>
+	</p>
+
+	<hr>
+
+    <p>
 <%
 	List authorities = (List) pageContext.getAttribute("authorities");
 	for (Object authority : authorities) {
@@ -23,5 +30,6 @@ tbody tr:nth-child(odd) th {
 <%
 	}
 %>
+    </p>
   </body>
 </html>

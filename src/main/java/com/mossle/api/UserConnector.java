@@ -9,5 +9,7 @@ public interface UserConnector {
 
     UserDTO findByUsername(String username, Long globalId);
 
+    UserDTO findByUsername(String username, String loginInfoCode);
+
     Page pagedQuery(Page page, Map<String, Object> parameters);
 }

@@ -3,7 +3,8 @@ package com.mossle.auth.web.auth;
 import java.util.ArrayList;
 import java.util.List;
 
-import com.mossle.api.ScopeConnector;
+import com.mossle.api.scope.ScopeConnector;
+import com.mossle.api.scope.ScopeHolder;
 
 import com.mossle.auth.component.UserStatusChecker;
 import com.mossle.auth.domain.Role;
@@ -13,7 +14,6 @@ import com.mossle.auth.manager.UserStatusManager;
 import com.mossle.auth.service.AuthService;
 import com.mossle.auth.support.CheckUserStatusException;
 
-import com.mossle.core.scope.ScopeHolder;
 import com.mossle.core.struts2.BaseAction;
 
 import com.opensymphony.xwork2.ModelDriven;
@@ -51,9 +51,6 @@ public class UserStatusBatchAction extends BaseAction implements
     }
 
     public String input() {
-        Long localId = scopeConnector.findLocalId(ScopeHolder.getGlobalCode(),
-                ScopeHolder.getLocalCode());
-
         if (userText != null) {
             for (String str : userText.split("\n")) {
                 str = str.trim();
@@ -63,8 +60,8 @@ public class UserStatusBatchAction extends BaseAction implements
                 }
 
                 UserStatus userStatus = userStatusManager.findUnique(
-                        "from UserStatus where username=? and localId=?", str,
-                        localId);
+                        "from UserStatus where username=? and userRepoRef=?",
+                        str, ScopeHolder.getUserRepoRef());
 
                 if (userStatus == null) {
                     addActionMessage(str + " is not exists.");
@@ -79,20 +76,18 @@ public class UserStatusBatchAction extends BaseAction implements
             }
         }
 
-        roles = roleManager.find("from Role where localId=?", localId);
+        roles = roleManager.find("from Role where scopeId=?",
+                ScopeHolder.getScopeId());
 
         return INPUT;
     }
 
     public String save() {
-        Long globalId = scopeConnector
-                .findGlobalId(ScopeHolder.getGlobalCode());
-        Long localId = scopeConnector.findLocalId(ScopeHolder.getGlobalCode(),
-                ScopeHolder.getLocalCode());
         logger.debug("userIds: {}, roleIds: {}", userIds, roleIds);
 
         for (Long userId : userIds) {
-            authService.configUserRole(userId, roleIds, globalId, localId,
+            authService.configUserRole(userId, roleIds,
+                    ScopeHolder.getUserRepoRef(), ScopeHolder.getScopeId(),
                     false);
         }
 

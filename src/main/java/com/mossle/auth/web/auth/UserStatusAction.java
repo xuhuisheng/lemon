@@ -3,7 +3,8 @@ package com.mossle.auth.web.auth;
 import java.util.ArrayList;
 import java.util.List;
 
-import com.mossle.api.ScopeConnector;
+import com.mossle.api.scope.ScopeConnector;
+import com.mossle.api.scope.ScopeHolder;
 
 import com.mossle.auth.component.UserStatusChecker;
 import com.mossle.auth.component.UserStatusConverter;
@@ -17,7 +18,6 @@ import com.mossle.core.export.TableModel;
 import com.mossle.core.hibernate.PropertyFilter;
 import com.mossle.core.mapper.BeanMapper;
 import com.mossle.core.page.Page;
-import com.mossle.core.scope.ScopeHolder;
 import com.mossle.core.struts2.BaseAction;
 
 import com.mossle.security.util.SimplePasswordEncoder;
@@ -62,17 +62,14 @@ public class UserStatusAction extends BaseAction implements
     public String list() {
         List<PropertyFilter> propertyFilters = PropertyFilter
                 .buildFromHttpRequest(ServletActionContext.getRequest());
-        Long globalId = scopeConnector
-                .findGlobalId(ScopeHolder.getGlobalCode());
-        Long localId = scopeConnector.findLocalId(ScopeHolder.getGlobalCode(),
-                ScopeHolder.getLocalCode());
-        propertyFilters.add(new PropertyFilter("EQL_localId", Long
-                .toString(localId)));
+        propertyFilters.add(new PropertyFilter("EQS_userRepoRef", ScopeHolder
+                .getUserRepoRef()));
         page = userStatusManager.pagedQuery(page, propertyFilters);
 
         List<UserStatus> userStatuses = (List<UserStatus>) page.getResult();
         List<UserStatusDTO> userStatusDtos = userStatusConverter
-                .createUserStatusDtos(userStatuses, globalId, localId);
+                .createUserStatusDtos(userStatuses,
+                        ScopeHolder.getUserRepoRef(), ScopeHolder.getScopeId());
         page.setResult(userStatusDtos);
 
         return SUCCESS;
@@ -111,10 +108,8 @@ public class UserStatusAction extends BaseAction implements
             }
 
             if (id == 0) {
-                dest.setGlobalId(scopeConnector.findGlobalId(ScopeHolder
-                        .getGlobalCode()));
-                dest.setLocalId(scopeConnector.findLocalId(
-                        ScopeHolder.getGlobalCode(), ScopeHolder.getLocalCode()));
+                dest.setUserRepoRef(ScopeHolder.getUserRepoRef());
+                dest.setScopeId(ScopeHolder.getScopeId());
             }
 
             userStatusManager.save(dest);
@@ -156,17 +151,14 @@ public class UserStatusAction extends BaseAction implements
     }
 
     public void exportExcel() throws Exception {
-        Long globalId = scopeConnector
-                .findGlobalId(ScopeHolder.getGlobalCode());
-        Long localId = scopeConnector.findLocalId(ScopeHolder.getGlobalCode(),
-                ScopeHolder.getLocalCode());
         List<PropertyFilter> propertyFilters = PropertyFilter
                 .buildFromHttpRequest(ServletActionContext.getRequest());
         page = userStatusManager.pagedQuery(page, propertyFilters);
 
         List<UserStatus> userStatuses = (List<UserStatus>) page.getResult();
         List<UserStatusDTO> userStatusDtos = userStatusConverter
-                .createUserStatusDtos(userStatuses, globalId, localId);
+                .createUserStatusDtos(userStatuses,
+                        ScopeHolder.getUserRepoRef(), ScopeHolder.getScopeId());
         TableModel tableModel = new TableModel();
         tableModel.setName("user status");
         tableModel.addHeaders("id", "username", "enabled", "authorities");

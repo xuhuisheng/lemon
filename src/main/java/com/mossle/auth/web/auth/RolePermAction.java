@@ -3,7 +3,8 @@ package com.mossle.auth.web.auth;
 import java.util.ArrayList;
 import java.util.List;
 
-import com.mossle.api.ScopeConnector;
+import com.mossle.api.scope.ScopeConnector;
+import com.mossle.api.scope.ScopeHolder;
 
 import com.mossle.auth.component.RoleDefChecker;
 import com.mossle.auth.domain.Perm;
@@ -12,7 +13,6 @@ import com.mossle.auth.manager.PermManager;
 import com.mossle.auth.manager.RoleDefManager;
 import com.mossle.auth.support.CheckRoleException;
 
-import com.mossle.core.scope.ScopeHolder;
 import com.mossle.core.struts2.BaseAction;
 
 import org.apache.struts2.convention.annotation.Result;
@@ -66,9 +66,7 @@ public class RolePermAction extends BaseAction {
             selectedItem.add(perm.getId());
         }
 
-        Long localId = scopeConnector.findLocalId(ScopeHolder.getGlobalCode(),
-                ScopeHolder.getLocalCode());
-        perms = permManager.findBy("localId", localId);
+        perms = permManager.findBy("scopeId", ScopeHolder.getScopeId());
 
         return INPUT;
     }

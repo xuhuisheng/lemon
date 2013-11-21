@@ -10,7 +10,7 @@ package com.mossle.security.api;
 public interface UserFetcher {
     UserInfo getUserInfo(String username);
 
-    UserInfo getUserInfo(String username, Long localId);
+    UserInfo getUserInfo(String username, String scopeId);
 
-    UserInfo getUserInfo(String username, Long globalId, Long localId);
+    UserInfo getUserInfo(String username, String userRepoRef, String scopeId);
 }

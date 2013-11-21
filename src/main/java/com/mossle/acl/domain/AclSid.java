@@ -27,19 +27,15 @@ public class AclSid implements java.io.Serializable {
     private String reference;
 
     /** null. */
-    private Long globalId;
-
-    /** null. */
-    private Long localId;
+    private String scopeId;
 
     public AclSid() {
     }
 
-    public AclSid(String name, String reference, Long globalId, Long localId) {
+    public AclSid(String name, String reference, String scopeId) {
         this.name = name;
         this.reference = reference;
-        this.globalId = globalId;
-        this.localId = localId;
+        this.scopeId = scopeId;
     }
 
     /** @return null. */
@@ -87,30 +83,16 @@ public class AclSid implements java.io.Serializable {
     }
 
     /** @return null. */
-    @Column(name = "GLOBAL_ID")
-    public Long getGlobalId() {
-        return this.globalId;
+    @Column(name = "SCOPE_ID", length = 50)
+    public String getScopeId() {
+        return this.scopeId;
     }
 
     /**
-     * @param globalId
+     * @param scopeId
      *            null.
      */
-    public void setGlobalId(Long globalId) {
-        this.globalId = globalId;
-    }
-
-    /** @return null. */
-    @Column(name = "LOCAL_ID")
-    public Long getLocalId() {
-        return this.localId;
-    }
-
-    /**
-     * @param localId
-     *            null.
-     */
-    public void setLocalId(Long localId) {
-        this.localId = localId;
+    public void setScopeId(String scopeId) {
+        this.scopeId = scopeId;
     }
 }

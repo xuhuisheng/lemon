@@ -90,9 +90,6 @@ public class SessionFactoryWrapper implements SessionFactoryImplementor {
         return sessionFactoryImplementor.getSessionFactoryOptions();
     }
 
-    // public SessionBuilder withOptions() {
-    // return sessionFactoryImplementor.withOptions();
-    // }
     public Session openSession() throws HibernateException {
         return sessionFactoryImplementor.openSession();
     }

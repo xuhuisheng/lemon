@@ -5,7 +5,7 @@ import java.util.HashMap;
 import java.util.List;
 import java.util.Map;
 
-import com.mossle.core.scope.ScopeHolder;
+import com.mossle.api.scope.ScopeHolder;
 
 import com.mossle.security.api.UserFetcher;
 import com.mossle.security.api.UserInfo;
@@ -20,39 +20,27 @@ import org.springframework.security.core.userdetails.UsernameNotFoundException;
 public class DatabaseUserFetcher implements UserFetcher {
     private static Logger logger = LoggerFactory
             .getLogger(DatabaseUserFetcher.class);
-    private Long defaultGlobalId;
-    private Long defaultLocalId;
+    private String defaultUserRepoRef;
     private JdbcTemplate jdbcTemplate;
 
     public UserInfo getUserInfo(String username) {
-        String globalCode = ScopeHolder.getGlobalCode();
-        String localCode = ScopeHolder.getLocalCode();
-        Long globalId = jdbcTemplate.queryForObject(
-                "select id from scope_global where name=?", Long.class,
-                globalCode);
-        Long localId = jdbcTemplate.queryForObject(
-                "select id from scope_local where name=? and global_id=?",
-                Long.class, localCode, globalId);
-
-        logger.debug("username : {}", username);
-        logger.debug("globalId : {}", globalId);
-        logger.debug("localId : {}", localId);
-
-        return getUserInfo(username, globalId, localId);
+        return getUserInfo(username, ScopeHolder.getUserRepoRef(),
+                ScopeHolder.getScopeId());
     }
 
-    public UserInfo getUserInfo(String username, Long localId) {
+    public UserInfo getUserInfo(String username, String scopeId) {
         logger.debug("username : {}", username);
-        logger.debug("defaultGlobalId : {}", defaultGlobalId);
-        logger.debug("localId : {}", localId);
+        logger.debug("defaultUserRepoRef : {}", defaultUserRepoRef);
+        logger.debug("scopeId : {}", scopeId);
 
-        return getUserInfo(username, defaultGlobalId, localId);
+        return getUserInfo(username, defaultUserRepoRef, scopeId);
     }
 
-    public UserInfo getUserInfo(String username, Long globalId, Long localId) {
+    public UserInfo getUserInfo(String username, String userRepoRef,
+            String scopeId) {
         logger.debug("username : {}", username);
-        logger.debug("globalId : {}", globalId);
-        logger.debug("localId : {}", localId);
+        logger.debug("userRepoRef : {}", userRepoRef);
+        logger.debug("scopeId : {}", scopeId);
 
         String processedUsername = null;
 
@@ -66,21 +54,21 @@ public class DatabaseUserFetcher implements UserFetcher {
 
         try {
             userMap = jdbcTemplate.queryForMap(sqlUser, processedUsername,
-                    globalId);
+                    userRepoRef);
         } catch (Exception ex) {
             logger.error(ex.getMessage(), ex);
-            throw new UsernameNotFoundException(processedUsername);
+            throw new UsernameNotFoundException(processedUsername, ex);
         }
 
         String sqlAuthority = "select p.name as authority"
                 + " from AUTH_USER_STATUS us,AUTH_USER_ROLE ur,AUTH_ROLE r,AUTH_PERM_ROLE_DEF pr,AUTH_PERM p"
                 + " where us.id=ur.user_status_id and ur.role_id=r.id and r.role_def_id=pr.role_def_id and pr.perm_id=p.id"
-                + " and username=? and global_id=? and r.local_id=?";
+                + " and username=? and user_repo_ref=? and r.scope_id=?";
         List<Map<String, Object>> authorityList = null;
 
         try {
             authorityList = jdbcTemplate.queryForList(sqlAuthority,
-                    processedUsername, globalId, localId);
+                    processedUsername, userRepoRef, scopeId);
         } catch (Exception ex) {
             logger.error(ex.getMessage(), ex);
             authorityList = new ArrayList<Map<String, Object>>();
@@ -92,9 +80,9 @@ public class DatabaseUserFetcher implements UserFetcher {
             String sqlAttribute = "select r.name as attribute"
                     + " from AUTH_USER_STATUS us,AUTH_USER_ROLE ur,AUTH_ROLE r"
                     + " where us.id=ur.user_status_id and ur.role_id=r.id"
-                    + " and username=? and global_id=? and r.local_id=?";
+                    + " and username=? and user_repo_ref=? and r.scope_id=?";
             attributeList = jdbcTemplate.queryForList(sqlAttribute,
-                    processedUsername, globalId, localId);
+                    processedUsername, userRepoRef, scopeId);
         } catch (Exception ex) {
             logger.error(ex.getMessage(), ex);
             attributeList = new ArrayList<Map<String, Object>>();
@@ -127,12 +115,8 @@ public class DatabaseUserFetcher implements UserFetcher {
         return userInfo;
     }
 
-    public void setDefaultGlobalId(Long defaultGlobalId) {
-        this.defaultGlobalId = defaultGlobalId;
-    }
-
-    public void setDefaultLocalId(Long defaultLocalId) {
-        this.defaultLocalId = defaultLocalId;
+    public void setDefaultUserRepoRef(String defaultUserRepoRef) {
+        this.defaultUserRepoRef = defaultUserRepoRef;
     }
 
     public void setJdbcTemplate(JdbcTemplate jdbcTemplate) {

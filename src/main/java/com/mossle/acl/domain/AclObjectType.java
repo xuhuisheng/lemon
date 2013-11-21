@@ -32,10 +32,7 @@ public class AclObjectType implements java.io.Serializable {
     private String name;
 
     /** null. */
-    private Long globalId;
-
-    /** null. */
-    private Long localId;
+    private String scopeId;
 
     /** . */
     private Set<AclObjectIdentity> aclObjectIdentities = new HashSet<AclObjectIdentity>(
@@ -44,12 +41,11 @@ public class AclObjectType implements java.io.Serializable {
     public AclObjectType() {
     }
 
-    public AclObjectType(String code, String name, Long globalId, Long localId,
+    public AclObjectType(String code, String name, String scopeId,
             Set<AclObjectIdentity> aclObjectIdentities) {
         this.code = code;
         this.name = name;
-        this.globalId = globalId;
-        this.localId = localId;
+        this.scopeId = scopeId;
         this.aclObjectIdentities = aclObjectIdentities;
     }
 
@@ -98,31 +94,17 @@ public class AclObjectType implements java.io.Serializable {
     }
 
     /** @return null. */
-    @Column(name = "GLOBAL_ID")
-    public Long getGlobalId() {
-        return this.globalId;
+    @Column(name = "SCOPE_ID", length = 50)
+    public String getScopeId() {
+        return this.scopeId;
     }
 
     /**
-     * @param globalId
+     * @param scopeId
      *            null.
      */
-    public void setGlobalId(Long globalId) {
-        this.globalId = globalId;
-    }
-
-    /** @return null. */
-    @Column(name = "LOCAL_ID")
-    public Long getLocalId() {
-        return this.localId;
-    }
-
-    /**
-     * @param localId
-     *            null.
-     */
-    public void setLocalId(Long localId) {
-        this.localId = localId;
+    public void setScopeId(String scopeId) {
+        this.scopeId = scopeId;
     }
 
     /** @return . */

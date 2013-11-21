@@ -14,8 +14,8 @@ import org.springframework.stereotype.Service;
 public class AccessManager extends HibernateEntityDao<Access> {
     private static final int PRIORITY_STEP = 10;
 
-    public void batchSave(Long globalId, Long localId, String type,
-            List<String> ids, List<String> values, List<String> perms) {
+    public void batchSave(String scopeId, String type, List<String> ids,
+            List<String> values, List<String> perms) {
         int priority = 0;
 
         for (int i = 0; i < values.size(); i++) {
@@ -28,12 +28,12 @@ public class AccessManager extends HibernateEntityDao<Access> {
             }
 
             Access access = createOrGetAccess(idStr, value, type, permStr,
-                    globalId, localId);
+                    scopeId);
 
             priority += PRIORITY_STEP;
             access.setPriority(priority);
 
-            Perm perm = this.createOrGetPerm(permStr, globalId, localId);
+            Perm perm = this.createOrGetPerm(permStr, scopeId);
             access.setPerm(perm);
 
             this.save(access);
@@ -41,58 +41,52 @@ public class AccessManager extends HibernateEntityDao<Access> {
     }
 
     public Access createOrGetAccess(String id, String value, String type,
-            String perm, Long globalId, Long localId) {
+            String perm, String scopeId) {
         Access access;
 
         if (id.length() != 0) {
             access = this.get(Long.parseLong(id));
         } else {
-            access = this
-                    .findUnique(
-                            "from Access where value=? and type=? and global_id=? and local_id=?",
-                            value, type, globalId, localId);
+            access = this.findUnique(
+                    "from Access where value=? and type=? and scope_id=?",
+                    value, type, scopeId);
         }
 
         if (access == null) {
             access = new Access();
             access.setType(type);
             access.setValue(value);
-            access.setGlobalId(globalId);
-            access.setLocalId(localId);
+            access.setScopeId(scopeId);
             this.save(access);
         }
 
         return access;
     }
 
-    public Perm createOrGetPerm(String name, Long globalId, Long localId) {
-        Resc resc = createOrGetResc(name, globalId, localId);
-        Perm perm = this.findUnique(
-                "from Perm where name=? and global_id=? and local_id=?", name,
-                globalId, localId);
+    public Perm createOrGetPerm(String name, String scopeId) {
+        Resc resc = createOrGetResc(name, scopeId);
+        Perm perm = this.findUnique("from Perm where name=? and scope_id=?",
+                name, scopeId);
 
         if (perm == null) {
             perm = new Perm();
             perm.setName(name);
             perm.setResc(resc);
-            perm.setGlobalId(globalId);
-            perm.setLocalId(localId);
+            perm.setScopeId(scopeId);
             this.save(perm);
         }
 
         return perm;
     }
 
-    public Resc createOrGetResc(String name, Long globalId, Long localId) {
-        Resc resc = this.findUnique(
-                "from Resc where name=? and global_id=? and local_id=?", name,
-                globalId, localId);
+    public Resc createOrGetResc(String name, String scopeId) {
+        Resc resc = this.findUnique("from Resc where name=? and scope_id=?",
+                name, scopeId);
 
         if (resc == null) {
             resc = new Resc();
             resc.setName(name);
-            resc.setGlobalId(globalId);
-            resc.setLocalId(localId);
+            resc.setScopeId(scopeId);
             this.save(resc);
         }
 

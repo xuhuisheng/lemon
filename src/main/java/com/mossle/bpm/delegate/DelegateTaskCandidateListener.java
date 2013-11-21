@@ -1,8 +1,5 @@
 package com.mossle.bpm.delegate;
 
-import java.util.Date;
-import java.util.List;
-import java.util.Map;
 import java.util.Set;
 
 import javax.annotation.Resource;
@@ -11,15 +8,10 @@ import com.mossle.bpm.support.DefaultTaskListener;
 
 import org.activiti.engine.IdentityService;
 import org.activiti.engine.delegate.DelegateTask;
-import org.activiti.engine.delegate.TaskListener;
 import org.activiti.engine.task.IdentityLink;
 
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
-
-import org.springframework.beans.factory.annotation.Autowired;
-
-import org.springframework.jdbc.core.JdbcTemplate;
 
 import org.springframework.stereotype.Component;
 

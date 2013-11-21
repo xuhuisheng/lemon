@@ -49,24 +49,21 @@ public class AclEntry implements java.io.Serializable {
     private Long sidId;
 
     /** null. */
-    private Long globalId;
-
-    /** null. */
-    private Long localId;
-
-    /** null. */
     private Date startTime;
 
     /** null. */
     private Date endTime;
+
+    /** null. */
+    private String scopeId;
 
     public AclEntry() {
     }
 
     public AclEntry(AclObjectIdentity aclObjectIdentity, Integer aceOrder,
             Integer granting, Integer auditSuccess, Integer auditFailure,
-            Integer mask, Long sidId, Long globalId, Long localId,
-            Date startTime, Date endTime) {
+            Integer mask, Long sidId, Date startTime, Date endTime,
+            String scopeId) {
         this.aclObjectIdentity = aclObjectIdentity;
         this.aceOrder = aceOrder;
         this.granting = granting;
@@ -74,10 +71,9 @@ public class AclEntry implements java.io.Serializable {
         this.auditFailure = auditFailure;
         this.mask = mask;
         this.sidId = sidId;
-        this.globalId = globalId;
-        this.localId = localId;
         this.startTime = startTime;
         this.endTime = endTime;
+        this.scopeId = scopeId;
     }
 
     /** @return null. */
@@ -196,34 +192,6 @@ public class AclEntry implements java.io.Serializable {
     }
 
     /** @return null. */
-    @Column(name = "GLOBAL_ID")
-    public Long getGlobalId() {
-        return this.globalId;
-    }
-
-    /**
-     * @param globalId
-     *            null.
-     */
-    public void setGlobalId(Long globalId) {
-        this.globalId = globalId;
-    }
-
-    /** @return null. */
-    @Column(name = "LOCAL_ID")
-    public Long getLocalId() {
-        return this.localId;
-    }
-
-    /**
-     * @param localId
-     *            null.
-     */
-    public void setLocalId(Long localId) {
-        this.localId = localId;
-    }
-
-    /** @return null. */
     @Temporal(TemporalType.TIMESTAMP)
     @Column(name = "START_TIME", length = 26)
     public Date getStartTime() {
@@ -251,5 +219,19 @@ public class AclEntry implements java.io.Serializable {
      */
     public void setEndTime(Date endTime) {
         this.endTime = endTime;
+    }
+
+    /** @return null. */
+    @Column(name = "SCOPE_ID", length = 50)
+    public String getScopeId() {
+        return this.scopeId;
+    }
+
+    /**
+     * @param scopeId
+     *            null.
+     */
+    public void setScopeId(String scopeId) {
+        this.scopeId = scopeId;
     }
 }

@@ -39,23 +39,19 @@ public class Access implements java.io.Serializable {
     private String descn;
 
     /** null. */
-    private Long globalId;
-
-    /** null. */
-    private Long localId;
+    private String scopeId;
 
     public Access() {
     }
 
     public Access(Perm perm, String type, String value, Integer priority,
-            String descn, Long globalId, Long localId) {
+            String descn, String scopeId) {
         this.perm = perm;
         this.type = type;
         this.value = value;
         this.priority = priority;
         this.descn = descn;
-        this.globalId = globalId;
-        this.localId = localId;
+        this.scopeId = scopeId;
     }
 
     /** @return null. */
@@ -146,30 +142,16 @@ public class Access implements java.io.Serializable {
     }
 
     /** @return null. */
-    @Column(name = "GLOBAL_ID")
-    public Long getGlobalId() {
-        return this.globalId;
+    @Column(name = "SCOPE_ID", length = 50)
+    public String getScopeId() {
+        return this.scopeId;
     }
 
     /**
-     * @param globalId
+     * @param scopeId
      *            null.
      */
-    public void setGlobalId(Long globalId) {
-        this.globalId = globalId;
-    }
-
-    /** @return null. */
-    @Column(name = "LOCAL_ID")
-    public Long getLocalId() {
-        return this.localId;
-    }
-
-    /**
-     * @param localId
-     *            null.
-     */
-    public void setLocalId(Long localId) {
-        this.localId = localId;
+    public void setScopeId(String scopeId) {
+        this.scopeId = scopeId;
     }
 }

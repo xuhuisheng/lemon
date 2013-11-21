@@ -68,20 +68,7 @@
 
 	<bean id="scopeFilter" class="com.mossle.core.servlet.ProxyFilter">
 		<property name="name" value="scope"/>
-		<property name="filter">
-			<bean class="com.mossle.core.scope.ScopeFilter">
-				<property name="excludes">
-					<set>
-						<value>s</value>
-						<value>common</value>
-						<value>gef</value>
-						<value>xform</value>
-						<value>rs</value>
-						<value>h2database</value>
-					</set>
-				</property>
-			</bean>
-		</property>
+		<property name="filter" ref="${application.scope.type}ScopeFilter"/>
 		<property name="enable" value="${filter.scope.enable}"/>
 	</bean>
 
@@ -114,6 +101,8 @@
 		<property name="urlPattern" value="/*"/>
 		<property name="excludePatterns" value="/h2database/*"/>
 	</bean>
+
+	<!-- ====================================================================== -->
 
 	<bean id="servletFilter" class="com.mossle.core.servlet.ServletFilter">
 		<property name="name" value="servlet"/>
@@ -191,6 +180,24 @@
 				</entry>
 			</map>
 		</constructor-arg>
+	</bean>
+
+	<!-- ====================================================================== -->
+
+	<bean id="prefixScopeFilter" class="com.mossle.bridge.scope.PrefixScopeFilter">
+		<property name="scopeCache" ref="scopeCache"/>
+	</bean>
+
+	<bean id="headerCodeScopeFilter" class="com.mossle.bridge.scope.HeaderCodeScopeFilter">
+		<property name="scopeCache" ref="scopeCache"/>
+	</bean>
+
+	<bean id="headerRefScopeFilter" class="com.mossle.bridge.scope.HeaderRefScopeFilter">
+		<property name="scopeCache" ref="scopeCache"/>
+	</bean>
+
+	<bean id="scopeCache" class="com.mossle.bridge.scope.ScopeCache" init-method="refresh">
+		<property name="jdbcTemplate" ref="jdbcTemplate"/>
 	</bean>
 
 </beans>

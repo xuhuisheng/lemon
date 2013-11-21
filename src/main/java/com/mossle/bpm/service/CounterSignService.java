@@ -1,7 +1,6 @@
 package com.mossle.bpm.service;
 
 import org.activiti.engine.HistoryService;
-import org.activiti.engine.IdentityService;
 import org.activiti.engine.RuntimeService;
 import org.activiti.engine.TaskService;
 import org.activiti.engine.runtime.Execution;
@@ -66,7 +65,7 @@ public class CounterSignService {
                         nrOfCompletedInstances, loopCounter });
 
         // 计算通过的比例，以此决定是否结束会签
-        Double completeRate = new Double(nrOfCompletedInstances)
+        double completeRate = nrOfCompletedInstances.doubleValue()
                 / nrOfInstances;
         boolean canComlete = (completeRate * 100) >= rate;
         logger.debug("rate: {}, completeRate: {}, canComlete={}", new Object[] {

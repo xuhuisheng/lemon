@@ -10,14 +10,14 @@ import com.mossle.acl.manager.AclEntryManager;
 import com.mossle.acl.manager.AclObjectIdentityManager;
 import com.mossle.acl.manager.AclSidManager;
 
-import com.mossle.api.ScopeConnector;
+import com.mossle.api.scope.ScopeConnector;
+import com.mossle.api.scope.ScopeHolder;
 
 import com.mossle.core.export.Exportor;
 import com.mossle.core.export.TableModel;
 import com.mossle.core.hibernate.PropertyFilter;
 import com.mossle.core.mapper.BeanMapper;
 import com.mossle.core.page.Page;
-import com.mossle.core.scope.ScopeHolder;
 import com.mossle.core.struts2.BaseAction;
 
 import com.opensymphony.xwork2.ModelDriven;
@@ -59,9 +59,8 @@ public class AclEntryAction extends BaseAction implements
     public String list() {
         List<PropertyFilter> propertyFilters = PropertyFilter
                 .buildFromHttpRequest(ServletActionContext.getRequest());
-        Long localId = scopeConnector.findLocalId(ScopeHolder.getGlobalCode(),
-                ScopeHolder.getLocalCode());
-        propertyFilters.add(new PropertyFilter("EQL_localId", "" + localId));
+        propertyFilters.add(new PropertyFilter("EQS_scopeId", ScopeHolder
+                .getScopeId()));
         page = aclEntryManager.pagedQuery(page, propertyFilters);
 
         return SUCCESS;
@@ -85,10 +84,7 @@ public class AclEntryAction extends BaseAction implements
         dest.setSidId(sidId);
 
         if (id == 0) {
-            dest.setGlobalId(scopeConnector.findGlobalId(ScopeHolder
-                    .getGlobalCode()));
-            dest.setLocalId(scopeConnector.findLocalId(
-                    ScopeHolder.getGlobalCode(), ScopeHolder.getLocalCode()));
+            dest.setScopeId(ScopeHolder.getScopeId());
         }
 
         aclEntryManager.save(dest);
@@ -112,11 +108,9 @@ public class AclEntryAction extends BaseAction implements
             model = aclEntryManager.get(id);
         }
 
-        Long localId = scopeConnector.findLocalId(ScopeHolder.getGlobalCode(),
-                ScopeHolder.getLocalCode());
-        aclObjectIdentities = aclObjectIdentityManager.findBy("localId",
-                localId);
-        aclSids = aclSidManager.findBy("localId", localId);
+        aclObjectIdentities = aclObjectIdentityManager.findBy("scopeId",
+                ScopeHolder.getScopeId());
+        aclSids = aclSidManager.findBy("scopeId", ScopeHolder.getScopeId());
 
         return INPUT;
     }

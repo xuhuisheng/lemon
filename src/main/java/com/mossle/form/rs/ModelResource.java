@@ -8,14 +8,10 @@ import javax.annotation.Resource;
 import javax.ws.rs.GET;
 import javax.ws.rs.Path;
 import javax.ws.rs.Produces;
-import javax.ws.rs.QueryParam;
 import javax.ws.rs.core.MediaType;
 
 import com.mossle.form.domain.FormTemplate;
 import com.mossle.form.manager.FormTemplateManager;
-
-import org.slf4j.Logger;
-import org.slf4j.LoggerFactory;
 
 import org.springframework.stereotype.Component;
 
@@ -23,7 +19,6 @@ import org.springframework.stereotype.Component;
 @Path("model")
 public class ModelResource {
     private static final String CHARSET = ";charset=UTF-8";
-    private static Logger logger = LoggerFactory.getLogger(ModelResource.class);
     private FormTemplateManager formTemplateManager;
 
     @GET
@@ -41,7 +36,7 @@ public class ModelResource {
     }
 
     @Resource
-    public void FormTemplateManager(FormTemplateManager formTemplateManager) {
+    public void setFormTemplateManager(FormTemplateManager formTemplateManager) {
         this.formTemplateManager = formTemplateManager;
     }
 }

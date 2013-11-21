@@ -5,14 +5,13 @@ import java.util.HashMap;
 import java.util.List;
 import java.util.Map;
 
-import com.mossle.api.ScopeConnector;
+import com.mossle.api.scope.ScopeHolder;
 
 import com.mossle.core.export.Exportor;
 import com.mossle.core.export.TableModel;
 import com.mossle.core.hibernate.PropertyFilter;
 import com.mossle.core.mapper.BeanMapper;
 import com.mossle.core.page.Page;
-import com.mossle.core.scope.ScopeHolder;
 import com.mossle.core.struts2.BaseAction;
 
 import com.mossle.group.component.GroupTypeCache;
@@ -41,7 +40,6 @@ public class GroupTypeAction extends BaseAction implements
     private List<Long> selectedItem = new ArrayList<Long>();
     private Exportor exportor = new Exportor();
     private BeanMapper beanMapper = new BeanMapper();
-    private ScopeConnector scopeConnector;
     private GroupTypeCache groupTypeCache;
 
     public String execute() {
@@ -51,10 +49,8 @@ public class GroupTypeAction extends BaseAction implements
     public String list() {
         List<PropertyFilter> propertyFilters = PropertyFilter
                 .buildFromHttpRequest(ServletActionContext.getRequest());
-        Long globalId = scopeConnector
-                .findGlobalId(ScopeHolder.getGlobalCode());
-        propertyFilters.add(new PropertyFilter("EQL_globalId", Long
-                .toString(globalId)));
+        propertyFilters.add(new PropertyFilter("EQS_userRepoRef", ScopeHolder
+                .getUserRepoRef()));
         page = groupTypeManager.pagedQuery(page, propertyFilters);
 
         return SUCCESS;
@@ -65,10 +61,6 @@ public class GroupTypeAction extends BaseAction implements
     }
 
     public String save() {
-        Long globalId = scopeConnector
-                .findGlobalId(ScopeHolder.getGlobalCode());
-        Long localId = scopeConnector.findLocalId(ScopeHolder.getGlobalCode(),
-                ScopeHolder.getLocalCode());
         GroupType dest = null;
 
         if (id > 0) {
@@ -79,12 +71,12 @@ public class GroupTypeAction extends BaseAction implements
         }
 
         if (id == 0) {
-            dest.setGlobalId(globalId);
-            dest.setLocalId(localId);
+            dest.setUserRepoRef(ScopeHolder.getUserRepoRef());
+            dest.setScopeId(ScopeHolder.getScopeId());
         }
 
         groupTypeManager.save(dest);
-        groupTypeCache.refreshScope(globalId);
+        groupTypeCache.refreshScope(ScopeHolder.getUserRepoRef());
         addActionMessage(messages.getMessage("core.success.save", "保存成功"));
 
         return RELOAD;
@@ -97,9 +89,7 @@ public class GroupTypeAction extends BaseAction implements
             groupTypeManager.remove(groupType);
         }
 
-        Long globalId = scopeConnector
-                .findGlobalId(ScopeHolder.getGlobalCode());
-        groupTypeCache.refreshScope(globalId);
+        groupTypeCache.refreshScope(ScopeHolder.getUserRepoRef());
         addActionMessage(messages.getMessage("core.success.delete", "删除成功"));
 
         return RELOAD;
@@ -170,10 +160,6 @@ public class GroupTypeAction extends BaseAction implements
     }
 
     // ~ ======================================================================
-    public void setScopeConnector(ScopeConnector scopeConnector) {
-        this.scopeConnector = scopeConnector;
-    }
-
     public void setGroupTypeCache(GroupTypeCache groupTypeCache) {
         this.groupTypeCache = groupTypeCache;
     }

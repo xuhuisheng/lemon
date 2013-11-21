@@ -46,13 +46,13 @@ public class GroupBase implements java.io.Serializable {
     private Integer status;
 
     /** null. */
-    private Long globalId;
-
-    /** null. */
-    private Long localId;
-
-    /** null. */
     private String reference;
+
+    /** null. */
+    private String userRepoRef;
+
+    /** null. */
+    private String scopeId;
 
     /** . */
     private Set<GroupInfo> groupInfos = new HashSet<GroupInfo>(0);
@@ -61,17 +61,17 @@ public class GroupBase implements java.io.Serializable {
     }
 
     public GroupBase(GroupType groupType, String code, String abbr,
-            String name, String descn, Integer status, Long globalId,
-            Long localId, String reference, Set<GroupInfo> groupInfos) {
+            String name, String descn, Integer status, String reference,
+            String userRepoRef, String scopeId, Set<GroupInfo> groupInfos) {
         this.groupType = groupType;
         this.code = code;
         this.abbr = abbr;
         this.name = name;
         this.descn = descn;
         this.status = status;
-        this.globalId = globalId;
-        this.localId = localId;
         this.reference = reference;
+        this.userRepoRef = userRepoRef;
+        this.scopeId = scopeId;
         this.groupInfos = groupInfos;
     }
 
@@ -177,34 +177,6 @@ public class GroupBase implements java.io.Serializable {
     }
 
     /** @return null. */
-    @Column(name = "GLOBAL_ID")
-    public Long getGlobalId() {
-        return this.globalId;
-    }
-
-    /**
-     * @param globalId
-     *            null.
-     */
-    public void setGlobalId(Long globalId) {
-        this.globalId = globalId;
-    }
-
-    /** @return null. */
-    @Column(name = "LOCAL_ID")
-    public Long getLocalId() {
-        return this.localId;
-    }
-
-    /**
-     * @param localId
-     *            null.
-     */
-    public void setLocalId(Long localId) {
-        this.localId = localId;
-    }
-
-    /** @return null. */
     @Column(name = "REFERENCE", length = 200)
     public String getReference() {
         return this.reference;
@@ -216,6 +188,34 @@ public class GroupBase implements java.io.Serializable {
      */
     public void setReference(String reference) {
         this.reference = reference;
+    }
+
+    /** @return null. */
+    @Column(name = "USER_REPO_REF", length = 50)
+    public String getUserRepoRef() {
+        return this.userRepoRef;
+    }
+
+    /**
+     * @param userRepoRef
+     *            null.
+     */
+    public void setUserRepoRef(String userRepoRef) {
+        this.userRepoRef = userRepoRef;
+    }
+
+    /** @return null. */
+    @Column(name = "SCOPE_ID", length = 50)
+    public String getScopeId() {
+        return this.scopeId;
+    }
+
+    /**
+     * @param scopeId
+     *            null.
+     */
+    public void setScopeId(String scopeId) {
+        this.scopeId = scopeId;
     }
 
     /** @return . */

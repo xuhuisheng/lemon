@@ -26,18 +26,17 @@ public class AuthService {
     private RoleManager roleManager;
 
     public UserStatus createOrGetUserStatus(String username, String reference,
-            Long globalId, Long localId) {
-        UserStatus userStatus = userStatusManager
-                .findUnique(
-                        "from UserStatus where username=? and globalId=? and localId=?",
-                        username, globalId, localId);
+            String userRepoRef, String scopeId) {
+        UserStatus userStatus = userStatusManager.findUnique(
+                "from UserStatus where username=? and userRepoRef=?", username,
+                userRepoRef);
 
         if (userStatus == null) {
             userStatus = new UserStatus();
             userStatus.setUsername(username);
             userStatus.setReference(reference);
-            userStatus.setGlobalId(globalId);
-            userStatus.setLocalId(localId);
+            userStatus.setUserRepoRef(userRepoRef);
+            userStatus.setScopeId(scopeId);
             // TODO: 考虑status同步的策略，目前是默认都设置成了有效
             userStatus.setStatus(1);
             userStatusManager.save(userStatus);
@@ -46,8 +45,8 @@ public class AuthService {
         return userStatus;
     }
 
-    public void configUserRole(Long userId, List<Long> roleIds, Long globalId,
-            Long localId, boolean clearRoles) {
+    public void configUserRole(Long userId, List<Long> roleIds,
+            String userRepoRef, String scopeId, boolean clearRoles) {
         logger.debug("userId: {}, roleIds: {}", userId, roleIds);
 
         UserStatus userStatus = userStatusManager.get(userId);
@@ -61,17 +60,10 @@ public class AuthService {
         if (clearRoles) {
             List<Role> roles = new ArrayList<Role>();
 
-            // for (Role role : userStatus.getRoles()) {
-            // if (localId.equals(role.getLocalId())) {
-            // roles.add(role);
-            // }
-            // }
             roles.addAll(userStatus.getRoles());
 
             for (Role role : roles) {
                 userStatus.getRoles().remove(role);
-
-                // role.getUserStatuses().remove(userStatus);
             }
         }
 
@@ -106,8 +98,8 @@ public class AuthService {
         userStatusManager.save(userStatus);
     }
 
-    public List<Role> findRoles(Long localId) {
-        return roleManager.find("from Role where localId=?", localId);
+    public List<Role> findRoles(String scopeId) {
+        return roleManager.find("from Role where scopeId=?", scopeId);
     }
 
     @Resource

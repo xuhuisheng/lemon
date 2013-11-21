@@ -68,24 +68,35 @@
     <script type="text/javascript">
 $(function() {
     $.showMessage($('#m-success-message').html(), {
-         position: 'top',
-         size: '55',
-         fontSize: '20px'
+        position: 'top',
+        size: '55',
+        fontSize: '20px'
     });
 
-    $("input:checkbox, input:radio, input:file").not('[data-no-uniform="true"],#uniform-is-ajax').uniform();
+    $("input:checkbox, input:radio, input:file").not('[data-no-uniform="true"],#uniform-is-ajax').uniform({
+        fileDefaultHtml: '还未选择文件',
+        fileButtonHtml: '选择文件'
+    });
 
     $('.datepicker').datepicker({format:'yyyy-mm-dd'});
-/*
-	$('.datetimepicker').datetimepicker({
+
+    $('.datetimepicker').datetimepicker({
         format: "yyyy-mm-dd hh:ii",
         autoclose: true,
         todayBtn: true,
         pickerPosition: "bottom-left"
-	});
-*/
-    $(".chzn-select").chosen();
-    $(".chzn-select-deselect").chosen({allow_single_deselect:true});
+    });
+
+    $(".chzn-select").chosen({
+        no_results_text: '找不到',
+        width: '220px'
+    });
+
+    $(".chzn-select-deselect").chosen({
+        allow_single_deselect:true,
+        no_results_text: '找不到',
+        width: '220px'
+    });
 
     function widgetToggleContent() {
         var self = $(this);

@@ -3,10 +3,8 @@ package com.mossle.auth.support;
 public class RoleDTO {
     private Long id;
     private String name;
-    private Long globalId;
-    private Long localId;
-    private String globalName;
-    private String localName;
+    private String scopeId;
+    private String scopeCode;
     private String status;
 
     public Long getId() {
@@ -25,36 +23,20 @@ public class RoleDTO {
         this.name = name;
     }
 
-    public Long getGlobalId() {
-        return globalId;
+    public String getScopeId() {
+        return scopeId;
     }
 
-    public void setGlobalId(Long globalId) {
-        this.globalId = globalId;
+    public void setScopeId(String scopeId) {
+        this.scopeId = scopeId;
     }
 
-    public Long getLocalId() {
-        return localId;
+    public String getScopeCode() {
+        return scopeCode;
     }
 
-    public void setLocalId(Long localId) {
-        this.localId = localId;
-    }
-
-    public String getGlobalName() {
-        return globalName;
-    }
-
-    public void setGlobalName(String globalName) {
-        this.globalName = globalName;
-    }
-
-    public String getLocalName() {
-        return localName;
-    }
-
-    public void setLocalName(String localName) {
-        this.localName = localName;
+    public void setScopeCode(String scopeCode) {
+        this.scopeCode = scopeCode;
     }
 
     public String getStatus() {

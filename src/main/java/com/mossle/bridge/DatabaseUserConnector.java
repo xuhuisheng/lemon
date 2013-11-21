@@ -21,8 +21,6 @@ import org.springframework.dao.EmptyResultDataAccessException;
 
 import org.springframework.jdbc.core.JdbcTemplate;
 
-import org.springframework.security.core.userdetails.UsernameNotFoundException;
-
 public class DatabaseUserConnector implements UserConnector {
     private static Logger logger = LoggerFactory
             .getLogger(DatabaseUserConnector.class);
@@ -32,7 +30,9 @@ public class DatabaseUserConnector implements UserConnector {
     // ~
     private String sqlFindById = "select id as id,username as username,status as status from USER_BASE where id=?";
     private String sqlFindByUsername = "select id as id,username as username,status as status"
-            + " from USER_BASE where username=? and global_id=?";
+            + " from USER_BASE where username=? and user_repo_ref=?";
+    private String sqlFindByUsernameAndUserRepoRef = "select ub.id as id,ub.username as username,ub.status as status"
+            + " from USER_BASE ub where ub.username=? and ub.user_repo_id=?";
     private String sqlPagedQueryCount = "select count(*) from USER_BASE";
     private String sqlPagedQuerySelect = "select id as id,username as username,status as status from USER_BASE";
 
@@ -56,6 +56,19 @@ public class DatabaseUserConnector implements UserConnector {
             return convertUserDTO(map);
         } catch (EmptyResultDataAccessException ex) {
             logger.info("user[{}, {}] is not exists.", username, globalId);
+
+            return null;
+        }
+    }
+
+    public UserDTO findByUsername(String username, String userRepoRef) {
+        try {
+            Map<String, Object> map = jdbcTemplate.queryForMap(
+                    sqlFindByUsernameAndUserRepoRef, username, userRepoRef);
+
+            return convertUserDTO(map);
+        } catch (EmptyResultDataAccessException ex) {
+            logger.info("user[{}, {}] is not exists.", username, userRepoRef);
 
             return null;
         }

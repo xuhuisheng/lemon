@@ -36,6 +36,12 @@ public class PartyStruct implements java.io.Serializable {
     /** null. */
     private Integer priority;
 
+    /** null. */
+    private String userRepoRef;
+
+    /** null. */
+    private String scopeId;
+
     public PartyStruct() {
     }
 
@@ -49,12 +55,14 @@ public class PartyStruct implements java.io.Serializable {
 
     public PartyStruct(PartyStructId id, PartyEntity parentEntity,
             PartyEntity childEntity, PartyStructType partyStructType,
-            Integer priority) {
+            Integer priority, String userRepoRef, String scopeId) {
         this.id = id;
         this.parentEntity = parentEntity;
         this.childEntity = childEntity;
         this.partyStructType = partyStructType;
         this.priority = priority;
+        this.userRepoRef = userRepoRef;
+        this.scopeId = scopeId;
     }
 
     /** @return null,null,null. */
@@ -132,5 +140,33 @@ public class PartyStruct implements java.io.Serializable {
      */
     public void setPriority(Integer priority) {
         this.priority = priority;
+    }
+
+    /** @return null. */
+    @Column(name = "USER_REPO_REF", length = 50)
+    public String getUserRepoRef() {
+        return this.userRepoRef;
+    }
+
+    /**
+     * @param userRepoRef
+     *            null.
+     */
+    public void setUserRepoRef(String userRepoRef) {
+        this.userRepoRef = userRepoRef;
+    }
+
+    /** @return null. */
+    @Column(name = "SCOPE_ID", length = 50)
+    public String getScopeId() {
+        return this.scopeId;
+    }
+
+    /**
+     * @param scopeId
+     *            null.
+     */
+    public void setScopeId(String scopeId) {
+        this.scopeId = scopeId;
     }
 }

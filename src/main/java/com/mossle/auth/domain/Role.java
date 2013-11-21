@@ -35,13 +35,10 @@ public class Role implements java.io.Serializable {
     private String name;
 
     /** null. */
-    private Long globalId;
-
-    /** null. */
-    private Long localId;
-
-    /** null. */
     private String descn;
+
+    /** null. */
+    private String scopeId;
 
     /** . */
     private Set<UserStatus> userStatuses = new HashSet<UserStatus>(0);
@@ -49,13 +46,12 @@ public class Role implements java.io.Serializable {
     public Role() {
     }
 
-    public Role(RoleDef roleDef, String name, Long globalId, Long localId,
-            String descn, Set<UserStatus> userStatuses) {
+    public Role(RoleDef roleDef, String name, String descn, String scopeId,
+            Set<UserStatus> userStatuses) {
         this.roleDef = roleDef;
         this.name = name;
-        this.globalId = globalId;
-        this.localId = localId;
         this.descn = descn;
+        this.scopeId = scopeId;
         this.userStatuses = userStatuses;
     }
 
@@ -105,34 +101,6 @@ public class Role implements java.io.Serializable {
     }
 
     /** @return null. */
-    @Column(name = "GLOBAL_ID")
-    public Long getGlobalId() {
-        return this.globalId;
-    }
-
-    /**
-     * @param globalId
-     *            null.
-     */
-    public void setGlobalId(Long globalId) {
-        this.globalId = globalId;
-    }
-
-    /** @return null. */
-    @Column(name = "LOCAL_ID")
-    public Long getLocalId() {
-        return this.localId;
-    }
-
-    /**
-     * @param localId
-     *            null.
-     */
-    public void setLocalId(Long localId) {
-        this.localId = localId;
-    }
-
-    /** @return null. */
     @Column(name = "DESCN", length = 200)
     public String getDescn() {
         return this.descn;
@@ -144,6 +112,20 @@ public class Role implements java.io.Serializable {
      */
     public void setDescn(String descn) {
         this.descn = descn;
+    }
+
+    /** @return null. */
+    @Column(name = "SCOPE_ID", length = 50)
+    public String getScopeId() {
+        return this.scopeId;
+    }
+
+    /**
+     * @param scopeId
+     *            null.
+     */
+    public void setScopeId(String scopeId) {
+        this.scopeId = scopeId;
     }
 
     /** @return . */

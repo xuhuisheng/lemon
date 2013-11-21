@@ -1,8 +1,5 @@
 package com.mossle.bridge;
 
-import java.util.ArrayList;
-import java.util.HashMap;
-import java.util.List;
 import java.util.Map;
 
 import javax.annotation.Resource;
@@ -16,8 +13,6 @@ import org.slf4j.LoggerFactory;
 import org.springframework.dao.EmptyResultDataAccessException;
 
 import org.springframework.jdbc.core.JdbcTemplate;
-
-import org.springframework.security.core.userdetails.UsernameNotFoundException;
 
 public class DatabaseOrgConnector implements OrgConnector {
     private static Logger logger = LoggerFactory

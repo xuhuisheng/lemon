@@ -4,11 +4,12 @@ import java.util.ArrayList;
 import java.util.List;
 import java.util.Map;
 
-import com.mossle.api.ScopeConnector;
 import com.mossle.api.UserConnector;
 import com.mossle.api.UserDTO;
 import com.mossle.api.UserRepoConnector;
 import com.mossle.api.UserRepoDTO;
+import com.mossle.api.scope.ScopeConnector;
+import com.mossle.api.scope.ScopeHolder;
 
 import com.mossle.auth.component.UserStatusConverter;
 import com.mossle.auth.domain.UserStatus;
@@ -18,7 +19,6 @@ import com.mossle.auth.support.UserStatusDTO;
 
 import com.mossle.core.hibernate.PropertyFilter;
 import com.mossle.core.page.Page;
-import com.mossle.core.scope.ScopeHolder;
 import com.mossle.core.struts2.BaseAction;
 import com.mossle.core.util.ServletUtils;
 
@@ -57,11 +57,6 @@ public class UserConnectorAction extends BaseAction {
     }
 
     public String list() {
-        Long globalId = scopeConnector
-                .findGlobalId(ScopeHolder.getGlobalCode());
-        Long localId = scopeConnector.findLocalId(ScopeHolder.getGlobalCode(),
-                ScopeHolder.getLocalCode());
-
         Map<String, Object> parameters = ServletUtils
                 .getParametersStartingWith(ServletActionContext.getRequest(),
                         "filter_");
@@ -69,22 +64,24 @@ public class UserConnectorAction extends BaseAction {
         // 缩小显示范围，把所有用户都显示出来也没什么用途
         if (parameters.isEmpty()) {
             // 如果没有查询条件，就只返回配置了权限的用户
-            String hql = "select distinct u from UserStatus u join u.roles r where u.globalId=? and r.localId=?";
+            String hql = "select distinct u from UserStatus u join u.roles r where u.userRepoRef=? and r.scopeId=?";
             page = userStatusManager.pagedQuery(hql, page.getPageNo(),
-                    page.getPageSize(), globalId, localId);
+                    page.getPageSize(), ScopeHolder.getUserRepoRef(),
+                    ScopeHolder.getScopeId());
 
             List<UserStatus> userStatuses = (List<UserStatus>) page.getResult();
             List<UserStatusDTO> userStatusDtos = new ArrayList<UserStatusDTO>();
 
             for (UserStatus userStatus : userStatuses) {
                 userStatusDtos.add(userStatusConverter.createUserStatusDto(
-                        userStatus, globalId, localId));
+                        userStatus, ScopeHolder.getUserRepoRef(),
+                        ScopeHolder.getScopeId()));
             }
 
             page.setResult(userStatusDtos);
         } else {
             // 如果设置了查询条件，就根据条件查询
-            parameters.put("EQL_GLOBAL_ID", Long.toString(globalId));
+            parameters.put("EQS_USER_REPO_REF", ScopeHolder.getUserRepoRef());
             page = userConnector.pagedQuery(page, parameters);
 
             List<UserDTO> userDtos = (List<UserDTO>) page.getResult();
@@ -92,9 +89,9 @@ public class UserConnectorAction extends BaseAction {
 
             for (UserDTO userDto : userDtos) {
                 String usernameStr = userDto.getUsername();
-                String hql = "from UserStatus where username=? and globalId=?";
+                String hql = "from UserStatus where username=? and userRepoRef=?";
                 UserStatus userStatus = userStatusManager.findUnique(hql,
-                        usernameStr, globalId);
+                        usernameStr, ScopeHolder.getUserRepoRef());
 
                 if (userStatus == null) {
                     UserStatusDTO userStatusDto = new UserStatusDTO();
@@ -103,7 +100,8 @@ public class UserConnectorAction extends BaseAction {
                     userStatusDtos.add(userStatusDto);
                 } else {
                     userStatusDtos.add(userStatusConverter.createUserStatusDto(
-                            userStatus, globalId, localId));
+                            userStatus, ScopeHolder.getUserRepoRef(),
+                            ScopeHolder.getScopeId()));
                 }
             }
 
@@ -114,15 +112,13 @@ public class UserConnectorAction extends BaseAction {
     }
 
     public String configRole() {
-        Long globalId = scopeConnector
-                .findGlobalId(ScopeHolder.getGlobalCode());
-        Long localId = scopeConnector.findLocalId(ScopeHolder.getGlobalCode(),
-                ScopeHolder.getLocalCode());
-        UserDTO userDto = userConnector.findByUsername(username, globalId);
+        UserDTO userDto = userConnector.findByUsername(username,
+                ScopeHolder.getUserRepoRef());
 
         if (userDto != null) {
             UserStatus userStatus = authService.createOrGetUserStatus(username,
-                    userDto.getId(), globalId, localId);
+                    userDto.getId(), ScopeHolder.getUserRepoRef(),
+                    ScopeHolder.getScopeId());
 
             id = userStatus.getId();
         }

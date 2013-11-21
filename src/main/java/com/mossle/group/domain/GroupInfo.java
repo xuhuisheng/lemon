@@ -33,21 +33,21 @@ public class GroupInfo implements java.io.Serializable {
     private String value;
 
     /** null. */
-    private Long globalId;
+    private String userRepoRef;
 
     /** null. */
-    private Long localId;
+    private String scopeId;
 
     public GroupInfo() {
     }
 
     public GroupInfo(GroupBase groupBase, String name, String value,
-            Long globalId, Long localId) {
+            String userRepoRef, String scopeId) {
         this.groupBase = groupBase;
         this.name = name;
         this.value = value;
-        this.globalId = globalId;
-        this.localId = localId;
+        this.userRepoRef = userRepoRef;
+        this.scopeId = scopeId;
     }
 
     /** @return null. */
@@ -110,30 +110,30 @@ public class GroupInfo implements java.io.Serializable {
     }
 
     /** @return null. */
-    @Column(name = "GLOBAL_ID")
-    public Long getGlobalId() {
-        return this.globalId;
+    @Column(name = "USER_REPO_REF", length = 50)
+    public String getUserRepoRef() {
+        return this.userRepoRef;
     }
 
     /**
-     * @param globalId
+     * @param userRepoRef
      *            null.
      */
-    public void setGlobalId(Long globalId) {
-        this.globalId = globalId;
+    public void setUserRepoRef(String userRepoRef) {
+        this.userRepoRef = userRepoRef;
     }
 
     /** @return null. */
-    @Column(name = "LOCAL_ID")
-    public Long getLocalId() {
-        return this.localId;
+    @Column(name = "SCOPE_ID", length = 50)
+    public String getScopeId() {
+        return this.scopeId;
     }
 
     /**
-     * @param localId
+     * @param scopeId
      *            null.
      */
-    public void setLocalId(Long localId) {
-        this.localId = localId;
+    public void setScopeId(String scopeId) {
+        this.scopeId = scopeId;
     }
 }

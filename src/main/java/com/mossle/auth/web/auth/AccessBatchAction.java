@@ -5,13 +5,13 @@ import java.util.HashSet;
 import java.util.List;
 import java.util.Set;
 
-import com.mossle.api.ScopeConnector;
+import com.mossle.api.scope.ScopeConnector;
+import com.mossle.api.scope.ScopeHolder;
 
 import com.mossle.auth.domain.Access;
 import com.mossle.auth.manager.AccessManager;
 import com.mossle.auth.support.AccessDTO;
 
-import com.mossle.core.scope.ScopeHolder;
 import com.mossle.core.struts2.BaseAction;
 
 import com.opensymphony.xwork2.ModelDriven;
@@ -43,10 +43,9 @@ public class AccessBatchAction extends BaseAction implements
     }
 
     public String input() {
-        Long localId = scopeConnector.findLocalId(ScopeHolder.getGlobalCode(),
-                ScopeHolder.getLocalCode());
-        String hql = "from Access where type=? and localId=? order by priority";
-        List<Access> accesses = accessManager.find(hql, type, localId);
+        String hql = "from Access where type=? and scopeId=? order by priority";
+        List<Access> accesses = accessManager.find(hql, type,
+                ScopeHolder.getScopeId());
         accessDtos = new ArrayList<AccessDTO>();
 
         for (Access access : accesses) {
@@ -64,10 +63,9 @@ public class AccessBatchAction extends BaseAction implements
     }
 
     public String edit() {
-        Long localId = scopeConnector.findLocalId(ScopeHolder.getGlobalCode(),
-                ScopeHolder.getLocalCode());
-        String hql = "from Access where type=? and localId=? order by priority";
-        List<Access> accesses = accessManager.find(hql, type, localId);
+        String hql = "from Access where type=? and scopeId=? order by priority";
+        List<Access> accesses = accessManager.find(hql, type,
+                ScopeHolder.getScopeId());
 
         accessDtos = new ArrayList<AccessDTO>();
 
@@ -109,11 +107,8 @@ public class AccessBatchAction extends BaseAction implements
     }
 
     public String save() {
-        Long globalId = scopeConnector
-                .findGlobalId(ScopeHolder.getGlobalCode());
-        Long localId = scopeConnector.findLocalId(ScopeHolder.getGlobalCode(),
-                ScopeHolder.getLocalCode());
-        accessManager.batchSave(globalId, localId, type, ids, values, perms);
+        accessManager.batchSave(ScopeHolder.getScopeId(), type, ids, values,
+                perms);
 
         addActionMessage(messages.getMessage("core.success.save", "保存成功"));
 

@@ -43,10 +43,7 @@ public class AclObjectIdentity implements java.io.Serializable {
     private Long ownerId;
 
     /** null. */
-    private Long globalId;
-
-    /** null. */
-    private Long localId;
+    private String scopeId;
 
     /** . */
     private Set<AclObjectIdentity> aclObjectIdentities = new HashSet<AclObjectIdentity>(
@@ -60,16 +57,14 @@ public class AclObjectIdentity implements java.io.Serializable {
 
     public AclObjectIdentity(AclObjectIdentity aclObjectIdentity,
             AclObjectType aclObjectType, String reference,
-            Integer entriesHieriting, Long ownerId, Long globalId,
-            Long localId, Set<AclObjectIdentity> aclObjectIdentities,
-            Set<AclEntry> aclEntries) {
+            Integer entriesHieriting, Long ownerId, String scopeId,
+            Set<AclObjectIdentity> aclObjectIdentities, Set<AclEntry> aclEntries) {
         this.aclObjectIdentity = aclObjectIdentity;
         this.aclObjectType = aclObjectType;
         this.reference = reference;
         this.entriesHieriting = entriesHieriting;
         this.ownerId = ownerId;
-        this.globalId = globalId;
-        this.localId = localId;
+        this.scopeId = scopeId;
         this.aclObjectIdentities = aclObjectIdentities;
         this.aclEntries = aclEntries;
     }
@@ -163,31 +158,17 @@ public class AclObjectIdentity implements java.io.Serializable {
     }
 
     /** @return null. */
-    @Column(name = "GLOBAL_ID")
-    public Long getGlobalId() {
-        return this.globalId;
+    @Column(name = "SCOPE_ID", length = 50)
+    public String getScopeId() {
+        return this.scopeId;
     }
 
     /**
-     * @param globalId
+     * @param scopeId
      *            null.
      */
-    public void setGlobalId(Long globalId) {
-        this.globalId = globalId;
-    }
-
-    /** @return null. */
-    @Column(name = "LOCAL_ID")
-    public Long getLocalId() {
-        return this.localId;
-    }
-
-    /**
-     * @param localId
-     *            null.
-     */
-    public void setLocalId(Long localId) {
-        this.localId = localId;
+    public void setScopeId(String scopeId) {
+        this.scopeId = scopeId;
     }
 
     /** @return . */

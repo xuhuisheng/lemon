@@ -4,9 +4,6 @@ import java.util.Date;
 
 import org.activiti.engine.ActivitiException;
 
-import org.joda.time.DateTime;
-import org.joda.time.Period;
-
 public class DueDateBusinessCalendar extends AdvancedBusinessCalendar {
     public Date resolveDuedate(String duedate) {
         try {

@@ -6,13 +6,12 @@
           <div class="accordion-heading">
             <a class="accordion-toggle" data-toggle="collapse" data-parent="#m-sidebar" href="#collapse-scope">
               <i class="icon-user"></i>
-              <span class="title">范围</span>
+              <span class="title">应用管理</span>
             </a>
           </div>
           <div id="collapse-scope" class="accordion-body collapse ${currentMenu == 'scope' ? 'in' : ''}">
             <ul class="accordion-inner nav nav-list">
-              <li><a href="${scopePrefix}/scope/scope-global.do">全局</a></li>
-              <li><a href="${scopePrefix}/scope/scope-local.do">局域</a></li>
+              <li><a href="${scopePrefix}/scope/scope-info.do">应用管理</a></li>
             </ul>
           </div>
         </div>

@@ -3,12 +3,11 @@ package com.mossle.party.web.party;
 import java.util.ArrayList;
 import java.util.List;
 
-import com.mossle.api.ScopeConnector;
 import com.mossle.api.UserConnector;
 import com.mossle.api.UserDTO;
+import com.mossle.api.scope.ScopeHolder;
 
 import com.mossle.core.page.Page;
-import com.mossle.core.scope.ScopeHolder;
 import com.mossle.core.struts2.BaseAction;
 
 import com.mossle.party.domain.PartyEntity;
@@ -33,7 +32,6 @@ public class AdminBatchAction extends BaseAction implements
     private MessageSourceAccessor messages;
     private Page page = new Page();
     private long id;
-    private ScopeConnector scopeConnector;
     private Long groupTypeId;
     private String text;
     private List<UserDTO> userDtos = new ArrayList<UserDTO>();
@@ -53,9 +51,6 @@ public class AdminBatchAction extends BaseAction implements
     }
 
     public String input() {
-        Long globalId = scopeConnector
-                .findGlobalId(ScopeHolder.getGlobalCode());
-
         if (text != null) {
             for (String str : text.split("\n")) {
                 str = str.trim();
@@ -64,7 +59,8 @@ public class AdminBatchAction extends BaseAction implements
                     continue;
                 }
 
-                UserDTO userDto = userConnector.findByUsername(str, globalId);
+                UserDTO userDto = userConnector.findByUsername(str,
+                        ScopeHolder.getUserRepoRef());
 
                 if (userDto.getStatus() != 1) {
                     continue;
@@ -79,13 +75,13 @@ public class AdminBatchAction extends BaseAction implements
 
     public String save() {
         PartyEntity group = partyEntityManager.findUnique(
-                "from PartyEntity where partyType.id=2 and reference=?", ""
-                        + id);
+                "from PartyEntity where partyType.id=2 and reference=?",
+                Long.toString(id));
 
         for (Long userId : userIds) {
             PartyEntity user = partyEntityManager.findUnique(
-                    "from PartyEntity where partyType.id=1 and reference=?", ""
-                            + userId);
+                    "from PartyEntity where partyType.id=1 and reference=?",
+                    Long.toString(userId));
 
             PartyStruct partyStruct = partyStructManager
                     .findUnique(
@@ -108,13 +104,13 @@ public class AdminBatchAction extends BaseAction implements
 
     public String removeAll() {
         PartyEntity group = partyEntityManager.findUnique(
-                "from PartyEntity where partyType.id=2 and reference=?", ""
-                        + id);
+                "from PartyEntity where partyType.id=2 and reference=?",
+                Long.toString(id));
 
         for (Long userId : selectedItem) {
             PartyEntity user = partyEntityManager.findUnique(
-                    "from PartyEntity where partyType.id=1 and reference=?", ""
-                            + userId);
+                    "from PartyEntity where partyType.id=1 and reference=?",
+                    Long.toString(userId));
 
             PartyStruct partyStruct = partyStructManager
                     .findUnique(
@@ -159,10 +155,6 @@ public class AdminBatchAction extends BaseAction implements
     }
 
     // ~ ======================================================================
-    public void setScopeConnector(ScopeConnector scopeConnector) {
-        this.scopeConnector = scopeConnector;
-    }
-
     public void setUserConnector(UserConnector userConnector) {
         this.userConnector = userConnector;
     }

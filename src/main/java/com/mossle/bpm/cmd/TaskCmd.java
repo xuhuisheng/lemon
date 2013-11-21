@@ -3,7 +3,6 @@ package com.mossle.bpm.cmd;
 import java.util.List;
 
 import org.activiti.engine.ActivitiException;
-import org.activiti.engine.impl.Page;
 import org.activiti.engine.impl.TaskQueryImpl;
 import org.activiti.engine.impl.bpmn.behavior.UserTaskActivityBehavior;
 import org.activiti.engine.impl.context.Context;

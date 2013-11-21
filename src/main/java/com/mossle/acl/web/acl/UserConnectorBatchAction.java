@@ -7,14 +7,14 @@ import java.util.Map;
 import com.mossle.acl.domain.AclObjectIdentity;
 import com.mossle.acl.service.AclService;
 
-import com.mossle.api.LocalScopeDTO;
-import com.mossle.api.ScopeConnector;
 import com.mossle.api.UserConnector;
 import com.mossle.api.UserDTO;
+import com.mossle.api.scope.ScopeConnector;
+import com.mossle.api.scope.ScopeHolder;
+import com.mossle.api.scope.ScopeInfo;
 
 import com.mossle.core.hibernate.PropertyFilter;
 import com.mossle.core.page.Page;
-import com.mossle.core.scope.ScopeHolder;
 import com.mossle.core.struts2.BaseAction;
 import com.mossle.core.util.ServletUtils;
 
@@ -33,16 +33,13 @@ public class UserConnectorBatchAction extends BaseAction {
     private static Logger logger = LoggerFactory
             .getLogger(UserConnectorBatchAction.class);
     public static final String RELOAD = "reload";
-    private MessageSourceAccessor messages;
     private String userText;
     private List<Long> userIds = new ArrayList<Long>();
-    private List<Long> resourceIds = new ArrayList<Long>();
     private UserConnector userConnector;
     private ScopeConnector scopeConnector;
     private AclService aclService;
     private String resourceType;
     private Long resourceId;
-    private Integer mask;
     private List<UserDTO> userDtos = new ArrayList<UserDTO>();
 
     public String execute() {
@@ -50,11 +47,6 @@ public class UserConnectorBatchAction extends BaseAction {
     }
 
     public String input() {
-        Long globalId = scopeConnector
-                .findGlobalId(ScopeHolder.getGlobalCode());
-
-        // Long localId = scopeConnector.findLocalId(ScopeHolder.getGlobalCode(),
-        // ScopeHolder.getLocalCode());
         if (userText != null) {
             for (String str : userText.split("\n")) {
                 str = str.trim();
@@ -63,11 +55,9 @@ public class UserConnectorBatchAction extends BaseAction {
                     continue;
                 }
 
-                // UserStatus userStatus = userStatusManager.findUniqueBy(
-                // "username", str);
                 String username = str;
                 UserDTO userDto = userConnector.findByUsername(username,
-                        globalId);
+                        ScopeHolder.getUserRepoRef());
 
                 if (userDto == null) {
                     addActionMessage(str + " is not exists.");
@@ -81,10 +71,6 @@ public class UserConnectorBatchAction extends BaseAction {
     }
 
     public String save() {
-        // Long globalId = scopeConnector
-        // .findGlobalId(ScopeHolder.getGlobalCode());
-        // Long localId = scopeConnector.findLocalId(ScopeHolder.getGlobalCode(),
-        // ScopeHolder.getLocalCode());
         logger.debug("userIds: {}", userIds);
 
         for (Long userId : userIds) {
@@ -100,10 +86,6 @@ public class UserConnectorBatchAction extends BaseAction {
     }
 
     // ~ ======================================================================
-    public void setMessageSource(MessageSource messageSource) {
-        this.messages = new MessageSourceAccessor(messageSource);
-    }
-
     public void setUserConnector(UserConnector userConnector) {
         this.userConnector = userConnector;
     }
@@ -139,10 +121,6 @@ public class UserConnectorBatchAction extends BaseAction {
 
     public void setResourceId(Long resourceId) {
         this.resourceId = resourceId;
-    }
-
-    public void setMask(Integer mask) {
-        this.mask = mask;
     }
 
     public List<UserDTO> getUserDtos() {

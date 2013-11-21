@@ -26,8 +26,8 @@ public class DashboardAction {
         String currentUsername = SpringSecurityUtils.getCurrentUsername();
         personalTasks = processEngine.getTaskService().createTaskQuery()
                 .taskAssignee(currentUsername).list();
-        //groupTasks = processEngine.getTaskService().createTaskQuery()
-        //        .taskCandidateUser(currentUsername).list();
+        // groupTasks = processEngine.getTaskService().createTaskQuery()
+        // .taskCandidateUser(currentUsername).list();
         historicProcessInstances = processEngine.getHistoryService()
                 .createHistoricProcessInstanceQuery()
                 .startedBy(currentUsername).list();

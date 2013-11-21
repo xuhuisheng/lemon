@@ -13,7 +13,7 @@ import javax.sql.DataSource;
  * @author Lingo
  */
 public class DataSourceProxy extends MockDataSource {
-    protected DataSource targetDataSource;
+    private DataSource targetDataSource;
 
     /**
      * get connection.

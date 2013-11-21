@@ -4,10 +4,11 @@ import java.util.ArrayList;
 import java.util.List;
 import java.util.Map;
 
-import com.mossle.api.LocalScopeDTO;
-import com.mossle.api.ScopeConnector;
 import com.mossle.api.UserConnector;
 import com.mossle.api.UserDTO;
+import com.mossle.api.scope.ScopeConnector;
+import com.mossle.api.scope.ScopeHolder;
+import com.mossle.api.scope.ScopeInfo;
 
 import com.mossle.auth.component.UserStatusChecker;
 import com.mossle.auth.component.UserStatusConverter;
@@ -23,7 +24,6 @@ import com.mossle.auth.support.UserStatusDTO;
 
 import com.mossle.core.hibernate.PropertyFilter;
 import com.mossle.core.page.Page;
-import com.mossle.core.scope.ScopeHolder;
 import com.mossle.core.struts2.BaseAction;
 import com.mossle.core.util.ServletUtils;
 
@@ -62,11 +62,6 @@ public class UserConnectorBatchAction extends BaseAction {
     }
 
     public String input() {
-        Long globalId = scopeConnector
-                .findGlobalId(ScopeHolder.getGlobalCode());
-        Long localId = scopeConnector.findLocalId(ScopeHolder.getGlobalCode(),
-                ScopeHolder.getLocalCode());
-
         if (userText != null) {
             for (String str : userText.split("\n")) {
                 str = str.trim();
@@ -75,17 +70,17 @@ public class UserConnectorBatchAction extends BaseAction {
                     continue;
                 }
 
-                // UserStatus userStatus = userStatusManager.findUniqueBy(
-                // "username", str);
                 String username = str;
                 UserDTO userDto = userConnector.findByUsername(username,
-                        globalId);
+                        ScopeHolder.getUserRepoRef());
 
                 if (userDto == null) {
                     addActionMessage(str + " is not exists.");
                 } else {
                     UserStatus userStatus = authService.createOrGetUserStatus(
-                            username, userDto.getId(), globalId, localId);
+                            username, userDto.getId(),
+                            ScopeHolder.getUserRepoRef(),
+                            ScopeHolder.getScopeId());
 
                     try {
                         userStatusChecker.check(userStatus);
@@ -97,18 +92,16 @@ public class UserConnectorBatchAction extends BaseAction {
             }
         }
 
-        roles = roleManager.find("from Role where globalId=? and localId=?",
-                globalId, localId);
+        roles = roleManager.find("from Role where scopeId=?",
+                ScopeHolder.getScopeId());
         roleDtos.addAll(convertRoleDtos(roles, false));
 
-        List<LocalScopeDTO> sharedLocalScopes = scopeConnector
-                .findSharedLocalScopes();
+        List<ScopeInfo> sharedScopeInfos = scopeConnector.findSharedScopes();
 
-        System.out.println(sharedLocalScopes);
+        logger.info("{}", sharedScopeInfos);
 
-        for (LocalScopeDTO localScopeDto : sharedLocalScopes) {
-            List<Role> sharedRoles = authService.findRoles(localScopeDto
-                    .getId());
+        for (ScopeInfo scopeInfo : sharedScopeInfos) {
+            List<Role> sharedRoles = authService.findRoles(scopeInfo.getId());
             roleDtos.addAll(convertRoleDtos(sharedRoles, true));
         }
 
@@ -116,14 +109,11 @@ public class UserConnectorBatchAction extends BaseAction {
     }
 
     public String save() {
-        Long globalId = scopeConnector
-                .findGlobalId(ScopeHolder.getGlobalCode());
-        Long localId = scopeConnector.findLocalId(ScopeHolder.getGlobalCode(),
-                ScopeHolder.getLocalCode());
         logger.debug("userIds: {}, roleIds: {}", userIds, roleIds);
 
         for (Long userId : userIds) {
-            authService.configUserRole(userId, roleIds, globalId, localId,
+            authService.configUserRole(userId, roleIds,
+                    ScopeHolder.getUserRepoRef(), ScopeHolder.getScopeId(),
                     false);
         }
 
@@ -146,13 +136,13 @@ public class UserConnectorBatchAction extends BaseAction {
 
         if (useScope) {
             roleDto.setName(role.getName() + "("
-                    + scopeConnector.getLocalScope(role.getLocalId()).getName()
+                    + scopeConnector.findById(role.getScopeId()).getName()
                     + ")");
         } else {
             roleDto.setName(role.getName());
         }
 
-        roleDto.setLocalId(role.getLocalId());
+        roleDto.setScopeId(role.getScopeId());
 
         return roleDto;
     }

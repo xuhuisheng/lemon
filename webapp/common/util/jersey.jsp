@@ -2,6 +2,7 @@
 <%@page import="java.lang.annotation.*"%>
 <%@page import="java.lang.reflect.*"%>
 <%@page import="java.util.*"%>
+<%@page import="javax.annotation.*"%>
 <%@page import="javax.ws.rs.*"%>
 <%@page import="org.springframework.context.ApplicationContext"%>
 <%@page import="org.springframework.web.context.support.WebApplicationContextUtils"%>
@@ -24,12 +25,17 @@
 	}
 
 	String getRequestMethod(Method method) {
+		if (method.isAnnotationPresent(Resource.class)) {
+			return null;
+		}
 		if (method.isAnnotationPresent(POST.class)) {
 			return "POST";
 		} else if (method.isAnnotationPresent(GET.class)) {
 			return "GET";
 		} else if (method.isAnnotationPresent(DELETE.class)) {
 			return "DELETE";
+		} else if (method.isAnnotationPresent(PUT.class)) {
+			return "PUT";
 		} else {
 			System.out.println("UNKNOW : " + method);
 			return null;
@@ -109,6 +115,9 @@ var data = {
 					} else if (annotation instanceof FormParam) {
 						name = ((FormParam) annotation).value();
 						type = "form";
+					} else if (annotation instanceof HeaderParam) {
+						name = ((HeaderParam) annotation).value();
+						type = "header";
 					}
 				}
 				if (name == null) {
@@ -157,13 +166,8 @@ function doTest(className, methodName) {
 		// code for IE6, IE5
 		xmlhttp = new ActiveXObject("Microsoft.XMLHTTP");
 	}
-	xmlhttp.onreadystatechange = function() {
-		if (xmlhttp.readyState == 4 && xmlhttp.status == 200) {
-			document.getElementById(id + '-result').innerHTML = xmlhttp.responseText;
-			document.getElementById(id + '-result').style.display = '';
-		}
-	}
 
+	var headerParams = {};
 	var queryParams = '';
 	var formParams = '';
 	for (var i = 0; i < o.params.length; i++) {
@@ -180,6 +184,20 @@ function doTest(className, methodName) {
 				formParams += '&';
 			}
 			formParams += item.name + '=' +  document.getElementById(id + '-' + item.name).value;
+		} else if (item.type == 'header') {
+			headerParams[item.name] = document.getElementById(id + '-' + item.name).value;
+		}
+	}
+	xmlhttp.onreadystatechange = function() {
+		if (xmlhttp.readyState == 1) {
+			for (var key in headerParams) {
+				var value = headerParams[key];
+				xmlhttp.setRequestHeader(key, value);
+			}
+		}
+		if (xmlhttp.readyState == 4 && xmlhttp.status == 200) {
+			document.getElementById(id + '-result').innerHTML = xmlhttp.responseText;
+			document.getElementById(id + '-result').style.display = '';
 		}
 	}
 
@@ -257,6 +275,9 @@ function doTest(className, methodName) {
 					} else if (annotation instanceof FormParam) {
 						name = ((FormParam) annotation).value();
 						type = "form";
+					} else if (annotation instanceof HeaderParam) {
+						name = ((HeaderParam) annotation).value();
+						type = "header";
 					}
 				}
 				if (name == null) {

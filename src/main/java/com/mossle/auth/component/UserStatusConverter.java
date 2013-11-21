@@ -5,8 +5,8 @@ import java.util.List;
 
 import javax.annotation.Resource;
 
-import com.mossle.api.LocalScopeDTO;
-import com.mossle.api.ScopeConnector;
+import com.mossle.api.scope.ScopeConnector;
+import com.mossle.api.scope.ScopeInfo;
 
 import com.mossle.auth.domain.Role;
 import com.mossle.auth.domain.UserStatus;
@@ -21,7 +21,7 @@ public class UserStatusConverter {
     private ScopeConnector scopeConnector;
 
     public UserStatusDTO createUserStatusDto(UserStatus userStatus,
-            Long globalId, Long localId) {
+            String userRepoRef, String scopeId) {
         UserStatusDTO userStatusDto = new UserStatusDTO();
         userStatusDto.setId(userStatus.getId());
         userStatusDto.setUsername(userStatus.getUsername());
@@ -31,13 +31,13 @@ public class UserStatusConverter {
         StringBuilder buff = new StringBuilder();
 
         for (Role role : userStatus.getRoles()) {
-            if (localId.equals(role.getLocalId())) {
+            if (scopeId.equals(role.getScopeId())) {
                 buff.append(role.getName()).append(",");
             } else {
-                LocalScopeDTO localScopeDto = scopeConnector.getLocalScope(role
-                        .getLocalId());
+                ScopeInfo scopeInfo = scopeConnector
+                        .findById(role.getScopeId());
                 buff.append(role.getName()).append("(")
-                        .append(localScopeDto.getName()).append("),");
+                        .append(scopeInfo.getName()).append("),");
             }
         }
 
@@ -51,12 +51,12 @@ public class UserStatusConverter {
     }
 
     public List<UserStatusDTO> createUserStatusDtos(
-            List<UserStatus> userStatuses, Long globalId, Long localId) {
+            List<UserStatus> userStatuses, String userRepoRef, String scopeId) {
         List<UserStatusDTO> userStatusDtos = new ArrayList<UserStatusDTO>();
 
         for (UserStatus userStatus : userStatuses) {
-            userStatusDtos.add(createUserStatusDto(userStatus, globalId,
-                    localId));
+            userStatusDtos.add(createUserStatusDto(userStatus, userRepoRef,
+                    scopeId));
         }
 
         return userStatusDtos;

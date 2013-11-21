@@ -32,10 +32,8 @@ import org.springframework.stereotype.Component;
 public class AclService {
     private Logger logger = LoggerFactory.getLogger(AclService.class);
     private UserConnector userConnector;
-    private OrgConnector orgConnector;
     private AclEntryManager aclEntryManager;
     private AclObjectIdentityManager aclObjectIdentityManager;
-    private AclSidManager aclSidManager;
     private AclObjectTypeManager aclObjectTypeManager;
     private JdbcTemplate jdbcTemplate;
 
@@ -189,7 +187,9 @@ public class AclService {
         String sql = "select id,name,type_id from party_entity where id=?";
         Map<String, Object> map = jdbcTemplate.queryForMap(sql, sidId);
         Map sidInfo = new HashMap();
-        sidInfo.put("typeId", "" + map.get("type_id"));
+        sidInfo.put("typeId",
+                (map.get("type_id") == null) ? null : map.get("type_id")
+                        .toString());
         sidInfo.put("id", map.get("id"));
         sidInfo.put("name", map.get("name"));
 
@@ -199,11 +199,6 @@ public class AclService {
     @Resource
     public void setUserConnector(UserConnector userConnector) {
         this.userConnector = userConnector;
-    }
-
-    @Resource
-    public void setOrgConnector(OrgConnector orgConnector) {
-        this.orgConnector = orgConnector;
     }
 
     @Resource
@@ -221,11 +216,6 @@ public class AclService {
     public void setAclObjectTypeManager(
             AclObjectTypeManager aclObjectTypeManager) {
         this.aclObjectTypeManager = aclObjectTypeManager;
-    }
-
-    @Resource
-    public void setAclSidManager(AclSidManager aclSidManager) {
-        this.aclSidManager = aclSidManager;
     }
 
     @Resource

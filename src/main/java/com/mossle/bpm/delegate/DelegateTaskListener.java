@@ -1,19 +1,10 @@
 package com.mossle.bpm.delegate;
 
-import java.util.Date;
-import java.util.List;
-import java.util.Map;
-
 import javax.annotation.Resource;
 
 import com.mossle.bpm.support.DefaultTaskListener;
 
 import org.activiti.engine.delegate.DelegateTask;
-import org.activiti.engine.delegate.TaskListener;
-
-import org.springframework.beans.factory.annotation.Autowired;
-
-import org.springframework.jdbc.core.JdbcTemplate;
 
 import org.springframework.stereotype.Component;
 

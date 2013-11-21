@@ -3,7 +3,8 @@ package com.mossle.auth.web.auth;
 import java.util.ArrayList;
 import java.util.List;
 
-import com.mossle.api.ScopeConnector;
+import com.mossle.api.scope.ScopeConnector;
+import com.mossle.api.scope.ScopeHolder;
 
 import com.mossle.auth.domain.Access;
 import com.mossle.auth.domain.Perm;
@@ -15,7 +16,6 @@ import com.mossle.core.export.TableModel;
 import com.mossle.core.hibernate.PropertyFilter;
 import com.mossle.core.mapper.BeanMapper;
 import com.mossle.core.page.Page;
-import com.mossle.core.scope.ScopeHolder;
 import com.mossle.core.struts2.BaseAction;
 
 import com.opensymphony.xwork2.ModelDriven;
@@ -52,10 +52,8 @@ public class AccessAction extends BaseAction implements ModelDriven<Access>,
     public String list() {
         List<PropertyFilter> propertyFilters = PropertyFilter
                 .buildFromHttpRequest(ServletActionContext.getRequest());
-        Long localId = scopeConnector.findLocalId(ScopeHolder.getGlobalCode(),
-                ScopeHolder.getLocalCode());
-        propertyFilters.add(new PropertyFilter("EQL_localId", Long
-                .toString(localId)));
+        propertyFilters.add(new PropertyFilter("EQS_scopeId", ScopeHolder
+                .getScopeId()));
         page = accessManager.pagedQuery(page, propertyFilters);
 
         return SUCCESS;
@@ -82,10 +80,7 @@ public class AccessAction extends BaseAction implements ModelDriven<Access>,
         dest.setPerm(perm);
 
         if (id == 0) {
-            dest.setGlobalId(scopeConnector.findGlobalId(ScopeHolder
-                    .getGlobalCode()));
-            dest.setLocalId(scopeConnector.findLocalId(
-                    ScopeHolder.getGlobalCode(), ScopeHolder.getLocalCode()));
+            dest.setScopeId(ScopeHolder.getScopeId());
         }
 
         // save
@@ -109,9 +104,7 @@ public class AccessAction extends BaseAction implements ModelDriven<Access>,
             model = accessManager.get(id);
         }
 
-        Long localId = scopeConnector.findLocalId(ScopeHolder.getGlobalCode(),
-                ScopeHolder.getLocalCode());
-        perms = permManager.findBy("localId", localId);
+        perms = permManager.findBy("scopeId", ScopeHolder.getScopeId());
 
         return INPUT;
     }

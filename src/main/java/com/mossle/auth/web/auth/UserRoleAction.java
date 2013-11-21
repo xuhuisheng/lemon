@@ -5,8 +5,9 @@ import java.util.HashMap;
 import java.util.List;
 import java.util.Map;
 
-import com.mossle.api.LocalScopeDTO;
-import com.mossle.api.ScopeConnector;
+import com.mossle.api.scope.ScopeConnector;
+import com.mossle.api.scope.ScopeHolder;
+import com.mossle.api.scope.ScopeInfo;
 
 import com.mossle.auth.component.UserStatusChecker;
 import com.mossle.auth.domain.Role;
@@ -16,7 +17,6 @@ import com.mossle.auth.manager.UserStatusManager;
 import com.mossle.auth.service.AuthService;
 import com.mossle.auth.support.CheckUserStatusException;
 
-import com.mossle.core.scope.ScopeHolder;
 import com.mossle.core.struts2.BaseAction;
 
 import org.apache.struts2.convention.annotation.Result;
@@ -49,13 +49,9 @@ public class UserRoleAction extends BaseAction {
     }
 
     public String save() {
-        Long globalId = scopeConnector
-                .findGlobalId(ScopeHolder.getGlobalCode());
-        Long localId = scopeConnector.findLocalId(ScopeHolder.getGlobalCode(),
-                ScopeHolder.getLocalCode());
-
         try {
-            authService.configUserRole(id, selectedItem, globalId, localId,
+            authService.configUserRole(id, selectedItem,
+                    ScopeHolder.getUserRepoRef(), ScopeHolder.getScopeId(),
                     true);
             addActionMessage(messages.getMessage("core.success.save", "保存成功"));
         } catch (CheckUserStatusException ex) {
@@ -68,19 +64,9 @@ public class UserRoleAction extends BaseAction {
     }
 
     public String input() {
-        // Long globalId = scopeConnector
-        // .findGlobalId(ScopeHolder.getGlobalCode());
-        Long localId = scopeConnector.findLocalId(ScopeHolder.getGlobalCode(),
-                ScopeHolder.getLocalCode());
         // local roles
-        roles = authService.findRoles(localId);
+        roles = authService.findRoles(ScopeHolder.getScopeId());
 
-        /*
-         * // shared role map List<LocalScopeDTO> sharedLocalScopes = scopeConnector .findSharedLocalScopes();
-         * 
-         * for (LocalScopeDTO localScopeDto : sharedLocalScopes) { sharedRoleMap.put(localScopeDto.getName(),
-         * authService .findRoles(localScopeDto.getId())); }
-         */
         return INPUT;
     }
 
