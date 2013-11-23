@@ -13,7 +13,8 @@
             <ul class="accordion-inner nav nav-list">
 			  <li class="m-icn-add-user"><a href="${scopePrefix}/bpm/workspace!home.do">发起新流程</a></li>
 			  <li class="m-icn-add-user"><a href="${scopePrefix}/bpm/workspace!listRunningProcessInstances.do">运行的流程</a></li>
-			  <li class="m-icn-add-user"><a href="${scopePrefix}/bpm/workspace!listRunningProcessInstances.do">办结的流程</a></li>
+			  <li class="m-icn-add-user"><a href="${scopePrefix}/bpm/workspace!listCompletedProcessInstances.do">办结的流程</a></li>
+			  <li class="m-icn-add-user"><a href="${scopePrefix}/bpm/workspace!listInvolvedProcessInstances.do">参与的流程</a></li>
 			  <li class="m-icn-add-user"><a href="${scopePrefix}/form/workspace!listDrafts.do">草稿箱</a></li>
             </ul>
           </div>
