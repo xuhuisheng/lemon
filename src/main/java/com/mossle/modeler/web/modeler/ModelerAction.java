@@ -24,7 +24,6 @@ import org.codehaus.jackson.node.ObjectNode;
  * modeler.
  * 
  * @author Lingo
- * 
  */
 @Results({
         @Result(name = ModelerAction.RELOAD, location = "modeler!list.do?operationMode=RETRIEVE", type = "redirect"),
@@ -50,8 +49,6 @@ public class ModelerAction extends BaseAction {
         if (model == null) {
             model = repositoryService.newModel();
             repositoryService.saveModel(model);
-            repositoryService.addModelEditorSource(model.getId(),
-                    "".getBytes("utf-8"));
             id = model.getId();
         }
 

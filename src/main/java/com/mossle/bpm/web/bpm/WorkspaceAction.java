@@ -95,21 +95,31 @@ public class WorkspaceAction extends BaseAction {
         return "listProcessDefinitions";
     }
 
-    /**
-     * 用户发起的流程（包含已经完成和未完成）
-     * 
-     * @return
-     */
     public String listRunningProcessInstances() {
         HistoryService historyService = processEngine.getHistoryService();
 
-        // TODO: finished(), unfinished()
         String currentUsername = SpringSecurityUtils.getCurrentUsername();
         historicProcessInstances = historyService
                 .createHistoricProcessInstanceQuery()
-                .startedBy(currentUsername).list();
+                .startedBy(currentUsername).unfinished().list();
 
         return "listRunningProcessInstances";
+    }
+
+    /**
+     * 已结流程.
+     * 
+     * @return
+     */
+    public String listCompletedProcessInstances() {
+        HistoryService historyService = processEngine.getHistoryService();
+
+        String currentUsername = SpringSecurityUtils.getCurrentUsername();
+        historicProcessInstances = historyService
+                .createHistoricProcessInstanceQuery()
+                .startedBy(currentUsername).finished().list();
+
+        return "listCompletedProcessInstances";
     }
 
     /**

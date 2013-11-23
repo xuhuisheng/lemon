@@ -51,7 +51,7 @@ public class HttpConnectionInfo {
                 conn.setDoOutput(true);
 
                 String data = constructFormParams(formParams);
-                conn.getOutputStream().write(data.getBytes());
+                conn.getOutputStream().write(data.getBytes("UTF-8"));
             }
 
             InputStream is = conn.getInputStream();

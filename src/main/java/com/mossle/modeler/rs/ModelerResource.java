@@ -14,30 +14,38 @@ import javax.ws.rs.QueryParam;
 import javax.ws.rs.core.GenericEntity;
 import javax.ws.rs.core.MediaType;
 
+import com.mossle.core.mapper.JsonMapper;
+
 import org.activiti.engine.ProcessEngine;
 import org.activiti.engine.RepositoryService;
 import org.activiti.engine.repository.Model;
+
+import org.slf4j.Logger;
+import org.slf4j.LoggerFactory;
 
 import org.springframework.stereotype.Component;
 
 @Component
 @Path("modeler")
 public class ModelerResource {
+    private static Logger logger = LoggerFactory
+            .getLogger(ModelerResource.class);
     private ProcessEngine processEngine;
+    private JsonMapper jsonMapper = new JsonMapper();
 
     @GET
     @Path("open")
     @Produces(MediaType.APPLICATION_JSON)
-    public Map open(@QueryParam("modelId") String modelId) throws Exception {
+    public Object open(@QueryParam("id") String modelId) throws Exception {
         RepositoryService repositoryService = processEngine
                 .getRepositoryService();
         Model model = repositoryService.getModel(modelId);
 
         if (model == null) {
+            logger.info("model({}) is null", modelId);
             model = repositoryService.newModel();
             repositoryService.saveModel(model);
-            repositoryService.addModelEditorSource(model.getId(),
-                    "".getBytes("utf-8"));
+            modelId = model.getId();
         }
 
         Map root = new HashMap();
@@ -46,19 +54,32 @@ public class ModelerResource {
         root.put("revision", 1);
         root.put("description", "description");
 
-        Map modelNode = new HashMap();
-        modelNode.put("id", "canvas");
-        modelNode.put("resourceId", "canvas");
+        byte[] bytes = repositoryService.getModelEditorSource(model.getId());
 
-        Map stencilSetNode = new HashMap();
-        stencilSetNode.put("namespace", "http://b3mn.org/stencilset/bpmn2.0#");
-        modelNode.put("stencilset", stencilSetNode);
+        if (bytes != null) {
+            String modelEditorSource = new String(bytes, "utf-8");
+            logger.info("modelEditorSource : {}", modelEditorSource);
 
-        // model.setMetaInfo(root.toString());
-        model.setName("name");
-        model.setKey("key");
+            Map modelNode = jsonMapper.fromJson(modelEditorSource, Map.class);
+            root.put("model", modelNode);
+        } else {
+            Map modelNode = new HashMap();
+            modelNode.put("id", "canvas");
+            modelNode.put("resourceId", "canvas");
 
-        root.put("model", modelNode);
+            Map stencilSetNode = new HashMap();
+            stencilSetNode.put("namespace",
+                    "http://b3mn.org/stencilset/bpmn2.0#");
+            modelNode.put("stencilset", stencilSetNode);
+
+            model.setMetaInfo(jsonMapper.toJson(root));
+            model.setName("name");
+            model.setKey("key");
+
+            root.put("model", modelNode);
+        }
+
+        logger.info("model : {}", root);
 
         return root;
     }
@@ -81,6 +102,7 @@ public class ModelerResource {
         Model model = repositoryService.getModel(id);
         model.setName(name);
         // model.setMetaInfo(root.toString());
+        System.out.println("jsonXml : " + jsonXml);
         repositoryService.saveModel(model);
         repositoryService.addModelEditorSource(model.getId(),
                 jsonXml.getBytes("utf-8"));

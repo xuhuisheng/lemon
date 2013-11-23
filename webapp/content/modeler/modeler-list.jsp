@@ -1,7 +1,7 @@
 <%@page contentType="text/html;charset=UTF-8"%>
 <%@include file="/taglibs.jsp"%>
 <%pageContext.setAttribute("currentHeader", "bpm-console");%>
-<%pageContext.setAttribute("currentMenu", "process");%>
+<%pageContext.setAttribute("currentMenu", "bpm-process");%>
 <!doctype html>
 <html lang="en">
 
@@ -20,7 +20,9 @@
 	<!-- start of main -->
     <section id="m-main" class="span10" style="float:right">
 
-<a href="modeler!open.do" class="btn">新建模型</a>
+<a href="modeler!open.do" class="btn" target="_blank">新建模型</a>
+<br>
+
       <article class="m-widget">
         <header class="header">
 		  <h4 class="title">列表</h4>
@@ -39,7 +41,7 @@
         <th class="sorting" name="name">lastUpdateTime</th>
         <th class="sorting" name="name">deploymentId</th>
         <th class="sorting" name="name">metaInfo</th>
-        <th width="170">&nbsp;</th>
+        <th>&nbsp;</th>
       </tr>
     </thead>
 
@@ -57,7 +59,7 @@
 	    <td>${item.deploymentId}</td>
 	    <td>${item.metaInfo}</td>
         <td>
-		  <a href="modeler!open.do?id=${item.id}">编辑</a>
+		  <a href="modeler!open.do?id=${item.id}" target="_blank">编辑</a>
 		  <a href="modeler!removeModeler.do?id=${item.id}">删除</a>
 		  <a href="modeler!deploy.do?id=${item.id}">发布</a>
         </td>
