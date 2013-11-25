@@ -3,7 +3,6 @@ package com.mossle.auth.web.auth;
 import java.util.ArrayList;
 import java.util.List;
 
-import com.mossle.api.scope.ScopeConnector;
 import com.mossle.api.scope.ScopeHolder;
 
 import com.mossle.auth.component.RoleDefChecker;
@@ -31,7 +30,6 @@ public class RolePermAction extends BaseAction {
     private List<Long> selectedItem = new ArrayList<Long>();
     private List<Perm> perms;
     private RoleDefChecker roleDefChecker;
-    private ScopeConnector scopeConnector;
 
     public String execute() {
         return input();
@@ -107,9 +105,5 @@ public class RolePermAction extends BaseAction {
 
     public List<Perm> getPerms() {
         return perms;
-    }
-
-    public void setScopeConnector(ScopeConnector scopeConnector) {
-        this.scopeConnector = scopeConnector;
     }
 }

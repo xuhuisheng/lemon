@@ -12,6 +12,7 @@ import org.slf4j.LoggerFactory;
 public class HttpConnectionPool implements Runnable {
     private static Logger logger = LoggerFactory
             .getLogger(HttpConnectionPool.class);
+    public static final int TEN_SECOND = 10000;
     private List<HttpConnectionInfo> activeHttpConnectionInfos = new ArrayList<HttpConnectionInfo>();
     private List<HttpConnectionInfo> suspendedHttpConnectionInfos = new ArrayList<HttpConnectionInfo>();
     private String urls;
@@ -112,7 +113,7 @@ public class HttpConnectionPool implements Runnable {
     public void run() {
         while (running) {
             try {
-                Thread.sleep(10000);
+                Thread.sleep(TEN_SECOND);
             } catch (InterruptedException ex) {
                 logger.info(ex.getMessage(), ex);
             }

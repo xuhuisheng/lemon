@@ -6,9 +6,6 @@ import java.util.Map;
 
 import com.mossle.api.UserConnector;
 import com.mossle.api.UserDTO;
-import com.mossle.api.UserRepoConnector;
-import com.mossle.api.UserRepoDTO;
-import com.mossle.api.scope.ScopeConnector;
 import com.mossle.api.scope.ScopeHolder;
 
 import com.mossle.auth.component.UserStatusConverter;
@@ -17,7 +14,6 @@ import com.mossle.auth.manager.UserStatusManager;
 import com.mossle.auth.service.AuthService;
 import com.mossle.auth.support.UserStatusDTO;
 
-import com.mossle.core.hibernate.PropertyFilter;
 import com.mossle.core.page.Page;
 import com.mossle.core.struts2.BaseAction;
 import com.mossle.core.util.ServletUtils;
@@ -26,30 +22,20 @@ import org.apache.struts2.ServletActionContext;
 import org.apache.struts2.convention.annotation.Result;
 import org.apache.struts2.convention.annotation.Results;
 
-import org.slf4j.Logger;
-import org.slf4j.LoggerFactory;
-
-import org.springframework.context.MessageSource;
-import org.springframework.context.support.MessageSourceAccessor;
-
 @Results({
         @Result(name = UserConnectorAction.RELOAD, location = "user-connector.do?operationMode=RETRIEVE", type = "redirect"),
         @Result(name = UserConnectorAction.RELOAD_PASSWORD, location = "user-connector!password.do?operationMode=RETRIEVE&id=${id}", type = "redirect"),
         @Result(name = UserConnectorAction.RELOAD_ROLE, location = "user-role.do?id=${id}", type = "redirect") })
 public class UserConnectorAction extends BaseAction {
-    private static Logger logger = LoggerFactory
-            .getLogger(UserConnectorAction.class);
     public static final String RELOAD = "reload";
     public static final String RELOAD_PASSWORD = "reload-password";
     public static final String RELOAD_ROLE = "reload-role";
     private UserStatusManager userStatusManager;
-    private MessageSourceAccessor messages;
     private Page page = new Page();
     private String username;
     private long id;
     private UserStatusConverter userStatusConverter;
     private UserConnector userConnector;
-    private ScopeConnector scopeConnector;
     private AuthService authService;
 
     public String execute() {
@@ -131,10 +117,6 @@ public class UserConnectorAction extends BaseAction {
         this.userStatusManager = userStatusManager;
     }
 
-    public void setMessageSource(MessageSource messageSource) {
-        this.messages = new MessageSourceAccessor(messageSource);
-    }
-
     public void setUserStatusConverter(UserStatusConverter userStatusConverter) {
         this.userStatusConverter = userStatusConverter;
     }
@@ -158,10 +140,6 @@ public class UserConnectorAction extends BaseAction {
 
     public void setUsername(String username) {
         this.username = username;
-    }
-
-    public void setScopeConnector(ScopeConnector scopeConnector) {
-        this.scopeConnector = scopeConnector;
     }
 
     public void setAuthService(AuthService authService) {

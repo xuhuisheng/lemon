@@ -13,7 +13,6 @@ import com.mossle.user.notification.DefaultUserNotification;
 import com.mossle.user.notification.UserNotification;
 import com.mossle.user.persistence.domain.UserAttr;
 import com.mossle.user.persistence.domain.UserBase;
-import com.mossle.user.persistence.domain.UserRepo;
 import com.mossle.user.persistence.domain.UserSchema;
 import com.mossle.user.persistence.manager.UserAttrManager;
 import com.mossle.user.persistence.manager.UserBaseManager;

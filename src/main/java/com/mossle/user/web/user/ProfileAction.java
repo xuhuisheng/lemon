@@ -1,35 +1,19 @@
 package com.mossle.user.web.user;
 
-import java.text.SimpleDateFormat;
-
-import java.util.ArrayList;
-import java.util.HashMap;
-import java.util.List;
 import java.util.Map;
 
-import com.mossle.api.UserProcessor;
-
-import com.mossle.core.export.Exportor;
-import com.mossle.core.export.TableModel;
-import com.mossle.core.hibernate.PropertyFilter;
 import com.mossle.core.mapper.BeanMapper;
 import com.mossle.core.page.Page;
 import com.mossle.core.struts2.BaseAction;
 import com.mossle.core.util.ServletUtils;
 
-import com.mossle.security.util.SimplePasswordEncoder;
 import com.mossle.security.util.SpringSecurityUtils;
 
-import com.mossle.user.persistence.domain.UserAttr;
 import com.mossle.user.persistence.domain.UserBase;
-import com.mossle.user.persistence.domain.UserRepo;
-import com.mossle.user.persistence.domain.UserSchema;
 import com.mossle.user.persistence.manager.UserAttrManager;
 import com.mossle.user.persistence.manager.UserBaseManager;
-import com.mossle.user.persistence.manager.UserRepoManager;
 import com.mossle.user.persistence.manager.UserSchemaManager;
 import com.mossle.user.service.UserService;
-import com.mossle.user.support.EmptyUserProcessor;
 import com.mossle.user.support.UserBaseWrapper;
 
 import com.opensymphony.xwork2.ModelDriven;
@@ -47,8 +31,6 @@ public class ProfileAction extends BaseAction implements ModelDriven<UserBase>,
         Preparable {
     public static final String RELOAD = "reload";
     private UserBaseManager userBaseManager;
-    private UserSchemaManager userSchemaManager;
-    private UserAttrManager userAttrManager;
     private MessageSourceAccessor messages;
     private Page page = new Page();
     private UserBase model;

@@ -7,6 +7,7 @@ import javax.servlet.http.HttpServletResponse;
 import javax.servlet.http.HttpServletResponseWrapper;
 
 public class ScopeHttpServletResponseWrapper extends HttpServletResponseWrapper {
+    public static final int DEFAULT_HTTP_PORT = 80;
     private String contextPath;
     private String prefix;
     private String absolutePrefix;
@@ -19,7 +20,7 @@ public class ScopeHttpServletResponseWrapper extends HttpServletResponseWrapper 
         this.absolutePrefix = request.getScheme() + "://"
                 + request.getServerName();
 
-        if (request.getServerPort() != 80) {
+        if (request.getServerPort() != DEFAULT_HTTP_PORT) {
             absolutePrefix += (":" + request.getServerPort());
         }
 

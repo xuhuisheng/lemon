@@ -1,10 +1,8 @@
 package com.mossle.auth.rs;
 
 import java.util.ArrayList;
-import java.util.Arrays;
 import java.util.Collections;
 import java.util.List;
-import java.util.Map;
 
 import javax.annotation.Resource;
 
@@ -15,7 +13,6 @@ import javax.ws.rs.QueryParam;
 import javax.ws.rs.core.MediaType;
 
 import com.mossle.api.UserConnector;
-import com.mossle.api.scope.ScopeConnector;
 import com.mossle.api.scope.ScopeHolder;
 
 import com.mossle.auth.domain.Access;
@@ -25,8 +22,6 @@ import com.mossle.auth.manager.AccessManager;
 import com.mossle.auth.manager.RoleManager;
 import com.mossle.auth.manager.UserStatusManager;
 import com.mossle.auth.service.AuthService;
-
-import com.mossle.core.jdbc.DataSourceService;
 
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
@@ -47,8 +42,6 @@ public class AuthResource {
     private UserStatusManager userStatusManager;
     private AccessManager accessManager;
     private UserConnector userConnector;
-    private DataSourceService dataSourceService;
-    private ScopeConnector scopeConnector;
     private JdbcTemplate jdbcTemplate;
     private RoleManager roleManager;
     private AuthService authService;
@@ -356,16 +349,6 @@ public class AuthResource {
     @Resource
     public void setUserConnector(UserConnector userConnector) {
         this.userConnector = userConnector;
-    }
-
-    @Resource
-    public void setDataSourceService(DataSourceService dataSourceService) {
-        this.dataSourceService = dataSourceService;
-    }
-
-    @Resource
-    public void setScopeConnector(ScopeConnector scopeConnector) {
-        this.scopeConnector = scopeConnector;
     }
 
     @Resource

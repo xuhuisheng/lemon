@@ -45,7 +45,6 @@ public class AuthorityResource {
     private UserStatusManager userStatusManager;
     private AccessManager accessManager;
     private UserConnector userConnector;
-    private DataSourceService dataSourceService;
     private JdbcTemplate jdbcTemplate;
     private MailService mailService;
     private Map<Long, String> appMap = new HashMap<Long, String>();
@@ -124,7 +123,6 @@ public class AuthorityResource {
 
                 if ((userDto.getUsername() == null)
                         || "".equals(userDto.getUsername())) {
-                    // userDto.setUsername((String) remoteMap.get("email"));
                     userDto.setUsername(apiUserDto.getId());
                 }
 
@@ -324,11 +322,6 @@ public class AuthorityResource {
     @Resource
     public void setUserConnector(UserConnector userConnector) {
         this.userConnector = userConnector;
-    }
-
-    @Resource
-    public void setDataSourceService(DataSourceService dataSourceService) {
-        this.dataSourceService = dataSourceService;
     }
 
     @Resource

@@ -1,11 +1,5 @@
 package com.mossle.security.client;
 
-import java.util.Collection;
-import java.util.Collections;
-import java.util.HashSet;
-import java.util.List;
-import java.util.Set;
-
 import com.mossle.security.api.UserFetcher;
 import com.mossle.security.api.UserInfo;
 import com.mossle.security.impl.MockUserFetcher;
@@ -14,8 +8,6 @@ import com.mossle.security.util.UserDetailsBuilder;
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
 
-import org.springframework.security.core.GrantedAuthority;
-import org.springframework.security.core.authority.SimpleGrantedAuthority;
 import org.springframework.security.core.userdetails.UserDetails;
 import org.springframework.security.core.userdetails.UserDetailsService;
 import org.springframework.security.core.userdetails.UsernameNotFoundException;

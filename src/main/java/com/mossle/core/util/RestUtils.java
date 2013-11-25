@@ -11,7 +11,6 @@ import java.util.Date;
 import java.util.Locale;
 
 import javax.ws.rs.core.Response;
-import javax.ws.rs.core.Response.ResponseBuilder;
 import javax.ws.rs.core.Response.Status;
 
 import org.slf4j.Logger;
@@ -19,6 +18,7 @@ import org.slf4j.LoggerFactory;
 
 public class RestUtils {
     private static Logger logger = LoggerFactory.getLogger(RestUtils.class);
+    public static final int ONE_SECOND = 1000;
 
     protected RestUtils() {
     }
@@ -43,10 +43,9 @@ public class RestUtils {
 
             Locale.setDefault(old);
 
-            if (modifiedDate != null) {
-                if ((file.lastModified() - modifiedDate.getTime()) < 1000) {
-                    return Response.status(Status.NOT_MODIFIED).build();
-                }
+            if ((modifiedDate != null)
+                    && ((file.lastModified() - modifiedDate.getTime()) < ONE_SECOND)) {
+                return Response.status(Status.NOT_MODIFIED).build();
             }
         }
 

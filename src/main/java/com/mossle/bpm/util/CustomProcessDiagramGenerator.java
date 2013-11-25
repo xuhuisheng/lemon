@@ -42,6 +42,8 @@ import org.apache.commons.io.FilenameUtils;
  * 流程图绘制工具
  */
 public class CustomProcessDiagramGenerator {
+    public static final int OFFSET_SUBPROCESS = 5;
+    public static final int OFFSET_TASK = 20;
     private static List<String> taskType = new ArrayList<String>();
     private static List<String> eventType = new ArrayList<String>();
     private static List<String> gatewayType = new ArrayList<String>();
@@ -133,17 +135,14 @@ public class CustomProcessDiagramGenerator {
 
             if (activity != null) {
                 if (historicActivityInstance.getEndTime() == null) { // 节点正在运行中
-                    signRunningNode(
-                            image, //
-                            activity.getX() - this.minX, activity.getY()
-                                    - this.minY, activity.getWidth(),
+                    signRunningNode(image, activity.getX() - this.minX,
+                            activity.getY() - this.minY, activity.getWidth(),
                             activity.getHeight(),
                             historicActivityInstance.getActivityType());
-                } else { // 节点已经结束
-                    signHistoryNode(
-                            image, //
-                            activity.getX() - this.minX, activity.getY()
-                                    - this.minY, activity.getWidth(),
+                } else {
+                    // 节点已经结束
+                    signHistoryNode(image, activity.getX() - this.minX,
+                            activity.getY() - this.minY, activity.getWidth(),
                             activity.getHeight(),
                             historicActivityInstance.getActivityType());
                 }
@@ -259,7 +258,7 @@ public class CustomProcessDiagramGenerator {
     protected static void drawTask(int x, int y, int width, int height,
             Graphics2D graphics) {
         RoundRectangle2D rect = new RoundRectangle2D.Double(x, y, width,
-                height, 20, 20);
+                height, OFFSET_TASK, OFFSET_TASK);
         graphics.draw(rect);
     }
 
@@ -291,23 +290,23 @@ public class CustomProcessDiagramGenerator {
     protected static void drawSubProcess(int x, int y, int width, int height,
             Graphics2D graphics) {
         RoundRectangle2D rect = new RoundRectangle2D.Double(x + 1, y + 1,
-                width - 2, height - 2, 5, 5);
+                width - 2, height - 2, OFFSET_SUBPROCESS, OFFSET_SUBPROCESS);
         graphics.draw(rect);
     }
 
     protected Point getMinXAndMinY(BpmnModel bpmnModel) {
         // We need to calculate maximum values to know how big the image will be in its entirety
-        double minX = java.lang.Double.MAX_VALUE;
-        double maxX = 0;
-        double minY = java.lang.Double.MAX_VALUE;
-        double maxY = 0;
+        double theMinX = java.lang.Double.MAX_VALUE;
+        double theMaxX = 0;
+        double theMinY = java.lang.Double.MAX_VALUE;
+        double theMaxY = 0;
 
         for (Pool pool : bpmnModel.getPools()) {
             GraphicInfo graphicInfo = bpmnModel.getGraphicInfo(pool.getId());
-            minX = graphicInfo.getX();
-            maxX = graphicInfo.getX() + graphicInfo.getWidth();
-            minY = graphicInfo.getY();
-            maxY = graphicInfo.getY() + graphicInfo.getHeight();
+            theMinX = graphicInfo.getX();
+            theMaxX = graphicInfo.getX() + graphicInfo.getWidth();
+            theMinY = graphicInfo.getY();
+            theMaxY = graphicInfo.getY() + graphicInfo.getHeight();
         }
 
         List<FlowNode> flowNodes = gatherAllFlowNodes(bpmnModel);
@@ -317,23 +316,23 @@ public class CustomProcessDiagramGenerator {
                     .getId());
 
             // width
-            if ((flowNodeGraphicInfo.getX() + flowNodeGraphicInfo.getWidth()) > maxX) {
-                maxX = flowNodeGraphicInfo.getX()
+            if ((flowNodeGraphicInfo.getX() + flowNodeGraphicInfo.getWidth()) > theMaxX) {
+                theMaxX = flowNodeGraphicInfo.getX()
                         + flowNodeGraphicInfo.getWidth();
             }
 
-            if (flowNodeGraphicInfo.getX() < minX) {
-                minX = flowNodeGraphicInfo.getX();
+            if (flowNodeGraphicInfo.getX() < theMinX) {
+                theMinX = flowNodeGraphicInfo.getX();
             }
 
             // height
-            if ((flowNodeGraphicInfo.getY() + flowNodeGraphicInfo.getHeight()) > maxY) {
-                maxY = flowNodeGraphicInfo.getY()
+            if ((flowNodeGraphicInfo.getY() + flowNodeGraphicInfo.getHeight()) > theMaxY) {
+                theMaxY = flowNodeGraphicInfo.getY()
                         + flowNodeGraphicInfo.getHeight();
             }
 
-            if (flowNodeGraphicInfo.getY() < minY) {
-                minY = flowNodeGraphicInfo.getY();
+            if (flowNodeGraphicInfo.getY() < theMinY) {
+                theMinY = flowNodeGraphicInfo.getY();
             }
 
             for (SequenceFlow sequenceFlow : flowNode.getOutgoingFlows()) {
@@ -342,21 +341,21 @@ public class CustomProcessDiagramGenerator {
 
                 for (GraphicInfo graphicInfo : graphicInfoList) {
                     // width
-                    if (graphicInfo.getX() > maxX) {
-                        maxX = graphicInfo.getX();
+                    if (graphicInfo.getX() > theMaxX) {
+                        theMaxX = graphicInfo.getX();
                     }
 
-                    if (graphicInfo.getX() < minX) {
-                        minX = graphicInfo.getX();
+                    if (graphicInfo.getX() < theMinX) {
+                        theMinX = graphicInfo.getX();
                     }
 
                     // height
-                    if (graphicInfo.getY() > maxY) {
-                        maxY = graphicInfo.getY();
+                    if (graphicInfo.getY() > theMaxY) {
+                        theMaxY = graphicInfo.getY();
                     }
 
-                    if (graphicInfo.getY() < minY) {
-                        minY = graphicInfo.getY();
+                    if (graphicInfo.getY() < theMinY) {
+                        theMinY = graphicInfo.getY();
                     }
                 }
             }
@@ -371,24 +370,24 @@ public class CustomProcessDiagramGenerator {
             if (artifactGraphicInfo != null) {
                 // width
                 if ((artifactGraphicInfo.getX() + artifactGraphicInfo
-                        .getWidth()) > maxX) {
-                    maxX = artifactGraphicInfo.getX()
+                        .getWidth()) > theMaxX) {
+                    theMaxX = artifactGraphicInfo.getX()
                             + artifactGraphicInfo.getWidth();
                 }
 
-                if (artifactGraphicInfo.getX() < minX) {
-                    minX = artifactGraphicInfo.getX();
+                if (artifactGraphicInfo.getX() < theMinX) {
+                    theMinX = artifactGraphicInfo.getX();
                 }
 
                 // height
                 if ((artifactGraphicInfo.getY() + artifactGraphicInfo
-                        .getHeight()) > maxY) {
-                    maxY = artifactGraphicInfo.getY()
+                        .getHeight()) > theMaxY) {
+                    theMaxY = artifactGraphicInfo.getY()
                             + artifactGraphicInfo.getHeight();
                 }
 
-                if (artifactGraphicInfo.getY() < minY) {
-                    minY = artifactGraphicInfo.getY();
+                if (artifactGraphicInfo.getY() < theMinY) {
+                    theMinY = artifactGraphicInfo.getY();
                 }
             }
 
@@ -398,21 +397,21 @@ public class CustomProcessDiagramGenerator {
             if (graphicInfoList != null) {
                 for (GraphicInfo graphicInfo : graphicInfoList) {
                     // width
-                    if (graphicInfo.getX() > maxX) {
-                        maxX = graphicInfo.getX();
+                    if (graphicInfo.getX() > theMaxX) {
+                        theMaxX = graphicInfo.getX();
                     }
 
-                    if (graphicInfo.getX() < minX) {
-                        minX = graphicInfo.getX();
+                    if (graphicInfo.getX() < theMinX) {
+                        theMinX = graphicInfo.getX();
                     }
 
                     // height
-                    if (graphicInfo.getY() > maxY) {
-                        maxY = graphicInfo.getY();
+                    if (graphicInfo.getY() > theMaxY) {
+                        theMaxY = graphicInfo.getY();
                     }
 
-                    if (graphicInfo.getY() < minY) {
-                        minY = graphicInfo.getY();
+                    if (graphicInfo.getY() < theMinY) {
+                        theMinY = graphicInfo.getY();
                     }
                 }
             }
@@ -427,21 +426,21 @@ public class CustomProcessDiagramGenerator {
                 GraphicInfo graphicInfo = bpmnModel.getGraphicInfo(l.getId());
 
                 // // width
-                if ((graphicInfo.getX() + graphicInfo.getWidth()) > maxX) {
-                    maxX = graphicInfo.getX() + graphicInfo.getWidth();
+                if ((graphicInfo.getX() + graphicInfo.getWidth()) > theMaxX) {
+                    theMaxX = graphicInfo.getX() + graphicInfo.getWidth();
                 }
 
-                if (graphicInfo.getX() < minX) {
-                    minX = graphicInfo.getX();
+                if (graphicInfo.getX() < theMinX) {
+                    theMinX = graphicInfo.getX();
                 }
 
                 // height
-                if ((graphicInfo.getY() + graphicInfo.getHeight()) > maxY) {
-                    maxY = graphicInfo.getY() + graphicInfo.getHeight();
+                if ((graphicInfo.getY() + graphicInfo.getHeight()) > theMaxY) {
+                    theMaxY = graphicInfo.getY() + graphicInfo.getHeight();
                 }
 
-                if (graphicInfo.getY() < minY) {
-                    minY = graphicInfo.getY();
+                if (graphicInfo.getY() < theMinY) {
+                    theMinY = graphicInfo.getY();
                 }
             }
         }
@@ -450,11 +449,11 @@ public class CustomProcessDiagramGenerator {
         if ((flowNodes.size() == 0) && (bpmnModel.getPools().size() == 0)
                 && (nrOfLanes == 0)) {
             // Nothing to show
-            minX = 0;
-            minY = 0;
+            theMinX = 0;
+            theMinY = 0;
         }
 
-        return new Point((int) minX, (int) minY);
+        return new Point((int) theMinX, (int) theMinY);
     }
 
     protected static List<Artifact> gatherAllArtifacts(BpmnModel bpmnModel) {

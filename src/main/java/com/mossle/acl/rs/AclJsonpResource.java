@@ -7,24 +7,17 @@ import java.util.Map;
 
 import javax.annotation.Resource;
 
-import javax.ws.rs.FormParam;
 import javax.ws.rs.GET;
-import javax.ws.rs.POST;
 import javax.ws.rs.Path;
 import javax.ws.rs.Produces;
 import javax.ws.rs.QueryParam;
-import javax.ws.rs.core.GenericEntity;
 import javax.ws.rs.core.MediaType;
 
 import com.fasterxml.jackson.databind.util.JSONPObject;
 
 import com.mossle.acl.domain.AclEntry;
 import com.mossle.acl.domain.AclObjectIdentity;
-import com.mossle.acl.domain.AclObjectType;
-import com.mossle.acl.domain.AclSid;
 import com.mossle.acl.service.AclService;
-
-import com.mossle.api.UserDTO;
 
 import com.mossle.core.util.BaseDTO;
 

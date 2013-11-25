@@ -20,8 +20,6 @@ import javax.ws.rs.core.MediaType;
 
 import com.mossle.acl.domain.AclEntry;
 import com.mossle.acl.domain.AclObjectIdentity;
-import com.mossle.acl.domain.AclObjectType;
-import com.mossle.acl.domain.AclSid;
 import com.mossle.acl.service.AclService;
 
 import com.mossle.api.UserDTO;

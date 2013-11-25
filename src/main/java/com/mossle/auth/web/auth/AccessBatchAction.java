@@ -5,7 +5,6 @@ import java.util.HashSet;
 import java.util.List;
 import java.util.Set;
 
-import com.mossle.api.scope.ScopeConnector;
 import com.mossle.api.scope.ScopeHolder;
 
 import com.mossle.auth.domain.Access;
@@ -35,7 +34,6 @@ public class AccessBatchAction extends BaseAction implements
     private List<String> ids;
     private List<String> values;
     private List<String> perms;
-    private ScopeConnector scopeConnector;
 
     // ~ ======================================================================
     public String execute() {
@@ -162,9 +160,5 @@ public class AccessBatchAction extends BaseAction implements
 
     public void setPerms(List<String> perms) {
         this.perms = perms;
-    }
-
-    public void setScopeConnector(ScopeConnector scopeConnector) {
-        this.scopeConnector = scopeConnector;
     }
 }

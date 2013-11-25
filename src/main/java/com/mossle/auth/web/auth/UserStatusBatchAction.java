@@ -25,9 +25,6 @@ import org.apache.struts2.convention.annotation.Results;
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
 
-import org.springframework.context.MessageSource;
-import org.springframework.context.support.MessageSourceAccessor;
-
 @Results({ @Result(name = UserStatusBatchAction.RELOAD, location = "user-status.do?operationMode=RETRIEVE", type = "redirect") })
 public class UserStatusBatchAction extends BaseAction implements
         ModelDriven<UserStatus>, Preparable {
@@ -36,14 +33,13 @@ public class UserStatusBatchAction extends BaseAction implements
     public static final String RELOAD = "reload";
     private UserStatusManager userStatusManager;
     private RoleManager roleManager;
-    private MessageSourceAccessor messages;
+    private ScopeConnector scopeConnector;
     private String userText;
     private List<Long> userIds = new ArrayList<Long>();
     private List<Long> roleIds = new ArrayList<Long>();
     private List<UserStatus> userStatuses = new ArrayList<UserStatus>();
     private List<Role> roles;
     private UserStatusChecker userStatusChecker;
-    private ScopeConnector scopeConnector;
     private AuthService authService;
 
     public String execute() {
@@ -114,8 +110,12 @@ public class UserStatusBatchAction extends BaseAction implements
         this.userStatusChecker = userStatusChecker;
     }
 
-    public void setMessageSource(MessageSource messageSource) {
-        this.messages = new MessageSourceAccessor(messageSource);
+    public void setScopeConnector(ScopeConnector scopeConnector) {
+        this.scopeConnector = scopeConnector;
+    }
+
+    public void setAuthService(AuthService authService) {
+        this.authService = authService;
     }
 
     // ~ ======================================================================
@@ -149,13 +149,5 @@ public class UserStatusBatchAction extends BaseAction implements
 
     public List<Role> getRoles() {
         return roles;
-    }
-
-    public void setScopeConnector(ScopeConnector scopeConnector) {
-        this.scopeConnector = scopeConnector;
-    }
-
-    public void setAuthService(AuthService authService) {
-        this.authService = authService;
     }
 }

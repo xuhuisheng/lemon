@@ -10,7 +10,6 @@ import com.mossle.acl.manager.AclObjectIdentityManager;
 import com.mossle.acl.manager.AclObjectTypeManager;
 import com.mossle.acl.manager.AclSidManager;
 
-import com.mossle.api.scope.ScopeConnector;
 import com.mossle.api.scope.ScopeHolder;
 
 import com.mossle.core.export.Exportor;
@@ -52,7 +51,6 @@ public class AclObjectIdentityAction extends BaseAction implements
     private Long typeId;
     private Long parentId;
     private Long ownerId;
-    private ScopeConnector scopeConnector;
 
     public String execute() {
         return list();
@@ -203,9 +201,5 @@ public class AclObjectIdentityAction extends BaseAction implements
 
     public void setOwnerId(Long ownerId) {
         this.ownerId = ownerId;
-    }
-
-    public void setScopeConnector(ScopeConnector scopeConnector) {
-        this.scopeConnector = scopeConnector;
     }
 }

@@ -12,7 +12,6 @@ import com.mossle.auth.domain.UserStatus;
 import com.mossle.auth.manager.UserStatusManager;
 
 import com.mossle.security.impl.UserInfoImpl;
-import com.mossle.security.region.RegionDTO;
 import com.mossle.security.spi.UserStatusFetcher;
 import com.mossle.security.spi.UserStatusUpdater;
 import com.mossle.security.util.UserDetailsBuilder;

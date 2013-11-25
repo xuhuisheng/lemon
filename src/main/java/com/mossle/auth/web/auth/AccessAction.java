@@ -3,7 +3,6 @@ package com.mossle.auth.web.auth;
 import java.util.ArrayList;
 import java.util.List;
 
-import com.mossle.api.scope.ScopeConnector;
 import com.mossle.api.scope.ScopeHolder;
 
 import com.mossle.auth.domain.Access;
@@ -43,7 +42,6 @@ public class AccessAction extends BaseAction implements ModelDriven<Access>,
     private List<Perm> perms;
     private PermManager permManager;
     private Long permId;
-    private ScopeConnector scopeConnector;
 
     public String execute() {
         return list();
@@ -162,9 +160,5 @@ public class AccessAction extends BaseAction implements ModelDriven<Access>,
 
     public void setPermId(Long permId) {
         this.permId = permId;
-    }
-
-    public void setScopeConnector(ScopeConnector scopeConnector) {
-        this.scopeConnector = scopeConnector;
     }
 }

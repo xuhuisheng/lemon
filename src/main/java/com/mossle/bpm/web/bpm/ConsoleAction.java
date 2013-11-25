@@ -11,8 +11,10 @@ import javax.servlet.http.HttpServletResponse;
 import com.mossle.bpm.cmd.JumpCmd;
 import com.mossle.bpm.cmd.ListActivityCmd;
 import com.mossle.bpm.cmd.ProcessDefinitionDiagramCmd;
+import com.mossle.bpm.cmd.UpdateProcessCmd;
 
 import com.mossle.core.struts2.BaseAction;
+import com.mossle.core.util.IoUtils;
 
 import org.activiti.engine.HistoryService;
 import org.activiti.engine.ProcessEngine;
@@ -266,6 +268,27 @@ public class ConsoleAction extends BaseAction {
         commandExecutor.execute(cmd);
 
         return RELOAD_TASK;
+    }
+
+    public String beforeUpdateProcess() throws Exception {
+        ProcessDefinition processDefinition = processEngine
+                .getRepositoryService().getProcessDefinition(
+                        processDefinitionId);
+        InputStream is = processEngine.getRepositoryService()
+                .getResourceAsStream(processDefinition.getDeploymentId(),
+                        processDefinition.getResourceName());
+        xml = IoUtils.readString(is);
+
+        return "beforeUpdateProcess";
+    }
+
+    public String doUpdateProcess() throws Exception {
+        byte[] bytes = xml.getBytes("utf-8");
+        UpdateProcessCmd updateProcessCmd = new UpdateProcessCmd(
+                processDefinitionId, bytes);
+        processEngine.getManagementService().executeCommand(updateProcessCmd);
+
+        return RELOAD_PROCESS_DEFINITION;
     }
 
     // ~ ======================================================================

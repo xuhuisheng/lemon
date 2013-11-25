@@ -12,8 +12,6 @@ import com.mossle.auth.domain.Role;
 import com.mossle.auth.domain.UserStatus;
 import com.mossle.auth.support.UserStatusDTO;
 
-import com.mossle.security.region.RegionRoleDTO;
-
 import org.springframework.stereotype.Component;
 
 @Component

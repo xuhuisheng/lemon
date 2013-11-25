@@ -230,7 +230,12 @@ public class MailService {
      * set default to.
      */
     public void setDefaultTo(String[] defaultTo) {
-        this.defaultToArray = defaultTo;
+        if (defaultTo == null) {
+            this.defaultToArray = null;
+        } else {
+            System.arraycopy(defaultTo, 0, this.defaultToArray, 0,
+                    defaultTo.length);
+        }
     }
 
     /**
@@ -244,7 +249,12 @@ public class MailService {
      * set default cc.
      */
     public void setDefaultCc(String[] defaultCc) {
-        this.defaultCcArray = defaultCc;
+        if (defaultCc == null) {
+            this.defaultCcArray = null;
+        } else {
+            System.arraycopy(defaultCc, 0, this.defaultCcArray, 0,
+                    defaultCc.length);
+        }
     }
 
     /**
@@ -258,7 +268,12 @@ public class MailService {
      * set default bcc.
      */
     public void setDefaultBcc(String[] defaultBcc) {
-        this.defaultBccArray = defaultBcc;
+        if (defaultBcc == null) {
+            this.defaultBccArray = null;
+        } else {
+            System.arraycopy(defaultBcc, 0, this.defaultBccArray, 0,
+                    defaultBcc.length);
+        }
     }
 
     /**

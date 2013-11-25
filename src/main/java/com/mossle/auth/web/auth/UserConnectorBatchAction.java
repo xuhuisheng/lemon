@@ -2,7 +2,6 @@ package com.mossle.auth.web.auth;
 
 import java.util.ArrayList;
 import java.util.List;
-import java.util.Map;
 
 import com.mossle.api.UserConnector;
 import com.mossle.api.UserDTO;
@@ -18,16 +17,10 @@ import com.mossle.auth.manager.RoleManager;
 import com.mossle.auth.manager.UserStatusManager;
 import com.mossle.auth.service.AuthService;
 import com.mossle.auth.support.CheckUserStatusException;
-import com.mossle.auth.support.CheckUserStatusException;
 import com.mossle.auth.support.RoleDTO;
-import com.mossle.auth.support.UserStatusDTO;
 
-import com.mossle.core.hibernate.PropertyFilter;
-import com.mossle.core.page.Page;
 import com.mossle.core.struts2.BaseAction;
-import com.mossle.core.util.ServletUtils;
 
-import org.apache.struts2.ServletActionContext;
 import org.apache.struts2.convention.annotation.Result;
 import org.apache.struts2.convention.annotation.Results;
 
@@ -45,6 +38,7 @@ public class UserConnectorBatchAction extends BaseAction {
     private UserStatusManager userStatusManager;
     private MessageSourceAccessor messages;
     private UserStatusConverter userStatusConverter;
+    private ScopeConnector scopeConnector;
     private String userText;
     private List<Long> userIds = new ArrayList<Long>();
     private List<Long> roleIds = new ArrayList<Long>();
@@ -52,7 +46,6 @@ public class UserConnectorBatchAction extends BaseAction {
     private UserStatusChecker userStatusChecker;
     private UserConnector userConnector;
     private RoleManager roleManager;
-    private ScopeConnector scopeConnector;
     private List<Role> roles;
     private AuthService authService;
     private List<RoleDTO> roleDtos = new ArrayList<RoleDTO>();
@@ -172,6 +165,10 @@ public class UserConnectorBatchAction extends BaseAction {
         this.userConnector = userConnector;
     }
 
+    public void setScopeConnector(ScopeConnector scopeConnector) {
+        this.scopeConnector = scopeConnector;
+    }
+
     // ~ ======================================================================
     public String getUserText() {
         return userText;
@@ -203,10 +200,6 @@ public class UserConnectorBatchAction extends BaseAction {
 
     public List<Role> getRoles() {
         return roles;
-    }
-
-    public void setScopeConnector(ScopeConnector scopeConnector) {
-        this.scopeConnector = scopeConnector;
     }
 
     public void setAuthService(AuthService authService) {

@@ -2,9 +2,6 @@ package com.mossle.bridge.scope;
 
 import java.io.IOException;
 
-import java.util.HashSet;
-import java.util.Set;
-
 import javax.servlet.Filter;
 import javax.servlet.FilterChain;
 import javax.servlet.FilterConfig;
@@ -16,12 +13,7 @@ import javax.servlet.http.HttpServletResponse;
 
 import com.mossle.api.scope.ScopeHolder;
 
-import org.slf4j.Logger;
-import org.slf4j.LoggerFactory;
-
 public class HeaderCodeScopeFilter implements Filter {
-    private static Logger logger = LoggerFactory
-            .getLogger(HeaderCodeScopeFilter.class);
     private String defaultScopeCode = "default";
     private ScopeCache scopeCache;
     private String scopeHeaderName = "x-scope-code";

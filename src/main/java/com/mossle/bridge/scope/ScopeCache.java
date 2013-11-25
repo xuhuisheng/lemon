@@ -6,8 +6,6 @@ import java.util.Map;
 
 import com.mossle.api.scope.ScopeInfo;
 
-import org.springframework.beans.factory.InitializingBean;
-
 import org.springframework.jdbc.core.JdbcTemplate;
 
 public class ScopeCache {

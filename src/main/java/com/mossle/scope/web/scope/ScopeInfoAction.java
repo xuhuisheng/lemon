@@ -61,9 +61,11 @@ public class ScopeInfoAction extends BaseAction implements
 
             String userRepoRef = scopeInfoDto.getUserRepoRef();
             UserRepoDTO userRepoDto = userRepoConnector.findById(userRepoRef);
-			if (userRepoDto != null) {
-	            scopeInfoDto.setUserRepoCode(userRepoDto.getCode());
-			}
+
+            if (userRepoDto != null) {
+                scopeInfoDto.setUserRepoCode(userRepoDto.getCode());
+            }
+
             scopeInfoDtos.add(scopeInfoDto);
         }
 

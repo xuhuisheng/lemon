@@ -7,13 +7,10 @@ import java.util.Map;
 
 import com.mossle.api.scope.ScopeConnector;
 import com.mossle.api.scope.ScopeHolder;
-import com.mossle.api.scope.ScopeInfo;
 
 import com.mossle.auth.component.UserStatusChecker;
 import com.mossle.auth.domain.Role;
-import com.mossle.auth.domain.UserStatus;
 import com.mossle.auth.manager.RoleManager;
-import com.mossle.auth.manager.UserStatusManager;
 import com.mossle.auth.service.AuthService;
 import com.mossle.auth.support.CheckUserStatusException;
 
@@ -33,13 +30,10 @@ public class UserRoleAction extends BaseAction {
     public static final String RELOAD = "reload";
     private static Logger logger = LoggerFactory
             .getLogger(UserRoleAction.class);
-    private UserStatusManager userStatusManager;
     private RoleManager roleManager;
     private MessageSourceAccessor messages;
     private long id;
     private List<Long> selectedItem = new ArrayList<Long>();
-    private UserStatusChecker userStatusChecker;
-    private ScopeConnector scopeConnector;
     private List<Role> roles;
     private AuthService authService;
     private Map<String, List<Role>> sharedRoleMap = new HashMap<String, List<Role>>();
@@ -71,16 +65,8 @@ public class UserRoleAction extends BaseAction {
     }
 
     // ~ ======================================================================
-    public void setUserStatusManager(UserStatusManager userStatusManager) {
-        this.userStatusManager = userStatusManager;
-    }
-
     public void setRoleManager(RoleManager roleManager) {
         this.roleManager = roleManager;
-    }
-
-    public void setUserStatusChecker(UserStatusChecker userStatusChecker) {
-        this.userStatusChecker = userStatusChecker;
     }
 
     public void setMessageSource(MessageSource messageSource) {
@@ -119,10 +105,6 @@ public class UserRoleAction extends BaseAction {
 
     public void setSelectedItem(List<Long> selectedItem) {
         this.selectedItem = selectedItem;
-    }
-
-    public void setScopeConnector(ScopeConnector scopeConnector) {
-        this.scopeConnector = scopeConnector;
     }
 
     public List<Role> getRoles() {

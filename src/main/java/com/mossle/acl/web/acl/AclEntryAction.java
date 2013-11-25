@@ -10,7 +10,6 @@ import com.mossle.acl.manager.AclEntryManager;
 import com.mossle.acl.manager.AclObjectIdentityManager;
 import com.mossle.acl.manager.AclSidManager;
 
-import com.mossle.api.scope.ScopeConnector;
 import com.mossle.api.scope.ScopeHolder;
 
 import com.mossle.core.export.Exportor;
@@ -50,7 +49,6 @@ public class AclEntryAction extends BaseAction implements
     private List<AclSid> aclSids;
     private Long identityId;
     private Long sidId;
-    private ScopeConnector scopeConnector;
 
     public String execute() {
         return list();
@@ -181,9 +179,5 @@ public class AclEntryAction extends BaseAction implements
 
     public void setSidId(Long sidId) {
         this.sidId = sidId;
-    }
-
-    public void setScopeConnector(ScopeConnector scopeConnector) {
-        this.scopeConnector = scopeConnector;
     }
 }

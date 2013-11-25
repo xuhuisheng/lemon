@@ -6,7 +6,6 @@ import java.util.List;
 import com.mossle.acl.domain.AclSid;
 import com.mossle.acl.manager.AclSidManager;
 
-import com.mossle.api.scope.ScopeConnector;
 import com.mossle.api.scope.ScopeHolder;
 
 import com.mossle.core.export.Exportor;
@@ -38,7 +37,6 @@ public class AclSidAction extends BaseAction implements ModelDriven<AclSid>,
     private List<Long> selectedItem = new ArrayList<Long>();
     private Exportor exportor = new Exportor();
     private BeanMapper beanMapper = new BeanMapper();
-    private ScopeConnector scopeConnector;
 
     public String execute() {
         return list();
@@ -137,9 +135,5 @@ public class AclSidAction extends BaseAction implements ModelDriven<AclSid>,
 
     public void setSelectedItem(List<Long> selectedItem) {
         this.selectedItem = selectedItem;
-    }
-
-    public void setScopeConnector(ScopeConnector scopeConnector) {
-        this.scopeConnector = scopeConnector;
     }
 }

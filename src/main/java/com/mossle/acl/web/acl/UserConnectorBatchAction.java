@@ -2,31 +2,21 @@ package com.mossle.acl.web.acl;
 
 import java.util.ArrayList;
 import java.util.List;
-import java.util.Map;
 
 import com.mossle.acl.domain.AclObjectIdentity;
 import com.mossle.acl.service.AclService;
 
 import com.mossle.api.UserConnector;
 import com.mossle.api.UserDTO;
-import com.mossle.api.scope.ScopeConnector;
 import com.mossle.api.scope.ScopeHolder;
-import com.mossle.api.scope.ScopeInfo;
 
-import com.mossle.core.hibernate.PropertyFilter;
-import com.mossle.core.page.Page;
 import com.mossle.core.struts2.BaseAction;
-import com.mossle.core.util.ServletUtils;
 
-import org.apache.struts2.ServletActionContext;
 import org.apache.struts2.convention.annotation.Result;
 import org.apache.struts2.convention.annotation.Results;
 
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
-
-import org.springframework.context.MessageSource;
-import org.springframework.context.support.MessageSourceAccessor;
 
 @Results({ @Result(name = UserConnectorBatchAction.RELOAD, location = "acl-entry.do?operationMode=RETRIEVE", type = "redirect") })
 public class UserConnectorBatchAction extends BaseAction {
@@ -36,7 +26,6 @@ public class UserConnectorBatchAction extends BaseAction {
     private String userText;
     private List<Long> userIds = new ArrayList<Long>();
     private UserConnector userConnector;
-    private ScopeConnector scopeConnector;
     private AclService aclService;
     private String resourceType;
     private Long resourceId;
@@ -109,10 +98,6 @@ public class UserConnectorBatchAction extends BaseAction {
 
     public void setUserIds(List<Long> userIds) {
         this.userIds = userIds;
-    }
-
-    public void setScopeConnector(ScopeConnector scopeConnector) {
-        this.scopeConnector = scopeConnector;
     }
 
     public void setResourceType(String resourceType) {

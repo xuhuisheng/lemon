@@ -3,7 +3,6 @@ package com.mossle.auth.web.auth;
 import java.util.ArrayList;
 import java.util.List;
 
-import com.mossle.api.scope.ScopeConnector;
 import com.mossle.api.scope.ScopeHolder;
 
 import com.mossle.auth.domain.Resc;
@@ -38,7 +37,6 @@ public class RescAction extends BaseAction implements ModelDriven<Resc>,
     private List<Long> selectedItem = new ArrayList<Long>();
     private Exportor exportor = new Exportor();
     private BeanMapper beanMapper = new BeanMapper();
-    private ScopeConnector scopeConnector;
 
     public String execute() {
         return list();
@@ -135,9 +133,5 @@ public class RescAction extends BaseAction implements ModelDriven<Resc>,
 
     public void setSelectedItem(List<Long> selectedItem) {
         this.selectedItem = selectedItem;
-    }
-
-    public void setScopeConnector(ScopeConnector scopeConnector) {
-        this.scopeConnector = scopeConnector;
     }
 }

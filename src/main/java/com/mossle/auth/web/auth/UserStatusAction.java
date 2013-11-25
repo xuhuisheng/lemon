@@ -3,7 +3,6 @@ package com.mossle.auth.web.auth;
 import java.util.ArrayList;
 import java.util.List;
 
-import com.mossle.api.scope.ScopeConnector;
 import com.mossle.api.scope.ScopeHolder;
 
 import com.mossle.auth.component.UserStatusChecker;
@@ -53,7 +52,6 @@ public class UserStatusAction extends BaseAction implements
     private UserStatusChecker userStatusChecker;
     private SimplePasswordEncoder simplePasswordEncoder;
     private String newPassword;
-    private ScopeConnector scopeConnector;
 
     public String execute() {
         return list();
@@ -254,9 +252,5 @@ public class UserStatusAction extends BaseAction implements
 
     public void setConfirmPassword(String confirmPassword) {
         this.confirmPassword = confirmPassword;
-    }
-
-    public void setScopeConnector(ScopeConnector scopeConnector) {
-        this.scopeConnector = scopeConnector;
     }
 }
