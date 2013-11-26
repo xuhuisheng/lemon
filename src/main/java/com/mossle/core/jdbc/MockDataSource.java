@@ -5,6 +5,8 @@ import java.io.PrintWriter;
 import java.sql.Connection;
 import java.sql.SQLException;
 
+import java.util.logging.Logger;
+
 import javax.sql.DataSource;
 
 /**
@@ -91,6 +93,11 @@ public class MockDataSource implements DataSource {
 
     // JDK 6
     public <T> T unwrap(Class<T> iface) throws SQLException {
+        return null;
+    }
+
+    // jdk7
+    public Logger getParentLogger() {
         return null;
     }
 }

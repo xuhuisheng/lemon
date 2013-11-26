@@ -14,9 +14,9 @@ import org.springframework.mail.javamail.MimeMessageHelper;
 
 /**
  * 简单的邮件发送服务.
- *
+ * 
  * TODO: 支持附件
- *
+ * 
  * @author Lingo
  */
 public class MailService {
@@ -59,14 +59,14 @@ public class MailService {
     // ~ ======================================================================
     /**
      * 发送模式.
-     *
+     * 
      * 如果为0，表示正常发送 如果为1，表示把邮件都发给指定的测试邮箱
      */
     private int mode = MODE_NORMAL;
 
     /**
      * 测试模式下发送到的测试邮箱.
-     *
+     * 
      * demo.mossle@gmail.com;xyz20003@gmail.com也自动处理成了数组
      */
     private String testMail = "demo.mossle@gmail.com";
@@ -233,7 +233,7 @@ public class MailService {
         if (defaultTo == null) {
             this.defaultToArray = null;
         } else {
-			this.defaultToArray = new String[defaultTo.length];
+            this.defaultToArray = new String[defaultTo.length];
             System.arraycopy(defaultTo, 0, this.defaultToArray, 0,
                     defaultTo.length);
         }
@@ -253,7 +253,7 @@ public class MailService {
         if (defaultCc == null) {
             this.defaultCcArray = null;
         } else {
-			this.defaultCcArray = new String[defaultCc.length];
+            this.defaultCcArray = new String[defaultCc.length];
             System.arraycopy(defaultCc, 0, this.defaultCcArray, 0,
                     defaultCc.length);
         }
@@ -273,7 +273,7 @@ public class MailService {
         if (defaultBcc == null) {
             this.defaultBccArray = null;
         } else {
-			this.defaultBccArray = new String[defaultBcc.length];
+            this.defaultBccArray = new String[defaultBcc.length];
             System.arraycopy(defaultBcc, 0, this.defaultBccArray, 0,
                     defaultBcc.length);
         }
