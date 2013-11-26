@@ -79,14 +79,14 @@ $(function() {
     });
 
     $('.datepicker').datepicker({format:'yyyy-mm-dd'});
-
+/*
     $('.datetimepicker').datetimepicker({
         format: "yyyy-mm-dd hh:ii",
         autoclose: true,
         todayBtn: true,
         pickerPosition: "bottom-left"
     });
-
+*/
     $(".chzn-select").chosen({
         no_results_text: '’“≤ªµΩ',
         width: '220px'
