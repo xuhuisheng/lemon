@@ -6,7 +6,7 @@
 	if (request.getParameter("password") != null) {
 		ApplicationContext ctx = WebApplicationContextUtils.getWebApplicationContext(application);
 		SimplePasswordEncoder simplePasswordEncoder = (SimplePasswordEncoder) ctx.getBean("simplePasswordEncoder");
-		pageContext.setAttribute("encodedPassword", simplePasswordEncoder.encodePassword(request.getParameter("password")));
+		pageContext.setAttribute("encodedPassword", simplePasswordEncoder.encode(request.getParameter("password")));
 	}
 %>
 <html>

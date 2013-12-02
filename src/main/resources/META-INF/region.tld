@@ -146,7 +146,7 @@
         <description>
             Lack All Roles Tag
         </description>
-        <name>has-all-roles</name>
+        <name>lack-all-roles</name>
         <tag-class>com.mossle.security.tag.LackAllRolesTag</tag-class>
         <body-content>JSP</body-content>
 
