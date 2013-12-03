@@ -102,10 +102,11 @@ $(function() {
           <th width="10" style="text-indent:0px;text-align:center;"><input type="checkbox" name="checkAll" onchange="toggleSelectedItems(this.checked)"></th>
           <th class="sorting" name="id">编号</th>
           <th class="sorting" name="name">名称</th>
-          <th class="sorting" name="processDefinitionId">流程定义id</th>
+          <th class="sorting" name="processDefinitionKey">流程定义key</th>
+          <th class="sorting" name="processDefinitionVersion">流程定义version</th>
           <th class="sorting" name="bpmCategory.id">分类</th>
           <th class="sorting" name="priority">排序</th>
-          <th class="sorting" name="descn">描述</th>
+          <th class="sorting" name="useTaskConf">是否配置任务负责人</th>
           <th width="100">&nbsp;</th>
         </tr>
       </thead>
@@ -115,12 +116,12 @@ $(function() {
           <td><input type="checkbox" class="selectedItem a-check" name="selectedItem" value="${item.id}"></td>
           <td>${item.id}</td>
           <td>${item.name}</td>
-          <td>${item.processDefinitionId}</td>
+          <td>${item.processDefinitionKey}</td>
+          <td>${item.processDefinitionVersion}</td>
           <td>${item.bpmCategory.name}</td>
           <td>${item.priority}</td>
-          <td>${item.descn}</td>
+          <td>${item.useTaskConf == 1}</td>
           <td>
-            <a href="user-schema.do?bpmProcessId=${item.id}">配置属性</a>&nbsp;
 			<region:region-permission permission="bpmProcess:write">
             <a href="bpm-process!input.do?id=${item.id}" class="a-update"><spring:message code="core.list.edit" text="编辑"/></a>&nbsp;
 			</region:region-permission>

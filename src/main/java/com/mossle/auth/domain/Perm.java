@@ -30,10 +30,7 @@ public class Perm implements java.io.Serializable {
     private Long id;
 
     /** null. */
-    private Oper oper;
-
-    /** null. */
-    private Resc resc;
+    private PermType permType;
 
     /** null. */
     private String code;
@@ -53,14 +50,13 @@ public class Perm implements java.io.Serializable {
     public Perm() {
     }
 
-    public Perm(Resc resc) {
-        this.resc = resc;
+    public Perm(PermType permType) {
+        this.permType = permType;
     }
 
-    public Perm(Oper oper, Resc resc, String code, String name, String scopeId,
+    public Perm(PermType permType, String code, String name, String scopeId,
             Set<RoleDef> roleDefs, Set<Access> accesses) {
-        this.oper = oper;
-        this.resc = resc;
+        this.permType = permType;
         this.code = code;
         this.name = name;
         this.scopeId = scopeId;
@@ -86,32 +82,17 @@ public class Perm implements java.io.Serializable {
 
     /** @return null. */
     @ManyToOne(fetch = FetchType.LAZY)
-    @JoinColumn(name = "OPER_ID")
-    public Oper getOper() {
-        return this.oper;
+    @JoinColumn(name = "PERM_TYPE_ID", nullable = false)
+    public PermType getPermType() {
+        return this.permType;
     }
 
     /**
-     * @param oper
+     * @param permType
      *            null.
      */
-    public void setOper(Oper oper) {
-        this.oper = oper;
-    }
-
-    /** @return null. */
-    @ManyToOne(fetch = FetchType.LAZY)
-    @JoinColumn(name = "RESC_ID", nullable = false)
-    public Resc getResc() {
-        return this.resc;
-    }
-
-    /**
-     * @param resc
-     *            null.
-     */
-    public void setResc(Resc resc) {
-        this.resc = resc;
+    public void setPermType(PermType permType) {
+        this.permType = permType;
     }
 
     /** @return null. */

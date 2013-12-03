@@ -23,7 +23,8 @@ public class UserStatusConverter {
         UserStatusDTO userStatusDto = new UserStatusDTO();
         userStatusDto.setId(userStatus.getId());
         userStatusDto.setUsername(userStatus.getUsername());
-        userStatusDto.setEnabled(userStatus.getStatus() == 1);
+        userStatusDto.setEnabled(Integer.valueOf(1).equals(
+                userStatus.getStatus()));
         userStatusDto.setReference(userStatus.getReference());
 
         StringBuilder buff = new StringBuilder();

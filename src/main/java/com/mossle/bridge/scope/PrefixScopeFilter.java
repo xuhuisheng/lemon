@@ -14,6 +14,7 @@ import javax.servlet.ServletResponse;
 import javax.servlet.http.HttpServletRequest;
 import javax.servlet.http.HttpServletResponse;
 
+import com.mossle.api.scope.ScopeCache;
 import com.mossle.api.scope.ScopeHolder;
 
 import org.slf4j.Logger;
@@ -68,9 +69,19 @@ public class PrefixScopeFilter implements Filter {
             } else {
                 // 如果不在排除列表内，对scope进行处理，继续执行
                 String checkUri = uri.substring(scopeCode.length() + 1);
-                String realUri = ctx + checkUri;
-                this.doWithScope(scopeCode, realUri, request, response,
-                        filterChain);
+
+                // 如果访问的是http://localhost:8080/scopeCode或http://localhost:8080/scopeCode/
+                // 因为服务器自动的forward会忽略wrapper，所以会导致找不到index.jsp
+                // 这时手工跳转到dashboard/dashboard.jsp
+                if ("".equals(checkUri) || "/".equals(checkUri)) {
+                    this.jumpToDefaultPage(request, response, scopeCode);
+                } else {
+                    String realUri = ctx + checkUri;
+                    logger.debug("checkUri : {}, realUri : {}", checkUri,
+                            realUri);
+                    this.doWithScope(scopeCode, realUri, request, response,
+                            filterChain);
+                }
             }
         }
     }

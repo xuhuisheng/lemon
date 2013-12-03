@@ -5,13 +5,19 @@ import java.util.List;
 
 import javax.annotation.Resource;
 
+import com.mossle.api.scope.ScopeCache;
+
 import com.mossle.auth.domain.Role;
 import com.mossle.auth.domain.UserStatus;
 import com.mossle.auth.manager.RoleManager;
 import com.mossle.auth.manager.UserStatusManager;
+import com.mossle.auth.support.Exporter;
+import com.mossle.auth.support.Importer;
 
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
+
+import org.springframework.jdbc.core.JdbcTemplate;
 
 import org.springframework.stereotype.Service;
 
@@ -23,12 +29,14 @@ public class AuthService {
     private static Logger logger = LoggerFactory.getLogger(AuthService.class);
     private UserStatusManager userStatusManager;
     private RoleManager roleManager;
+    private JdbcTemplate jdbcTemplate;
+    private ScopeCache scopeCache;
 
     public UserStatus createOrGetUserStatus(String username, String reference,
             String userRepoRef, String scopeId) {
         UserStatus userStatus = userStatusManager.findUnique(
-                "from UserStatus where username=? and userRepoRef=?", username,
-                userRepoRef);
+                "from UserStatus where username=? and scopeId=?", username,
+                scopeId);
 
         if (userStatus == null) {
             userStatus = new UserStatus();
@@ -97,6 +105,20 @@ public class AuthService {
         userStatusManager.save(userStatus);
     }
 
+    public String doExport() {
+        Exporter exporter = new Exporter();
+        exporter.setJdbcTemplate(jdbcTemplate);
+
+        return exporter.execute();
+    }
+
+    public void doImport(String text) {
+        Importer importer = new Importer();
+        importer.setJdbcTemplate(jdbcTemplate);
+        importer.execute(text);
+        scopeCache.refresh();
+    }
+
     public List<Role> findRoles(String scopeId) {
         return roleManager.find("from Role where scopeId=?", scopeId);
     }
@@ -109,5 +131,15 @@ public class AuthService {
     @Resource
     public void setRoleManager(RoleManager roleManager) {
         this.roleManager = roleManager;
+    }
+
+    @Resource
+    public void setJdbcTemplate(JdbcTemplate jdbcTemplate) {
+        this.jdbcTemplate = jdbcTemplate;
+    }
+
+    @Resource
+    public void setScopeCache(ScopeCache scopeCache) {
+        this.scopeCache = scopeCache;
     }
 }

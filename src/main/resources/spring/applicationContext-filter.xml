@@ -196,7 +196,7 @@
 		<property name="scopeCache" ref="scopeCache"/>
 	</bean>
 
-	<bean id="scopeCache" class="com.mossle.bridge.scope.ScopeCache" init-method="refresh">
+	<bean id="scopeCache" class="com.mossle.bridge.scope.DatabaseScopeCache" init-method="refresh">
 		<property name="jdbcTemplate" ref="jdbcTemplate"/>
 	</bean>
 

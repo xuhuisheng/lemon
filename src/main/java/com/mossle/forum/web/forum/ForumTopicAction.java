@@ -5,8 +5,6 @@ import java.util.Date;
 import java.util.List;
 
 import com.mossle.api.UserConnector;
-import com.mossle.api.UserDTO;
-import com.mossle.api.scope.ScopeConnector;
 import com.mossle.api.scope.ScopeHolder;
 
 import com.mossle.core.export.Exportor;
@@ -47,7 +45,6 @@ public class ForumTopicAction extends BaseAction implements
     private Exportor exportor = new Exportor();
     private BeanMapper beanMapper = new BeanMapper();
     private UserConnector userConnector;
-    private ScopeConnector scopeConnector;
     private List<ForumTopic> forumTopics;
 
     public String execute() {
@@ -57,9 +54,7 @@ public class ForumTopicAction extends BaseAction implements
     public String list() {
         List<PropertyFilter> propertyFilters = PropertyFilter
                 .buildFromHttpRequest(ServletActionContext.getRequest());
-        String userId = userConnector.findByUsername(
-                SpringSecurityUtils.getCurrentUsername(),
-                ScopeHolder.getUserRepoRef()).getId();
+
         propertyFilters.add(new PropertyFilter("EQS_senderUsername",
                 SpringSecurityUtils.getCurrentUsername()));
         page = forumTopicManager.pagedQuery(page, propertyFilters);
@@ -70,9 +65,7 @@ public class ForumTopicAction extends BaseAction implements
     public String listReceived() {
         List<PropertyFilter> propertyFilters = PropertyFilter
                 .buildFromHttpRequest(ServletActionContext.getRequest());
-        String userId = userConnector.findByUsername(
-                SpringSecurityUtils.getCurrentUsername(),
-                ScopeHolder.getUserRepoRef()).getId();
+
         propertyFilters.add(new PropertyFilter("EQS_receiverUsername",
                 SpringSecurityUtils.getCurrentUsername()));
         page = forumTopicManager.pagedQuery(page, propertyFilters);
@@ -83,9 +76,7 @@ public class ForumTopicAction extends BaseAction implements
     public String listSent() {
         List<PropertyFilter> propertyFilters = PropertyFilter
                 .buildFromHttpRequest(ServletActionContext.getRequest());
-        String userId = userConnector.findByUsername(
-                SpringSecurityUtils.getCurrentUsername(),
-                ScopeHolder.getUserRepoRef()).getId();
+
         propertyFilters.add(new PropertyFilter("EQS_receiverUsername",
                 SpringSecurityUtils.getCurrentUsername()));
         page = forumTopicManager.pagedQuery(page, propertyFilters);
@@ -121,8 +112,7 @@ public class ForumTopicAction extends BaseAction implements
     }
 
     public String removeAll() {
-        List<ForumTopic> forumTopics = forumTopicManager
-                .findByIds(selectedItem);
+        forumTopics = forumTopicManager.findByIds(selectedItem);
 
         forumTopicManager.removeAll(forumTopics);
         addActionMessage(messages.getMessage("core.success.delete", "删除成功"));
@@ -143,7 +133,7 @@ public class ForumTopicAction extends BaseAction implements
                 .buildFromHttpRequest(ServletActionContext.getRequest());
         page = forumTopicManager.pagedQuery(page, propertyFilters);
 
-        List<ForumTopic> forumTopics = (List<ForumTopic>) page.getResult();
+        forumTopics = (List<ForumTopic>) page.getResult();
 
         TableModel tableModel = new TableModel();
         tableModel.setName("msg info");
@@ -208,10 +198,6 @@ public class ForumTopicAction extends BaseAction implements
 
     public void setUserConnector(UserConnector userConnector) {
         this.userConnector = userConnector;
-    }
-
-    public void setScopeConnector(ScopeConnector scopeConnector) {
-        this.scopeConnector = scopeConnector;
     }
 
     public List<ForumTopic> getForumTopics() {

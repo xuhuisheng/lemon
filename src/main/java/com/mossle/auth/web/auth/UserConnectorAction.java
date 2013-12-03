@@ -50,10 +50,9 @@ public class UserConnectorAction extends BaseAction {
         // 缩小显示范围，把所有用户都显示出来也没什么用途
         if (parameters.isEmpty()) {
             // 如果没有查询条件，就只返回配置了权限的用户
-            String hql = "select distinct u from UserStatus u join u.roles r where u.userRepoRef=? and r.scopeId=?";
+            String hql = "from UserStatus where scopeId=?";
             page = userStatusManager.pagedQuery(hql, page.getPageNo(),
-                    page.getPageSize(), ScopeHolder.getUserRepoRef(),
-                    ScopeHolder.getScopeId());
+                    page.getPageSize(), ScopeHolder.getScopeId());
 
             List<UserStatus> userStatuses = (List<UserStatus>) page.getResult();
             List<UserStatusDTO> userStatusDtos = new ArrayList<UserStatusDTO>();
@@ -67,7 +66,6 @@ public class UserConnectorAction extends BaseAction {
             page.setResult(userStatusDtos);
         } else {
             // 如果设置了查询条件，就根据条件查询
-            parameters.put("EQS_USER_REPO_REF", ScopeHolder.getUserRepoRef());
             page = userConnector.pagedQuery(page, parameters);
 
             List<UserDTO> userDtos = (List<UserDTO>) page.getResult();

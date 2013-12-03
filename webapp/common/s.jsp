@@ -41,6 +41,8 @@
     <!-- datepicker -->
     <link type="text/css" rel="stylesheet" href="${ctx}/s/bootstrap-datepicker/datepicker.css">
     <script type="text/javascript" src="${ctx}/s/bootstrap-datepicker/bootstrap-datepicker.js"></script>
+    <link href="${ctx}/s/bootstrap-datetimepicker/css/datetimepicker.css" rel="stylesheet">
+    <script type="text/javascript" src="${ctx}/s/bootstrap-datetimepicker/js/bootstrap-datetimepicker.js"></script>
 
 	<!-- tree -->
     <link rel="stylesheet" href="${ctx}/s/ztree/zTreeStyle/zTreeStyle.css" type="text/css" />
@@ -79,14 +81,14 @@ $(function() {
     });
 
     $('.datepicker').datepicker({format:'yyyy-mm-dd'});
-/*
+
     $('.datetimepicker').datetimepicker({
         format: "yyyy-mm-dd hh:ii",
         autoclose: true,
         todayBtn: true,
         pickerPosition: "bottom-left"
     });
-*/
+
     $(".chzn-select").chosen({
         no_results_text: '’“≤ªµΩ',
         width: '220px'

@@ -17,7 +17,6 @@ public class DashboardAction {
     private ProcessEngine processEngine;
     private CmsArticleManager cmsArticleManager;
     private List<Task> personalTasks;
-    private List<Task> groupTasks;
     private List<HistoricProcessInstance> historicProcessInstances;
     private List<ProcessDefinition> processDefinitions;
     private List<CmsArticle> cmsArticles;
@@ -26,8 +25,6 @@ public class DashboardAction {
         String currentUsername = SpringSecurityUtils.getCurrentUsername();
         personalTasks = processEngine.getTaskService().createTaskQuery()
                 .taskAssignee(currentUsername).list();
-        // groupTasks = processEngine.getTaskService().createTaskQuery()
-        // .taskCandidateUser(currentUsername).list();
         historicProcessInstances = processEngine.getHistoryService()
                 .createHistoricProcessInstanceQuery()
                 .startedBy(currentUsername).list();
@@ -48,10 +45,6 @@ public class DashboardAction {
 
     public List<Task> getPersonalTasks() {
         return personalTasks;
-    }
-
-    public List<Task> getGroupTasks() {
-        return groupTasks;
     }
 
     public List<HistoricProcessInstance> getHistoricProcessInstances() {

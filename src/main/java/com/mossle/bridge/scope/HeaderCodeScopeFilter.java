@@ -11,6 +11,7 @@ import javax.servlet.ServletResponse;
 import javax.servlet.http.HttpServletRequest;
 import javax.servlet.http.HttpServletResponse;
 
+import com.mossle.api.scope.ScopeCache;
 import com.mossle.api.scope.ScopeHolder;
 
 public class HeaderCodeScopeFilter implements Filter {

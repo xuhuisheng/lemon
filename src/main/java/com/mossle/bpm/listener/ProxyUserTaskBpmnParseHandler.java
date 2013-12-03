@@ -1,4 +1,4 @@
-package com.mossle.bpm.handler;
+package com.mossle.bpm.listener;
 
 import java.util.Collection;
 import java.util.Collections;
@@ -18,14 +18,16 @@ import org.activiti.engine.parse.BpmnParseHandler;
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
 
-public class AutoCompleteFirstTaskBpmnParseHandler implements BpmnParseHandler {
+public class ProxyUserTaskBpmnParseHandler implements BpmnParseHandler {
     private static Logger logger = LoggerFactory
-            .getLogger(AutoCompleteFirstTaskBpmnParseHandler.class);
+            .getLogger(ProxyUserTaskBpmnParseHandler.class);
 
     public void parse(BpmnParse bpmnParse, BaseElement baseElement) {
         if (!(baseElement instanceof UserTask)) {
             return;
         }
+
+        new UserTaskParseHandler().parse(bpmnParse, baseElement);
 
         UserTask userTask = (UserTask) baseElement;
         logger.info("bpmnParse : {}, userTask : {}", bpmnParse, userTask);
@@ -34,14 +36,25 @@ public class AutoCompleteFirstTaskBpmnParseHandler implements BpmnParseHandler {
                 .getCurrentActivity().getProperty(
                         UserTaskParseHandler.PROPERTY_TASK_DEFINITION);
 
+        this.configEvent(taskDefinition, bpmnParse,
+                TaskListener.EVENTNAME_CREATE);
+        this.configEvent(taskDefinition, bpmnParse,
+                TaskListener.EVENTNAME_ASSIGNMENT);
+        this.configEvent(taskDefinition, bpmnParse,
+                TaskListener.EVENTNAME_COMPLETE);
+        this.configEvent(taskDefinition, bpmnParse,
+                TaskListener.EVENTNAME_DELETE);
+    }
+
+    public void configEvent(TaskDefinition taskDefinition, BpmnParse bpmnParse,
+            String eventName) {
         ActivitiListener activitiListener = new ActivitiListener();
-        activitiListener.setEvent(TaskListener.EVENTNAME_ASSIGNMENT);
+        activitiListener.setEvent(eventName);
         activitiListener
                 .setImplementationType(ImplementationType.IMPLEMENTATION_TYPE_DELEGATEEXPRESSION);
-        activitiListener.setImplementation("#{autoCompleteFirstTaskListener}");
+        activitiListener.setImplementation("#{proxyTaskListener}");
         taskDefinition
-                .addTaskListener(TaskListener.EVENTNAME_CREATE, bpmnParse
-                        .getListenerFactory()
+                .addTaskListener(eventName, bpmnParse.getListenerFactory()
                         .createDelegateExpressionTaskListener(activitiListener));
     }
 

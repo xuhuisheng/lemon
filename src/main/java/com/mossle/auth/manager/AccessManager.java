@@ -4,7 +4,6 @@ import java.util.List;
 
 import com.mossle.auth.domain.Access;
 import com.mossle.auth.domain.Perm;
-import com.mossle.auth.domain.Resc;
 
 import com.mossle.core.hibernate.HibernateEntityDao;
 
@@ -63,33 +62,18 @@ public class AccessManager extends HibernateEntityDao<Access> {
         return access;
     }
 
-    public Perm createOrGetPerm(String name, String scopeId) {
-        Resc resc = createOrGetResc(name, scopeId);
-        Perm perm = this.findUnique("from Perm where name=? and scope_id=?",
-                name, scopeId);
+    public Perm createOrGetPerm(String code, String scopeId) {
+        Perm perm = this.findUnique("from Perm where code=? and scope_id=?",
+                code, scopeId);
 
         if (perm == null) {
             perm = new Perm();
-            perm.setName(name);
-            perm.setResc(resc);
+            perm.setCode(code);
+            perm.setName(code);
             perm.setScopeId(scopeId);
             this.save(perm);
         }
 
         return perm;
-    }
-
-    public Resc createOrGetResc(String name, String scopeId) {
-        Resc resc = this.findUnique("from Resc where name=? and scope_id=?",
-                name, scopeId);
-
-        if (resc == null) {
-            resc = new Resc();
-            resc.setName(name);
-            resc.setScopeId(scopeId);
-            this.save(resc);
-        }
-
-        return resc;
     }
 }

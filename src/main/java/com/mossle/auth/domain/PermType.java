@@ -13,13 +13,13 @@ import javax.persistence.OneToMany;
 import javax.persistence.Table;
 
 /**
- * Oper .
+ * PermType .
  * 
  * @author Lingo
  */
 @Entity
-@Table(name = "AUTH_OPER")
-public class Oper implements java.io.Serializable {
+@Table(name = "AUTH_PERM_TYPE")
+public class PermType implements java.io.Serializable {
     private static final long serialVersionUID = 0L;
 
     /** null. */
@@ -29,10 +29,10 @@ public class Oper implements java.io.Serializable {
     private String name;
 
     /** null. */
-    private Integer mask;
+    private Integer type;
 
     /** null. */
-    private Character code;
+    private Integer priority;
 
     /** null. */
     private String descn;
@@ -43,14 +43,14 @@ public class Oper implements java.io.Serializable {
     /** . */
     private Set<Perm> perms = new HashSet<Perm>(0);
 
-    public Oper() {
+    public PermType() {
     }
 
-    public Oper(String name, Integer mask, Character code, String descn,
+    public PermType(String name, Integer type, Integer priority, String descn,
             String scopeId, Set<Perm> perms) {
         this.name = name;
-        this.mask = mask;
-        this.code = code;
+        this.type = type;
+        this.priority = priority;
         this.descn = descn;
         this.scopeId = scopeId;
         this.perms = perms;
@@ -87,31 +87,31 @@ public class Oper implements java.io.Serializable {
     }
 
     /** @return null. */
-    @Column(name = "MASK")
-    public Integer getMask() {
-        return this.mask;
+    @Column(name = "TYPE")
+    public Integer getType() {
+        return this.type;
     }
 
     /**
-     * @param mask
+     * @param type
      *            null.
      */
-    public void setMask(Integer mask) {
-        this.mask = mask;
+    public void setType(Integer type) {
+        this.type = type;
     }
 
     /** @return null. */
-    @Column(name = "CODE", length = 1)
-    public Character getCode() {
-        return this.code;
+    @Column(name = "PRIORITY")
+    public Integer getPriority() {
+        return this.priority;
     }
 
     /**
-     * @param code
+     * @param priority
      *            null.
      */
-    public void setCode(Character code) {
-        this.code = code;
+    public void setPriority(Integer priority) {
+        this.priority = priority;
     }
 
     /** @return null. */
@@ -143,7 +143,7 @@ public class Oper implements java.io.Serializable {
     }
 
     /** @return . */
-    @OneToMany(fetch = FetchType.LAZY, mappedBy = "oper")
+    @OneToMany(fetch = FetchType.LAZY, mappedBy = "permType")
     public Set<Perm> getPerms() {
         return this.perms;
     }

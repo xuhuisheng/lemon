@@ -4,9 +4,6 @@ import java.util.ArrayList;
 import java.util.List;
 
 import com.mossle.api.UserConnector;
-import com.mossle.api.UserDTO;
-import com.mossle.api.scope.ScopeConnector;
-import com.mossle.api.scope.ScopeHolder;
 
 import com.mossle.car.domain.CarInfo;
 import com.mossle.car.manager.CarInfoManager;
@@ -43,7 +40,6 @@ public class CarInfoAction extends BaseAction implements ModelDriven<CarInfo>,
     private Exportor exportor = new Exportor();
     private BeanMapper beanMapper = new BeanMapper();
     private UserConnector userConnector;
-    private ScopeConnector scopeConnector;
 
     public String execute() {
         return list();
@@ -140,9 +136,5 @@ public class CarInfoAction extends BaseAction implements ModelDriven<CarInfo>,
 
     public void setUserConnector(UserConnector userConnector) {
         this.userConnector = userConnector;
-    }
-
-    public void setScopeConnector(ScopeConnector scopeConnector) {
-        this.scopeConnector = scopeConnector;
     }
 }

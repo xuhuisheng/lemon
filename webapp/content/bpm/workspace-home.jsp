@@ -30,13 +30,8 @@
           <h4>${bpmProcess.name}</h4>
           <p>${bpmProcess.descn}</p>
           <div class="btn-group">
-		    <s:if test="#bpmProcess.startStrategy=='id'">
-            <a class="btn btn-small" href="${scopePrefix}/form/form!viewStartForm.do?processDefinitionId=${bpmProcess.processDefinitionId}"><li class="icon-play"></li>发起</a>
-			</s:if>
-		    <s:if test="#bpmProcess.startStrategy=='key'">
-            <a class="btn btn-small" href="${scopePrefix}/form/form!viewStartForm.do?processDefinitionKey=${bpmProcess.processDefinitionKey}"><li class="icon-play"></li>发起</a>
-			</s:if>
-            <a class="btn btn-small" href="console!graphProcessDefinition.do?processDefinitionId=${bpmProcess.processDefinitionId}"><li class="icon-picture"></li>图形</a>
+            <a class="btn btn-small" href="${scopePrefix}/form/form!viewStartForm.do?processDefinitionKey=${bpmProcess.processDefinitionKey}&processDefinitionVersion=${bpmProcess.processDefinitionVersion}"><li class="icon-play"></li>发起</a>
+            <a class="btn btn-small" href="workspace!graphProcessDefinition.do?processDefinitionKey=${bpmProcess.processDefinitionKey}&processDefinitionVersion=${bpmProcess.processDefinitionVersion}" target="_blank"><li class="icon-picture"></li>图形</a>
           </div>
         </div>
       </s:iterator>

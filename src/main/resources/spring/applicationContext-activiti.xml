@@ -11,11 +11,11 @@
 		<property name="jobExecutorActivate" value="false" />
 		<!-- mail server configurations -->
 		<property name="mailServerPort" value="5025" />
-		<property name="history" value="full" />
+		<property name="history" value="audit" />
 
  		<property name="customDefaultBpmnParseHandlers">
     	 	<list>
-				<bean class="com.mossle.bpm.handler.ProxyUserTaskBpmnParseHandler"/>
+				<bean class="com.mossle.bpm.listener.ProxyUserTaskBpmnParseHandler"/>
     	 	</list>
 		</property>
 
@@ -94,12 +94,13 @@
 	</bean>
 
 	<!-- 全局任务监听器 -->
-	<bean id="proxyTaskListener" class="com.mossle.bpm.handler.ProxyTaskListener">
+	<bean id="proxyTaskListener" class="com.mossle.bpm.listener.ProxyTaskListener">
 		<property name="taskListeners">
 			<list>
 				<bean class="com.mossle.bpm.delegate.DelegateTaskListener"/>
-				<bean class="com.mossle.bpm.handler.AutoCompleteFirstTaskListener"/>
-				<bean class="com.mossle.bpm.handler.AssigneeAliasTaskListener"/>
+				<bean class="com.mossle.bpm.listener.AutoCompleteFirstTaskListener"/>
+				<bean class="com.mossle.bpm.listener.AssigneeAliasTaskListener"/>
+				<bean class="com.mossle.bpm.listener.TaskConfTaskListener"/>
 			</list>
 		</property>
 	</bean>

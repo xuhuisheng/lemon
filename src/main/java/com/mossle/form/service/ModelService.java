@@ -70,7 +70,7 @@ public class ModelService {
         return dynamicModel;
     }
 
-    private DynamicModel createOrGetDynamicModel(Long businessKey) {
+    public DynamicModel createOrGetDynamicModel(Long businessKey) {
         DynamicModel dynamicModel = null;
 
         if (businessKey == null) {
@@ -84,7 +84,7 @@ public class ModelService {
         return dynamicModel;
     }
 
-    private DynamicModelData createOrGetDynamicModelData(String name,
+    public DynamicModelData createOrGetDynamicModelData(String name,
             DynamicModel dynamicModel) {
         DynamicModelData dynamicModelData = dynamicModelDataManager.findUnique(
                 "from DynamicModelData where name=? and dynamicModel=?", name,

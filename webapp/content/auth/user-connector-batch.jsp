@@ -1,7 +1,7 @@
 <%@page contentType="text/html;charset=UTF-8"%>
 <%@include file="/taglibs.jsp"%>
 <%pageContext.setAttribute("currentHeader", "auth");%>
-<%pageContext.setAttribute("currentMenu", "auth-user");%>
+<%pageContext.setAttribute("currentMenu", "auth");%>
 <!doctype html>
 <html lang="zh_CN">
 
@@ -36,10 +36,10 @@ function doPrev() {
   </head>
 
   <body>
-    <%@include file="/header.jsp"%>
+    <%@include file="/header/auth.jsp"%>
 
     <div class="row-fluid">
-    <%@include file="/menu-auth.jsp"%>
+    <%@include file="/menu/auth.jsp"%>
 
     <!-- start of main -->
     <section id="m-main" class="span10">

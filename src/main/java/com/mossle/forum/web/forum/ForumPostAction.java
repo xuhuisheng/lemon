@@ -5,8 +5,6 @@ import java.util.Date;
 import java.util.List;
 
 import com.mossle.api.UserConnector;
-import com.mossle.api.UserDTO;
-import com.mossle.api.scope.ScopeConnector;
 import com.mossle.api.scope.ScopeHolder;
 
 import com.mossle.core.export.Exportor;
@@ -50,14 +48,9 @@ public class ForumPostAction extends BaseAction implements
     private Exportor exportor = new Exportor();
     private BeanMapper beanMapper = new BeanMapper();
     private UserConnector userConnector;
-    private ScopeConnector scopeConnector;
     private ForumTopic forumTopic;
     private Long forumTopicId;
     private List<ForumPost> forumPosts;
-
-    public void setForumTopicManager(ForumTopicManager forumTopicManager) {
-        this.forumTopicManager = forumTopicManager;
-    }
 
     public String execute() {
         return list();
@@ -66,9 +59,7 @@ public class ForumPostAction extends BaseAction implements
     public String list() {
         List<PropertyFilter> propertyFilters = PropertyFilter
                 .buildFromHttpRequest(ServletActionContext.getRequest());
-        String userId = userConnector.findByUsername(
-                SpringSecurityUtils.getCurrentUsername(),
-                ScopeHolder.getUserRepoRef()).getId();
+
         propertyFilters.add(new PropertyFilter("EQS_senderUsername",
                 SpringSecurityUtils.getCurrentUsername()));
         page = forumPostManager.pagedQuery(page, propertyFilters);
@@ -79,9 +70,7 @@ public class ForumPostAction extends BaseAction implements
     public String listReceived() {
         List<PropertyFilter> propertyFilters = PropertyFilter
                 .buildFromHttpRequest(ServletActionContext.getRequest());
-        String userId = userConnector.findByUsername(
-                SpringSecurityUtils.getCurrentUsername(),
-                ScopeHolder.getUserRepoRef()).getId();
+
         propertyFilters.add(new PropertyFilter("EQS_receiverUsername",
                 SpringSecurityUtils.getCurrentUsername()));
         page = forumPostManager.pagedQuery(page, propertyFilters);
@@ -92,9 +81,7 @@ public class ForumPostAction extends BaseAction implements
     public String listSent() {
         List<PropertyFilter> propertyFilters = PropertyFilter
                 .buildFromHttpRequest(ServletActionContext.getRequest());
-        String userId = userConnector.findByUsername(
-                SpringSecurityUtils.getCurrentUsername(),
-                ScopeHolder.getUserRepoRef()).getId();
+
         propertyFilters.add(new PropertyFilter("EQS_receiverUsername",
                 SpringSecurityUtils.getCurrentUsername()));
         page = forumPostManager.pagedQuery(page, propertyFilters);
@@ -211,6 +198,10 @@ public class ForumPostAction extends BaseAction implements
         this.messages = new MessageSourceAccessor(messageSource);
     }
 
+    public void setForumTopicManager(ForumTopicManager forumTopicManager) {
+        this.forumTopicManager = forumTopicManager;
+    }
+
     // ~ ======================================================================
     public void setId(int id) {
         this.id = id;
@@ -226,13 +217,5 @@ public class ForumPostAction extends BaseAction implements
 
     public void setUserConnector(UserConnector userConnector) {
         this.userConnector = userConnector;
-    }
-
-    public void setScopeConnector(ScopeConnector scopeConnector) {
-        this.scopeConnector = scopeConnector;
-    }
-
-    public List<ForumPost> getForumPosts() {
-        return forumPosts;
     }
 }

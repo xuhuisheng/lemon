@@ -6,23 +6,15 @@ import java.io.File;
 import java.util.ArrayList;
 import java.util.List;
 
-import com.mossle.api.UserConnector;
-import com.mossle.api.UserDTO;
-import com.mossle.api.scope.ScopeConnector;
-import com.mossle.api.scope.ScopeHolder;
-
 import com.mossle.core.export.Exportor;
 import com.mossle.core.export.TableModel;
 import com.mossle.core.hibernate.PropertyFilter;
 import com.mossle.core.mapper.BeanMapper;
 import com.mossle.core.page.Page;
 import com.mossle.core.struts2.BaseAction;
-import com.mossle.core.util.IoUtils;
 
 import com.mossle.meeting.domain.MeetingRoom;
 import com.mossle.meeting.manager.MeetingRoomManager;
-
-import com.mossle.security.util.SpringSecurityUtils;
 
 import com.opensymphony.xwork2.ModelDriven;
 import com.opensymphony.xwork2.Preparable;
@@ -46,13 +38,6 @@ public class MeetingRoomAction extends BaseAction implements
     private List<Long> selectedItem = new ArrayList<Long>();
     private Exportor exportor = new Exportor();
     private BeanMapper beanMapper = new BeanMapper();
-    private UserConnector userConnector;
-    private ScopeConnector scopeConnector;
-    private File attachment;
-
-    public void setAttachment(File attachment) {
-        this.attachment = attachment;
-    }
 
     public String execute() {
         return list();
@@ -146,13 +131,5 @@ public class MeetingRoomAction extends BaseAction implements
 
     public void setSelectedItem(List<Long> selectedItem) {
         this.selectedItem = selectedItem;
-    }
-
-    public void setUserConnector(UserConnector userConnector) {
-        this.userConnector = userConnector;
-    }
-
-    public void setScopeConnector(ScopeConnector scopeConnector) {
-        this.scopeConnector = scopeConnector;
     }
 }

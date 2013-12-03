@@ -5,8 +5,6 @@ import java.util.Date;
 import java.util.List;
 
 import com.mossle.api.UserConnector;
-import com.mossle.api.UserDTO;
-import com.mossle.api.scope.ScopeConnector;
 import com.mossle.api.scope.ScopeHolder;
 
 import com.mossle.cms.domain.CmsArticle;
@@ -44,7 +42,6 @@ public class CmsArticleAction extends BaseAction implements
     private Exportor exportor = new Exportor();
     private BeanMapper beanMapper = new BeanMapper();
     private UserConnector userConnector;
-    private ScopeConnector scopeConnector;
 
     public String execute() {
         return list();
@@ -153,9 +150,5 @@ public class CmsArticleAction extends BaseAction implements
 
     public void setUserConnector(UserConnector userConnector) {
         this.userConnector = userConnector;
-    }
-
-    public void setScopeConnector(ScopeConnector scopeConnector) {
-        this.scopeConnector = scopeConnector;
     }
 }

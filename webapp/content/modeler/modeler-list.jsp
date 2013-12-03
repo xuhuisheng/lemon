@@ -20,8 +20,11 @@
 	<!-- start of main -->
     <section id="m-main" class="span10" style="float:right">
 
-<a href="modeler!open.do" class="btn" target="_blank">新建模型</a>
-<br>
+	  <article style="margin-bottom:10px;">
+	    <a href="modeler!open.do" class="btn btn-small" target="_blank">新建模型</a>
+
+	    <div class="m-clear"></div>
+	  </article>
 
       <article class="m-widget">
         <header class="header">

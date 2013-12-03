@@ -34,8 +34,6 @@
 			return "GET";
 		} else if (method.isAnnotationPresent(DELETE.class)) {
 			return "DELETE";
-		} else if (method.isAnnotationPresent(PUT.class)) {
-			return "PUT";
 		} else {
 			System.out.println("UNKNOW : " + method);
 			return null;

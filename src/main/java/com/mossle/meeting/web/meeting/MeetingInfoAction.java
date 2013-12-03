@@ -51,17 +51,8 @@ public class MeetingInfoAction extends BaseAction implements
     private BeanMapper beanMapper = new BeanMapper();
     private UserConnector userConnector;
     private ScopeConnector scopeConnector;
-    private File attachment;
     private Long meetingRoomId;
     private List<MeetingRoom> meetingRooms;
-
-    public List<MeetingRoom> getMeetingRooms() {
-        return meetingRooms;
-    }
-
-    public void setAttachment(File attachment) {
-        this.attachment = attachment;
-    }
 
     public String execute() {
         return list();
@@ -164,19 +155,15 @@ public class MeetingInfoAction extends BaseAction implements
         this.selectedItem = selectedItem;
     }
 
-    public void setUserConnector(UserConnector userConnector) {
-        this.userConnector = userConnector;
-    }
-
-    public void setScopeConnector(ScopeConnector scopeConnector) {
-        this.scopeConnector = scopeConnector;
-    }
-
     public Long getMeetingRoomId() {
         return meetingRoomId;
     }
 
     public void setMeetingRoomId(Long meetingRoomId) {
         this.meetingRoomId = meetingRoomId;
+    }
+
+    public List<MeetingRoom> getMeetingRooms() {
+        return meetingRooms;
     }
 }

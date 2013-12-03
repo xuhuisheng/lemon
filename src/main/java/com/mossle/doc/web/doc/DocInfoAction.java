@@ -7,8 +7,6 @@ import java.util.ArrayList;
 import java.util.List;
 
 import com.mossle.api.UserConnector;
-import com.mossle.api.UserDTO;
-import com.mossle.api.scope.ScopeConnector;
 import com.mossle.api.scope.ScopeHolder;
 
 import com.mossle.core.export.Exportor;
@@ -47,7 +45,6 @@ public class DocInfoAction extends BaseAction implements ModelDriven<DocInfo>,
     private Exportor exportor = new Exportor();
     private BeanMapper beanMapper = new BeanMapper();
     private UserConnector userConnector;
-    private ScopeConnector scopeConnector;
     private File attachment;
 
     public void setAttachment(File attachment) {
@@ -172,9 +169,5 @@ public class DocInfoAction extends BaseAction implements ModelDriven<DocInfo>,
 
     public void setUserConnector(UserConnector userConnector) {
         this.userConnector = userConnector;
-    }
-
-    public void setScopeConnector(ScopeConnector scopeConnector) {
-        this.scopeConnector = scopeConnector;
     }
 }

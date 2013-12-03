@@ -5,12 +5,10 @@ import java.util.List;
 
 import com.mossle.api.scope.ScopeHolder;
 
-import com.mossle.auth.domain.Oper;
 import com.mossle.auth.domain.Perm;
-import com.mossle.auth.domain.Resc;
-import com.mossle.auth.manager.OperManager;
+import com.mossle.auth.domain.PermType;
 import com.mossle.auth.manager.PermManager;
-import com.mossle.auth.manager.RescManager;
+import com.mossle.auth.manager.PermTypeManager;
 
 import com.mossle.core.export.Exportor;
 import com.mossle.core.export.TableModel;
@@ -34,8 +32,7 @@ public class PermAction extends BaseAction implements ModelDriven<Perm>,
         Preparable {
     public static final String RELOAD = "reload";
     private PermManager permManager;
-    private RescManager rescManager;
-    private OperManager operManager;
+    private PermTypeManager permTypeManager;
     private MessageSourceAccessor messages;
     private Page page = new Page();
     private Perm model;
@@ -43,10 +40,8 @@ public class PermAction extends BaseAction implements ModelDriven<Perm>,
     private List<Long> selectedItem = new ArrayList<Long>();
     private Exportor exportor = new Exportor();
     private BeanMapper beanMapper = new BeanMapper();
-    private List<Resc> rescs;
-    private List<Oper> opers;
-    private long rescId;
-    private long operId;
+    private List<PermType> permTypes;
+    private Long permTypeId;
 
     public String execute() {
         return list();
@@ -76,22 +71,11 @@ public class PermAction extends BaseAction implements ModelDriven<Perm>,
             dest = model;
         }
 
-        Resc resc = rescManager.get(rescId);
-        dest.setResc(resc);
-
-        if (operId == 0L) {
-            dest.setOper(null);
-            dest.setName(dest.getResc().getName());
-        } else {
-            dest.setOper(operManager.get(operId));
-            dest.setName(dest.getResc().getName() + ":"
-                    + dest.getOper().getName());
-        }
-
         if (id == 0) {
             dest.setScopeId(ScopeHolder.getScopeId());
         }
 
+        dest.setPermType(permTypeManager.get(permTypeId));
         permManager.save(dest);
 
         addActionMessage(messages.getMessage("core.success.save", "保存成功"));
@@ -112,8 +96,7 @@ public class PermAction extends BaseAction implements ModelDriven<Perm>,
             model = permManager.get(id);
         }
 
-        rescs = rescManager.findBy("scopeId", ScopeHolder.getScopeId());
-        opers = operManager.findBy("scopeId", ScopeHolder.getScopeId());
+        permTypes = permTypeManager.findBy("scopeId", ScopeHolder.getScopeId());
 
         return INPUT;
     }
@@ -143,12 +126,8 @@ public class PermAction extends BaseAction implements ModelDriven<Perm>,
         this.permManager = permManager;
     }
 
-    public void setRescManager(RescManager rescManager) {
-        this.rescManager = rescManager;
-    }
-
-    public void setOperManager(OperManager operManager) {
-        this.operManager = operManager;
+    public void setPermTypeManager(PermTypeManager permTypeManager) {
+        this.permTypeManager = permTypeManager;
     }
 
     public void setMessageSource(MessageSource messageSource) {
@@ -168,19 +147,11 @@ public class PermAction extends BaseAction implements ModelDriven<Perm>,
         this.selectedItem = selectedItem;
     }
 
-    public List<Resc> getRescs() {
-        return rescs;
+    public List<PermType> getPermTypes() {
+        return permTypes;
     }
 
-    public List<Oper> getOpers() {
-        return opers;
-    }
-
-    public void setRescId(long rescId) {
-        this.rescId = rescId;
-    }
-
-    public void setOperId(long operId) {
-        this.operId = operId;
+    public void setPermTypeId(Long permTypeId) {
+        this.permTypeId = permTypeId;
     }
 }

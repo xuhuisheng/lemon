@@ -5,8 +5,6 @@ import java.util.Date;
 import java.util.List;
 
 import com.mossle.api.UserConnector;
-import com.mossle.api.UserDTO;
-import com.mossle.api.scope.ScopeConnector;
 import com.mossle.api.scope.ScopeHolder;
 
 import com.mossle.core.export.Exportor;
@@ -44,7 +42,6 @@ public class MsgInfoAction extends BaseAction implements ModelDriven<MsgInfo>,
     private Exportor exportor = new Exportor();
     private BeanMapper beanMapper = new BeanMapper();
     private UserConnector userConnector;
-    private ScopeConnector scopeConnector;
 
     public String execute() {
         return list();
@@ -54,9 +51,6 @@ public class MsgInfoAction extends BaseAction implements ModelDriven<MsgInfo>,
         List<PropertyFilter> propertyFilters = PropertyFilter
                 .buildFromHttpRequest(ServletActionContext.getRequest());
 
-        String userId = userConnector.findByUsername(
-                SpringSecurityUtils.getCurrentUsername(),
-                ScopeHolder.getUserRepoRef()).getId();
         propertyFilters.add(new PropertyFilter("EQS_senderUsername",
                 SpringSecurityUtils.getCurrentUsername()));
         page = msgInfoManager.pagedQuery(page, propertyFilters);
@@ -67,9 +61,6 @@ public class MsgInfoAction extends BaseAction implements ModelDriven<MsgInfo>,
     public String listReceived() {
         List<PropertyFilter> propertyFilters = PropertyFilter
                 .buildFromHttpRequest(ServletActionContext.getRequest());
-        String userId = userConnector.findByUsername(
-                SpringSecurityUtils.getCurrentUsername(),
-                ScopeHolder.getUserRepoRef()).getId();
         propertyFilters.add(new PropertyFilter("EQS_receiverUsername",
                 SpringSecurityUtils.getCurrentUsername()));
         page = msgInfoManager.pagedQuery(page, propertyFilters);
@@ -81,9 +72,6 @@ public class MsgInfoAction extends BaseAction implements ModelDriven<MsgInfo>,
         List<PropertyFilter> propertyFilters = PropertyFilter
                 .buildFromHttpRequest(ServletActionContext.getRequest());
 
-        String userId = userConnector.findByUsername(
-                SpringSecurityUtils.getCurrentUsername(),
-                ScopeHolder.getUserRepoRef()).getId();
         propertyFilters.add(new PropertyFilter("EQS_receiverUsername",
                 SpringSecurityUtils.getCurrentUsername()));
         page = msgInfoManager.pagedQuery(page, propertyFilters);
@@ -181,9 +169,5 @@ public class MsgInfoAction extends BaseAction implements ModelDriven<MsgInfo>,
 
     public void setUserConnector(UserConnector userConnector) {
         this.userConnector = userConnector;
-    }
-
-    public void setScopeConnector(ScopeConnector scopeConnector) {
-        this.scopeConnector = scopeConnector;
     }
 }

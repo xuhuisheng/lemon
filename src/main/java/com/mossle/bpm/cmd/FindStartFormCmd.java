@@ -68,22 +68,26 @@ public class FindStartFormCmd implements Command<FormInfo> {
                         .getTaskDefinitions().get(taskDefinitionKey);
 
                 Expression expression = taskDefinition.getAssigneeExpression();
-                String expressionText = expression.getExpressionText();
-                logger.info("{}", expressionText);
-                logger.info("{}", startActivity.getProperties());
-                logger.info("{}", processDefinitionEntity.getProperties());
 
-                String initiatorVariableName = (String) processDefinitionEntity
-                        .getProperty(BpmnParse.PROPERTYNAME_INITIATOR_VARIABLE_NAME);
+                if (expression != null) {
+                    String expressionText = expression.getExpressionText();
+                    logger.info("{}", expressionText);
+                    logger.info("{}", startActivity.getProperties());
+                    logger.info("{}", processDefinitionEntity.getProperties());
 
-                if (("${" + initiatorVariableName + "}").equals(expressionText)) {
-                    DefaultFormHandler formHandler = (DefaultFormHandler) taskDefinition
-                            .getTaskFormHandler();
+                    String initiatorVariableName = (String) processDefinitionEntity
+                            .getProperty(BpmnParse.PROPERTYNAME_INITIATOR_VARIABLE_NAME);
 
-                    if (formHandler.getFormKey() != null) {
-                        String formKey = formHandler.getFormKey()
-                                .getExpressionText();
-                        formInfo.setFormKey(formKey);
+                    if (("${" + initiatorVariableName + "}")
+                            .equals(expressionText)) {
+                        DefaultFormHandler formHandler = (DefaultFormHandler) taskDefinition
+                                .getTaskFormHandler();
+
+                        if (formHandler.getFormKey() != null) {
+                            String formKey = formHandler.getFormKey()
+                                    .getExpressionText();
+                            formInfo.setFormKey(formKey);
+                        }
                     }
                 }
             }

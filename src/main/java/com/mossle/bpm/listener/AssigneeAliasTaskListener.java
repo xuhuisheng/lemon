@@ -1,4 +1,4 @@
-package com.mossle.bpm.handler;
+package com.mossle.bpm.listener;
 
 import javax.annotation.Resource;
 

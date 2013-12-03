@@ -59,7 +59,7 @@ public class DatabaseUserFetcher implements UserFetcher {
             throw new UsernameNotFoundException(processedUsername, ex);
         }
 
-        String sqlAuthority = "select p.name as authority"
+        String sqlAuthority = "select p.code as authority"
                 + " from AUTH_USER_STATUS us,AUTH_USER_ROLE ur,AUTH_ROLE r,AUTH_PERM_ROLE_DEF pr,AUTH_PERM p"
                 + " where us.id=ur.user_status_id and ur.role_id=r.id and r.role_def_id=pr.role_def_id and pr.perm_id=p.id"
                 + " and username=? and user_repo_ref=? and r.scope_id=?";

@@ -40,9 +40,6 @@ public class UserStatus implements java.io.Serializable {
     private String reference;
 
     /** null. */
-    private String descn;
-
-    /** null. */
     private String userRepoRef;
 
     /** null. */
@@ -55,13 +52,12 @@ public class UserStatus implements java.io.Serializable {
     }
 
     public UserStatus(String username, String password, Integer status,
-            String reference, String descn, String userRepoRef, String scopeId,
+            String reference, String userRepoRef, String scopeId,
             Set<Role> roles) {
         this.username = username;
         this.password = password;
         this.status = status;
         this.reference = reference;
-        this.descn = descn;
         this.userRepoRef = userRepoRef;
         this.scopeId = scopeId;
         this.roles = roles;
@@ -137,20 +133,6 @@ public class UserStatus implements java.io.Serializable {
      */
     public void setReference(String reference) {
         this.reference = reference;
-    }
-
-    /** @return null. */
-    @Column(name = "DESCN", length = 200)
-    public String getDescn() {
-        return this.descn;
-    }
-
-    /**
-     * @param descn
-     *            null.
-     */
-    public void setDescn(String descn) {
-        this.descn = descn;
     }
 
     /** @return null. */

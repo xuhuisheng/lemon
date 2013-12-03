@@ -30,10 +30,10 @@ public class BpmProcess implements java.io.Serializable {
     private String name;
 
     /** null. */
-    private String processDefinitionId;
+    private String processDefinitionKey;
 
     /** null. */
-    private String processDefinitionKey;
+    private Integer processDefinitionVersion;
 
     /** null. */
     private Integer priority;
@@ -42,21 +42,21 @@ public class BpmProcess implements java.io.Serializable {
     private String descn;
 
     /** null. */
-    private String startStrategy;
+    private Integer useTaskConf;
 
     public BpmProcess() {
     }
 
     public BpmProcess(BpmCategory bpmCategory, String name,
-            String processDefinitionId, String processDefinitionKey,
-            Integer priority, String descn, String startStrategy) {
+            String processDefinitionKey, Integer processDefinitionVersion,
+            Integer priority, String descn, Integer useTaskConf) {
         this.bpmCategory = bpmCategory;
         this.name = name;
-        this.processDefinitionId = processDefinitionId;
         this.processDefinitionKey = processDefinitionKey;
+        this.processDefinitionVersion = processDefinitionVersion;
         this.priority = priority;
         this.descn = descn;
-        this.startStrategy = startStrategy;
+        this.useTaskConf = useTaskConf;
     }
 
     /** @return null. */
@@ -105,20 +105,6 @@ public class BpmProcess implements java.io.Serializable {
     }
 
     /** @return null. */
-    @Column(name = "PROCESS_DEFINITION_ID", length = 200)
-    public String getProcessDefinitionId() {
-        return this.processDefinitionId;
-    }
-
-    /**
-     * @param processDefinitionId
-     *            null.
-     */
-    public void setProcessDefinitionId(String processDefinitionId) {
-        this.processDefinitionId = processDefinitionId;
-    }
-
-    /** @return null. */
     @Column(name = "PROCESS_DEFINITION_KEY", length = 200)
     public String getProcessDefinitionKey() {
         return this.processDefinitionKey;
@@ -130,6 +116,20 @@ public class BpmProcess implements java.io.Serializable {
      */
     public void setProcessDefinitionKey(String processDefinitionKey) {
         this.processDefinitionKey = processDefinitionKey;
+    }
+
+    /** @return null. */
+    @Column(name = "PROCESS_DEFINITION_VERSION")
+    public Integer getProcessDefinitionVersion() {
+        return this.processDefinitionVersion;
+    }
+
+    /**
+     * @param processDefinitionVersion
+     *            null.
+     */
+    public void setProcessDefinitionVersion(Integer processDefinitionVersion) {
+        this.processDefinitionVersion = processDefinitionVersion;
     }
 
     /** @return null. */
@@ -161,16 +161,16 @@ public class BpmProcess implements java.io.Serializable {
     }
 
     /** @return null. */
-    @Column(name = "START_STRATEGY", length = 50)
-    public String getStartStrategy() {
-        return this.startStrategy;
+    @Column(name = "USE_TASK_CONF")
+    public Integer getUseTaskConf() {
+        return this.useTaskConf;
     }
 
     /**
-     * @param startStrategy
+     * @param useTaskConf
      *            null.
      */
-    public void setStartStrategy(String startStrategy) {
-        this.startStrategy = startStrategy;
+    public void setUseTaskConf(Integer useTaskConf) {
+        this.useTaskConf = useTaskConf;
     }
 }
