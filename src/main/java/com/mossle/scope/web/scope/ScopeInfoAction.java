@@ -5,6 +5,7 @@ import java.util.List;
 
 import com.mossle.api.UserRepoConnector;
 import com.mossle.api.UserRepoDTO;
+import com.mossle.api.scope.ScopeCache;
 
 import com.mossle.core.export.Exportor;
 import com.mossle.core.export.TableModel;
@@ -42,6 +43,7 @@ public class ScopeInfoAction extends BaseAction implements
     private String name;
     private List<UserRepoDTO> userRepoDtos;
     private UserRepoConnector userRepoConnector;
+    private ScopeCache scopeCache;
 
     public String execute() {
         return list();
@@ -89,6 +91,7 @@ public class ScopeInfoAction extends BaseAction implements
         }
 
         scopeInfoManager.save(dest);
+        scopeCache.refresh();
 
         addActionMessage(messages.getMessage("core.success.save", "保存成功"));
 
@@ -99,6 +102,7 @@ public class ScopeInfoAction extends BaseAction implements
         List<ScopeInfo> scopeInfos = scopeInfoManager.findByIds(selectedItem);
 
         scopeInfoManager.removeAll(scopeInfos);
+        scopeCache.refresh();
         addActionMessage(messages.getMessage("core.success.delete", "删除成功"));
 
         return RELOAD;
@@ -184,5 +188,9 @@ public class ScopeInfoAction extends BaseAction implements
 
     public void setName(String name) {
         this.name = name;
+    }
+
+    public void setScopeCache(ScopeCache scopeCache) {
+        this.scopeCache = scopeCache;
     }
 }

@@ -192,6 +192,12 @@ public class AclService {
         return sidInfo;
     }
 
+    public Long findUserIdByUsername(String username, long userType) {
+        UserDTO userDto = userConnector.findByUsername(username, userType);
+
+        return getSidId(userDto.getId(), "1");
+    }
+
     @Resource
     public void setUserConnector(UserConnector userConnector) {
         this.userConnector = userConnector;

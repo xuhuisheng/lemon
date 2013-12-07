@@ -6,34 +6,43 @@ import java.awt.Graphics2D;
 import java.awt.Point;
 import java.awt.Polygon;
 import java.awt.Stroke;
+import java.awt.geom.AffineTransform;
 import java.awt.geom.Ellipse2D;
 import java.awt.geom.Ellipse2D.Double;
+import java.awt.geom.Line2D;
+import java.awt.geom.Path2D;
 import java.awt.geom.RoundRectangle2D;
 import java.awt.image.BufferedImage;
 
-import java.io.*;
 import java.io.ByteArrayInputStream;
 import java.io.ByteArrayOutputStream;
 import java.io.IOException;
 import java.io.InputStream;
 
-import java.util.*;
 import java.util.ArrayList;
 import java.util.List;
 
 import javax.imageio.ImageIO;
 
 import org.activiti.bpmn.constants.BpmnXMLConstants;
-import org.activiti.bpmn.model.*;
+import org.activiti.bpmn.model.Artifact;
 import org.activiti.bpmn.model.BpmnModel;
+import org.activiti.bpmn.model.FlowElement;
+import org.activiti.bpmn.model.FlowElementsContainer;
+import org.activiti.bpmn.model.FlowNode;
+import org.activiti.bpmn.model.GraphicInfo;
+import org.activiti.bpmn.model.Lane;
+import org.activiti.bpmn.model.Pool;
+import org.activiti.bpmn.model.SequenceFlow;
 
-import org.activiti.engine.history.*;
 import org.activiti.engine.history.HistoricActivityInstance;
-import org.activiti.engine.impl.*;
+import org.activiti.engine.history.HistoricProcessInstance;
+import org.activiti.engine.impl.HistoricActivityInstanceQueryImpl;
+import org.activiti.engine.impl.Page;
 import org.activiti.engine.impl.cmd.GetBpmnModelCmd;
 import org.activiti.engine.impl.context.Context;
-import org.activiti.engine.impl.persistence.entity.*;
 import org.activiti.engine.impl.persistence.entity.ProcessDefinitionEntity;
+import org.activiti.engine.impl.pvm.PvmTransition;
 import org.activiti.engine.impl.pvm.process.ActivityImpl;
 
 import org.apache.commons.io.FilenameUtils;
@@ -119,7 +128,8 @@ public class CustomProcessDiagramGenerator {
         BufferedImage image = ImageIO.read(originDiagram);
 
         HistoricActivityInstanceQueryImpl historicActivityInstanceQueryImpl = new HistoricActivityInstanceQueryImpl();
-        historicActivityInstanceQueryImpl.processInstanceId(processInstanceId);
+        historicActivityInstanceQueryImpl.processInstanceId(processInstanceId)
+                .orderByHistoricActivityInstanceStartTime().asc();
 
         Page page = new Page(0, 100);
         List<HistoricActivityInstance> activityInstances = Context
@@ -148,6 +158,8 @@ public class CustomProcessDiagramGenerator {
                 }
             }
         }
+
+        drawHistoryFlow(image, processInstanceId);
 
         ByteArrayOutputStream out = new ByteArrayOutputStream();
         String formatName = getDiagramExtension(diagramResourceName);
@@ -492,5 +504,230 @@ public class CustomProcessDiagramGenerator {
         }
 
         return flowNodes;
+    }
+
+    public void drawHistoryFlow(BufferedImage image, String processInstanceId) {
+        HistoricProcessInstance historicProcessInstance = Context
+                .getCommandContext().getHistoricProcessInstanceEntityManager()
+                .findHistoricProcessInstance(processInstanceId);
+        String processDefinitionId = historicProcessInstance
+                .getProcessDefinitionId();
+        GetBpmnModelCmd getBpmnModelCmd = new GetBpmnModelCmd(
+                processDefinitionId);
+        BpmnModel bpmnModel = getBpmnModelCmd.execute(Context
+                .getCommandContext());
+        HistoricActivityInstanceQueryImpl historicActivityInstanceQueryImpl = new HistoricActivityInstanceQueryImpl();
+        historicActivityInstanceQueryImpl.processInstanceId(processInstanceId)
+                .orderByHistoricActivityInstanceStartTime().asc();
+
+        Page page = new Page(0, 100);
+        List<HistoricActivityInstance> historicActivityInstances = Context
+                .getCommandContext()
+                .getHistoricActivityInstanceEntityManager()
+                .findHistoricActivityInstancesByQueryCriteria(
+                        historicActivityInstanceQueryImpl, page);
+
+        ProcessDefinitionEntity processDefinition = Context
+                .getProcessEngineConfiguration().getProcessDefinitionCache()
+                .get(processDefinitionId);
+        List<String> historicActivityInstanceList = new ArrayList<String>();
+
+        for (HistoricActivityInstance hai : historicActivityInstances) {
+            historicActivityInstanceList.add(hai.getActivityId());
+        }
+
+        List<String> highLightedFlows = new ArrayList<String>();
+
+        // activities and their sequence-flows
+        for (ActivityImpl activity : processDefinition.getActivities()) {
+            int index = historicActivityInstanceList.indexOf(activity.getId());
+
+            // 说明经过了这个节点，并且这个节点不是最后一个节点，所以可能有后续高亮的连线
+            if ((index >= 0)
+                    && ((index + 1) < historicActivityInstanceList.size())) {
+                List<PvmTransition> pvmTransitionList = activity
+                        .getOutgoingTransitions();
+
+                for (HistoricActivityInstance srcHistoricActivityInstance : historicActivityInstances) {
+                    if ((!activity.getId().equals(
+                            srcHistoricActivityInstance.getActivityId()))
+                            || (srcHistoricActivityInstance.getEndTime() == null)) {
+                        continue;
+                    }
+
+                    for (PvmTransition pvmTransition : pvmTransitionList) {
+                        String destinationFlowId = pvmTransition
+                                .getDestination().getId();
+
+                        for (HistoricActivityInstance destHistoricActivityInstance : historicActivityInstances) {
+                            long destStartTime = destHistoricActivityInstance
+                                    .getStartTime().getTime();
+                            long srcEndTime = srcHistoricActivityInstance
+                                    .getEndTime().getTime();
+                            long offset = destStartTime - srcEndTime;
+
+                            if ((!destinationFlowId
+                                    .equals(destHistoricActivityInstance
+                                            .getActivityId()))
+                                    || (offset < 0) || (offset > 1000)) {
+                                continue;
+                            }
+
+                            drawSequenceFlow(image, processDefinitionId,
+                                    pvmTransition.getId());
+                        }
+                    }
+                }
+            }
+        }
+    }
+
+    public void drawSequenceFlow(BufferedImage image,
+            String processDefinitionId, String sequenceFlowId) {
+        GetBpmnModelCmd getBpmnModelCmd = new GetBpmnModelCmd(
+                processDefinitionId);
+        BpmnModel bpmnModel = getBpmnModelCmd.execute(Context
+                .getCommandContext());
+
+        Graphics2D graphics = image.createGraphics();
+        graphics.setPaint(HISTORY_COLOR);
+        graphics.setStroke(new BasicStroke(2f));
+
+        try {
+            List<GraphicInfo> graphicInfoList = bpmnModel
+                    .getFlowLocationGraphicInfo(sequenceFlowId);
+
+            int[] xPoints = new int[graphicInfoList.size()];
+            int[] yPoints = new int[graphicInfoList.size()];
+
+            for (int i = 1; i < graphicInfoList.size(); i++) {
+                GraphicInfo graphicInfo = graphicInfoList.get(i);
+                GraphicInfo previousGraphicInfo = graphicInfoList.get(i - 1);
+
+                if (i == 1) {
+                    xPoints[0] = (int) previousGraphicInfo.getX() - minX;
+                    yPoints[0] = (int) previousGraphicInfo.getY() - minY;
+                }
+
+                xPoints[i] = (int) graphicInfo.getX() - minX;
+                yPoints[i] = (int) graphicInfo.getY() - minY;
+            }
+
+            int radius = 15;
+
+            Path2D path = new Path2D.Double();
+
+            for (int i = 0; i < xPoints.length; i++) {
+                Integer anchorX = xPoints[i];
+                Integer anchorY = yPoints[i];
+
+                double targetX = anchorX;
+                double targetY = anchorY;
+
+                double ax = 0;
+                double ay = 0;
+                double bx = 0;
+                double by = 0;
+                double zx = 0;
+                double zy = 0;
+
+                if ((i > 0) && (i < (xPoints.length - 1))) {
+                    Integer cx = anchorX;
+                    Integer cy = anchorY;
+
+                    // pivot point of prev line
+                    double lineLengthY = yPoints[i] - yPoints[i - 1];
+
+                    // pivot point of prev line
+                    double lineLengthX = xPoints[i] - xPoints[i - 1];
+                    double lineLength = Math.sqrt(Math.pow(lineLengthY, 2)
+                            + Math.pow(lineLengthX, 2));
+                    double dx = (lineLengthX * radius) / lineLength;
+                    double dy = (lineLengthY * radius) / lineLength;
+                    targetX = targetX - dx;
+                    targetY = targetY - dy;
+
+                    // isDefaultConditionAvailable = isDefault && i == 1 && lineLength > 10;
+                    if ((lineLength < (2 * radius)) && (i > 1)) {
+                        targetX = xPoints[i] - (lineLengthX / 2);
+                        targetY = yPoints[i] - (lineLengthY / 2);
+                    }
+
+                    // pivot point of next line
+                    lineLengthY = yPoints[i + 1] - yPoints[i];
+                    lineLengthX = xPoints[i + 1] - xPoints[i];
+                    lineLength = Math.sqrt(Math.pow(lineLengthY, 2)
+                            + Math.pow(lineLengthX, 2));
+
+                    if (lineLength < radius) {
+                        lineLength = radius;
+                    }
+
+                    dx = (lineLengthX * radius) / lineLength;
+                    dy = (lineLengthY * radius) / lineLength;
+
+                    double nextSrcX = xPoints[i] + dx;
+                    double nextSrcY = yPoints[i] + dy;
+
+                    if ((lineLength < (2 * radius))
+                            && (i < (xPoints.length - 2))) {
+                        nextSrcX = xPoints[i] + (lineLengthX / 2);
+                        nextSrcY = yPoints[i] + (lineLengthY / 2);
+                    }
+
+                    double dx0 = (cx - targetX) / 3;
+                    double dy0 = (cy - targetY) / 3;
+                    ax = cx - dx0;
+                    ay = cy - dy0;
+
+                    double dx1 = (cx - nextSrcX) / 3;
+                    double dy1 = (cy - nextSrcY) / 3;
+                    bx = cx - dx1;
+                    by = cy - dy1;
+
+                    zx = nextSrcX;
+                    zy = nextSrcY;
+                }
+
+                if (i == 0) {
+                    path.moveTo(targetX, targetY);
+                } else {
+                    path.lineTo(targetX, targetY);
+                }
+
+                if ((i > 0) && (i < (xPoints.length - 1))) {
+                    // add curve
+                    path.curveTo(ax, ay, bx, by, zx, zy);
+                }
+            }
+
+            graphics.draw(path);
+
+            // draw arrow
+            Line2D.Double line = new Line2D.Double(xPoints[xPoints.length - 2],
+                    yPoints[xPoints.length - 2], xPoints[xPoints.length - 1],
+                    yPoints[xPoints.length - 1]);
+
+            int ARROW_WIDTH = 5;
+            int doubleArrowWidth = 2 * ARROW_WIDTH;
+            Polygon arrowHead = new Polygon();
+            arrowHead.addPoint(0, 0);
+            arrowHead.addPoint(-ARROW_WIDTH, -doubleArrowWidth);
+            arrowHead.addPoint(ARROW_WIDTH, -doubleArrowWidth);
+
+            AffineTransform transformation = new AffineTransform();
+            transformation.setToIdentity();
+
+            double angle = Math.atan2(line.y2 - line.y1, line.x2 - line.x1);
+            transformation.translate(line.x2, line.y2);
+            transformation.rotate((angle - (Math.PI / 2d)));
+
+            AffineTransform originalTransformation = graphics.getTransform();
+            graphics.setTransform(transformation);
+            graphics.fill(arrowHead);
+            graphics.setTransform(originalTransformation);
+        } finally {
+            graphics.dispose();
+        }
     }
 }

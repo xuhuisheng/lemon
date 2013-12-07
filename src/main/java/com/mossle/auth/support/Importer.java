@@ -150,9 +150,15 @@ public class Importer {
         String scopeId = createOrGetScopeId();
 
         for (Map<String, Object> permType : permTypeList) {
-            jdbcTemplate
-                    .update("insert into auth_perm_type(name,type,scope_id) values(?,?,?)",
-                            permType.get("name"), permType.get("type"), scopeId);
+            if (jdbcTemplate
+                    .queryForObject(
+                            "select count(*) from auth_perm_type where name=? and scope_id=?",
+                            Integer.class, permType.get("name"), scopeId) == 0) {
+                jdbcTemplate
+                        .update("insert into auth_perm_type(name,type,scope_id) values(?,?,?)",
+                                permType.get("name"), permType.get("type"),
+                                scopeId);
+            }
         }
 
         for (Map<String, Object> perm : permList) {
@@ -186,7 +192,7 @@ public class Importer {
             Long roleDefId = createOrGetRoleDefId((String) role.get("name"),
                     (String) role.get("scope"), scopeId);
 
-            if (scopeId.equals(role.get("scope"))) {
+            if (scopeMap.get("ref").equals(role.get("scope"))) {
                 Long permId = permCache.get(role.get("perm"));
 
                 if (permId == null) {

@@ -7,6 +7,7 @@ public class UserDTO {
     private long userId;
     private String username;
     private String password;
+    private String ref;
     private String appId;
     private List<String> authorities = new ArrayList<String>();
     private List<String> attributes = new ArrayList<String>();
@@ -33,6 +34,14 @@ public class UserDTO {
 
     public void setPassword(String password) {
         this.password = password;
+    }
+
+    public String getRef() {
+        return ref;
+    }
+
+    public void setRef(String ref) {
+        this.ref = ref;
     }
 
     public String getAppId() {

@@ -176,6 +176,11 @@ public class DatabaseUserConnector implements UserConnector {
         this.sqlFindByUsername = sqlFindByUsername;
     }
 
+    public void setSqlFindByUsernameAndUserRepoRef(
+            String sqlFindByUsernameAndUserRepoRef) {
+        this.sqlFindByUsernameAndUserRepoRef = sqlFindByUsernameAndUserRepoRef;
+    }
+
     public void setAliasMap(Map<String, String> aliasMap) {
         this.aliasMap = aliasMap;
     }
