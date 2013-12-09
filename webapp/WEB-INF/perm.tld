@@ -1,0 +1,31 @@
+<?xml version="1.0" encoding="ISO-8859-1" ?>
+
+<taglib xmlns="http://java.sun.com/xml/ns/j2ee"
+        xmlns:xsi="http://www.w3.org/2001/XMLSchema-instance"
+        xsi:schemaLocation="http://java.sun.com/xml/ns/j2ee http://java.sun.com/xml/ns/j2ee/web-jsptaglibrary_2_0.xsd"
+        version="2.0">
+    <description>Permission Tag Library</description>
+
+    <tlib-version>3.1</tlib-version>
+    <short-name>perm</short-name>
+    <uri>http://www.mossle.com/perm/tags</uri>
+
+    <tag>
+        <description>
+            Permission Tag
+        </description>
+        <name>permission</name>
+        <tag-class>com.mossle.security.perm.PermissionTag</tag-class>
+        <body-content>JSP</body-content>
+
+        <attribute>
+            <description>
+                permission
+            </description>
+            <name>permission</name>
+            <required>false</required>
+            <rtexprvalue>true</rtexprvalue>
+        </attribute>
+    </tag>
+
+</taglib>

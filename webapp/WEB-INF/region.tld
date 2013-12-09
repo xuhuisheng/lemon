@@ -1,0 +1,163 @@
+<?xml version="1.0" encoding="ISO-8859-1" ?>
+
+<taglib xmlns="http://java.sun.com/xml/ns/j2ee"
+        xmlns:xsi="http://www.w3.org/2001/XMLSchema-instance"
+        xsi:schemaLocation="http://java.sun.com/xml/ns/j2ee http://java.sun.com/xml/ns/j2ee/web-jsptaglibrary_2_0.xsd"
+        version="2.0">
+    <description>Region Tag Library</description>
+
+    <tlib-version>3.1</tlib-version>
+    <short-name>region</short-name>
+    <uri>http://www.mossle.com/region/tags</uri>
+
+    <tag>
+        <description>
+            Region Permission Tag
+        </description>
+        <name>region-permission</name>
+        <tag-class>com.mossle.security.region.RegionPermissionTag</tag-class>
+        <body-content>JSP</body-content>
+
+        <attribute>
+            <description>
+                permission
+            </description>
+            <name>permission</name>
+            <required>false</required>
+            <rtexprvalue>true</rtexprvalue>
+        </attribute>
+        <attribute>
+            <description>
+                region
+            </description>
+            <name>region</name>
+            <required>false</required>
+            <rtexprvalue>true</rtexprvalue>
+        </attribute>
+    </tag>
+
+    <tag>
+        <description>
+            Region Tag
+        </description>
+        <name>region</name>
+        <tag-class>com.mossle.security.region.RegionTag</tag-class>
+        <body-content>JSP</body-content>
+
+        <attribute>
+            <description>
+                entityType
+            </description>
+            <name>entityType</name>
+            <required>false</required>
+            <rtexprvalue>true</rtexprvalue>
+        </attribute>
+        <attribute>
+            <description>
+                parentPath
+            </description>
+            <name>parentPath</name>
+            <required>false</required>
+            <rtexprvalue>true</rtexprvalue>
+        </attribute>
+    </tag>
+
+    <tag>
+        <description>
+            Region Role Tag
+        </description>
+        <name>region-role</name>
+        <tag-class>com.mossle.security.region.RegionRoleTag</tag-class>
+        <body-content>JSP</body-content>
+
+        <attribute>
+            <description>
+                region
+            </description>
+            <name>region</name>
+            <required>false</required>
+            <rtexprvalue>true</rtexprvalue>
+        </attribute>
+        <attribute>
+            <description>
+                regionPath
+            </description>
+            <name>regionPath</name>
+            <required>false</required>
+            <rtexprvalue>true</rtexprvalue>
+        </attribute>
+    </tag>
+
+    <tag>
+        <description>
+            Has Role Tag
+        </description>
+        <name>has-role</name>
+        <tag-class>com.mossle.security.tag.HasRoleTag</tag-class>
+        <body-content>JSP</body-content>
+
+        <attribute>
+            <description>
+                role
+            </description>
+            <name>role</name>
+            <required>false</required>
+            <rtexprvalue>true</rtexprvalue>
+        </attribute>
+    </tag>
+
+    <tag>
+        <description>
+            Has All Roles Tag
+        </description>
+        <name>has-all-roles</name>
+        <tag-class>com.mossle.security.tag.HasAllRolesTag</tag-class>
+        <body-content>JSP</body-content>
+
+        <attribute>
+            <description>
+                role
+            </description>
+            <name>role</name>
+            <required>false</required>
+            <rtexprvalue>true</rtexprvalue>
+        </attribute>
+    </tag>
+
+    <tag>
+        <description>
+            Lack Role Tag
+        </description>
+        <name>lack-role</name>
+        <tag-class>com.mossle.security.tag.LackRoleTag</tag-class>
+        <body-content>JSP</body-content>
+
+        <attribute>
+            <description>
+                role
+            </description>
+            <name>role</name>
+            <required>false</required>
+            <rtexprvalue>true</rtexprvalue>
+        </attribute>
+    </tag>
+
+    <tag>
+        <description>
+            Lack All Roles Tag
+        </description>
+        <name>lack-all-roles</name>
+        <tag-class>com.mossle.security.tag.LackAllRolesTag</tag-class>
+        <body-content>JSP</body-content>
+
+        <attribute>
+            <description>
+                role
+            </description>
+            <name>role</name>
+            <required>false</required>
+            <rtexprvalue>true</rtexprvalue>
+        </attribute>
+    </tag>
+
+</taglib>
