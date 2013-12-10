@@ -11,7 +11,7 @@
           </div>
           <div id="collapse-chart" class="accordion-body collapse ${currentMenu == 'chart' ? 'in' : ''}">
             <ul class="accordion-inner nav nav-list">
-			  <li class="m-icn-view-users"><a href="${ctx}/bpm/chart!mostActiveProcess.do">最活跃流程</a></li>
+			  <li class="m-icn-view-users"><a href="${scopePrefix}/report/chart!mostActiveProcess.do">最活跃流程</a></li>
             </ul>
           </div>
         </div>
