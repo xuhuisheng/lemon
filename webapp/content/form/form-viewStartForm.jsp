@@ -129,18 +129,18 @@ $(function() {
 
 
 
-
+      <!--
 	  <article class="m-blank">
 	    <div class="pull-left">
-		  <form name="userForm" method="post" action="user.do" class="form-inline m-form-bottom">
+		  <form name="userForm" method="post" action="javascript:void(0);return false;" class="form-inline m-form-bottom">
     	    <label for="user_username">账号:</label>
 			<input type="text" id="user_username" name="filter_LIKES_username" value="">
 			<button class="btn btn-small" onclick="document.userForm.submit()">查询</button>
 		  </form>
 		</div>
-
 	    <div class="m-clear"></div>
 	  </article>
+      -->
 
       <article class="m-widget">
         <header class="header">
