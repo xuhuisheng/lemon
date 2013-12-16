@@ -49,6 +49,7 @@ public class UserRoleAction extends BaseAction {
                     true);
             addActionMessage(messages.getMessage("core.success.save", "保存成功"));
         } catch (CheckUserStatusException ex) {
+            logger.warn(ex.getMessage(), ex);
             addActionMessage(ex.getMessage());
 
             return input();

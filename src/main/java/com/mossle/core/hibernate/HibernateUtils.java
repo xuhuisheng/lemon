@@ -227,6 +227,8 @@ public class HibernateUtils {
 
         default:
             criterion = Restrictions.eq(propertyName, propertyValue);
+
+            break;
         }
 
         return criterion;
@@ -313,6 +315,8 @@ public class HibernateUtils {
 
         default:
             buff.append(" =:");
+
+            break;
         }
 
         buff.append(propertyFilter.getPropertyName().replaceAll("\\.", "_"));

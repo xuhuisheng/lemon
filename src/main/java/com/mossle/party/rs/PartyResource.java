@@ -66,7 +66,7 @@ public class PartyResource {
             PartyEntityDTO partyEntityDto = new PartyEntityDTO();
             partyEntityDto.setId(partyEntity.getId());
             partyEntityDto.setName(partyEntity.getName());
-            partyEntityDto.setReference(partyEntity.getReference());
+            partyEntityDto.setRef(partyEntity.getRef());
             partyEntityDtos.add(partyEntityDto);
         }
 
@@ -76,17 +76,16 @@ public class PartyResource {
     @POST
     @Path("tree")
     @Produces(MediaType.APPLICATION_JSON)
-    public List<Map> tree(@QueryParam("typeId") long typeId) {
-        String hql = "select distinct o from PartyEntity o left join o.parentStructs p with p.partyStructType.id=? "
-                + "join o.childStructs c where p is null and c.partyStructType.id=? order by o.id";
-        List<PartyEntity> partyEntities = partyEntityManager.find(hql, typeId,
-                typeId);
+    public List<Map> tree(@QueryParam("partyDimId") long partyDimId) {
+        String hql = "select pdr.partyEntity from PartyDimRoot pdr where pdr.partyDim.id=?";
+        List<PartyEntity> partyEntities = partyEntityManager.find(hql,
+                partyDimId);
 
-        return generatePartyEntities(partyEntities, typeId);
+        return generatePartyEntities(partyEntities, partyDimId);
     }
 
     public List<Map> generatePartyEntities(List<PartyEntity> partyEntities,
-            long partyStructTypeId) {
+            long partyDimId) {
         if (partyEntities == null) {
             return null;
         }
@@ -95,25 +94,23 @@ public class PartyResource {
 
         try {
             for (PartyEntity partyEntity : partyEntities) {
-                list.add(generatePartyEntity(partyEntity, partyStructTypeId));
+                list.add(generatePartyEntity(partyEntity, partyDimId));
             }
-
-            return list;
         } catch (Exception ex) {
             logger.error(ex.getMessage(), ex);
-
-            return list;
         }
+
+        return list;
     }
 
     public Map<String, Object> generatePartyEntity(PartyEntity partyEntity,
-            long partyStructTypeId) {
+            long partyDimId) {
         Map<String, Object> map = new HashMap<String, Object>();
 
         try {
             map.put("id", partyEntity.getId());
             map.put("name", partyEntity.getName());
-            map.put("reference", partyEntity.getReference());
+            map.put("ref", partyEntity.getRef());
 
             List<PartyStruct> partyStructs = partyStructManager.find(
                     "from PartyStruct where parentEntity=? order by priority",
@@ -121,10 +118,10 @@ public class PartyResource {
             List<PartyEntity> partyEntities = new ArrayList<PartyEntity>();
 
             for (PartyStruct partyStruct : partyStructs) {
-                if (partyStruct.getPartyStructType().getId() == partyStructTypeId) {
+                if (partyStruct.getPartyDim().getId() == partyDimId) {
                     PartyEntity childPartyEntity = partyStruct.getChildEntity();
 
-                    if (childPartyEntity.getPartyType().getId() != 1L) {
+                    if (childPartyEntity.getPartyType().getPerson() != 1) {
                         partyEntities.add(childPartyEntity);
                     }
                 }
@@ -135,7 +132,7 @@ public class PartyResource {
             } else {
                 map.put("open", true);
                 map.put("children",
-                        generatePartyEntities(partyEntities, partyStructTypeId));
+                        generatePartyEntities(partyEntities, partyDimId));
             }
 
             return map;
@@ -144,6 +141,18 @@ public class PartyResource {
 
             return map;
         }
+    }
+
+    @GET
+    @Path("search")
+    @Produces(MediaType.APPLICATION_JSON)
+    public List<String> search(@QueryParam("name") String name,
+            @QueryParam("partyTypeId") long partyTypeId) {
+        List<String> names = partyEntityManager
+                .find("select name from PartyEntity where name like ? and partyType.id=?",
+                        "%" + name + "%", partyTypeId);
+
+        return names;
     }
 
     @Resource
@@ -185,7 +194,7 @@ public class PartyResource {
     public static class PartyEntityDTO {
         private long id;
         private String name;
-        private String reference;
+        private String ref;
 
         public long getId() {
             return id;
@@ -203,12 +212,12 @@ public class PartyResource {
             this.name = name;
         }
 
-        public String getReference() {
-            return reference;
+        public String getRef() {
+            return ref;
         }
 
-        public void setReference(String reference) {
-            this.reference = reference;
+        public void setRef(String ref) {
+            this.ref = ref;
         }
     }
 }

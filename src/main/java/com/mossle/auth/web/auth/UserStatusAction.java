@@ -28,6 +28,9 @@ import org.apache.struts2.ServletActionContext;
 import org.apache.struts2.convention.annotation.Result;
 import org.apache.struts2.convention.annotation.Results;
 
+import org.slf4j.Logger;
+import org.slf4j.LoggerFactory;
+
 import org.springframework.context.MessageSource;
 import org.springframework.context.support.MessageSourceAccessor;
 
@@ -36,6 +39,8 @@ import org.springframework.context.support.MessageSourceAccessor;
         @Result(name = UserStatusAction.RELOAD_PASSWORD, location = "user-status!password.do?operationMode=RETRIEVE&id=${id}", type = "redirect") })
 public class UserStatusAction extends BaseAction implements
         ModelDriven<UserStatus>, Preparable {
+    private static Logger logger = LoggerFactory
+            .getLogger(RolePermAction.class);
     public static final String RELOAD = "reload";
     public static final String RELOAD_PASSWORD = "reload-password";
     private UserStatusManager userStatusManager;
@@ -114,6 +119,7 @@ public class UserStatusAction extends BaseAction implements
 
             addActionMessage(messages.getMessage("core.success.save", "保存成功"));
         } catch (CheckUserStatusException ex) {
+            logger.warn(ex.getMessage(), ex);
             addActionMessage(ex.getMessage());
 
             return INPUT;
@@ -134,6 +140,7 @@ public class UserStatusAction extends BaseAction implements
             userStatusManager.removeAll(userStatuses);
             addActionMessage(messages.getMessage("core.success.delete", "删除成功"));
         } catch (CheckUserStatusException ex) {
+            logger.warn(ex.getMessage(), ex);
             addActionMessage(ex.getMessage());
         }
 

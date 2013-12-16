@@ -22,7 +22,7 @@
                 <a data-toggle="dropdown" class="dropdown-toggle" href="#">系统管理 <b class="caret"></b></a>
                 <ul class="dropdown-menu">
                   <li><a href="${scopePrefix}/user/user-base.do">用户管理</a></li>
-                  <li><a href="${scopePrefix}/group/group-base!pagedQueryChildren.do">组织机构</a></li>
+                  <li><a href="${scopePrefix}/group/org.do">组织机构</a></li>
                   <li class="divider"></li>
                   <li><a href="${scopePrefix}/auth/user-connector.do">权限管理</a></li>
                   <li><a href="${scopePrefix}/acl/acl-sid.do">数据权限</a></li>

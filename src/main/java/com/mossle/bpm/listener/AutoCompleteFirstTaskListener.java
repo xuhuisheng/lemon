@@ -1,5 +1,6 @@
 package com.mossle.bpm.listener;
 
+import com.mossle.bpm.cmd.CompleteTaskWithCommentCmd;
 import com.mossle.bpm.support.DefaultTaskListener;
 
 import org.activiti.engine.delegate.DelegateTask;
@@ -52,7 +53,10 @@ public class AutoCompleteFirstTaskListener extends DefaultTaskListener {
                 delegateTask.getExecution().getCurrentActivityId())) {
             if ((username != null) && username.equals(assignee)) {
                 logger.info("auto complete first task : {}", delegateTask);
-                ((TaskEntity) delegateTask).complete();
+
+                // ((TaskEntity) delegateTask).complete();
+                new CompleteTaskWithCommentCmd(delegateTask.getId(), null,
+                        "发起流程").execute(Context.getCommandContext());
             }
         }
     }

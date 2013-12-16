@@ -1,6 +1,10 @@
 package com.mossle.security.region;
 
+import org.slf4j.Logger;
+import org.slf4j.LoggerFactory;
+
 public class RegionKey {
+    private static Logger logger = LoggerFactory.getLogger(RegionKey.class);
     private String type;
     private String value;
 
@@ -28,6 +32,8 @@ public class RegionKey {
         try {
             return Long.valueOf(value);
         } catch (Exception ex) {
+            logger.debug(ex.getMessage(), ex);
+
             return Long.valueOf(0L);
         }
     }

@@ -30,6 +30,7 @@ public class DatabaseUserRepoConnector implements UserRepoConnector {
 
             return convertUserRepoDTO(map);
         } catch (EmptyResultDataAccessException ex) {
+            logger.debug(ex.getMessage(), ex);
             logger.info("user repo(id : {}) is not exists.", id);
 
             return null;
@@ -43,6 +44,7 @@ public class DatabaseUserRepoConnector implements UserRepoConnector {
 
             return convertUserRepoDTO(map);
         } catch (EmptyResultDataAccessException ex) {
+            logger.debug(ex.getMessage(), ex);
             logger.info("user repo(code : {}) is not exists.", code);
 
             return null;

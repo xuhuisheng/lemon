@@ -28,10 +28,10 @@
   </userTask>
   <sequenceFlow id='transition-3' sourceRef='taskuser-2' targetRef='exclusive-1'/>
   <exclusiveGateway id='exclusive-1' name='exclusive-1'/>
-  <sequenceFlow id='transition-4' sourceRef='exclusive-1' targetRef='taskuser-3'>
+  <sequenceFlow id='transition-4' name="同意" sourceRef='exclusive-1' targetRef='taskuser-3'>
     <conditionExpression xsi:type='tFormalExpression'>${leaderComment==&apos;同意&apos;}</conditionExpression>
   </sequenceFlow>
-  <sequenceFlow id='transition-9' sourceRef='exclusive-1' targetRef='taskuser-5'>
+  <sequenceFlow id='transition-9' name="不同意" sourceRef='exclusive-1' targetRef='taskuser-5'>
     <conditionExpression xsi:type='tFormalExpression'>${leaderComment==&apos;不同意&apos;}</conditionExpression>
   </sequenceFlow>
   <userTask id='taskuser-3' name='人事审批' activiti:formKey='人事审批'>
@@ -43,10 +43,10 @@
   </userTask>
   <sequenceFlow id='transition-8' sourceRef='taskuser-3' targetRef='exclusive-2'/>
   <exclusiveGateway id='exclusive-2' name='exclusive-2'/>
-  <sequenceFlow id='transition-10' sourceRef='exclusive-2' targetRef='taskuser-5'>
+  <sequenceFlow id='transition-10' name="不同意" sourceRef='exclusive-2' targetRef='taskuser-5'>
     <conditionExpression xsi:type='tFormalExpression'>${hrComment==&apos;不同意&apos;}</conditionExpression>
   </sequenceFlow>
-  <sequenceFlow id='transition-13' sourceRef='exclusive-2' targetRef='taskuser-6'>
+  <sequenceFlow id='transition-13' name="同意" sourceRef='exclusive-2' targetRef='taskuser-6'>
     <conditionExpression xsi:type='tFormalExpression'>${hrComment==&apos;同意&apos;}</conditionExpression>
   </sequenceFlow>
   <userTask id='taskuser-5' name='调整申请' activiti:formKey='调整申请'>
@@ -58,10 +58,10 @@
   </userTask>
   <sequenceFlow id='transition-11' sourceRef='taskuser-5' targetRef='exclusive-3'/>
   <exclusiveGateway id='exclusive-3' name='exclusive-3'/>
-  <sequenceFlow id='transition-12' sourceRef='exclusive-3' targetRef='taskuser-2'>
+  <sequenceFlow id='transition-12' name="重新申请" sourceRef='exclusive-3' targetRef='taskuser-2'>
     <conditionExpression xsi:type='tFormalExpression'>${initiatorComment==&apos;重新申请&apos;}</conditionExpression>
   </sequenceFlow>
-  <sequenceFlow id='transition-15' sourceRef='exclusive-3' targetRef='endnone-2'>
+  <sequenceFlow id='transition-15' name="撤销申请" sourceRef='exclusive-3' targetRef='endnone-2'>
     <conditionExpression xsi:type='tFormalExpression'>${initiatorComment==&apos;撤销申请&apos;}</conditionExpression>
   </sequenceFlow>
   <userTask id='taskuser-6' name='销假' activiti:formKey='销假'>
@@ -121,11 +121,17 @@
     <bpmndi:BPMNEdge bpmnElement='transition-4' id='BPMNShape_transition-4'>
       <omgdi:waypoint x='485' y='225'/>
       <omgdi:waypoint x='531' y='225'/>
+	  <bpmndi:BPMNLabel>
+        <omgdc:Bounds height="11" width="100" x="10" y="0"></omgdc:Bounds>
+      </bpmndi:BPMNLabel>
     </bpmndi:BPMNEdge>
     <bpmndi:BPMNEdge bpmnElement='transition-9' id='BPMNShape_transition-9'>
       <omgdi:waypoint x='464' y='205'/>
       <omgdi:waypoint x='464' y='120'/>
       <omgdi:waypoint x='531' y='120'/>
+	  <bpmndi:BPMNLabel>
+        <omgdc:Bounds height="11" width="100" x="10" y="0"></omgdc:Bounds>
+      </bpmndi:BPMNLabel>
     </bpmndi:BPMNEdge>
     <bpmndi:BPMNEdge bpmnElement='transition-8' id='BPMNShape_transition-8'>
       <omgdi:waypoint x='651' y='225'/>
@@ -135,10 +141,16 @@
       <omgdi:waypoint x='700' y='205'/>
       <omgdi:waypoint x='700' y='120'/>
       <omgdi:waypoint x='651' y='120'/>
+	  <bpmndi:BPMNLabel>
+        <omgdc:Bounds height="11" width="100" x="10" y="0"></omgdc:Bounds>
+      </bpmndi:BPMNLabel>
     </bpmndi:BPMNEdge>
     <bpmndi:BPMNEdge bpmnElement='transition-13' id='BPMNShape_transition-13'>
       <omgdi:waypoint x='721' y='225'/>
       <omgdi:waypoint x='764' y='225'/>
+	  <bpmndi:BPMNLabel>
+        <omgdc:Bounds height="11" width="100" x="10" y="0"></omgdc:Bounds>
+      </bpmndi:BPMNLabel>
     </bpmndi:BPMNEdge>
     <bpmndi:BPMNEdge bpmnElement='transition-11' id='BPMNShape_transition-11'>
       <omgdi:waypoint x='591' y='80'/>
@@ -148,11 +160,17 @@
       <omgdi:waypoint x='571' y='32'/>
       <omgdi:waypoint x='338' y='32'/>
       <omgdi:waypoint x='338' y='185'/>
+	  <bpmndi:BPMNLabel>
+        <omgdc:Bounds height="11" width="100" x="10" y="0"></omgdc:Bounds>
+      </bpmndi:BPMNLabel>
     </bpmndi:BPMNEdge>
     <bpmndi:BPMNEdge bpmnElement='transition-15' id='BPMNShape_transition-15'>
       <omgdi:waypoint x='611' y='32'/>
       <omgdi:waypoint x='945' y='32'/>
       <omgdi:waypoint x='945' y='205'/>
+	  <bpmndi:BPMNLabel>
+        <omgdc:Bounds height="11" width="100" x="10" y="0"></omgdc:Bounds>
+      </bpmndi:BPMNLabel>
     </bpmndi:BPMNEdge>
     <bpmndi:BPMNEdge bpmnElement='transition-14' id='BPMNShape_transition-14'>
       <omgdi:waypoint x='884' y='225'/>

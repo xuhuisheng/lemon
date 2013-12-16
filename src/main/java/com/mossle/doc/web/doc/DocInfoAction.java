@@ -90,8 +90,23 @@ public class DocInfoAction extends BaseAction implements ModelDriven<DocInfo>,
         new File("target/uploaded").mkdirs();
 
         File targetFile = new File("target/uploaded", attachment.getName());
-        IoUtils.copyStream(new FileInputStream(attachment),
-                new FileOutputStream(targetFile));
+        InputStream is = null;
+        OutputStream os = null;
+
+        try {
+            is = new FileInputStream(attachment);
+            os = new FileOutputStream(targetFile);
+            IoUtils.copyStream(is, os);
+        } finally {
+            if (is != null) {
+                is.close();
+            }
+
+            if (os != null) {
+                os.close();
+            }
+        }
+
         dest.setPath(targetFile.getName());
         docInfoManager.save(dest);
 
@@ -103,8 +118,17 @@ public class DocInfoAction extends BaseAction implements ModelDriven<DocInfo>,
     public void download() throws Exception {
         DocInfo docInfo = docInfoManager.get(id);
         File file = new File("target/uploaded", docInfo.getPath());
-        IoUtils.copyStream(new FileInputStream(file), ServletActionContext
-                .getResponse().getOutputStream());
+        InputStream is = null;
+
+        try {
+            is = new FileInputStream(attachment);
+            IoUtils.copyStream(is, ServletActionContext.getResponse()
+                    .getOutputStream());
+        } finally {
+            if (is != null) {
+                is.close();
+            }
+        }
     }
 
     public String removeAll() {

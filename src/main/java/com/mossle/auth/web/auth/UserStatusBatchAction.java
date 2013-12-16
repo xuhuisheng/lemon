@@ -66,6 +66,7 @@ public class UserStatusBatchAction extends BaseAction implements
                         userStatusChecker.check(userStatus);
                         userStatuses.add(userStatus);
                     } catch (CheckUserStatusException ex) {
+                        logger.warn(ex.getMessage(), ex);
                         addActionMessage(ex.getMessage());
                     }
                 }

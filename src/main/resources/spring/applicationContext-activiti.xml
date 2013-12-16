@@ -26,7 +26,7 @@
 
 		<property name="transactionManager" ref="transactionManager"/>
 		<!-- (databaseType 不用修改,即使连接其他类型数据库)  act引擎会自动替换成相应的type,这里加上是因为act不识别hsqldb类型,故直接映射成H2-->
-		<property name="databaseType" value="h2"/>
+		<property name="databaseType" value="${application.database.type}"/>
 
 		<!-- 生成流程图的字体 -->
         <property name="activityFontName" value="宋体"/>

@@ -79,6 +79,7 @@ public class UserConnectorBatchAction extends BaseAction {
                         userStatusChecker.check(userStatus);
                         userStatuses.add(userStatus);
                     } catch (CheckUserStatusException ex) {
+                        logger.warn(ex.getMessage(), ex);
                         addActionMessage(ex.getMessage());
                     }
                 }

@@ -29,6 +29,9 @@ import org.apache.struts2.ServletActionContext;
 import org.apache.struts2.convention.annotation.Result;
 import org.apache.struts2.convention.annotation.Results;
 
+import org.slf4j.Logger;
+import org.slf4j.LoggerFactory;
+
 import org.springframework.context.MessageSource;
 import org.springframework.context.support.MessageSourceAccessor;
 
@@ -37,6 +40,7 @@ import org.springframework.context.support.MessageSourceAccessor;
         @Result(name = RoleDefAction.RELOAD_MANAGE, location = "role-def!manage.do?id=${id}&operationMode=RETRIEVE", type = "redirect") })
 public class RoleDefAction extends BaseAction implements ModelDriven<RoleDef>,
         Preparable {
+    private static Logger logger = LoggerFactory.getLogger(RoleDefAction.class);
     public static final String RELOAD = "reload";
     public static final String RELOAD_MANAGE = "reload-manage";
     private RoleDefManager roleDefManager;
@@ -94,6 +98,7 @@ public class RoleDefAction extends BaseAction implements ModelDriven<RoleDef>,
 
             addActionMessage(messages.getMessage("core.success.save", "保存成功"));
         } catch (CheckRoleException ex) {
+            logger.warn(ex.getMessage(), ex);
             addActionMessage(ex.getMessage());
 
             return INPUT;
@@ -113,6 +118,7 @@ public class RoleDefAction extends BaseAction implements ModelDriven<RoleDef>,
             roleDefManager.removeAll(roleDefs);
             addActionMessage(messages.getMessage("core.success.delete", "删除成功"));
         } catch (CheckRoleException ex) {
+            logger.warn(ex.getMessage(), ex);
             addActionMessage(ex.getMessage());
         }
 

@@ -4,8 +4,10 @@ import java.util.List;
 
 import com.mossle.core.struts2.BaseAction;
 
+import com.mossle.party.domain.PartyDim;
 import com.mossle.party.domain.PartyEntity;
 import com.mossle.party.domain.PartyStructType;
+import com.mossle.party.manager.PartyDimManager;
 import com.mossle.party.manager.PartyEntityManager;
 import com.mossle.party.manager.PartyStructTypeManager;
 
@@ -16,17 +18,18 @@ public class TreeAction extends BaseAction implements ModelDriven<PartyEntity>,
         Preparable {
     private PartyEntityManager partyEntityManager;
     private PartyStructTypeManager partyStructTypeManager;
+    private PartyDimManager partyDimManager;
     private long partyStructTypeId;
     private List<PartyStructType> partyStructTypes;
     private List<PartyEntity> partyEntities;
+    private List<PartyDim> partyDims;
+    private long partyDimId;
 
     public String execute() {
-        partyStructTypes = partyStructTypeManager.getAll();
+        partyDims = partyDimManager.getAll();
 
-        String hql = "select distinct o from PartyEntity o left join o.parentStructs p with p.partyStructType.id=? "
-                + "join o.childStructs c where p is null and c.partyStructType.id=?";
-        partyEntities = partyEntityManager.find(hql, partyStructTypeId,
-                partyStructTypeId);
+        String hql = "select pdr.partyEntity from PartyDimRoot pdr where pdr.partyDim.id=?";
+        partyEntities = partyEntityManager.find(hql, partyDimId);
 
         return SUCCESS;
     }
@@ -48,6 +51,10 @@ public class TreeAction extends BaseAction implements ModelDriven<PartyEntity>,
         this.partyStructTypeManager = partyStructTypeManager;
     }
 
+    public void setPartyDimManager(PartyDimManager partyDimManager) {
+        this.partyDimManager = partyDimManager;
+    }
+
     // ~ ======================================================================
     public void setPartyStructTypeId(long partyStructTypeId) {
         this.partyStructTypeId = partyStructTypeId;
@@ -59,5 +66,13 @@ public class TreeAction extends BaseAction implements ModelDriven<PartyEntity>,
 
     public List<PartyEntity> getPartyEntities() {
         return partyEntities;
+    }
+
+    public List<PartyDim> getPartyDims() {
+        return partyDims;
+    }
+
+    public void setPartyDimId(long partyDimId) {
+        this.partyDimId = partyDimId;
     }
 }

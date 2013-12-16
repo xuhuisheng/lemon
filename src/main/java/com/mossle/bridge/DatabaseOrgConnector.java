@@ -29,6 +29,7 @@ public class DatabaseOrgConnector implements OrgConnector {
 
             return convertOrgDTO(map);
         } catch (EmptyResultDataAccessException ex) {
+            logger.debug(ex.getMessage(), ex);
             logger.info("org[{},{}] is not exists.", reference, type);
 
             return null;

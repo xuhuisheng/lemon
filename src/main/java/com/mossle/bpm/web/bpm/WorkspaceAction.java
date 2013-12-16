@@ -35,7 +35,6 @@ import org.activiti.engine.history.HistoricTaskInstance;
 import org.activiti.engine.history.HistoricVariableInstance;
 import org.activiti.engine.impl.ServiceImpl;
 import org.activiti.engine.impl.interceptor.Command;
-import org.activiti.engine.impl.interceptor.CommandExecutor;
 import org.activiti.engine.repository.ProcessDefinition;
 import org.activiti.engine.task.DelegationState;
 import org.activiti.engine.task.Task;
@@ -64,7 +63,6 @@ public class WorkspaceAction extends BaseAction {
     private List<HistoricProcessInstance> historicProcessInstances;
     private List<HistoricVariableInstance> historicVariableInstances;
     private String username;
-    private CommandExecutor commandExecutor;
     private BpmCategoryManager bpmCategoryManager;
     private List<BpmCategory> bpmCategories;
     private String operationType;
@@ -92,8 +90,8 @@ public class WorkspaceAction extends BaseAction {
         Command<InputStream> cmd = null;
         cmd = new ProcessDefinitionDiagramCmd(processDefinitionId);
 
-        InputStream is = ((ServiceImpl) repositoryService).getCommandExecutor()
-                .execute(cmd);
+        InputStream is = processEngine.getManagementService().executeCommand(
+                cmd);
         HttpServletResponse response = ServletActionContext.getResponse();
         response.setContentType("image/png");
 
@@ -172,13 +170,11 @@ public class WorkspaceAction extends BaseAction {
      * @throws Exception
      */
     public void graphHistoryProcessInstance() throws Exception {
-        RepositoryService repositoryService = processEngine
-                .getRepositoryService();
-        Command<InputStream> cmd = null;
-        cmd = new HistoryProcessInstanceDiagramCmd(processInstanceId);
+        Command<InputStream> cmd = new HistoryProcessInstanceDiagramCmd(
+                processInstanceId);
 
-        InputStream is = ((ServiceImpl) repositoryService).getCommandExecutor()
-                .execute(cmd);
+        InputStream is = processEngine.getManagementService().executeCommand(
+                cmd);
         HttpServletResponse response = ServletActionContext.getResponse();
         response.setContentType("image/png");
 
@@ -399,7 +395,7 @@ public class WorkspaceAction extends BaseAction {
     public String rollback() {
         Command<Integer> cmd = new RollbackTaskCmd(taskId);
 
-        commandExecutor.execute(cmd);
+        processEngine.getManagementService().executeCommand(cmd);
 
         return RELOAD;
     }
@@ -412,7 +408,7 @@ public class WorkspaceAction extends BaseAction {
     public String withdraw() {
         Command<Integer> cmd = new WithdrawTaskCmd(taskId);
 
-        commandExecutor.execute(cmd);
+        processEngine.getManagementService().executeCommand(cmd);
 
         return RELOAD;
     }
@@ -491,10 +487,6 @@ public class WorkspaceAction extends BaseAction {
 
     public void setUsername(String username) {
         this.username = username;
-    }
-
-    public void setCommandExecutor(CommandExecutor commandExecutor) {
-        this.commandExecutor = commandExecutor;
     }
 
     public void setBpmCategoryManager(BpmCategoryManager bpmCategoryManager) {

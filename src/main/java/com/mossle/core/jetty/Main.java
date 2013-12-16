@@ -9,11 +9,6 @@ import java.security.ProtectionDomain;
 import org.eclipse.jetty.server.Server;
 import org.eclipse.jetty.webapp.WebAppContext;
 
-/**
- * Main Class for standalone running.
- * 
- * @author calvin
- */
 public class Main {
     public static final int DEFAULT_PORT = 8080;
     public static final int ERROR_CODE = 100;
@@ -28,13 +23,8 @@ public class Main {
 
         Server server = createServer(contextPath, port, tempDir);
 
-        try {
-            server.start();
-            server.join();
-        } catch (Exception e) {
-            e.printStackTrace();
-            System.exit(ERROR_CODE);
-        }
+        server.start();
+        server.join();
     }
 
     private static Server createServer(String contextPath, int port,

@@ -39,6 +39,7 @@ public class DataSourceWrapper extends DataSourceProxy {
         try {
             new DataSourceChecker().check(basicDataSource);
         } catch (SQLException ex) {
+            logger.warn(ex.getMessage(), ex);
             throwable = ex;
         }
 

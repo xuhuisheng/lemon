@@ -75,10 +75,9 @@ public class PartyService {
     }
 
     // ~ ======================================================================
-    public void insertPartyEntity(String reference, Long partyTypeId,
-            String name) {
+    public void insertPartyEntity(String ref, Long partyTypeId, String name) {
         PartyEntity partyEntity = new PartyEntity();
-        partyEntity.setReference(reference);
+        partyEntity.setRef(ref);
         partyEntity.setName(name);
 
         PartyType partyType = partyTypeManager.get(partyTypeId);
@@ -86,19 +85,18 @@ public class PartyService {
         partyEntityManager.save(partyEntity);
     }
 
-    public void updatePartyEntity(String reference, Long partyTypeId,
-            String name) {
+    public void updatePartyEntity(String ref, Long partyTypeId, String name) {
         PartyEntity partyEntity = partyEntityManager.findUnique(
-                "from PartyEntity where reference=? and partyTypeId=?",
-                reference, partyTypeId);
+                "from PartyEntity where ref=? and partyTypeId=?", ref,
+                partyTypeId);
         partyEntity.setName(name);
         partyEntityManager.save(partyEntity);
     }
 
-    public void removePartyEntity(String reference, Long partyTypeId) {
+    public void removePartyEntity(String ref, Long partyTypeId) {
         PartyEntity partyEntity = partyEntityManager.findUnique(
-                "from PartyEntity where reference=? and partyTypeId=?",
-                reference, partyTypeId);
+                "from PartyEntity where ref=? and partyTypeId=?", ref,
+                partyTypeId);
         partyEntityManager.remove(partyEntity);
     }
 
@@ -126,14 +124,14 @@ public class PartyService {
         return partyStructType.getId();
     }
 
-    public String getDefaultRootPartyEntityReference() {
+    public String getDefaultRootPartyEntityRef() {
         Long defaultPartyStructTypeId = getDefaultPartyStructTypeId();
         String hql = "select distinct o from PartyEntity o left join o.parentStructs p with p.partyStructType.id=? "
                 + "join o.childStructs c where p is null and c.partyStructType.id=?";
         PartyEntity partyEntity = partyEntityManager.findUnique(hql,
                 defaultPartyStructTypeId, defaultPartyStructTypeId);
 
-        return partyEntity.getReference();
+        return partyEntity.getRef();
     }
 
     // ~ ======================================================================

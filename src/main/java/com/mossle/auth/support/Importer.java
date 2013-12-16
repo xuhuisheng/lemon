@@ -216,7 +216,7 @@ public class Importer {
                         .update("insert into auth_user_role(user_status_id,role_id) values(?,?)",
                                 userId, roleCache.get(user.get("role")));
             } catch (Exception ex) {
-                logger.info("{} - {}", user, ex.getMessage());
+                logger.warn("{} - {}", user, ex.getMessage(), ex);
             }
         }
     }
@@ -246,20 +246,17 @@ public class Importer {
     }
 
     public String createOrGetScopeId() {
-        try {
-            return jdbcTemplate.queryForObject(
-                    "select id from scope_info where ref=?", String.class,
-                    scopeMap.get("ref"));
-        } catch (Exception ex) {
+        if (this.notExists("select count(*) from scope_info where ref=?",
+                scopeMap.get("ref"))) {
             jdbcTemplate
                     .update("insert into scope_info(NAME,CODE,REF,SHARED,USER_REPO_REF) values(?,?,?,0,?)",
                             scopeMap.get("code"), scopeMap.get("code"),
                             scopeMap.get("ref"), scopeMap.get("userRepoRef"));
-
-            return jdbcTemplate.queryForObject(
-                    "select id from scope_info where ref=?", String.class,
-                    scopeMap.get("ref"));
         }
+
+        return jdbcTemplate.queryForObject(
+                "select id from scope_info where ref=?", String.class,
+                scopeMap.get("ref"));
     }
 
     public Long createOrGetRoleDefId(String name, String scopeRef,
@@ -269,25 +266,21 @@ public class Importer {
                         String.class, scopeRef);
         Long roleDefId = null;
 
-        try {
-            roleDefId = jdbcTemplate.queryForObject(
-                    "select id from auth_role_def where name=? and scope_id=?",
-                    Long.class, name, roleDefScopeId);
-        } catch (Exception ex) {
+        if (this.notExists(
+                "select count(*) from auth_role_def where name=? and scope_id=?",
+                name, roleDefScopeId)) {
             jdbcTemplate.update(
                     "insert into auth_role_def(name,scope_id) values(?,?)",
                     name, roleDefScopeId);
-            roleDefId = jdbcTemplate.queryForObject(
-                    "select id from auth_role_def where name=? and scope_id=?",
-                    Long.class, name, roleDefScopeId);
         }
 
-        try {
-            jdbcTemplate
-                    .queryForObject(
-                            "select id from auth_role where role_def_id=? and scope_id=?",
-                            Long.class, roleDefId, scopeId);
-        } catch (Exception ex) {
+        roleDefId = jdbcTemplate.queryForObject(
+                "select id from auth_role_def where name=? and scope_id=?",
+                Long.class, name, roleDefScopeId);
+
+        if (this.notExists(
+                "select count(*) from auth_role where role_def_id=? and scope_id=?",
+                roleDefId, scopeId)) {
             jdbcTemplate
                     .update("insert into auth_role(name,role_def_id,scope_id) values(?,?,?)",
                             name, roleDefId, scopeId);
@@ -298,21 +291,22 @@ public class Importer {
 
     public Long createOrGetUserId(String username, String reference,
             String scopeId) {
-        try {
-            return jdbcTemplate
-                    .queryForObject(
-                            "select id from auth_user_status where reference=? and scope_id=?",
-                            Long.class, reference, scopeId);
-        } catch (Exception ex) {
+        if (this.notExists(
+                "select count(*) form auth_user_status where reference=? and scope_id=?",
+                reference, scopeId)) {
             jdbcTemplate
                     .update("insert into auth_user_status(username,reference,status,scope_id) values(?,?,1,?)",
                             username, reference, scopeId);
-
-            return jdbcTemplate
-                    .queryForObject(
-                            "select id from auth_user_status where reference=? and scope_id=?",
-                            Long.class, reference, scopeId);
         }
+
+        return jdbcTemplate
+                .queryForObject(
+                        "select id from auth_user_status where reference=? and scope_id=?",
+                        Long.class, reference, scopeId);
+    }
+
+    public boolean notExists(String sql, Object... values) {
+        return jdbcTemplate.queryForObject(sql, Integer.class, values) == 0;
     }
 
     public void setJdbcTemplate(JdbcTemplate jdbcTemplate) {

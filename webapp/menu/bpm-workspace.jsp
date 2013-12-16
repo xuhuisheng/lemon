@@ -30,6 +30,7 @@
           <div id="collapse-bpm-task" class="accordion-body collapse ${currentMenu == 'bpm-task' ? 'in' : ''}">
             <ul class="accordion-inner nav nav-list">
 			  <li class="m-icn-add-user"><a href="${scopePrefix}/bpm/workspace!listPersonalTasks.do">待办任务</a></li>
+			  <li class="m-icn-add-user"><a href="${scopePrefix}/bpm/workspace!listGroupTasks.do">待领任务</a></li>
 			  <li class="m-icn-add-user"><a href="${scopePrefix}/bpm/workspace!listHistoryTasks.do">已办任务</a></li>
 			  <li class="m-icn-add-user"><a href="${scopePrefix}/bpm/workspace!listDelegatedTasks.do">代理中的任务</a></li>
             </ul>

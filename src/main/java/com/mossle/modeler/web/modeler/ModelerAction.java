@@ -74,8 +74,7 @@ public class ModelerAction extends BaseAction {
         bpmnBytes = new BpmnXMLConverter().convertToXML(model);
 
         String processName = modelData.getName() + ".bpmn20.xml";
-        Deployment deployment = repositoryService.createDeployment()
-                .name(modelData.getName())
+        repositoryService.createDeployment().name(modelData.getName())
                 .addString(processName, new String(bpmnBytes)).deploy();
 
         return RELOAD;

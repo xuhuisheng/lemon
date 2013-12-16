@@ -1007,7 +1007,7 @@
 
     <junit.version>4.11</junit.version>
     <mockito.version>1.9.5</mockito.version>
-    <selenium2.version>2.37.1</selenium2.version>
+    <selenium2.version>2.38.0</selenium2.version>
     <dbunit.version>2.4.9</dbunit.version>
     <commons-lang.version>3.1</commons-lang.version>
 
@@ -1015,8 +1015,8 @@
     <jsp.version>2.0</jsp.version>
     <jetty.version>8.1.14.v20131031</jetty.version>
 
-    <spring.version>3.2.5.RELEASE</spring.version>
-    <struts2.version>2.3.15.3</struts2.version>
+    <spring.version>3.2.6.RELEASE</spring.version>
+    <struts2.version>2.3.16</struts2.version>
     <spring-security.version>3.1.4.RELEASE</spring-security.version>
     <hibernate.version>4.2.7.SP1</hibernate.version>
     <hibernate-validator.version>5.0.1.Final</hibernate-validator.version>
@@ -1028,7 +1028,7 @@
     <jansi.version>1.11</jansi.version>
     <janino.version>2.6.1</janino.version>
     <commons-dbcp.version>1.4</commons-dbcp.version>
-    <commons-beanutils.version>1.8.3</commons-beanutils.version>
+    <commons-beanutils.version>1.9.0</commons-beanutils.version>
     <commons-codec.version>1.8</commons-codec.version>
     <commons-io.version>2.4</commons-io.version>
     <poi.version>3.9</poi.version>
@@ -1036,7 +1036,7 @@
     <log4jdbc-remix.version>0.2.7</log4jdbc-remix.version>
     <jersey.version>2.4.1</jersey.version>
     <jackson-jaxrs-json-provider.version>2.3.0</jackson-jaxrs-json-provider.version>
-    <jackson-datatype-hibernate4.version>2.3.0</jackson-datatype-hibernate4.version>
+    <jackson-datatype-hibernate4.version>2.3.0-1</jackson-datatype-hibernate4.version>
     <mail.version>1.4.7</mail.version>
     <dozer.version>5.4.0.20121220</dozer.version>
     <inspektr.version>1.1.GA</inspektr.version>
@@ -1066,7 +1066,7 @@
     <stat-scm.version>1.2.0</stat-scm.version>
     <versions-maven-plugin.version>2.1</versions-maven-plugin.version>
     <native2ascii-maven-plugin.version>1.0-beta-1</native2ascii-maven-plugin.version>
-    <jacoco-maven-plugin.version>0.6.3.201306030806</jacoco-maven-plugin.version>
+    <jacoco-maven-plugin.version>0.6.4.201312101107</jacoco-maven-plugin.version>
 
   </properties>
 

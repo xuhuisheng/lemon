@@ -45,7 +45,6 @@ public class ModelerResource {
             logger.info("model({}) is null", modelId);
             model = repositoryService.newModel();
             repositoryService.saveModel(model);
-            modelId = model.getId();
         }
 
         Map root = new HashMap();

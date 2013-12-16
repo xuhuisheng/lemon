@@ -34,10 +34,13 @@ public class PartyStruct implements java.io.Serializable {
     private PartyStructType partyStructType;
 
     /** null. */
+    private PartyDim partyDim;
+
+    /** null. */
     private Integer priority;
 
     /** null. */
-    private String userRepoRef;
+    private Integer status;
 
     /** null. */
     private String scopeId;
@@ -55,13 +58,14 @@ public class PartyStruct implements java.io.Serializable {
 
     public PartyStruct(PartyStructId id, PartyEntity parentEntity,
             PartyEntity childEntity, PartyStructType partyStructType,
-            Integer priority, String userRepoRef, String scopeId) {
+            PartyDim partyDim, Integer priority, Integer status, String scopeId) {
         this.id = id;
         this.parentEntity = parentEntity;
         this.childEntity = childEntity;
         this.partyStructType = partyStructType;
+        this.partyDim = partyDim;
         this.priority = priority;
-        this.userRepoRef = userRepoRef;
+        this.status = status;
         this.scopeId = scopeId;
     }
 
@@ -129,6 +133,21 @@ public class PartyStruct implements java.io.Serializable {
     }
 
     /** @return null. */
+    @ManyToOne(fetch = FetchType.LAZY)
+    @JoinColumn(name = "DIM_ID")
+    public PartyDim getPartyDim() {
+        return this.partyDim;
+    }
+
+    /**
+     * @param partyDim
+     *            null.
+     */
+    public void setPartyDim(PartyDim partyDim) {
+        this.partyDim = partyDim;
+    }
+
+    /** @return null. */
     @Column(name = "PRIORITY")
     public Integer getPriority() {
         return this.priority;
@@ -143,17 +162,17 @@ public class PartyStruct implements java.io.Serializable {
     }
 
     /** @return null. */
-    @Column(name = "USER_REPO_REF", length = 50)
-    public String getUserRepoRef() {
-        return this.userRepoRef;
+    @Column(name = "STATUS")
+    public Integer getStatus() {
+        return this.status;
     }
 
     /**
-     * @param userRepoRef
+     * @param status
      *            null.
      */
-    public void setUserRepoRef(String userRepoRef) {
-        this.userRepoRef = userRepoRef;
+    public void setStatus(Integer status) {
+        this.status = status;
     }
 
     /** @return null. */

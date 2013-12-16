@@ -174,7 +174,7 @@ public class CustomProcessDiagramGenerator {
 
     /**
      * 标记运行节点
-     * 
+     *
      * @param image
      *            原始图片
      * @param x
@@ -203,7 +203,7 @@ public class CustomProcessDiagramGenerator {
 
     /**
      * 标记历史节点
-     * 
+     *
      * @param image
      *            原始图片
      * @param x
@@ -232,7 +232,7 @@ public class CustomProcessDiagramGenerator {
 
     /**
      * 绘制节点边框
-     * 
+     *
      * @param x
      *            左上角节点坐在X位置
      * @param y
@@ -512,10 +512,7 @@ public class CustomProcessDiagramGenerator {
                 .findHistoricProcessInstance(processInstanceId);
         String processDefinitionId = historicProcessInstance
                 .getProcessDefinitionId();
-        GetBpmnModelCmd getBpmnModelCmd = new GetBpmnModelCmd(
-                processDefinitionId);
-        BpmnModel bpmnModel = getBpmnModelCmd.execute(Context
-                .getCommandContext());
+
         HistoricActivityInstanceQueryImpl historicActivityInstanceQueryImpl = new HistoricActivityInstanceQueryImpl();
         historicActivityInstanceQueryImpl.processInstanceId(processInstanceId)
                 .orderByHistoricActivityInstanceStartTime().asc();
@@ -535,8 +532,6 @@ public class CustomProcessDiagramGenerator {
         for (HistoricActivityInstance hai : historicActivityInstances) {
             historicActivityInstanceList.add(hai.getActivityId());
         }
-
-        List<String> highLightedFlows = new ArrayList<String>();
 
         // activities and their sequence-flows
         for (ActivityImpl activity : processDefinition.getActivities()) {

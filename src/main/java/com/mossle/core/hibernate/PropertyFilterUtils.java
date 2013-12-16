@@ -85,6 +85,8 @@ public class PropertyFilterUtils {
         default:
             buff.append(propertyName).append("=?");
             params.add(propertyValue);
+
+            break;
         }
     }
 }

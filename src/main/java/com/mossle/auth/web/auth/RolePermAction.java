@@ -19,11 +19,16 @@ import com.mossle.core.struts2.BaseAction;
 import org.apache.struts2.convention.annotation.Result;
 import org.apache.struts2.convention.annotation.Results;
 
+import org.slf4j.Logger;
+import org.slf4j.LoggerFactory;
+
 import org.springframework.context.MessageSource;
 import org.springframework.context.support.MessageSourceAccessor;
 
 @Results({ @Result(name = RolePermAction.RELOAD, location = "role-perm.do?id=${id}&operationMode=RETRIEVE", type = "redirect") })
 public class RolePermAction extends BaseAction {
+    private static Logger logger = LoggerFactory
+            .getLogger(RolePermAction.class);
     public static final String RELOAD = "reload";
     private PermManager permManager;
     private RoleDefManager roleDefManager;
@@ -52,6 +57,7 @@ public class RolePermAction extends BaseAction {
             roleDefManager.save(roleDef);
             addActionMessage(messages.getMessage("core.success.save", "保存成功"));
         } catch (CheckRoleException ex) {
+            logger.warn(ex.getMessage(), ex);
             addActionMessage(ex.getMessage());
 
             return input();

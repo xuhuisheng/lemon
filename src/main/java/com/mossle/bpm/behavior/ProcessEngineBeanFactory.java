@@ -1,18 +1,20 @@
 package com.mossle.bpm.behavior;
 
+import java.util.Map;
+
 import org.activiti.engine.ProcessEngines;
 import org.activiti.engine.impl.ProcessEngineImpl;
 import org.activiti.engine.impl.cfg.SpringBeanFactoryProxyMap;
 
 public class ProcessEngineBeanFactory {
-    private static SpringBeanFactoryProxyMap beanFactory;
+    private static Map beanFactory;
 
     static {
         if (beanFactory == null) {
             ProcessEngineImpl processEngine = (ProcessEngineImpl) ProcessEngines
                     .getDefaultProcessEngine();
-            beanFactory = (SpringBeanFactoryProxyMap) processEngine
-                    .getProcessEngineConfiguration().getBeans();
+            beanFactory = (Map) processEngine.getProcessEngineConfiguration()
+                    .getBeans();
         }
     }
 

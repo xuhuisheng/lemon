@@ -54,7 +54,9 @@ public class RestUtils {
 
             return Response.ok(new FileInputStream(file))
                     .lastModified(fileDate).build();
-        } catch (FileNotFoundException e) {
+        } catch (FileNotFoundException ex) {
+            logger.warn(ex.getMessage(), ex);
+
             return Response.status(Status.NOT_FOUND).build();
         }
     }

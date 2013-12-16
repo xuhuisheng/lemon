@@ -28,12 +28,16 @@ import org.apache.struts2.ServletActionContext;
 import org.apache.struts2.convention.annotation.Result;
 import org.apache.struts2.convention.annotation.Results;
 
+import org.slf4j.Logger;
+import org.slf4j.LoggerFactory;
+
 import org.springframework.context.MessageSource;
 import org.springframework.context.support.MessageSourceAccessor;
 
 @Results({ @Result(name = RoleAction.RELOAD, location = "role.do?operationMode=RETRIEVE", type = "redirect") })
 public class RoleAction extends BaseAction implements ModelDriven<Role>,
         Preparable {
+    private static Logger logger = LoggerFactory.getLogger(RoleAction.class);
     public static final String RELOAD = "reload";
     private RoleManager roleManager;
     private RoleDefManager roleDefManager;
@@ -94,6 +98,7 @@ public class RoleAction extends BaseAction implements ModelDriven<Role>,
 
             addActionMessage(messages.getMessage("core.success.save", "保存成功"));
         } catch (CheckRoleException ex) {
+            logger.warn(ex.getMessage(), ex);
             addActionMessage(ex.getMessage());
 
             return INPUT;
@@ -113,6 +118,7 @@ public class RoleAction extends BaseAction implements ModelDriven<Role>,
             roleManager.removeAll(roles);
             addActionMessage(messages.getMessage("core.success.delete", "删除成功"));
         } catch (CheckRoleException ex) {
+            logger.warn(ex.getMessage(), ex);
             addActionMessage(ex.getMessage());
         }
 

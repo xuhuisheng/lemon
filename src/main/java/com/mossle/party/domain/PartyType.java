@@ -29,7 +29,7 @@ public class PartyType implements java.io.Serializable {
     private String name;
 
     /** null. */
-    private String userRepoRef;
+    private Integer person;
 
     /** null. */
     private String scopeId;
@@ -48,12 +48,12 @@ public class PartyType implements java.io.Serializable {
     public PartyType() {
     }
 
-    public PartyType(String name, String userRepoRef, String scopeId,
+    public PartyType(String name, Integer person, String scopeId,
             Set<PartyStructRule> parentStructRules,
             Set<PartyStructRule> childStructRules,
             Set<PartyEntity> partyEntities) {
         this.name = name;
-        this.userRepoRef = userRepoRef;
+        this.person = person;
         this.scopeId = scopeId;
         this.parentStructRules = parentStructRules;
         this.childStructRules = childStructRules;
@@ -91,17 +91,17 @@ public class PartyType implements java.io.Serializable {
     }
 
     /** @return null. */
-    @Column(name = "USER_REPO_REF", length = 50)
-    public String getUserRepoRef() {
-        return this.userRepoRef;
+    @Column(name = "PERSON")
+    public Integer getPerson() {
+        return this.person;
     }
 
     /**
-     * @param userRepoRef
+     * @param person
      *            null.
      */
-    public void setUserRepoRef(String userRepoRef) {
-        this.userRepoRef = userRepoRef;
+    public void setPerson(Integer person) {
+        this.person = person;
     }
 
     /** @return null. */

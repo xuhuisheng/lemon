@@ -34,7 +34,7 @@ public class PartyStructRule implements java.io.Serializable {
     private PartyStructType partyStructType;
 
     /** null. */
-    private String userRepoRef;
+    private PartyDim partyDim;
 
     /** null. */
     private String scopeId;
@@ -52,12 +52,12 @@ public class PartyStructRule implements java.io.Serializable {
 
     public PartyStructRule(PartyStructRuleId id, PartyType parentType,
             PartyType childType, PartyStructType partyStructType,
-            String userRepoRef, String scopeId) {
+            PartyDim partyDim, String scopeId) {
         this.id = id;
         this.parentType = parentType;
         this.childType = childType;
         this.partyStructType = partyStructType;
-        this.userRepoRef = userRepoRef;
+        this.partyDim = partyDim;
         this.scopeId = scopeId;
     }
 
@@ -125,17 +125,18 @@ public class PartyStructRule implements java.io.Serializable {
     }
 
     /** @return null. */
-    @Column(name = "USER_REPO_REF", length = 50)
-    public String getUserRepoRef() {
-        return this.userRepoRef;
+    @ManyToOne(fetch = FetchType.LAZY)
+    @JoinColumn(name = "DIM_ID")
+    public PartyDim getPartyDim() {
+        return this.partyDim;
     }
 
     /**
-     * @param userRepoRef
+     * @param partyDim
      *            null.
      */
-    public void setUserRepoRef(String userRepoRef) {
-        this.userRepoRef = userRepoRef;
+    public void setPartyDim(PartyDim partyDim) {
+        this.partyDim = partyDim;
     }
 
     /** @return null. */

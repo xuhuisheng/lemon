@@ -26,7 +26,6 @@ import org.activiti.engine.history.HistoricProcessInstance;
 import org.activiti.engine.history.HistoricTaskInstance;
 import org.activiti.engine.impl.ServiceImpl;
 import org.activiti.engine.impl.interceptor.Command;
-import org.activiti.engine.impl.interceptor.CommandExecutor;
 import org.activiti.engine.repository.Deployment;
 import org.activiti.engine.repository.ProcessDefinition;
 import org.activiti.engine.runtime.ProcessInstance;
@@ -56,7 +55,6 @@ public class ConsoleAction extends BaseAction {
     private List<Task> tasks;
     private String executionId;
     private String activityId;
-    private CommandExecutor commandExecutor;
     private Map<String, String> activityMap;
     private String processInstanceId;
     private String deleteReason;
@@ -145,24 +143,15 @@ public class ConsoleAction extends BaseAction {
     }
 
     public void graphProcessDefinition() throws Exception {
-        RepositoryService repositoryService = processEngine
-                .getRepositoryService();
-        Command<InputStream> cmd = null;
-        cmd = new ProcessDefinitionDiagramCmd(processDefinitionId);
+        Command<InputStream> cmd = new ProcessDefinitionDiagramCmd(
+                processDefinitionId);
 
-        InputStream is = ((ServiceImpl) repositoryService).getCommandExecutor()
-                .execute(cmd);
+        InputStream is = processEngine.getManagementService().executeCommand(
+                cmd);
         HttpServletResponse response = ServletActionContext.getResponse();
         response.setContentType("image/png");
 
         IOUtils.copy(is, response.getOutputStream());
-
-        // int len = 0;
-        // byte[] b = new byte[1024];
-        //
-        // while ((len = is.read(b, 0, 1024)) != -1) {
-        // response.getOutputStream().write(b, 0, len);
-        // }
     }
 
     public void viewXml() throws Exception {
@@ -257,7 +246,7 @@ public class ConsoleAction extends BaseAction {
     public String prepareJump() {
         Command<Map<String, String>> cmd = new ListActivityCmd(executionId);
 
-        activityMap = commandExecutor.execute(cmd);
+        activityMap = processEngine.getManagementService().executeCommand(cmd);
 
         return "prepareJump";
     }
@@ -265,7 +254,7 @@ public class ConsoleAction extends BaseAction {
     public String jump() {
         Command<Object> cmd = new JumpCmd(executionId, activityId);
 
-        commandExecutor.execute(cmd);
+        processEngine.getManagementService().executeCommand(cmd);
 
         return RELOAD_TASK;
     }
@@ -330,10 +319,6 @@ public class ConsoleAction extends BaseAction {
 
     public void setActivityId(String activityId) {
         this.activityId = activityId;
-    }
-
-    public void setCommandExecutor(CommandExecutor commandExecutor) {
-        this.commandExecutor = commandExecutor;
     }
 
     public Map<String, String> getActivityMap() {

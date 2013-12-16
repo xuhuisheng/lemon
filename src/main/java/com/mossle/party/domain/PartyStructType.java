@@ -9,6 +9,8 @@ import javax.persistence.Entity;
 import javax.persistence.FetchType;
 import javax.persistence.GeneratedValue;
 import javax.persistence.Id;
+import javax.persistence.JoinColumn;
+import javax.persistence.ManyToOne;
 import javax.persistence.OneToMany;
 import javax.persistence.Table;
 
@@ -26,10 +28,13 @@ public class PartyStructType implements java.io.Serializable {
     private Long id;
 
     /** null. */
+    private PartyDim partyDim;
+
+    /** null. */
     private String name;
 
     /** null. */
-    private String userRepoRef;
+    private String ref;
 
     /** null. */
     private String scopeId;
@@ -44,10 +49,12 @@ public class PartyStructType implements java.io.Serializable {
     public PartyStructType() {
     }
 
-    public PartyStructType(String name, String userRepoRef, String scopeId,
-            Set<PartyStructRule> partyStructRules, Set<PartyStruct> partyStructs) {
+    public PartyStructType(PartyDim partyDim, String name, String ref,
+            String scopeId, Set<PartyStructRule> partyStructRules,
+            Set<PartyStruct> partyStructs) {
+        this.partyDim = partyDim;
         this.name = name;
-        this.userRepoRef = userRepoRef;
+        this.ref = ref;
         this.scopeId = scopeId;
         this.partyStructRules = partyStructRules;
         this.partyStructs = partyStructs;
@@ -70,6 +77,21 @@ public class PartyStructType implements java.io.Serializable {
     }
 
     /** @return null. */
+    @ManyToOne(fetch = FetchType.LAZY)
+    @JoinColumn(name = "DIM_ID")
+    public PartyDim getPartyDim() {
+        return this.partyDim;
+    }
+
+    /**
+     * @param partyDim
+     *            null.
+     */
+    public void setPartyDim(PartyDim partyDim) {
+        this.partyDim = partyDim;
+    }
+
+    /** @return null. */
     @Column(name = "NAME", length = 50)
     public String getName() {
         return this.name;
@@ -84,17 +106,17 @@ public class PartyStructType implements java.io.Serializable {
     }
 
     /** @return null. */
-    @Column(name = "USER_REPO_REF", length = 50)
-    public String getUserRepoRef() {
-        return this.userRepoRef;
+    @Column(name = "REF", length = 50)
+    public String getRef() {
+        return this.ref;
     }
 
     /**
-     * @param userRepoRef
+     * @param ref
      *            null.
      */
-    public void setUserRepoRef(String userRepoRef) {
-        this.userRepoRef = userRepoRef;
+    public void setRef(String ref) {
+        this.ref = ref;
     }
 
     /** @return null. */
