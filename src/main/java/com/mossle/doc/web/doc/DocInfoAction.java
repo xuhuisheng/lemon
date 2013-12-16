@@ -121,7 +121,7 @@ public class DocInfoAction extends BaseAction implements ModelDriven<DocInfo>,
         InputStream is = null;
 
         try {
-            is = new FileInputStream(attachment);
+            is = new FileInputStream(file);
             IoUtils.copyStream(is, ServletActionContext.getResponse()
                     .getOutputStream());
         } finally {

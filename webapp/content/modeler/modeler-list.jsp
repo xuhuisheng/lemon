@@ -63,7 +63,7 @@
 	    <td>${item.metaInfo}</td>
         <td>
 		  <a href="modeler!open.do?id=${item.id}" target="_blank">编辑</a>
-		  <a href="modeler!removeModeler.do?id=${item.id}">删除</a>
+		  <a href="modeler!removeModel.do?id=${item.id}">删除</a>
 		  <a href="modeler!deploy.do?id=${item.id}">发布</a>
         </td>
       </tr>
