@@ -9,11 +9,6 @@
     <%@include file="/common/meta.jsp"%>
     <title>编辑</title>
     <%@include file="/common/s.jsp"%>
-	<script type="text/javascript">
-$(function() {
-    $('.datepicker').datepicker({format:'yyyy-mm-dd'});
-});
-	</script>
   </head>
 
   <body>
@@ -48,7 +43,7 @@ $(function() {
 	    <span class="add-on"><i class="icon-calendar"></i></span>
 	  </div>
     </div>
-  </div>
+  </div><%--
   <div class="control-group">
     <label class="control-label">结束时间</label>
 	<div class="controls">
@@ -57,7 +52,7 @@ $(function() {
 	    <span class="add-on"><i class="icon-calendar"></i></span>
 	  </div>
     </div>
-  </div>
+  </div>--%>
   <div class="control-group">
     <label class="control-label">流程定义</label>
 	<div class="controls">
