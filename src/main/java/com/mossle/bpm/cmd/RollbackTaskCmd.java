@@ -28,9 +28,9 @@ import org.slf4j.LoggerFactory;
 
 /**
  * 流程打回 流程命令,目前只考虑一种情况下的流程会单箭头无分支
- * 
+ *
  * @author zou_ping
- * 
+ *
  */
 public class RollbackTaskCmd extends TaskCmd implements Command<Integer> {
     private static Logger logger = LoggerFactory
@@ -46,7 +46,7 @@ public class RollbackTaskCmd extends TaskCmd implements Command<Integer> {
 
     /**
      * 命令执行
-     * 
+     *
      * @return 0-成功 1-为初始节点无法回退
      */
     public Integer execute(CommandContext commandContext) {
@@ -168,7 +168,7 @@ public class RollbackTaskCmd extends TaskCmd implements Command<Integer> {
     /**
      * 处理前一个任务节?确保RU_TASK和HI_TASKINST的ID_是一样的,否则重新完成时两个任务不会关? 1.增加前任? 2.将前历史任务结束时间置为?duration置空,delete_resons_置空
      * 3.将前历史活动节点结束时间置为? 4.将Execution指针指向前任务节点
-     * 
+     *
      * @return Task
      */
     public TaskEntity processPreTask() {
@@ -231,7 +231,7 @@ public class RollbackTaskCmd extends TaskCmd implements Command<Integer> {
 
     /**
      * getPreviousHistoryTask by taskName
-     * 
+     *
      * @param activityId
      * @return HistoryTask
      */
@@ -241,6 +241,7 @@ public class RollbackTaskCmd extends TaskCmd implements Command<Integer> {
 
         if (hai != null) {
             if (hai.getActivityType().equals("userTask")) {
+				this.preHistoricActivityInstance = (HistoricActivityInstanceEntity) hai;
                 return getHistoricTaskInstance(hai.getActivityId());
             } else { // iterate
 
@@ -253,7 +254,7 @@ public class RollbackTaskCmd extends TaskCmd implements Command<Integer> {
 
     /**
      * getPreviousHistoryActivityInstance by activityName,not only for the task
-     * 
+     *
      * @param activityId
      * @return HistoryActivityInstance
      */

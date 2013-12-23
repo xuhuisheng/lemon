@@ -28,8 +28,9 @@
 		<div class="content content-inner">
 
 <form id="demoForm" method="post" action="form!startProcessInstance.do?operationMode=STORE" class="form-horizontal">
-  <input id="demo_id" type="hidden" name="processDefinitionId" value="${processDefinitionId}">
-  <input id="demo_id" type="hidden" name="businessKey" value="${businessKey}">
+  <input id="demo_processDefinitionId" type="hidden" name="processDefinitionId" value="${processDefinitionId}">
+  <input id="demo_businessKey" type="hidden" name="businessKey" value="${businessKey}">
+  <input id="demo_status" type="hidden" name="status" value="taskConf">
   <s:if test="taskDefinitions != null">
   <table class="table table-border">
     <thead>

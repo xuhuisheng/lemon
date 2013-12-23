@@ -70,6 +70,7 @@ public class FormAction extends BaseAction {
     private List<String> taskAssignees;
     private KeyValue keyValue;
     private List<Record> records;
+    private String status;
 
     /**
      * 根据id显示表单模板，把表单模板生成json，返回到页面显示.
@@ -196,12 +197,17 @@ public class FormAction extends BaseAction {
      * 发起流程.
      */
     public String startProcessInstance() throws Exception {
+        // 先保存草稿
+        this.saveDraft();
+
+        if ((!"taskConf".equals(status)) && "taskConf".equals(taskConf())) {
+            return "taskConf";
+        }
+
         // 先设置登录用户
         IdentityService identityService = processEngine.getIdentityService();
         identityService.setAuthenticatedUserId(SpringSecurityUtils
                 .getCurrentUsername());
-        // 先保存草稿
-        this.saveDraft();
         // 获得form的信息
         formInfo = processEngine.getManagementService().executeCommand(
                 new FindStartFormCmd(processDefinitionId));
@@ -400,6 +406,10 @@ public class FormAction extends BaseAction {
     }
 
     // ~ ======================================================================
+    public String getBusinessKey() {
+        return businessKey;
+    }
+
     public void setBusinessKey(String businessKey) {
         this.businessKey = businessKey;
     }
@@ -462,5 +472,9 @@ public class FormAction extends BaseAction {
 
     public List<Record> getRecords() {
         return records;
+    }
+
+    public void setStatus(String status) {
+        this.status = status;
     }
 }

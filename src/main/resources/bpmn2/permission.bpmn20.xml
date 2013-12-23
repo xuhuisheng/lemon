@@ -9,12 +9,12 @@
   expressionLanguage='http://www.w3.org/1999/XPath'
   targetNamespace='http://www.mossle.com'>
   <process id="permission" name="审批权限" isExecutable="true">
-    <startEvent id="sid-A84151C1-CFB5-4A84-BD04-0B8300929FB1" activiti:initiator='initiator'/>
-	<userTask id="sid-CF96214A-6575-4B3C-8C2D-D67874011009" name="经理审批"/>
+    <startEvent id="sid-A84151C1-CFB5-4A84-BD04-0B8300929FB1" activiti:initiator='initiator' activiti:formKey="permission发起申请"/>
+	<userTask id="sid-CF96214A-6575-4B3C-8C2D-D67874011009" name="经理审批" activiti:formKey="permission经理审批"/>
 	<sequenceFlow id="sid-6A1B6F55-874B-4B9A-A9F6-9B1892C92749" sourceRef="sid-A84151C1-CFB5-4A84-BD04-0B8300929FB1" targetRef="sid-CF96214A-6575-4B3C-8C2D-D67874011009"/>
-	<userTask id="sid-80C87560-7519-4851-9907-C0A0816F0ABF" name="模块负责人审批"/>
+	<userTask id="sid-80C87560-7519-4851-9907-C0A0816F0ABF" name="模块负责人审批" activiti:formKey="permission模块负责人审批"/>
 	<sequenceFlow id="sid-D411B36D-615D-4425-8E4C-AA49E7471144" sourceRef="sid-CF96214A-6575-4B3C-8C2D-D67874011009" targetRef="sid-80C87560-7519-4851-9907-C0A0816F0ABF"/>
-	<userTask id="sid-A49FBF1D-8EE8-48C1-B6D6-FE5C629F50DF" name="内审审批"/>
+	<userTask id="sid-A49FBF1D-8EE8-48C1-B6D6-FE5C629F50DF" name="内审审批" activiti:formKey="permission内审审批"/>
 	<sequenceFlow id="sid-57F9F6D7-1B16-45DC-8631-D1789B0E63A9" sourceRef="sid-80C87560-7519-4851-9907-C0A0816F0ABF" targetRef="sid-A49FBF1D-8EE8-48C1-B6D6-FE5C629F50DF"/>
 	<endEvent id="sid-C2BB4087-EFD1-4203-BF85-93762E95B691"/>
 	<sequenceFlow id="sid-FA913FAD-D24B-4E90-9D82-2C83CCA101C0" sourceRef="sid-A49FBF1D-8EE8-48C1-B6D6-FE5C629F50DF" targetRef="sid-C2BB4087-EFD1-4203-BF85-93762E95B691"/>

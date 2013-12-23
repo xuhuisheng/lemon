@@ -105,9 +105,10 @@ public class UserConnectorAction extends BaseAction {
         logger.info("reference : {}", reference);
 
         UserDTO userDto = userConnector.findById(reference);
-        username = userDto.getUsername();
 
         if (userDto != null) {
+            username = userDto.getUsername();
+
             UserStatus userStatus = authService.createOrGetUserStatus(username,
                     userDto.getId(), ScopeHolder.getUserRepoRef(),
                     ScopeHolder.getScopeId());
