@@ -80,6 +80,7 @@
 	<logger name="org.springframework.security.access.event.LoggerListener" level="error"/>
 	<logger name="org.springframework.security.authentication.event.LoggerListener" level="error"/>
 	<logger name="org.apache.struts2.config.BeanSelectionProvider" level="warn"/>
+	<logger name="org.hibernate.engine.internal.StatisticalLoggingSessionEventListener" level="warn"/>
 
 
 </configuration>

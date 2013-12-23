@@ -229,7 +229,7 @@ public class WithdrawTaskCmd extends TaskCmd implements Command<Integer> {
                     state = null;
                 }
             } catch (SQLException ex) {
-                // ignore
+                logger.debug(ex.getMessage(), ex);
             }
 
             try {
@@ -238,7 +238,7 @@ public class WithdrawTaskCmd extends TaskCmd implements Command<Integer> {
                     conn = null;
                 }
             } catch (SQLException ex) {
-                // ignore
+                logger.debug(ex.getMessage(), ex);
             }
         }
 

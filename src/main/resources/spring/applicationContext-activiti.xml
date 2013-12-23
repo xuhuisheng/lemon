@@ -101,6 +101,7 @@
 				<bean class="com.mossle.bpm.listener.AutoCompleteFirstTaskListener"/>
 				<bean class="com.mossle.bpm.listener.AssigneeAliasTaskListener"/>
 				<bean class="com.mossle.bpm.listener.TaskConfTaskListener"/>
+				<bean class="com.mossle.bpm.listener.NoticeTaskListener"/>
 			</list>
 		</property>
 	</bean>

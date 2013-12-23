@@ -18,12 +18,12 @@ import com.mossle.bpm.persistence.manager.BpmTaskConfManager;
 import com.mossle.core.mapper.JsonMapper;
 import com.mossle.core.struts2.BaseAction;
 
-import com.mossle.form.domain.DynamicModel;
-import com.mossle.form.domain.DynamicModelData;
 import com.mossle.form.domain.FormTemplate;
-import com.mossle.form.manager.DynamicModelManager;
+import com.mossle.form.keyvalue.KeyValue;
+import com.mossle.form.keyvalue.Prop;
+import com.mossle.form.keyvalue.Record;
+import com.mossle.form.keyvalue.RecordBuilder;
 import com.mossle.form.manager.FormTemplateManager;
-import com.mossle.form.service.ModelService;
 
 import com.mossle.security.util.SpringSecurityUtils;
 
@@ -48,9 +48,10 @@ import org.slf4j.LoggerFactory;
  */
 public class FormAction extends BaseAction {
     private static Logger logger = LoggerFactory.getLogger(FormAction.class);
+    public static final int STATUS_DRAFT_PROCESS = 0;
+    public static final int STATUS_DRAFT_TASK = 1;
+    public static final int STATUS_RUNNING = 2;
     private ProcessEngine processEngine;
-    private DynamicModel dynamicModel;
-    private DynamicModelManager dynamicModelManager;
     private BpmProcessManager bpmProcessManager;
     private BpmTaskConfManager bpmTaskConfManager;
     private String businessKey;
@@ -60,18 +61,20 @@ public class FormAction extends BaseAction {
     private String taskId;
     private Long id;
     private FormTemplateManager formTemplateManager;
-    private ModelService modelService;
     private JsonMapper jsonMapper = new JsonMapper();
     private String json = "{}";
     private FormInfo formInfo;
     private FormTemplate formTemplate;
-    private List<DynamicModel> dynamicModels;
     private List<TaskDefinition> taskDefinitions;
     private List<String> taskDefinitionKeys;
     private List<String> taskAssignees;
+    private KeyValue keyValue;
+    private List<Record> records;
 
     /**
-     * 根据id，加载form模板，显示布局.
+     * 根据id显示表单模板，把表单模板生成json，返回到页面显示.
+     * 
+     * @todo: 放到rest里？
      */
     public String loadForm() throws Exception {
         FormTemplate theFormTemplate = formTemplateManager.get(id);
@@ -81,71 +84,37 @@ public class FormAction extends BaseAction {
     }
 
     /**
-     * 显示草稿箱的内容.
-     */
-    public String loadModelData() throws Exception {
-        if ((businessKey != null) && (!"".equals(businessKey))) {
-            // 如果有businessKey就用businessKey查询
-            dynamicModel = dynamicModelManager.get(Long.parseLong(businessKey));
-        } else {
-            // 如果没有businessKey，就用executionId查询
-            Task task = processEngine.getTaskService().createTaskQuery()
-                    .taskId(taskId).singleResult();
-            String executionId = task.getExecutionId();
-            dynamicModel = dynamicModelManager.findUniqueBy("executionId",
-                    executionId);
-        }
-
-        StringBuilder buff = new StringBuilder();
-        buff.append("{");
-
-        for (DynamicModelData dynamicModelData : dynamicModel
-                .getDynamicModelDatas()) {
-            buff.append("\'").append(dynamicModelData.getName())
-                    .append("\':\'").append(dynamicModelData.getValue())
-                    .append("\',");
-        }
-
-        buff.deleteCharAt(buff.length() - 1);
-        buff.append("}");
-        json = jsonMapper.toJson(buff.toString());
-
-        return "loadModelData";
-    }
-
-    /**
      * 保存草稿.
      */
     public String saveDraft() throws Exception {
         Map<String, String[]> parameterMap = ServletActionContext.getRequest()
                 .getParameterMap();
-        Map<String, String> parameters = new HashMap<String, String>();
-
-        for (Map.Entry<String, String[]> entry : parameterMap.entrySet()) {
-            String key = entry.getKey();
-            String[] value = entry.getValue();
-
-            if (value.length == 1) {
-                parameters.put(key, value[0]);
-            }
-        }
-
-        String businessKeyString = parameters.get("businessKey");
-        Long businessKeyLong = null;
-
-        if ((businessKeyString != null) && (!"".equals(businessKeyString))) {
-            businessKeyLong = Long.parseLong(businessKeyString);
-        }
 
         if ((taskId != null) && (!"".equals(taskId))) {
+            // 如果是任务草稿，直接通过processInstanceId获得record，更新数据
+            // TODO: 分支肯定有问题
             Task task = processEngine.getTaskService().createTaskQuery()
                     .taskId(taskId).singleResult();
-            String executionId = task.getExecutionId();
-            modelService
-                    .saveTaskDraft(businessKeyLong, executionId, parameters);
+            String processInstanceId = task.getProcessInstanceId();
+            Record record = keyValue.findByRef(processInstanceId);
+
+            record = new RecordBuilder().build(record, STATUS_DRAFT_TASK,
+                    parameterMap);
+            keyValue.save(record);
+            businessKey = record.getCode();
+        } else if ((businessKey != null) && (!"".equals(businessKey))) {
+            // 如果是流程草稿，直接通过businessKey获得record，更新数据
+            Record record = keyValue.findByCode(businessKey);
+
+            record = new RecordBuilder().build(record, STATUS_DRAFT_PROCESS,
+                    parameterMap);
+            keyValue.save(record);
         } else {
-            modelService.saveProcessInstanceDraft(businessKeyLong,
-                    processDefinitionId, parameters);
+            // 如果是第一次保存草稿，肯定是流程草稿，先初始化record，再保存数据
+            Record record = new RecordBuilder().build(processDefinitionId,
+                    STATUS_DRAFT_PROCESS, parameterMap);
+            keyValue.save(record);
+            businessKey = record.getCode();
         }
 
         return "saveDraft";
@@ -155,7 +124,7 @@ public class FormAction extends BaseAction {
      * 列出所有草稿.
      */
     public String listDrafts() throws Exception {
-        dynamicModels = dynamicModelManager.findBy("status", 0);
+        records = keyValue.findByStatus(STATUS_DRAFT_PROCESS);
 
         return "listDrafts";
     }
@@ -179,16 +148,13 @@ public class FormAction extends BaseAction {
             this.formTemplate = formTemplateManager.findUniqueBy("name",
                     formInfo.getFormKey());
 
-            if ((businessKey != null) && (!"".equals(businessKey))) {
-                dynamicModel = dynamicModelManager.get(Long
-                        .parseLong(businessKey));
+            Record record = keyValue.findByCode(businessKey);
 
+            if (record != null) {
                 Map map = new HashMap();
 
-                for (DynamicModelData dynamicModelData : dynamicModel
-                        .getDynamicModelDatas()) {
-                    map.put(dynamicModelData.getName(),
-                            dynamicModelData.getValue());
+                for (Prop prop : record.getProps().values()) {
+                    map.put(prop.getCode(), prop.getValue());
                 }
 
                 json = jsonMapper.toJson(map);
@@ -234,10 +200,13 @@ public class FormAction extends BaseAction {
         IdentityService identityService = processEngine.getIdentityService();
         identityService.setAuthenticatedUserId(SpringSecurityUtils
                 .getCurrentUsername());
+        // 先保存草稿
+        this.saveDraft();
         // 获得form的信息
         formInfo = processEngine.getManagementService().executeCommand(
                 new FindStartFormCmd(processDefinitionId));
 
+        // 尝试根据表单里字段的类型，进行转换
         Map<String, String> formTypeMap = new HashMap<String, String>();
 
         if (formInfo.isFormExists()) {
@@ -259,41 +228,25 @@ public class FormAction extends BaseAction {
             }
         }
 
-        Long businessKeyLong = null;
+        Record record = keyValue.findByCode(businessKey);
+
         Map<String, Object> processParameters = new HashMap<String, Object>();
-        Map<String, String> modelParameters = new HashMap<String, String>();
+
+        // 如果有表单，就从数据库获取数据
+        for (Prop prop : record.getProps().values()) {
+            String key = prop.getCode();
+            String value = prop.getValue();
+            String formType = this.getFormType(formTypeMap, key);
+
+            if ("userPicker".equals(formType)) {
+                processParameters.put(key,
+                        new ArrayList(Arrays.asList(value.split(","))));
+            } else {
+                processParameters.put(key, value);
+            }
+        }
 
         if (taskDefinitionKeys != null) {
-            DynamicModel dynamicModel;
-
-            if ((businessKey == null) || "".equals(businessKey)) {
-                // 如果就没有表单，也要生成一个businessKey，否则后边没法关联
-                dynamicModel = modelService.createOrGetDynamicModel(null);
-                businessKeyLong = dynamicModel.getId();
-                businessKey = Long.toString(businessKeyLong);
-            } else {
-                // 如果有表单，就从数据库获取数据
-                businessKeyLong = Long.parseLong(businessKey);
-                dynamicModel = modelService
-                        .createOrGetDynamicModel(businessKeyLong);
-
-                for (DynamicModelData data : dynamicModel
-                        .getDynamicModelDatas()) {
-                    String key = data.getName();
-                    String value = data.getValue();
-                    String formType = this.getFormType(formTypeMap, key);
-
-                    if ("userPicker".equals(formType)) {
-                        processParameters.put(key,
-                                new ArrayList(Arrays.asList(value.split(","))));
-                    } else {
-                        processParameters.put(key, value);
-                    }
-
-                    modelParameters.put(key, value);
-                }
-            }
-
             // 如果是从配置任务负责人的页面过来，就保存TaskConf，再从草稿中得到数据启动流程
             int index = 0;
 
@@ -305,43 +258,14 @@ public class FormAction extends BaseAction {
                 bpmTaskConf.setAssignee(taskAssignee);
                 bpmTaskConfManager.save(bpmTaskConf);
             }
-        } else {
-            // 如果是从startForm过来，就直接保存数据
-            Map<String, String[]> parameterMap = ServletActionContext
-                    .getRequest().getParameterMap();
-
-            for (Map.Entry<String, String[]> entry : parameterMap.entrySet()) {
-                String key = entry.getKey();
-                String[] value = entry.getValue();
-                String formType = this.getFormType(formTypeMap, key);
-
-                if (value.length == 1) {
-                    if ("userPicker".equals(formType)) {
-                        processParameters.put(
-                                key,
-                                new ArrayList(
-                                        Arrays.asList(value[0].split(","))));
-                    } else {
-                        processParameters.put(key, value[0]);
-                    }
-
-                    modelParameters.put(key, value[0]);
-                }
-            }
-
-            if ((businessKey != null) && (!"".equals(businessKey))) {
-                businessKeyLong = Long.parseLong(businessKey);
-            }
-
-            modelService.saveProcessInstance(businessKeyLong,
-                    processDefinitionId, null, modelParameters);
         }
 
         ProcessInstance processInstance = processEngine.getRuntimeService()
                 .startProcessInstanceById(processDefinitionId, businessKey,
                         processParameters);
-        modelService.saveProcessInstance(businessKeyLong, processDefinitionId,
-                processInstance.getId(), modelParameters);
+        record = new RecordBuilder().build(record, STATUS_RUNNING,
+                processInstance.getId());
+        keyValue.save(record);
 
         return "startProcessInstance";
     }
@@ -368,9 +292,25 @@ public class FormAction extends BaseAction {
         String taskFormKey = formService.getTaskFormKey(
                 task.getProcessDefinitionId(), task.getTaskDefinitionKey());
         formTemplate = formTemplateManager.findUniqueBy("name", taskFormKey);
-        this.loadModelDataComplete();
         formInfo = new FormInfo();
         formInfo.setTaskId(taskId);
+
+        if ((taskId != null) && (!"".equals(taskId))) {
+            // 如果是任务草稿，直接通过processInstanceId获得record，更新数据
+            // TODO: 分支肯定有问题
+            String processInstanceId = task.getProcessInstanceId();
+            Record record = keyValue.findByRef(processInstanceId);
+
+            if (record != null) {
+                Map map = new HashMap();
+
+                for (Prop prop : record.getProps().values()) {
+                    map.put(prop.getCode(), prop.getValue());
+                }
+
+                json = jsonMapper.toJson(map);
+            }
+        }
 
         return "viewTaskForm";
     }
@@ -384,58 +324,71 @@ public class FormAction extends BaseAction {
                 .getCurrentUsername());
         this.saveDraft();
 
-        Map<String, String[]> parameterMap = ServletActionContext.getRequest()
-                .getParameterMap();
-        Map<String, Object> parameters = new HashMap<String, Object>();
+        TaskService taskService = processEngine.getTaskService();
+        Task task = taskService.createTaskQuery().taskId(taskId).singleResult();
 
-        for (Map.Entry<String, String[]> entry : parameterMap.entrySet()) {
-            String key = entry.getKey();
-            String[] value = entry.getValue();
+        FormService formService = processEngine.getFormService();
+        String taskFormKey = formService.getTaskFormKey(
+                task.getProcessDefinitionId(), task.getTaskDefinitionKey());
+        formInfo = new FormInfo();
+        formInfo.setTaskId(taskId);
+        formInfo.setFormKey(taskFormKey);
 
-            if (value.length == 1) {
-                parameters.put(key, value[0]);
+        // 尝试根据表单里字段的类型，进行转换
+        Map<String, String> formTypeMap = new HashMap<String, String>();
+
+        if (formInfo.isFormExists()) {
+            this.formTemplate = formTemplateManager.findUniqueBy("name",
+                    formInfo.getFormKey());
+
+            String content = formTemplate.getContent();
+            logger.info("content : {}", content);
+
+            Map map = jsonMapper.fromJson(content, Map.class);
+            logger.info("map : {}", map);
+
+            List<Map> list = (List<Map>) map.get("fields");
+            logger.info("list : {}", list);
+
+            for (Map item : list) {
+                formTypeMap.put((String) item.get("name"),
+                        (String) item.get("type"));
             }
         }
 
-        processEngine.getManagementService().executeCommand(
-                new CompleteTaskWithCommentCmd(taskId, parameters, "完成"));
+        String processInstanceId = task.getProcessInstanceId();
+        Record record = keyValue.findByRef(processInstanceId);
+
+        Map<String, Object> processParameters = new HashMap<String, Object>();
+
+        // 如果有表单，就从数据库获取数据
+        for (Prop prop : record.getProps().values()) {
+            String key = prop.getCode();
+            String value = prop.getValue();
+            String formType = this.getFormType(formTypeMap, key);
+
+            if ("userPicker".equals(formType)) {
+                processParameters.put(key,
+                        new ArrayList(Arrays.asList(value.split(","))));
+            } else {
+                processParameters.put(key, value);
+            }
+        }
+
+        processEngine.getManagementService()
+                .executeCommand(
+                        new CompleteTaskWithCommentCmd(taskId,
+                                processParameters, "完成"));
+        record = new RecordBuilder().build(record, STATUS_RUNNING,
+                processInstanceId);
+        keyValue.save(record);
 
         return "completeTask";
-    }
-
-    public void loadModelDataComplete() throws Exception {
-        if ((businessKey != null) && (!"".equals(businessKey))) {
-            dynamicModel = dynamicModelManager.get(Long.parseLong(businessKey));
-        } else {
-            Task task = processEngine.getTaskService().createTaskQuery()
-                    .taskId(taskId).singleResult();
-            String executionId = task.getExecutionId();
-            dynamicModel = dynamicModelManager.findUniqueBy("executionId",
-                    executionId);
-
-            if (dynamicModel == null) {
-                dynamicModel = dynamicModelManager.findUniqueBy("instanceId",
-                        task.getProcessInstanceId());
-            }
-        }
-
-        Map map = new HashMap();
-
-        for (DynamicModelData dynamicModelData : dynamicModel
-                .getDynamicModelDatas()) {
-            map.put(dynamicModelData.getName(), dynamicModelData.getValue());
-        }
-
-        json = jsonMapper.toJson(map);
     }
 
     // ~ ======================================================================
     public void setProcessEngine(ProcessEngine processEngine) {
         this.processEngine = processEngine;
-    }
-
-    public void setDynamicModelManager(DynamicModelManager dynamicModelManager) {
-        this.dynamicModelManager = dynamicModelManager;
     }
 
     public void setBpmProcessManager(BpmProcessManager bpmProcessManager) {
@@ -447,10 +400,6 @@ public class FormAction extends BaseAction {
     }
 
     // ~ ======================================================================
-    public DynamicModel getDynamicModel() {
-        return dynamicModel;
-    }
-
     public void setBusinessKey(String businessKey) {
         this.businessKey = businessKey;
     }
@@ -475,10 +424,6 @@ public class FormAction extends BaseAction {
         this.taskId = taskId;
     }
 
-    public void setModelService(ModelService modelService) {
-        this.modelService = modelService;
-    }
-
     public void setId(Long id) {
         this.id = id;
     }
@@ -499,10 +444,6 @@ public class FormAction extends BaseAction {
         return formTemplate;
     }
 
-    public List<DynamicModel> getDynamicModels() {
-        return dynamicModels;
-    }
-
     public List<TaskDefinition> getTaskDefinitions() {
         return taskDefinitions;
     }
@@ -513,5 +454,13 @@ public class FormAction extends BaseAction {
 
     public void setTaskAssignees(List<String> taskAssignees) {
         this.taskAssignees = taskAssignees;
+    }
+
+    public void setKeyValue(KeyValue keyValue) {
+        this.keyValue = keyValue;
+    }
+
+    public List<Record> getRecords() {
+        return records;
     }
 }

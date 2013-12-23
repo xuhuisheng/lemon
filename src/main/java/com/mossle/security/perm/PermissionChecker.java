@@ -16,4 +16,12 @@ public class PermissionChecker {
 
         return false;
     }
+
+    public void setReadOnly(boolean readOnly) {
+        permissionMatcher.setReadOnly(readOnly);
+    }
+
+    public boolean isReadOnly() {
+        return permissionMatcher.isReadOnly();
+    }
 }

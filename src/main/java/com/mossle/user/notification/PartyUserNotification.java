@@ -15,11 +15,11 @@ public class PartyUserNotification implements UserNotification {
     private JdbcTemplate jdbcTemplate;
 
     // insert
-    private String insertPartyEntitySql = "insert into party_entity(name,reference,type_id) values(?,?,?)";
-    private String selectPartyEntitySql = "select id from party_entity where reference=? and type_id=?";
+    private String insertPartyEntitySql = "insert into party_entity(name,ref,type_id) values(?,?,?)";
+    private String selectPartyEntitySql = "select id from party_entity where ref=? and type_id=?";
 
     // update
-    private String updatePartyEntitySql = "update party_entity set name=? where reference=? and type_id=?";
+    private String updatePartyEntitySql = "update party_entity set name=? where ref=? and type_id=?";
 
     // remove
     private String removePartyStructSql = "delete from party_struct where STRUCT_TYPE_ID=? and PARENT_ENTITY_ID=? and CHILD_ENTITY_ID=?";

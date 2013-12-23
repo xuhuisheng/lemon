@@ -1,7 +1,7 @@
 <%@page contentType="text/html;charset=UTF-8"%>
 <%@include file="/taglibs.jsp"%>
 <%pageContext.setAttribute("currentHeader", "auth");%>
-<%pageContext.setAttribute("currentMenu", "auth-user");%>
+<%pageContext.setAttribute("currentMenu", "auth");%>
 <!doctype html>
 <html lang="en">
 
@@ -110,7 +110,7 @@ $(function() {
         <td>${item.authorities}</td>
         <td>
 			<perm:permission permission="user:auth">
-            <a href="javascript:void(0);location.href='user-connector!configRole.do?username=' + encodeURIComponent('${item.username}') "><spring:message code="user.user.list.role" text="设置权限"/></a>
+            <a href="user-connector!configRole.do?reference=${item.reference}"><spring:message code="user.user.list.role" text="设置权限"/></a>
 			</perm:permission>
         </td>
       </tr>

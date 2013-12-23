@@ -7,18 +7,6 @@
 
 	<context:mbean-server />
 
-	<bean id="mbeanExporter" class="org.springframework.jmx.export.MBeanExporter">
-		<property name="beans">
-			<map>
-				<entry key="org.hibernate:name=hibernateStatistics" value-ref="hibernateStatistics" />
-			</map>
-		</property>
-	</bean>
-
-	<bean name="hibernateStatistics" class="org.hibernate.jmx.StatisticsService">
-		<property name="sessionFactory" ref="sessionFactory" />
-	</bean>
-
 	<bean name="ehcacheStatistics" class="net.sf.ehcache.management.ManagementService" init-method="init">
 		<constructor-arg index="0" ref="ehcacheManager"/>
 		<constructor-arg index="1" ref="mbeanServer"/>

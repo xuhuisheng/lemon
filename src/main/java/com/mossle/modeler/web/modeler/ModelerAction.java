@@ -22,7 +22,7 @@ import org.codehaus.jackson.node.ObjectNode;
 
 /**
  * modeler.
- *
+ * 
  * @author Lingo
  */
 @Results({
@@ -75,7 +75,8 @@ public class ModelerAction extends BaseAction {
 
         String processName = modelData.getName() + ".bpmn20.xml";
         repositoryService.createDeployment().name(modelData.getName())
-                .addString(processName, new String(bpmnBytes, "UTF-8")).deploy();
+                .addString(processName, new String(bpmnBytes, "UTF-8"))
+                .deploy();
 
         return RELOAD;
     }

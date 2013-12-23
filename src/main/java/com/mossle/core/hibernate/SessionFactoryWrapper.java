@@ -13,6 +13,7 @@ import javax.naming.Reference;
 
 import org.hibernate.Cache;
 import org.hibernate.CustomEntityDirtinessStrategy;
+import org.hibernate.EntityNameResolver;
 import org.hibernate.HibernateException;
 import org.hibernate.Interceptor;
 import org.hibernate.MappingException;
@@ -35,6 +36,7 @@ import org.hibernate.dialect.Dialect;
 import org.hibernate.dialect.function.SQLFunctionRegistry;
 
 import org.hibernate.engine.ResultSetMappingDefinition;
+import org.hibernate.engine.jdbc.connections.spi.ConnectionProvider;
 import org.hibernate.engine.jdbc.spi.JdbcServices;
 import org.hibernate.engine.jdbc.spi.SqlExceptionHelper;
 import org.hibernate.engine.profile.FetchProfile;
@@ -50,6 +52,8 @@ import org.hibernate.exception.spi.SQLExceptionConverter;
 import org.hibernate.id.IdentifierGenerator;
 import org.hibernate.id.factory.IdentifierGeneratorFactory;
 
+import org.hibernate.internal.NamedQueryRepository;
+
 import org.hibernate.metadata.ClassMetadata;
 import org.hibernate.metadata.CollectionMetadata;
 
@@ -58,7 +62,6 @@ import org.hibernate.persister.entity.EntityPersister;
 
 import org.hibernate.proxy.EntityNotFoundDelegate;
 
-import org.hibernate.service.jdbc.connections.spi.ConnectionProvider;
 import org.hibernate.service.spi.ServiceRegistryImplementor;
 
 import org.hibernate.stat.Statistics;
@@ -390,5 +393,25 @@ public class SessionFactoryWrapper implements SessionFactoryImplementor {
             throws MappingException {
         return sessionFactoryImplementor.getReferencedPropertyType(className,
                 propertyName);
+    }
+
+    public NamedQueryRepository getNamedQueryRepository() {
+        return sessionFactoryImplementor.getNamedQueryRepository();
+    }
+
+    public Iterable<EntityNameResolver> iterateEntityNameResolvers() {
+        return sessionFactoryImplementor.iterateEntityNameResolvers();
+    }
+
+    public void registerNamedSQLQueryDefinition(String name,
+            NamedSQLQueryDefinition definition) {
+        sessionFactoryImplementor.registerNamedSQLQueryDefinition(name,
+                definition);
+    }
+
+    public void registerNamedQueryDefinition(String name,
+            NamedQueryDefinition definition) {
+        sessionFactoryImplementor
+                .registerNamedQueryDefinition(name, definition);
     }
 }

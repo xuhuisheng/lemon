@@ -12,11 +12,13 @@
 	</bean>
 
 	<bean id="mailService" class="com.mossle.core.mail.MailService">
-		<property name="defaultFrom" value="demo.mossle@gmail.com" />
-		<property name="defaultTo" value="demo.mossle@gmail.com" />
-		<property name="defaultSubject" value="Hello Demo Mossle" />
-		<property name="defaultContent" value="Hello Demo Mossle"/>
 		<property name="javaMailSender" ref="javaMailSender"/>
+		<property name="defaultFrom" value="${mail.default.from}" />
+		<property name="defaultTo" value="${mail.default.to}" />
+		<property name="defaultSubject" value="${mail.default.subject}" />
+		<property name="defaultContent" value="${mail.default.content}"/>
+		<property name="testMode" value="${mail.test.mode}"/>
+		<property name="testMail" value="${mail.test.mail}"/>
 	</bean>
 
 </beans>

@@ -45,7 +45,8 @@ public class AutoDeployer {
             } else {
                 try {
                     resourceName = resource.getFile().getAbsolutePath();
-                } catch (IOException e) {
+                } catch (IOException ex) {
+                    logger.debug(ex.getMessage(), ex);
                     resourceName = resource.getFilename();
                 }
             }
@@ -67,9 +68,9 @@ public class AutoDeployer {
 
                 deploymentBuilder.deploy();
                 logger.info("auto deploy : {}", resourceName);
-            } catch (IOException e) {
+            } catch (IOException ex) {
                 throw new ActivitiException("couldn't auto deploy resource '"
-                        + resource + "': " + e.getMessage(), e);
+                        + resource + "': " + ex.getMessage(), ex);
             }
         }
     }

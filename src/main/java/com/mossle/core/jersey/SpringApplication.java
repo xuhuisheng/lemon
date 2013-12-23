@@ -4,7 +4,7 @@ import java.util.Map;
 
 import javax.ws.rs.Path;
 
-import com.mossle.core.spring.ApplicationContextHolder;
+import com.mossle.core.spring.ApplicationContextHelper;
 
 import org.glassfish.jersey.server.ResourceConfig;
 
@@ -22,7 +22,7 @@ public class SpringApplication extends ResourceConfig {
     }
 
     public void init() {
-        ApplicationContext ctx = ApplicationContextHolder.getInstance()
+        ApplicationContext ctx = ApplicationContextHelper
                 .getApplicationContext();
         Map<String, Object> map = ctx.getBeansWithAnnotation(Path.class);
 

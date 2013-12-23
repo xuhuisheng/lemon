@@ -11,7 +11,7 @@
 
 	<bean id="transactionManager" class="com.mossle.core.hibernate.ReadOnlyTransactionManager">
 		<property name="platformTransactionManager">
-			<bean class="org.springframework.orm.hibernate4.HibernateTransactionManager">
+			<bean class="org.springframework.orm.hibernate43.HibernateTransactionManager">
 				<property name="sessionFactory" ref="sessionFactory" />
 			</bean>
 		</property>

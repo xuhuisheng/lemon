@@ -65,8 +65,8 @@ public class UserStatusAction extends BaseAction implements
     public String list() {
         List<PropertyFilter> propertyFilters = PropertyFilter
                 .buildFromHttpRequest(ServletActionContext.getRequest());
-        propertyFilters.add(new PropertyFilter("EQS_userRepoRef", ScopeHolder
-                .getUserRepoRef()));
+        propertyFilters.add(new PropertyFilter("EQS_scopeId", ScopeHolder
+                .getScopeId()));
         page = userStatusManager.pagedQuery(page, propertyFilters);
 
         List<UserStatus> userStatuses = (List<UserStatus>) page.getResult();

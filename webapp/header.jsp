@@ -25,7 +25,6 @@
                   <li><a href="${scopePrefix}/group/org.do">组织机构</a></li>
                   <li class="divider"></li>
                   <li><a href="${scopePrefix}/auth/user-connector.do">权限管理</a></li>
-                  <li><a href="${scopePrefix}/acl/acl-sid.do">数据权限</a></li>
                   <li class="divider"></li>
 				  <li><a href="${scopePrefix}/bpm/console!listProcessDefinitions.do">流程管理</a></li>
 				  <li><a href="${scopePrefix}/form/form-template.do">表单管理</a></li>

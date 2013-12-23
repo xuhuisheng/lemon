@@ -209,7 +209,6 @@ public class Expr {
 
         if (buff.length() > 0) {
             String value = buff.toString();
-            buff = new StringBuilder();
 
             if (opers.contains(value)) {
                 Oper oper = new Oper();

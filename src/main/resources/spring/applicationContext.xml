@@ -7,7 +7,7 @@
        http://www.springframework.org/schema/context http://www.springframework.org/schema/context/spring-context.xsd
        http://www.springframework.org/schema/tx http://www.springframework.org/schema/tx/spring-tx.xsd">
 
-	<context:component-scan base-package="${application.scan.packages}"/>
+	<context:component-scan base-package="com.mossle"/>
 
 	<!-- 默认通过application.properties读取配置 -->
     <bean id="applicationProperties" class="com.mossle.core.spring.ApplicationPropertiesFactoryBean"/>
@@ -23,8 +23,6 @@
 	</bean>
 
 	<bean class="com.mossle.core.logback.JulHandler"/>
-
-	<bean class="com.mossle.core.util.DozerInitializer"/>
 
 	<bean class="com.mossle.core.spring.ApplicationContextHelper"/>
 

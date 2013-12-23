@@ -1,5 +1,0 @@
-<FindBugsFilter>
-  <Match>
-    <Package name="~com\.jbpmsurf\.domain\.*" />
-  </Match>
-</FindBugsFilter>

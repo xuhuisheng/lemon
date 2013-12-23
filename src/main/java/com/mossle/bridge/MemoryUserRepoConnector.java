@@ -7,15 +7,22 @@ import com.mossle.api.UserRepoConnector;
 import com.mossle.api.UserRepoDTO;
 
 public class MemoryUserRepoConnector implements UserRepoConnector {
+    private UserRepoDTO userRepoDto = new UserRepoDTO();
+
+    public MemoryUserRepoConnector() {
+        userRepoDto.setId("1");
+        userRepoDto.setCode("default");
+    }
+
     public UserRepoDTO findById(String id) {
-        return null;
+        return userRepoDto;
     }
 
     public UserRepoDTO findByCode(String code) {
-        return null;
+        return userRepoDto;
     }
 
     public List<UserRepoDTO> findAll() {
-        return Collections.EMPTY_LIST;
+        return Collections.singletonList(userRepoDto);
     }
 }

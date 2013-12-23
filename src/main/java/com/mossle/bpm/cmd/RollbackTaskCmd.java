@@ -120,11 +120,23 @@ public class RollbackTaskCmd extends TaskCmd implements Command<Integer> {
         Context.getCommandContext().getTaskEntityManager()
                 .deleteTask(task, TaskEntity.DELETE_REASON_DELETED, false);
 
+        TaskEntity task = Context.getCommandContext().getTaskEntityManager()
+                .findTaskById(taskId);
+
         // 结束历史任务
         HistoricTaskInstanceEntity historicTaskInstance = Context
                 .getCommandContext().getHistoricTaskInstanceEntityManager()
                 .findHistoricTaskInstanceById(taskId);
-        historicTaskInstance.markEnded("rollback");
+        historicTaskInstance.markEnded("退回");
+
+        // 记录节点历史
+        HistoricActivityInstanceEntity historicActivityInstance = Context
+                .getCommandContext()
+                .getHistoricActivityInstanceEntityManager()
+                .findHistoricActivityInstance(
+                        task.getExecution().getCurrentActivityId(),
+                        task.getProcessInstanceId());
+        historicActivityInstance.markEnded("退回");
 
         /**
          * 结束历史活动节点,因为activiti5.6没有映射updateHistoricActivityInstance这一statement 历史节点考虑用纯Sql语句更新

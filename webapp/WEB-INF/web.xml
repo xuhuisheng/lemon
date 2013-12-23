@@ -9,11 +9,6 @@
         <param-value>classpath*:spring/applicationContext*.xml</param-value>
     </context-param>
 
-	<context-param>
-		<param-name>contextClass</param-name>
-		<param-value>com.mossle.core.spring.WebApplicationContext</param-value>
-	</context-param>
-
     <filter>
         <filter-name>compositeFilter</filter-name>
         <filter-class>org.springframework.web.filter.DelegatingFilterProxy</filter-class>

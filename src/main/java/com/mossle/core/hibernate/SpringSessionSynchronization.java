@@ -12,8 +12,8 @@ import org.springframework.core.Ordered;
 
 import org.springframework.dao.DataAccessException;
 
-import org.springframework.orm.hibernate4.SessionFactoryUtils;
-import org.springframework.orm.hibernate4.SessionHolder;
+import org.springframework.orm.hibernate43.SessionFactoryUtils;
+import org.springframework.orm.hibernate43.SessionHolder;
 
 import org.springframework.transaction.support.TransactionSynchronization;
 import org.springframework.transaction.support.TransactionSynchronizationManager;

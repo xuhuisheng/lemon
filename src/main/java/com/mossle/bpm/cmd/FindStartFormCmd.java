@@ -30,6 +30,12 @@ public class FindStartFormCmd implements Command<FormInfo> {
         ProcessDefinitionEntity processDefinitionEntity = Context
                 .getProcessEngineConfiguration().getDeploymentManager()
                 .findDeployedProcessDefinitionById(processDefinitionId);
+
+        if (processDefinitionEntity == null) {
+            throw new IllegalArgumentException(
+                    "cannot find processDefinition : " + processDefinitionId);
+        }
+
         FormInfo formInfo = new FormInfo();
         formInfo.setProcessDefinitionId(processDefinitionId);
 

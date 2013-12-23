@@ -44,7 +44,7 @@ public class DatabaseScopeConnector implements ScopeConnector {
 
             return convertScopeInfo(map);
         } catch (EmptyResultDataAccessException ex) {
-            logger.info("scope[{}] is not exists.", id);
+            logger.info("scope[{}] is not exists.", id, ex);
 
             return null;
         }

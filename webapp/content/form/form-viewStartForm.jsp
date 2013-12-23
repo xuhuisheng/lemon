@@ -98,7 +98,7 @@ $(function() {
 			  <form id="xf-form" method="post" action="${scopePrefix}/form/form!startProcessInstance.do?operationMode=STORE" class="xf-form">
 <input id="processDefinitionId" type="hidden" name="processDefinitionId" value="${formInfo.processDefinitionId}">
 <input id="autoCompleteFirstTask" type="hidden" name="autoCompleteFirstTask" value="${formInfo.autoCompleteFirstTask}">
-<input id="businessKey" type="hidden" name="businessKey" value="${dynamicModel.id}">
+<input id="businessKey" type="hidden" name="businessKey" value="${param.businessKey}">
 <!--
 <input id="taskId" type="hidden" name="taskId" value="${taskId}">
 -->

@@ -15,7 +15,7 @@ import org.springframework.beans.factory.DisposableBean;
 import org.springframework.beans.factory.FactoryBean;
 import org.springframework.beans.factory.InitializingBean;
 
-import org.springframework.orm.hibernate4.LocalSessionFactoryBean;
+import org.springframework.orm.hibernate43.LocalSessionFactoryBean;
 
 public class RecoverableSessionFactoryBean implements FactoryBean,
         DisposableBean, InitializingBean {

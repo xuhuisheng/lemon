@@ -140,9 +140,6 @@
 	  <groupId>javax.mail</groupId>
 	  <artifactId>mail</artifactId>
     </dependency><dependency>
-	  <groupId>net.sf.dozer</groupId>
-	  <artifactId>dozer</artifactId>
-    </dependency><dependency>
 	  <groupId>com.github.inspektr</groupId>
 	  <artifactId>inspektr-support-spring</artifactId>
 	</dependency><dependency>
@@ -161,15 +158,6 @@
 	  <groupId>org.activiti</groupId>
 	  <artifactId>activiti-spring</artifactId>
 	</dependency><dependency>
-      <groupId>org.apache.cxf</groupId>
-      <artifactId>cxf-rt-frontend-jaxws</artifactId>
-    </dependency><dependency>
-      <groupId>org.apache.cxf</groupId>
-      <artifactId>cxf-rt-transports-http</artifactId>
-    </dependency><dependency>
-      <groupId>org.apache.cxf</groupId>
-      <artifactId>cxf-rt-management</artifactId>
-    </dependency><dependency>
       <groupId>com.googlecode.flyway</groupId>
       <artifactId>flyway-core</artifactId>
     </dependency><dependency>
@@ -182,6 +170,9 @@
       <groupId>org.javasimon</groupId>
       <artifactId>javasimon-javaee</artifactId>
     </dependency><dependency>
+	  <groupId>ma.glasnost.orika</groupId>
+	  <artifactId>orika-core</artifactId>
+	</dependency><dependency>
       <groupId>org.activiti</groupId>
       <artifactId>activiti-json-converter</artifactId>
 	  <version>${activiti.version}</version>
@@ -505,18 +496,6 @@
       </dependency>
 
       <dependency>
-        <groupId>net.sf.dozer</groupId>
-        <artifactId>dozer</artifactId>
-        <version>${dozer.version}</version>
-        <exclusions>
-          <exclusion>
-            <groupId>org.slf4j</groupId>
-            <artifactId>slf4j-log4j12</artifactId>
-          </exclusion>
-        </exclusions>
-      </dependency>
-
-      <dependency>
         <groupId>com.github.inspektr</groupId>
         <artifactId>inspektr-support-spring</artifactId>
         <version>${inspektr.version}</version>
@@ -611,6 +590,12 @@
         <artifactId>javasimon-javaee</artifactId>
         <version>${javasimon.version}</version>
       </dependency>
+
+	  <dependency>
+	    <groupId>ma.glasnost.orika</groupId>
+	    <artifactId>orika-core</artifactId>
+	    <version>${orika.version}</version>
+	  </dependency>
     </dependencies>
   </dependencyManagement>
 
@@ -1007,7 +992,7 @@
 
     <junit.version>4.11</junit.version>
     <mockito.version>1.9.5</mockito.version>
-    <selenium2.version>2.38.0</selenium2.version>
+    <selenium2.version>2.39.0</selenium2.version>
     <dbunit.version>2.4.9</dbunit.version>
     <commons-lang.version>3.1</commons-lang.version>
 
@@ -1018,10 +1003,10 @@
     <spring.version>3.2.6.RELEASE</spring.version>
     <struts2.version>2.3.16</struts2.version>
     <spring-security.version>3.1.4.RELEASE</spring-security.version>
-    <hibernate.version>4.2.7.SP1</hibernate.version>
+    <hibernate.version>4.3.0.Final</hibernate.version>
     <hibernate-validator.version>5.0.1.Final</hibernate-validator.version>
     <javassist.version>3.18.1-GA</javassist.version>
-    <ehcache.version>2.7.4</ehcache.version>
+    <ehcache.version>2.8.0</ehcache.version>
     <hsqldb.version>2.3.1</hsqldb.version>
     <slf4j.version>1.7.5</slf4j.version>
     <logback.version>1.0.13</logback.version>
@@ -1034,19 +1019,19 @@
     <poi.version>3.9</poi.version>
     <jolokia.version>1.1.5</jolokia.version>
     <log4jdbc-remix.version>0.2.7</log4jdbc-remix.version>
-    <jersey.version>2.4.1</jersey.version>
+    <jersey.version>2.5</jersey.version>
     <jackson-jaxrs-json-provider.version>2.3.0</jackson-jaxrs-json-provider.version>
     <jackson-datatype-hibernate4.version>2.3.0-1</jackson-datatype-hibernate4.version>
     <mail.version>1.4.7</mail.version>
-    <dozer.version>5.4.0.20121220</dozer.version>
     <inspektr.version>1.1.GA</inspektr.version>
     <quartz.version>2.2.1</quartz.version>
     <h2.version>1.3.174</h2.version>
     <mysql.version>5.1.27</mysql.version>
     <activiti.version>5.14</activiti.version>
     <cxf.version>2.7.8</cxf.version>
-	<flyway.version>2.2.1</flyway.version>
+	<flyway.version>2.3.1</flyway.version>
 	<javasimon.version>3.4.0</javasimon.version>
+	<orika.version>1.4.4</orika.version>
 
     <maven-antrun-plugin.version>1.7</maven-antrun-plugin.version>
     <maven-clean-plugin.version>2.5</maven-clean-plugin.version>
@@ -1221,7 +1206,8 @@
 
 <repositories>
     <repository>
-	  <id>local-file</id>
-	  <url>file://${basedir}/repositories/</url>
-	</repository>
+      <id>oschina</id>
+      <name>oschina</name>
+      <url>http://maven.oschina.net/content/groups/public/</url>
+    </repository>
   </repositories></project>

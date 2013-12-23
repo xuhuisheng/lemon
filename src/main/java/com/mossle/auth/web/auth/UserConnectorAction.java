@@ -22,11 +22,16 @@ import org.apache.struts2.ServletActionContext;
 import org.apache.struts2.convention.annotation.Result;
 import org.apache.struts2.convention.annotation.Results;
 
+import org.slf4j.Logger;
+import org.slf4j.LoggerFactory;
+
 @Results({
         @Result(name = UserConnectorAction.RELOAD, location = "user-connector.do?operationMode=RETRIEVE", type = "redirect"),
         @Result(name = UserConnectorAction.RELOAD_PASSWORD, location = "user-connector!password.do?operationMode=RETRIEVE&id=${id}", type = "redirect"),
         @Result(name = UserConnectorAction.RELOAD_ROLE, location = "user-role.do?id=${id}", type = "redirect") })
 public class UserConnectorAction extends BaseAction {
+    private static Logger logger = LoggerFactory
+            .getLogger(UserConnectorAction.class);
     public static final String RELOAD = "reload";
     public static final String RELOAD_PASSWORD = "reload-password";
     public static final String RELOAD_ROLE = "reload-role";
@@ -37,6 +42,7 @@ public class UserConnectorAction extends BaseAction {
     private UserStatusConverter userStatusConverter;
     private UserConnector userConnector;
     private AuthService authService;
+    private String reference;
 
     public String execute() {
         return list();
@@ -96,8 +102,10 @@ public class UserConnectorAction extends BaseAction {
     }
 
     public String configRole() {
-        UserDTO userDto = userConnector.findByUsername(username,
-                ScopeHolder.getUserRepoRef());
+        logger.info("reference : {}", reference);
+
+        UserDTO userDto = userConnector.findById(reference);
+        username = userDto.getUsername();
 
         if (userDto != null) {
             UserStatus userStatus = authService.createOrGetUserStatus(username,
@@ -142,5 +150,9 @@ public class UserConnectorAction extends BaseAction {
 
     public void setAuthService(AuthService authService) {
         this.authService = authService;
+    }
+
+    public void setReference(String reference) {
+        this.reference = reference;
     }
 }

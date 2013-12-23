@@ -161,7 +161,7 @@ public abstract class AdvancedBusinessCalendar implements BusinessCalendar {
             holiday.setToDay(toDay);
         } catch (Exception ex) {
             throw new IllegalArgumentException("couldn't parse holiday: "
-                    + holidayPeriodText);
+                    + holidayPeriodText, ex);
         }
 
         return holiday;

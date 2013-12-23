@@ -19,6 +19,9 @@ import org.activiti.engine.repository.ProcessDefinition;
 import org.apache.struts2.convention.annotation.Result;
 import org.apache.struts2.convention.annotation.Results;
 
+import org.slf4j.Logger;
+import org.slf4j.LoggerFactory;
+
 import org.springframework.jdbc.core.JdbcTemplate;
 
 /**
@@ -29,6 +32,8 @@ import org.springframework.jdbc.core.JdbcTemplate;
  */
 @Results({ @Result(name = DelegateAction.RELOAD, location = "delegate!listMyDelegateInfos.do?operationMode=RETRIEVE", type = "redirect") })
 public class DelegateAction extends BaseAction {
+    private static Logger logger = LoggerFactory
+            .getLogger(DelegateAction.class);
     public static final String RELOAD = "reload";
     private ProcessEngine processEngine;
     private JdbcTemplate jdbcTemplate;
@@ -92,7 +97,7 @@ public class DelegateAction extends BaseAction {
         try {
             startDate = dateFormat.parse(startTime);
         } catch (Exception ex) {
-            //
+            logger.debug(ex.getMessage(), ex);
         }
 
         Date endDate = null;
@@ -100,7 +105,7 @@ public class DelegateAction extends BaseAction {
         try {
             endDate = dateFormat.parse(endTime);
         } catch (Exception ex) {
-            //
+            logger.debug(ex.getMessage(), ex);
         }
 
         if ((processDefinitionId != null)

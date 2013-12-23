@@ -80,7 +80,7 @@
 	<bean id="openSessionInViewFilter" class="com.mossle.core.servlet.ProxyFilter">
 		<property name="name" value="hibernate"/>
 		<property name="filter">
-			<bean class="org.springframework.orm.hibernate4.support.OpenSessionInViewFilter"/>
+			<bean class="org.springframework.orm.hibernate43.support.OpenSessionInViewFilter"/>
 		</property>
 		<property name="excludePatterns" value="/common/util/*"/>
 	</bean>

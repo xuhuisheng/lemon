@@ -7,7 +7,7 @@ import org.hibernate.SessionFactory;
 
 import org.hibernate.context.spi.CurrentSessionContext;
 
-import org.springframework.orm.hibernate4.SessionHolder;
+import org.springframework.orm.hibernate43.SessionHolder;
 
 import org.springframework.transaction.support.TransactionSynchronizationManager;
 

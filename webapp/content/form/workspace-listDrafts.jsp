@@ -96,28 +96,24 @@ $(function() {
     <thead>
       <tr>
         <th width="10" class="m-table-check"><input type="checkbox" name="checkAll" onchange="toggleSelectedItems(this.checked)"></th>
-        <th class="sorting" name="id">编号</th>
-        <th class="sorting" name="type">类型</th>
-        <th class="sorting" name="definitionId">流程定义id</th>
-        <th class="sorting" name="instanceId">流程实例id</th>
-        <th class="sorting" name="executionId">分支id</th>
+        <th class="sorting" name="code">编号</th>
+        <th class="sorting" name="category">分类</th>
         <th class="sorting" name="status">状态</th>
+        <th class="sorting" name="ref">引用</th>
         <th width="80">&nbsp;</th>
       </tr>
     </thead>
 
     <tbody>
-      <s:iterator value="dynamicModels" var="item">
+      <s:iterator value="records" var="item">
       <tr>
-        <td><input type="checkbox" class="selectedItem" name="selectedItem" value="${item.id}"></td>
-        <td>${item.id}</td>
-        <td>${item.type}</td>
-        <td>${item.definitionId}</td>
-        <td>${item.instanceId}</td>
-        <td>${item.executionId}</td>
+        <td><input type="checkbox" class="selectedItem" name="selectedItem" value="${item.code}"></td>
+        <td>${item.code}</td>
+        <td>${item.category}</td>
         <td>${item.status}</td>
+        <td>${item.ref}</td>
         <td>
-          <a href="form!viewStartForm.do?businessKey=${item.id}&processDefinitionId=${item.definitionId}">发起流程</a>
+          <a href="form!viewStartForm.do?businessKey=${item.code}&processDefinitionId=${item.category}">发起流程</a>
         </td>
       </tr>
       </s:iterator>

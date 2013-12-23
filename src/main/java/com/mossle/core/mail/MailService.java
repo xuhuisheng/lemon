@@ -22,11 +22,11 @@ import org.springframework.mail.javamail.MimeMessageHelper;
 public class MailService {
     /** logger. */
     private static Logger logger = LoggerFactory.getLogger(MailService.class);
-    public static final int MODE_NORMAL = 0;
-    public static final int MODE_TEST = 1;
 
     /** java mail sender. */
     private JavaMailSender javaMailSender;
+
+    /** host generator. */
     private HostGenerator hostGenerator = new HostGeneratorImpl();
 
     // ~ ======================================================================
@@ -60,9 +60,9 @@ public class MailService {
     /**
      * 发送模式.
      * 
-     * 如果为0，表示正常发送 如果为1，表示把邮件都发给指定的测试邮箱
+     * 如果为false，表示正常发送 如果为true，表示把邮件都发给指定的测试邮箱
      */
-    private int mode = MODE_NORMAL;
+    private boolean testMode = false;
 
     /**
      * 测试模式下发送到的测试邮箱.
@@ -112,12 +112,10 @@ public class MailService {
      */
     public void send(String from, String[] to, String[] cc, String[] bcc,
             String subject, String content) {
-        if (mode == MODE_NORMAL) {
-            this.sendRealMail(from, to, cc, bcc, subject, content);
-        } else if (mode == MODE_TEST) {
+        if (testMode) {
             this.sendTestMail(from, to, cc, bcc, subject, content);
         } else {
-            logger.warn("unknown mode : {}", mode);
+            this.sendRealMail(from, to, cc, bcc, subject, content);
         }
     }
 
@@ -321,14 +319,14 @@ public class MailService {
     }
 
     // ~ ======================================================================
-    /** return mode. */
-    public int getMode() {
-        return mode;
+    /** return test mode. */
+    public boolean isTestMode() {
+        return testMode;
     }
 
-    /** set mode. */
-    public void setMode(int mode) {
-        this.mode = mode;
+    /** set test mode. */
+    public void setTestMode(boolean testMode) {
+        this.testMode = testMode;
     }
 
     public String getTestMail() {
