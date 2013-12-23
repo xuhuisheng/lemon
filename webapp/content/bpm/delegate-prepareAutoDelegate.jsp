@@ -43,7 +43,7 @@
 	    <span class="add-on"><i class="icon-calendar"></i></span>
 	  </div>
     </div>
-  </div><%--
+  </div>
   <div class="control-group">
     <label class="control-label">结束时间</label>
 	<div class="controls">
@@ -52,7 +52,7 @@
 	    <span class="add-on"><i class="icon-calendar"></i></span>
 	  </div>
     </div>
-  </div>--%>
+  </div>
   <div class="control-group">
     <label class="control-label">流程定义</label>
 	<div class="controls">
