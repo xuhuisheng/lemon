@@ -72,7 +72,7 @@ public class MsgInfoAction extends BaseAction implements ModelDriven<MsgInfo>,
         List<PropertyFilter> propertyFilters = PropertyFilter
                 .buildFromHttpRequest(ServletActionContext.getRequest());
 
-        propertyFilters.add(new PropertyFilter("EQS_receiverUsername",
+        propertyFilters.add(new PropertyFilter("EQS_senderUsername",
                 SpringSecurityUtils.getCurrentUsername()));
         page = msgInfoManager.pagedQuery(page, propertyFilters);
 
