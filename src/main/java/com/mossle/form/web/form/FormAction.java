@@ -247,7 +247,7 @@ public class FormAction extends BaseAction {
             if ("userPicker".equals(formType)) {
                 processParameters.put(key,
                         new ArrayList(Arrays.asList(value.split(","))));
-            } else {
+            } else if (formType != null) {
                 processParameters.put(key, value);
             }
         }
@@ -283,7 +283,7 @@ public class FormAction extends BaseAction {
         if (formTypeMap.containsKey(name)) {
             return formTypeMap.get(name);
         } else {
-            return "textfield";
+            return null;
         }
     }
 
@@ -353,12 +353,14 @@ public class FormAction extends BaseAction {
             Map map = jsonMapper.fromJson(content, Map.class);
             logger.info("map : {}", map);
 
-            List<Map> list = (List<Map>) map.get("fields");
-            logger.info("list : {}", list);
+            if (map != null) {
+                List<Map> list = (List<Map>) map.get("fields");
+                logger.info("list : {}", list);
 
-            for (Map item : list) {
-                formTypeMap.put((String) item.get("name"),
-                        (String) item.get("type"));
+                for (Map item : list) {
+                    formTypeMap.put((String) item.get("name"),
+                            (String) item.get("type"));
+                }
             }
         }
 
@@ -376,7 +378,7 @@ public class FormAction extends BaseAction {
             if ("userPicker".equals(formType)) {
                 processParameters.put(key,
                         new ArrayList(Arrays.asList(value.split(","))));
-            } else {
+            } else if (formType != null) {
                 processParameters.put(key, value);
             }
         }
