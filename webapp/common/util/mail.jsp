@@ -11,7 +11,7 @@
 	if ("update".equals(action)) {
 		String mode = request.getParameter("mode");
 		String testMail = request.getParameter("testMail");
-		mailService.setMode(mode == null ? 0 : 1);
+		mailService.setTestMode(mode == null);
 		mailService.setTestMail(testMail);
 		response.sendRedirect("mail.jsp");
 	} else if("send".equals(action)) {
@@ -37,7 +37,7 @@ tbody tr:nth-child(odd) th {
 		<tbody>
 		  <tr>
 			<td>是否测试模式</td>
-			<td><input type="checkbox" name="mode" value="1" ${mailService.mode == 0 ? '' : 'checked'}></td>
+			<td><input type="checkbox" name="mode" value="1" ${mailService.testMode ? '' : 'checked'}></td>
 		  </tr>
 		  <tr>
 			<td>测试邮箱</td>
