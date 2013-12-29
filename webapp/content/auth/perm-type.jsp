@@ -7,11 +7,11 @@
 
   <head>
     <%@include file="/common/meta.jsp"%>
-    <title><spring:message code="auth.oper.list.title" text="操作列表"/></title>
+    <title>权限分类</title>
     <%@include file="/common/s.jsp"%>
     <script type="text/javascript">
 var config = {
-    id: 'operGrid',
+    id: 'permTypeGrid',
     pageNo: ${page.pageNo},
     pageSize: ${page.pageSize},
     totalCount: ${page.totalCount},
@@ -23,8 +23,8 @@ var config = {
         'filter_LIKES_name': '${param.filter_LIKES_name}'
     },
 	selectedItemClass: 'selectedItem',
-	gridFormId: 'operGridForm',
-	exportUrl: 'oper!exportExcel.do'
+	gridFormId: 'permTypeGridForm',
+	exportUrl: 'perm-type!exportExcel.do'
 };
 
 var table;
@@ -51,15 +51,15 @@ $(function() {
         <header class="header">
 		  <h4 class="title">查询</h4>
 		  <div class="ctrl">
-		    <a class="btn"><i id="operSearchIcon" class="icon-chevron-up"></i></a>
+			<a class="btn"><i id="permTypeSearchIcon" class="icon-chevron-up"></i></a>
 		  </div>
 		</header>
-        <div id="operSearch" class="content content-inner">
+        <div id="permTypeSearch" class="content content-inner">
 
-		  <form name="operForm" method="post" action="oper.do" class="form-inline">
-		    <label for="oper_name"><spring:message code="auth.oper.list.search.name" text="名称"/>:</label>
-		    <input type="text" id="oper_name" name="filter_LIKES_name" value="${param.filter_LIKES_name}">
-			<button class="btn btn-small" onclick="document.operForm.submit()">查询</button>
+		  <form name="permTypeForm" method="post" action="perm-type.do" class="form-inline">
+		    <label for="permType_name"><spring:message code='auth.permType.list.search.name' text='名称'/>:</label>
+		    <input type="text" id="permType_name" name="filter_LIKES_name" value="${param.filter_LIKES_name}">
+			<button class="btn btn-small" onclick="document.permForm.submit()">查询</button>
 		  </form>
 
 		</div>
@@ -67,13 +67,13 @@ $(function() {
 
 	  <article class="m-blank">
 	    <div class="pull-left">
-		  <region:region-permission permission="oper:create">
-		  <button class="btn btn-small" onclick="location.href='oper!input.do'"><spring:message code="core.list.create" text="新建"/></button>
+		  <region:region-permission permission="permType:create">
+		  <button class="btn btn-small" onclick="location.href='perm-type!input.do'"><spring:message code="core.list.create" text="新建"/></button>
 		  </region:region-permission>
-		  <region:region-permission permission="oper:delete">
+		  <region:region-permission permission="permType:delete">
 		  <button class="btn btn-small" onclick="table.removeAll()"><spring:message code="core.list.delete" text="删除"/></button>
 		  </region:region-permission>
-		  <button class="btn btn-small" onclick="table.exportExcel()">导出</button>
+		  <button class="btn btn-small" onclick="table.exportExcel()"><spring:message code="core.list.export" text="导出"/></button>
 		</div>
 
 		<div class="pull-right">
@@ -91,20 +91,18 @@ $(function() {
 
       <article class="m-widget">
         <header class="header">
-          <h4 class="title"><spring:message code="auth.oper.list.title" text="操作列表"/></h4>
+		  <h4 class="title">权限分类</h4>
 		</header>
 		<div class="content">
 
-  <form id="operGridForm" name="operGridForm" method='post' action="oper!removeAll.do" class="m-form-blank">
-    <table id="operGrid" class="m-table table-hover">
+  <form id="permTypeGridForm" name="permTypeGridForm" method='post' action="perm-type!removeAll.do" class="m-form-blank">
+    <table id="permTypeGrid" class="m-table table-hover">
       <thead>
         <tr>
           <th width="10" class="m-table-check"><input type="checkbox" name="checkAll" onchange="toggleSelectedItems(this.checked)"></th>
-          <th class="sorting" name="id"><spring:message code="auth.oper.list.id" text="编号"/></th>
-          <th class="sorting" name="name"><spring:message code="auth.oper.list.name" text="名称"/></th>
-          <th class="sorting" name="mask"><spring:message code="auth.oper.list.mask" text="掩码"/></th>
-          <th class="sorting" name="code"><spring:message code="auth.oper.list.code" text="代码"/></th>
-          <th width="50">&nbsp;</th>
+          <th class="sorting" name="id"><spring:message code="auth.permType.list.id" text="编号"/></th>
+          <th class="sorting" name="name"><spring:message code="auth.permType.list.name" text="名称"/></th>
+          <th width="150">&nbsp;</th>
         </tr>
       </thead>
       <tbody>
@@ -113,11 +111,9 @@ $(function() {
           <td><input type="checkbox" class="selectedItem" name="selectedItem" value="${item.id}"></td>
           <td>${item.id}</td>
           <td>${item.name}</td>
-          <td>${item.mask}</td>
-          <td>${item.code}</td>
           <td>
-			<region:region-permission permission="oper:write">
-            <a href="oper!input.do?id=${item.id}"><spring:message code="core.list.edit" text="编辑"/></a>&nbsp;
+			<region:region-permission permission="permType:write">
+            <a href="perm-type!input.do?id=${item.id}"><spring:message code="core.list.edit" text="编辑"/></a>&nbsp;
 			</region:region-permission>
           </td>
         </tr>
@@ -125,7 +121,7 @@ $(function() {
       </tbody>
     </table>
   </form>
-        </div>
+
       </article>
 
 	  <article>

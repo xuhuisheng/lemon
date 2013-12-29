@@ -54,7 +54,7 @@ try {
 			.append(java.util.Arrays.asList(request.getParameterValues(key)))
 			.append("\n");
     }
-	requestInfo = buff.toString();
+	requestInfo = buff.toString().replaceAll("<", "&lt;");
 } catch(Throwable t) {
     logger.error("fetch request info error", t);
 }

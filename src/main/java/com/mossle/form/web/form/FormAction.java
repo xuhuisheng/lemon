@@ -37,6 +37,8 @@ import org.activiti.engine.runtime.ProcessInstance;
 import org.activiti.engine.task.Task;
 
 import org.apache.struts2.ServletActionContext;
+import org.apache.struts2.convention.annotation.Result;
+import org.apache.struts2.convention.annotation.Results;
 
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
@@ -46,11 +48,13 @@ import org.slf4j.LoggerFactory;
  * 
  * @author Lingo
  */
+@Results({ @Result(name = FormAction.RELOAD_REDIRECT, location = "${redirectUrl}", type = "redirect") })
 public class FormAction extends BaseAction {
     private static Logger logger = LoggerFactory.getLogger(FormAction.class);
     public static final int STATUS_DRAFT_PROCESS = 0;
     public static final int STATUS_DRAFT_TASK = 1;
     public static final int STATUS_RUNNING = 2;
+    public static final String RELOAD_REDIRECT = "reload-redirect";
     private ProcessEngine processEngine;
     private BpmProcessManager bpmProcessManager;
     private BpmTaskConfManager bpmTaskConfManager;
@@ -71,6 +75,7 @@ public class FormAction extends BaseAction {
     private KeyValue keyValue;
     private List<Record> records;
     private String status;
+    private String redirectUrl;
 
     /**
      * 根据id显示表单模板，把表单模板生成json，返回到页面显示.
@@ -149,6 +154,12 @@ public class FormAction extends BaseAction {
             this.formTemplate = formTemplateManager.findUniqueBy("name",
                     formInfo.getFormKey());
 
+            if (Integer.valueOf(1).equals(formTemplate.getType())) {
+                redirectUrl = formTemplate.getContent();
+
+                return RELOAD_REDIRECT;
+            }
+
             Record record = keyValue.findByCode(businessKey);
 
             if (record != null) {
@@ -218,6 +229,12 @@ public class FormAction extends BaseAction {
         if (formInfo.isFormExists()) {
             this.formTemplate = formTemplateManager.findUniqueBy("name",
                     formInfo.getFormKey());
+
+            if (Integer.valueOf(1).equals(formTemplate.getType())) {
+                redirectUrl = formTemplate.getContent();
+
+                return RELOAD_REDIRECT;
+            }
 
             String content = formTemplate.getContent();
             logger.info("content : {}", content);
@@ -300,6 +317,12 @@ public class FormAction extends BaseAction {
         formTemplate = formTemplateManager.findUniqueBy("name", taskFormKey);
         formInfo = new FormInfo();
         formInfo.setTaskId(taskId);
+
+        if (Integer.valueOf(1).equals(formTemplate.getType())) {
+            redirectUrl = formTemplate.getContent() + "?taskId=" + taskId;
+
+            return RELOAD_REDIRECT;
+        }
 
         if ((taskId != null) && (!"".equals(taskId))) {
             // 如果是任务草稿，直接通过processInstanceId获得record，更新数据
@@ -478,5 +501,9 @@ public class FormAction extends BaseAction {
 
     public void setStatus(String status) {
         this.status = status;
+    }
+
+    public String getRedirectUrl() {
+        return redirectUrl;
     }
 }

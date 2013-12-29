@@ -18,6 +18,7 @@ import org.springframework.orm.hibernate43.SessionHolder;
 import org.springframework.transaction.support.TransactionSynchronization;
 import org.springframework.transaction.support.TransactionSynchronizationManager;
 
+@SuppressWarnings("deprecation")
 class SpringSessionSynchronization implements TransactionSynchronization,
         Ordered {
     private static Logger logger = LoggerFactory

@@ -3,7 +3,7 @@
 <%@page import="org.springframework.context.ApplicationContext"%>
 <%@page import="org.springframework.web.context.support.WebApplicationContextUtils"%>
 <%@page import="com.mossle.core.hibernate.ReadOnlyTransactionManager"%>
-<%@page import="com.mossle.security.region.PermissionChecker"%>
+<%@page import="com.mossle.security.perm.PermissionChecker"%>
 <%
     ApplicationContext ctx = WebApplicationContextUtils.getWebApplicationContext(application);
 	PermissionChecker permissionChecker = (PermissionChecker) ctx.getBean(PermissionChecker.class);

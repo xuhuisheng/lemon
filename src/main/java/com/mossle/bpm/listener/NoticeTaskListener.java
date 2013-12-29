@@ -12,7 +12,7 @@ import com.mossle.bpm.persistence.domain.*;
 import com.mossle.bpm.persistence.manager.*;
 import com.mossle.bpm.support.DefaultTaskListener;
 
-import com.mossle.core.mail.MailService;
+import com.mossle.ext.mail.MailFacade;
 
 import org.activiti.engine.delegate.DelegateTask;
 import org.activiti.engine.impl.context.Context;
@@ -48,7 +48,7 @@ public class NoticeTaskListener extends DefaultTaskListener {
     public static final int TYPE_ARRIVAL = 0;
     public static final int TYPE_COMPLETE = 1;
     public static final int TYPE_TIMEOUT = 2;
-    private MailService mailService;
+    private MailFacade mailFacade;
     private BpmProcessManager bpmProcessManager;
     private BpmTaskDefNoticeManager bpmTaskDefNoticeManager;
 
@@ -117,56 +117,50 @@ public class NoticeTaskListener extends DefaultTaskListener {
     public void processArrival(DelegateTask delegateTask,
             BpmTaskDefNotice bpmTaskDefNotice) {
         String receiver = bpmTaskDefNotice.getReceiver();
-        String template = bpmTaskDefNotice.getTemplate();
+        BpmMailTemplate bpmMailTemplate = bpmTaskDefNotice.getBpmMailTemplate();
         ExpressionManager expressionManager = Context
                 .getProcessEngineConfiguration().getExpressionManager();
+        String to = null;
+        String subject = expressionManager
+                .createExpression(bpmMailTemplate.getSubject())
+                .getValue(delegateTask).toString();
+
+        String content = expressionManager
+                .createExpression(bpmMailTemplate.getContent())
+                .getValue(delegateTask).toString();
 
         if ("任务接收人".equals(receiver)) {
-            String email = delegateTask.getAssignee() + "@gmail.com";
-            String subject = "您有新任务需要处理";
-
-            // String content = "您有新任务需要处理" + delegateTask.getName();
-            String content = expressionManager.createExpression(template)
-                    .getValue(delegateTask).toString();
-            mailService.send(email, subject, content);
+            to = delegateTask.getAssignee() + "@gmail.com";
         } else if ("流程发起人".equals(receiver)) {
-            String email = delegateTask.getAssignee() + "@gmail.com";
-            String subject = "您的流程已经到达" + delegateTask.getName() + "环节";
-
-            // String content = "您有新任务需要处理" + delegateTask.getName();
-            String content = expressionManager.createExpression(template)
-                    .getValue(delegateTask).toString();
-            mailService.send(email, subject, content);
+            to = delegateTask.getAssignee() + "@gmail.com";
         } else {
             HistoricProcessInstanceEntity historicProcessInstanceEntity = Context
                     .getCommandContext()
                     .getHistoricProcessInstanceEntityManager()
                     .findHistoricProcessInstance(
                             delegateTask.getProcessInstanceId());
-            String email = historicProcessInstanceEntity.getStartUserId()
-                    + "@gmail.com";
-            String subject = "有新任务已经到达" + delegateTask.getName() + "环节";
-
-            // String content = "您有新任务需要处理" + delegateTask.getName();
-            String content = expressionManager.createExpression(template)
-                    .getValue(delegateTask).toString();
-            mailService.send(email, subject, content);
+            to = historicProcessInstanceEntity.getStartUserId() + "@gmail.com";
         }
+
+        mailFacade.sendMail("no-reply@lemon.mossle.com", to, subject, content);
     }
 
     public void processComplete(DelegateTask delegateTask,
             BpmTaskDefNotice bpmTaskDefNotice) {
         String receiver = bpmTaskDefNotice.getReceiver();
-        String template = bpmTaskDefNotice.getTemplate();
+        BpmMailTemplate bpmMailTemplate = bpmTaskDefNotice.getBpmMailTemplate();
         ExpressionManager expressionManager = Context
                 .getProcessEngineConfiguration().getExpressionManager();
 
-        String email = receiver + "@gmail.com";
-        String subject = "任务已完成";
-
-        String content = expressionManager.createExpression(template)
+        String to = receiver + "@gmail.com";
+        String subject = expressionManager
+                .createExpression(bpmMailTemplate.getSubject())
                 .getValue(delegateTask).toString();
-        mailService.send(email, subject, content);
+
+        String content = expressionManager
+                .createExpression(bpmMailTemplate.getContent())
+                .getValue(delegateTask).toString();
+        mailFacade.sendMail("no-reply@lemon.mossle.com", to, subject, content);
     }
 
     public void processTimeout(DelegateTask delegateTask,
@@ -174,8 +168,8 @@ public class NoticeTaskListener extends DefaultTaskListener {
     }
 
     @Resource
-    public void setMailService(MailService mailService) {
-        this.mailService = mailService;
+    public void setMailFacade(MailFacade mailFacade) {
+        this.mailFacade = mailFacade;
     }
 
     @Resource

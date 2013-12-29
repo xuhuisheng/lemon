@@ -10,6 +10,7 @@ import javax.xml.datatype.DatatypeFactory;
 import javax.xml.datatype.Duration;
 
 import com.mossle.bpm.cmd.SendNoticeCmd;
+import com.mossle.bpm.persistence.domain.BpmMailTemplate;
 import com.mossle.bpm.persistence.domain.BpmProcess;
 import com.mossle.bpm.persistence.domain.BpmTaskDefNotice;
 import com.mossle.bpm.persistence.manager.BpmProcessManager;
@@ -81,9 +82,11 @@ public class TaskTimeoutJob {
 
         if ((now.getTime() < noticeDate.getTime())
                 && ((noticeDate.getTime() - now.getTime()) < (60 * 1000))) {
+            BpmMailTemplate bpmMailTemplate = bpmTaskDefNotice
+                    .getBpmMailTemplate();
             SendNoticeCmd sendNoticeCmd = new SendNoticeCmd(task.getId(),
                     bpmTaskDefNotice.getReceiver(),
-                    bpmTaskDefNotice.getTemplate());
+                    bpmMailTemplate.getSubject(), bpmMailTemplate.getContent());
             processEngine.getManagementService().executeCommand(sendNoticeCmd);
         }
     }

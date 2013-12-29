@@ -1,7 +1,7 @@
 <%@page contentType="text/html;charset=UTF-8"%>
 <%@include file="/taglibs.jsp"%>
 <%pageContext.setAttribute("currentHeader", "auth");%>
-<%pageContext.setAttribute("currentMenu", "auth-user");%>
+<%pageContext.setAttribute("currentMenu", "auth");%>
 <!doctype html>
 <html>
 

@@ -53,7 +53,7 @@ public class TaskConfTaskListener extends DefaultTaskListener implements
                 delegateTask.setAssignee(assignee);
             }
         } catch (Exception ex) {
-            logger.info(ex.getMessage(), ex);
+            logger.debug(ex.getMessage(), ex);
         }
     }
 

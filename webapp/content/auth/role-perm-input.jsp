@@ -25,18 +25,22 @@
 		  <h4 class="title"><spring:message code="auth.role.perm.title" text="设置权限"/></h4>
 		</header>
 
-		<div class="m-widget">
+		<div class="content content-inner">
 
 <form id="roleForm" method="post" action="role-perm!save.do?operationMode=STORE" class="form-horizontal">
   <input type="hidden" name="id" value="${id}">
+  <s:iterator value="permTypes" var="permType">
   <div class="control-group">
+	<label class="control-label"><strong>${permType.name}:</strong></label>
     <div class="controls">
       <s:iterator value="perms">
-        <input id="selectedItem-${id}" type="checkbox" name="selectedItem" value="${id}" <s:if test='#action.selectedItem.contains(id)'>checked</s:if>>&nbsp;
-        <label for="selectedItem-${id}" style="display:inline;">${name}</label><br>
+        <input id="selectedItem-${id}" type="checkbox" name="selectedItem" value="${id}" <s:if test='#action.selectedItem.contains(id)'>checked</s:if>>
+        <label for="selectedItem-${id}" style="display:inline;">${name}</label>
+		&nbsp;
       </s:iterator>
     </div>
   </div>
+  </s:iterator>
   <div class="control-group">
     <div class="controls">
       <button id="submitButton" class="btn"><spring:message code='core.input.save' text='保存'/></button>

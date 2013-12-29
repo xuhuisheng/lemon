@@ -1,7 +1,8 @@
 package com.mossle.bpm.cmd;
 
-import com.mossle.core.mail.MailService;
 import com.mossle.core.spring.ApplicationContextHolder;
+
+import com.mossle.ext.mail.MailFacade;
 
 import org.activiti.engine.impl.context.Context;
 import org.activiti.engine.impl.el.ExpressionManager;
@@ -15,12 +16,15 @@ import org.activiti.engine.impl.pvm.process.ProcessDefinitionImpl;
 public class SendNoticeCmd implements Command<Object> {
     private String taskId;
     private String receiver;
-    private String template;
+    private String subject;
+    private String content;
 
-    public SendNoticeCmd(String taskId, String receiver, String template) {
+    public SendNoticeCmd(String taskId, String receiver, String subject,
+            String content) {
         this.taskId = taskId;
         this.receiver = receiver;
-        this.template = template;
+        this.subject = subject;
+        this.content = content;
     }
 
     public Object execute(CommandContext commandContext) {
@@ -31,12 +35,17 @@ public class SendNoticeCmd implements Command<Object> {
                 .getProcessEngineConfiguration().getExpressionManager();
 
         String email = taskEntity.getAssignee() + "@gmail.com";
-        String subject = "任务即将过期";
-
-        String content = expressionManager.createExpression(template)
+        String targetSubject = expressionManager.createExpression(subject)
                 .getValue(taskEntity).toString();
-        ApplicationContextHolder.getInstance().getApplicationContext()
-                .getBean(MailService.class).send(email, subject, content);
+
+        String targetContent = expressionManager.createExpression(content)
+                .getValue(taskEntity).toString();
+        ApplicationContextHolder
+                .getInstance()
+                .getApplicationContext()
+                .getBean(MailFacade.class)
+                .sendMail("no-reply@lemon.mossle.com", email, targetSubject,
+                        targetContent);
 
         return null;
     }

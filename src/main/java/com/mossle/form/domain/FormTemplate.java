@@ -13,12 +13,15 @@ import javax.persistence.Table;
  * @author Lingo
  */
 @Entity
-@Table(name = "M_FORM_TEMPLATE")
+@Table(name = "FORM_TEMPLATE")
 public class FormTemplate implements java.io.Serializable {
     private static final long serialVersionUID = 0L;
 
     /** null. */
     private Long id;
+
+    /** null. */
+    private Integer type;
 
     /** null. */
     private String name;
@@ -29,7 +32,8 @@ public class FormTemplate implements java.io.Serializable {
     public FormTemplate() {
     }
 
-    public FormTemplate(String name, String content) {
+    public FormTemplate(Integer type, String name, String content) {
+        this.type = type;
         this.name = name;
         this.content = content;
     }
@@ -51,6 +55,20 @@ public class FormTemplate implements java.io.Serializable {
     }
 
     /** @return null. */
+    @Column(name = "TYPE")
+    public Integer getType() {
+        return this.type;
+    }
+
+    /**
+     * @param type
+     *            null.
+     */
+    public void setType(Integer type) {
+        this.type = type;
+    }
+
+    /** @return null. */
     @Column(name = "NAME", length = 200)
     public String getName() {
         return this.name;
@@ -65,7 +83,7 @@ public class FormTemplate implements java.io.Serializable {
     }
 
     /** @return null. */
-    @Column(name = "CONTENT", length = 200)
+    @Column(name = "CONTENT", length = 2000)
     public String getContent() {
         return this.content;
     }

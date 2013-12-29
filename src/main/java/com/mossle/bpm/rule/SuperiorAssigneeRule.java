@@ -70,7 +70,7 @@ public class SuperiorAssigneeRule implements AssigneeRule {
         try {
             return jdbcTemplate.queryForObject(sql, Long.class, userId);
         } catch (Exception ex) {
-            logger.info(ex.getMessage(), ex);
+            logger.debug(ex.getMessage(), ex);
 
             return null;
         }
@@ -83,7 +83,7 @@ public class SuperiorAssigneeRule implements AssigneeRule {
                             + "where dim_id=2 and child_entity_id=?",
                     Long.class, departmentId);
         } catch (Exception ex) {
-            logger.info(ex.getMessage(), ex);
+            logger.debug(ex.getMessage(), ex);
 
             return null;
         }
@@ -96,7 +96,7 @@ public class SuperiorAssigneeRule implements AssigneeRule {
                             + "where dim_id=1 and child_entity_id=?",
                     Long.class, departmentId);
         } catch (Exception ex) {
-            logger.info(ex.getMessage(), ex);
+            logger.debug(ex.getMessage(), ex);
 
             return null;
         }

@@ -13,6 +13,7 @@
             <ul class="accordion-inner nav nav-list">
 			  <li class="m-icn-view-users"><a href="${scopePrefix}/bpm/bpm-category.do">流程分类</a></li>
 			  <li class="m-icn-add-user"><a href="${scopePrefix}/bpm/bpm-process.do">流程定义</a></li>
+			  <li class="m-icn-add-user"><a href="${scopePrefix}/bpm/bpm-mail-template.do">邮件模板</a></li>
             </ul>
           </div>
 		</div>

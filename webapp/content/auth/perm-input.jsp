@@ -44,22 +44,23 @@ $(function() {
   <input id="perm_id" type="hidden" name="id" value="${model.id}">
   </s:if>
   <div class="control-group">
-	<label class="control-label" for="perm_resc"><spring:message code="auth.perm.input.resource" text="资源"/></label>
+	<label class="control-label" for="perm_code">代码:</label>
     <div class="controls">
-      <select id="perm_resc" name="rescId">
-	    <s:iterator value="rescs" var="item">
-	    <option value="${item.id}" ${model.resc.id==item.id ? 'selected' : ''}>${item.name}</option>
-		</s:iterator>
-	  </select>
+      <input id="perm_code" type="text" name="code" value="${model.code}" class="text">
     </div>
   </div>
   <div class="control-group">
-	<label class="control-label" for="perm_oper"><spring:message code="auth.perm.input.operation" text="操作"/>:</label>
+	<label class="control-label" for="perm_name">名称:</label>
     <div class="controls">
-      <select id="perm_oper" name="operId">
-	    <option value="0"></option>
-	    <s:iterator value="opers" var="item">
-	    <option value="${item.id}" ${model.oper.id==item.id ? 'selected' : ''}>${item.name}</option>
+      <input id="perm_name" type="text" name="name" value="${model.name}" class="text">
+    </div>
+  </div>
+  <div class="control-group">
+	<label class="control-label" for="access_perm">权限分类</label>
+    <div class="controls">
+	  <select id="access_perm" name="permTypeId">
+	    <s:iterator value="permTypes" var="item">
+	    <option value="${item.id}" ${model.permType.id==item.id ? 'selected' : ''}>${item.name}</option>
 		</s:iterator>
 	  </select>
     </div>

@@ -23,9 +23,9 @@ function switchUser() {
   </head>
   <body>
     <div align="center">
-	  <region:region-permission permission="util,ROLE_PREVIOUS_ADMINISTRATOR">
+	  <perm:permission permission="util,ROLE_PREVIOUS_ADMINISTRATOR">
 		<a href="#" onclick="switchUser()">切换用户</a>
-	  </region:region-permission>
+	  </perm:permission>
 	  <sec:authorize ifAnyGranted="ROLE_PREVIOUS_ADMINISTRATOR">
 	    <a href="${ctx}/j_spring_security_exit_user">退出切换用户</a>
 	  </sec:authorize>

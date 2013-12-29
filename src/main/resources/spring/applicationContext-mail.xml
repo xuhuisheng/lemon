@@ -3,22 +3,22 @@
 	xmlns:xsi="http://www.w3.org/2001/XMLSchema-instance"
 	xsi:schemaLocation="http://www.springframework.org/schema/beans http://www.springframework.org/schema/beans/spring-beans.xsd">
 
-	<bean id="javaMailSender" class="org.springframework.mail.javamail.JavaMailSenderImpl">
-		<property name="host" value="${mail.host}" />
-		<property name="username" value="${mail.username}" />
-		<property name="password" value="${mail.password}" />
-		<property name="defaultEncoding" value="UTF-8"/>
-		<property name="javaMailProperties" ref="applicationProperties"/>
+	<bean id="mailFacade" class="com.mossle.ext.mail.MailFacade">
+		<property name="mailHelper" ref="mailHelper"/>
 	</bean>
 
-	<bean id="mailService" class="com.mossle.core.mail.MailService">
-		<property name="javaMailSender" ref="javaMailSender"/>
-		<property name="defaultFrom" value="${mail.default.from}" />
-		<property name="defaultTo" value="${mail.default.to}" />
-		<property name="defaultSubject" value="${mail.default.subject}" />
-		<property name="defaultContent" value="${mail.default.content}"/>
-		<property name="testMode" value="${mail.test.mode}"/>
-		<property name="testMail" value="${mail.test.mail}"/>
+	<bean id="mailHelper" class="com.mossle.ext.mail.MailHelper">
+		<property name="defaultMailServerInfo">
+			<bean class="com.mossle.ext.mail.MailServerInfo">
+				<property name="host" value="${mail.host}" />
+				<property name="username" value="${mail.username}" />
+				<property name="password" value="${mail.password}" />
+				<property name="smtpAuth" value="${mail.smtp.auth}"/>
+				<property name="smtpStarttls" value="${mail.smtp.starttls.enable}"/>
+				<property name="mode" value="${mail.mode}"/>
+				<property name="testMail" value="${mail.test.mail}"/>
+			</bean>
+		</property>
 	</bean>
 
 </beans>

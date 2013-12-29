@@ -76,8 +76,8 @@ $(function() {
     });
 
     $("input:checkbox, input:radio, input:file").not('[data-no-uniform="true"],#uniform-is-ajax').uniform({
-        fileDefaultHtml: '»¹Î´Ñ¡ÔñÎÄ¼ş',
-        fileButtonHtml: 'Ñ¡ÔñÎÄ¼ş'
+        fileDefaultHtml: 'è¿˜æœªé€‰æ‹©æ–‡ä»¶',
+        fileButtonHtml: 'é€‰æ‹©æ–‡ä»¶'
     });
 
     $('.datepicker').datepicker({format:'yyyy-mm-dd'});
@@ -90,13 +90,13 @@ $(function() {
     });
 
     $(".chzn-select").chosen({
-        no_results_text: 'ÕÒ²»µ½',
+        no_results_text: 'æ‰¾ä¸åˆ°',
         width: '220px'
     });
 
     $(".chzn-select-deselect").chosen({
         allow_single_deselect:true,
-        no_results_text: 'ÕÒ²»µ½',
+        no_results_text: 'æ‰¾ä¸åˆ°',
         width: '220px'
     });
 

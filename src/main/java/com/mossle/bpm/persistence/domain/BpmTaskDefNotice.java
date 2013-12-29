@@ -24,6 +24,9 @@ public class BpmTaskDefNotice implements java.io.Serializable {
     private Long id;
 
     /** null. */
+    private BpmMailTemplate bpmMailTemplate;
+
+    /** null. */
     private BpmProcess bpmProcess;
 
     /** null. */
@@ -36,21 +39,19 @@ public class BpmTaskDefNotice implements java.io.Serializable {
     private String receiver;
 
     /** null. */
-    private String template;
-
-    /** null. */
     private String dueDate;
 
     public BpmTaskDefNotice() {
     }
 
-    public BpmTaskDefNotice(BpmProcess bpmProcess, String taskDefinitionKey,
-            Integer type, String receiver, String template, String dueDate) {
+    public BpmTaskDefNotice(BpmMailTemplate bpmMailTemplate,
+            BpmProcess bpmProcess, String taskDefinitionKey, Integer type,
+            String receiver, String dueDate) {
+        this.bpmMailTemplate = bpmMailTemplate;
         this.bpmProcess = bpmProcess;
         this.taskDefinitionKey = taskDefinitionKey;
         this.type = type;
         this.receiver = receiver;
-        this.template = template;
         this.dueDate = dueDate;
     }
 
@@ -68,6 +69,21 @@ public class BpmTaskDefNotice implements java.io.Serializable {
      */
     public void setId(Long id) {
         this.id = id;
+    }
+
+    /** @return null. */
+    @ManyToOne(fetch = FetchType.LAZY)
+    @JoinColumn(name = "TEMPLATE_ID")
+    public BpmMailTemplate getBpmMailTemplate() {
+        return this.bpmMailTemplate;
+    }
+
+    /**
+     * @param bpmMailTemplate
+     *            null.
+     */
+    public void setBpmMailTemplate(BpmMailTemplate bpmMailTemplate) {
+        this.bpmMailTemplate = bpmMailTemplate;
     }
 
     /** @return null. */
@@ -125,20 +141,6 @@ public class BpmTaskDefNotice implements java.io.Serializable {
      */
     public void setReceiver(String receiver) {
         this.receiver = receiver;
-    }
-
-    /** @return null. */
-    @Column(name = "TEMPLATE", length = 200)
-    public String getTemplate() {
-        return this.template;
-    }
-
-    /**
-     * @param template
-     *            null.
-     */
-    public void setTemplate(String template) {
-        this.template = template;
     }
 
     /** @return null. */

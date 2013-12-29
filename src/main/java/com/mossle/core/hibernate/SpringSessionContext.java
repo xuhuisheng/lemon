@@ -11,7 +11,7 @@ import org.springframework.orm.hibernate43.SessionHolder;
 
 import org.springframework.transaction.support.TransactionSynchronizationManager;
 
-@SuppressWarnings("serial")
+@SuppressWarnings("deprecation")
 public class SpringSessionContext implements CurrentSessionContext {
     private final SessionFactory sessionFactory;
 

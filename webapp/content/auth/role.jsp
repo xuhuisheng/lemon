@@ -112,7 +112,7 @@ $(function() {
           <td><input type="checkbox" class="selectedItem" name="selectedItem" value="${item.id}"></td>
           <td>${item.id}</td>
           <td>${item.name}</td>
-          <td>${item.roleDef.localId}</td>
+          <td>${item.roleDef.scopeId}</td>
           <td>
 		    &nbsp;
           </td>

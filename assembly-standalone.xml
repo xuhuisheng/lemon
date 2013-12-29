@@ -24,7 +24,7 @@
 		<dependencySet>
 			<outputDirectory>/</outputDirectory>
 			<includes>
-				<include>com.mossle:mossle-core</include>
+				<include>com.mossle:mossle-lib-core</include>
 			</includes>
 			<scope>compile</scope>
 			<unpack>true</unpack>

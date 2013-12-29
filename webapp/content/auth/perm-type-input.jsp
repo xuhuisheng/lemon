@@ -7,11 +7,11 @@
 
   <head>
     <%@include file="/common/meta.jsp"%>
-    <title><spring:message code="auth.oper.input.title" text="编辑操作"/></title>
+    <title>权限分类</title>
     <%@include file="/common/s.jsp"%>
     <script type="text/javascript">
 $(function() {
-    $("#operForm").validate({
+    $("#permTypeForm").validate({
         submitHandler: function(form) {
 			bootbox.animate(false);
 			var box = bootbox.dialog('<div class="progress progress-striped active" style="margin:0px;"><div class="bar" style="width: 100%;"></div></div>');
@@ -34,37 +34,39 @@ $(function() {
 
       <article class="m-widget">
         <header class="header">
-		  <h4 class="title"><spring:message code="auth.oper.input.title" text="编辑操作"/></h4>
+		  <h4 class="title">权限分类</h4>
 		</header>
 
 		<div class="content content-inner">
 
-<form id="operForm" method="post" action="oper!save.do?operationMode=STORE" class="form-horizontal">
+<form id="permTypeForm" method="post" action="perm-type!save.do?operationMode=STORE" class="form-horizontal">
   <s:if test="model != null">
-  <input id="oper_id" type="hidden" name="id" value="${model.id}">
+  <input id="permType_id" type="hidden" name="id" value="${model.id}">
   </s:if>
   <div class="control-group">
-	<label class="control-label" for="oper_name"><spring:message code='auth.oper.input.name' text='名称'/></label>
+	<label class="control-label" for="permType_name"><spring:message code='auth.permType.input.name' text='名称'/></label>
     <div class="controls">
-      <input id="oper_name" type="text" name="name" value="${model.name}" size="40" class="text required" minlength="2" maxlength="50">
+      <input id="permType_name" type="text" name="name" value="${model.name}" size="40" class="text required" minlength="2" maxlength="50">
     </div>
   </div>
   <div class="control-group">
-	<label class="control-label" for="oper_mask"><spring:message code='auth.oper.input.mask' text='掩码'/></label>
+	<label class="control-label" for="permType_type"><spring:message code='auth.permType.input.type' text='类型'/></label>
     <div class="controls">
-      <input id="oper_mask" type="text" name="mask" value="${model.mask}" size="40" class="text required number" minlength="1" maxlength="10">
+	  <label for="permType_type_0" class="radio inline">
+	    <input id="permType_type_0" type="radio" name="type" value="0" class="required" ${model.type != 1 ? 'checked' : ''}>
+		显示
+	  </label>
+	  <label for="permType_type_1" class="radio inline">
+	    <input id="permType_type_1" type="radio" name="type" value="1" class="required" ${model.type == 1 ? 'checked' : ''}>
+		隐藏
+	  </label>
+	  <label for="permType_type_0" class="validate-error" generated="true" style="display:none;"></label>
     </div>
   </div>
   <div class="control-group">
-	<label class="control-label" for="oper_code"><spring:message code='auth.oper.input.code' text='代码'/></label>
+    <label class="control-label" for="permType_descn"><spring:message code='auth.permType.input.description' text='描述'/></label>
     <div class="controls">
-      <input id="oper_code" type="text" name="code" value="${model.code}" size="40" class="text required" minlength="1" maxlength="1">
-    </div>
-  </div>
-  <div class="control-group">
-    <label class="control-label" for="oper_descn"><spring:message code='auth.oper.input.description' text='描述'/></label>
-    <div class="controls">
-      <textarea id="oper_descn" name="descn" maxlength="60" rows="4">${model.descn}</textarea>
+      <textarea id="permType_descn" name="descn" maxlength="60" rows="4">${model.descn}</textarea>
     </div>
   </div>
   <div class="control-group">

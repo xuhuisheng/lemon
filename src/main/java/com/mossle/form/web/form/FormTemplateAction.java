@@ -60,6 +60,7 @@ public class FormTemplateAction extends BaseAction implements
             beanMapper.copy(model, dest);
         } else {
             dest = model;
+            dest.setType(0);
         }
 
         formTemplateManager.save(dest);

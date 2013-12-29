@@ -78,7 +78,7 @@ $(function() {
   <div class="control-group">
     <label class="control-label" for="user_confirmpassword"><spring:message code="user.user.input.confirmpassword" text="验证密码"/></label>
 	<div class="controls">
-	  <input id="user_confirmpassword" type="password" name="confirmpassword" size="40" class="text required" maxlength="10" equalTo="#user_password">
+	  <input id="user_confirmpassword" type="password" name="confirmPassword" size="40" class="text required" maxlength="10" equalTo="#user_password">
     </div>
   </div>
   </s:if>
@@ -92,12 +92,6 @@ $(function() {
     <label class="control-label" for="user_reference"><spring:message code="user.user.input.reference" text="引用"/></label>
 	<div class="controls">
 	  <input id="user_reference" type="text" name="reference" value="${model.reference}">
-    </div>
-  </div>
-  <div class="control-group">
-    <label class="control-label" for="user_descn"><spring:message code="user.user.input.description" text="描述"/></label>
-	<div class="controls">
-	  <textarea id="user_descn" name="descn" maxlength="60" rows="3">${model.descn}</textarea>
     </div>
   </div>
   <div class="control-group">

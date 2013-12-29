@@ -5,11 +5,9 @@ import java.util.ArrayList;
 import java.util.List;
 
 import com.mossle.bpm.cmd.FindTaskDefinitionsCmd;
-import com.mossle.bpm.persistence.domain.BpmCategory;
 import com.mossle.bpm.persistence.domain.BpmMailTemplate;
 import com.mossle.bpm.persistence.domain.BpmProcess;
 import com.mossle.bpm.persistence.domain.BpmTaskDefNotice;
-import com.mossle.bpm.persistence.manager.BpmCategoryManager;
 import com.mossle.bpm.persistence.manager.BpmMailTemplateManager;
 import com.mossle.bpm.persistence.manager.BpmProcessManager;
 import com.mossle.bpm.persistence.manager.BpmTaskDefNoticeManager;
@@ -35,31 +33,27 @@ import org.apache.struts2.convention.annotation.Results;
 import org.springframework.context.MessageSource;
 import org.springframework.context.support.MessageSourceAccessor;
 
-@Results({
-        @Result(name = BpmProcessAction.RELOAD, location = "bpm-process.do?operationMode=RETRIEVE", type = "redirect"),
-        @Result(name = BpmProcessAction.RELOAD_CONFIG, location = "bpm-process!config.do?id=${id}", type = "redirect") })
-public class BpmProcessAction extends BaseAction implements
-        ModelDriven<BpmProcess>, Preparable {
+@Results(@Result(name = BpmTaskDefNoticeAction.RELOAD, location = "bpm-process!config.do?id=${bpmProcessId}", type = "redirect"))
+public class BpmTaskDefNoticeAction extends BaseAction implements
+        ModelDriven<BpmTaskDefNotice>, Preparable {
     public static final String RELOAD = "reload";
-    public static final String RELOAD_CONFIG = "reload-config";
-    private BpmProcessManager bpmProcessManager;
-    private BpmCategoryManager bpmCategoryManager;
     private BpmTaskDefNoticeManager bpmTaskDefNoticeManager;
+    private BpmProcessManager bpmProcessManager;
     private BpmMailTemplateManager bpmMailTemplateManager;
     private MessageSourceAccessor messages;
     private Page page = new Page();
-    private BpmProcess model;
+    private BpmTaskDefNotice model;
     private long id;
     private List<Long> selectedItem = new ArrayList<Long>();
     private Exportor exportor = new Exportor();
     private BeanMapper beanMapper = new BeanMapper();
-    private List<BpmCategory> bpmCategories;
     private Long bpmCategoryId;
     private List<TaskDefinition> taskDefinitions;
     private Map<TaskDefinition, List<?>> taskMap = new LinkedHashMap<TaskDefinition, List<?>>();
     private ProcessEngine processEngine;
     private List<BpmMailTemplate> bpmMailTemplates;
     private long bpmMailTemplateId;
+    private long bpmProcessId;
 
     public String execute() {
         return list();
@@ -68,27 +62,28 @@ public class BpmProcessAction extends BaseAction implements
     public String list() {
         List<PropertyFilter> propertyFilters = PropertyFilter
                 .buildFromHttpRequest(ServletActionContext.getRequest());
-        page = bpmProcessManager.pagedQuery(page, propertyFilters);
+        page = bpmTaskDefNoticeManager.pagedQuery(page, propertyFilters);
 
         return SUCCESS;
     }
 
     public void prepareSave() {
-        model = new BpmProcess();
+        model = new BpmTaskDefNotice();
     }
 
     public String save() {
-        BpmProcess dest = null;
+        BpmTaskDefNotice dest = null;
 
         if (id > 0) {
-            dest = bpmProcessManager.get(id);
+            dest = bpmTaskDefNoticeManager.get(id);
             beanMapper.copy(model, dest);
         } else {
             dest = model;
         }
 
-        dest.setBpmCategory(bpmCategoryManager.get(bpmCategoryId));
-        bpmProcessManager.save(dest);
+        dest.setBpmProcess(bpmProcessManager.get(bpmProcessId));
+        dest.setBpmMailTemplate(bpmMailTemplateManager.get(bpmMailTemplateId));
+        bpmTaskDefNoticeManager.save(dest);
 
         addActionMessage(messages.getMessage("core.success.save", "保存成功"));
 
@@ -96,9 +91,9 @@ public class BpmProcessAction extends BaseAction implements
     }
 
     public String removeAll() {
-        List<BpmProcess> bpmCategories = bpmProcessManager
+        List<BpmTaskDefNotice> bpmCategories = bpmTaskDefNoticeManager
                 .findByIds(selectedItem);
-        bpmProcessManager.removeAll(bpmCategories);
+        bpmTaskDefNoticeManager.removeAll(bpmCategories);
         addActionMessage(messages.getMessage("core.success.delete", "删除成功"));
 
         return RELOAD;
@@ -106,10 +101,10 @@ public class BpmProcessAction extends BaseAction implements
 
     public String input() {
         if (id > 0) {
-            model = bpmProcessManager.get(id);
+            model = bpmTaskDefNoticeManager.get(id);
         }
 
-        bpmCategories = bpmCategoryManager.getAll();
+        bpmMailTemplates = bpmMailTemplateManager.getAll();
 
         return INPUT;
     }
@@ -117,9 +112,10 @@ public class BpmProcessAction extends BaseAction implements
     public void exportExcel() throws Exception {
         List<PropertyFilter> propertyFilters = PropertyFilter
                 .buildFromHttpRequest(ServletActionContext.getRequest());
-        page = bpmProcessManager.pagedQuery(page, propertyFilters);
+        page = bpmTaskDefNoticeManager.pagedQuery(page, propertyFilters);
 
-        List<BpmProcess> bpmCategories = (List<BpmProcess>) page.getResult();
+        List<BpmTaskDefNotice> bpmCategories = (List<BpmTaskDefNotice>) page
+                .getResult();
         TableModel tableModel = new TableModel();
         tableModel.setName("bpm-process");
         tableModel.addHeaders("id", "name");
@@ -127,43 +123,20 @@ public class BpmProcessAction extends BaseAction implements
         exportor.exportExcel(ServletActionContext.getResponse(), tableModel);
     }
 
-    public String config() {
-        model = bpmProcessManager.get(id);
+    public String removeNotice() {
+        BpmTaskDefNotice bpmTaskDefNotice = bpmTaskDefNoticeManager.get(id);
+        bpmProcessId = bpmTaskDefNotice.getBpmProcess().getId();
+        bpmTaskDefNoticeManager.remove(bpmTaskDefNotice);
 
-        ProcessDefinition processDefinition = processEngine
-                .getRepositoryService().createProcessDefinitionQuery()
-                .processDefinitionKey(model.getProcessDefinitionKey())
-                .processDefinitionVersion(model.getProcessDefinitionVersion())
-                .singleResult();
-        FindTaskDefinitionsCmd cmd = new FindTaskDefinitionsCmd(
-                processDefinition.getId());
-        taskDefinitions = processEngine.getManagementService().executeCommand(
-                cmd);
-
-        for (TaskDefinition taskDefinition : taskDefinitions) {
-            List<BpmTaskDefNotice> bpmTaskDefNotices = bpmTaskDefNoticeManager
-                    .find("from BpmTaskDefNotice where taskDefinitionKey=? and bpmProcess=?",
-                            taskDefinition.getKey(), model);
-            taskMap.put(taskDefinition, bpmTaskDefNotices);
-        }
-
-        return "config";
+        return RELOAD;
     }
 
     // ~ ======================================================================
     public void prepare() {
     }
 
-    public BpmProcess getModel() {
+    public BpmTaskDefNotice getModel() {
         return model;
-    }
-
-    public void setBpmProcessManager(BpmProcessManager bpmProcessManager) {
-        this.bpmProcessManager = bpmProcessManager;
-    }
-
-    public void setBpmCategoryManager(BpmCategoryManager bpmCategoryManager) {
-        this.bpmCategoryManager = bpmCategoryManager;
     }
 
     public void setBpmTaskDefNoticeManager(
@@ -171,7 +144,12 @@ public class BpmProcessAction extends BaseAction implements
         this.bpmTaskDefNoticeManager = bpmTaskDefNoticeManager;
     }
 
-    public void setBpmMailTemplate(BpmMailTemplateManager bpmMailTemplateManager) {
+    public void setBpmProcessManager(BpmProcessManager bpmProcessManager) {
+        this.bpmProcessManager = bpmProcessManager;
+    }
+
+    public void setBpmMailTemplateManager(
+            BpmMailTemplateManager bpmMailTemplateManager) {
         this.bpmMailTemplateManager = bpmMailTemplateManager;
     }
 
@@ -201,14 +179,6 @@ public class BpmProcessAction extends BaseAction implements
     }
 
     // ~ ======================================================================
-    public List<BpmCategory> getBpmCategories() {
-        return bpmCategories;
-    }
-
-    public void setBpmCategoryId(Long bpmCategoryId) {
-        this.bpmCategoryId = bpmCategoryId;
-    }
-
     public List<TaskDefinition> getTaskDefinitions() {
         return taskDefinitions;
     }
@@ -223,5 +193,13 @@ public class BpmProcessAction extends BaseAction implements
 
     public void setBpmMailTemplateId(long bpmMailTemplateId) {
         this.bpmMailTemplateId = bpmMailTemplateId;
+    }
+
+    public long getBpmProcessId() {
+        return bpmProcessId;
+    }
+
+    public void setBpmProcessId(long bpmProcessId) {
+        this.bpmProcessId = bpmProcessId;
     }
 }

@@ -14,6 +14,11 @@
     <script type="text/javascript" src="${ctx}/xform/container-layout.js"></script>
     <script type="text/javascript" src="${ctx}/xform/adaptor.js"></script>
     <script type="text/javascript">
+document.onmousedown = function(e) {};
+document.onmousemove = function(e) {};
+document.onmouseup = function(e) {};
+document.ondblclick = function(e) {};
+
 $(function() {
     $("#demoForm").validate({
         submitHandler: function(form) {
