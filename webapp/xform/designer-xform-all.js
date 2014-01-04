@@ -646,9 +646,9 @@ Xf.Model.prototype = {
     serial: function() {
         //return this.template.serial();
         var json = '{';
-        json += 'title:"' + this.title + '",';
-        json += 'template:"' + this.template.type + '",';
-        json += 'fields:[';
+        json += '"title":"' + this.title + '",';
+        json += '"template":"' + this.template.type + '",';
+        json += '"fields":[';
 
         var array = [];
         for (var key in this.fields) {
@@ -659,13 +659,13 @@ Xf.Model.prototype = {
             var field = array[i];
 
             json += '{';
-            json += 'type:"' + field.type + '",';
-            json += 'id:"' + field.id + '",';
-            json += 'name:"' + field.name + '",';
-            json += 'label:"' + field.label + '",';
-            json += 'data:"' + field.data + '",';
-            json += 'row:' + field.row + ',';
-            json += 'col:' + field.col;
+            json += '"type":"' + field.type + '",';
+            json += '"id":"' + field.id + '",';
+            json += '"name":"' + field.name + '",';
+            json += '"label":"' + field.label + '",';
+            json += '"data":"' + field.data + '",';
+            json += '"row":' + field.row + ',';
+            json += '"col":' + field.col;
             json += '}';
             if (i != array.length - 1) {
                 json += ',';
@@ -673,7 +673,7 @@ Xf.Model.prototype = {
         }
 
         json += '],';
-        json += 'buttons:[';
+        json += '"buttons":[';
 
         for (var i = 0; i < this.buttons.length; i++) {
             json += '"' + this.buttons[i] + '"';
