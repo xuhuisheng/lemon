@@ -19,4 +19,6 @@
 		<property name="jdbcTemplate" ref="jdbcTemplate"/>
 	</bean>
 
+	<bean id="userNotification" class="com.mossle.user.notification.PartyUserNotification"/>
+
 </beans>
