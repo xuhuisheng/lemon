@@ -115,8 +115,8 @@ public class CustomProcessDiagramGenerator {
         this.minY -= 5;
 
         ProcessDefinitionEntity definition = Context
-                .getProcessEngineConfiguration().getProcessDefinitionCache()
-                .get(processDefinitionId);
+                .getProcessEngineConfiguration().getDeploymentManager()
+                .findDeployedProcessDefinitionById(processDefinitionId);
         String diagramResourceName = definition.getDiagramResourceName();
         String deploymentId = definition.getDeploymentId();
         byte[] bytes = Context
