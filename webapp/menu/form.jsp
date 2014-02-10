@@ -11,8 +11,8 @@
           </div>
           <div id="collapse-form" class="accordion-body collapse ${currentMenu == 'form' ? 'in' : ''}">
             <ul class="accordion-inner nav nav-list">
-			  <li class="m-icn-add-user"><a href="${scopePrefix}/form/form-template.do">表单列表</a></li>
-			  <li class="m-icn-add-user"><a href="${scopePrefix}/form/form-template!input.do">新建表单</a></li>
+			  <li><a href="${scopePrefix}/form/form-template.do"><i class="icon-user"></i>表单列表</a></li>
+			  <li><a href="${scopePrefix}/form/form-template!input.do"><i class="icon-user"></i>新建表单</a></li>
             </ul>
           </div>
         </div>

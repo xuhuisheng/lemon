@@ -39,55 +39,10 @@ public class TaskTimeoutJob {
 
         for (Task task : tasks) {
             if (task.getDueDate() != null) {
-                processTimeout(task);
+                SendNoticeCmd sendNoticeCmd = new SendNoticeCmd(task.getId());
+                processEngine.getManagementService().executeCommand(
+                        sendNoticeCmd);
             }
-        }
-    }
-
-    public void processTimeout(Task task) throws Exception {
-        String processDefinitionId = task.getProcessDefinitionId();
-        String taskDefinitionKey = task.getTaskDefinitionKey();
-        ProcessDefinition processDefinition = processEngine
-                .getRepositoryService().createProcessDefinitionQuery()
-                .processDefinitionId(processDefinitionId).singleResult();
-        BpmProcess bpmProcess = bpmProcessManager
-                .findUnique(
-                        "from BpmProcess where processDefinitionKey=? and processDefinitionVersion=?",
-                        processDefinition.getKey(),
-                        processDefinition.getVersion());
-        List<BpmTaskDefNotice> bpmTaskDefNotices = bpmTaskDefNoticeManager
-                .find("from BpmTaskDefNotice where taskDefinitionKey=? and bpmProcess=?",
-                        taskDefinitionKey, bpmProcess);
-
-        for (BpmTaskDefNotice bpmTaskDefNotice : bpmTaskDefNotices) {
-            if (TYPE_TIMEOUT == bpmTaskDefNotice.getType()) {
-                processTimeout(task, bpmTaskDefNotice);
-            }
-        }
-    }
-
-    public void processTimeout(Task task, BpmTaskDefNotice bpmTaskDefNotice)
-            throws Exception {
-        Date dueDate = task.getDueDate();
-        Calendar calendar = Calendar.getInstance();
-        calendar.setTime(dueDate);
-
-        DatatypeFactory datatypeFactory = DatatypeFactory.newInstance();
-        Duration duration = datatypeFactory.newDuration("-"
-                + bpmTaskDefNotice.getDueDate());
-        duration.addTo(calendar);
-
-        Date noticeDate = calendar.getTime();
-        Date now = new Date();
-
-        if ((now.getTime() < noticeDate.getTime())
-                && ((noticeDate.getTime() - now.getTime()) < (60 * 1000))) {
-            BpmMailTemplate bpmMailTemplate = bpmTaskDefNotice
-                    .getBpmMailTemplate();
-            SendNoticeCmd sendNoticeCmd = new SendNoticeCmd(task.getId(),
-                    bpmTaskDefNotice.getReceiver(),
-                    bpmMailTemplate.getSubject(), bpmMailTemplate.getContent());
-            processEngine.getManagementService().executeCommand(sendNoticeCmd);
         }
     }
 

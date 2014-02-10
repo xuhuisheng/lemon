@@ -21,16 +21,16 @@
               <li class="dropdown ${currentHeader == 'scope' ? 'active' : ''}">
                 <a data-toggle="dropdown" class="dropdown-toggle" href="#">系统管理 <b class="caret"></b></a>
                 <ul class="dropdown-menu">
-                  <li><a href="${scopePrefix}/user/user-base.do">用户管理</a></li>
-                  <li><a href="${scopePrefix}/group/org.do">组织机构</a></li>
+                  <li><a href="${scopePrefix}/user/user-base.do"><i class="icon-user"></i>用户管理</a></li>
+                  <li><a href="${scopePrefix}/group/org.do"><i class="icon-user"></i>组织机构</a></li>
                   <li class="divider"></li>
-                  <li><a href="${scopePrefix}/auth/user-connector.do">权限管理</a></li>
+                  <li><a href="${scopePrefix}/auth/user-connector.do"><i class="icon-user"></i>权限管理</a></li>
                   <li class="divider"></li>
-				  <li><a href="${scopePrefix}/bpm/console!listProcessDefinitions.do">流程管理</a></li>
-				  <li><a href="${scopePrefix}/form/form-template.do">表单管理</a></li>
+				  <li><a href="${scopePrefix}/bpm/bpm-process.do"><i class="icon-user"></i>流程管理</a></li>
+				  <li><a href="${scopePrefix}/form/form-template.do"><i class="icon-user"></i>表单管理</a></li>
                   <li class="divider"></li>
-                  <li><a href="${scopePrefix}/cms/cms-article.do">公告管理</a></li>
-                  <li><a href="${scopePrefix}/party/tree.do">系统配置</a></li>
+                  <li><a href="${scopePrefix}/cms/cms-article.do"><i class="icon-user"></i>公告管理</a></li>
+                  <li><a href="${scopePrefix}/party/tree.do"><i class="icon-user"></i>系统配置</a></li>
                 </ul>
               </li>
             </ul>

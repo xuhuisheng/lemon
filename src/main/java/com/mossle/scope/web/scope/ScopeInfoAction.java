@@ -3,9 +3,9 @@ package com.mossle.scope.web.scope;
 import java.util.ArrayList;
 import java.util.List;
 
-import com.mossle.api.UserRepoConnector;
-import com.mossle.api.UserRepoDTO;
 import com.mossle.api.scope.ScopeCache;
+import com.mossle.api.userrepo.UserRepoConnector;
+import com.mossle.api.userrepo.UserRepoDTO;
 
 import com.mossle.core.export.Exportor;
 import com.mossle.core.export.TableModel;
@@ -14,6 +14,7 @@ import com.mossle.core.mapper.BeanMapper;
 import com.mossle.core.page.Page;
 import com.mossle.core.struts2.BaseAction;
 
+import com.mossle.scope.component.ScopePublisher;
 import com.mossle.scope.domain.ScopeInfo;
 import com.mossle.scope.manager.ScopeInfoManager;
 import com.mossle.scope.support.ScopeInfoDTO;
@@ -33,6 +34,7 @@ public class ScopeInfoAction extends BaseAction implements
         ModelDriven<ScopeInfo>, Preparable {
     public static final String RELOAD = "reload";
     private ScopeInfoManager scopeInfoManager;
+    private ScopePublisher scopePublisher;
     private MessageSourceAccessor messages;
     private Page page = new Page();
     private ScopeInfo model;
@@ -91,19 +93,24 @@ public class ScopeInfoAction extends BaseAction implements
         }
 
         scopeInfoManager.save(dest);
-        scopeCache.refresh();
-
         addActionMessage(messages.getMessage("core.success.save", "保存成功"));
+        // TODO: 应该支持事务提交后发送消息
+        scopePublisher.execute(dest);
 
         return RELOAD;
     }
 
     public String removeAll() {
         List<ScopeInfo> scopeInfos = scopeInfoManager.findByIds(selectedItem);
-
         scopeInfoManager.removeAll(scopeInfos);
-        scopeCache.refresh();
         addActionMessage(messages.getMessage("core.success.delete", "删除成功"));
+
+        // TODO: 应该支持事务提交后发送消息
+        for (ScopeInfo scopeInfo : scopeInfos) {
+            scopeInfo.setName(null);
+            // 支持真删除？
+            scopePublisher.execute(scopeInfo);
+        }
 
         return RELOAD;
     }
@@ -166,6 +173,10 @@ public class ScopeInfoAction extends BaseAction implements
 
     public void setUserRepoConnector(UserRepoConnector userRepoConnector) {
         this.userRepoConnector = userRepoConnector;
+    }
+
+    public void setScopePublisher(ScopePublisher scopePublisher) {
+        this.scopePublisher = scopePublisher;
     }
 
     // ~ ======================================================================

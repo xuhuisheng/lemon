@@ -2,6 +2,7 @@ package com.mossle.bpm.web.bpm;
 
 import java.io.InputStream;
 
+import java.util.ArrayList;
 import java.util.HashMap;
 import java.util.List;
 import java.util.Map;
@@ -9,13 +10,23 @@ import java.util.Map;
 import javax.servlet.http.HttpServletRequest;
 import javax.servlet.http.HttpServletResponse;
 
+import com.mossle.api.user.UserConnector;
+
 import com.mossle.bpm.cmd.CounterSignCmd;
+import com.mossle.bpm.cmd.DelegateTaskCmd;
+import com.mossle.bpm.cmd.FindProcessDefinitionEntityCmd;
 import com.mossle.bpm.cmd.HistoryProcessInstanceDiagramCmd;
 import com.mossle.bpm.cmd.ProcessDefinitionDiagramCmd;
 import com.mossle.bpm.cmd.RollbackTaskCmd;
 import com.mossle.bpm.cmd.WithdrawTaskCmd;
+import com.mossle.bpm.component.ProcessInstanceConverter;
+import com.mossle.bpm.component.TaskConverter;
 import com.mossle.bpm.persistence.domain.BpmCategory;
+import com.mossle.bpm.persistence.domain.BpmProcess;
 import com.mossle.bpm.persistence.manager.BpmCategoryManager;
+import com.mossle.bpm.persistence.manager.BpmProcessManager;
+import com.mossle.bpm.support.ProcessInstanceDTO;
+import com.mossle.bpm.support.TaskDTO;
 
 import com.mossle.core.struts2.BaseAction;
 
@@ -35,6 +46,7 @@ import org.activiti.engine.history.HistoricTaskInstance;
 import org.activiti.engine.history.HistoricVariableInstance;
 import org.activiti.engine.impl.ServiceImpl;
 import org.activiti.engine.impl.interceptor.Command;
+import org.activiti.engine.impl.persistence.entity.ProcessDefinitionEntity;
 import org.activiti.engine.repository.ProcessDefinition;
 import org.activiti.engine.task.DelegationState;
 import org.activiti.engine.task.Task;
@@ -51,7 +63,10 @@ import org.apache.struts2.convention.annotation.Results;
 @Results({ @Result(name = WorkspaceAction.RELOAD, location = "workspace!listProcessDefinitions.do?operationMode=RETRIEVE", type = "redirect") })
 public class WorkspaceAction extends BaseAction {
     public static final String RELOAD = "reload";
+    private BpmCategoryManager bpmCategoryManager;
+    private BpmProcessManager bpmProcessManager;
     private ProcessEngine processEngine;
+    private UserConnector userConnector;
     private List<ProcessDefinition> processDefinitions;
     private String processDefinitionId;
     private StartFormData startFormData;
@@ -62,12 +77,15 @@ public class WorkspaceAction extends BaseAction {
     private List<HistoricTaskInstance> historicTasks;
     private List<HistoricProcessInstance> historicProcessInstances;
     private List<HistoricVariableInstance> historicVariableInstances;
-    private String username;
-    private BpmCategoryManager bpmCategoryManager;
+    private String userId;
     private List<BpmCategory> bpmCategories;
     private String operationType;
-    private String processDefinitionKey;
-    private int processDefinitionVersion;
+    private long bpmProcessId;
+    private List<TaskDTO> taskDtos;
+    private List<ProcessInstanceDTO> processInstanceDtos;
+    private TaskConverter taskConverter;
+    private ProcessInstanceConverter processInstanceConverter;
+    private String attorney;
 
     public String home() {
         bpmCategories = bpmCategoryManager.getAll("priority", true);
@@ -76,16 +94,9 @@ public class WorkspaceAction extends BaseAction {
     }
 
     public void graphProcessDefinition() throws Exception {
-        RepositoryService repositoryService = processEngine
-                .getRepositoryService();
-
-        if (processDefinitionId == null) {
-            processDefinitionId = repositoryService
-                    .createProcessDefinitionQuery()
-                    .processDefinitionKey(processDefinitionKey)
-                    .processDefinitionVersion(processDefinitionVersion)
-                    .singleResult().getId();
-        }
+        BpmProcess bpmProcess = bpmProcessManager.get(bpmProcessId);
+        processDefinitionId = bpmProcess.getBpmConfBase()
+                .getProcessDefinitionId();
 
         Command<InputStream> cmd = null;
         cmd = new ProcessDefinitionDiagramCmd(processDefinitionId);
@@ -123,10 +134,12 @@ public class WorkspaceAction extends BaseAction {
     public String listRunningProcessInstances() {
         HistoryService historyService = processEngine.getHistoryService();
 
-        String currentUsername = SpringSecurityUtils.getCurrentUsername();
+        // TODO: 改成通过runtime表搜索，提高效率
+        String userId = SpringSecurityUtils.getCurrentUserId();
         historicProcessInstances = historyService
-                .createHistoricProcessInstanceQuery()
-                .startedBy(currentUsername).unfinished().list();
+                .createHistoricProcessInstanceQuery().startedBy(userId)
+                .unfinished().list();
+        this.processHistoryProcessInstance();
 
         return "listRunningProcessInstances";
     }
@@ -139,10 +152,11 @@ public class WorkspaceAction extends BaseAction {
     public String listCompletedProcessInstances() {
         HistoryService historyService = processEngine.getHistoryService();
 
-        String currentUsername = SpringSecurityUtils.getCurrentUsername();
+        String userId = SpringSecurityUtils.getCurrentUserId();
         historicProcessInstances = historyService
-                .createHistoricProcessInstanceQuery()
-                .startedBy(currentUsername).finished().list();
+                .createHistoricProcessInstanceQuery().startedBy(userId)
+                .finished().list();
+        this.processHistoryProcessInstance();
 
         return "listCompletedProcessInstances";
     }
@@ -156,10 +170,11 @@ public class WorkspaceAction extends BaseAction {
         HistoryService historyService = processEngine.getHistoryService();
 
         // TODO: finished(), unfinished()
-        String currentUsername = SpringSecurityUtils.getCurrentUsername();
+        String userId = SpringSecurityUtils.getCurrentUserId();
         historicProcessInstances = historyService
-                .createHistoricProcessInstanceQuery()
-                .involvedUser(currentUsername).list();
+                .createHistoricProcessInstanceQuery().involvedUser(userId)
+                .list();
+        this.processHistoryProcessInstance();
 
         return "listInvolvedProcessInstances";
     }
@@ -193,9 +208,10 @@ public class WorkspaceAction extends BaseAction {
      */
     public String listPersonalTasks() {
         TaskService taskService = processEngine.getTaskService();
-        String username = SpringSecurityUtils.getCurrentUsername();
-        tasks = taskService.createTaskQuery().taskAssignee(username).active()
+        String userId = SpringSecurityUtils.getCurrentUserId();
+        tasks = taskService.createTaskQuery().taskAssignee(userId).active()
                 .list();
+        this.processTask();
 
         return "listPersonalTasks";
     }
@@ -207,9 +223,10 @@ public class WorkspaceAction extends BaseAction {
      */
     public String listGroupTasks() {
         TaskService taskService = processEngine.getTaskService();
-        String currentUsername = SpringSecurityUtils.getCurrentUsername();
-        tasks = taskService.createTaskQuery()
-                .taskCandidateUser(currentUsername).active().list();
+        String userId = SpringSecurityUtils.getCurrentUserId();
+        tasks = taskService.createTaskQuery().taskCandidateUser(userId)
+                .active().list();
+        this.processTask();
 
         return "listGroupTasks";
     }
@@ -221,9 +238,10 @@ public class WorkspaceAction extends BaseAction {
      */
     public String listDelegatedTasks() {
         TaskService taskService = processEngine.getTaskService();
-        String currentUsername = SpringSecurityUtils.getCurrentUsername();
-        tasks = taskService.createTaskQuery().taskOwner(currentUsername)
+        String userId = SpringSecurityUtils.getCurrentUserId();
+        tasks = taskService.createTaskQuery().taskOwner(userId)
                 .taskDelegationState(DelegationState.PENDING).list();
+        this.processTask();
 
         return "listDelegatedTasks";
     }
@@ -235,9 +253,10 @@ public class WorkspaceAction extends BaseAction {
      */
     public String listHistoryTasks() {
         HistoryService historyService = processEngine.getHistoryService();
-        String currentUsername = SpringSecurityUtils.getCurrentUsername();
+        String userId = SpringSecurityUtils.getCurrentUserId();
         historicTasks = historyService.createHistoricTaskInstanceQuery()
-                .taskAssignee(currentUsername).finished().list();
+                .taskAssignee(userId).finished().list();
+        this.processHistoryTask();
 
         return "listHistoryTasks";
     }
@@ -255,32 +274,6 @@ public class WorkspaceAction extends BaseAction {
         return "prepareStartProcessInstance";
     }
 
-    /**
-     * 发起流程
-     * 
-     * @return
-     */
-    public String startProcessInstance() {
-        IdentityService identityService = processEngine.getIdentityService();
-        identityService.setAuthenticatedUserId(SpringSecurityUtils
-                .getCurrentUsername());
-
-        FormService formService = processEngine.getFormService();
-        startFormData = formService.getStartFormData(processDefinitionId);
-
-        HttpServletRequest request = ServletActionContext.getRequest();
-        Map<String, String> map = new HashMap<String, String>();
-
-        for (FormProperty formProperty : startFormData.getFormProperties()) {
-            String name = formProperty.getId();
-            map.put(name, request.getParameter(name));
-        }
-
-        formService.submitStartFormData(processDefinitionId, map);
-
-        return RELOAD;
-    }
-
     // ~ ======================================================================
     /**
      * 完成任务页面
@@ -296,43 +289,15 @@ public class WorkspaceAction extends BaseAction {
     }
 
     /**
-     * 完成任务
-     * 
-     * @return
-     */
-    public String completeTask() {
-        HttpServletRequest request = ServletActionContext.getRequest();
-        IdentityService identityService = processEngine.getIdentityService();
-        identityService.setAuthenticatedUserId(SpringSecurityUtils
-                .getCurrentUsername());
-
-        FormService formService = processEngine.getFormService();
-        taskFormData = formService.getTaskFormData(taskId);
-
-        Map<String, String> map = new HashMap<String, String>();
-
-        for (FormProperty formProperty : taskFormData.getFormProperties()) {
-            if (formProperty.isWritable()) {
-                String name = formProperty.getId();
-                map.put(name, request.getParameter(name));
-            }
-        }
-
-        formService.submitTaskFormData(taskId, map);
-
-        return RELOAD;
-    }
-
-    /**
      * 认领任务（对应的是在组任务，即从组任务中领取任务）
      * 
      * @return
      */
     public String claimTask() {
-        String currentUsername = SpringSecurityUtils.getCurrentUsername();
+        String userId = SpringSecurityUtils.getCurrentUserId();
 
         TaskService taskService = processEngine.getTaskService();
-        taskService.claim(taskId, currentUsername);
+        taskService.claim(taskId, userId);
 
         return RELOAD;
     }
@@ -353,7 +318,7 @@ public class WorkspaceAction extends BaseAction {
      */
     public String delegateTask() {
         TaskService taskService = processEngine.getTaskService();
-        taskService.delegateTask(taskId, username);
+        taskService.delegateTask(taskId, userId);
 
         return RELOAD;
     }
@@ -382,6 +347,7 @@ public class WorkspaceAction extends BaseAction {
         historicVariableInstances = historyService
                 .createHistoricVariableInstanceQuery()
                 .processInstanceId(processInstanceId).list();
+        this.processHistoryTask();
 
         return "viewHistory";
     }
@@ -414,25 +380,84 @@ public class WorkspaceAction extends BaseAction {
     }
 
     /**
-     * 加减签
+     * 准备加减签.
      */
     public String changeCounterSign() {
         return "changeCounterSign";
     }
 
+    /**
+     * 进行加减签.
+     */
     public String saveCounterSign() {
-        CounterSignCmd cmd = new CounterSignCmd(operationType, username, taskId);
+        CounterSignCmd cmd = new CounterSignCmd(operationType, userId, taskId);
 
         processEngine.getManagementService().executeCommand(cmd);
 
         return RELOAD;
     }
 
+    /**
+     * 转办.
+     */
+    public String doDelegate() {
+        DelegateTaskCmd cmd = new DelegateTaskCmd(taskId, attorney);
+        processEngine.getManagementService().executeCommand(cmd);
+
+        return RELOAD;
+    }
+
+    /**
+     * 协办.
+     */
+    public String doDelegateHelp() {
+        TaskService taskService = processEngine.getTaskService();
+        taskService.delegateTask(taskId, attorney);
+
+        return RELOAD;
+    }
+
+    // ~ ==================================================
+    public void processHistoryProcessInstance() {
+        processInstanceDtos = processInstanceConverter
+                .convertHistoryProcessInstances(historicProcessInstances);
+    }
+
+    public void processHistoryTask() {
+        taskDtos = taskConverter.convertHistoryTasks(historicTasks);
+    }
+
+    public void processTask() {
+        taskDtos = taskConverter.convertTasks(tasks);
+    }
+
     // ~ ======================================================================
+    public void setBpmCategoryManager(BpmCategoryManager bpmCategoryManager) {
+        this.bpmCategoryManager = bpmCategoryManager;
+    }
+
+    public void setBpmProcessManager(BpmProcessManager bpmProcessManager) {
+        this.bpmProcessManager = bpmProcessManager;
+    }
+
     public void setProcessEngine(ProcessEngine processEngine) {
         this.processEngine = processEngine;
     }
 
+    public void setUserConnector(UserConnector userConnector) {
+        this.userConnector = userConnector;
+    }
+
+    public void setTaskConverter(TaskConverter taskConverter) {
+        this.taskConverter = taskConverter;
+    }
+
+    public void setProcessInstanceConverter(
+            ProcessInstanceConverter processInstanceConverter) {
+        this.processInstanceConverter = processInstanceConverter;
+    }
+
+    // ~ ======================================================================
     public List<ProcessDefinition> getProcessDefinitions() {
         return processDefinitions;
     }
@@ -485,12 +510,8 @@ public class WorkspaceAction extends BaseAction {
         return historicVariableInstances;
     }
 
-    public void setUsername(String username) {
-        this.username = username;
-    }
-
-    public void setBpmCategoryManager(BpmCategoryManager bpmCategoryManager) {
-        this.bpmCategoryManager = bpmCategoryManager;
+    public void setUserId(String userId) {
+        this.userId = userId;
     }
 
     public List<BpmCategory> getBpmCategories() {
@@ -501,11 +522,19 @@ public class WorkspaceAction extends BaseAction {
         this.operationType = operationType;
     }
 
-    public void setProcessDefinitionKey(String processDefinitionKey) {
-        this.processDefinitionKey = processDefinitionKey;
+    public void setBpmProcessId(long bpmProcessId) {
+        this.bpmProcessId = bpmProcessId;
     }
 
-    public void setProcessDefinitionVersion(int processDefinitionVersion) {
-        this.processDefinitionVersion = processDefinitionVersion;
+    public List<TaskDTO> getTaskDtos() {
+        return taskDtos;
+    }
+
+    public List<ProcessInstanceDTO> getProcessInstanceDtos() {
+        return processInstanceDtos;
+    }
+
+    public void setAttorney(String attorney) {
+        this.attorney = attorney;
     }
 }

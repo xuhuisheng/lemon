@@ -65,8 +65,8 @@ $(function() {
   <div class="control-group">
     <label class="control-label" for="user-base_username"><spring:message code="user.user.input.username" text="账号"/></label>
 	<div class="controls">
-	  ${model.username}
-    </div>
+	  <div style="padding-top:5px;">${model.username}</div>
+	</div>
   </div>
   <s:if test="model == null || model.password == null">
   <div class="control-group">
@@ -86,6 +86,18 @@ $(function() {
     <label class="control-label" for="user-base_displayName">显示名</label>
 	<div class="controls">
 	  <input id="user-base_displayName" type="text" name="displayName" value="${model.displayName}" size="40" class="text required" minlength="2" maxlength="50">
+    </div>
+  </div>
+  <div class="control-group">
+    <label class="control-label" for="user-base_email">邮箱</label>
+	<div class="controls">
+	  <input id="user-base_email" type="text" name="email" value="${model.email}">
+    </div>
+  </div>
+  <div class="control-group">
+    <label class="control-label" for="user-base_mobile">手机</label>
+	<div class="controls">
+	  <input id="user-base_mobile" type="text" name="mobile" value="${model.mobile}">
     </div>
   </div>
   <s:iterator value="userBaseWrapper.userAttrWrappers" var="item">

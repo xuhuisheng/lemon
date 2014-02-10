@@ -4,8 +4,8 @@ import java.util.ArrayList;
 import java.util.List;
 
 import com.mossle.api.scope.ScopeConnector;
+import com.mossle.api.scope.ScopeDTO;
 import com.mossle.api.scope.ScopeHolder;
-import com.mossle.api.scope.ScopeInfo;
 
 import com.mossle.auth.component.RoleChecker;
 import com.mossle.auth.domain.Role;
@@ -133,11 +133,11 @@ public class RoleAction extends BaseAction implements ModelDriven<Role>,
         roleDefs = roleDefManager.find("from RoleDef where scopeId=?",
                 ScopeHolder.getScopeId());
 
-        List<ScopeInfo> scopeInfos = scopeConnector.findSharedScopes();
+        List<ScopeDTO> scopeDtos = scopeConnector.findSharedScopes();
 
-        for (ScopeInfo scopeInfo : scopeInfos) {
+        for (ScopeDTO scopeDto : scopeDtos) {
             roleDefs.addAll(roleDefManager.find(
-                    "from RoleDef where scopeInfo=?", scopeInfo.getId()));
+                    "from RoleDef where scopeInfo=?", scopeDto.getId()));
         }
 
         List<Role> roles = roleManager.findBy("scopeId",

@@ -112,7 +112,7 @@ $(function() {
         <th class="sorting" name="username"><spring:message code="user.user.list.username" text="账号"/></th>
         <th name="password"><spring:message code="user.user.list.password" text="密码"/></th>
         <th class="sorting" name="status"><spring:message code="user.user.list.status" text="状态"/></th>
-        <th class="sorting" name="reference"><spring:message code="user.user.list.reference" text="引用"/></th>
+        <th class="sorting" name="ref"><spring:message code="user.user.list.ref" text="引用"/></th>
         <th name="description"><spring:message code="user.user.list.authorities" text="权限"/></th>
         <th width="150">&nbsp;</th>
       </tr>
@@ -126,7 +126,7 @@ $(function() {
         <td>${item.username}</td>
         <td>[protected]</td>
         <td>${item.enabled ? '启用' : '禁用'}</td>
-        <td>${item.reference}</td>
+        <td>${item.ref}</td>
         <td>${item.authorities}</td>
         <td>
 			<perm:permission permission="user:write">

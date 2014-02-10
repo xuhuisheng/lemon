@@ -32,7 +32,7 @@
   <div class="control-group">
     <label class="control-label">代理人</label>
 	<div class="controls">
-	  <input type="text" name="username" value="">
+	  <input type="text" name="userId" value="">
     </div>
   </div>
   <div class="control-group">

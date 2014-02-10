@@ -17,6 +17,7 @@
 				<property name="smtpStarttls" value="${mail.smtp.starttls.enable}"/>
 				<property name="mode" value="${mail.mode}"/>
 				<property name="testMail" value="${mail.test.mail}"/>
+				<property name="defaultFrom" value="${mail.default.from}"/>
 			</bean>
 		</property>
 	</bean>

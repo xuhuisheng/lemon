@@ -103,6 +103,7 @@ $(function() {
           <th class="sorting" name="id"><spring:message code="user.userRepo.list.id" text="编号"/></th>
           <th class="sorting" name="code"><spring:message code="user.userRepo.list.code" text="代码"/></th>
           <th class="sorting" name="name"><spring:message code="user.userRepo.list.name" text="名称"/></th>
+          <th class="sorting" name="ref">引用</th>
           <th width="100">&nbsp;</th>
         </tr>
       </thead>
@@ -113,6 +114,7 @@ $(function() {
           <td>${item.id}</td>
           <td>${item.code}</td>
           <td>${item.name}</td>
+          <td>${item.ref}</td>
           <td>
             <a href="user-schema.do?userRepoId=${item.id}">配置属性</a>&nbsp;
 			<region:region-permission permission="userrepo:write">

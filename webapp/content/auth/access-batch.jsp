@@ -57,9 +57,7 @@ function doSort() {
   </div>
   <div class="control-group">
     <div class="controls">
-      <button id="submitButton" class="btn"><spring:message code='core.input.import' text='批量导入'/></button>
-	  &nbsp;
-      <button type="button" class="btn" onclick="doSort()"><spring:message code='core.input.sort' text='排量排序'/></button>
+      <button id="submitButton" class="btn">提交</button>
     </div>
   </div>
 </form>

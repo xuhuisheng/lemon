@@ -37,7 +37,7 @@ public class UserStatus implements java.io.Serializable {
     private Integer status;
 
     /** null. */
-    private String reference;
+    private String ref;
 
     /** null. */
     private String userRepoRef;
@@ -52,12 +52,11 @@ public class UserStatus implements java.io.Serializable {
     }
 
     public UserStatus(String username, String password, Integer status,
-            String reference, String userRepoRef, String scopeId,
-            Set<Role> roles) {
+            String ref, String userRepoRef, String scopeId, Set<Role> roles) {
         this.username = username;
         this.password = password;
         this.status = status;
-        this.reference = reference;
+        this.ref = ref;
         this.userRepoRef = userRepoRef;
         this.scopeId = scopeId;
         this.roles = roles;
@@ -122,17 +121,17 @@ public class UserStatus implements java.io.Serializable {
     }
 
     /** @return null. */
-    @Column(name = "REFERENCE", length = 200)
-    public String getReference() {
-        return this.reference;
+    @Column(name = "REF", length = 200)
+    public String getRef() {
+        return this.ref;
     }
 
     /**
-     * @param reference
+     * @param ref
      *            null.
      */
-    public void setReference(String reference) {
-        this.reference = reference;
+    public void setRef(String ref) {
+        this.ref = ref;
     }
 
     /** @return null. */

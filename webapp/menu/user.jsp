@@ -11,8 +11,8 @@
           </div>
           <div id="collapse-user" class="accordion-body collapse ${currentMenu == 'user' ? 'in' : ''}">
             <ul class="accordion-inner nav nav-list">
-			  <li><a href="${scopePrefix}/user/user-base.do">用户列表</a></li>
-			  <li><a href="${scopePrefix}/user/user-base!input.do">添加用户</a></li>
+			  <li><a href="${scopePrefix}/user/user-base.do"><i class="icon-user"></i>用户列表</a></li>
+			  <li><a href="${scopePrefix}/user/user-base!input.do"><i class="icon-user"></i>添加用户</a></li>
             </ul>
           </div>
         </div>

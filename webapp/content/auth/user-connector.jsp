@@ -110,7 +110,7 @@ $(function() {
         <td>${item.authorities}</td>
         <td>
 			<perm:permission permission="user:auth">
-            <a href="user-connector!configRole.do?reference=${item.reference}"><spring:message code="user.user.list.role" text="设置权限"/></a>
+            <a href="user-connector!configRole.do?ref=${item.ref}"><spring:message code="user.user.list.role" text="设置权限"/></a>
 			</perm:permission>
         </td>
       </tr>

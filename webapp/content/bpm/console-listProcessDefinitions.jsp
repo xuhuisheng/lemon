@@ -64,7 +64,7 @@
         <td>
           <a href="console!graphProcessDefinition.do?processDefinitionId=${item.id}" target="_blank">流程图</a>
           <a href="console!viewXml.do?processDefinitionId=${item.id}" target="_blank">查看XML</a>
-          <a href="${scopePrefix}/diagram-viewer/index.html?processDefinitionId=${item.id}" target="_blank">diagram-viewer</a>
+          <a href="${scopePrefix}/widgets/diagram-viewer/index.html?processDefinitionId=${item.id}" target="_blank">diagram-viewer</a>
           <a href="console!beforeUpdateProcess.do?processDefinitionId=${item.id}">修改</a>
         </td>
       </tr>

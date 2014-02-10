@@ -11,8 +11,8 @@
           </div>
           <div id="collapse-cms" class="accordion-body collapse ${currentMenu == 'cms' ? 'in' : ''}">
             <ul class="accordion-inner nav nav-list">
-			  <li class="m-icn-add-user"><a href="${scopePrefix}/cms/cms-article.do">查看公告</a></li>
-			  <li class="m-icn-add-user"><a href="${scopePrefix}/cms/cms-article!input.do">填写公告</a></li>
+			  <li><a href="${scopePrefix}/cms/cms-article.do"><i class="icon-user"></i>查看公告</a></li>
+			  <li><a href="${scopePrefix}/cms/cms-article!input.do"><i class="icon-user"></i>填写公告</a></li>
             </ul>
           </div>
         </div>

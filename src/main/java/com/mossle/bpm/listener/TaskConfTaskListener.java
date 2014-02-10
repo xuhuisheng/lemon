@@ -14,6 +14,7 @@ import com.mossle.bpm.support.DefaultTaskListener;
 
 import org.activiti.engine.delegate.DelegateTask;
 import org.activiti.engine.impl.context.Context;
+import org.activiti.engine.impl.persistence.entity.TaskEntity;
 
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;

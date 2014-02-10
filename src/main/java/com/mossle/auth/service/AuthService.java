@@ -5,10 +5,12 @@ import java.util.List;
 
 import javax.annotation.Resource;
 
-import com.mossle.api.scope.ScopeCache;
-
+import com.mossle.auth.domain.Access;
+import com.mossle.auth.domain.Perm;
 import com.mossle.auth.domain.Role;
 import com.mossle.auth.domain.UserStatus;
+import com.mossle.auth.manager.AccessManager;
+import com.mossle.auth.manager.PermManager;
 import com.mossle.auth.manager.RoleManager;
 import com.mossle.auth.manager.UserStatusManager;
 import com.mossle.auth.support.Exporter;
@@ -23,16 +25,20 @@ import org.springframework.stereotype.Service;
 
 import org.springframework.transaction.annotation.Transactional;
 
+import org.springframework.util.Assert;
+
 @Transactional
 @Service
 public class AuthService {
+    private static final int PRIORITY_STEP = 10;
     private static Logger logger = LoggerFactory.getLogger(AuthService.class);
     private UserStatusManager userStatusManager;
     private RoleManager roleManager;
     private JdbcTemplate jdbcTemplate;
-    private ScopeCache scopeCache;
+    private AccessManager accessManager;
+    private PermManager permManager;
 
-    public UserStatus createOrGetUserStatus(String username, String reference,
+    public UserStatus createOrGetUserStatus(String username, String ref,
             String userRepoRef, String scopeId) {
         UserStatus userStatus = userStatusManager.findUnique(
                 "from UserStatus where username=? and scopeId=?", username,
@@ -41,7 +47,7 @@ public class AuthService {
         if (userStatus == null) {
             userStatus = new UserStatus();
             userStatus.setUsername(username);
-            userStatus.setReference(reference);
+            userStatus.setRef(ref);
             userStatus.setUserRepoRef(userRepoRef);
             userStatus.setScopeId(scopeId);
             // TODO: 考虑status同步的策略，目前是默认都设置成了有效
@@ -116,7 +122,45 @@ public class AuthService {
         Importer importer = new Importer();
         importer.setJdbcTemplate(jdbcTemplate);
         importer.execute(text);
-        scopeCache.refresh();
+    }
+
+    public void batchSaveAccess(String text, String type, String scopeId) {
+        List<Access> accesses = accessManager.find(
+                "from Access where type=? and scopeId=?", type, scopeId);
+
+        for (Access access : accesses) {
+            accessManager.remove(access);
+        }
+
+        int priority = 0;
+
+        for (String line : text.split("\n")) {
+            String[] array = line.split(",");
+            String value = array[0];
+            String permStr = array[1];
+            logger.debug("value : {}, perm : {}", value, permStr);
+
+            value = value.trim();
+            permStr = permStr.trim();
+
+            if (value.length() == 0) {
+                continue;
+            }
+
+            priority += PRIORITY_STEP;
+
+            Access access = new Access();
+            access.setValue(value);
+            access.setScopeId(scopeId);
+            access.setType(type);
+            access.setPriority(priority);
+
+            Perm perm = permManager.findUnique(
+                    "from Perm where code=? and scopeId=?", permStr, scopeId);
+            Assert.notNull(perm);
+            access.setPerm(perm);
+            accessManager.save(access);
+        }
     }
 
     public List<Role> findRoles(String scopeId) {
@@ -134,12 +178,17 @@ public class AuthService {
     }
 
     @Resource
-    public void setJdbcTemplate(JdbcTemplate jdbcTemplate) {
-        this.jdbcTemplate = jdbcTemplate;
+    public void setAccessManager(AccessManager accessManager) {
+        this.accessManager = accessManager;
     }
 
     @Resource
-    public void setScopeCache(ScopeCache scopeCache) {
-        this.scopeCache = scopeCache;
+    public void setPermManager(PermManager permManager) {
+        this.permManager = permManager;
+    }
+
+    @Resource
+    public void setJdbcTemplate(JdbcTemplate jdbcTemplate) {
+        this.jdbcTemplate = jdbcTemplate;
     }
 }

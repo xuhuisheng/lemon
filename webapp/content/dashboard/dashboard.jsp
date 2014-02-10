@@ -100,7 +100,7 @@ $(function(){
 
 	  <article class="m-widget-2">
         <header class="header">
-		  <h4 class="title">待办任务</h4>
+		  <h4 class="title"><i class="icon-user"></i>待办任务</h4>
 		  <div class="ctrl">
 		    <a class="btn"><i class="icon-chevron-up"></i></a>
 		  </div>
@@ -133,7 +133,7 @@ $(function(){
 
 	  <article class="m-widget-2">
         <header class="header">
-		  <h4 class="title">通知公告</h4>
+		  <h4 class="title"><i class="icon-user"></i>通知公告</h4>
 		  <div class="ctrl">
 		    <a class="btn"><i class="icon-chevron-up"></i></a>
 		  </div>
@@ -156,7 +156,7 @@ $(function(){
 
 	  <article class="m-widget-2">
         <header class="header">
-		  <h4 class="title">我的流程</h4>
+		  <h4 class="title"><i class="icon-user"></i>我的流程</h4>
 		  <div class="ctrl">
 		    <a class="btn"><i class="icon-chevron-up"></i></a>
 		  </div>
@@ -190,7 +190,7 @@ $(function(){
 
 	  <article class="m-widget-2">
         <header class="header">
-		  <h4 class="title">常用工具</h4>
+		  <h4 class="title"><i class="icon-user"></i>常用工具</h4>
 		  <div class="ctrl">
 		    <a class="btn"><i class="icon-chevron-up"></i></a>
 		  </div>
@@ -217,7 +217,7 @@ $(function(){
 
 	  <article class="m-widget-2">
         <header class="header">
-		  <h4 class="title">常用流程</h4>
+		  <h4 class="title"><i class="icon-user"></i>常用流程</h4>
 		  <div class="ctrl">
 		    <a class="btn"><i class="icon-chevron-up"></i></a>
 		  </div>
@@ -226,20 +226,16 @@ $(function(){
 		  <table class="m-table table-hover">
 			<thead>
 			  <tr>
-				<th>代码</th>
 				<th>名称</th>
-				<th>版本</th>
-				<th>&nbsp;</th>
+				<th width="20%">&nbsp;</th>
 			  </tr>
 			</thead>
 			<tbody>
-			<s:iterator value="processDefinitions" var="item">
+			<s:iterator value="bpmProcesses" var="item">
 			  <tr>
-				<td>${item.key}</td>
 				<td>${item.name}</td>
-				<td>${item.version}</td>
 				<td>
-				  <a href="${scopePrefix}/form/form!viewStartForm.do?processDefinitionId=${item.id}" class="btn btn-small btn-primary">发起</a>
+				  <a href="${scopePrefix}/form/form!viewStartForm.do?bpmProcessId=${item.id}" class="btn btn-small btn-primary">发起</a>
 				</td>
 			  </tr>
 			  </s:iterator>
@@ -250,7 +246,7 @@ $(function(){
 
 	  <article class="m-widget-2">
         <header class="header">
-		  <h4 class="title">天气预报</h4>
+		  <h4 class="title"><i class="icon-user"></i>天气预报</h4>
 		  <div class="ctrl">
 		    <a class="btn"><i class="icon-chevron-up"></i></a>
 		  </div>

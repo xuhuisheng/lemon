@@ -18,6 +18,10 @@ import org.springframework.security.access.method.DelegatingMethodSecurityMetada
 import org.springframework.security.access.method.MapBasedMethodSecurityMetadataSource;
 import org.springframework.security.access.method.MethodSecurityMetadataSource;
 
+/**
+ * @deprecated use MethodResourcePopulator instead.
+ */
+@Deprecated
 public class MethodSourceBuilder {
     private static Logger logger = LoggerFactory
             .getLogger(MethodSourceBuilder.class);

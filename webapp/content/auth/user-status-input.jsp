@@ -89,9 +89,9 @@ $(function() {
     </div>
   </div>
   <div class="control-group">
-    <label class="control-label" for="user_reference"><spring:message code="user.user.input.reference" text="引用"/></label>
+    <label class="control-label" for="user_ref"><spring:message code="user.user.input.ref" text="引用"/></label>
 	<div class="controls">
-	  <input id="user_reference" type="text" name="reference" value="${model.reference}">
+	  <input id="user_ref" type="text" name="ref" value="${model.ref}">
     </div>
   </div>
   <div class="control-group">

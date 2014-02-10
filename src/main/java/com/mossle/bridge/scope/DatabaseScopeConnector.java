@@ -7,7 +7,7 @@ import java.util.Map;
 import javax.annotation.Resource;
 
 import com.mossle.api.scope.ScopeConnector;
-import com.mossle.api.scope.ScopeInfo;
+import com.mossle.api.scope.ScopeDTO;
 
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
@@ -38,11 +38,11 @@ public class DatabaseScopeConnector implements ScopeConnector {
             + " shared as shared,user_repo_ref as userRepoRef"
             + " from SCOPE_INFO where shared=1";
 
-    public ScopeInfo findById(String id) {
+    public ScopeDTO findById(String id) {
         try {
             Map<String, Object> map = jdbcTemplate.queryForMap(sqlFindById, id);
 
-            return convertScopeInfo(map);
+            return convertScopeDto(map);
         } catch (EmptyResultDataAccessException ex) {
             logger.info("scope[{}] is not exists.", id, ex);
 
@@ -50,12 +50,12 @@ public class DatabaseScopeConnector implements ScopeConnector {
         }
     }
 
-    public ScopeInfo findByCode(String code) {
+    public ScopeDTO findByCode(String code) {
         try {
             Map<String, Object> map = jdbcTemplate.queryForMap(sqlFindByCode,
                     code);
 
-            return convertScopeInfo(map);
+            return convertScopeDto(map);
         } catch (EmptyResultDataAccessException ex) {
             logger.debug(ex.getMessage(), ex);
             logger.info("scope[{}] is not exists.", code);
@@ -64,12 +64,12 @@ public class DatabaseScopeConnector implements ScopeConnector {
         }
     }
 
-    public ScopeInfo findByRef(String ref) {
+    public ScopeDTO findByRef(String ref) {
         try {
             Map<String, Object> map = jdbcTemplate.queryForMap(sqlFindByRef,
                     ref);
 
-            return convertScopeInfo(map);
+            return convertScopeDto(map);
         } catch (EmptyResultDataAccessException ex) {
             logger.debug(ex.getMessage(), ex);
             logger.info("scope[{}] is not exists.", ref);
@@ -78,32 +78,32 @@ public class DatabaseScopeConnector implements ScopeConnector {
         }
     }
 
-    public List<ScopeInfo> findAll() {
-        List<ScopeInfo> scopeInfos = new ArrayList<ScopeInfo>();
+    public List<ScopeDTO> findAll() {
+        List<ScopeDTO> scopeDtos = new ArrayList<ScopeDTO>();
         List<Map<String, Object>> list = jdbcTemplate.queryForList(sqlFindAll);
 
         for (Map<String, Object> map : list) {
-            ScopeInfo scopeInfo = convertScopeInfo(map);
-            scopeInfos.add(scopeInfo);
+            ScopeDTO scopeDto = convertScopeDto(map);
+            scopeDtos.add(scopeDto);
         }
 
-        return scopeInfos;
+        return scopeDtos;
     }
 
-    public List<ScopeInfo> findSharedScopes() {
-        List<ScopeInfo> scopeInfos = new ArrayList<ScopeInfo>();
+    public List<ScopeDTO> findSharedScopes() {
+        List<ScopeDTO> scopeDtos = new ArrayList<ScopeDTO>();
         List<Map<String, Object>> list = jdbcTemplate
                 .queryForList(sqlFindSharedScopes);
 
         for (Map<String, Object> map : list) {
-            ScopeInfo scopeInfo = convertScopeInfo(map);
-            scopeInfos.add(scopeInfo);
+            ScopeDTO scopeDto = convertScopeDto(map);
+            scopeDtos.add(scopeDto);
         }
 
-        return scopeInfos;
+        return scopeDtos;
     }
 
-    protected ScopeInfo convertScopeInfo(Map<String, Object> map) {
+    protected ScopeDTO convertScopeDto(Map<String, Object> map) {
         if ((map == null) || map.isEmpty()) {
             logger.info("scope[{}] is null.", map);
 
@@ -112,14 +112,14 @@ public class DatabaseScopeConnector implements ScopeConnector {
 
         logger.debug("{}", map);
 
-        ScopeInfo scopeInfo = new ScopeInfo();
-        scopeInfo.setId(getValue(map.get("id")));
-        scopeInfo.setCode(this.getValue(map.get("code")));
-        scopeInfo.setName(this.getValue(map.get("name")));
-        scopeInfo.setUserRepoRef(this.getValue(map.get("userRepoRef")));
-        scopeInfo.setShared(Integer.valueOf(1).equals(map.get("shared")));
+        ScopeDTO scopeDto = new ScopeDTO();
+        scopeDto.setId(getValue(map.get("id")));
+        scopeDto.setCode(this.getValue(map.get("code")));
+        scopeDto.setName(this.getValue(map.get("name")));
+        scopeDto.setUserRepoRef(this.getValue(map.get("userRepoRef")));
+        scopeDto.setShared(Integer.valueOf(1).equals(map.get("shared")));
 
-        return scopeInfo;
+        return scopeDto;
     }
 
     private String getValue(Object value) {

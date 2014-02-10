@@ -18,6 +18,7 @@ public class MailServerInfo {
     private boolean defaultServer;
     private String mode;
     private String testMail;
+    private String defaultFrom;
     private JavaMailSenderImpl javaMailSender;
 
     public String getName() {
@@ -90,6 +91,14 @@ public class MailServerInfo {
 
     public void setTestMail(String testMail) {
         this.testMail = testMail;
+    }
+
+    public String getDefaultFrom() {
+        return defaultFrom;
+    }
+
+    public void setDefaultFrom(String defaultFrom) {
+        this.defaultFrom = defaultFrom;
     }
 
     public Properties getProperties() {

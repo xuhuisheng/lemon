@@ -3,11 +3,20 @@ package com.mossle.bpm.web.bpm;
 import java.text.DateFormat;
 import java.text.SimpleDateFormat;
 
+import java.util.ArrayList;
 import java.util.Date;
 import java.util.List;
 import java.util.Map;
 
+import com.mossle.api.user.UserConnector;
+
+import com.mossle.bpm.delegate.DelegateHistory;
+import com.mossle.bpm.delegate.DelegateInfo;
 import com.mossle.bpm.delegate.DelegateService;
+import com.mossle.bpm.persistence.domain.BpmDelegateHistory;
+import com.mossle.bpm.persistence.domain.BpmDelegateInfo;
+import com.mossle.bpm.persistence.manager.BpmDelegateHistoryManager;
+import com.mossle.bpm.persistence.manager.BpmDelegateInfoManager;
 
 import com.mossle.core.struts2.BaseAction;
 
@@ -28,7 +37,6 @@ import org.springframework.jdbc.core.JdbcTemplate;
  * 自动委托
  * 
  * @author LuZhao
- * 
  */
 @Results({ @Result(name = DelegateAction.RELOAD, location = "delegate!listMyDelegateInfos.do?operationMode=RETRIEVE", type = "redirect") })
 public class DelegateAction extends BaseAction {
@@ -38,14 +46,19 @@ public class DelegateAction extends BaseAction {
     private ProcessEngine processEngine;
     private JdbcTemplate jdbcTemplate;
     private DelegateService delegateService;
+    private BpmDelegateInfoManager bpmDelegateInfoManager;
+    private BpmDelegateHistoryManager bpmDelegateHistoryManager;
+    private UserConnector userConnector;
     private String attorney;
     private Long id;
-    private List<Map<String, Object>> delegateInfos;
-    private List<Map<String, Object>> delegateHistories;
     private String startTime;
     private String endTime;
     private String processDefinitionId;
     private List<ProcessDefinition> processDefinitions;
+    private List<DelegateInfo> delegateInfos;
+    private List<BpmDelegateInfo> bpmDelegateInfos;
+    private List<DelegateHistory> delegateHistories;
+    private List<BpmDelegateHistory> bpmDelegateHistories;
 
     /**
      * 自动委托列表 TODO 可以指定多个自动委托人？
@@ -53,9 +66,9 @@ public class DelegateAction extends BaseAction {
      * @return
      */
     public String listMyDelegateInfos() {
-        delegateInfos = jdbcTemplate.queryForList(
-                "select * from bpm_delegate_info where assignee=?",
-                SpringSecurityUtils.getCurrentUsername());
+        String userId = SpringSecurityUtils.getCurrentUserId();
+        bpmDelegateInfos = bpmDelegateInfoManager.findBy("assignee", userId);
+        this.processDelegateInfo();
 
         return "listMyDelegateInfos";
     }
@@ -66,7 +79,7 @@ public class DelegateAction extends BaseAction {
      * @return
      */
     public String removeDelegateInfo() {
-        jdbcTemplate.update("delete from bpm_delegate_info where id=?", id);
+        delegateService.removeRecord(id);
 
         return RELOAD;
     }
@@ -90,7 +103,7 @@ public class DelegateAction extends BaseAction {
      * @return
      */
     public String autoDelegate() throws Exception {
-        String username = SpringSecurityUtils.getCurrentUsername();
+        String userId = SpringSecurityUtils.getCurrentUserId();
         DateFormat dateFormat = new SimpleDateFormat("yyyy-mm-dd");
         Date startDate = null;
 
@@ -113,7 +126,7 @@ public class DelegateAction extends BaseAction {
             processDefinitionId = null;
         }
 
-        delegateService.addDelegateInfo(username, attorney, startDate, endDate,
+        delegateService.addDelegateInfo(userId, attorney, startDate, endDate,
                 processDefinitionId);
 
         return RELOAD;
@@ -124,8 +137,8 @@ public class DelegateAction extends BaseAction {
      * 自动委派
      */
     public String listDelegateInfos() {
-        delegateInfos = jdbcTemplate
-                .queryForList("select * from bpm_delegate_info");
+        bpmDelegateInfos = bpmDelegateInfoManager.getAll();
+        this.processDelegateInfo();
 
         return "listDelegateInfos";
     }
@@ -136,10 +149,51 @@ public class DelegateAction extends BaseAction {
      * @return
      */
     public String listDelegateHistories() {
-        delegateHistories = jdbcTemplate
-                .queryForList("select * from bpm_delegate_history");
+        bpmDelegateHistories = bpmDelegateHistoryManager.getAll();
+        this.processDelegateHistory();
 
         return "listDelegateHistories";
+    }
+
+    public void processDelegateInfo() {
+        delegateInfos = new ArrayList<DelegateInfo>();
+
+        for (BpmDelegateInfo bpmDelegateInfo : bpmDelegateInfos) {
+            DelegateInfo delegateInfo = new DelegateInfo();
+            delegateInfos.add(delegateInfo);
+            delegateInfo.setId(bpmDelegateInfo.getId());
+            delegateInfo.setAssignee(bpmDelegateInfo.getAssignee());
+            delegateInfo.setAttorney(bpmDelegateInfo.getAttorney());
+            delegateInfo.setStartTime(bpmDelegateInfo.getStartTime());
+            delegateInfo.setEndTime(bpmDelegateInfo.getEndTime());
+            delegateInfo.setProcessDefinitionId(bpmDelegateInfo
+                    .getProcessDefinitionId());
+            delegateInfo.setStatus(bpmDelegateInfo.getStatus());
+            delegateInfo.setAssigneeDisplayName(userConnector.findById(
+                    delegateInfo.getAssignee()).getDisplayName());
+            delegateInfo.setAttorneyDisplayName(userConnector.findById(
+                    delegateInfo.getAttorney()).getDisplayName());
+        }
+    }
+
+    public void processDelegateHistory() {
+        delegateHistories = new ArrayList<DelegateHistory>();
+
+        for (BpmDelegateHistory bpmDelegateHistory : bpmDelegateHistories) {
+            DelegateHistory delegateHistory = new DelegateHistory();
+            delegateHistories.add(delegateHistory);
+            delegateHistory.setId(bpmDelegateHistory.getId());
+            delegateHistory.setAssignee(bpmDelegateHistory.getAssignee());
+            delegateHistory.setAttorney(bpmDelegateHistory.getAttorney());
+            delegateHistory.setDelegateTime(bpmDelegateHistory
+                    .getDelegateTime());
+            delegateHistory.setTaskId(bpmDelegateHistory.getTaskId());
+            delegateHistory.setStatus(bpmDelegateHistory.getStatus());
+            delegateHistory.setAssigneeDisplayName(userConnector.findById(
+                    bpmDelegateHistory.getAssignee()).getDisplayName());
+            delegateHistory.setAttorneyDisplayName(userConnector.findById(
+                    bpmDelegateHistory.getAttorney()).getDisplayName());
+        }
     }
 
     // ~ ==================================================
@@ -155,20 +209,27 @@ public class DelegateAction extends BaseAction {
         this.processEngine = processEngine;
     }
 
+    public void setBpmDelegateInfoManager(
+            BpmDelegateInfoManager bpmDelegateInfoManager) {
+        this.bpmDelegateInfoManager = bpmDelegateInfoManager;
+    }
+
+    public void setBpmDelegateHistoryManager(
+            BpmDelegateHistoryManager bpmDelegateHistoryManager) {
+        this.bpmDelegateHistoryManager = bpmDelegateHistoryManager;
+    }
+
+    public void setUserConnector(UserConnector userConnector) {
+        this.userConnector = userConnector;
+    }
+
+    // ~ ==================================================
     public void setAttorney(String attorney) {
         this.attorney = attorney;
     }
 
     public void setId(Long id) {
         this.id = id;
-    }
-
-    public List<Map<String, Object>> getDelegateInfos() {
-        return delegateInfos;
-    }
-
-    public List<Map<String, Object>> getDelegateHistories() {
-        return delegateHistories;
     }
 
     public void setStartTime(String startTime) {
@@ -185,5 +246,13 @@ public class DelegateAction extends BaseAction {
 
     public List<ProcessDefinition> getProcessDefinitions() {
         return processDefinitions;
+    }
+
+    public List<DelegateInfo> getDelegateInfos() {
+        return delegateInfos;
+    }
+
+    public List<DelegateHistory> getDelegateHistories() {
+        return delegateHistories;
     }
 }

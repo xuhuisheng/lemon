@@ -40,14 +40,14 @@
     </thead>
 
     <tbody>
-      <s:iterator value="historicTaskInstances" var="item">
+      <s:iterator value="taskDtos" var="item">
       <tr>
 	    <td>${item.id}</td>
 	    <td>${item.processDefinitionId}</td>
-	    <td>${item.startTime}</td>
-	    <td>${item.endTime}</td>
-	    <td>${item.assignee}</td>
-	    <td>${item.claimTime}</td>
+	    <td><s:date name="startTime" format="yyyy-MM-dd HH:mm:ss" /></td>
+	    <td><s:date name="endTime" format="yyyy-MM-dd HH:mm:ss" /></td>
+	    <td>${item.username}</td>
+	    <td><s:date name="claimTime" format="yyyy-MM-dd HH:mm:ss" /></td>
 		<td>
           <a href="workspace!viewHistory.do?processInstanceId=${item.processInstanceId}">历史</a>
           <a href="${scopePrefix}/diagram-viewer/index.html?processInstanceId=${item.id}&processDefinitionId=${item.processDefinitionId}">diagram-viewer</a>

@@ -1,23 +1,32 @@
 package com.mossle.bpm.cmd;
 
-import java.sql.PreparedStatement;
+import java.sql.Connection;
 import java.sql.SQLException;
+import java.sql.Statement;
 
+import java.util.ArrayList;
 import java.util.Date;
 import java.util.List;
-import java.util.UUID;
+import java.util.Map;
+
+import com.mossle.bpm.graph.ActivitiHistoryGraphBuilder;
+import com.mossle.bpm.graph.Edge;
+import com.mossle.bpm.graph.Graph;
+import com.mossle.bpm.graph.Node;
+
+import com.mossle.core.spring.ApplicationContextHelper;
 
 import org.activiti.engine.ActivitiException;
 import org.activiti.engine.history.HistoricActivityInstance;
-import org.activiti.engine.history.HistoricTaskInstance;
-import org.activiti.engine.impl.bpmn.behavior.UserTaskActivityBehavior;
+import org.activiti.engine.impl.HistoricActivityInstanceQueryImpl;
+import org.activiti.engine.impl.Page;
 import org.activiti.engine.impl.context.Context;
-import org.activiti.engine.impl.history.handler.ActivityInstanceStartHandler;
-import org.activiti.engine.impl.history.handler.UserTaskAssignmentHandler;
 import org.activiti.engine.impl.interceptor.Command;
 import org.activiti.engine.impl.interceptor.CommandContext;
+import org.activiti.engine.impl.persistence.entity.ExecutionEntity;
 import org.activiti.engine.impl.persistence.entity.HistoricActivityInstanceEntity;
 import org.activiti.engine.impl.persistence.entity.HistoricTaskInstanceEntity;
+import org.activiti.engine.impl.persistence.entity.ProcessDefinitionEntity;
 import org.activiti.engine.impl.persistence.entity.TaskEntity;
 import org.activiti.engine.impl.pvm.PvmTransition;
 import org.activiti.engine.impl.pvm.process.ActivityImpl;
@@ -26,256 +35,307 @@ import org.activiti.engine.impl.pvm.process.TransitionImpl;
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
 
+import org.springframework.jdbc.core.JdbcTemplate;
+
 /**
- * 流程打回 流程命令,目前只考虑一种情况下的流程会单箭头无分支
- * 
- * @author zou_ping
- * 
+ * 退回任务.
  */
-public class RollbackTaskCmd extends TaskCmd implements Command<Integer> {
+public class RollbackTaskCmd implements Command<Integer> {
     private static Logger logger = LoggerFactory
             .getLogger(RollbackTaskCmd.class);
-    private TaskEntity task;
-    private HistoricActivityInstanceEntity historicActivityInstance;
-    private HistoricTaskInstanceEntity preHistoricTaskInstance;
-    private HistoricActivityInstanceEntity preHistoricActivityInstance;
+    private String taskId;
 
     public RollbackTaskCmd(String taskId) {
         this.taskId = taskId;
     }
 
     /**
-     * 命令执行
+     * 退回流程.
      * 
-     * @return 0-成功 1-为初始节点无法回退
+     * @return 0-退回成功 1-流程结束 2-下一结点已经通过,不能退回
      */
     public Integer execute(CommandContext commandContext) {
-        int code = initAndCheck();
-        logger.info("activiti is rollbacking task {}", task.getName());
+        String historyTaskId = findNearestUserTask();
 
-        if (code == 0) {
-            processTask();
+        if (historyTaskId == null) {
+            logger.info("cannot rollback {}", historyTaskId);
 
-            TaskEntity preTask = processPreTask();
-            logger.info("rollback task({}->{}) successfully", task.getName(),
-                    preTask.getName());
+            return 2;
         }
 
-        return code;
-    }
+        HistoricTaskInstanceEntity historicTaskInstanceEntity = Context
+                .getCommandContext().getHistoricTaskInstanceEntityManager()
+                .findHistoricTaskInstanceById(historyTaskId);
+        HistoricActivityInstanceEntity historicActivityInstanceEntity = getHistoricActivityInstanceEntity(historyTaskId);
 
-    /**
-     * 初始化并检测 initial task context,execution,historyActivityInstanceImpl
-     */
-    public int initAndCheck() {
-        task = getTask(taskId);
+        Graph graph = new ActivitiHistoryGraphBuilder(
+                historicTaskInstanceEntity.getProcessInstanceId()).build();
 
-        if (task == null) {
-            throw new ActivitiException("task<" + taskId + ">,无法找到此任");
+        Node node = graph.findById(historicActivityInstanceEntity.getId());
+
+        if (!checkCouldRollback(node)) {
+            logger.info("cannot rollback {}", historyTaskId);
+
+            return 2;
         }
 
-        execution = task.getExecution();
+        if (this.isSameBranch(historicTaskInstanceEntity)) {
+            // 如果退回的目标节点的executionId与当前task的executionId一样，说明是同一个分支
+            // 只删除当前分支的task
+            this.deleteActiveTask();
+        } else {
+            // 否则认为是从分支跳回主干
+            // 删除所有活动中的task
+            this.deleteActiveTasks(historicTaskInstanceEntity
+                    .getProcessInstanceId());
 
-        if (execution == null) {
-            throw new ActivitiException("task<" + taskId + ">,无法找到此任务所在的流程执行实例");
+            // 获得期望退回的节点后面的所有节点历史
+            List<String> historyNodeIds = new ArrayList<String>();
+            collectNodes(node, historyNodeIds);
+            this.deleteHistoryActivities(historyNodeIds);
         }
 
-        processDefinition = getProcessDefinition();
+        // 恢复期望退回的任务和历史
+        this.processHistoryTask(historicTaskInstanceEntity,
+                historicActivityInstanceEntity);
 
-        if (processDefinition == null) {
-            throw new ActivitiException("task<" + taskId + ">,无法找到此任务所在的流程定义");
-        }
-
-        if (isFirstTask()) {
-            logger.info("task<" + task.getId() + ">为初始节点无法回滚");
-
-            return 1;
-        }
-
-        historicActivityInstance = this.getHistoricActivityInstance(task
-                .getTaskDefinitionKey());
-        preHistoricActivityInstance = (HistoricActivityInstanceEntity) findPreviousHistoryActivityInstance(task
-                .getTaskDefinitionKey());
-
-        if (preHistoricActivityInstance == null) {
-            throw new ActivitiException("task<" + taskId + ">,无法找到此任务的上一个任务节点");
-        }
-
-        preHistoricTaskInstance = (HistoricTaskInstanceEntity) findPreviousHistoryTaskInstance(task
-                .getTaskDefinitionKey());
-
-        if (preHistoricTaskInstance == null) {
-            throw new ActivitiException("task<" + task.getId()
-                    + ">无法找到上一级历史活动节点");
-        }
+        logger.info("activiti is rollback {}",
+                historicTaskInstanceEntity.getName());
 
         return 0;
     }
 
-    /**
-     * 处理当前任务 1.删除当前任务 2.删除历史任务 3.删除历史活动节点
-     */
-    public void processTask() {
-        // 删除当前任务
-        Context.getCommandContext().getTaskEntityManager()
-                .deleteTask(task, TaskEntity.DELETE_REASON_DELETED, false);
+    public boolean isSameBranch(
+            HistoricTaskInstanceEntity historicTaskInstanceEntity) {
+        TaskEntity taskEntity = Context.getCommandContext()
+                .getTaskEntityManager().findTaskById(taskId);
 
-        TaskEntity task = Context.getCommandContext().getTaskEntityManager()
-                .findTaskById(taskId);
+        return taskEntity.getExecutionId().equals(
+                historicTaskInstanceEntity.getExecutionId());
+    }
 
-        // 结束历史任务
-        HistoricTaskInstanceEntity historicTaskInstance = Context
-                .getCommandContext().getHistoricTaskInstanceEntityManager()
-                .findHistoricTaskInstanceById(taskId);
-        historicTaskInstance.markEnded("退回");
+    public String findNearestUserTask() {
+        TaskEntity taskEntity = Context.getCommandContext()
+                .getTaskEntityManager().findTaskById(taskId);
 
-        // 记录节点历史
-        HistoricActivityInstanceEntity historicActivityInstance = Context
+        if (taskEntity == null) {
+            logger.debug("cannot find task : {}", taskEntity);
+
+            return null;
+        }
+
+        Graph graph = new ActivitiHistoryGraphBuilder(
+                taskEntity.getProcessInstanceId()).build();
+        JdbcTemplate jdbcTemplate = ApplicationContextHelper
+                .getBean(JdbcTemplate.class);
+        String historicActivityInstanceId = jdbcTemplate.queryForObject(
+                "select id_ from ACT_HI_ACTINST where task_id_=?",
+                String.class, taskId);
+        Node node = graph.findById(historicActivityInstanceId);
+
+        String previousHistoricActivityInstanceId = findIncomingNode(graph,
+                node);
+
+        if (previousHistoricActivityInstanceId == null) {
+            logger.debug(
+                    "cannot find previous historic activity instance : {}",
+                    taskEntity);
+
+            return null;
+        }
+
+        return jdbcTemplate.queryForObject(
+                "select task_id_ from ACT_HI_ACTINST where id_=?",
+                String.class, previousHistoricActivityInstanceId);
+    }
+
+    public String findIncomingNode(Graph graph, Node node) {
+        for (Edge edge : graph.getEdges()) {
+            Node src = edge.getSrc();
+            Node dest = edge.getDest();
+            String srcType = src.getType();
+
+            if (!dest.getId().equals(node.getId())) {
+                continue;
+            }
+
+            if ("userTask".equals(srcType)) {
+                return src.getId();
+            } else if (srcType.endsWith("Gateway")) {
+                return findIncomingNode(graph, src);
+            } else {
+                logger.info("cannot rollback, previous node is not userTask : "
+                        + src.getId() + " " + srcType + "(" + src.getName()
+                        + ")");
+
+                return null;
+            }
+        }
+
+        logger.info("cannot rollback, this : " + node.getId() + " "
+                + node.getType() + "(" + node.getName() + ")");
+
+        return null;
+    }
+
+    public HistoricActivityInstanceEntity getHistoricActivityInstanceEntity(
+            String historyTaskId) {
+        logger.info("historyTaskId : {}", historyTaskId);
+
+        JdbcTemplate jdbcTemplate = ApplicationContextHelper
+                .getBean(JdbcTemplate.class);
+        String historicActivityInstanceId = jdbcTemplate.queryForObject(
+                "select id_ from ACT_HI_ACTINST where task_id_=?",
+                String.class, historyTaskId);
+        logger.info("historicActivityInstanceId : {}",
+                historicActivityInstanceId);
+
+        HistoricActivityInstanceQueryImpl historicActivityInstanceQueryImpl = new HistoricActivityInstanceQueryImpl();
+        historicActivityInstanceQueryImpl
+                .activityInstanceId(historicActivityInstanceId);
+
+        HistoricActivityInstanceEntity historicActivityInstanceEntity = (HistoricActivityInstanceEntity) Context
                 .getCommandContext()
                 .getHistoricActivityInstanceEntityManager()
-                .findHistoricActivityInstance(
-                        task.getExecution().getCurrentActivityId(),
-                        task.getProcessInstanceId());
-        historicActivityInstance.markEnded("退回");
+                .findHistoricActivityInstancesByQueryCriteria(
+                        historicActivityInstanceQueryImpl, new Page(0, 1))
+                .get(0);
 
-        /**
-         * 结束历史活动节点,因为activiti5.6没有映射updateHistoricActivityInstance这一statement 历史节点考虑用纯Sql语句更新
-         */
-        try {
-            String sql = "update ACT_HI_ACTINST set END_TIME_=?,DURATION_=? where ID_=?";
-
-            // + historicActivityInstance.getId();
-            PreparedStatement state = Context.getCommandContext()
-                    .getDbSqlSession().getSqlSession().getConnection()
-                    .prepareStatement(sql);
-            Date now = new Date();
-            state.setTimestamp(1, new java.sql.Timestamp(now.getTime()));
-            state.setLong(2, now.getTime()
-                    - historicActivityInstance.getStartTime().getTime());
-            state.setLong(3, Long.parseLong(historicActivityInstance.getId()));
-            state.executeUpdate();
-            state.close();
-        } catch (SQLException e) {
-            throw new ActivitiException("sql语句执行失败", e);
-        }
-
-        // Context
-        // .getCommandContext()
-        // .getHistoricActivityInstanceManager()
-        // .deleteHistoricActivityInstance(historicActivityInstance.getId());
+        return historicActivityInstanceEntity;
     }
 
-    /**
-     * 处理前一个任务节?确保RU_TASK和HI_TASKINST的ID_是一样的,否则重新完成时两个任务不会关? 1.增加前任? 2.将前历史任务结束时间置为?duration置空,delete_resons_置空
-     * 3.将前历史活动节点结束时间置为? 4.将Execution指针指向前任务节点
-     * 
-     * @return Task
-     */
-    public TaskEntity processPreTask() {
-        // 增加前任务节?
-        TaskEntity preTask = TaskEntity.create();
+    public boolean checkCouldRollback(Node node) {
+        // TODO: 如果是catchEvent，也应该可以退回，到时候再说
+        for (Edge edge : node.getEdges()) {
+            Node dest = edge.getDest();
+            String type = dest.getType();
 
-        // 确保当前任务和历史任务的ID是一样的，相当于还原
-        preTask.setId(UUID.randomUUID().toString()); // 防止验证历史出现空指针
+            if ("userTask".equals(type)) {
+                if (!dest.isActive()) {
+                    logger.info("cannot rollback, " + type + "("
+                            + dest.getName() + ") is complete.");
 
-        // DbSqlSession dbSqlSession = Context.getCommandContext()
-        // .getDbSqlSession();
-        // dbSqlSession.insert(preTask);
-
-        // 获取任务节点定义
-        ActivityImpl activity = getActivity(preHistoricActivityInstance
-                .getActivityId());
-
-        if (activity.getActivityBehavior() instanceof UserTaskActivityBehavior) {
-            UserTaskActivityBehavior behavior = (UserTaskActivityBehavior) activity
-                    .getActivityBehavior();
-            preTask.setTaskDefinition(behavior.getTaskDefinition());
-        }
-
-        preTask.setExecution(execution);
-        preTask.setAssignee(preHistoricTaskInstance.getAssignee());
-        preTask.setName(preHistoricTaskInstance.getName());
-        preTask.setOwner(preHistoricTaskInstance.getOwner());
-        preTask.setPriority(preHistoricTaskInstance.getPriority());
-        // 加描述或?回评?
-        preTask.setDescription(preHistoricTaskInstance.getDescription()
-                + "<rollback>");
-        preTask.setExecutionId(execution.getId());
-        preTask.setProcessInstanceId(execution.getProcessInstanceId());
-        preTask.setProcessDefinitionId(execution.getProcessDefinitionId());
-
-        // 将前历史任务结束时间置为?
-        /*
-         * preHistoricTaskInstance.setEndTime(null); preHistoricTaskInstance.setDurationInMillis(null);
-         * preHistoricTaskInstance.setDeleteReason(null);
-         */
-
-        // 将前历史活动节点结束时间置为?
-        /*
-         * preHistoricActivityInstance.setEndTime(null); preHistoricActivityInstance.setDurationInMillis(null);
-         * preHistoricActivityInstance.setDeleteReason(null);
-         */
-
-        // 更新Execution
-        execution.setActivity(activity);
-
-        // 创建新的HistoryActivityInstance
-        new ActivityInstanceStartHandler().notify(execution);
-        new UserTaskAssignmentHandler().notify(preTask);
-
-        // 创建新的HistoryTaskInstance
-        preTask.insert(execution);
-
-        return preTask;
-    }
-
-    /**
-     * getPreviousHistoryTask by taskName
-     * 
-     * @param activityId
-     * @return HistoryTask
-     */
-    public HistoricTaskInstance findPreviousHistoryTaskInstance(
-            String activityId) {
-        HistoricActivityInstance hai = findPreviousHistoryActivityInstance(activityId);
-
-        if (hai != null) {
-            if (hai.getActivityType().equals("userTask")) {
-                this.preHistoricActivityInstance = (HistoricActivityInstanceEntity) hai;
-
-                return getHistoricTaskInstance(hai.getActivityId());
-            } else { // iterate
-
-                return findPreviousHistoryTaskInstance(hai.getActivityId());
-            }
-        }
-
-        return null;
-    }
-
-    /**
-     * getPreviousHistoryActivityInstance by activityName,not only for the task
-     * 
-     * @param activityId
-     * @return HistoryActivityInstance
-     */
-    public HistoricActivityInstance findPreviousHistoryActivityInstance(
-            String activityId) {
-        List<PvmTransition> transitions = getActivity(activityId)
-                .getIncomingTransitions();
-        List<HistoricActivityInstance> historicActivityInstances = getProcessInstanceHistoryActivities();
-
-        for (PvmTransition transition : transitions) {
-            TransitionImpl transitionImpl = (TransitionImpl) transition;
-            ActivityImpl sourceActivity = transitionImpl.getSource();
-
-            for (HistoricActivityInstance hai : historicActivityInstances) {
-                if (sourceActivity.getId().equals(hai.getActivityId())) {
-                    return hai;
+                    return false;
                 }
+            } else if (type.endsWith("Gateway")) {
+                if (!checkCouldRollback(dest)) {
+                    return false;
+                }
+            } else {
+                logger.info("cannot rollback, " + type + "(" + dest.getName()
+                        + ") is complete.");
+
+                return false;
             }
         }
 
-        return null;
+        return true;
+    }
+
+    public void deleteActiveTasks(String processInstanceId) {
+        Context.getCommandContext().getTaskEntityManager()
+                .deleteTasksByProcessInstanceId(processInstanceId, "退回", false);
+
+        JdbcTemplate jdbcTemplate = ApplicationContextHelper
+                .getBean(JdbcTemplate.class);
+        List<Map<String, Object>> list = jdbcTemplate
+                .queryForList(
+                        "select * from ACT_HI_ACTINST where proc_inst_id_=? and end_time_ is null",
+                        processInstanceId);
+        Date now = new Date();
+
+        for (Map<String, Object> map : list) {
+            Date startTime = (Date) map.get("start_time_");
+            long duration = now.getTime() - startTime.getTime();
+            jdbcTemplate
+                    .update("update ACT_HI_ACTINST set end_time_=?,duration_=? where id_=?",
+                            now, duration, map.get("id_"));
+        }
+    }
+
+    public void collectNodes(Node node, List<String> historyNodeIds) {
+        logger.info("node : {}, {}, {}", node.getId(), node.getType(),
+                node.getName());
+
+        for (Edge edge : node.getEdges()) {
+            logger.info("edge : {}", edge.getName());
+
+            Node dest = edge.getDest();
+            historyNodeIds.add(dest.getId());
+            collectNodes(dest, historyNodeIds);
+        }
+    }
+
+    public void deleteHistoryActivities(List<String> historyNodeIds) {
+        /*
+         * JdbcTemplate jdbcTemplate = ApplicationContextHelper .getBean(JdbcTemplate.class);
+         * logger.info("historyNodeIds : {}", historyNodeIds);
+         * 
+         * for (String id : historyNodeIds) { jdbcTemplate.update("delete from ACT_HI_ACTINST where id_=?", id); }
+         */
+    }
+
+    public void processHistoryTask(
+            HistoricTaskInstanceEntity historicTaskInstanceEntity,
+            HistoricActivityInstanceEntity historicActivityInstanceEntity) {
+        /*
+         * historicTaskInstanceEntity.setEndTime(null); historicTaskInstanceEntity.setDurationInMillis(null);
+         * historicActivityInstanceEntity.setEndTime(null); historicActivityInstanceEntity.setDurationInMillis(null);
+         */
+
+        // 创建新任务
+        TaskEntity task = TaskEntity.create();
+        task.setProcessDefinitionId(historicTaskInstanceEntity
+                .getProcessDefinitionId());
+        // task.setId(historicTaskInstanceEntity.getId());
+        task.setAssigneeWithoutCascade(historicTaskInstanceEntity.getAssignee());
+        task.setParentTaskIdWithoutCascade(historicTaskInstanceEntity
+                .getParentTaskId());
+        task.setNameWithoutCascade(historicTaskInstanceEntity.getName());
+        task.setTaskDefinitionKey(historicTaskInstanceEntity
+                .getTaskDefinitionKey());
+        task.setExecutionId(historicTaskInstanceEntity.getExecutionId());
+        task.setPriority(historicTaskInstanceEntity.getPriority());
+        task.setProcessInstanceId(historicTaskInstanceEntity
+                .getProcessInstanceId());
+        task.setExecutionId(historicTaskInstanceEntity.getExecutionId());
+        task.setDescriptionWithoutCascade(historicTaskInstanceEntity
+                .getDescription());
+
+        Context.getCommandContext().getTaskEntityManager().insert(task);
+
+        // 把流程指向任务对应的节点
+        ExecutionEntity executionEntity = Context.getCommandContext()
+                .getExecutionEntityManager()
+                .findExecutionById(historicTaskInstanceEntity.getExecutionId());
+        executionEntity
+                .setActivity(getActivity(historicActivityInstanceEntity));
+
+        Date now = new Date();
+        // 创建HistoricActivityInstance
+        Context.getCommandContext().getHistoryManager()
+                .recordActivityStart(executionEntity);
+
+        // 创建HistoricTaskInstance
+        Context.getCommandContext().getHistoryManager()
+                .recordTaskCreated(task, executionEntity);
+        Context.getCommandContext().getHistoryManager().recordTaskId(task);
+    }
+
+    public ActivityImpl getActivity(
+            HistoricActivityInstanceEntity historicActivityInstanceEntity) {
+        ProcessDefinitionEntity processDefinitionEntity = new FindProcessDefinitionEntityCmd(
+                historicActivityInstanceEntity.getProcessDefinitionId())
+                .execute(Context.getCommandContext());
+
+        return processDefinitionEntity
+                .findActivity(historicActivityInstanceEntity.getActivityId());
+    }
+
+    public void deleteActiveTask() {
+        TaskEntity taskEntity = Context.getCommandContext()
+                .getTaskEntityManager().findTaskById(taskId);
+        Context.getCommandContext().getTaskEntityManager()
+                .deleteTask(taskEntity, "回退", false);
     }
 }

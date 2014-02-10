@@ -59,18 +59,6 @@ $(function() {
     </div>
   </div>
   <div class="control-group">
-	<label class="control-label" for="bpm-process_processDefinitionId">流程定义key</label>
-    <div class="controls">
-      <input id="bpm-process_processDefinitionId" type="text" name="processDefinitionKey" value="${model.processDefinitionKey}" size="40" class="text">
-    </div>
-  </div>
-  <div class="control-group">
-	<label class="control-label" for="bpm-process_processDefinitionId">流程定义version</label>
-    <div class="controls">
-      <input id="bpm-process_processDefinitionId" type="text" name="processDefinitionVersion" value="${model.processDefinitionVersion}" size="40" class="text">
-    </div>
-  </div>
-  <div class="control-group">
 	<label class="control-label" for="bpm-process_priority">排序</label>
     <div class="controls">
       <input id="bpm-process_priority" type="text" name="priority" value="${model.priority}" size="40" class="text required" minlength="1" maxlength="50">

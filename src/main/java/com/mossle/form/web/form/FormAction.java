@@ -10,8 +10,10 @@ import com.mossle.bpm.FormInfo;
 import com.mossle.bpm.cmd.CompleteTaskWithCommentCmd;
 import com.mossle.bpm.cmd.FindStartFormCmd;
 import com.mossle.bpm.cmd.FindTaskDefinitionsCmd;
+import com.mossle.bpm.persistence.domain.BpmConfOperation;
 import com.mossle.bpm.persistence.domain.BpmProcess;
 import com.mossle.bpm.persistence.domain.BpmTaskConf;
+import com.mossle.bpm.persistence.manager.BpmConfOperationManager;
 import com.mossle.bpm.persistence.manager.BpmProcessManager;
 import com.mossle.bpm.persistence.manager.BpmTaskConfManager;
 
@@ -24,6 +26,10 @@ import com.mossle.form.keyvalue.Prop;
 import com.mossle.form.keyvalue.Record;
 import com.mossle.form.keyvalue.RecordBuilder;
 import com.mossle.form.manager.FormTemplateManager;
+import com.mossle.form.operation.CompleteTaskOperation;
+import com.mossle.form.operation.ConfAssigneeOperation;
+import com.mossle.form.operation.SaveDraftOperation;
+import com.mossle.form.operation.StartProcessOperation;
 
 import com.mossle.security.util.SpringSecurityUtils;
 
@@ -58,6 +64,7 @@ public class FormAction extends BaseAction {
     private ProcessEngine processEngine;
     private BpmProcessManager bpmProcessManager;
     private BpmTaskConfManager bpmTaskConfManager;
+    private BpmConfOperationManager bpmConfOperationManager;
     private String businessKey;
     private String processDefinitionId;
     private String processDefinitionKey;
@@ -76,18 +83,8 @@ public class FormAction extends BaseAction {
     private List<Record> records;
     private String status;
     private String redirectUrl;
-
-    /**
-     * 根据id显示表单模板，把表单模板生成json，返回到页面显示.
-     * 
-     * @todo: 放到rest里？
-     */
-    public String loadForm() throws Exception {
-        FormTemplate theFormTemplate = formTemplateManager.get(id);
-        json = jsonMapper.toJson(theFormTemplate);
-
-        return "loadForm";
-    }
+    private String nextStep = "startProcess";
+    private long bpmProcessId;
 
     /**
      * 保存草稿.
@@ -95,33 +92,7 @@ public class FormAction extends BaseAction {
     public String saveDraft() throws Exception {
         Map<String, String[]> parameterMap = ServletActionContext.getRequest()
                 .getParameterMap();
-
-        if ((taskId != null) && (!"".equals(taskId))) {
-            // 如果是任务草稿，直接通过processInstanceId获得record，更新数据
-            // TODO: 分支肯定有问题
-            Task task = processEngine.getTaskService().createTaskQuery()
-                    .taskId(taskId).singleResult();
-            String processInstanceId = task.getProcessInstanceId();
-            Record record = keyValue.findByRef(processInstanceId);
-
-            record = new RecordBuilder().build(record, STATUS_DRAFT_TASK,
-                    parameterMap);
-            keyValue.save(record);
-            businessKey = record.getCode();
-        } else if ((businessKey != null) && (!"".equals(businessKey))) {
-            // 如果是流程草稿，直接通过businessKey获得record，更新数据
-            Record record = keyValue.findByCode(businessKey);
-
-            record = new RecordBuilder().build(record, STATUS_DRAFT_PROCESS,
-                    parameterMap);
-            keyValue.save(record);
-        } else {
-            // 如果是第一次保存草稿，肯定是流程草稿，先初始化record，再保存数据
-            Record record = new RecordBuilder().build(processDefinitionId,
-                    STATUS_DRAFT_PROCESS, parameterMap);
-            keyValue.save(record);
-            businessKey = record.getCode();
-        }
+        new SaveDraftOperation().execute(parameterMap);
 
         return "saveDraft";
     }
@@ -139,18 +110,22 @@ public class FormAction extends BaseAction {
      * 显示启动流程的表单.
      */
     public String viewStartForm() throws Exception {
-        if (processDefinitionId == null) {
-            this.processDefinitionId = processEngine.getRepositoryService()
-                    .createProcessDefinitionQuery()
-                    .processDefinitionKey(this.processDefinitionKey)
-                    .processDefinitionVersion(this.processDefinitionVersion)
-                    .singleResult().getId();
-        }
+        BpmProcess bpmProcess = bpmProcessManager.get(bpmProcessId);
+        processDefinitionId = bpmProcess.getBpmConfBase()
+                .getProcessDefinitionId();
 
         formInfo = processEngine.getManagementService().executeCommand(
                 new FindStartFormCmd(processDefinitionId));
 
         if (formInfo.isFormExists()) {
+            // 如果找到了form，就显示表单
+            if (Integer.valueOf(1).equals(bpmProcess.getUseTaskConf())) {
+                // 如果需要配置负责人
+                nextStep = "taskConf";
+            } else {
+                nextStep = "confirmStartProcess";
+            }
+
             this.formTemplate = formTemplateManager.findUniqueBy("name",
                     formInfo.getFormKey());
 
@@ -174,6 +149,7 @@ public class FormAction extends BaseAction {
 
             return "viewStartForm";
         } else {
+            // 如果没找到form，就判断是否配置负责人
             return taskConf();
         }
     }
@@ -182,17 +158,18 @@ public class FormAction extends BaseAction {
      * 配置每个任务的参与人.
      */
     public String taskConf() {
-        ProcessDefinition processDefinition = processEngine
-                .getRepositoryService().getProcessDefinition(
-                        processDefinitionId);
-        BpmProcess bpmProcess = bpmProcessManager
-                .findUnique(
-                        "from BpmProcess where processDefinitionKey=? and processDefinitionVersion=?",
-                        processDefinition.getKey(),
-                        processDefinition.getVersion());
+        Map<String, String[]> parameterMap = ServletActionContext.getRequest()
+                .getParameterMap();
+        businessKey = new SaveDraftOperation().execute(parameterMap);
 
-        if ((bpmProcess != null)
-                && Integer.valueOf(1).equals(bpmProcess.getUseTaskConf())) {
+        BpmProcess bpmProcess = bpmProcessManager.get(bpmProcessId);
+        processDefinitionId = bpmProcess.getBpmConfBase()
+                .getProcessDefinitionId();
+
+        if (Integer.valueOf(1).equals(bpmProcess.getUseTaskConf())) {
+            // 如果需要配置负责人
+            nextStep = "confirmStartProcess";
+
             FindTaskDefinitionsCmd cmd = new FindTaskDefinitionsCmd(
                     processDefinitionId);
             taskDefinitions = processEngine.getManagementService()
@@ -200,95 +177,28 @@ public class FormAction extends BaseAction {
 
             return "taskConf";
         } else {
-            return "confirmStartProcessInstance";
+            // 如果不需要配置负责人，就进入确认发起流程的页面
+            return confirmStartProcess();
         }
+    }
+
+    public String confirmStartProcess() {
+        Map<String, String[]> parameterMap = ServletActionContext.getRequest()
+                .getParameterMap();
+        businessKey = new ConfAssigneeOperation().execute(parameterMap);
+        nextStep = "startProcessInstance";
+
+        return "confirmStartProcess";
     }
 
     /**
      * 发起流程.
      */
     public String startProcessInstance() throws Exception {
-        // 先保存草稿
-        this.saveDraft();
+        Map<String, String[]> parameterMap = ServletActionContext.getRequest()
+                .getParameterMap();
 
-        if ((!"taskConf".equals(status)) && "taskConf".equals(taskConf())) {
-            return "taskConf";
-        }
-
-        // 先设置登录用户
-        IdentityService identityService = processEngine.getIdentityService();
-        identityService.setAuthenticatedUserId(SpringSecurityUtils
-                .getCurrentUsername());
-        // 获得form的信息
-        formInfo = processEngine.getManagementService().executeCommand(
-                new FindStartFormCmd(processDefinitionId));
-
-        // 尝试根据表单里字段的类型，进行转换
-        Map<String, String> formTypeMap = new HashMap<String, String>();
-
-        if (formInfo.isFormExists()) {
-            this.formTemplate = formTemplateManager.findUniqueBy("name",
-                    formInfo.getFormKey());
-
-            if (Integer.valueOf(1).equals(formTemplate.getType())) {
-                redirectUrl = formTemplate.getContent();
-
-                return RELOAD_REDIRECT;
-            }
-
-            String content = formTemplate.getContent();
-            logger.info("content : {}", content);
-
-            Map map = jsonMapper.fromJson(content, Map.class);
-            logger.info("map : {}", map);
-
-            List<Map> list = (List<Map>) map.get("fields");
-            logger.info("list : {}", list);
-
-            for (Map item : list) {
-                formTypeMap.put((String) item.get("name"),
-                        (String) item.get("type"));
-            }
-        }
-
-        Record record = keyValue.findByCode(businessKey);
-
-        Map<String, Object> processParameters = new HashMap<String, Object>();
-
-        // 如果有表单，就从数据库获取数据
-        for (Prop prop : record.getProps().values()) {
-            String key = prop.getCode();
-            String value = prop.getValue();
-            String formType = this.getFormType(formTypeMap, key);
-
-            if ("userPicker".equals(formType)) {
-                processParameters.put(key,
-                        new ArrayList(Arrays.asList(value.split(","))));
-            } else if (formType != null) {
-                processParameters.put(key, value);
-            }
-        }
-
-        if (taskDefinitionKeys != null) {
-            // 如果是从配置任务负责人的页面过来，就保存TaskConf，再从草稿中得到数据启动流程
-            int index = 0;
-
-            for (String taskDefinitionKey : taskDefinitionKeys) {
-                String taskAssignee = taskAssignees.get(index++);
-                BpmTaskConf bpmTaskConf = new BpmTaskConf();
-                bpmTaskConf.setBusinessKey(businessKey);
-                bpmTaskConf.setTaskDefinitionKey(taskDefinitionKey);
-                bpmTaskConf.setAssignee(taskAssignee);
-                bpmTaskConfManager.save(bpmTaskConf);
-            }
-        }
-
-        ProcessInstance processInstance = processEngine.getRuntimeService()
-                .startProcessInstanceById(processDefinitionId, businessKey,
-                        processParameters);
-        record = new RecordBuilder().build(record, STATUS_RUNNING,
-                processInstance.getId());
-        keyValue.save(record);
+        new StartProcessOperation().execute(parameterMap);
 
         return "startProcessInstance";
     }
@@ -317,6 +227,15 @@ public class FormAction extends BaseAction {
         formTemplate = formTemplateManager.findUniqueBy("name", taskFormKey);
         formInfo = new FormInfo();
         formInfo.setTaskId(taskId);
+
+        List<BpmConfOperation> bpmConfOperations = bpmConfOperationManager
+                .find("from BpmConfOperation where bpmConfNode.bpmConfBase.processDefinitionId=? and bpmConfNode.code=?",
+                        task.getProcessDefinitionId(),
+                        task.getTaskDefinitionKey());
+
+        for (BpmConfOperation bpmConfOperation : bpmConfOperations) {
+            formInfo.getButtons().add(bpmConfOperation.getValue());
+        }
 
         if (Integer.valueOf(1).equals(formTemplate.getType())) {
             redirectUrl = formTemplate.getContent() + "?taskId=" + taskId;
@@ -348,71 +267,9 @@ public class FormAction extends BaseAction {
      * 完成任务.
      */
     public String completeTask() throws Exception {
-        IdentityService identityService = processEngine.getIdentityService();
-        identityService.setAuthenticatedUserId(SpringSecurityUtils
-                .getCurrentUsername());
-        this.saveDraft();
-
-        TaskService taskService = processEngine.getTaskService();
-        Task task = taskService.createTaskQuery().taskId(taskId).singleResult();
-
-        FormService formService = processEngine.getFormService();
-        String taskFormKey = formService.getTaskFormKey(
-                task.getProcessDefinitionId(), task.getTaskDefinitionKey());
-        formInfo = new FormInfo();
-        formInfo.setTaskId(taskId);
-        formInfo.setFormKey(taskFormKey);
-
-        // 尝试根据表单里字段的类型，进行转换
-        Map<String, String> formTypeMap = new HashMap<String, String>();
-
-        if (formInfo.isFormExists()) {
-            this.formTemplate = formTemplateManager.findUniqueBy("name",
-                    formInfo.getFormKey());
-
-            String content = formTemplate.getContent();
-            logger.info("content : {}", content);
-
-            Map map = jsonMapper.fromJson(content, Map.class);
-            logger.info("map : {}", map);
-
-            if (map != null) {
-                List<Map> list = (List<Map>) map.get("fields");
-                logger.info("list : {}", list);
-
-                for (Map item : list) {
-                    formTypeMap.put((String) item.get("name"),
-                            (String) item.get("type"));
-                }
-            }
-        }
-
-        String processInstanceId = task.getProcessInstanceId();
-        Record record = keyValue.findByRef(processInstanceId);
-
-        Map<String, Object> processParameters = new HashMap<String, Object>();
-
-        // 如果有表单，就从数据库获取数据
-        for (Prop prop : record.getProps().values()) {
-            String key = prop.getCode();
-            String value = prop.getValue();
-            String formType = this.getFormType(formTypeMap, key);
-
-            if ("userPicker".equals(formType)) {
-                processParameters.put(key,
-                        new ArrayList(Arrays.asList(value.split(","))));
-            } else if (formType != null) {
-                processParameters.put(key, value);
-            }
-        }
-
-        processEngine.getManagementService()
-                .executeCommand(
-                        new CompleteTaskWithCommentCmd(taskId,
-                                processParameters, "完成"));
-        record = new RecordBuilder().build(record, STATUS_RUNNING,
-                processInstanceId);
-        keyValue.save(record);
+        Map<String, String[]> parameterMap = ServletActionContext.getRequest()
+                .getParameterMap();
+        new CompleteTaskOperation().execute(parameterMap);
 
         return "completeTask";
     }
@@ -428,6 +285,11 @@ public class FormAction extends BaseAction {
 
     public void setBpmTaskConfManager(BpmTaskConfManager bpmTaskConfManager) {
         this.bpmTaskConfManager = bpmTaskConfManager;
+    }
+
+    public void setBpmConfOperationManager(
+            BpmConfOperationManager bpmConfOperationManager) {
+        this.bpmConfOperationManager = bpmConfOperationManager;
     }
 
     // ~ ======================================================================
@@ -505,5 +367,17 @@ public class FormAction extends BaseAction {
 
     public String getRedirectUrl() {
         return redirectUrl;
+    }
+
+    public String getNextStep() {
+        return nextStep;
+    }
+
+    public long getBpmProcessId() {
+        return bpmProcessId;
+    }
+
+    public void setBpmProcessId(long bpmProcessId) {
+        this.bpmProcessId = bpmProcessId;
     }
 }

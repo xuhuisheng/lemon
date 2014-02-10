@@ -16,6 +16,8 @@ import com.mossle.auth.support.CheckUserStatusException;
 
 import com.mossle.core.struts2.BaseAction;
 
+import com.mossle.security.client.ResourcePublisher;
+
 import org.apache.struts2.convention.annotation.Result;
 import org.apache.struts2.convention.annotation.Results;
 
@@ -29,6 +31,7 @@ public class AuthAction extends BaseAction {
     public static final String RELOAD = "reload";
     private AuthService authService;
     private String text;
+    private ResourcePublisher resourcePublisher;
 
     public String execute() throws Exception {
         text = authService.doExport();
@@ -38,6 +41,7 @@ public class AuthAction extends BaseAction {
 
     public String save() {
         authService.doImport(text);
+        resourcePublisher.publish();
 
         return RELOAD;
     }
@@ -45,6 +49,10 @@ public class AuthAction extends BaseAction {
     // ~ ======================================================================
     public void setAuthService(AuthService authService) {
         this.authService = authService;
+    }
+
+    public void setResourcePublisher(ResourcePublisher resourcePublisher) {
+        this.resourcePublisher = resourcePublisher;
     }
 
     public String getText() {

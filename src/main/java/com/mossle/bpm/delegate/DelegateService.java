@@ -76,6 +76,10 @@ public class DelegateService {
         jdbcTemplate.update(SQL_SET_DELEGATE_INFO, assignee, attorney, taskId);
     }
 
+    public void removeRecord(Long id) {
+        jdbcTemplate.update("delete from bpm_delegate_info where id=?", id);
+    }
+
     public void addDelegateInfo(String assignee, String attorney,
             Date startTime, Date endTime, String processDefinitionId) {
         String sql = "insert into bpm_delegate_info(assignee,attorney,start_time,end_time,process_definition_id,status) values(?,?,?,?,?,?)";

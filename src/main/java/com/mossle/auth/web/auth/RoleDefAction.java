@@ -4,8 +4,8 @@ import java.util.ArrayList;
 import java.util.List;
 
 import com.mossle.api.scope.ScopeConnector;
+import com.mossle.api.scope.ScopeDTO;
 import com.mossle.api.scope.ScopeHolder;
-import com.mossle.api.scope.ScopeInfo;
 
 import com.mossle.auth.component.RoleDefChecker;
 import com.mossle.auth.domain.Role;
@@ -166,21 +166,21 @@ public class RoleDefAction extends BaseAction implements ModelDriven<RoleDef>,
         RoleDef roleDef = roleDefManager.get(id);
         List<Role> roles = roleManager.findBy("roleDef.id", id);
 
-        ScopeInfo currentScope = ScopeHolder.getScopeInfo();
-        List<ScopeInfo> scopeInfos;
+        ScopeDTO currentScope = ScopeHolder.getScopeDto();
+        List<ScopeDTO> scopeDtos;
 
         if (currentScope.isShared()) {
-            scopeInfos = scopeConnector.findAll();
+            scopeDtos = scopeConnector.findAll();
         } else {
-            scopeInfos = new ArrayList<ScopeInfo>();
-            scopeInfos.add(currentScope);
+            scopeDtos = new ArrayList<ScopeDTO>();
+            scopeDtos.add(currentScope);
         }
 
-        for (ScopeInfo scopeInfo : scopeInfos) {
+        for (ScopeDTO scopeDto : scopeDtos) {
             Role existedRole = null;
 
             for (Role role : roles) {
-                if (role.getScopeId().equals(scopeInfo.getId())) {
+                if (role.getScopeId().equals(scopeDto.getId())) {
                     existedRole = role;
 
                     break;
@@ -190,14 +190,14 @@ public class RoleDefAction extends BaseAction implements ModelDriven<RoleDef>,
             if (existedRole == null) {
                 RoleDTO roleDto = new RoleDTO();
                 roleDto.setName(roleDef.getName());
-                roleDto.setScopeId(scopeInfo.getId());
+                roleDto.setScopeId(scopeDto.getId());
                 roleDto.setStatus("added");
                 roleDtos.add(roleDto);
             } else {
                 RoleDTO roleDto = new RoleDTO();
                 roleDto.setName(roleDef.getName());
                 roleDto.setId(existedRole.getId());
-                roleDto.setScopeId(scopeInfo.getId());
+                roleDto.setScopeId(scopeDto.getId());
                 roleDto.setStatus("existed");
                 roleDtos.add(roleDto);
             }
@@ -206,8 +206,8 @@ public class RoleDefAction extends BaseAction implements ModelDriven<RoleDef>,
         for (Role role : roles) {
             boolean existed = false;
 
-            for (ScopeInfo scopeInfo : scopeInfos) {
-                if (role.getScopeId().equals(scopeInfo.getId())) {
+            for (ScopeDTO scopeDto : scopeDtos) {
+                if (role.getScopeId().equals(scopeDto.getId())) {
                     existed = true;
 
                     break;
@@ -231,21 +231,21 @@ public class RoleDefAction extends BaseAction implements ModelDriven<RoleDef>,
         RoleDef roleDef = roleDefManager.get(id);
         List<Role> roles = roleManager.findBy("roleDef.id", id);
 
-        ScopeInfo currentScope = ScopeHolder.getScopeInfo();
-        List<ScopeInfo> scopeInfos;
+        ScopeDTO currentScope = ScopeHolder.getScopeDto();
+        List<ScopeDTO> scopeDtos;
 
         if (currentScope.isShared()) {
-            scopeInfos = scopeConnector.findAll();
+            scopeDtos = scopeConnector.findAll();
         } else {
-            scopeInfos = new ArrayList<ScopeInfo>();
-            scopeInfos.add(currentScope);
+            scopeDtos = new ArrayList<ScopeDTO>();
+            scopeDtos.add(currentScope);
         }
 
-        for (ScopeInfo scopeInfo : scopeInfos) {
+        for (ScopeDTO scopeDto : scopeDtos) {
             Role existedRole = null;
 
             for (Role role : roles) {
-                if (role.getScopeId().equals(scopeInfo.getId())) {
+                if (role.getScopeId().equals(scopeDto.getId())) {
                     existedRole = role;
 
                     break;
@@ -256,7 +256,7 @@ public class RoleDefAction extends BaseAction implements ModelDriven<RoleDef>,
                 Role role = new Role();
                 role.setName(roleDef.getName());
                 role.setRoleDef(roleDef);
-                role.setScopeId(scopeInfo.getId());
+                role.setScopeId(scopeDto.getId());
                 roleManager.save(role);
             }
         }
@@ -264,8 +264,8 @@ public class RoleDefAction extends BaseAction implements ModelDriven<RoleDef>,
         for (Role role : roles) {
             boolean existed = false;
 
-            for (ScopeInfo scopeInfo : scopeInfos) {
-                if (role.getScopeId().equals(scopeInfo.getId())) {
+            for (ScopeDTO scopeDto : scopeDtos) {
+                if (role.getScopeId().equals(scopeDto.getId())) {
                     existed = true;
 
                     break;

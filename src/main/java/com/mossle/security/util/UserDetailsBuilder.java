@@ -53,8 +53,9 @@ public class UserDetailsBuilder {
         UserStatusDetailsImpl userStatusDetailsImpl = new UserStatusDetailsImpl(
                 username, password, enabled, authSet);
         userStatusDetailsImpl.setAttributes(attributes);
-
+        userStatusDetailsImpl.setId(userInfo.getId());
         userStatusDetailsImpl.setDisplayName(displayName);
+        userStatusDetailsImpl.setScopeId(userInfo.getScopeId());
 
         return userStatusDetailsImpl;
     }

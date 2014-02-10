@@ -40,13 +40,13 @@
     </thead>
 
     <tbody>
-      <s:iterator value="tasks" var="item">
+      <s:iterator value="taskDtos" var="item">
       <tr>
         <td><input type="checkbox" class="selectedItem" name="selectedItem" value="${item.id}"></td>
 	    <td>${item.id}</td>
 	    <td>${item.name}</td>
 	    <td>${item.createTime}</td>
-	    <td>${item.assignee}</td>
+	    <td>${item.username}</td>
 	    <td>${item.suspended ? '挂起' : '激活'}</td>
         <td>
           <a href="workspace!viewHistory.do?processInstanceId=${item.processInstanceId}">历史</a>

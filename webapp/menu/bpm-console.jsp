@@ -11,9 +11,9 @@
           </div>
           <div id="collapse-bpm-category" class="accordion-body collapse ${currentMenu == 'bpm-category' ? 'in' : ''}">
             <ul class="accordion-inner nav nav-list">
-			  <li class="m-icn-view-users"><a href="${scopePrefix}/bpm/bpm-category.do">流程分类</a></li>
-			  <li class="m-icn-add-user"><a href="${scopePrefix}/bpm/bpm-process.do">流程定义</a></li>
-			  <li class="m-icn-add-user"><a href="${scopePrefix}/bpm/bpm-mail-template.do">邮件模板</a></li>
+			  <li><a href="${scopePrefix}/bpm/bpm-category.do"><i class="icon-user"></i>流程分类</a></li>
+			  <li><a href="${scopePrefix}/bpm/bpm-process.do"><i class="icon-user"></i>流程定义</a></li>
+			  <li><a href="${scopePrefix}/bpm/bpm-mail-template.do"><i class="icon-user"></i>邮件模板</a></li>
             </ul>
           </div>
 		</div>
@@ -27,11 +27,11 @@
           </div>
           <div id="collapse-bpm-process" class="accordion-body collapse ${currentMenu == 'bpm-process' ? 'in' : ''}">
             <ul class="accordion-inner nav nav-list">
-			  <li class="m-icn-view-users"><a href="${scopePrefix}/modeler/modeler!list.do">发布流程</a></li>
-			  <li class="m-icn-add-user"><a href="${scopePrefix}/bpm/console!listProcessDefinitions.do">流程定义</a></li>
-			  <li class="m-icn-add-user"><a href="${scopePrefix}/bpm/console!listProcessInstances.do">流程实例</a></li>
-			  <li class="m-icn-add-user"><a href="${scopePrefix}/bpm/console!listTasks.do">任务</a></li>
-			  <li class="m-icn-add-user"><a href="${scopePrefix}/bpm/console!listDeployments.do">部署</a></li>
+			  <li><a href="${scopePrefix}/modeler/modeler!list.do"><i class="icon-user"></i>发布流程</a></li>
+			  <li><a href="${scopePrefix}/bpm/console!listProcessDefinitions.do"><i class="icon-user"></i>流程定义</a></li>
+			  <li><a href="${scopePrefix}/bpm/console!listProcessInstances.do"><i class="icon-user"></i>流程实例</a></li>
+			  <li><a href="${scopePrefix}/bpm/console!listTasks.do"><i class="icon-user"></i>任务</a></li>
+			  <li><a href="${scopePrefix}/bpm/console!listDeployments.do"><i class="icon-user"></i>部署</a></li>
             </ul>
           </div>
 		</div>
@@ -45,9 +45,9 @@
           </div>
           <div id="collapse-history" class="accordion-body collapse ${currentMenu == 'history' ? 'in' : ''}">
             <ul class="accordion-inner nav nav-list">
-			  <li class="m-icn-add-user"><a href="${scopePrefix}/bpm/console!listHistoricProcessInstances.do">流程实例</a></li>
-			  <li class="m-icn-add-user"><a href="${scopePrefix}/bpm/console!listHistoricActivityInstances.do">节点</a></li>
-			  <li class="m-icn-add-user"><a href="${scopePrefix}/bpm/console!listHistoricTasks.do">任务</a></li>
+			  <li><a href="${scopePrefix}/bpm/console!listHistoricProcessInstances.do"><i class="icon-user"></i>流程实例</a></li>
+			  <li><a href="${scopePrefix}/bpm/console!listHistoricActivityInstances.do"><i class="icon-user"></i>节点</a></li>
+			  <li><a href="${scopePrefix}/bpm/console!listHistoricTasks.do"><i class="icon-user"></i>任务</a></li>
             </ul>
           </div>
         </div>
@@ -61,8 +61,8 @@
           </div>
           <div id="collapse-delegate" class="accordion-body collapse ${currentMenu == 'delegate' ? 'in' : ''}">
             <ul class="accordion-inner nav nav-list">
-			  <li class="m-icn-add-user"><a href="${scopePrefix}/bpm/delegate!listDelegateInfos.do">自动委托</a></li>
-			  <li class="m-icn-add-user"><a href="${scopePrefix}/bpm/delegate!listDelegateHistories.do">自动委托记录</a></li>
+			  <li><a href="${scopePrefix}/bpm/delegate!listDelegateInfos.do"><i class="icon-user"></i>自动委托</a></li>
+			  <li><a href="${scopePrefix}/bpm/delegate!listDelegateHistories.do"><i class="icon-user"></i>自动委托记录</a></li>
             </ul>
           </div>
         </div>
@@ -76,7 +76,7 @@
           </div>
           <div id="collapse-job" class="accordion-body collapse ${currentMenu == 'job' ? 'in' : ''}">
             <ul class="accordion-inner nav nav-list">
-			  <li class="m-icn-add-user"><a href="${scopePrefix}/bpm/job!list.do">异步消息管理</a></li>
+			  <li><a href="${scopePrefix}/bpm/job!list.do"><i class="icon-user"></i>异步消息管理</a></li>
             </ul>
           </div>
         </div>

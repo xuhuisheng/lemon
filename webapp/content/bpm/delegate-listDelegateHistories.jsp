@@ -31,10 +31,10 @@
       <tr>
         <th width="10" class="m-table-check"><input type="checkbox" name="checkAll" onchange="toggleSelectedItems(this.checked)"></th>
         <th class="sorting" name="id">编号</th>
-        <th class="sorting" name="key">委托人</th>
-        <th class="sorting" name="name">被委托人</th>
-        <th class="sorting" name="category">委托时间</th>
-        <th class="sorting" name="suspended">状态</th>
+        <th class="sorting" name="assignee">委托人</th>
+        <th class="sorting" name="attorney">被委托人</th>
+        <th class="sorting" name="delegateTime">委托时间</th>
+        <th class="sorting" name="status">状态</th>
         <th width="150">&nbsp;</th>
       </tr>
     </thead>
@@ -44,10 +44,10 @@
       <tr>
         <td><input type="checkbox" class="selectedItem" name="selectedItem" value="${item.id}"></td>
 	    <td>${item.id}</td>
-	    <td>${item.assignee}</td>
-	    <td>${item.attorney}</td>
-	    <td>${item.delegate_time}</td>
-	    <td>${item.status}</td>
+	    <td>${item.assigneeDisplayName}</td>
+	    <td>${item.attorneyDisplayName}</td>
+	    <td>${item.delegateTime}</td>
+	    <td>${item.status == 1 ? '启用' : '禁用'}</td>
       </tr>
       </s:iterator>
     </tbody>

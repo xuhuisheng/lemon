@@ -2,6 +2,9 @@ package com.mossle.dashboard.web.dashboard;
 
 import java.util.*;
 
+import com.mossle.bpm.persistence.domain.BpmProcess;
+import com.mossle.bpm.persistence.manager.BpmProcessManager;
+
 import com.mossle.cms.domain.*;
 import com.mossle.cms.manager.*;
 
@@ -15,34 +18,40 @@ import org.activiti.engine.task.*;
 
 public class DashboardAction {
     private ProcessEngine processEngine;
+    private BpmProcessManager bpmProcessManager;
     private CmsArticleManager cmsArticleManager;
     private List<Task> personalTasks;
     private List<HistoricProcessInstance> historicProcessInstances;
-    private List<ProcessDefinition> processDefinitions;
+    private List<BpmProcess> bpmProcesses;
     private List<CmsArticle> cmsArticles;
 
     public String execute() {
-        String currentUsername = SpringSecurityUtils.getCurrentUsername();
+        String userId = SpringSecurityUtils.getCurrentUserId();
         personalTasks = processEngine.getTaskService().createTaskQuery()
-                .taskAssignee(currentUsername).list();
+                .taskAssignee(userId).list();
         historicProcessInstances = processEngine.getHistoryService()
-                .createHistoricProcessInstanceQuery()
-                .startedBy(currentUsername).list();
-        processDefinitions = processEngine.getRepositoryService()
-                .createProcessDefinitionQuery().list();
+                .createHistoricProcessInstanceQuery().startedBy(userId)
+                .unfinished().list();
+        bpmProcesses = bpmProcessManager.getAll();
         cmsArticles = cmsArticleManager.getAll();
 
         return "success";
     }
 
+    // ~ ==================================================
     public void setProcessEngine(ProcessEngine processEngine) {
         this.processEngine = processEngine;
+    }
+
+    public void setBpmProcessManager(BpmProcessManager bpmProcessManager) {
+        this.bpmProcessManager = bpmProcessManager;
     }
 
     public void setCmsArticleManager(CmsArticleManager cmsArticleManager) {
         this.cmsArticleManager = cmsArticleManager;
     }
 
+    // ~ ==================================================
     public List<Task> getPersonalTasks() {
         return personalTasks;
     }
@@ -51,8 +60,8 @@ public class DashboardAction {
         return historicProcessInstances;
     }
 
-    public List<ProcessDefinition> getProcessDefinitions() {
-        return processDefinitions;
+    public List<BpmProcess> getBpmProcesses() {
+        return bpmProcesses;
     }
 
     public List<CmsArticle> getCmsArticles() {

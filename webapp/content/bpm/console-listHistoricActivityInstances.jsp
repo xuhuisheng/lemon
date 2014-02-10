@@ -47,8 +47,8 @@
 	    <td>${item.activityId}</td>
 	    <td>${item.activityName}</td>
 	    <td>${item.activityType}</td>
-	    <td>${item.startTime}</td>
-	    <td>${item.endTime}</td>
+	    <td><s:date name="startTime" format="yyyy-MM-dd HH:mm:ss" /></td>
+	    <td><s:date name="endTime" format="yyyy-MM-dd HH:mm:ss" /></td>
 	    <td>${item.processDefinitionId}</td>
 	    <td>${item.processInstanceId}</td>
 	    <td>${item.executionId}</td>

@@ -1,6 +1,6 @@
 package com.mossle.bpm.rule;
 
-import com.mossle.core.spring.ApplicationContextHolder;
+import com.mossle.core.spring.ApplicationContextHelper;
 
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
@@ -12,54 +12,55 @@ public class SuperiorAssigneeRule implements AssigneeRule {
             .getLogger(SuperiorAssigneeRule.class);
     private JdbcTemplate jdbcTemplate;
 
-    public String process(String username) {
+    public String process(String userId) {
         if (jdbcTemplate == null) {
-            jdbcTemplate = (JdbcTemplate) ApplicationContextHolder
-                    .getInstance().getApplicationContext()
-                    .getBean("jdbcTemplate");
+            jdbcTemplate = ApplicationContextHelper.getBean(JdbcTemplate.class);
         }
 
-        Long managerId = getManagerIdByUsername(username);
+        String userEntityId = getUserEntityId(userId);
+        String managerEntityId = getManagerEntityIdByUserEntityId(userEntityId);
 
-        return getUsername(managerId);
+        return getUserId(managerEntityId);
     }
 
-    public Long getManagerIdByUsername(String username) {
-        Long userId = getUserId(username);
-
-        return getManagerId(userId, null);
+    public String getManagerEntityIdByUserEntityId(String userEntityId) {
+        return getManagerEntityId(userEntityId, null);
     }
 
-    public Long getManagerId(Long userId, Long departmentId) {
-        Long targetDepartmentId = null;
+    public String getManagerEntityId(String userEntityId,
+            String departmentEntityId) {
+        String targetDepartmentEntityId = null;
 
-        if (departmentId == null) {
+        if (departmentEntityId == null) {
             // 获得流程发起人的部门
-            targetDepartmentId = this.getDepartmentId(userId);
+            targetDepartmentEntityId = this.getDepartmentEntityId(userEntityId);
         } else {
-            targetDepartmentId = this.getHigherDepartmentId(departmentId);
+            targetDepartmentEntityId = this
+                    .getHigherDepartmentEntityId(departmentEntityId);
         }
 
-        logger.info("targetDepartmentId : {}", targetDepartmentId);
+        logger.debug("targetDepartmentEntityId : {}", targetDepartmentEntityId);
 
-        if (targetDepartmentId == null) {
+        if (targetDepartmentEntityId == null) {
             return null;
         }
 
         // 获得部门负责人
-        Long managerId = this.getManagerId(targetDepartmentId);
-        logger.info("managerId : {}", managerId);
+        String managerEntityId = this
+                .getManagerEntityId(targetDepartmentEntityId);
+        logger.debug("managerEntityId : {}", managerEntityId);
 
         // 如果部门没有负责人，或者负责人和发起人是一个人，就找上一个部门
-        if ((managerId == null) || managerId.equals(userId)) {
-            return this.getManagerId(userId, targetDepartmentId);
+        if ((managerEntityId == null) || managerEntityId.equals(userEntityId)) {
+            return this.getManagerEntityId(userEntityId,
+                    targetDepartmentEntityId);
         } else {
-            return managerId;
+            return managerEntityId;
         }
     }
 
     // ~ ======================================================================
-    public Long getDepartmentId(Long userId) {
+    public String getDepartmentEntityId(String userEntityId) {
         String sql = "select ps.parent_entity_id"
                 + " from party_struct ps,party_entity parent,party_entity child,party_type parent_type,party_type child_type"
                 + " where parent.id=ps.parent_entity_id and child.id=ps.child_entity_id"
@@ -68,7 +69,7 @@ public class SuperiorAssigneeRule implements AssigneeRule {
                 + " and child.id=?";
 
         try {
-            return jdbcTemplate.queryForObject(sql, Long.class, userId);
+            return jdbcTemplate.queryForObject(sql, String.class, userEntityId);
         } catch (Exception ex) {
             logger.debug(ex.getMessage(), ex);
 
@@ -76,12 +77,12 @@ public class SuperiorAssigneeRule implements AssigneeRule {
         }
     }
 
-    public Long getManagerId(Long departmentId) {
+    public String getManagerEntityId(String departmentEntityId) {
         try {
             return jdbcTemplate.queryForObject(
                     "select parent_entity_id from party_struct "
                             + "where dim_id=2 and child_entity_id=?",
-                    Long.class, departmentId);
+                    String.class, departmentEntityId);
         } catch (Exception ex) {
             logger.debug(ex.getMessage(), ex);
 
@@ -89,12 +90,12 @@ public class SuperiorAssigneeRule implements AssigneeRule {
         }
     }
 
-    public Long getHigherDepartmentId(Long departmentId) {
+    public String getHigherDepartmentEntityId(String departmentEntityId) {
         try {
             return jdbcTemplate.queryForObject(
                     "select parent_entity_id from party_struct "
                             + "where dim_id=1 and child_entity_id=?",
-                    Long.class, departmentId);
+                    String.class, departmentEntityId);
         } catch (Exception ex) {
             logger.debug(ex.getMessage(), ex);
 
@@ -102,25 +103,19 @@ public class SuperiorAssigneeRule implements AssigneeRule {
         }
     }
 
-    public String getUsername(Long userId) {
-        Long id = jdbcTemplate.queryForObject(
-                "select ref from party_entity where id=?", Long.class, userId);
+    public String getUserId(String userEntityId) {
+        String userId = jdbcTemplate.queryForObject(
+                "select ref from party_entity where id=?", String.class,
+                userEntityId);
 
-        String username = jdbcTemplate.queryForObject(
-                "select username from user_base where id=?", String.class, id);
-
-        return username;
+        return userId;
     }
 
-    public Long getUserId(String username) {
-        Long userId = jdbcTemplate.queryForObject(
-                "select id from user_base where username=?", Long.class,
-                username);
-
-        Long partyEntityId = jdbcTemplate.queryForObject(
+    public String getUserEntityId(String userId) {
+        String partyEntityId = jdbcTemplate.queryForObject(
                 "select id from party_entity where type_id=1 and ref=?",
-                Long.class, userId);
-        logger.info("username : {}, userId : {}", username, userId);
+                String.class, userId);
+        logger.debug("userId : {}", userId);
 
         return partyEntityId;
     }

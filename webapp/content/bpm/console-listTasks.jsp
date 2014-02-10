@@ -34,18 +34,18 @@
         <th class="sorting" name="name">名称</th>
         <th class="sorting" name="createTime">创建时间</th>
         <th class="sorting" name="assignee">负责人</th>
-        <th width="170">&nbsp;</th>
+        <th width="180">&nbsp;</th>
       </tr>
     </thead>
 
     <tbody>
-      <s:iterator value="tasks" var="item">
+      <s:iterator value="taskDtos" var="item">
       <tr>
         <td><input type="checkbox" class="selectedItem" name="selectedItem" value="${item.id}"></td>
 	    <td>${item.id}</td>
 	    <td>${item.name}</td>
-	    <td>${item.createTime}</td>
-	    <td>${item.assignee}</td>
+	    <td><s:date name="createTime" format="yyyy-MM-dd HH:mm:ss" /></td>
+	    <td>${item.username}</td>
         <td>
           <a href="workspace!prepareCompleteTask.do?taskId=${item.id}">完成</a>
 		  <s:if test="assignee==null">

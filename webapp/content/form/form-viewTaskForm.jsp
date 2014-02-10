@@ -9,15 +9,24 @@
     <%@include file="/common/meta.jsp"%>
     <title><spring:message code="demo.demo.input.title" text="编辑"/></title>
     <%@include file="/common/s.jsp"%>
-	<link href="${ctx}/xform/styles/xform.css" rel="stylesheet">
-    <script type="text/javascript" src="${ctx}/xform/designer-xform-packed.js"></script>
-    <script type="text/javascript" src="${ctx}/xform/container-layout.js"></script>
-    <script type="text/javascript" src="${ctx}/xform/adaptor.js"></script>
+	<link href="${scopePrefix}/widgets/xform/styles/xform.css" rel="stylesheet">
+    <script type="text/javascript" src="${scopePrefix}/widgets/xform/designer-xform-packed.js"></script>
+    <script type="text/javascript" src="${scopePrefix}/widgets/xform/container-layout.js"></script>
+    <script type="text/javascript" src="${scopePrefix}/widgets/xform/adaptor.js"></script>
     <script type="text/javascript">
 document.onmousedown = function(e) {};
 document.onmousemove = function(e) {};
 document.onmouseup = function(e) {};
 document.ondblclick = function(e) {};
+
+var buttons = [];
+<s:iterator value="formInfo.buttons" var="item">
+buttons.push('${item}');
+</s:iterator>
+
+if (buttons.length == 0) {
+	buttons = ['保存草稿', '完成任务'];
+}
 
 $(function() {
     $("#demoForm").validate({
@@ -29,22 +38,55 @@ $(function() {
         errorClass: 'validate-error'
     });
 
-	$(document).delegate('#button0', 'click', function(e) {
-		$('#xf-form').attr('action', 'workspace!saveDraft.do');
-		$('#xf-form').submit();
-	});
-
-	$(document).delegate('#button1', 'click', function(e) {
-		$('#xf-form').submit();
+	$(document).delegate('#xf-form-table-foot button', 'click', function(e) {
+		switch($(this).html()) {
+			case '保存草稿':
+				$('#xf-form').attr('action', 'form!saveDraft.do');
+				$('#xf-form').submit();
+				break;
+			case '完成任务':
+				$('#xf-form').attr('action', 'form!completeTask.do');
+				$('#xf-form').submit();
+				break;
+			case '发起流程':
+				$('#xf-form').attr('action', 'form!startProcessInstance.do');
+				$('#xf-form').submit();
+				break;
+			case '驳回':
+				$('#xf-form').attr('action', '${scopePrefix}/bpm/workspace!rollback.do');
+				$('#xf-form').submit();
+				break;
+			case '转办':
+				$('#modal form').attr('action', '${scopePrefix}/bpm/workspace!doDelegate.do');
+				$('#modal').modal();
+				break;
+			case '协办':
+				$('#modal form').attr('action', '${scopePrefix}/bpm/workspace!doDelegateHelp.do');
+				$('#modal').modal();
+				break;
+		}
 	});
 
 	setTimeout(function() {
 		xform.setValue(${json});
+		xform.model.template.buttons = buttons;
+		xform.model.template.initFoot();
 
 		var id = '#xf-form-table-body-row' + (xform.model.template.positions.length - 1);
 		var el = $(id)[0];
 		el.parentNode.removeChild(el);
 	}, 500);
+})
+    </script>
+
+    <link type="text/css" rel="stylesheet" href="${scopePrefix}/widgets/userpicker/userpicker.css">
+    <script type="text/javascript" src="${scopePrefix}/widgets/userpicker/userpicker.js"></script>
+	<script type="text/javascript">
+$(function() {
+	createUserPicker({
+		modalId: 'userPicker',
+		url: '${scopePrefix}/rs/user/search'
+	});
 })
     </script>
   </head>
@@ -85,6 +127,20 @@ $(function() {
     <form id="f" action="form-template!save.do" method="post" style="display:none;">
 	  <textarea id="__gef_content__" name="content">${formTemplate.content}</textarea>
 	</form>
+
+	<div id="modal" class="modal hide fade">
+	  <div class="modal-body">
+	  <form>
+	    <input type="hidden" name="taskId" value="${formInfo.taskId}"/>
+        <div class="input-append userPicker">
+		  <input type="hidden" name="attorney" class="input-medium" value="">
+		  <input type="text" style="width: 175px;" value="">
+		  <span class="add-on"><i class="icon-user"></i></span>
+        </div>
+		<br>
+		<button class="btn">提交</button>
+	  </div>
+	</div>
   </body>
 
 </html>

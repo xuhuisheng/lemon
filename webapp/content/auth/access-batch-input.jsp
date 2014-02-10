@@ -51,7 +51,7 @@ function doPrev() {
 
 		<div class="content content-inner">
 
-<form id="accessForm" method="post" action="access-batch!edit.do" class="form-horizontal">
+<form id="accessForm" method="post" action="access-batch!save.do" class="form-horizontal">
   <div class="control-group">
     <label class="control-label"><spring:message code='auth.access.input.type' text='类型'/></label>
     <div class="controls">
@@ -60,30 +60,9 @@ function doPrev() {
     </div>
   </div>
   <div class="control-group">
-	<label class="control-label" for="access_perm"><spring:message code='auth.access.input.import' text='批量导入'/></label>
+	<label class="control-label" for="access_text"><spring:message code='auth.access.input.import' text='批量导入'/></label>
     <div class="controls">
-	  <textarea name="perm" style="width:600px;" rows="10">${perm}</textarea>
-    </div>
-  </div>
-  <div class="control-group">
-    <label class="control-label" for="access_perm"><spring:message code='auth.access.input.perm' text='资源'/></label>
-    <div class="controls">
-      <table class="table table-striped table-bordered table-hover" style="width:auto;">
-        <thead>
-		  <tr>
-		    <th>${type}</th>
-			<th>权限</th>
-		  </tr>
-        </thead>
-        <tbody>
-          <s:iterator value="accessDtos">
-            <tr>
-              <td>${value}</td>
-              <td>${perm}</td>
-            </tr>
-          </s:iterator>
-        </tbody>
-      </table>
+	  <textarea id="access_text" name="text" style="width:600px;" rows="10">${text}</textarea>
     </div>
   </div>
   <div class="control-group">

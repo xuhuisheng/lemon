@@ -51,7 +51,7 @@ $(function() {
         <header class="header">
 		  <h4 class="title">查询</h4>
 		  <div class="ctrl">
-		    <a href="javascript:$('#bpmProcessSearch').toggle(200);$('#bpmProcessSearchIcon').toggleClass('icon-chevron-down');$('#bpmProcessSearchIcon').toggleClass('icon-chevron-up');void(0);" class="btn"><i id="bpmProcessSearchIcon" class="icon-chevron-up"></i></a>
+		    <a class="btn"><i id="bpmCategorySearchIcon" class="icon-chevron-up"></i></a>
 		  </div>
 		</header>
         <div id="bpmProcessSearch" class="content content-inner">
@@ -102,8 +102,6 @@ $(function() {
           <th width="10" style="text-indent:0px;text-align:center;"><input type="checkbox" name="checkAll" onchange="toggleSelectedItems(this.checked)"></th>
           <th class="sorting" name="id">编号</th>
           <th class="sorting" name="name">名称</th>
-          <th class="sorting" name="processDefinitionKey">流程定义key</th>
-          <th class="sorting" name="processDefinitionVersion">流程定义version</th>
           <th class="sorting" name="bpmCategory.id">分类</th>
           <th class="sorting" name="priority">排序</th>
           <th class="sorting" name="useTaskConf">是否配置任务负责人</th>
@@ -116,16 +114,14 @@ $(function() {
           <td><input type="checkbox" class="selectedItem a-check" name="selectedItem" value="${item.id}"></td>
           <td>${item.id}</td>
           <td>${item.name}</td>
-          <td>${item.processDefinitionKey}</td>
-          <td>${item.processDefinitionVersion}</td>
           <td>${item.bpmCategory.name}</td>
           <td>${item.priority}</td>
-          <td>${item.useTaskConf == 1}</td>
+          <td>${item.useTaskConf == 1 ? '是' : '否'}</td>
           <td>
 			<region:region-permission permission="bpmProcess:write">
             <a href="bpm-process!input.do?id=${item.id}" class="a-update"><spring:message code="core.list.edit" text="编辑"/></a>&nbsp;
 			</region:region-permission>
-            <a href="bpm-process!config.do?id=${item.id}">配置</a>&nbsp;
+            <a href="bpm-conf-node.do?bpmConfBaseId=${item.bpmConfBase.id}">配置</a>&nbsp;
           </td>
         </tr>
         </s:iterator>

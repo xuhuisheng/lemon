@@ -55,6 +55,12 @@ $(function() {
     </div>
   </div>
   <div class="control-group">
+	<label class="control-label" for="user-repo_ref">引用</label>
+    <div class="controls">
+      <input id="user-repo_ref" type="text" name="ref" value="${model.ref}" size="40" class="text">
+    </div>
+  </div>
+  <div class="control-group">
     <div class="controls">
       <button id="submitButton" class="btn a-submit"><spring:message code='core.input.save' text='保存'/></button>
 	  &nbsp;

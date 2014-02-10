@@ -6,6 +6,8 @@ import java.util.List;
 import java.util.Map;
 
 import com.mossle.api.scope.ScopeHolder;
+import com.mossle.api.user.UserCache;
+import com.mossle.api.user.UserDTO;
 
 import com.mossle.core.export.Exportor;
 import com.mossle.core.export.TableModel;
@@ -40,6 +42,7 @@ public class UserBaseAction extends BaseAction implements
     public static final String RELOAD = "reload";
     private UserBaseManager userBaseManager;
     private UserRepoManager userRepoManager;
+    private UserCache userCache;
     private MessageSourceAccessor messages;
     private Page page = new Page();
     private UserBase model;
@@ -119,6 +122,13 @@ public class UserBaseAction extends BaseAction implements
 
         addActionMessage(messages.getMessage("core.success.save", "保存成功"));
 
+        UserDTO userDto = new UserDTO();
+        userDto.setId(Long.toString(dest.getId()));
+        userDto.setUsername(dest.getUsername());
+        userDto.setRef(dest.getRef());
+        userDto.setUserRepoRef(Long.toString(userRepoId));
+        userCache.removeUser(userDto);
+
         return RELOAD;
     }
 
@@ -127,6 +137,14 @@ public class UserBaseAction extends BaseAction implements
 
         for (UserBase userBase : userBases) {
             userService.removeUser(userBase);
+
+            UserDTO userDto = new UserDTO();
+            userDto.setId(Long.toString(userBase.getId()));
+            userDto.setUsername(userBase.getUsername());
+            userDto.setRef(userBase.getRef());
+            userDto.setUserRepoRef(Long
+                    .toString(userBase.getUserRepo().getId()));
+            userCache.removeUser(userDto);
         }
 
         addActionMessage(messages.getMessage("core.success.delete", "删除成功"));
@@ -214,6 +232,10 @@ public class UserBaseAction extends BaseAction implements
 
     public void setUserRepoManager(UserRepoManager userRepoManager) {
         this.userRepoManager = userRepoManager;
+    }
+
+    public void setUserCache(UserCache userCache) {
+        this.userCache = userCache;
     }
 
     public void setMessageSource(MessageSource messageSource) {

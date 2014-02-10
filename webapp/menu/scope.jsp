@@ -11,7 +11,7 @@
           </div>
           <div id="collapse-scope" class="accordion-body collapse ${currentMenu == 'scope' ? 'in' : ''}">
             <ul class="accordion-inner nav nav-list">
-              <li><a href="${scopePrefix}/scope/scope-info.do">应用管理</a></li>
+              <li><a href="${scopePrefix}/scope/scope-info.do"><i class="icon-user"></i>应用管理</a></li>
             </ul>
           </div>
         </div>
@@ -25,7 +25,7 @@
           </div>
           <div id="collapse-user-admin" class="accordion-body collapse ${currentMenu == 'user-admin' ? 'in' : ''}">
             <ul class="accordion-inner nav nav-list">
-			  <li><a href="${scopePrefix}/user/user-repo.do">用户库列表</a></li>
+			  <li><a href="${scopePrefix}/user/user-repo.do"><i class="icon-user"></i>用户库列表</a></li>
             </ul>
           </div>
         </div>
@@ -39,11 +39,11 @@
           </div>
           <div id="collapse-group" class="accordion-body collapse ${currentMenu == 'group' ? 'in' : ''}">
             <ul class="accordion-inner nav nav-list">
-			  <li class="m-icn-view-users"><a href="${scopePrefix}/group/org-company.do">公司</a></li>
-			  <li class="m-icn-view-users"><a href="${scopePrefix}/group/org-department.do">部门</a></li>
-			  <li class="m-icn-view-users"><a href="${scopePrefix}/group/org-group.do">小组</a></li>
-			  <li class="m-icn-view-users"><a href="${scopePrefix}/group/org-position-type.do">岗位类型</a></li>
-			  <li class="m-icn-view-users"><a href="${scopePrefix}/group/org-position.do">岗位</a></li>
+			  <li><a href="${scopePrefix}/group/org-company.do"><i class="icon-user"></i>公司</a></li>
+			  <li><a href="${scopePrefix}/group/org-department.do"><i class="icon-user"></i>部门</a></li>
+			  <li><a href="${scopePrefix}/group/org-group.do"><i class="icon-user"></i>小组</a></li>
+			  <li><a href="${scopePrefix}/group/org-position-type.do"><i class="icon-user"></i>岗位类型</a></li>
+			  <li><a href="${scopePrefix}/group/org-position.do"><i class="icon-user"></i>岗位</a></li>
             </ul>
           </div>
         </div>
@@ -57,14 +57,14 @@
           </div>
           <div id="collapse-party" class="accordion-body collapse ${currentMenu == 'party' ? 'in' : ''}">
             <ul class="accordion-inner nav nav-list">
-			  <li class="m-icn-view-users"><a href="${scopePrefix}/party/tree.do"><spring:message code="layout.leftmenu.tree" text="组织机构图"/></a></li>
-			  <li class="m-icn-view-users"><a href="${scopePrefix}/party/party-entity.do"><spring:message code="layout.leftmenu.org" text="组织机构"/></a></li>
-			  <li class="m-icn-view-users"><a href="${scopePrefix}/party/party-struct.do"><spring:message code="layout.leftmenu.struct" text="组织机构结构"/></a></li>
-			  <li class="m-icn-view-users"><a href="${scopePrefix}/party/party-type.do"><spring:message code="layout.leftmenu.type" text="组织机构类型"/></a></li>
-			  <li class="m-icn-view-users"><a href="${scopePrefix}/party/party-struct-type.do"><spring:message code="layout.leftmenu.struct.type" text="组织机构结构类型"/></a></li>
-			  <li class="m-icn-view-users"><a href="${scopePrefix}/party/party-struct-rule.do"><spring:message code="layout.leftmenu.struct.rule" text="组织机构结构规则"/></a></li>
-			  <li class="m-icn-view-users"><a href="${scopePrefix}/party/party-dim-root.do">维度</a></li>
-			  <li class="m-icn-view-users"><a href="${scopePrefix}/party/party-dim-root.do">顶级组织</a></li>
+			  <li><a href="${scopePrefix}/party/tree.do"><i class="icon-user"></i><spring:message code="layout.leftmenu.tree" text="组织机构图"/></a></li>
+			  <li><a href="${scopePrefix}/party/party-entity.do"><i class="icon-user"></i><spring:message code="layout.leftmenu.org" text="组织机构"/></a></li>
+			  <li><a href="${scopePrefix}/party/party-struct.do"><i class="icon-user"></i><spring:message code="layout.leftmenu.struct" text="组织机构结构"/></a></li>
+			  <li><a href="${scopePrefix}/party/party-type.do"><i class="icon-user"></i><spring:message code="layout.leftmenu.type" text="组织机构类型"/></a></li>
+			  <li><a href="${scopePrefix}/party/party-struct-type.do"><i class="icon-user"></i><spring:message code="layout.leftmenu.struct.type" text="组织机构结构类型"/></a></li>
+			  <li><a href="${scopePrefix}/party/party-struct-rule.do"><i class="icon-user"></i><spring:message code="layout.leftmenu.struct.rule" text="组织机构结构规则"/></a></li>
+			  <li><a href="${scopePrefix}/party/party-dim-root.do"><i class="icon-user"></i>维度</a></li>
+			  <li><a href="${scopePrefix}/party/party-dim-root.do"><i class="icon-user"></i>顶级组织</a></li>
             </ul>
           </div>
         </div>

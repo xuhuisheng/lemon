@@ -4,7 +4,7 @@ public class UserStatusDTO {
     private Long id;
     private String username;
     private boolean enabled;
-    private String reference;
+    private String ref;
     private String authorities;
 
     public Long getId() {
@@ -31,12 +31,12 @@ public class UserStatusDTO {
         this.enabled = enabled;
     }
 
-    public String getReference() {
-        return reference;
+    public String getRef() {
+        return ref;
     }
 
-    public void setReference(String reference) {
-        this.reference = reference;
+    public void setRef(String ref) {
+        this.ref = ref;
     }
 
     public String getAuthorities() {

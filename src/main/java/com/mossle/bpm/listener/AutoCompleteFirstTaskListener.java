@@ -24,7 +24,7 @@ public class AutoCompleteFirstTaskListener extends DefaultTaskListener {
 
     @Override
     public void onCreate(DelegateTask delegateTask) throws Exception {
-        String username = Authentication.getAuthenticatedUserId();
+        String userId = Authentication.getAuthenticatedUserId();
         String assignee = delegateTask.getAssignee();
 
         ProcessDefinitionEntity processDefinitionEntity = Context
@@ -44,17 +44,18 @@ public class AutoCompleteFirstTaskListener extends DefaultTaskListener {
         PvmActivity targetActivity = pvmTransition.getDestination();
 
         if (!"userTask".equals(targetActivity.getProperty("type"))) {
-            logger.info("first activity is not userTask, just skip");
+            logger.debug("first activity is not userTask, just skip");
 
             return;
         }
 
         if (targetActivity.getId().equals(
                 delegateTask.getExecution().getCurrentActivityId())) {
-            if ((username != null) && username.equals(assignee)) {
-                logger.info("auto complete first task : {}", delegateTask);
+            if ((userId != null) && userId.equals(assignee)) {
+                logger.debug("auto complete first task : {}", delegateTask);
 
                 // ((TaskEntity) delegateTask).complete();
+                // Context.getCommandContext().getHistoryManager().recordTaskId((TaskEntity) delegateTask);
                 new CompleteTaskWithCommentCmd(delegateTask.getId(), null,
                         "发起流程").execute(Context.getCommandContext());
             }

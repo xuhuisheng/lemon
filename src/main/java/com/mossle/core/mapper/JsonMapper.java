@@ -2,6 +2,7 @@ package com.mossle.core.mapper;
 
 import java.io.IOException;
 
+import com.fasterxml.jackson.core.type.TypeReference;
 import com.fasterxml.jackson.databind.DeserializationFeature;
 import com.fasterxml.jackson.databind.ObjectMapper;
 import com.fasterxml.jackson.databind.util.JSONPObject;
@@ -9,10 +10,17 @@ import com.fasterxml.jackson.databind.util.JSONPObject;
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
 
+/**
+ * json转换.
+ */
 public class JsonMapper {
+    /** logger. */
     private static Logger logger = LoggerFactory.getLogger(JsonMapper.class);
+
+    /** jackson. */
     private ObjectMapper mapper;
 
+    /** constructor. */
     public JsonMapper() {
         mapper = new ObjectMapper();
         mapper.disable(DeserializationFeature.FAIL_ON_UNKNOWN_PROPERTIES);
@@ -35,6 +43,20 @@ public class JsonMapper {
 
         try {
             return mapper.readValue(jsonString, clazz);
+        } catch (IOException e) {
+            logger.warn("parse json string error:" + jsonString, e);
+
+            return null;
+        }
+    }
+
+    public <T> T fromJson(String jsonString, TypeReference typeReference) {
+        if ((jsonString == null) || "".equals(jsonString.trim())) {
+            return null;
+        }
+
+        try {
+            return mapper.readValue(jsonString, typeReference);
         } catch (IOException e) {
             logger.warn("parse json string error:" + jsonString, e);
 

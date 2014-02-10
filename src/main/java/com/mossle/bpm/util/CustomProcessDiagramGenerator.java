@@ -24,6 +24,11 @@ import java.util.List;
 
 import javax.imageio.ImageIO;
 
+import com.mossle.bpm.cmd.FindProcessDefinitionEntityCmd;
+import com.mossle.bpm.graph.ActivitiHistoryGraphBuilder;
+import com.mossle.bpm.graph.Edge;
+import com.mossle.bpm.graph.Graph;
+
 import org.activiti.bpmn.constants.BpmnXMLConstants;
 import org.activiti.bpmn.model.Artifact;
 import org.activiti.bpmn.model.BpmnModel;
@@ -114,9 +119,8 @@ public class CustomProcessDiagramGenerator {
         this.minX -= 5;
         this.minY -= 5;
 
-        ProcessDefinitionEntity definition = Context
-                .getProcessEngineConfiguration().getDeploymentManager()
-                .findDeployedProcessDefinitionById(processDefinitionId);
+        ProcessDefinitionEntity definition = new FindProcessDefinitionEntityCmd(
+                processDefinitionId).execute(Context.getCommandContext());
         String diagramResourceName = definition.getDiagramResourceName();
         String deploymentId = definition.getDeploymentId();
         byte[] bytes = Context
@@ -138,6 +142,8 @@ public class CustomProcessDiagramGenerator {
                 .findHistoricActivityInstancesByQueryCriteria(
                         historicActivityInstanceQueryImpl, page);
 
+        this.drawHistoryFlow(image, processInstanceId);
+
         for (HistoricActivityInstance historicActivityInstance : activityInstances) {
             String historicActivityId = historicActivityInstance
                     .getActivityId();
@@ -158,8 +164,6 @@ public class CustomProcessDiagramGenerator {
                 }
             }
         }
-
-        drawHistoryFlow(image, processInstanceId);
 
         ByteArrayOutputStream out = new ByteArrayOutputStream();
         String formatName = getDiagramExtension(diagramResourceName);
@@ -512,68 +516,11 @@ public class CustomProcessDiagramGenerator {
                 .findHistoricProcessInstance(processInstanceId);
         String processDefinitionId = historicProcessInstance
                 .getProcessDefinitionId();
+        Graph graph = new ActivitiHistoryGraphBuilder(processInstanceId)
+                .build();
 
-        HistoricActivityInstanceQueryImpl historicActivityInstanceQueryImpl = new HistoricActivityInstanceQueryImpl();
-        historicActivityInstanceQueryImpl.processInstanceId(processInstanceId)
-                .orderByHistoricActivityInstanceStartTime().asc();
-
-        Page page = new Page(0, 100);
-        List<HistoricActivityInstance> historicActivityInstances = Context
-                .getCommandContext()
-                .getHistoricActivityInstanceEntityManager()
-                .findHistoricActivityInstancesByQueryCriteria(
-                        historicActivityInstanceQueryImpl, page);
-
-        ProcessDefinitionEntity processDefinition = Context
-                .getProcessEngineConfiguration().getProcessDefinitionCache()
-                .get(processDefinitionId);
-        List<String> historicActivityInstanceList = new ArrayList<String>();
-
-        for (HistoricActivityInstance hai : historicActivityInstances) {
-            historicActivityInstanceList.add(hai.getActivityId());
-        }
-
-        // activities and their sequence-flows
-        for (ActivityImpl activity : processDefinition.getActivities()) {
-            int index = historicActivityInstanceList.indexOf(activity.getId());
-
-            // 说明经过了这个节点，并且这个节点不是最后一个节点，所以可能有后续高亮的连线
-            if ((index >= 0)
-                    && ((index + 1) < historicActivityInstanceList.size())) {
-                List<PvmTransition> pvmTransitionList = activity
-                        .getOutgoingTransitions();
-
-                for (HistoricActivityInstance srcHistoricActivityInstance : historicActivityInstances) {
-                    if ((!activity.getId().equals(
-                            srcHistoricActivityInstance.getActivityId()))
-                            || (srcHistoricActivityInstance.getEndTime() == null)) {
-                        continue;
-                    }
-
-                    for (PvmTransition pvmTransition : pvmTransitionList) {
-                        String destinationFlowId = pvmTransition
-                                .getDestination().getId();
-
-                        for (HistoricActivityInstance destHistoricActivityInstance : historicActivityInstances) {
-                            long destStartTime = destHistoricActivityInstance
-                                    .getStartTime().getTime();
-                            long srcEndTime = srcHistoricActivityInstance
-                                    .getEndTime().getTime();
-                            long offset = destStartTime - srcEndTime;
-
-                            if ((!destinationFlowId
-                                    .equals(destHistoricActivityInstance
-                                            .getActivityId()))
-                                    || (offset < 0) || (offset > 1000)) {
-                                continue;
-                            }
-
-                            drawSequenceFlow(image, processDefinitionId,
-                                    pvmTransition.getId());
-                        }
-                    }
-                }
-            }
+        for (Edge edge : graph.getEdges()) {
+            drawSequenceFlow(image, processDefinitionId, edge.getName());
         }
     }
 

@@ -3,11 +3,11 @@ package com.mossle.auth.web.auth;
 import java.util.ArrayList;
 import java.util.List;
 
-import com.mossle.api.UserConnector;
-import com.mossle.api.UserDTO;
 import com.mossle.api.scope.ScopeConnector;
+import com.mossle.api.scope.ScopeDTO;
 import com.mossle.api.scope.ScopeHolder;
-import com.mossle.api.scope.ScopeInfo;
+import com.mossle.api.user.UserConnector;
+import com.mossle.api.user.UserDTO;
 
 import com.mossle.auth.component.UserStatusChecker;
 import com.mossle.auth.component.UserStatusConverter;

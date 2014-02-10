@@ -17,6 +17,8 @@ import com.mossle.core.mapper.BeanMapper;
 import com.mossle.core.page.Page;
 import com.mossle.core.struts2.BaseAction;
 
+import com.mossle.security.client.ResourcePublisher;
+
 import com.opensymphony.xwork2.ModelDriven;
 import com.opensymphony.xwork2.Preparable;
 
@@ -27,7 +29,7 @@ import org.apache.struts2.convention.annotation.Results;
 import org.springframework.context.MessageSource;
 import org.springframework.context.support.MessageSourceAccessor;
 
-@Results({ @Result(name = AccessAction.RELOAD, location = "access.do?operationMode=RETRIEVE&appId=${appId}", type = "redirect") })
+@Results({ @Result(name = AccessAction.RELOAD, location = "access.do?operationMode=RETRIEVE", type = "redirect") })
 public class AccessAction extends BaseAction implements ModelDriven<Access>,
         Preparable {
     public static final String RELOAD = "reload";
@@ -42,6 +44,7 @@ public class AccessAction extends BaseAction implements ModelDriven<Access>,
     private List<Perm> perms;
     private PermManager permManager;
     private Long permId;
+    private ResourcePublisher resourcePublisher;
 
     public String execute() {
         return list();
@@ -85,6 +88,7 @@ public class AccessAction extends BaseAction implements ModelDriven<Access>,
         accessManager.save(dest);
 
         addActionMessage(messages.getMessage("core.success.save", "保存成功"));
+        resourcePublisher.publish();
 
         return RELOAD;
     }
@@ -93,6 +97,8 @@ public class AccessAction extends BaseAction implements ModelDriven<Access>,
         List<Access> accesses = accessManager.findByIds(selectedItem);
         accessManager.removeAll(accesses);
         addActionMessage(messages.getMessage("core.success.delete", "删除成功"));
+
+        resourcePublisher.publish();
 
         return RELOAD;
     }
@@ -139,6 +145,10 @@ public class AccessAction extends BaseAction implements ModelDriven<Access>,
 
     public void setMessageSource(MessageSource messageSource) {
         this.messages = new MessageSourceAccessor(messageSource);
+    }
+
+    public void setResourcePublisher(ResourcePublisher resourcePublisher) {
+        this.resourcePublisher = resourcePublisher;
     }
 
     // ~ ======================================================================

@@ -24,6 +24,6 @@
 
 	<bean class="com.mossle.core.logback.JulHandler"/>
 
-	<bean class="com.mossle.core.spring.ApplicationContextHelper"/>
+	<bean id="applicationContextHelper" class="com.mossle.core.spring.ApplicationContextHelper"/>
 
 </beans>

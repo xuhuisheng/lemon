@@ -7,4 +7,8 @@
 		<property name="shared" value="true"/>
 	</bean>
 
+	<bean name="localCacheStrategy" class="com.mossle.ext.cache.LocalCacheStrategy"/>
+
+	<bean name="remoteCacheStrategy" class="com.mossle.ext.cache.RemoteCacheStrategy"/>
+
 </beans>

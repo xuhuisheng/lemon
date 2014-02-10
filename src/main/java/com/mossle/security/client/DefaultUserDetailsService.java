@@ -1,9 +1,14 @@
 package com.mossle.security.client;
 
-import com.mossle.security.api.UserFetcher;
-import com.mossle.security.api.UserInfo;
-import com.mossle.security.impl.MockUserFetcher;
-import com.mossle.security.util.UserDetailsBuilder;
+import java.util.Collections;
+
+import com.mossle.api.scope.ScopeHolder;
+import com.mossle.api.userauth.UserAuthConnector;
+import com.mossle.api.userauth.UserAuthDTO;
+
+import com.mossle.core.mapper.BeanMapper;
+
+import com.mossle.security.impl.SpringSecurityUserAuth;
 
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
@@ -15,8 +20,10 @@ import org.springframework.security.core.userdetails.UsernameNotFoundException;
 public class DefaultUserDetailsService implements UserDetailsService {
     private static Logger logger = LoggerFactory
             .getLogger(DefaultUserDetailsService.class);
-    private UserFetcher userFetcher = new MockUserFetcher();
+    private UserAuthConnector userAuthConnector;
     private String defaultPassword;
+    private BeanMapper beanMapper = new BeanMapper();
+    private boolean debug;
 
     /**
      * 遇到的问题.
@@ -26,32 +33,45 @@ public class DefaultUserDetailsService implements UserDetailsService {
     public UserDetails loadUserByUsername(String username)
             throws UsernameNotFoundException {
         logger.debug("username : {}", username);
-        logger.debug("userFetcher : {}", userFetcher);
+
+        if (debug) {
+            SpringSecurityUserAuth userAuth = new SpringSecurityUserAuth();
+            userAuth.setUsername(username);
+            userAuth.setDisplayName(username);
+            userAuth.setPermissions(Collections.singletonList("*"));
+
+            return userAuth;
+        }
 
         try {
-            UserInfo userInfo = userFetcher.getUserInfo(username);
+            UserAuthDTO userAuthDto = userAuthConnector.findByUsername(
+                    username, ScopeHolder.getScopeId());
 
-            String password = userInfo.getPassword();
+            SpringSecurityUserAuth userAuthResult = new SpringSecurityUserAuth();
+            beanMapper.copy(userAuthDto, userAuthResult);
+
+            String password = userAuthResult.getPassword();
 
             if (defaultPassword != null) {
-                password = defaultPassword;
+                userAuthResult.setPassword(defaultPassword);
             }
 
-            UserDetails userDetails = new UserDetailsBuilder(userInfo, password)
-                    .build();
-
-            return userDetails;
+            return userAuthResult;
         } catch (Exception ex) {
             logger.error(ex.getMessage(), ex);
             throw new UsernameNotFoundException(username, ex);
         }
     }
 
-    public void setUserFetcher(UserFetcher userFetcher) {
-        this.userFetcher = userFetcher;
+    public void setUserAuthConnector(UserAuthConnector userAuthConnector) {
+        this.userAuthConnector = userAuthConnector;
     }
 
     public void setDefaultPassword(String defaultPassword) {
         this.defaultPassword = defaultPassword;
+    }
+
+    public void setDebug(boolean debug) {
+        this.debug = debug;
     }
 }

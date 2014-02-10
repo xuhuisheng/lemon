@@ -39,13 +39,13 @@
     </thead>
 
     <tbody>
-      <s:iterator value="historicProcessInstances" var="item">
+      <s:iterator value="processInstanceDtos" var="item">
       <tr>
 	    <td>${item.id}</td>
-	    <td>${item.processDefinitionId}</td>
-	    <td>${item.startTime}</td>
-	    <td>${item.endTime}</td>
-	    <td>${item.startUserId}</td>
+	    <td>${item.processDefinitionName}</td>
+	    <td><s:date name="startTime" format="yyyy-MM-dd HH:mm:ss" /></td>
+	    <td><s:date name="endTime" format="yyyy-MM-dd HH:mm:ss" /></td>
+	    <td>${item.username}</td>
         <td>
           <a href="workspace!viewHistory.do?processInstanceId=${item.id}">历史</a>
         </td>

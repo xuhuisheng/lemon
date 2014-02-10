@@ -80,7 +80,7 @@
 	<bean id="openSessionInViewFilter" class="com.mossle.core.servlet.ProxyFilter">
 		<property name="name" value="hibernate"/>
 		<property name="filter">
-			<bean class="org.springframework.orm.hibernate43.support.OpenSessionInViewFilter"/>
+			<bean class="org.springframework.orm.hibernate4.support.OpenSessionInViewFilter"/>
 		</property>
 		<property name="excludePatterns" value="/common/util/*"/>
 	</bean>
@@ -185,19 +185,15 @@
 	<!-- ====================================================================== -->
 
 	<bean id="prefixScopeFilter" class="com.mossle.bridge.scope.PrefixScopeFilter">
-		<property name="scopeCache" ref="scopeCache"/>
+		<property name="scopeConnector" ref="scopeConnector"/>
 	</bean>
 
 	<bean id="headerCodeScopeFilter" class="com.mossle.bridge.scope.HeaderCodeScopeFilter">
-		<property name="scopeCache" ref="scopeCache"/>
+		<property name="scopeConnector" ref="scopeConnector"/>
 	</bean>
 
 	<bean id="headerRefScopeFilter" class="com.mossle.bridge.scope.HeaderRefScopeFilter">
-		<property name="scopeCache" ref="scopeCache"/>
-	</bean>
-
-	<bean id="scopeCache" class="com.mossle.bridge.scope.DatabaseScopeCache" init-method="refresh">
-		<property name="jdbcTemplate" ref="jdbcTemplate"/>
+		<property name="scopeConnector" ref="scopeConnector"/>
 	</bean>
 
 </beans>

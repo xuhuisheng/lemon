@@ -3,13 +3,13 @@ package com.mossle.api.scope;
 import java.util.List;
 
 public interface ScopeConnector {
-    ScopeInfo findById(String id);
+    ScopeDTO findById(String id);
 
-    ScopeInfo findByRef(String ref);
+    ScopeDTO findByRef(String ref);
 
-    ScopeInfo findByCode(String code);
+    ScopeDTO findByCode(String code);
 
-    List<ScopeInfo> findAll();
+    List<ScopeDTO> findAll();
 
-    List<ScopeInfo> findSharedScopes();
+    List<ScopeDTO> findSharedScopes();
 }

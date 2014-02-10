@@ -46,12 +46,12 @@
       <tr>
         <td><input type="checkbox" class="selectedItem" name="selectedItem" value="${item.id}"></td>
 	    <td>${item.id}</td>
-	    <td>${item.assignee}</td>
-	    <td>${item.attorney}</td>
-	    <td>${item.start_time}</td>
-	    <td>${item.end_time}</td>
-	    <td>${item.process_definition_id}</td>
-	    <td>${item.status}</td>
+	    <td>${item.assigneeDisplayName}</td>
+	    <td>${item.attorneyDisplayName}</td>
+	    <td>${item.startTime}</td>
+	    <td>${item.endTime}</td>
+	    <td>${item.processDefinitionId}</td>
+	    <td>${item.status == 1 ? '启用' : '禁用'}</td>
       </tr>
       </s:iterator>
     </tbody>

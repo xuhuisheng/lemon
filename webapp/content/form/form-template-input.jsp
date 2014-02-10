@@ -9,10 +9,10 @@
     <%@include file="/common/meta.jsp"%>
     <title>designer</title>
     <%@include file="/common/s.jsp"%>
-	<link href="${ctx}/xform/styles/xform.css" rel="stylesheet">
-    <script type="text/javascript" src="${ctx}/xform/designer-xform-packed.js"></script>
-    <script type="text/javascript" src="${ctx}/xform/container-layout.js"></script>
-    <script type="text/javascript" src="${ctx}/xform/adaptor.js"></script>
+	<link href="${scopePrefix}/widgets/xform/styles/xform.css" rel="stylesheet">
+    <script type="text/javascript" src="${scopePrefix}/widgets/xform/designer-xform-packed.js"></script>
+    <script type="text/javascript" src="${scopePrefix}/widgets/xform/container-layout.js"></script>
+    <script type="text/javascript" src="${scopePrefix}/widgets/xform/adaptor.js"></script>
   </head>
 
   <body>
@@ -27,38 +27,38 @@
 	    <div id="__gef_toolbar__">
 		  <div id="__gef_toolbar_blank__" style="float:left;">&nbsp;</div>
 		  <div class="btn-group">
-		    <button class="btn btn-small" onclick="openWindow()"><img src="${ctx}/gef/images/visualpharm/Properties_16x16.png">导入</button>
-		    <button class="btn btn-small" onclick="var json = xform.model.serial();alert(json);"><img src="${ctx}/gef/images/visualpharm/Copy_16x16.png">导出</button>
-		    <button class="btn btn-small" onclick="save()"><img src="${ctx}/gef/images/visualpharm/Save-16x16.png">保存</button>
+		    <button class="btn btn-small" onclick="openWindow()"><img src="${scopePrefix}/widgets/xform/images/visualpharm/Properties_16x16.png">导入</button>
+		    <button class="btn btn-small" onclick="var json = xform.model.serial();alert(json);"><img src="${scopePrefix}/widgets/xform/images/visualpharm/Copy_16x16.png">导出</button>
+		    <button class="btn btn-small" onclick="save()"><img src="${scopePrefix}/widgets/xform/images/visualpharm/Save-16x16.png">保存</button>
 		  </div>
 		  <div class="btn-group">
-		    <button class="btn btn-small" onclick="xform.model.changeTemplate('oneColumn')"><img src="${ctx}/gef/images/visualpharm/New-16x16.png">一列</button>
-		    <button class="btn btn-small" onclick="xform.model.changeTemplate('twoColumn')"><img src="${ctx}/gef/images/visualpharm/New-16x16.png">两列</button>
-		    <button class="btn btn-small" onclick="xform.model.changeTemplate('threeColumn')"><img src="${ctx}/gef/images/visualpharm/New-16x16.png">三列</button>
+		    <button class="btn btn-small" onclick="xform.model.changeTemplate('oneColumn')"><img src="${scopePrefix}/widgets/xform/images/visualpharm/New-16x16.png">一列</button>
+		    <button class="btn btn-small" onclick="xform.model.changeTemplate('twoColumn')"><img src="${scopePrefix}/widgets/xform/images/visualpharm/New-16x16.png">两列</button>
+		    <button class="btn btn-small" onclick="xform.model.changeTemplate('threeColumn')"><img src="${scopePrefix}/widgets/xform/images/visualpharm/New-16x16.png">三列</button>
 	      </div>
 		</div>
 	    <div id="__gef_palette__" style="float:left;">
 		  <div style="border: 1px solid #CCCCCC; border-radius: 4px;padding: 2px;">
 		    <div id="startnone" class="paletteItem-startnone" style="text-align:center;font-size:12px;cursor:pointer;" unselectable="on">
-		      <img class="xf-textfield" src="${ctx}/xform/images/xform/new_input.png" unselectable="on" title="文本">
+		      <img class="xf-textfield" src="${scopePrefix}/widgets/xform/images/xform/new_input.png" unselectable="on" title="文本">
 		    </div>
 		    <div id="endnone" class="paletteItem-endnone" style="text-align:center;font-size:12px;cursor:pointer;" unselectable="on">
-		      <img class="xf-radio" src="${ctx}/xform/images/xform/new_item.png" unselectable="on" title="单选">
+		      <img class="xf-radio" src="${scopePrefix}/widgets/xform/images/xform/new_item.png" unselectable="on" title="单选">
 		    </div>
 		    <div id="endnone" class="paletteItem-endnone" style="text-align:center;font-size:12px;cursor:pointer;" unselectable="on">
-		      <img class="xf-checkbox" src="${ctx}/xform/images/xform/new_itemset.png" unselectable="on" title="多选">
+		      <img class="xf-checkbox" src="${scopePrefix}/widgets/xform/images/xform/new_itemset.png" unselectable="on" title="多选">
 		    </div>
 		    <div id="endnone" class="paletteItem-endnone" style="text-align:center;font-size:12px;cursor:pointer;" unselectable="on">
-		      <img class="xf-password" src="${ctx}/xform/images/xform/new_secret.png" unselectable="on" title="密码">
+		      <img class="xf-password" src="${scopePrefix}/widgets/xform/images/xform/new_secret.png" unselectable="on" title="密码">
 		    </div>
 		    <div id="endnone" class="paletteItem-endnone" style="text-align:center;font-size:12px;cursor:pointer;" unselectable="on">
-		      <img class="xf-select" src="${ctx}/xform/images/xform/new_select1.png" unselectable="on" title="下拉">
+		      <img class="xf-select" src="${scopePrefix}/widgets/xform/images/xform/new_select1.png" unselectable="on" title="下拉">
 		    </div>
 		    <div id="endnone" class="paletteItem-endnone" style="text-align:center;font-size:12px;cursor:pointer;" unselectable="on">
-		      <img class="xf-textarea" src="${ctx}/xform/images/xform/new_textarea.png" unselectable="on" title="多行文本">
+		      <img class="xf-textarea" src="${scopePrefix}/widgets/xform/images/xform/new_textarea.png" unselectable="on" title="多行文本">
 		    </div>
 		    <div id="endnone" class="paletteItem-endnone" style="text-align:center;font-size:12px;cursor:pointer;" unselectable="on">
-		      <img class="xf-fileupload" src="${ctx}/xform/images/xform/new_upload.png" unselectable="on" title="上传">
+		      <img class="xf-fileupload" src="${scopePrefix}/widgets/xform/images/xform/new_upload.png" unselectable="on" title="上传">
 		    </div>
 		  </div>
 	    </div>

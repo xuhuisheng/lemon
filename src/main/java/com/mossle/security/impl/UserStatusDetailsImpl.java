@@ -12,7 +12,9 @@ import org.springframework.security.core.GrantedAuthority;
 import org.springframework.security.core.userdetails.User;
 
 public class UserStatusDetailsImpl extends User implements UserStatusDetails {
+    private String id;
     private String displayName;
+    private String scopeId;
     private List<String> attributes = new ArrayList<String>();
     private Map<String, Collection<String>> attributeMap = new HashMap<String, Collection<String>>();
 
@@ -47,11 +49,27 @@ public class UserStatusDetailsImpl extends User implements UserStatusDetails {
         }
     }
 
+    public String getId() {
+        return id;
+    }
+
+    public void setId(String id) {
+        this.id = id;
+    }
+
     public String getDisplayName() {
         return displayName;
     }
 
     public void setDisplayName(String displayName) {
         this.displayName = displayName;
+    }
+
+    public String getScopeId() {
+        return scopeId;
+    }
+
+    public void setScopeId(String scopeId) {
+        this.scopeId = scopeId;
     }
 }

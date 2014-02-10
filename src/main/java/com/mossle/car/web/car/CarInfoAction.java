@@ -3,7 +3,7 @@ package com.mossle.car.web.car;
 import java.util.ArrayList;
 import java.util.List;
 
-import com.mossle.api.UserConnector;
+import com.mossle.api.user.UserConnector;
 
 import com.mossle.car.domain.CarInfo;
 import com.mossle.car.manager.CarInfoManager;

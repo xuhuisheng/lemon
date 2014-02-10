@@ -9,9 +9,12 @@ import com.mossle.api.scope.ScopeHolder;
 
 import com.mossle.auth.domain.Access;
 import com.mossle.auth.manager.AccessManager;
+import com.mossle.auth.service.AuthService;
 import com.mossle.auth.support.AccessDTO;
 
 import com.mossle.core.struts2.BaseAction;
+
+import com.mossle.security.client.ResourcePublisher;
 
 import com.opensymphony.xwork2.ModelDriven;
 import com.opensymphony.xwork2.Preparable;
@@ -27,6 +30,7 @@ public class AccessBatchAction extends BaseAction implements
         ModelDriven<Access>, Preparable {
     public static final String RELOAD = "reload";
     private AccessManager accessManager;
+    private AuthService authService;
     private MessageSourceAccessor messages;
     private String type;
     private String perm;
@@ -34,6 +38,8 @@ public class AccessBatchAction extends BaseAction implements
     private List<String> ids;
     private List<String> values;
     private List<String> perms;
+    private String text;
+    private ResourcePublisher resourcePublisher;
 
     // ~ ======================================================================
     public String execute() {
@@ -44,71 +50,30 @@ public class AccessBatchAction extends BaseAction implements
         String hql = "from Access where type=? and scopeId=? order by priority";
         List<Access> accesses = accessManager.find(hql, type,
                 ScopeHolder.getScopeId());
-        accessDtos = new ArrayList<AccessDTO>();
+        StringBuilder buff = new StringBuilder();
 
         for (Access access : accesses) {
             String value = access.getValue();
             String permStr = "";
 
             if (access.getPerm() != null) {
-                permStr = access.getPerm().getName();
+                permStr = access.getPerm().getCode();
             }
 
-            accessDtos.add(new AccessDTO(value, permStr));
+            buff.append(value).append(",").append(permStr).append("\n");
         }
+
+        text = buff.toString();
 
         return INPUT;
     }
 
-    public String edit() {
-        String hql = "from Access where type=? and scopeId=? order by priority";
-        List<Access> accesses = accessManager.find(hql, type,
-                ScopeHolder.getScopeId());
-
-        accessDtos = new ArrayList<AccessDTO>();
-
-        Set<String> noDuplicatedValues = new HashSet<String>();
-
-        for (Access access : accesses) {
-            Long id = access.getId();
-            String value = access.getValue();
-
-            String permStr = "";
-
-            if (access.getPerm() != null) {
-                permStr = access.getPerm().getName();
-            }
-
-            accessDtos.add(new AccessDTO(id, value, permStr));
-            noDuplicatedValues.add(value);
-        }
-
-        if (perm != null) {
-            for (String str : perm.split("\n")) {
-                str = str.trim();
-
-                if (str.length() == 0) {
-                    continue;
-                }
-
-                if (noDuplicatedValues.contains(str)) {
-                    addActionMessage(str + " is duplicated.");
-                } else {
-                    accessDtos.add(new AccessDTO(str, str));
-
-                    noDuplicatedValues.add(str);
-                }
-            }
-        }
-
-        return "edit";
-    }
-
     public String save() {
-        accessManager.batchSave(ScopeHolder.getScopeId(), type, ids, values,
-                perms);
+        authService.batchSaveAccess(text, type, ScopeHolder.getScopeId());
 
         addActionMessage(messages.getMessage("core.success.save", "保存成功"));
+
+        resourcePublisher.publish();
 
         return RELOAD;
     }
@@ -125,8 +90,16 @@ public class AccessBatchAction extends BaseAction implements
         this.accessManager = accessManager;
     }
 
+    public void setAuthService(AuthService authService) {
+        this.authService = authService;
+    }
+
     public void setMessageSource(MessageSource messageSource) {
         this.messages = new MessageSourceAccessor(messageSource);
+    }
+
+    public void setResourcePublisher(ResourcePublisher resourcePublisher) {
+        this.resourcePublisher = resourcePublisher;
     }
 
     // ~ ======================================================================
@@ -160,5 +133,13 @@ public class AccessBatchAction extends BaseAction implements
 
     public void setPerms(List<String> perms) {
         this.perms = perms;
+    }
+
+    public String getText() {
+        return text;
+    }
+
+    public void setText(String text) {
+        this.text = text;
     }
 }

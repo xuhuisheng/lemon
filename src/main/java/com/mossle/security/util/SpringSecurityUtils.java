@@ -7,6 +7,7 @@ import java.util.List;
 
 import javax.servlet.http.HttpServletRequest;
 
+import com.mossle.security.impl.SpringSecurityUserAuth;
 import com.mossle.security.spi.UserStatusDetails;
 
 import org.slf4j.Logger;
@@ -19,6 +20,8 @@ import org.springframework.security.core.context.SecurityContextHolder;
 import org.springframework.security.core.userdetails.UserDetails;
 import org.springframework.security.web.authentication.WebAuthenticationDetails;
 import org.springframework.security.web.authentication.preauth.PreAuthenticatedAuthenticationToken;
+
+import org.springframework.util.Assert;
 
 public class SpringSecurityUtils {
     private static Logger logger = LoggerFactory
@@ -55,6 +58,19 @@ public class SpringSecurityUtils {
         }
 
         return authentication.getName();
+    }
+
+    /**
+     * 取得当前用户的id，如果当前用户与未登录，则返回null.
+     */
+    public static String getCurrentUserId() {
+        SpringSecurityUserAuth springSecurityUserAuth = getCurrentUser();
+
+        if (springSecurityUserAuth == null) {
+            return null;
+        }
+
+        return springSecurityUserAuth.getId();
     }
 
     /**
@@ -301,16 +317,53 @@ public class SpringSecurityUtils {
 
         Object principal = authentication.getPrincipal();
 
-        if (!(principal instanceof UserStatusDetails)) {
-            logger.debug("principal[{}] is not UserStatusDetails", principal);
+        if (!(principal instanceof SpringSecurityUserAuth)) {
+            logger.debug("principal[{}] is not SpringSecurityUserAuth",
+                    principal);
 
             return Collections.EMPTY_LIST;
         }
 
-        UserStatusDetails userStatusDetails = (UserStatusDetails) principal;
+        SpringSecurityUserAuth springSecurityUserAuth = (SpringSecurityUserAuth) principal;
 
-        Collection<String> attributes = userStatusDetails.getAttributes("ROLE");
+        List<String> roles = springSecurityUserAuth.getRoles();
 
-        return attributes;
+        return roles;
+    }
+
+    // ~ ==================================================
+
+    /**
+     * 取得当前用户的id，如果当前用户与未登录，则返回null.
+     */
+    public static SpringSecurityUserAuth getCurrentUser(
+            SecurityContext securityContext) {
+        Assert.notNull(securityContext, "securityContext cannot be null");
+
+        Authentication authentication = securityContext.getAuthentication();
+
+        if (authentication == null) {
+            logger.debug("authentication is null");
+
+            return null;
+        }
+
+        Object principal = authentication.getPrincipal();
+
+        if (principal == null) {
+            logger.info("principal is null");
+
+            return null;
+        }
+
+        if (!(principal instanceof SpringSecurityUserAuth)) {
+            logger.info("principal {} is not SpringSecurityUserAuth", principal);
+
+            return null;
+        }
+
+        SpringSecurityUserAuth springSecurityUserAuth = (SpringSecurityUserAuth) principal;
+
+        return springSecurityUserAuth;
     }
 }

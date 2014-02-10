@@ -5,9 +5,9 @@ import java.util.HashMap;
 import java.util.List;
 import java.util.Map;
 
-import com.mossle.api.UserConnector;
-import com.mossle.api.UserDTO;
 import com.mossle.api.scope.ScopeHolder;
+import com.mossle.api.user.UserConnector;
+import com.mossle.api.user.UserDTO;
 
 import com.mossle.core.export.Exportor;
 import com.mossle.core.export.TableModel;

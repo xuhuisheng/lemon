@@ -4,14 +4,20 @@ import java.util.*;
 import java.util.ArrayList;
 import java.util.List;
 
+import com.mossle.bpm.cmd.FindGraphCmd;
 import com.mossle.bpm.cmd.FindTaskDefinitionsCmd;
+import com.mossle.bpm.graph.ActivitiGraphBuilder;
+import com.mossle.bpm.graph.Graph;
+import com.mossle.bpm.graph.Node;
 import com.mossle.bpm.persistence.domain.BpmCategory;
 import com.mossle.bpm.persistence.domain.BpmMailTemplate;
 import com.mossle.bpm.persistence.domain.BpmProcess;
+import com.mossle.bpm.persistence.domain.BpmTaskDef;
 import com.mossle.bpm.persistence.domain.BpmTaskDefNotice;
 import com.mossle.bpm.persistence.manager.BpmCategoryManager;
 import com.mossle.bpm.persistence.manager.BpmMailTemplateManager;
 import com.mossle.bpm.persistence.manager.BpmProcessManager;
+import com.mossle.bpm.persistence.manager.BpmTaskDefManager;
 import com.mossle.bpm.persistence.manager.BpmTaskDefNoticeManager;
 
 import com.mossle.core.export.Exportor;
@@ -46,6 +52,7 @@ public class BpmProcessAction extends BaseAction implements
     private BpmCategoryManager bpmCategoryManager;
     private BpmTaskDefNoticeManager bpmTaskDefNoticeManager;
     private BpmMailTemplateManager bpmMailTemplateManager;
+    private BpmTaskDefManager bpmTaskDefManager;
     private MessageSourceAccessor messages;
     private Page page = new Page();
     private BpmProcess model;
@@ -60,6 +67,8 @@ public class BpmProcessAction extends BaseAction implements
     private ProcessEngine processEngine;
     private List<BpmMailTemplate> bpmMailTemplates;
     private long bpmMailTemplateId;
+    private Graph graph;
+    private List<BpmTaskDef> bpmTaskDefs = new ArrayList<BpmTaskDef>();
 
     public String execute() {
         return list();
@@ -127,28 +136,65 @@ public class BpmProcessAction extends BaseAction implements
         exportor.exportExcel(ServletActionContext.getResponse(), tableModel);
     }
 
-    public String config() {
-        model = bpmProcessManager.get(id);
+    /*
+     * public String viewConfig() { model = bpmProcessManager.get(id);
+     * 
+     * String processDefinitionId = processService .getProcessDefinitionId(model);
+     * 
+     * graph = processEngine.getManagementService().executeCommand( new FindGraphCmd(processDefinitionId));
+     * 
+     * BpmTaskDef bpmTaskDef = null; bpmTaskDef = bpmTaskDefManager .findUnique(
+     * "from BpmTaskDef where activityId=null and bpmProcess.id=?", id);
+     * 
+     * if (bpmTaskDef == null) { bpmTaskDef = new BpmTaskDef(); bpmTaskDef.setBpmProcess(model);
+     * bpmTaskDef.setConfUser(2); bpmTaskDef.setConfEvent(0); bpmTaskDef.setConfRule(2); bpmTaskDef.setConfForm(0);
+     * bpmTaskDef.setConfOperation(2); bpmTaskDef.setConfNotice(2); bpmTaskDefManager.save(bpmTaskDef); }
+     * 
+     * bpmTaskDefs.add(bpmTaskDef);
+     * 
+     * for (Node node : graph.getNodes()) { if ("exclusiveGateway".equals(node.getType())) { continue; }
+     * 
+     * bpmTaskDef = bpmTaskDefManager.findUnique( "from BpmTaskDef where activityId=? and bpmProcess.id=?",
+     * node.getId(), id);
+     * 
+     * if (bpmTaskDef == null) { bpmTaskDef = new BpmTaskDef(); bpmTaskDef.setActivityId(node.getId());
+     * bpmTaskDef.setActivityName(node.getName()); bpmTaskDef.setActivityType(node.getType());
+     * bpmTaskDef.setBpmProcess(model);
+     * 
+     * if ("userTask".equals(node.getType())) { bpmTaskDef.setConfUser(0); bpmTaskDef.setConfEvent(0);
+     * bpmTaskDef.setConfRule(0); bpmTaskDef.setConfForm(0); bpmTaskDef.setConfOperation(0);
+     * bpmTaskDef.setConfNotice(0); }
+     * 
+     * if ("startEvent".equals(node.getType())) { bpmTaskDef.setConfUser(2); bpmTaskDef.setConfEvent(0);
+     * bpmTaskDef.setConfRule(2); bpmTaskDef.setConfForm(2); bpmTaskDef.setConfOperation(2);
+     * bpmTaskDef.setConfNotice(0); }
+     * 
+     * if ("endEvent".equals(node.getType())) { bpmTaskDef.setConfUser(2); bpmTaskDef.setConfEvent(0);
+     * bpmTaskDef.setConfRule(2); bpmTaskDef.setConfForm(2); bpmTaskDef.setConfOperation(2);
+     * bpmTaskDef.setConfNotice(0); }
+     * 
+     * bpmTaskDefManager.save(bpmTaskDef); }
+     * 
+     * bpmTaskDefs.add(bpmTaskDef); }
+     * 
+     * return "viewConfig"; }
+     */
 
-        ProcessDefinition processDefinition = processEngine
-                .getRepositoryService().createProcessDefinitionQuery()
-                .processDefinitionKey(model.getProcessDefinitionKey())
-                .processDefinitionVersion(model.getProcessDefinitionVersion())
-                .singleResult();
-        FindTaskDefinitionsCmd cmd = new FindTaskDefinitionsCmd(
-                processDefinition.getId());
-        taskDefinitions = processEngine.getManagementService().executeCommand(
-                cmd);
-
-        for (TaskDefinition taskDefinition : taskDefinitions) {
-            List<BpmTaskDefNotice> bpmTaskDefNotices = bpmTaskDefNoticeManager
-                    .find("from BpmTaskDefNotice where taskDefinitionKey=? and bpmProcess=?",
-                            taskDefinition.getKey(), model);
-            taskMap.put(taskDefinition, bpmTaskDefNotices);
-        }
-
-        return "config";
-    }
+    /*
+     * public String config() { model = bpmProcessManager.get(id);
+     * 
+     * ProcessDefinition processDefinition = processEngine .getRepositoryService().createProcessDefinitionQuery()
+     * .processDefinitionKey(model.getProcessDefinitionKey())
+     * .processDefinitionVersion(model.getProcessDefinitionVersion()) .singleResult(); FindTaskDefinitionsCmd cmd = new
+     * FindTaskDefinitionsCmd( processDefinition.getId()); taskDefinitions =
+     * processEngine.getManagementService().executeCommand( cmd);
+     * 
+     * for (TaskDefinition taskDefinition : taskDefinitions) { List<BpmTaskDefNotice> bpmTaskDefNotices =
+     * bpmTaskDefNoticeManager .find("from BpmTaskDefNotice where taskDefinitionKey=? and bpmProcess=?",
+     * taskDefinition.getKey(), model); taskMap.put(taskDefinition, bpmTaskDefNotices); }
+     * 
+     * return "config"; }
+     */
 
     // ~ ======================================================================
     public void prepare() {
@@ -173,6 +219,10 @@ public class BpmProcessAction extends BaseAction implements
 
     public void setBpmMailTemplate(BpmMailTemplateManager bpmMailTemplateManager) {
         this.bpmMailTemplateManager = bpmMailTemplateManager;
+    }
+
+    public void setBpmTaskDefManager(BpmTaskDefManager bpmTaskDefManager) {
+        this.bpmTaskDefManager = bpmTaskDefManager;
     }
 
     public void setMessageSource(MessageSource messageSource) {
@@ -223,5 +273,13 @@ public class BpmProcessAction extends BaseAction implements
 
     public void setBpmMailTemplateId(long bpmMailTemplateId) {
         this.bpmMailTemplateId = bpmMailTemplateId;
+    }
+
+    public Graph getGraph() {
+        return graph;
+    }
+
+    public List<BpmTaskDef> getBpmTaskDefs() {
+        return bpmTaskDefs;
     }
 }

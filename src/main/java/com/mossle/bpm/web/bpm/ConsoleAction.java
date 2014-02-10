@@ -12,6 +12,10 @@ import com.mossle.bpm.cmd.JumpCmd;
 import com.mossle.bpm.cmd.ListActivityCmd;
 import com.mossle.bpm.cmd.ProcessDefinitionDiagramCmd;
 import com.mossle.bpm.cmd.UpdateProcessCmd;
+import com.mossle.bpm.component.ProcessInstanceConverter;
+import com.mossle.bpm.component.TaskConverter;
+import com.mossle.bpm.support.ProcessInstanceDTO;
+import com.mossle.bpm.support.TaskDTO;
 
 import com.mossle.core.struts2.BaseAction;
 import com.mossle.core.util.IoUtils;
@@ -64,6 +68,10 @@ public class ConsoleAction extends BaseAction {
     private List<Deployment> deployments;
     private String deploymentId;
     private List<String> deploymentResourceNames;
+    private List<TaskDTO> taskDtos;
+    private List<ProcessInstanceDTO> processInstanceDtos;
+    private TaskConverter taskConverter;
+    private ProcessInstanceConverter processInstanceConverter;
 
     /**
      * 部署列表.
@@ -76,6 +84,9 @@ public class ConsoleAction extends BaseAction {
         return "listDeployments";
     }
 
+    /**
+     * 显示每个部署包里的资源.
+     */
     public String listDeploymentResourceNames() {
         RepositoryService repositoryService = processEngine
                 .getRepositoryService();
@@ -85,6 +96,9 @@ public class ConsoleAction extends BaseAction {
         return "listDeploymentResourceNames";
     }
 
+    /**
+     * 删除部署.
+     */
     public String removeDeployment() {
         RepositoryService repositoryService = processEngine
                 .getRepositoryService();
@@ -100,6 +114,9 @@ public class ConsoleAction extends BaseAction {
         return "create";
     }
 
+    /**
+     * 发布流程.
+     */
     public String deploy() throws Exception {
         RepositoryService repositoryService = processEngine
                 .getRepositoryService();
@@ -112,7 +129,7 @@ public class ConsoleAction extends BaseAction {
     }
 
     /**
-     * 流程定义.
+     * 显示流程定义列表.
      */
     public String listProcessDefinitions() {
         RepositoryService repositoryService = processEngine
@@ -123,6 +140,9 @@ public class ConsoleAction extends BaseAction {
         return "listProcessDefinitions";
     }
 
+    /**
+     * 暂停流程定义.
+     */
     public String suspendProcessDefinition() {
         RepositoryService repositoryService = processEngine
                 .getRepositoryService();
@@ -132,6 +152,9 @@ public class ConsoleAction extends BaseAction {
         return RELOAD_PROCESS_DEFINITION;
     }
 
+    /**
+     * 恢复流程定义.
+     */
     public String activeProcessDefinition() {
         RepositoryService repositoryService = processEngine
                 .getRepositoryService();
@@ -142,6 +165,9 @@ public class ConsoleAction extends BaseAction {
         return RELOAD_PROCESS_DEFINITION;
     }
 
+    /**
+     * 显示流程定义图形.
+     */
     public void graphProcessDefinition() throws Exception {
         Command<InputStream> cmd = new ProcessDefinitionDiagramCmd(
                 processDefinitionId);
@@ -154,6 +180,9 @@ public class ConsoleAction extends BaseAction {
         IOUtils.copy(is, response.getOutputStream());
     }
 
+    /**
+     * 显示流程定义的xml.
+     */
     public void viewXml() throws Exception {
         RepositoryService repositoryService = processEngine
                 .getRepositoryService();
@@ -170,7 +199,7 @@ public class ConsoleAction extends BaseAction {
     }
 
     /**
-     * 流程实例.
+     * 显示流程实例列表.
      */
     public String listProcessInstances() {
         RuntimeService runtimeService = processEngine.getRuntimeService();
@@ -180,6 +209,9 @@ public class ConsoleAction extends BaseAction {
         return "listProcessInstances";
     }
 
+    /**
+     * 删除流程实例.
+     */
     public String removeProcessInstance() {
         RuntimeService runtimeService = processEngine.getRuntimeService();
         runtimeService.deleteProcessInstance(processInstanceId, deleteReason);
@@ -187,6 +219,9 @@ public class ConsoleAction extends BaseAction {
         return RELOAD_PROCESS_INSTANCE;
     }
 
+    /**
+     * 暂停流程实例.
+     */
     public String suspendProcessInstance() {
         RuntimeService runtimeService = processEngine.getRuntimeService();
         runtimeService.suspendProcessInstanceById(processInstanceId);
@@ -194,6 +229,9 @@ public class ConsoleAction extends BaseAction {
         return RELOAD_PROCESS_INSTANCE;
     }
 
+    /**
+     * 恢复流程实例.
+     */
     public String activeProcessInstance() {
         RuntimeService runtimeService = processEngine.getRuntimeService();
         runtimeService.activateProcessInstanceById(processInstanceId);
@@ -202,28 +240,34 @@ public class ConsoleAction extends BaseAction {
     }
 
     /**
-     * 任务.
+     * 显示任务列表.
      */
     public String listTasks() {
         TaskService taskService = processEngine.getTaskService();
         tasks = taskService.createTaskQuery().list();
+        taskDtos = taskConverter.convertTasks(tasks);
 
         return "listTasks";
     }
 
     // The task cannot be deleted because is part of a running process
     /**
-     * 历史
+     * 显示历史流程实例.
      */
     public String listHistoricProcessInstances() {
         HistoryService historyService = processEngine.getHistoryService();
 
         historicProcessInstances = historyService
                 .createHistoricProcessInstanceQuery().list();
+        processInstanceDtos = processInstanceConverter
+                .convertHistoryProcessInstances(historicProcessInstances);
 
         return "listHistoricProcessInstances";
     }
 
+    /**
+     * 显示历史节点实例.
+     */
     public String listHistoricActivityInstances() {
         HistoryService historyService = processEngine.getHistoryService();
 
@@ -233,11 +277,15 @@ public class ConsoleAction extends BaseAction {
         return "listHistoricActivityInstances";
     }
 
+    /**
+     * 显示历史任务.
+     */
     public String listHistoricTasks() {
         HistoryService historyService = processEngine.getHistoryService();
 
         historicTaskInstances = historyService
                 .createHistoricTaskInstanceQuery().list();
+        taskDtos = taskConverter.convertHistoryTasks(historicTaskInstances);
 
         return "listHistoricTasks";
     }
@@ -285,6 +333,16 @@ public class ConsoleAction extends BaseAction {
         this.processEngine = processEngine;
     }
 
+    public void setTaskConverter(TaskConverter taskConverter) {
+        this.taskConverter = taskConverter;
+    }
+
+    public void setProcessInstanceConverter(
+            ProcessInstanceConverter processInstanceConverter) {
+        this.processInstanceConverter = processInstanceConverter;
+    }
+
+    // ~ ======================================================================
     public List<ProcessDefinition> getProcessDefinitions() {
         return processDefinitions;
     }
@@ -355,5 +413,13 @@ public class ConsoleAction extends BaseAction {
 
     public List<String> getDeploymentResourceNames() {
         return deploymentResourceNames;
+    }
+
+    public List<TaskDTO> getTaskDtos() {
+        return taskDtos;
+    }
+
+    public List<ProcessInstanceDTO> getProcessInstanceDtos() {
+        return processInstanceDtos;
     }
 }

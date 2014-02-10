@@ -4,9 +4,9 @@ import java.util.ArrayList;
 import java.util.List;
 import java.util.Map;
 
-import com.mossle.api.UserConnector;
-import com.mossle.api.UserDTO;
 import com.mossle.api.scope.ScopeHolder;
+import com.mossle.api.user.UserConnector;
+import com.mossle.api.user.UserDTO;
 
 import com.mossle.auth.component.UserStatusConverter;
 import com.mossle.auth.domain.UserStatus;
@@ -42,7 +42,7 @@ public class UserConnectorAction extends BaseAction {
     private UserStatusConverter userStatusConverter;
     private UserConnector userConnector;
     private AuthService authService;
-    private String reference;
+    private String ref;
 
     public String execute() {
         return list();
@@ -87,6 +87,7 @@ public class UserConnectorAction extends BaseAction {
                     UserStatusDTO userStatusDto = new UserStatusDTO();
                     userStatusDto.setUsername(usernameStr);
                     userStatusDto.setEnabled(true);
+                    userStatusDto.setRef(userDto.getId());
                     userStatusDtos.add(userStatusDto);
                 } else {
                     userStatusDtos.add(userStatusConverter.createUserStatusDto(
@@ -102,9 +103,9 @@ public class UserConnectorAction extends BaseAction {
     }
 
     public String configRole() {
-        logger.info("reference : {}", reference);
+        logger.info("ref : {}", ref);
 
-        UserDTO userDto = userConnector.findById(reference);
+        UserDTO userDto = userConnector.findById(ref);
 
         if (userDto != null) {
             username = userDto.getUsername();
@@ -153,7 +154,7 @@ public class UserConnectorAction extends BaseAction {
         this.authService = authService;
     }
 
-    public void setReference(String reference) {
-        this.reference = reference;
+    public void setRef(String ref) {
+        this.ref = ref;
     }
 }

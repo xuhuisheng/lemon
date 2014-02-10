@@ -74,6 +74,7 @@ $(function() {
 		  <button class="btn btn-small" onclick="table.removeAll()"><spring:message code="core.list.delete" text="删除"/></button>
 		  </region:region-permission>
 		  <button class="btn btn-small" onclick="table.exportExcel()"><spring:message code="core.list.export" text="导出"/></button>
+		  <button class="btn btn-small" onclick="location.href='perm-batch.do'">批量</button>
 		</div>
 
 		<div class="pull-right">

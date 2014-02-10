@@ -12,6 +12,7 @@ import com.mossle.core.mapper.BeanMapper;
 import com.mossle.core.page.Page;
 import com.mossle.core.struts2.BaseAction;
 
+import com.mossle.user.component.UserRepoPublisher;
 import com.mossle.user.persistence.domain.UserRepo;
 import com.mossle.user.persistence.manager.UserRepoManager;
 
@@ -30,6 +31,7 @@ public class UserRepoAction extends BaseAction implements
         ModelDriven<UserRepo>, Preparable {
     public static final String RELOAD = "reload";
     private UserRepoManager userRepoManager;
+    private UserRepoPublisher userRepoPublisher;
     private MessageSourceAccessor messages;
     private Page page = new Page();
     private UserRepo model;
@@ -73,6 +75,7 @@ public class UserRepoAction extends BaseAction implements
         userRepoManager.save(dest);
 
         addActionMessage(messages.getMessage("core.success.save", "保存成功"));
+        userRepoPublisher.execute(dest);
 
         return RELOAD;
     }
@@ -85,6 +88,8 @@ public class UserRepoAction extends BaseAction implements
         for (UserRepo userRepo : userRepos) {
             if (userRepo.getUserSchemas().isEmpty()) {
                 userRepoManager.remove(userRepo);
+                userRepo.setName(null);
+                userRepoPublisher.execute(userRepo);
             } else {
                 success = false;
                 addActionMessage("无法删除" + userRepo.getName());
@@ -130,6 +135,10 @@ public class UserRepoAction extends BaseAction implements
 
     public void setUserRepoManager(UserRepoManager userRepoManager) {
         this.userRepoManager = userRepoManager;
+    }
+
+    public void setUserRepoPublisher(UserRepoPublisher userRepoPublisher) {
+        this.userRepoPublisher = userRepoPublisher;
     }
 
     public void setMessageSource(MessageSource messageSource) {

@@ -3,7 +3,7 @@ package com.mossle.cal.web.cal;
 import java.util.ArrayList;
 import java.util.List;
 
-import com.mossle.api.UserConnector;
+import com.mossle.api.user.UserConnector;
 import com.mossle.api.scope.ScopeHolder;
 
 import com.mossle.cal.domain.CalInfo;

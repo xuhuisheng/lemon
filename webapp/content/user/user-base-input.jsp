@@ -95,9 +95,21 @@ $(function() {
     </div>
   </div>
   <div class="control-group">
-    <label class="control-label" for="user-base_reference"><spring:message code="user.user.input.reference" text="引用"/></label>
+    <label class="control-label" for="user-base_email">邮箱</label>
 	<div class="controls">
-	  <input id="user-base_reference" type="text" name="reference" value="${model.reference}">
+	  <input id="user-base_email" type="text" name="email" value="${model.email}">
+    </div>
+  </div>
+  <div class="control-group">
+    <label class="control-label" for="user-base_mobile">手机</label>
+	<div class="controls">
+	  <input id="user-base_mobile" type="text" name="mobile" value="${model.mobile}">
+    </div>
+  </div>
+  <div class="control-group">
+    <label class="control-label" for="user-base_ref"><spring:message code="user.user.input.ref" text="引用"/></label>
+	<div class="controls">
+	  <input id="user-base_ref" type="text" name="ref" value="${model.ref}">
     </div>
   </div>
   <s:iterator value="userBaseWrapper.userAttrWrappers" var="item">
