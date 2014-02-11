@@ -36,41 +36,17 @@ $(function() {
     table.configPageSize('.m-page-size');
 });
     </script>
+
+    <link type="text/css" rel="stylesheet" href="${scopePrefix}/widgets/userpicker/userpicker.css">
+    <script type="text/javascript" src="${scopePrefix}/widgets/userpicker/userpicker.js"></script>
 	<script type="text/javascript">
 $(function() {
-var taskDefinitionId = null;
-
-	$(document).delegate('.userPickerBtn', 'click', function(e) {
-		taskDefinitionId = $(this).attr("id");
-		$('#userPicker').modal();
-		$.ajax({
-			url: '${scopePrefix}/rs/user/search',
-			data: {
-				username: ''
-			},
-			success: function(data) {
-				var html = '';
-				for (var i = 0; i < data.length; i++) {
-					var item = data[i];
-					html +=
-					  '<tr>'
-						+'<td><input id="selectedItem' + i + '" type="radio" class="selectedItem" name="selectedItem" value="'
-						+ item.id + '" title="' + item.displayName + '"></td>'
-						+'<td><label for="selectedItem' + i + '">' + item.displayName + '</label></td>'
-					  +'</tr>'
-				}
-				$('#userPickerBody').html(html);
-			}
-		});
+	createUserPicker({
+		modalId: 'userPicker',
+		url: '${scopePrefix}/rs/user/search'
 	});
-
-	$(document).delegate('#userPickerBtnSelect', 'click', function(e) {
-		$('#_task' + taskDefinitionId).val($('.selectedItem:checked').val());
-		$('#_task_name' + taskDefinitionId).val($('.selectedItem:checked').attr('title'));
-		$('#userPicker').modal('hide');
-	});
-});
-	</script>
+})
+    </script>
   </head>
 
   <body>
@@ -108,9 +84,11 @@ var taskDefinitionId = null;
 		  <form name="bpmCategoryForm" method="post" action="bpm-conf-user!save.do" class="form-inline">
 			<input type="hidden" name="bpmConfNodeId" value="${bpmConfNodeId}">
 		    <label for="_task_name_key">参与者:</label>
-		    <input type="hidden" name="value" class="input-medium userPicker" id="_task_key" value="">
-		    <input type="text" name="taskAssigneeNames" class="input-medium userPicker" id="_task_name_key" value="">
-		    <span style="padding:2px;" class="add-on"><i id='_key' style="cursor:pointer;" class="icon-user userPickerBtn"></i></span>
+		    <div class="input-append userPicker">
+			  <input id="_task_name_key" type="hidden" name="value" class="input-medium" value="">
+			  <input type="text" name="taskAssigneeNames" style="width: 175px;" value="">
+			  <span class="add-on"><i class="icon-user"></i></span>
+		    </div>
 		    <label for="type">类型</label>
 			<select name="type">
 			  <option value="0">负责人</option>
@@ -184,74 +162,6 @@ var taskDefinitionId = null;
     </section>
 	<!-- end of main -->
 	</div>
-
-
-
-<div id="userPicker" class="modal hide fade">
-  <div class="modal-header">
-    <button type="button" class="close" data-dismiss="modal" aria-hidden="true">&times;</button>
-    <h3>选择用户</h3>
-  </div>
-  <div class="modal-body">
-
-
-
-      <!--
-	  <article class="m-blank">
-	    <div class="pull-left">
-		  <form name="userForm" method="post" action="javascript:void(0);return false;" class="form-inline m-form-bottom">
-    	    <label for="user_username">账号:</label>
-			<input type="text" id="user_username" name="filter_LIKES_username" value="">
-			<button class="btn btn-small" onclick="document.userForm.submit()">查询</button>
-		  </form>
-		</div>
-	    <div class="m-clear"></div>
-	  </article>
-      -->
-
-      <article class="m-widget">
-        <header class="header">
-		  <h4 class="title">用户列表</h4>
-		</header>
-		<div class="content">
-
-<form id="userPickerForm" name="userPickerForm" method='post' action="#" class="m-form-blank">
-  <table id="userPickerGrid" class="m-table table-hover">
-    <thead>
-      <tr>
-        <th width="10" class="m-table-check">&nbsp;</th>
-        <th>账号</th>
-      </tr>
-    </thead>
-
-    <tbody id="userPickerBody">
-
-      <tr>
-        <td><input id="selectedItem1" type="checkbox" class="selectedItem" name="selectedItem" value="1"></td>
-        <td>admin</td>
-      </tr>
-
-      <tr>
-        <td><input id="selectedItem2" type="checkbox" class="selectedItem" name="selectedItem" value="2"></td>
-        <td>user</td>
-      </tr>
-
-    </tbody>
-  </table>
-</form>
-
-        </div>
-      </article>
-
-
-
-  </div>
-  <div class="modal-footer">
-    <span id="userPickerResult"></span>
-    <a id="userPickerBtnClose" href="#" class="btn">关闭</a>
-    <a id="userPickerBtnSelect" href="#" class="btn btn-primary">选择</a>
-  </div>
-</div>
 
   </body>
 
