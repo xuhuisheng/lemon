@@ -50,7 +50,7 @@
 	    <td><s:date name="claimTime" format="yyyy-MM-dd HH:mm:ss" /></td>
 		<td>
           <a href="workspace!viewHistory.do?processInstanceId=${item.processInstanceId}">历史</a>
-          <a href="${scopePrefix}/diagram-viewer/index.html?processInstanceId=${item.id}&processDefinitionId=${item.processDefinitionId}">diagram-viewer</a>
+          <a href="${scopePrefix}、widgets/diagram-viewer/index.html?processInstanceId=${item.id}&processDefinitionId=${item.processDefinitionId}">diagram-viewer</a>
         </td>
       </tr>
       </s:iterator>
