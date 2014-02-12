@@ -915,12 +915,14 @@ Xf.field.CheckboxField = Xf.extend(Xf.field.Field, {
 		if (this.readOnly) {
 			document.getElementById(this.id).innerHTML = value;
 		} else {
+			var values = value.split(',');
 			var els = document.getElementsByName(this.name);
 			for (var i = 0; i < els.length; i++) {
 				var el = els[i];
-				if (el.value == value) {
-					el.checked = true;
-					return;
+				for (var v in values) {
+					if (el.value == v) {
+						el.checked = true;
+					}
 				}
 			}
 		}
