@@ -35,10 +35,6 @@ public class CachedSecurityContextRepository extends
                     .getCurrentUser(securityContext);
 
             if (userAuthInSession != null) {
-                System.out.println(userAuthInSession);
-                System.out.println(userAuthInSession.getId());
-                System.out.println(userAuthInSession.getScopeId());
-
                 UserAuthDTO userAuthInCache = userAuthConnector.findById(
                         userAuthInSession.getId(),
                         userAuthInSession.getScopeId());
