@@ -40,18 +40,23 @@ public class RecordBuilder {
         return build(record, status, Collections.EMPTY_MAP);
     }
 
-	public String getValue(String[] values) {
-		if (values == null || values.length == 0) {
-			return "";
-		}
-		if (values.length == 1) {
-			return values[0];
-		}
-		StringBuilder buff = new StringBuilder();
-		for (String value : values) {
-			buff.append(value).append(",");
-		}
-		buff.deleteCharAt(buff.length() - 1);
-		return buff.toString();
-	}
+    public String getValue(String[] values) {
+        if ((values == null) || (values.length == 0)) {
+            return "";
+        }
+
+        if (values.length == 1) {
+            return values[0];
+        }
+
+        StringBuilder buff = new StringBuilder();
+
+        for (String value : values) {
+            buff.append(value).append(",");
+        }
+
+        buff.deleteCharAt(buff.length() - 1);
+
+        return buff.toString();
+    }
 }

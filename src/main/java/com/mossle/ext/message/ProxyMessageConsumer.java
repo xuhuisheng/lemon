@@ -38,13 +38,14 @@ public class ProxyMessageConsumer implements MessageConsumer {
     }
 
     public Message receive(long timeout) throws JMSException {
-		try {
-			Thread.sleep(timeout);
-		} catch(InterruptedException ex) {
-			JMSException jmsException = new JMSException(ex.getMessage());
-			jmsException.setLinkedException(ex);
-			throw jmsException;
-		}
+        try {
+            Thread.sleep(timeout);
+        } catch (InterruptedException ex) {
+            JMSException jmsException = new JMSException(ex.getMessage());
+            jmsException.setLinkedException(ex);
+            throw jmsException;
+        }
+
         return getMessage();
     }
 

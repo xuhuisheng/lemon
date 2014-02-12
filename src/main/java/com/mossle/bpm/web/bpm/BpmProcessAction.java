@@ -10,11 +10,13 @@ import com.mossle.bpm.graph.ActivitiGraphBuilder;
 import com.mossle.bpm.graph.Graph;
 import com.mossle.bpm.graph.Node;
 import com.mossle.bpm.persistence.domain.BpmCategory;
+import com.mossle.bpm.persistence.domain.BpmConfBase;
 import com.mossle.bpm.persistence.domain.BpmMailTemplate;
 import com.mossle.bpm.persistence.domain.BpmProcess;
 import com.mossle.bpm.persistence.domain.BpmTaskDef;
 import com.mossle.bpm.persistence.domain.BpmTaskDefNotice;
 import com.mossle.bpm.persistence.manager.BpmCategoryManager;
+import com.mossle.bpm.persistence.manager.BpmConfBaseManager;
 import com.mossle.bpm.persistence.manager.BpmMailTemplateManager;
 import com.mossle.bpm.persistence.manager.BpmProcessManager;
 import com.mossle.bpm.persistence.manager.BpmTaskDefManager;
@@ -53,6 +55,7 @@ public class BpmProcessAction extends BaseAction implements
     private BpmTaskDefNoticeManager bpmTaskDefNoticeManager;
     private BpmMailTemplateManager bpmMailTemplateManager;
     private BpmTaskDefManager bpmTaskDefManager;
+    private BpmConfBaseManager bpmConfBaseManager;
     private MessageSourceAccessor messages;
     private Page page = new Page();
     private BpmProcess model;
@@ -69,6 +72,8 @@ public class BpmProcessAction extends BaseAction implements
     private long bpmMailTemplateId;
     private Graph graph;
     private List<BpmTaskDef> bpmTaskDefs = new ArrayList<BpmTaskDef>();
+    private List<BpmConfBase> bpmConfBases = new ArrayList<BpmConfBase>();
+    private long bpmConfBaseId;
 
     public String execute() {
         return list();
@@ -97,6 +102,7 @@ public class BpmProcessAction extends BaseAction implements
         }
 
         dest.setBpmCategory(bpmCategoryManager.get(bpmCategoryId));
+        dest.setBpmConfBase(bpmConfBaseManager.get(bpmConfBaseId));
         bpmProcessManager.save(dest);
 
         addActionMessage(messages.getMessage("core.success.save", "保存成功"));
@@ -119,6 +125,7 @@ public class BpmProcessAction extends BaseAction implements
         }
 
         bpmCategories = bpmCategoryManager.getAll();
+        bpmConfBases = bpmConfBaseManager.getAll();
 
         return INPUT;
     }
@@ -225,6 +232,10 @@ public class BpmProcessAction extends BaseAction implements
         this.bpmTaskDefManager = bpmTaskDefManager;
     }
 
+    public void setBpmConfBaseManager(BpmConfBaseManager bpmConfBaseManager) {
+        this.bpmConfBaseManager = bpmConfBaseManager;
+    }
+
     public void setMessageSource(MessageSource messageSource) {
         this.messages = new MessageSourceAccessor(messageSource);
     }
@@ -281,5 +292,13 @@ public class BpmProcessAction extends BaseAction implements
 
     public List<BpmTaskDef> getBpmTaskDefs() {
         return bpmTaskDefs;
+    }
+
+    public List<BpmConfBase> getBpmConfBases() {
+        return bpmConfBases;
+    }
+
+    public void setBpmConfBaseId(long bpmConfBaseId) {
+        this.bpmConfBaseId = bpmConfBaseId;
     }
 }

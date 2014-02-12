@@ -2,6 +2,8 @@ package com.mossle.modeler.web.modeler;
 
 import java.util.List;
 
+import com.mossle.bpm.cmd.SyncProcessCmd;
+
 import com.mossle.core.struts2.BaseAction;
 
 import org.activiti.bpmn.converter.BpmnXMLConverter;
@@ -13,6 +15,7 @@ import org.activiti.engine.ProcessEngine;
 import org.activiti.engine.RepositoryService;
 import org.activiti.engine.repository.Deployment;
 import org.activiti.engine.repository.Model;
+import org.activiti.engine.repository.ProcessDefinition;
 
 import org.apache.struts2.convention.annotation.Result;
 import org.apache.struts2.convention.annotation.Results;
@@ -74,9 +77,18 @@ public class ModelerAction extends BaseAction {
         bpmnBytes = new BpmnXMLConverter().convertToXML(model);
 
         String processName = modelData.getName() + ".bpmn20.xml";
-        repositoryService.createDeployment().name(modelData.getName())
+        Deployment deployment = repositoryService.createDeployment()
+                .name(modelData.getName())
                 .addString(processName, new String(bpmnBytes, "UTF-8"))
                 .deploy();
+        List<ProcessDefinition> processDefinitions = repositoryService
+                .createProcessDefinitionQuery()
+                .deploymentId(deployment.getId()).list();
+
+        for (ProcessDefinition processDefinition : processDefinitions) {
+            processEngine.getManagementService().executeCommand(
+                    new SyncProcessCmd(processDefinition.getId()));
+        }
 
         return RELOAD;
     }

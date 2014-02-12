@@ -11,6 +11,7 @@ import javax.servlet.http.HttpServletResponse;
 import com.mossle.bpm.cmd.JumpCmd;
 import com.mossle.bpm.cmd.ListActivityCmd;
 import com.mossle.bpm.cmd.ProcessDefinitionDiagramCmd;
+import com.mossle.bpm.cmd.SyncProcessCmd;
 import com.mossle.bpm.cmd.UpdateProcessCmd;
 import com.mossle.bpm.component.ProcessInstanceConverter;
 import com.mossle.bpm.component.TaskConverter;
@@ -122,8 +123,16 @@ public class ConsoleAction extends BaseAction {
                 .getRepositoryService();
         ByteArrayInputStream bais = new ByteArrayInputStream(
                 xml.getBytes("UTF-8"));
-        repositoryService.createDeployment()
+        Deployment deployment = repositoryService.createDeployment()
                 .addInputStream("process.bpmn20.xml", bais).deploy();
+        List<ProcessDefinition> processDefinitions = repositoryService
+                .createProcessDefinitionQuery()
+                .deploymentId(deployment.getId()).list();
+
+        for (ProcessDefinition processDefinition : processDefinitions) {
+            processEngine.getManagementService().executeCommand(
+                    new SyncProcessCmd(processDefinition.getId()));
+        }
 
         return RELOAD_PROCESS_DEFINITION;
     }

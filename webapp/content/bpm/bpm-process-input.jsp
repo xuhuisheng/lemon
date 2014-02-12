@@ -59,6 +59,16 @@ $(function() {
     </div>
   </div>
   <div class="control-group">
+	<label class="control-label" for="bpm-process_bpmConfBaseId">绑定流程</label>
+    <div class="controls">
+      <select id="bpm-process_bpmConfBaseId" name="bpmConfBaseId">
+      <s:iterator value="bpmConfBases" var="item">
+	    <option value="${item.id}" ${item.id==model.bpmConfBase.id ? 'selected' : ''}>${item.processDefinitionId}</option>
+	  </s:iterator>
+	  </select>
+    </div>
+  </div>
+  <div class="control-group">
 	<label class="control-label" for="bpm-process_priority">排序</label>
     <div class="controls">
       <input id="bpm-process_priority" type="text" name="priority" value="${model.priority}" size="40" class="text required" minlength="1" maxlength="50">
