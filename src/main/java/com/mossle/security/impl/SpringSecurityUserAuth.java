@@ -1,5 +1,9 @@
 package com.mossle.security.impl;
 
+import java.io.IOException;
+import java.io.ObjectInputStream;
+import java.io.ObjectOutputStream;
+
 import java.util.ArrayList;
 import java.util.Collection;
 import java.util.List;
@@ -53,5 +57,18 @@ public class SpringSecurityUserAuth extends UserAuthDTO implements UserDetails {
         }
 
         this.authorities = authorities;
+    }
+
+    private void writeObject(ObjectOutputStream out) throws IOException {
+        out.defaultWriteObject();
+        out.writeObject(getId());
+        out.writeObject(getScopeId());
+    }
+
+    private void readObject(ObjectInputStream in) throws IOException,
+            ClassNotFoundException {
+        in.defaultReadObject();
+        setId((String) in.readObject());
+        setScopeId((String) in.readObject());
     }
 }

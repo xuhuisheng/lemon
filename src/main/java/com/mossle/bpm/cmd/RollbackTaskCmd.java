@@ -337,5 +337,21 @@ public class RollbackTaskCmd implements Command<Integer> {
                 .getTaskEntityManager().findTaskById(taskId);
         Context.getCommandContext().getTaskEntityManager()
                 .deleteTask(taskEntity, "回退", false);
+
+        JdbcTemplate jdbcTemplate = ApplicationContextHelper
+                .getBean(JdbcTemplate.class);
+        List<Map<String, Object>> list = jdbcTemplate
+                .queryForList(
+                        "select * from ACT_HI_ACTINST where task_id_=? and end_time_ is null",
+                        taskId);
+        Date now = new Date();
+
+        for (Map<String, Object> map : list) {
+            Date startTime = (Date) map.get("start_time_");
+            long duration = now.getTime() - startTime.getTime();
+            jdbcTemplate
+                    .update("update ACT_HI_ACTINST set end_time_=?,duration_=? where id_=?",
+                            now, duration, map.get("id_"));
+        }
     }
 }
