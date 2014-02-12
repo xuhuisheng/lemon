@@ -56,7 +56,7 @@ var createUserPicker = function(conf) {
 +'  </div>'
 +'  <div class="modal-footer">'
 +'    <span id="userPickerResult"></span>'
-+'    <a id="userPickerBtnClose" href="#" class="btn">关闭</a>'
++'    <a id="userPickerBtnClose" href="#" class="btn" data-dismiss="modal">关闭</a>'
 +'    <a id="userPickerBtnSelect" href="#" class="btn btn-primary">选择</a>'
 +'  </div>'
 +'</div>');
