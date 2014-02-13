@@ -237,7 +237,8 @@ public class FormAction extends BaseAction {
             formInfo.getButtons().add(bpmConfOperation.getValue());
         }
 
-        if (Integer.valueOf(1).equals(formTemplate.getType())) {
+        if ((formTemplate != null)
+                && Integer.valueOf(1).equals(formTemplate.getType())) {
             redirectUrl = formTemplate.getContent() + "?taskId=" + taskId;
 
             return RELOAD_REDIRECT;

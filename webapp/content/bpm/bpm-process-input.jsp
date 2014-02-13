@@ -77,8 +77,8 @@ $(function() {
   <div class="control-group">
 	<label class="control-label" for="bpm-process_useTaskConf">配置任务负责人</label>
     <div class="controls">
-      <label><input id="bpm-process_useTaskConf_0" type="radio" name="useTaskConf" value="0" ${model.useTaskConf == 1 ? 'checked' : ''}>开启</label>
-      <label><input id="bpm-process_useTaskConf_1" type="radio" name="useTaskConf" value="1" ${model.useTaskConf != 1 ? 'checked' : ''}>关闭</label>
+      <label><input id="bpm-process_useTaskConf_0" type="radio" name="useTaskConf" value="1" ${model.useTaskConf == 1 ? 'checked' : ''}>开启</label>
+      <label><input id="bpm-process_useTaskConf_1" type="radio" name="useTaskConf" value="0" ${model.useTaskConf != 1 ? 'checked' : ''}>关闭</label>
     </div>
   </div>
   <div class="control-group">

@@ -68,13 +68,18 @@ $(function() {
 	});
 
 	setTimeout(function() {
-		xform.setValue(${json});
-		xform.model.template.buttons = buttons;
-		xform.model.template.initFoot();
+		if (!!xform.model.template) {
+			xform.setValue(${json});
+			xform.model.template.buttons = buttons;
+			xform.model.template.initFoot();
 
-		var id = '#xf-form-table-body-row' + (xform.model.template.positions.length - 1);
-		var el = $(id)[0];
-		el.parentNode.removeChild(el);
+			var id = '#xf-form-table-body-row' + (xform.model.template.positions.length - 1);
+			var el = $(id)[0];
+			el.parentNode.removeChild(el);
+		} else {
+			$('#__gef_container__').hide();
+			$('#m-main').append('<form action="${scopePrefix}/form/form!completeTask.do"><button name="taskId" value="${formInfo.taskId}">完成</button></form>');
+		}
 	}, 500);
 })
     </script>

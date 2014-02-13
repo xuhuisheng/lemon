@@ -14,13 +14,10 @@ import org.apache.struts2.convention.annotation.Results;
 import org.springframework.context.MessageSource;
 import org.springframework.context.support.MessageSourceAccessor;
 
-import org.springframework.security.core.userdetails.UserCache;
-
 @Results({ @Result(name = ChangePasswordAction.RELOAD, location = "change-password.do?operationMode=RETRIEVE", type = "redirect") })
 public class ChangePasswordAction extends BaseAction {
     public static final String RELOAD = "reload";
     private UserBaseManager userBaseManager;
-    private UserCache userCache;
     private MessageSourceAccessor messages;
     private String oldPassword;
     private String newPassword;
@@ -52,10 +49,6 @@ public class ChangePasswordAction extends BaseAction {
         userBase.setPassword(encodePassword(newPassword));
         userBaseManager.save(userBase);
 
-        if (userCache != null) {
-            userCache.removeUserFromCache(userBase.getUsername());
-        }
-
         addActionMessage(messages.getMessage("core.success.save", "保存成功"));
 
         return RELOAD;
@@ -84,10 +77,6 @@ public class ChangePasswordAction extends BaseAction {
     // ~ ======================================================================
     public void setUserBaseManager(UserBaseManager userBaseManager) {
         this.userBaseManager = userBaseManager;
-    }
-
-    public void setUserCache(UserCache userCache) {
-        this.userCache = userCache;
     }
 
     public void setMessageSource(MessageSource messageSource) {
