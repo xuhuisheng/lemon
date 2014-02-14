@@ -710,7 +710,7 @@ Xf.field.Field = function() {
 Xf.field.Field.prototype = {
 	updateLabel: function(label) {
 		this.label = label;
-		var labelId = 'xf-form-table-body-row' + this.row + '' + this.col;
+		var labelId = 'xf-form-table-body-row' + this.row + '' + (this.col * 2);
 		document.getElementById(labelId).innerHTML = '<label for=' + this.id + '>' + label + '</label>';
 	}
 };
