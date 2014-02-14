@@ -38,7 +38,7 @@ public class DatabaseUserConnector implements UserConnector {
             + "display_name as display_name,email as email,mobile as mobile,user_repo_id as user_repo_ref"
             + " from USER_BASE ub where ub.reference=? and ub.user_repo_id=?";
     private String sqlPagedQueryCount = "select count(*) from USER_BASE";
-    private String sqlPagedQuerySelect = "select id as id,username as username,status as status"
+    private String sqlPagedQuerySelect = "select id as id,username as username,status as status,"
             + "display_name as display_name,email as email,mobile as mobile,user_repo_id as user_repo_ref"
             + " from USER_BASE";
 
