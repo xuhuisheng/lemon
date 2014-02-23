@@ -25,7 +25,7 @@ var config = {
     },
 	selectedItemClass: 'selectedItem',
 	gridFormId: 'userGridForm',
-	exportUrl: 'user-base!exportExcel.do'
+	exportUrl: 'user-base-export.do'
 };
 
 var table;
@@ -57,11 +57,11 @@ $(function() {
 		</header>
         <div id="userSearch" class="content content-inner">
 
-		  <form name="userForm" method="post" action="user-base!search.do" class="form-inline">
-		    <s:iterator value="userSchema.userSchemaInfos" var="item">
+		  <form name="userForm" method="post" action="user-base-search.do" class="form-inline">
+		    <c:forEach value="${userSchema.userSchemaInfos}" var="item">
 			<label>${item.label}</label>:
 			<input type="text" name="${item.name}">
-		    </s:iterator>
+		    </c:forEach>
 			<button class="btn btn-small" onclick="document.userForm.submit()">查询</button>
 		  </form>
 
@@ -71,7 +71,7 @@ $(function() {
 	  <article class="m-blank">
 	    <div class="pull-left">
 		  <region:region-permission permission="user:create">
-		  <button class="btn btn-small" onclick="location.href='user-base!input.do'">新建</button>
+		  <button class="btn btn-small" onclick="location.href='user-base-input.do'">新建</button>
 		  </region:region-permission>
 		  <region:region-permission permission="user:delete">
 		  <button class="btn btn-small" onclick="table.removeAll()">删除</button>
@@ -98,7 +98,7 @@ $(function() {
 		</header>
 		<div class="content content-inner">
 
-<form id="userGridForm" name="userGridForm" method='post' action="user-base!removeAll.do" class="m-form-blank">
+<form id="userGridForm" name="userGridForm" method='post' action="user-base-remove.do" class="m-form-blank">
   <table id="userGrid" class="m-table table-hover">
     <thead>
       <tr>
@@ -114,7 +114,7 @@ $(function() {
     </thead>
 
     <tbody>
-      <s:iterator value="page.result" var="item">
+      <c:forEach value="${page.result}" var="item">
       <tr>
         <td><input type="checkbox" class="selectedItem" name="selectedItem" value="${item.id}"></td>
         <td>${item.id}</td>
@@ -124,10 +124,10 @@ $(function() {
         <td>${item.userExtraMap['code'].value}</td>
         <td>${item.userExtraMap['email'].value}</td>
         <td>
-          <a href="user-base!input.do?id=${item.id}"><spring:message code="core.list.edit" text="编辑"/></a>
+          <a href="user-base-input.do?id=${item.id}"><spring:message code="core.list.edit" text="编辑"/></a>
         </td>
       </tr>
-      </s:iterator>
+      </c:forEach>
     </tbody>
   </table>
 </form>

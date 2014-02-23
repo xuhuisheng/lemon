@@ -7,7 +7,7 @@
 
   <head>
     <%@include file="/common/meta.jsp"%>
-    <title><spring:message code="auth.access.input.title" text="编辑访问"/></title>
+    <title><spring:message code="auth.access.input.title" text="编辑资源"/></title>
     <%@include file="/common/s.jsp"%>
     <script type="text/javascript">
 $(function() {
@@ -34,15 +34,15 @@ $(function() {
 
       <article class="m-widget">
         <header class="header">
-		  <h4 class="title"><spring:message code="auth.access.input.title" text="编辑访问"/></h4>
+		  <h4 class="title"><spring:message code="auth.access.input.title" text="编辑资源"/></h4>
 		</header>
 
 		<div class="content content-inner">
 
-<form id="accessForm" method="post" action="access!save.do?operationMode=STORE" class="form-horizontal">
-  <s:if test="model != null">
+<form id="accessForm" method="post" action="access-save.do" class="form-horizontal">
+  <c:if test="${model != null}">
   <input id="access_id" type="hidden" name="id" value="${model.id}">
-  </s:if>
+  </c:if>
   <div class="control-group">
 	<label class="control-label" for="access_type"><spring:message code='auth.access.input.type' text='类型'/></label>
     <div class="controls">
@@ -62,9 +62,9 @@ $(function() {
 	<label class="control-label" for="access_perm"><spring:message code='auth.access.input.perm' text='权限'/></label>
     <div class="controls">
 	  <select id="access_perm" name="permId">
-	    <s:iterator value="perms" var="item">
+	    <c:forEach items="${perms}" var="item">
 	    <option value="${item.id}" ${model.perm.id==item.id ? 'selected' : ''}>${item.name}</option>
-		</s:iterator>
+		</c:forEach>
 	  </select>
     </div>
   </div>
@@ -76,7 +76,7 @@ $(function() {
   </div>
   <div class="control-group">
     <div class="controls">
-      <button id="submitButton" class="btn"><spring:message code='core.input.save' text='保存'/></button>
+      <button id="submitButton" class="btn a-submit"><spring:message code='core.input.save' text='保存'/></button>
 	  &nbsp;
       <button type="button" onclick="history.back();" class="btn"><spring:message code='core.input.back' text='返回'/></button>
     </div>

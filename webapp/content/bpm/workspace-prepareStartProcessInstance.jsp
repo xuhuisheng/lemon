@@ -27,27 +27,27 @@
 
 		<div class="content content-inner">
 
-<form id="demoForm" method="post" action="workspace!startProcessInstance.do?operationMode=STORE" class="form-horizontal">
+<form id="demoForm" method="post" action="workspace-startProcessInstance.do?operationMode=STORE" class="form-horizontal">
   <input id="demo_id" type="hidden" name="processDefinitionId" value="${processDefinitionId}">
-  <s:iterator value="startFormData.formProperties" var="item">
+  <c:forEach items="${startFormData.formProperties}" var="item">
   <div class="control-group">
     <label class="control-label">${item.name}</label>
 	<div class="controls">
-	  <s:if test="type.name=='enum'">
-	  <s:iterator value="type.getInformation('values')">
+	  <c:if test="${item.type.name=='enum'}">
+	  <c:forEach items="${type.getInformation('values')}" var="item">
 	    <label class="checkbox inline">
 	    <input type="radio" name="${item.id}" value="${key}" ${item.value == key ? 'checked' : ''}>
-		${value}
+		${item.value}
 		</label>
-	  </s:iterator>
+	  </c:forEach>
 	  </select>
-	  </s:if>
-	  <s:else>
+	  </c:if>
+	  <c:if test="${item.type.name != 'enum'}">
 	  <input type="text" name="${id}" value="${item.value}" size="40" class="text ${item.required ? 'required' : ''}" ${item.writable ? '' : 'readonly'}>
-	  </s:else>
+	  </c:if>
     </div>
   </div>
-  </s:iterator>
+  </c:forEach>
   <div class="control-group">
     <div class="controls">
       <button id="submitButton" type="submit" class="btn">保存</button>

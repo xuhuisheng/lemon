@@ -10,7 +10,12 @@ import javax.jms.MessageConsumer;
 import javax.jms.MessageListener;
 import javax.jms.TextMessage;
 
+import org.slf4j.Logger;
+import org.slf4j.LoggerFactory;
+
 public class ProxyMessageConsumer implements MessageConsumer {
+    private static Logger logger = LoggerFactory
+            .getLogger(ProxyMessageConsumer.class);
     private ProxySession session;
     private Destination destination;
     private List<String> data = new ArrayList<String>();
@@ -41,6 +46,8 @@ public class ProxyMessageConsumer implements MessageConsumer {
         try {
             Thread.sleep(timeout);
         } catch (InterruptedException ex) {
+            logger.warn(ex.getMessage(), ex);
+
             JMSException jmsException = new JMSException(ex.getMessage());
             jmsException.setLinkedException(ex);
             throw jmsException;

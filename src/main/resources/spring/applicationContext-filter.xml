@@ -13,7 +13,7 @@
 				<ref bean="springSecurityFilterChainProxy"/>
 				<ref bean="openSessionInViewFilter"/>
 				<ref bean="auditTrailFilter"/>
-				<ref bean="strutsFilter"/>
+				<ref bean="restFilter"/>
 				<ref bean="servletFilter"/>
 			</list>
 		</property>
@@ -93,13 +93,12 @@
 		<property name="enable" value="${filter.inspektr.enable}"/>
 	</bean>
 
-	<bean id="strutsFilter" class="com.mossle.core.servlet.ProxyFilter">
-		<property name="name" value="struts"/>
+	<bean id="restFilter" class="com.mossle.core.servlet.ProxyFilter">
+		<property name="name" value="rest"/>
 		<property name="filter">
-			<bean class="org.apache.struts2.dispatcher.ng.filter.StrutsPrepareAndExecuteFilter"/>
+			<bean class="com.mossle.ext.rest.RestFilter"/>
 		</property>
-		<property name="urlPattern" value="/*"/>
-		<property name="excludePatterns" value="/h2database/*"/>
+		<property name="urlPattern" value="/rs/*"/>
 	</bean>
 
 	<!-- ====================================================================== -->
@@ -111,14 +110,11 @@
 				<entry key="/jolokia/*">
 					<ref bean="jolokia"/>
 				</entry>
-				<entry key="/rs/*">
-					<ref bean="jersey2"/>
-				</entry>
-				<entry key="/h2database/*">
-					<ref bean="h2database"/>
-				</entry>
 				<entry key="/javasimon/*">
 					<ref bean="javasimon"/>
+				</entry>
+				<entry key="*.do">
+					<ref bean="springmvc"/>
 				</entry>
 			</map>
 		</property>
@@ -130,42 +126,6 @@
 			<bean class="org.jolokia.http.AgentServlet"/>
 		</constructor-arg>
 		<constructor-arg index="2" value="${servlet.jolokia.enable}"/>
-	</bean>
-<!--
-	<bean id="jersey" class="com.mossle.core.servlet.ProxyServlet">
-		<constructor-arg index="0" value="jersey"/>
-		<constructor-arg index="1">
-			<bean class="com.sun.jersey.spi.spring.container.servlet.SpringServlet"/>
-		</constructor-arg>
-	</bean>
--->
-	<bean id="jersey2" class="com.mossle.core.servlet.ProxyServlet">
-		<constructor-arg index="0" value="jersey"/>
-		<constructor-arg index="1">
-			<bean class="org.glassfish.jersey.servlet.ServletContainer"/>
-		</constructor-arg>
-		<constructor-arg index="2">
-			<map>
-				<entry key="javax.ws.rs.Application">
-					<value>com.mossle.core.jersey.SpringApplication</value>
-				</entry>
-			</map>
-		</constructor-arg>
-	</bean>
-
-	<bean id="h2database" class="com.mossle.core.servlet.ProxyServlet">
-		<constructor-arg index="0" value="h2database"/>
-		<constructor-arg index="1">
-			<bean class="org.h2.server.web.WebServlet"/>
-		</constructor-arg>
-		<constructor-arg index="2">
-			<map>
-				<entry key="webAllowOthers">
-					<value>true</value>
-				</entry>
-			</map>
-		</constructor-arg>
-		<constructor-arg index="3" value="${servlet.h2database.enable}"/>
 	</bean>
 
 	<bean id="javasimon" class="com.mossle.core.servlet.ProxyServlet">
@@ -179,6 +139,13 @@
 					<value>/javasimon</value>
 				</entry>
 			</map>
+		</constructor-arg>
+	</bean>
+
+	<bean id="springmvc" class="com.mossle.core.servlet.ProxyServlet">
+		<constructor-arg index="0" value="springmvc"/>
+		<constructor-arg index="1">
+			<bean class="org.springframework.web.servlet.DispatcherServlet"/>
 		</constructor-arg>
 	</bean>
 

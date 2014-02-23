@@ -23,7 +23,7 @@ var config = {
     },
 	selectedItemClass: 'selectedItem',
 	gridFormId: 'dynamicModelGridForm',
-	exportUrl: 'dynamic-model!exportExcel.do'
+	exportUrl: 'form-template-export.do'
 };
 
 var table;

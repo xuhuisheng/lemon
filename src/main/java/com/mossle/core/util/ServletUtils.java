@@ -38,6 +38,9 @@ public class ServletUtils {
     /** excel type. */
     public static final String EXCEL_TYPE = "application/vnd.ms-excel";
 
+    /** stream type. */
+    public static final String STREAM_TYPE = "application/octet-stream";
+
     // -- Header 定义 --//
     /** authencation header. */
     public static final String AUTHENTICATION_HEADER = "Authorization";
@@ -236,6 +239,31 @@ public class ServletUtils {
                 } else {
                     params.put(unprefixed, values[0]);
                 }
+            }
+        }
+
+        return params;
+    }
+
+    public static Map<String, Object> getParametersStartingWith(
+            Map<String, Object> parameterMap, String prefix) {
+        Map<String, Object> params = new TreeMap<String, Object>();
+
+        String thePrefix = (prefix == null) ? "" : prefix;
+
+        for (Map.Entry<String, Object> entry : parameterMap.entrySet()) {
+            String paramName = entry.getKey();
+            Object paramValue = entry.getValue();
+
+            if ("".equals(thePrefix) || paramName.startsWith(thePrefix)) {
+                String unprefixed = paramName.substring(thePrefix.length());
+
+                if (paramValue == null) {
+                    // Do nothing, no values found at all.
+                    continue;
+                }
+
+                params.put(unprefixed, paramValue);
             }
         }
 

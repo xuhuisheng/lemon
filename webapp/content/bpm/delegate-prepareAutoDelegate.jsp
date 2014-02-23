@@ -38,7 +38,7 @@ $(function() {
 
 		<div class="content content-inner">
 
-<form id="demoForm" method="post" action="delegate!autoDelegate.do?operationMode=STORE" class="form-horizontal">
+<form id="demoForm" method="post" action="delegate-autoDelegate.do" class="form-horizontal">
   <input id="demo_id" type="hidden" name="taskId" value="${taskId}">
   <div class="control-group">
     <label class="control-label">代理人</label>
@@ -73,9 +73,9 @@ $(function() {
 	<div class="controls">
 	  <select name="processDefinitionId">
 	    <option value=""></option>
-		<s:iterator value="processDefinitions" var="item">
+		<c:forEach items="${processDefinitions}" var="item">
 	    <option value="${item.id}">${item.name}</option>
-		</s:iterator>
+		</c:forEach>
 	  </select>
     </div>
   </div>

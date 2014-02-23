@@ -11,7 +11,7 @@
             </a>
           </div>
           <div id="collapse-group" class="accordion-body collapse ${currentMenu == 'group' ? 'in' : ''}">
-		    <select style="width:100%" onchange="location.href='org.do?partyDimId=' + this.value">
+		    <select style="width:100%" onchange="location.href='org-users.do?partyDimId=' + this.value">
 			  <s:iterator value="partyDims" var="item">
 			  <option value="${item.id}" ${item.id == param.partyDimId ? 'selected' : ''}>${item.name}</option>
 			  </s:iterator>
@@ -35,7 +35,7 @@
 			},
 			callback: {
 				onClick: function(event, treeId, treeNode) {
-					location.href = '${scopePrefix}/group/org.do?partyDimId=${partyDim.id}&partyEntityId=' + treeNode.id;
+					location.href = '${scopePrefix}/group/org-users.do?partyDimId=${partyDim.id}&partyEntityId=' + treeNode.id;
 				}
 			}
 		};

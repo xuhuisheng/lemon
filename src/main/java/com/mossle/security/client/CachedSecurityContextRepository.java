@@ -48,15 +48,6 @@ public class CachedSecurityContextRepository extends
         return securityContext;
     }
 
-    public void saveContext(SecurityContext context,
-            HttpServletRequest request, HttpServletResponse response) {
-        super.saveContext(context, request, response);
-    }
-
-    public boolean containsContext(HttpServletRequest request) {
-        return super.containsContext(request);
-    }
-
     public void setUserAuthConnector(UserAuthConnector userAuthConnector) {
         this.userAuthConnector = userAuthConnector;
     }

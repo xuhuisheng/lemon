@@ -39,17 +39,17 @@ $(function() {
 
 		<div class="content content-inner">
 
-<form id="orgTypeForm" method="post" action="party-dim-root!save.do?operationMode=STORE" class="form-horizontal">
-  <s:if test="model != null">
+<form id="orgTypeForm" method="post" action="party-dim-root-save.do?operationMode=STORE" class="form-horizontal">
+  <c:if test="${model != null}">
   <input id="orgType_id" type="hidden" name="id" value="${model.id}">
-  </s:if>
+  </c:if>
   <div class="control-group">
 	<label class="control-label" for="orgType_dim">维度</label>
 	<div class="controls">
 	  <select id="orgType_dim" name="partyDimId">
-	    <s:iterator value="partyDims" var="item">
+	    <c:forEach items="${partyDims}" var="item">
 	    <option value="${item.id}" ${model.partyDim.id==item.id ? 'selected' : ''}>${item.name}</option>
-		</s:iterator>
+		</c:forEach>
 	  </select>
     </div>
   </div>
@@ -57,9 +57,9 @@ $(function() {
 	<label class="control-label" for="orgType_entity">组织</label>
 	<div class="controls">
 	  <select id="orgType_entity" name="partyDimId">
-	    <s:iterator value="partyEntities" var="item">
+	    <c:forEach items="${partyEntities}" var="item">
 	    <option value="${item.id}" ${model.partyEntity.id==item.id ? 'selected' : ''}>${item.name}</option>
-		</s:iterator>
+		</c:forEach>
 	  </select>
     </div>
   </div>

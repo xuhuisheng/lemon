@@ -37,25 +37,22 @@
         <th class="sorting" name="name">流程定义</th>
         <th class="sorting" name="name">流程实例</th>
         <th class="sorting" name="name">分支</th>
-        <th width="170">&nbsp;</th>
       </tr>
     </thead>
 
     <tbody>
-      <s:iterator value="historicActivityInstances" var="item">
+      <c:forEach items="${historicActivityInstances}" var="item">
       <tr>
 	    <td>${item.activityId}</td>
 	    <td>${item.activityName}</td>
 	    <td>${item.activityType}</td>
-	    <td><s:date name="startTime" format="yyyy-MM-dd HH:mm:ss" /></td>
-	    <td><s:date name="endTime" format="yyyy-MM-dd HH:mm:ss" /></td>
+	    <td><fmt:formatDate value="${item.startTime}" pattern="yyyy-MM-dd HH:mm:ss"/></td>
+	    <td><fmt:formatDate value="${item.endTime}" pattern="yyyy-MM-dd HH:mm:ss"/></td>
 	    <td>${item.processDefinitionId}</td>
 	    <td>${item.processInstanceId}</td>
 	    <td>${item.executionId}</td>
-        <td>&nbsp;
-        </td>
       </tr>
-      </s:iterator>
+      </c:forEach>
     </tbody>
   </table>
         </div>

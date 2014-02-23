@@ -116,16 +116,16 @@ $(function(){
 			  </tr>
 			</thead>
 			<tbody>
-			<s:iterator value="personalTasks" var="item">
+			<c:forEach items="${personalTasks}" var="item">
 			  <tr>
 				<td>${item.id}</td>
 				<td>${item.name}</td>
-				<td><s:date name="createTime" format="yyyy-MM-dd HH:mm:ss" /></td>
+				<td><fmt:formatDate value="${item.createTime}" pattern="yyyy-MM-dd HH:mm:ss" /></td>
 				<td>
-				  <a href="${scopePrefix}/form/form!viewTaskForm.do?taskId=${item.id}" class="btn btn-small btn-primary">处理</a>
+				  <a href="${scopePrefix}/form/form-viewTaskForm.do?taskId=${item.id}" class="btn btn-small btn-primary">处理</a>
 				</td>
 			  </tr>
-			  </s:iterator>
+			  </c:forEach>
 			</tbody>
 		  </table>
 		</div>
@@ -140,12 +140,12 @@ $(function(){
 		</header>
         <div class="content content-inner">
 		  <marquee direction="up" scrollamount="2" >
-		  <s:iterator value="cmsArticles" var="item">
+		  <c:forEach items="${cmsArticles}" var="item">
 		    <div>
 			  <h4>${item.name}</h4>
 			  <p>${item.content}</p>
 			</div>
-			</s:iterator>
+			</c:forEach>
 		  </marquee>
 		</div>
 	  </article>
@@ -173,16 +173,16 @@ $(function(){
 			</thead>
 
 			<tbody>
-			<s:iterator value="historicProcessInstances" var="item">
+			<c:forEach items="${historicProcessInstances}" var="item">
 			  <tr>
 				<td>${item.id}</td>
 				<td>${item.processDefinitionId}</td>
-				<td><s:date name="startTime" format="yyyy-MM-dd HH:mm:ss" /></td>
+				<td><fmt:formatDate value="${item.startTime}" pattern="yyyy-MM-dd HH:mm:ss" /></td>
 				<td>
-                  <a href="${scopePrefix}/bpm/workspace!viewHistory.do?processInstanceId=${item.id}" class="btn btn-small btn-primary">历史</a>
+                  <a href="${scopePrefix}/bpm/workspace-viewHistory.do?processInstanceId=${item.id}" class="btn btn-small btn-primary">历史</a>
 				</td>
 			  </tr>
-			  </s:iterator>
+			  </c:forEach>
 			</tbody>
 		  </table>
 		</div>
@@ -231,14 +231,14 @@ $(function(){
 			  </tr>
 			</thead>
 			<tbody>
-			<s:iterator value="bpmProcesses" var="item">
+			<c:forEach items="${bpmProcesses}" var="item">
 			  <tr>
 				<td>${item.name}</td>
 				<td>
-				  <a href="${scopePrefix}/form/form!viewStartForm.do?bpmProcessId=${item.id}" class="btn btn-small btn-primary">发起</a>
+				  <a href="${scopePrefix}/form/form-viewStartForm.do?bpmProcessId=${item.id}" class="btn btn-small btn-primary">发起</a>
 				</td>
 			  </tr>
-			  </s:iterator>
+			  </c:forEach>
 			</tbody>
 		  </table>
 		</div>

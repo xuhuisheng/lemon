@@ -7,7 +7,7 @@
 
   <head>
     <%@include file="/common/meta.jsp"%>
-    <title><spring:message code="org.org.input.title" text="编辑用户"/></title>
+    <title>添加下属</title>
     <%@include file="/common/s.jsp"%>
     <script type="text/javascript">
 $(function() {
@@ -57,7 +57,7 @@ $(function() {
 
 		<div class="content content-inner">
 
-<form id="orgForm" method="post" action="org!saveUser.do?operationMode=STORE" class="form-horizontal">
+<form id="orgForm" method="post" action="org-saveUser.do" class="form-horizontal">
   <input id="group-base_groupBaseId" type="hidden" name="partyDimId" value="${partyDimId}">
   <input id="group-base_groupBaseId" type="hidden" name="partyEntityId" value="${partyEntityId}">
   <div class="control-group">
@@ -84,15 +84,15 @@ $(function() {
     <label class="control-label" for="scope-local_global">岗位</label>
 	<div class="controls">
 	  <select id="org_partyTypeId" name="partyStructTypeId">
-      <s:iterator value="partyStructTypes" var="item">
+      <c:forEach items="${partyStructTypes}" var="item">
 	    <option value="${item.id}" ${item.id==model.partyStructType.id ? 'selected' : ''}>${item.name}</option>
-	  </s:iterator>
+	  </c:forEach>
 	  </select>
     </div>
   </div>
   <div class="control-group">
     <div class="controls">
-      <button id="submitButton" class="btn"><spring:message code='core.input.save' text='保存'/></button>
+      <button id="submitButton" class="btn a-submit"><spring:message code='core.input.save' text='保存'/></button>
       <button type="button" onclick="history.back();" class="btn"><spring:message code='core.input.back' text='返回'/></button>
     </div>
   </div>

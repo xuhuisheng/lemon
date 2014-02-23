@@ -39,7 +39,7 @@ $(function() {
 
 		<div class="content content-inner">
 
-<form id="orgForm" method="post" action="admin-batch!save.do?operationMode=STORE&id=${id}&groupTypeId=${groupTypeId}" class="form-horizontal">
+<form id="orgForm" method="post" action="admin-batch-save.do?id=${id}&groupTypeId=${groupTypeId}" class="form-horizontal">
   <div class="control-group">
     <label class="control-label" for="org_orgname">用户</label>
 	<div class="controls">
@@ -53,14 +53,14 @@ $(function() {
 		  </tr>
         </thead>
         <tbody>
-          <s:iterator value="userDtos" var="item">
+          <c:forEach items="${userDtos}" var="item">
             <tr>
               <td><input type="checkbox" class="selectedItem" name="userIds" value="${item.id}"></td>
               <td>${id}</td>
               <td>${username}</td>
               <td>${status == 1 ? 'enable' : 'disable'}</td>
             </tr>
-          </s:iterator>
+          </c:forEach>
         </tbody>
       </table>
     </div>

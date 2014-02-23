@@ -27,7 +27,7 @@
 
 		<div class="content content-inner">
 
-<form id="demoForm" method="post" action="form!startProcessInstance.do?operationMode=STORE" class="form-horizontal">
+<form id="demoForm" method="post" action="form-startProcessInstance.do" class="form-horizontal">
   <input id="demo_id" type="hidden" name="bpmProcessId" value="${bpmProcessId}">
   <input type="hidden" name="businessKey" value="${businessKey}">
   <div class="control-group">

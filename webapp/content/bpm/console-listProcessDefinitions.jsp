@@ -42,7 +42,7 @@
     </thead>
 
     <tbody>
-      <s:iterator value="processDefinitions" var="item">
+      <c:forEach items="${processDefinitions}" var="item">
       <tr>
         <td><input type="checkbox" class="selectedItem" name="selectedItem" value="${item.id}"></td>
 	    <td>${item.id}</td>
@@ -52,23 +52,23 @@
 	    <td>${item.version}</td>
 	    <td>${item.description}</td>
 	    <td>
-		  <s:if test="%{suspended}">
+		  <c:if test="${item.suspended}">
 		    挂起
-            <a href="console!activeProcessDefinition.do?processDefinitionId=${item.id}">(激活)</a>
-		  </s:if>
-		  <s:else>
+            <a href="console-activeProcessDefinition.do?processDefinitionId=${item.id}">(激活)</a>
+		  </c:if>
+		  <c:if test="${not item.suspended}">
 		    激活
-            <a href="console!suspendProcessDefinition.do?processDefinitionId=${item.id}">(挂起)</a>
-		  </s:else>
+            <a href="console-suspendProcessDefinition.do?processDefinitionId=${item.id}">(挂起)</a>
+		  </c:if>
 		</td>
         <td>
-          <a href="console!graphProcessDefinition.do?processDefinitionId=${item.id}" target="_blank">流程图</a>
-          <a href="console!viewXml.do?processDefinitionId=${item.id}" target="_blank">查看XML</a>
+          <a href="console-graphProcessDefinition.do?processDefinitionId=${item.id}" target="_blank">流程图</a>
+          <a href="console-viewXml.do?processDefinitionId=${item.id}" target="_blank">查看XML</a>
           <a href="${scopePrefix}/widgets/diagram-viewer/index.html?processDefinitionId=${item.id}" target="_blank">diagram-viewer</a>
-          <a href="console!beforeUpdateProcess.do?processDefinitionId=${item.id}">修改</a>
+          <a href="console-beforeUpdateProcess.do?processDefinitionId=${item.id}">修改</a>
         </td>
       </tr>
-      </s:iterator>
+      </c:forEach>
     </tbody>
   </table>
         </div>

@@ -27,23 +27,23 @@
 
 		<div class="content content-inner">
 
-<form id="roleForm" method="post" action="role-perm!save.do?operationMode=STORE" class="form-horizontal">
+<form id="roleForm" method="post" action="role-perm-save.do" class="form-horizontal">
   <input type="hidden" name="id" value="${id}">
-  <s:iterator value="permTypes" var="permType">
+  <c:forEach items="${permTypes}" var="permType">
   <div class="control-group">
 	<label class="control-label"><strong>${permType.name}:</strong></label>
     <div class="controls">
-      <s:iterator value="perms">
-        <input id="selectedItem-${id}" type="checkbox" name="selectedItem" value="${id}" <s:if test='#action.selectedItem.contains(id)'>checked</s:if>>
-        <label for="selectedItem-${id}" style="display:inline;">${name}</label>
+      <c:forEach items="${permType.perms}" var="item">
+        <input id="selectedItem-${item.id}" type="checkbox" name="selectedItem" value="${item.id}" <tags:contains items="${selectedItem}" item="${item.id}">checked</tags:contains>>
+        <label for="selectedItem-${item.id}" style="display:inline;">${item.name}</label>
 		&nbsp;
-      </s:iterator>
+      </c:forEach>
     </div>
   </div>
-  </s:iterator>
+  </c:forEach>
   <div class="control-group">
     <div class="controls">
-      <button id="submitButton" class="btn"><spring:message code='core.input.save' text='保存'/></button>
+      <button id="submitButton" class="btn a-submit"><spring:message code='core.input.save' text='保存'/></button>
 	  &nbsp;
       <button type="button" onclick="history.back();" class="btn"><spring:message code='core.input.back' text='返回'/></button>
     </div>

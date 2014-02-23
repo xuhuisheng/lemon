@@ -38,7 +38,8 @@ public class AuthCache {
             }
         }
     }
-	@Resource
+
+    @Resource
     public void setUserAuthCache(UserAuthCache userAuthCache) {
         this.userAuthCache = userAuthCache;
     }

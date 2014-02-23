@@ -27,7 +27,7 @@
 
 		<div class="content content-inner">
 
-<form id="demoForm" method="post" action="console!doUpdateProcess.do?operationMode=STORE" class="form-horizontal">
+<form id="demoForm" method="post" action="console-doUpdateProcess.do" class="form-horizontal">
   <input id="processDefinitionId" type="hidden" name="processDefinitionId" value="${param.processDefinitionId}">
   <div class="control-group">
     <label class="control-label">xml</label>

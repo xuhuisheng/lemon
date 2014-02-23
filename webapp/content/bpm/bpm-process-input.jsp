@@ -38,10 +38,10 @@ $(function() {
 		</header>
 		<div class="content content-inner">
 
-<form id="userRepoForm" method="post" action="bpm-process!save.do?userRepoationMode=STORE" class="form-horizontal">
-  <s:if test="model != null">
+<form id="userRepoForm" method="post" action="bpm-process-save.do" class="form-horizontal">
+  <c:if test="${model != null}">
   <input id="userRepo_id" type="hidden" name="id" value="${model.id}">
-  </s:if>
+  </c:if>
   <div class="control-group">
 	<label class="control-label" for="bpm-process_name">名称</label>
     <div class="controls">
@@ -52,9 +52,9 @@ $(function() {
 	<label class="control-label" for="bpm-process_bpmCategoryId">流程分类</label>
     <div class="controls">
       <select id="bpm-process_bpmCategoryId" name="bpmCategoryId">
-      <s:iterator value="bpmCategories" var="item">
+      <c:forEach items="${bpmCategories}" var="item">
 	    <option value="${item.id}" ${item.id==model.bpmCategory.id ? 'selected' : ''}>${item.name}</option>
-	  </s:iterator>
+	  </c:forEach>
 	  </select>
     </div>
   </div>
@@ -62,9 +62,9 @@ $(function() {
 	<label class="control-label" for="bpm-process_bpmConfBaseId">绑定流程</label>
     <div class="controls">
       <select id="bpm-process_bpmConfBaseId" name="bpmConfBaseId">
-      <s:iterator value="bpmConfBases" var="item">
+      <c:forEach items="${bpmConfBases}" var="item">
 	    <option value="${item.id}" ${item.id==model.bpmConfBase.id ? 'selected' : ''}>${item.processDefinitionId}</option>
-	  </s:iterator>
+	  </c:forEach>
 	  </select>
     </div>
   </div>

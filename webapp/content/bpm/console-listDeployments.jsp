@@ -39,19 +39,19 @@
     </thead>
 
     <tbody>
-      <s:iterator value="deployments" var="item">
+      <c:forEach items="${deployments}" var="item">
       <tr>
         <td><input type="checkbox" class="selectedItem" name="selectedItem" value="${item.id}"></td>
 	    <td>${item.id}</td>
 	    <td>${item.name}</td>
-	    <td><s:date name="deploymentTime" format="yyyy-MM-dd HH:mm:ss" /></td>
+	    <td><fmt:formatDate value="${item.deploymentTime}" pattern="yyyy-MM-dd HH:mm:ss"/></td>
 	    <td>${item.category}</td>
         <td>
-          <a href="console!removeDeployment.do?deploymentId=${item.id}">删除</a>
-          <a href="console!listDeploymentResourceNames.do?deploymentId=${item.id}">查看资源</a>
+          <a href="console-removeDeployment.do?deploymentId=${item.id}">删除</a>
+          <a href="console-listDeploymentResourceNames.do?deploymentId=${item.id}">查看资源</a>
         </td>
       </tr>
-      </s:iterator>
+      </c:forEach>
     </tbody>
   </table>
         </div>

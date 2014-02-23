@@ -33,10 +33,10 @@ Table.prototype = {
 
 	changeOrder: function (orderBy, order) {
 		var params = {
-			'page.pageNo': this.config.pageNo,
-			'page.pageSize': this.config.pageSize,
-			'page.orderBy': orderBy,
-			'page.order': order
+			'pageNo': this.config.pageNo,
+			'pageSize': this.config.pageSize,
+			'orderBy': orderBy,
+			'order': order
 		};
 		var targetParams = {};
 		$.extend(targetParams, this.config.params, params);
@@ -48,10 +48,10 @@ Table.prototype = {
 	changePageNo: function(pageNo) {
 		if (pageNo != this.config.pageNo) {
 			var params = {
-				'page.pageNo': pageNo,
-				'page.pageSize': this.config.pageSize,
-				'page.orderBy': this.config.orderBy,
-				'page.order': this.config.asc ? 'ASC' : 'DESC'
+				'pageNo': pageNo,
+				'pageSize': this.config.pageSize,
+				'orderBy': this.config.orderBy,
+				'order': this.config.asc ? 'ASC' : 'DESC'
 			};
 
 			var targetParams = {};
@@ -65,10 +65,10 @@ Table.prototype = {
 	changePageSize: function(pageSize) {
 		if (pageSize != this.config.pageSize) {
 			var params = {
-				'page.pageNo': this.config.pageNo,
-				'page.pageSize': pageSize,
-				'page.orderBy': this.config.orderBy,
-				'page.order': this.config.asc ? 'ASC' : 'DESC'
+				'pageNo': this.config.pageNo,
+				'pageSize': pageSize,
+				'orderBy': this.config.orderBy,
+				'order': this.config.asc ? 'ASC' : 'DESC'
 			};
 
 			var targetParams = {};
@@ -153,10 +153,10 @@ Table.prototype = {
 		var url = this.config.exportUrl;
 
 		var params = {
-			'page.pageNo': this.config.pageNo,
-			'page.pageSize': this.config.pageSize,
-			'page.orderBy': this.config.orderBy,
-			'page.order': this.config.asc ? 'ASC' : 'DESC'
+			'pageNo': this.config.pageNo,
+			'pageSize': this.config.pageSize,
+			'orderBy': this.config.orderBy,
+			'order': this.config.asc ? 'ASC' : 'DESC'
 		};
 
 		var targetParams = {};

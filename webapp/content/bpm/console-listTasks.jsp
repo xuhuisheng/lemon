@@ -34,34 +34,34 @@
         <th class="sorting" name="name">名称</th>
         <th class="sorting" name="createTime">创建时间</th>
         <th class="sorting" name="assignee">负责人</th>
-        <th width="180">&nbsp;</th>
+        <th width="170">&nbsp;</th>
       </tr>
     </thead>
 
     <tbody>
-      <s:iterator value="taskDtos" var="item">
+      <c:forEach items="${tasks}" var="item">
       <tr>
         <td><input type="checkbox" class="selectedItem" name="selectedItem" value="${item.id}"></td>
 	    <td>${item.id}</td>
 	    <td>${item.name}</td>
-	    <td><s:date name="createTime" format="yyyy-MM-dd HH:mm:ss" /></td>
-	    <td>${item.username}</td>
+	    <td><fmt:formatDate value="${item.createTime}" pattern="yyyy-MM-dd HH:mm:ss"/></td>
+	    <td><tags:user userId="${item.assignee}"/></td>
         <td>
-          <a href="workspace!prepareCompleteTask.do?taskId=${item.id}">完成</a>
-		  <s:if test="assignee==null">
-          <a href="workspace!claimTask.do?taskId=${item.id}">认领</a>
-		  </s:if>
-		  <s:if test="owner==null">
-          <a href="workspace!delegateTask.do?taskId=${item.id}">代理</a>
-		  </s:if>
-		  <s:else>
-          <a href="workspace!resolveTask.do?taskId=${item.id}">处理</a>
-		  </s:else>
-          <a href="workspace!viewHistory.do?processInstanceId=${item.processInstanceId}">历史</a>
-          <a href="console!prepareJump.do?executionId=${item.executionId}">自由跳转</a>
+          <a href="workspace-prepareCompleteTask.do?taskId=${item.id}">完成</a>
+		  <c:if test="${assignee==null}">
+          <a href="workspace-claimTask.do?taskId=${item.id}">认领</a>
+		  </c:if>
+		  <c:if test="${owner==null}">
+          <a href="workspace-delegateTask.do?taskId=${item.id}">代理</a>
+		  </c:if>
+		  <c:if test="${assignee != null && owner != null}">
+          <a href="workspace-resolveTask.do?taskId=${item.id}">处理</a>
+		  </c:if>
+          <a href="workspace-viewHistory.do?processInstanceId=${item.processInstanceId}">历史</a>
+          <a href="console-prepareJump.do?executionId=${item.executionId}">自由跳转</a>
         </td>
       </tr>
-      </s:iterator>
+      </c:forEach>
     </tbody>
   </table>
         </div>

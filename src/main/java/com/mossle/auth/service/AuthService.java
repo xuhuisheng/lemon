@@ -1,6 +1,7 @@
 package com.mossle.auth.service;
 
 import java.util.ArrayList;
+import java.util.Collections;
 import java.util.List;
 
 import javax.annotation.Resource;
@@ -80,6 +81,10 @@ public class AuthService {
             }
         }
 
+        if (roleIds == null) {
+            roleIds = Collections.emptyList();
+        }
+
         for (Long roleId : roleIds) {
             Role role = roleManager.get(roleId);
             boolean skip = false;
@@ -157,7 +162,7 @@ public class AuthService {
 
             Perm perm = permManager.findUnique(
                     "from Perm where code=? and scopeId=?", permStr, scopeId);
-            Assert.notNull(perm);
+            Assert.notNull(perm, "cannot find perm");
             access.setPerm(perm);
             accessManager.save(access);
         }

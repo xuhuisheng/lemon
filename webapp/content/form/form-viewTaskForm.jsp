@@ -20,9 +20,9 @@ document.onmouseup = function(e) {};
 document.ondblclick = function(e) {};
 
 var buttons = [];
-<s:iterator value="formInfo.buttons" var="item">
+<c:forEach items="${formInfo.buttons}" var="item">
 buttons.push('${item}');
-</s:iterator>
+</c:forEach>
 
 if (buttons.length == 0) {
 	buttons = ['保存草稿', '完成任务'];
@@ -41,27 +41,27 @@ $(function() {
 	$(document).delegate('#xf-form-table-foot button', 'click', function(e) {
 		switch($(this).html()) {
 			case '保存草稿':
-				$('#xf-form').attr('action', 'form!saveDraft.do');
+				$('#xf-form').attr('action', 'form-saveDraft.do');
 				$('#xf-form').submit();
 				break;
 			case '完成任务':
-				$('#xf-form').attr('action', 'form!completeTask.do');
+				$('#xf-form').attr('action', 'form-completeTask.do');
 				$('#xf-form').submit();
 				break;
 			case '发起流程':
-				$('#xf-form').attr('action', 'form!startProcessInstance.do');
+				$('#xf-form').attr('action', 'form-startProcessInstance.do');
 				$('#xf-form').submit();
 				break;
 			case '驳回':
-				$('#xf-form').attr('action', '${scopePrefix}/bpm/workspace!rollback.do');
+				$('#xf-form').attr('action', '${scopePrefix}/bpm/workspace-rollback.do');
 				$('#xf-form').submit();
 				break;
 			case '转办':
-				$('#modal form').attr('action', '${scopePrefix}/bpm/workspace!doDelegate.do');
+				$('#modal form').attr('action', '${scopePrefix}/bpm/workspace-doDelegate.do');
 				$('#modal').modal();
 				break;
 			case '协办':
-				$('#modal form').attr('action', '${scopePrefix}/bpm/workspace!doDelegateHelp.do');
+				$('#modal form').attr('action', '${scopePrefix}/bpm/workspace-doDelegateHelp.do');
 				$('#modal').modal();
 				break;
 		}
@@ -78,7 +78,7 @@ $(function() {
 			el.parentNode.removeChild(el);
 		} else {
 			$('#__gef_container__').hide();
-			$('#m-main').append('<form action="${scopePrefix}/form/form!completeTask.do"><button name="taskId" value="${formInfo.taskId}">完成</button></form>');
+			$('#m-main').append('<form action="${scopePrefix}/form/form-completeTask.do"><button name="taskId" value="${formInfo.taskId}">完成</button></form>');
 		}
 	}, 500);
 })
@@ -109,7 +109,7 @@ $(function() {
 		<div id="__gef_canvas__" style="float:left;clear:right;overflow:auto;">
 		  <div id="xf-center" class="xf-center" unselectable="on">
 			<div id="xf-layer-form" class="xf-layer-form">
-			  <form id="xf-form" method="post" action="${scopePrefix}/form/form!completeTask.do?operationMode=STORE" class="xf-form">
+			  <form id="xf-form" method="post" action="${scopePrefix}/form/form-completeTask.do?operationMode=STORE" class="xf-form">
 <input id="taskId" type="hidden" name="taskId" value="${formInfo.taskId}">
 <input id="businessKey" type="hidden" name="businessKey" value="${dynamicModel.id}">
 <!--
@@ -129,7 +129,7 @@ $(function() {
     </section>
 	<!-- end of main -->
 
-    <form id="f" action="form-template!save.do" method="post" style="display:none;">
+    <form id="f" action="form-template-save.do" method="post" style="display:none;">
 	  <textarea id="__gef_content__" name="content">${formTemplate.content}</textarea>
 	</form>
 

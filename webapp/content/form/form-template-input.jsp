@@ -60,9 +60,6 @@
 		    <div id="endnone" class="paletteItem-endnone" style="text-align:center;font-size:12px;cursor:pointer;" unselectable="on">
 		      <img class="xf-fileupload" src="${scopePrefix}/widgets/xform/images/xform/new_upload.png" unselectable="on" title="上传">
 		    </div>
-		    <div id="endnone" class="paletteItem-endnone" style="text-align:center;font-size:12px;cursor:pointer;" unselectable="on">
-		      <img class="xf-userPicker" src="${scopePrefix}/widgets/xform/images/xform/userpicker.png" unselectable="on" title="人员">
-		    </div>
 		  </div>
 	    </div>
 		<div id="__gef_canvas__" style="float:left;clear:right;overflow:auto;">
@@ -125,10 +122,10 @@
     </section>
 	<!-- end of main -->
 
-    <form id="f" action="form-template!save.do" method="post" style="display:none;">
-	<s:if test="model != null">
+    <form id="f" action="form-template-save.do" method="post" style="display:none;">
+	<c:if test="${model != null}">
 	  <input id="__gef_id__" name="id" value="${model.id}">
-    </s:if>
+    </c:if>
 	  <input id="__gef_name__" name="name" value="${model.name}">
 	  <textarea id="__gef_content__" name="content">${model.content}</textarea>
 	</form>

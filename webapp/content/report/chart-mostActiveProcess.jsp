@@ -7,24 +7,24 @@
 
   <head>
     <%@include file="/common/meta.jsp"%>
-    <title><spring:message code="auth.access.list.title" text="资源权限"/></title>
+    <title>最常用流程</title>
     <%@include file="/common/s.jsp"%>
 
-    <link rel="stylesheet" href="../s/jqplot/jquery.jqplot.min.css" type="text/css" media="screen" />
+    <link rel="stylesheet" href="${ctx}/s/jqplot/jquery.jqplot.min.css" type="text/css" media="screen" />
     <!--[if lte IE 8]><script language="javascript" type="text/javascript" src="../s/jqplot/excanvas.min.js"></script><![endif]-->
-	<script type="text/javascript" src="../s/jqplot/jquery.jqplot.min.js"></script>
-    <script type="text/javascript" src="../s/jqplot/plugins/jqplot.barRenderer.min.js"></script>
-    <script type="text/javascript" src="../s/jqplot/plugins/jqplot.categoryAxisRenderer.min.js"></script>
-    <script type="text/javascript" src="../s/jqplot/plugins/jqplot.pointLabels.min.js"></script>
-	<script type="text/javascript" src="../s/jqplot/plugins/jqplot.pieRenderer.min.js"></script>
+	<script type="text/javascript" src="${ctx}/s/jqplot/jquery.jqplot.min.js"></script>
+    <script type="text/javascript" src="${ctx}/s/jqplot/plugins/jqplot.barRenderer.min.js"></script>
+    <script type="text/javascript" src="${ctx}/s/jqplot/plugins/jqplot.categoryAxisRenderer.min.js"></script>
+    <script type="text/javascript" src="${ctx}/s/jqplot/plugins/jqplot.pointLabels.min.js"></script>
+	<script type="text/javascript" src="${ctx}/s/jqplot/plugins/jqplot.pieRenderer.min.js"></script>
 
 	<script type="text/javascript">
 
 function drawPie() {
   var data = [
-<s:iterator value="list" var="item">
+<c:forEach items="${list}" var="item">
 	["${item.name}", ${item.c}],
-</s:iterator>
+</c:forEach>
 	[]
   ];
   var plot1 = jQuery.jqplot ('pie', [data],

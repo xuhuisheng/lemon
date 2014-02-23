@@ -109,12 +109,12 @@ public class ProxySession implements Session {
 
     public MessageConsumer createConsumer(Destination destination)
             throws JMSException {
-        return createConsumer(destination);
+        return createConsumer(destination, null, true);
     }
 
     public MessageConsumer createConsumer(Destination destination,
             String messageSelector) throws JMSException {
-        return createConsumer(destination, messageSelector);
+        return createConsumer(destination, messageSelector, true);
     }
 
     public MessageConsumer createConsumer(Destination destination,

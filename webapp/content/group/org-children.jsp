@@ -7,7 +7,7 @@
 
   <head>
     <%@include file="/common/meta.jsp"%>
-    <title>管理下属</title>
+    <title>下级组织</title>
     <%@include file="/common/s.jsp"%>
     <script type="text/javascript">
 var config = {
@@ -25,7 +25,7 @@ var config = {
     },
 	selectedItemClass: 'selectedItem',
 	gridFormId: 'orgGridForm',
-	exportUrl: 'group-base!exportExcel.do'
+	exportUrl: 'group-base-export.do'
 };
 
 var table;
@@ -57,10 +57,10 @@ $(function() {
 		</header>
         <div id="orgSearch" class="content content-inner">
 <!--
-		  <button class="btn" onclick="location.href='group-base!inputRoot.do'">添加顶级部门</button>
+		  <button class="btn" onclick="location.href='group-base-inputRoot.do'">添加顶级部门</button>
 -->
-		  <button class="btn" onclick="location.href='org!users.do?partyDimId=${partyDimId}&partyEntityId=${partyEntityId}'">管理下属</button>
-		  <button class="btn" onclick="location.href='org!children.do?partyDimId=${partyDimId}&partyEntityId=${partyEntityId}'">下级组织</button>
+		  <button class="btn" onclick="location.href='org-users.do?partyDimId=${partyDimId}&partyEntityId=${partyEntityId}'">管理下属</button>
+		  <button class="btn" onclick="location.href='org-children.do?partyDimId=${partyDimId}&partyEntityId=${partyEntityId}'">下级组织</button>
 		  <br>
 		  <br>
 
@@ -70,12 +70,12 @@ $(function() {
 	  <article class="m-blank">
 	    <div class="pull-left">
 		  <region:region-permission permission="org:create">
-		  <button class="btn btn-small" onclick="location.href='org!inputChild.do?partyDimId=${partyDimId}&partyEntityId=${partyEntityId}'">新建</button>
+		  <button class="btn btn-small a-insert" onclick="location.href='org-inputChild.do?partyDimId=${partyDimId}&partyEntityId=${partyEntityId}'">新建</button>
 		  </region:region-permission>
 		  <region:region-permission permission="org:delete">
-		  <button class="btn btn-small" onclick="table.removeAll()">删除</button>
+		  <button class="btn btn-small a-remove" onclick="table.removeAll()">删除</button>
 		  </region:region-permission>
-		  <button class="btn btn-small" onclick="table.exportExcel()">导出</button>
+		  <button class="btn btn-small a-export" onclick="table.exportExcel()">导出</button>
 		</div>
 
 		<div class="pull-right">
@@ -97,7 +97,7 @@ $(function() {
 		</header>
 		<div class="content">
 
-<form id="orgGridForm" name="orgGridForm" method='post' action="org!removeChild.do?partyDimId=${partyDimId}&partyEntityId=${partyEntityId}" class="m-form-blank">
+<form id="orgGridForm" name="orgGridForm" method='post' action="org-removeChild.do?partyDimId=${partyDimId}&partyEntityId=${partyEntityId}" class="m-form-blank">
   <table id="orgGrid" class="m-table table-hover">
     <thead>
       <tr>
@@ -108,13 +108,13 @@ $(function() {
     </thead>
 
     <tbody>
-      <s:iterator value="page.result" var="item">
+      <c:forEach items="${page.result}" var="item">
       <tr>
-        <td><input type="checkbox" class="selectedItem" name="selectedItem" value="${item.id}"></td>
+        <td><input type="checkbox" class="selectedItem a-check" name="selectedItem" value="${item.id}"></td>
         <td>${item.id}</td>
         <td>${item.name}</td>
       </tr>
-      </s:iterator>
+      </c:forEach>
     </tbody>
   </table>
 </form>

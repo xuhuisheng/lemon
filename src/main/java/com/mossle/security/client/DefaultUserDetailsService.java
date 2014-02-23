@@ -36,6 +36,7 @@ public class DefaultUserDetailsService implements UserDetailsService {
 
         if (debug) {
             SpringSecurityUserAuth userAuth = new SpringSecurityUserAuth();
+            userAuth.setId("0");
             userAuth.setUsername(username);
             userAuth.setDisplayName(username);
             userAuth.setPermissions(Collections.singletonList("*"));
@@ -49,8 +50,6 @@ public class DefaultUserDetailsService implements UserDetailsService {
 
             SpringSecurityUserAuth userAuthResult = new SpringSecurityUserAuth();
             beanMapper.copy(userAuthDto, userAuthResult);
-
-            String password = userAuthResult.getPassword();
 
             if (defaultPassword != null) {
                 userAuthResult.setPassword(defaultPassword);

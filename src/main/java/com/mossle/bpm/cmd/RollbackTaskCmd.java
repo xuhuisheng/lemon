@@ -58,7 +58,7 @@ public class RollbackTaskCmd implements Command<Integer> {
         String historyTaskId = findNearestUserTask();
 
         if (historyTaskId == null) {
-            logger.info("cannot rollback {}", historyTaskId);
+            logger.info("cannot rollback {}", taskId);
 
             return 2;
         }
@@ -74,7 +74,7 @@ public class RollbackTaskCmd implements Command<Integer> {
         Node node = graph.findById(historicActivityInstanceEntity.getId());
 
         if (!checkCouldRollback(node)) {
-            logger.info("cannot rollback {}", historyTaskId);
+            logger.info("cannot rollback {}", taskId);
 
             return 2;
         }
@@ -119,7 +119,7 @@ public class RollbackTaskCmd implements Command<Integer> {
                 .getTaskEntityManager().findTaskById(taskId);
 
         if (taskEntity == null) {
-            logger.debug("cannot find task : {}", taskEntity);
+            logger.debug("cannot find task : {}", taskId);
 
             return null;
         }
@@ -311,7 +311,6 @@ public class RollbackTaskCmd implements Command<Integer> {
         executionEntity
                 .setActivity(getActivity(historicActivityInstanceEntity));
 
-        Date now = new Date();
         // 创建HistoricActivityInstance
         Context.getCommandContext().getHistoryManager()
                 .recordActivityStart(executionEntity);

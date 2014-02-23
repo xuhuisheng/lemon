@@ -23,7 +23,7 @@ var config = {
     },
 	selectedItemClass: 'selectedItem',
 	gridFormId: 'dynamicModelGridForm',
-	exportUrl: 'dynamic-model!exportExcel.do'
+	exportUrl: 'form-template-export.do'
 };
 
 var table;
@@ -55,7 +55,7 @@ $(function() {
 		</header>
         <div id="userSearch" class="content content-inner">
 
-		  <form name="userForm" method="post" action="form-template.do" class="form-inline">
+		  <form name="userForm" method="post" action="form-template-list.do" class="form-inline">
 		  </form>
 
 		</div>
@@ -64,7 +64,7 @@ $(function() {
 	  <article class="m-blank">
 	    <div class="pull-left">
 		  <region:region-permission permission="user:create">
-		  <button class="btn btn-small" onclick="location.href='form-template!input.do'">新建</button>
+		  <button class="btn btn-small" onclick="location.href='form-template-input.do'">新建</button>
 		  </region:region-permission>
 		  <region:region-permission permission="user:delete">
 		  <button class="btn btn-small" onclick="table.removeAll()">删除</button>
@@ -91,7 +91,7 @@ $(function() {
 		</header>
 		<div class="content">
 
-<form id="dynamicModelGridForm" name="dynamicModelGridForm" method='post' action="form-template!removeAll.do" class="m-form-blank">
+<form id="dynamicModelGridForm" name="dynamicModelGridForm" method='post' action="form-template-remove.do" class="m-form-blank">
   <table id="dynamicModelGrid" class="m-table table-hover">
     <thead>
       <tr>
@@ -105,7 +105,7 @@ $(function() {
     </thead>
 
     <tbody>
-      <s:iterator value="records" var="item">
+      <c:forEach items="${records}" var="item">
       <tr>
         <td><input type="checkbox" class="selectedItem" name="selectedItem" value="${item.code}"></td>
         <td>${item.code}</td>
@@ -113,10 +113,10 @@ $(function() {
         <td>${item.status == 0 ? '流程草稿' : '任务草稿'}</td>
         <td>${item.ref}</td>
         <td>
-          <a href="form!viewStartForm.do?businessKey=${item.code}&bpmProcessId=${item.category}">发起流程</a>
+          <a href="form-viewStartForm.do?businessKey=${item.code}&bpmProcessId=${item.category}">发起流程</a>
         </td>
       </tr>
-      </s:iterator>
+      </c:forEach>
     </tbody>
   </table>
 </form>

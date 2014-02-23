@@ -24,7 +24,7 @@ var config = {
     },
 	selectedItemClass: 'selectedItem',
 	gridFormId: 'roleDefGridForm',
-	exportUrl: 'role-def!exportExcel.do'
+	exportUrl: 'role-def-export.do'
 };
 
 var table;
@@ -56,7 +56,7 @@ $(function() {
 		</header>
         <div id="roleDefSearch" class="content content-inner">
 
-		  <form name="roleDefForm" method="post" action="role-def.do" class="form-inline">
+		  <form name="roleDefForm" method="post" action="role-def-list.do" class="form-inline">
 		    <label for="roleDef_name"><spring:message code='auth.roleDef.list.search.name' text='名称'/>:</label>
 		    <input type="text" id="roleDef_name" name="filter_LIKES_name" value="${param.filter_LIKES_name}">
 			<button class="btn btn-small" onclick="document.permForm.submit()">查询</button>
@@ -67,7 +67,7 @@ $(function() {
 
 	  <article class="m-blank">
 	    <div class="pull-left">
-		  <button class="btn btn-small" onclick="location.href='role-def!sync.do?id=${param.id}'">同步</button>
+		  <button class="btn btn-small a-submit" onclick="location.href='role-def-sync.do?id=${param.id}'">同步</button>
 		</div>
 
 		<div class="pull-right">
@@ -89,7 +89,7 @@ $(function() {
 		</header>
 		<div class="content">
 
-  <form id="roleDefGridForm" name="roleDefGridForm" method='post' action="role-def!removeAll.do" class="m-form-blank">
+  <form id="roleDefGridForm" name="roleDefGridForm" method='post' action="role-def-remove.do" class="m-form-blank">
     <table id="roleDefGrid" class="m-table table-hover">
       <thead>
         <tr>
@@ -101,7 +101,7 @@ $(function() {
         </tr>
       </thead>
       <tbody>
-        <s:iterator value="roleDtos" var="item">
+        <c:forEach items="${roleDtos}" var="item">
         <tr>
           <td><input type="checkbox" class="selectedItem" name="selectedItem" value="${item.id}"></td>
           <td>${item.id}</td>
@@ -111,7 +111,7 @@ $(function() {
 		    &nbsp;
           </td>
         </tr>
-        </s:iterator>
+        </c:forEach>
       </tbody>
     </table>
   </form>

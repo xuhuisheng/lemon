@@ -38,33 +38,33 @@ $(function() {
 		</header>
 		<div class="content content-inner">
 
-<form id="userForm2" method="post" action="user-role!save.do?operationMode=STORE" class="form-horizontal">
+<form id="userForm2" method="post" action="user-role-save.do" class="form-horizontal">
   <input type="hidden" name="id" value="${id}">
   <div class="control-group">
     <div class="controls">
 	  <h5>local</h5>
-	  <s:iterator value="roles" var="item">
-        <input id="selectedItem-${item.id}" type="checkbox" name="selectedItem" value="${item.id}" <s:if test='%{#action.containsRole(#item.id)}'>checked</s:if>>&nbsp;
+	  <c:forEach items="${roles}" var="item">
+        <input id="selectedItem-${item.id}" type="checkbox" name="selectedItem" value="${item.id}" <tags:contains items="${userRoleIds}" item="${item.id}">checked</tags:contains>>&nbsp;
         <label for="selectedItem-${item.id}" style="display:inline;">${item.name}</label><br>
-      </s:iterator>
+      </c:forEach>
     </div>
   </div>
   <hr>
-<s:iterator value="sharedRoleMap" var="entry">
+<c:forEach items="${sharedRoleMap}" var="entry">
   <div class="control-group">
     <div class="controls">
 	  <h5>${entry.key}</h5>
-	  <s:iterator value="value" var="item">
-        <input id="selectedItem-${item.id}" type="checkbox" name="selectedItem" value="${item.id}" <s:if test='%{#action.containsRole(#item.id)}'>checked</s:if>>&nbsp;
+	  <c:forEach items="${entry.value}" var="item">
+        <input id="selectedItem-${item.id}" type="checkbox" name="selectedItem" value="${item.id}" <tags:contains items="${userRoleIds}" item="${item.id}">checked</tags:contains>>&nbsp;
         <label for="selectedItem-${item.id}" style="display:inline;">${item.name}</label><br>
-      </s:iterator>
+      </c:forEach>
     </div>
   </div>
   <hr>
-</s:iterator>
+</c:forEach>
   <div class="control-group">
     <div class="controls">
-      <button id="submitButton" class="btn"><spring:message code='core.input.save' text='保存'/></button>
+      <button id="submitButton" class="btn a-submit"><spring:message code='core.input.save' text='保存'/></button>
 	  &nbsp;
       <button type="button" onclick="history.back();" class="btn"><spring:message code='core.input.back' text='返回'/></button>
     </div>

@@ -31,25 +31,25 @@
       <tr>
         <th width="10" class="m-table-check"><input type="checkbox" name="checkAll" onchange="toggleSelectedItems(this.checked)"></th>
         <th class="sorting" name="id">编号</th>
-        <th class="sorting" name="assignee">委托人</th>
-        <th class="sorting" name="attorney">被委托人</th>
-        <th class="sorting" name="delegateTime">委托时间</th>
-        <th class="sorting" name="status">状态</th>
+        <th class="sorting" name="key">委托人</th>
+        <th class="sorting" name="name">被委托人</th>
+        <th class="sorting" name="category">委托时间</th>
+        <th class="sorting" name="suspended">状态</th>
         <th width="150">&nbsp;</th>
       </tr>
     </thead>
 
     <tbody>
-      <s:iterator value="delegateHistories" var="item">
+      <c:forEach items="${bpmDelegateHistories}" var="item">
       <tr>
         <td><input type="checkbox" class="selectedItem" name="selectedItem" value="${item.id}"></td>
 	    <td>${item.id}</td>
-	    <td>${item.assigneeDisplayName}</td>
-	    <td>${item.attorneyDisplayName}</td>
-	    <td>${item.delegateTime}</td>
-	    <td>${item.status == 1 ? '启用' : '禁用'}</td>
+	    <td><tags:user userId="${item.assignee}"/></td>
+	    <td><tags:user userId="${item.attorney}"/></td>
+	    <td><fmt:formatDate value="${item.delegateTime}" pattern="yyyy-MM-dd HH:mm:ss"/></td>
+	    <td>${item.status == 1 ? '有效' : '无效'}</td>
       </tr>
-      </s:iterator>
+      </c:forEach>
     </tbody>
   </table>
         </div>
