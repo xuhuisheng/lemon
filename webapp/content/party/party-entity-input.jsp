@@ -60,6 +60,12 @@ $(function() {
     </div>
   </div>
   <div class="control-group">
+    <label class="control-label" for="orgentity_ref">引用:</label>
+    <div class="controls">
+	  <input id="orgentity_ref" type="text" name="ref" value="${model.ref}" class="text" maxlength="50">
+    </div>
+  </div>
+  <div class="control-group">
     <div class="controls">
       <button id="submitButton" class="btn"><spring:message code='core.input.save' text='保存'/></button>
       <button type="button" onclick="history.back();" class="btn"><spring:message code='core.input.back' text='返回'/></button>

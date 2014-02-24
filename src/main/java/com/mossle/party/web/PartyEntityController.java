@@ -70,6 +70,7 @@ public class PartyEntityController {
 
     @RequestMapping("party-entity-save")
     public String save(@ModelAttribute PartyEntity partyEntity,
+            @RequestParam("partyTypeId") Long partyTypeId,
             RedirectAttributes redirectAttributes) {
         PartyEntity dest = null;
         Long id = partyEntity.getId();
@@ -81,6 +82,7 @@ public class PartyEntityController {
             dest = partyEntity;
         }
 
+        dest.setPartyType(partyTypeManager.get(partyTypeId));
         partyEntityManager.save(dest);
 
         messageHelper.addFlashMessage(redirectAttributes, "core.success.save",

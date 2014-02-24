@@ -39,7 +39,7 @@ $(function() {
 
 		<div class="content content-inner">
 
-<form id="orgTypeForm" method="post" action="party-dim-root-save.do?operationMode=STORE" class="form-horizontal">
+<form id="orgTypeForm" method="post" action="party-dim-root-save.do" class="form-horizontal">
   <c:if test="${model != null}">
   <input id="orgType_id" type="hidden" name="id" value="${model.id}">
   </c:if>
@@ -56,7 +56,7 @@ $(function() {
   <div class="control-group">
 	<label class="control-label" for="orgType_entity">组织</label>
 	<div class="controls">
-	  <select id="orgType_entity" name="partyDimId">
+	  <select id="orgType_entity" name="partyEntityId">
 	    <c:forEach items="${partyEntities}" var="item">
 	    <option value="${item.id}" ${model.partyEntity.id==item.id ? 'selected' : ''}>${item.name}</option>
 		</c:forEach>

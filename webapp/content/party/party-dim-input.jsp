@@ -50,6 +50,12 @@ $(function() {
     </div>
   </div>
   <div class="control-group">
+	<label class="control-label" for="orgType_priority">排序</label>
+	<div class="controls">
+      <input id="orgType_priority" type="text" name="priority" value="${model.priority}" size="40" class="text number" maxlength="10">
+    </div>
+  </div>
+  <div class="control-group">
     <div class="controls">
       <button id="submitButton" class="btn"><spring:message code='core.input.save' text='保存'/></button>
       <button type="button" onclick="history.back();" class="btn"><spring:message code='core.input.back' text='返回'/></button>

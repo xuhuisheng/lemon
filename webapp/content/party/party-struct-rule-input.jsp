@@ -44,6 +44,16 @@ $(function() {
   <input id="orgStructRule_orgStructRuleId" type="hidden" name="id" value="${model.id}">
   </c:if>
   <div class="control-group">
+	<label class="control-label" for="orgStructRule_partyDimId">维度</label>
+	<div class="controls">
+	  <select id="orgStructRule_partyDimId" name="partyDimId">
+	    <c:forEach items="${partyDims}" var="item">
+	    <option value="${item.id}" ${model.partyDim.id==item.id ? 'selected' : ''}>${item.name}</option>
+		</c:forEach>
+	  </select>
+    </div>
+  </div>
+  <div class="control-group">
 	<label class="control-label" for="orgStructRule_orgStructType"><spring:message code="org.structrule.input.type" text="类型"/></label>
 	<div class="controls">
 	  <select id="orgStructRule_orgStructType" name="partyStructTypeId">

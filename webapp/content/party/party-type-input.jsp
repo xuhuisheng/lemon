@@ -50,6 +50,13 @@ $(function() {
     </div>
   </div>
   <div class="control-group">
+	<label class="control-label" for="orgType_person0">是否人员</label>
+	<div class="controls">
+      <label><input id="orgType_person1" type="radio" name="person" value="1" ${model.person == 1 ? 'checked' : ''}>是</label>
+      <label><input id="orgType_person0" type="radio" name="person" value="0" ${model.person != 1 ? 'checked' : ''}>否</label>
+    </div>
+  </div>
+  <div class="control-group">
     <div class="controls">
       <button id="submitButton" class="btn"><spring:message code='core.input.save' text='保存'/></button>
       <button type="button" onclick="history.back();" class="btn"><spring:message code='core.input.back' text='返回'/></button>

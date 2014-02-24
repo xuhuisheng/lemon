@@ -109,9 +109,9 @@ $(function() {
         <td>${item.enabled ? '启用' : '禁用'}</td>
         <td>${item.authorities}</td>
         <td>
-			<perm:permission permission="user:auth">
+			<tags:hasPerm value="user:auth">
             <a href="user-connector-configRole.do?ref=${item.ref}" class="a-update"><spring:message code="user.user.list.role" text="设置权限"/></a>
-			</perm:permission>
+			</tags:hasPerm>
         </td>
       </tr>
       </c:forEach>

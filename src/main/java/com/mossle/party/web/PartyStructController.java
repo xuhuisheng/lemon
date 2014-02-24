@@ -12,10 +12,12 @@ import com.mossle.core.hibernate.PropertyFilter;
 import com.mossle.core.page.Page;
 import com.mossle.core.spring.MessageHelper;
 
+import com.mossle.party.domain.PartyDim;
 import com.mossle.party.domain.PartyEntity;
 import com.mossle.party.domain.PartyStruct;
 import com.mossle.party.domain.PartyStructId;
 import com.mossle.party.domain.PartyStructType;
+import com.mossle.party.manager.PartyDimManager;
 import com.mossle.party.manager.PartyEntityManager;
 import com.mossle.party.manager.PartyStructManager;
 import com.mossle.party.manager.PartyStructTypeManager;
@@ -36,6 +38,7 @@ public class PartyStructController {
     private PartyEntityManager partyEntityManager;
     private PartyStructManager partyStructManager;
     private PartyStructTypeManager partyStructTypeManager;
+    private PartyDimManager partyDimManager;
     private MessageHelper messageHelper;
 
     @RequestMapping("party-struct-list")
@@ -60,8 +63,10 @@ public class PartyStructController {
         List<PartyStructType> partyStructTypes = partyStructTypeManager
                 .getAll();
         List<PartyEntity> partyEntities = partyEntityManager.getAll();
+        List<PartyDim> partyDims = partyDimManager.getAll();
         model.addAttribute("partyStructTypes", partyStructTypes);
         model.addAttribute("partyEntities", partyEntities);
+        model.addAttribute("partyDims", partyDims);
 
         if (partyStructId != null) {
             PartyStruct partyStruct = convertPartyStruct(partyStructId);
@@ -74,9 +79,12 @@ public class PartyStructController {
     @RequestMapping("party-struct-save")
     public String save(
             @RequestParam(value = "partyStructId", required = false) String partyStructId,
+            @RequestParam("partyDimId") Long partyDimId,
             @RequestParam("partyStructTypeId") Long partyStructTypeId,
             @RequestParam("parentEntityId") Long parentEntityId,
             @RequestParam("childEntityId") Long childEntityId,
+            @RequestParam("status") int status,
+            @RequestParam("priority") int priority,
             RedirectAttributes redirectAttributes) {
         if (partyStructId != null) {
             PartyStruct partyStruct = convertPartyStruct(partyStructId);
@@ -87,6 +95,9 @@ public class PartyStructController {
                 parentEntityId, childEntityId);
         PartyStruct partyStruct = new PartyStruct();
         partyStruct.setId(thePartyStructId);
+        partyStruct.setStatus(status);
+        partyStruct.setPriority(priority);
+        partyStruct.setPartyDim(partyDimManager.get(partyDimId));
         partyStructManager.save(partyStruct);
         messageHelper.addFlashMessage(redirectAttributes, "core.success.save",
                 "保存成功");
@@ -129,13 +140,18 @@ public class PartyStructController {
     }
 
     @Resource
+    public void setPartyDimManager(PartyDimManager partyDimManager) {
+        this.partyDimManager = partyDimManager;
+    }
+
+    @Resource
     public void setMessageHelper(MessageHelper messageHelper) {
         this.messageHelper = messageHelper;
     }
 
     // ~ ======================================================================
     protected PartyStructId convertPartyStructId(String id) {
-        String[] array = id.split(",");
+        String[] array = id.split(":");
         Long partyStructTypeId = Long.parseLong(array[0]);
         Long parentEntityId = Long.parseLong(array[1]);
         Long childEntityId = Long.parseLong(array[2]);

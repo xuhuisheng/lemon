@@ -14,6 +14,7 @@ import com.mossle.core.page.Page;
 import com.mossle.core.spring.MessageHelper;
 
 import com.mossle.party.domain.PartyStructType;
+import com.mossle.party.manager.PartyDimManager;
 import com.mossle.party.manager.PartyStructTypeManager;
 
 import org.springframework.stereotype.Controller;
@@ -30,6 +31,7 @@ import org.springframework.web.servlet.mvc.support.RedirectAttributes;
 @RequestMapping("party")
 public class PartyStructTypeController {
     private PartyStructTypeManager partyStructTypeManager;
+    private PartyDimManager partyDimManager;
     private MessageHelper messageHelper;
     private BeanMapper beanMapper = new BeanMapper();
 
@@ -52,11 +54,14 @@ public class PartyStructTypeController {
             model.addAttribute("model", partyStructType);
         }
 
+        model.addAttribute("partyDims", partyDimManager.getAll());
+
         return "party/party-struct-type-input";
     }
 
     @RequestMapping("party-struct-type-save")
     public String save(@ModelAttribute PartyStructType partyStructType,
+            @RequestParam("partyDimId") Long partyDimId,
             RedirectAttributes redirectAttributes) {
         PartyStructType dest = null;
         Long id = partyStructType.getId();
@@ -68,11 +73,13 @@ public class PartyStructTypeController {
             dest = partyStructType;
         }
 
+        dest.setPartyDim(partyDimManager.get(partyDimId));
+
         partyStructTypeManager.save(dest);
         messageHelper.addFlashMessage(redirectAttributes, "core.success.save",
                 "保存成功");
 
-        return "redirect:/party/party-strucxt-type-list.do";
+        return "redirect:/party/party-struct-type-list.do";
     }
 
     @RequestMapping("party-struct-type-remove")
@@ -83,7 +90,7 @@ public class PartyStructTypeController {
         messageHelper.addFlashMessage(redirectAttributes,
                 "core.success.delete", "删除成功");
 
-        return "redirect:/party/party-strucxt-type-list.do";
+        return "redirect:/party/party-struct-type-list.do";
     }
 
     // ~ ======================================================================
@@ -91,6 +98,11 @@ public class PartyStructTypeController {
     public void setPartyStructTypeManager(
             PartyStructTypeManager partyStructTypeManager) {
         this.partyStructTypeManager = partyStructTypeManager;
+    }
+
+    @Resource
+    public void setPartyDimManager(PartyDimManager partyDimManager) {
+        this.partyDimManager = partyDimManager;
     }
 
     @Resource

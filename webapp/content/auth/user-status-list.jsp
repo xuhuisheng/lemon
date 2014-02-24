@@ -74,12 +74,12 @@ $(function() {
 
 	  <article class="m-blank">
 	    <div class="pull-left">
-		  <perm:permission permission="user:create">
+		  <tags:hasPerm value="user:create">
 		  <button class="btn btn-small" onclick="location.href='user-status-input.do'">新建</button>
-		  </perm:permission>
-		  <perm:permission permission="user:delete">
+		  </tags:hasPerm>
+		  <tags:hasPerm permission="user:delete">
 		  <button class="btn btn-small" onclick="table.removeAll()">删除</button>
-		  </perm:permission>
+		  </tags:hasPerm>
 		  <button class="btn btn-small" onclick="table.exportExcel()">导出</button>
 		  <button class="btn btn-small btn-info" onclick="location.href='user-status-batch-list.do'">批量处理</button>
 		</div>
@@ -129,13 +129,13 @@ $(function() {
         <td>${item.ref}</td>
         <td>${item.authorities}</td>
         <td>
-			<perm:permission permission="user:write">
+			<tags:hasPerm value="user:write">
             <a href="user-status-input.do?id=${item.id}"><spring:message code="core.list.edit" text="编辑"/></a>&nbsp;
-			</perm:permission>
-			<perm:permission permission="user:auth">
+			</tags:hasPerm>
+			<tags:hasPerm value="user:auth">
             <a href="user-status-password.do?id=${item.id}"><spring:message code="user.user.list.password" text="设置密码"/></a>
             <a href="javascript:void(0);location.href='user-role-list.do?id=${item.id}'"><spring:message code="user.user.list.role" text="设置权限"/></a>
-			</perm:permission>
+			</tags:hasPerm>
         </td>
       </tr>
       </c:forEach>

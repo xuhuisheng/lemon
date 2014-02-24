@@ -12,10 +12,12 @@ import com.mossle.core.hibernate.PropertyFilter;
 import com.mossle.core.page.Page;
 import com.mossle.core.spring.MessageHelper;
 
+import com.mossle.party.domain.PartyDim;
 import com.mossle.party.domain.PartyStructRule;
 import com.mossle.party.domain.PartyStructRuleId;
 import com.mossle.party.domain.PartyStructType;
 import com.mossle.party.domain.PartyType;
+import com.mossle.party.manager.PartyDimManager;
 import com.mossle.party.manager.PartyStructRuleManager;
 import com.mossle.party.manager.PartyStructTypeManager;
 import com.mossle.party.manager.PartyTypeManager;
@@ -36,6 +38,7 @@ public class PartyStructRuleController {
     private PartyStructRuleManager partyStructRuleManager;
     private PartyStructTypeManager partyStructTypeManager;
     private PartyTypeManager partyTypeManager;
+    private PartyDimManager partyDimManager;
     private MessageHelper messageHelper;
 
     @RequestMapping("party-struct-rule-list")
@@ -60,8 +63,10 @@ public class PartyStructRuleController {
         List<PartyStructType> partyStructTypes = partyStructTypeManager
                 .getAll();
         List<PartyType> partyTypes = partyTypeManager.getAll();
+        List<PartyDim> partyDims = partyDimManager.getAll();
         model.addAttribute("partyStructTypes", partyStructTypes);
         model.addAttribute("partyTypes", partyTypes);
+        model.addAttribute("partyDims", partyDims);
 
         if (partyStructRuleId != null) {
             PartyStructRule partyStructRule = convertPartyStructRule(partyStructRuleId);
@@ -74,6 +79,7 @@ public class PartyStructRuleController {
     @RequestMapping("party-struct-rule-save")
     public String save(
             @RequestParam(value = "partyStructRuleId", required = false) String partyStructRuleId,
+            @RequestParam("partyDimId") Long partyDimId,
             @RequestParam("partyStructTypeId") Long partyStructTypeId,
             @RequestParam("parentTypeId") Long parentTypeId,
             @RequestParam("childTypeId") Long childTypeId,
@@ -88,6 +94,7 @@ public class PartyStructRuleController {
         PartyStructRuleId thePartyStructRuleId = new PartyStructRuleId(
                 partyStructTypeId, parentTypeId, childTypeId);
         partyStructRule.setId(thePartyStructRuleId);
+        partyStructRule.setPartyDim(partyDimManager.get(partyDimId));
         partyStructRuleManager.save(partyStructRule);
         messageHelper.addFlashMessage(redirectAttributes, "core.success.save",
                 "保存成功");
@@ -131,12 +138,17 @@ public class PartyStructRuleController {
     }
 
     @Resource
+    public void setPartyDimManager(PartyDimManager partyDimManager) {
+        this.partyDimManager = partyDimManager;
+    }
+
+    @Resource
     public void setMessageHelper(MessageHelper messageHelper) {
         this.messageHelper = messageHelper;
     }
 
     protected PartyStructRuleId convertPartyStructRuleId(String id) {
-        String[] array = id.split(",");
+        String[] array = id.split(":");
         Long partyStructTypeId = Long.parseLong(array[0]);
         Long parentTypeId = Long.parseLong(array[1]);
         Long childTypeId = Long.parseLong(array[2]);

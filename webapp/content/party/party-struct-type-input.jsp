@@ -50,6 +50,22 @@ $(function() {
     </div>
   </div>
   <div class="control-group">
+	<label class="control-label" for="orgStructType_name"><spring:message code="org.structtype.input.name" text="名称"/></label>
+	<div class="controls">
+	  <select id="orgStructType_partyDimId" name="partyDimId">
+	    <c:forEach items="${partyDims}" var="item">
+	    <option value="${item.id}" ${model.partyDim.id==item.id ? 'selected' : ''}>${item.name}</option>
+		</c:forEach>
+	  </select>
+    </div>
+  </div>
+  <div class="control-group">
+	<label class="control-label" for="orgStructType_ref">引用</label>
+	<div class="controls">
+      <input id="orgStructType_ref" type="text" name="ref" value="${model.ref}" size="40" class="text" maxlength="10">
+    </div>
+  </div>
+  <div class="control-group">
     <div class="controls">
       <button id="submitButton" class="btn"><spring:message code='core.input.save' text='保存'/></button>
       <button type="button" onclick="history.back();" class="btn"><spring:message code='core.input.back' text='返回'/></button>
