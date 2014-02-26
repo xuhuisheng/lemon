@@ -70,8 +70,8 @@ $(function() {
 		</header>
         <div id="bpmCategorySearch" class="content content-inner">
 
-		  <form name="bpmCategoryForm" method="post" action="bpm-task-def-user-save.do" class="form-inline">
-			<input type="hidden" name="bpmConfNodeId" value="${bpmConfNodeId}">
+		  <form name="bpmCategoryForm" method="post" action="bpm-conf-operation-save.do" class="form-inline">
+			<input type="hidden" name="bpmConfNodeId" value="${param.bpmConfNodeId}">
 		    <label for="value">操作:</label>
 		    <select id="value" name="value">
 			<c:forEach items="${operations}" var="item">
