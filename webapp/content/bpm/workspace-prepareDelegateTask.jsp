@@ -9,6 +9,17 @@
     <%@include file="/common/meta.jsp"%>
     <title>编辑</title>
     <%@include file="/common/s.jsp"%>
+
+    <link type="text/css" rel="stylesheet" href="${scopePrefix}/widgets/userpicker/userpicker.css">
+    <script type="text/javascript" src="${scopePrefix}/widgets/userpicker/userpicker.js"></script>
+	<script type="text/javascript">
+$(function() {
+	createUserPicker({
+		modalId: 'userPicker',
+		url: '${scopePrefix}/rs/user/search'
+	});
+})
+    </script>
   </head>
 
   <body>
@@ -27,12 +38,16 @@
 
 		<div class="content content-inner">
 
-<form id="demoForm" method="post" action="workspace!delegateTask.do?operationMode=STORE" class="form-horizontal">
-  <input id="demo_id" type="hidden" name="taskId" value="${taskId}">
+<form id="demoForm" method="post" action="workspace-delegateTask.do" class="form-horizontal">
+  <input id="demo_id" type="hidden" name="taskId" value="${param.taskId}">
   <div class="control-group">
     <label class="control-label">代理人</label>
 	<div class="controls">
-	  <input type="text" name="username" value="">
+      <div class="input-append userPicker">
+		<input type="hidden" name="userId" class="input-medium" value="">
+		<input type="text" style="width: 175px;" value="">
+		<span class="add-on"><i class="icon-user"></i></span>
+      </div>
     </div>
   </div>
   <div class="control-group">

@@ -4,15 +4,27 @@ import java.sql.Connection;
 import java.sql.SQLException;
 import java.sql.Statement;
 
+import java.util.ArrayList;
 import java.util.List;
+
+import com.mossle.bpm.graph.ActivitiHistoryGraphBuilder;
+import com.mossle.bpm.graph.Edge;
+import com.mossle.bpm.graph.Graph;
+import com.mossle.bpm.graph.Node;
+
+import com.mossle.core.spring.ApplicationContextHelper;
 
 import org.activiti.engine.ActivitiException;
 import org.activiti.engine.history.HistoricActivityInstance;
+import org.activiti.engine.impl.HistoricActivityInstanceQueryImpl;
+import org.activiti.engine.impl.Page;
 import org.activiti.engine.impl.context.Context;
 import org.activiti.engine.impl.interceptor.Command;
 import org.activiti.engine.impl.interceptor.CommandContext;
+import org.activiti.engine.impl.persistence.entity.ExecutionEntity;
 import org.activiti.engine.impl.persistence.entity.HistoricActivityInstanceEntity;
 import org.activiti.engine.impl.persistence.entity.HistoricTaskInstanceEntity;
+import org.activiti.engine.impl.persistence.entity.ProcessDefinitionEntity;
 import org.activiti.engine.impl.persistence.entity.TaskEntity;
 import org.activiti.engine.impl.pvm.PvmTransition;
 import org.activiti.engine.impl.pvm.process.ActivityImpl;
@@ -21,239 +33,183 @@ import org.activiti.engine.impl.pvm.process.TransitionImpl;
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
 
+import org.springframework.jdbc.core.JdbcTemplate;
+
 /**
- * 收回流程 目前?虑一种情况下的流程会?单箭头无分支
- * 
- * @author zou_ping
- * 
+ * 撤销任务.
  */
-public class WithdrawTaskCmd extends TaskCmd implements Command<Integer> {
+public class WithdrawTaskCmd implements Command<Integer> {
     private static Logger logger = LoggerFactory
             .getLogger(WithdrawTaskCmd.class);
     private String historyTaskId;
-    private HistoricActivityInstanceEntity historicActivityInstance;
-    private HistoricTaskInstanceEntity historicTaskInstance;
-    private HistoricActivityInstanceEntity nextHistoricActivityInstance;
-    private HistoricTaskInstanceEntity nextHistoricTaskInstance;
-    private TaskEntity nextTask;
 
     public WithdrawTaskCmd(String historyTaskId) {
         this.historyTaskId = historyTaskId;
     }
 
     /**
-     * 撤销流程
+     * 撤销流程.
      * 
      * @return 0-撤销成功 1-流程结束 2-下一结点已经通过,不能撤销
      */
     public Integer execute(CommandContext commandContext) {
-        int code = initAndCheck();
-        logger.info("activiti is withdraw {}", historicTaskInstance.getName());
-
-        if (code == 0) {
-            processHistoryTask();
-            processNextTask();
-            logger.info("withdraw task({}->{}) successfully",
-                    historicTaskInstance.getName(),
-                    nextHistoricTaskInstance.getName());
-        }
-
-        return code;
-    }
-
-    public void initHistoricTaskInstanceEntity() {
-        historicTaskInstance = Context.getCommandContext()
-                .getHistoricTaskInstanceEntityManager()
+        HistoricTaskInstanceEntity historicTaskInstanceEntity = Context
+                .getCommandContext().getHistoricTaskInstanceEntityManager()
                 .findHistoricTaskInstanceById(historyTaskId);
-    }
+        HistoricActivityInstanceEntity historicActivityInstanceEntity = getHistoricActivityInstanceEntity(historyTaskId);
 
-    public void initHistoricActivityInstanceEntity() {
-        historicActivityInstance = getHistoricActivityInstance(historicTaskInstance
-                .getTaskDefinitionKey());
-    }
+        Graph graph = new ActivitiHistoryGraphBuilder(
+                historicTaskInstanceEntity.getProcessInstanceId()).build();
 
-    /**
-     * initial task context,execution,historyActivityInstanceImpl
-     */
-    public int initAndCheck() {
-        initHistoricTaskInstanceEntity();
+        Node node = graph.findById(historicActivityInstanceEntity.getId());
 
-        if (historicTaskInstance == null) {
-            throw new ActivitiException("task<" + historyTaskId + ">,无法找到此任");
-        }
-
-        execution = Context.getCommandContext().getExecutionEntityManager()
-                .findExecutionById(historicTaskInstance.getExecutionId());
-
-        if (execution == null) {
-            logger.info("task<" + historyTaskId + ">,当前流程已经结束,不能撤销");
-
-            return 1;
-        }
-
-        initHistoricActivityInstanceEntity();
-
-        processDefinition = getProcessDefinition();
-
-        if (processDefinition == null) {
-            throw new ActivitiException("task<" + historyTaskId
-                    + ">,无法找到此任务所在的流程定义");
-        }
-
-        if (!isNextTask()) {
-            logger.info("task<" + historyTaskId + ">任务已经到下??无法收回");
+        if (!checkCouldWithdraw(node)) {
+            logger.info("cannot withdraw {}", historyTaskId);
 
             return 2;
         }
 
-        nextTask = getCurrentTask();
-        // nextHistoricActivityInstance = Context.getCommandContext()
-        // .getHistoricActivityInstanceEntityManager()
-        // .findHistoricActivityInstance(execution.getActivityId(),
-        // execution.getProcessInstanceId());
-        nextHistoricActivityInstance = (HistoricActivityInstanceEntity) Context
-                .getCommandContext().getDbSqlSession()
-                .createHistoricActivityInstanceQuery()
-                .executionId(execution.getId())
-                .activityId(execution.getActivityId())
-                .orderByHistoricActivityInstanceStartTime().desc().list()
-                .get(0);
+        // 删除所有活动中的task
+        this.deleteActiveTasks(historicTaskInstanceEntity
+                .getProcessInstanceId());
 
-        nextHistoricTaskInstance = Context.getCommandContext()
-                .getHistoricTaskInstanceEntityManager()
-                .findHistoricTaskInstanceById(nextTask.getId());
+        // 获得期望撤销的节点后面的所有节点历史
+        List<String> historyNodeIds = new ArrayList<String>();
+        collectNodes(node, historyNodeIds);
+        this.deleteHistoryActivities(historyNodeIds);
+        // 恢复期望撤销的任务和历史
+        this.processHistoryTask(historicTaskInstanceEntity,
+                historicActivityInstanceEntity);
+
+        logger.info("activiti is withdraw {}",
+                historicTaskInstanceEntity.getName());
 
         return 0;
     }
 
-    /**
-     * 获取该节点的下一节点
-     * 
-     * @param activityId
-     * @return
-     */
-    public HistoricActivityInstance findNextHistoryActivityInstance(
-            String activityId) {
-        List<PvmTransition> transitions = getActivity(activityId)
-                .getOutgoingTransitions();
-        List<HistoricActivityInstance> historicActivityInstances = getProcessInstanceHistoryActivities();
+    public HistoricActivityInstanceEntity getHistoricActivityInstanceEntity(
+            String historyTaskId) {
+        logger.info("historyTaskId : {}", historyTaskId);
 
-        for (PvmTransition transition : transitions) {
-            TransitionImpl transitionImpl = (TransitionImpl) transition;
-            ActivityImpl sourceActivity = transitionImpl.getDestination();
+        JdbcTemplate jdbcTemplate = ApplicationContextHelper
+                .getBean(JdbcTemplate.class);
+        String historicActivityInstanceId = jdbcTemplate.queryForObject(
+                "select id_ from ACT_HI_ACTINST where task_id_=?",
+                String.class, historyTaskId);
+        logger.info("historicActivityInstanceId : {}",
+                historicActivityInstanceId);
 
-            for (HistoricActivityInstance hai : historicActivityInstances) {
-                if (sourceActivity.getId().equals(hai.getActivityId())) {
-                    return hai;
+        HistoricActivityInstanceQueryImpl historicActivityInstanceQueryImpl = new HistoricActivityInstanceQueryImpl();
+        historicActivityInstanceQueryImpl
+                .activityInstanceId(historicActivityInstanceId);
+
+        HistoricActivityInstanceEntity historicActivityInstanceEntity = (HistoricActivityInstanceEntity) Context
+                .getCommandContext()
+                .getHistoricActivityInstanceEntityManager()
+                .findHistoricActivityInstancesByQueryCriteria(
+                        historicActivityInstanceQueryImpl, new Page(0, 1))
+                .get(0);
+
+        return historicActivityInstanceEntity;
+    }
+
+    public boolean checkCouldWithdraw(Node node) {
+        // TODO: 如果是catchEvent，也应该可以撤销，到时候再说
+        for (Edge edge : node.getEdges()) {
+            Node dest = edge.getDest();
+            String type = dest.getType();
+
+            if ("userTask".equals(type)) {
+                if (!dest.isActive()) {
+                    logger.info("cannot withdraw, " + type + "("
+                            + dest.getName() + ") is complete.");
+
+                    return false;
                 }
+            } else if (type.endsWith("Gateway")) {
+                if (!checkCouldWithdraw(dest)) {
+                    return false;
+                }
+            } else {
+                logger.info("cannot withdraw, " + type + "(" + dest.getName()
+                        + ") is complete.");
+
+                return false;
             }
         }
 
-        return null;
+        return true;
     }
 
-    /**
-     * 判断该节点的下一节点为流程当前节?
-     * 
-     * @return
-     */
-    public boolean isNextTask() {
-        HistoricActivityInstance nextHistoricActivityInstance = findNextHistoryActivityInstance(historicActivityInstance
-                .getActivityId());
-        String currentProcessActivityId = execution.getActivityId();
+    public void deleteActiveTasks(String processInstanceId) {
+        Context.getCommandContext().getTaskEntityManager()
+                .deleteTasksByProcessInstanceId(processInstanceId, null, true);
+    }
 
-        if (currentProcessActivityId.equals(nextHistoricActivityInstance
-                .getActivityId())) {
-            return true;
+    public void collectNodes(Node node, List<String> historyNodeIds) {
+        logger.info("node : {}, {}, {}", node.getId(), node.getType(),
+                node.getName());
+
+        for (Edge edge : node.getEdges()) {
+            logger.info("edge : {}", edge.getName());
+
+            Node dest = edge.getDest();
+            historyNodeIds.add(dest.getId());
+            collectNodes(dest, historyNodeIds);
         }
-
-        return false;
     }
 
-    /**
-     * 处理当前历史任务流程<br/>
-     * 1.将historytask.endTime 置为null<br/>
-     * 2.新建当前Task<br/>
-     * 3.将Execution设置为Task<br/>
-     */
-    public void processHistoryTask() {
-        historicTaskInstance.setEndTime(null);
-        historicTaskInstance.setDurationInMillis(null);
-        historicActivityInstance.setEndTime(null);
-        historicActivityInstance.setDurationInMillis(null);
+    public void deleteHistoryActivities(List<String> historyNodeIds) {
+        JdbcTemplate jdbcTemplate = ApplicationContextHelper
+                .getBean(JdbcTemplate.class);
+        logger.info("historyNodeIds : {}", historyNodeIds);
+
+        for (String id : historyNodeIds) {
+            jdbcTemplate.update("delete from ACT_HI_ACTINST where id_=?", id);
+        }
+    }
+
+    public void processHistoryTask(
+            HistoricTaskInstanceEntity historicTaskInstanceEntity,
+            HistoricActivityInstanceEntity historicActivityInstanceEntity) {
+        historicTaskInstanceEntity.setEndTime(null);
+        historicTaskInstanceEntity.setDurationInMillis(null);
+        historicActivityInstanceEntity.setEndTime(null);
+        historicActivityInstanceEntity.setDurationInMillis(null);
 
         TaskEntity task = TaskEntity.create();
-        task.setProcessDefinitionId(historicTaskInstance
+        task.setProcessDefinitionId(historicTaskInstanceEntity
                 .getProcessDefinitionId());
-        // 注意,task和historicTask的id是一样的
-        task.setId(historicTaskInstance.getId());
-        task.setAssigneeWithoutCascade(historicTaskInstance.getAssignee());
-        task.setParentTaskIdWithoutCascade(historicTaskInstance
+        task.setId(historicTaskInstanceEntity.getId());
+        task.setAssigneeWithoutCascade(historicTaskInstanceEntity.getAssignee());
+        task.setParentTaskIdWithoutCascade(historicTaskInstanceEntity
                 .getParentTaskId());
-        task.setNameWithoutCascade(historicTaskInstance.getName());
-        task.setTaskDefinitionKey(historicTaskInstance.getTaskDefinitionKey());
-        task.setExecutionId(historicTaskInstance.getExecutionId());
-        task.setPriority(historicTaskInstance.getPriority());
-        task.setProcessInstanceId(historicTaskInstance.getProcessInstanceId());
-        task.setDescriptionWithoutCascade(historicTaskInstance.getDescription());
+        task.setNameWithoutCascade(historicTaskInstanceEntity.getName());
+        task.setTaskDefinitionKey(historicTaskInstanceEntity
+                .getTaskDefinitionKey());
+        task.setExecutionId(historicTaskInstanceEntity.getExecutionId());
+        task.setPriority(historicTaskInstanceEntity.getPriority());
+        task.setProcessInstanceId(historicTaskInstanceEntity
+                .getProcessInstanceId());
+        task.setDescriptionWithoutCascade(historicTaskInstanceEntity
+                .getDescription());
 
         Context.getCommandContext().getTaskEntityManager().insert(task);
-        execution.setActivity(getActivity(historicActivityInstance
-                .getActivityId()));
+
+        ExecutionEntity executionEntity = Context.getCommandContext()
+                .getExecutionEntityManager()
+                .findExecutionById(historicTaskInstanceEntity.getExecutionId());
+        executionEntity
+                .setActivity(getActivity(historicActivityInstanceEntity));
     }
 
-    /**
-     * 处理下一节点Task 1.删除HistoryTask 2.删除Task
-     * 
-     * @return
-     */
-    public void processNextTask() {
-        /**
-         * 删除历史活动节点,因为activiti5.6没有映射deleteHistoricActivityInstance这一statement ?历史节点考虑用纯Sql语句删除
-         */
-        Connection conn = Context.getCommandContext().getDbSqlSession()
-                .getSqlSession().getConnection();
-        Statement state = null;
+    public ActivityImpl getActivity(
+            HistoricActivityInstanceEntity historicActivityInstanceEntity) {
+        ProcessDefinitionEntity processDefinitionEntity = new FindProcessDefinitionEntityCmd(
+                historicActivityInstanceEntity.getProcessDefinitionId())
+                .execute(Context.getCommandContext());
 
-        try {
-            String sql = "delete from ACT_HI_ACTINST where ID_="
-                    + nextHistoricActivityInstance.getId();
-            state = conn.createStatement();
-            state.execute(sql);
-        } catch (SQLException e) {
-            throw new ActivitiException("sql语句执行失败", e);
-        } finally {
-            try {
-                if (state != null) {
-                    state.close();
-                    state = null;
-                }
-            } catch (SQLException ex) {
-                logger.debug(ex.getMessage(), ex);
-            }
-
-            try {
-                if (conn != null) {
-                    conn.close();
-                    conn = null;
-                }
-            } catch (SQLException ex) {
-                logger.debug(ex.getMessage(), ex);
-            }
-        }
-
-        // Context
-        // .getCommandContext()
-        // .getHistoricActivityInstanceManager()
-        // .delete(nextHistoricActivityInstance);
-
-        // 删除历史任务节点
-        Context.getCommandContext()
-                .getHistoricTaskInstanceEntityManager()
-                .deleteHistoricTaskInstanceById(
-                        nextHistoricTaskInstance.getId());
-
-        // 删除任务节点
-        Context.getCommandContext().getTaskEntityManager().delete(nextTask);
+        return processDefinitionEntity
+                .findActivity(historicActivityInstanceEntity.getActivityId());
     }
 }

@@ -8,6 +8,11 @@ import java.util.Set;
 
 import javax.annotation.Resource;
 
+import com.mossle.api.user.UserConnector;
+
+import com.mossle.bpm.notice.ArrivalNotice;
+import com.mossle.bpm.notice.CompleteNotice;
+import com.mossle.bpm.notice.TimeoutNotice;
 import com.mossle.bpm.persistence.domain.*;
 import com.mossle.bpm.persistence.manager.*;
 import com.mossle.bpm.support.DefaultTaskListener;
@@ -43,143 +48,16 @@ import org.springframework.jdbc.core.JdbcTemplate;
  * </p>
  */
 public class NoticeTaskListener extends DefaultTaskListener {
-    private static Logger logger = LoggerFactory
-            .getLogger(NoticeTaskListener.class);
-    public static final int TYPE_ARRIVAL = 0;
-    public static final int TYPE_COMPLETE = 1;
-    public static final int TYPE_TIMEOUT = 2;
-    private MailFacade mailFacade;
-    private BpmProcessManager bpmProcessManager;
-    private BpmTaskDefNoticeManager bpmTaskDefNoticeManager;
+    private ArrivalNotice arrivalNotice = new ArrivalNotice();
+    private CompleteNotice completeNotice = new CompleteNotice();
 
     @Override
     public void onCreate(DelegateTask delegateTask) throws Exception {
-        String taskDefinitionKey = delegateTask.getTaskDefinitionKey();
-        String processDefinitionId = delegateTask.getExecution()
-                .getProcessDefinitionId();
-        ProcessDefinitionEntity processDefinitionEntity = Context
-                .getCommandContext().getProcessDefinitionEntityManager()
-                .findProcessDefinitionById(processDefinitionId);
-        BpmProcess bpmProcess = bpmProcessManager
-                .findUnique(
-                        "from BpmProcess where processDefinitionKey=? and processDefinitionVersion=?",
-                        processDefinitionEntity.getKey(),
-                        processDefinitionEntity.getVersion());
-        List<BpmTaskDefNotice> bpmTaskDefNotices = bpmTaskDefNoticeManager
-                .find("from BpmTaskDefNotice where taskDefinitionKey=? and bpmProcess=?",
-                        taskDefinitionKey, bpmProcess);
-
-        for (BpmTaskDefNotice bpmTaskDefNotice : bpmTaskDefNotices) {
-            if (TYPE_ARRIVAL == bpmTaskDefNotice.getType()) {
-                processArrival(delegateTask, bpmTaskDefNotice);
-            } else if (TYPE_COMPLETE == bpmTaskDefNotice.getType()) {
-                // do nothing
-            } else if (TYPE_TIMEOUT == bpmTaskDefNotice.getType()) {
-                processTimeout(delegateTask, bpmTaskDefNotice);
-            } else {
-                logger.warn("unknow type : {}, bpmTaskDefNotice.id : {}",
-                        bpmTaskDefNotice.getType(), bpmTaskDefNotice.getId());
-            }
-        }
+        arrivalNotice.process(delegateTask);
     }
 
     @Override
     public void onComplete(DelegateTask delegateTask) throws Exception {
-        String taskDefinitionKey = delegateTask.getTaskDefinitionKey();
-        String processDefinitionId = delegateTask.getExecution()
-                .getProcessDefinitionId();
-        ProcessDefinitionEntity processDefinitionEntity = Context
-                .getCommandContext().getProcessDefinitionEntityManager()
-                .findProcessDefinitionById(processDefinitionId);
-        BpmProcess bpmProcess = bpmProcessManager
-                .findUnique(
-                        "from BpmProcess where processDefinitionKey=? and processDefinitionVersion=?",
-                        processDefinitionEntity.getKey(),
-                        processDefinitionEntity.getVersion());
-        List<BpmTaskDefNotice> bpmTaskDefNotices = bpmTaskDefNoticeManager
-                .find("from BpmTaskDefNotice where taskDefinitionKey=? and bpmProcess=?",
-                        taskDefinitionKey, bpmProcess);
-
-        for (BpmTaskDefNotice bpmTaskDefNotice : bpmTaskDefNotices) {
-            if (TYPE_ARRIVAL == bpmTaskDefNotice.getType()) {
-                // do nothing
-            } else if (TYPE_COMPLETE == bpmTaskDefNotice.getType()) {
-                processComplete(delegateTask, bpmTaskDefNotice);
-            } else if (TYPE_TIMEOUT == bpmTaskDefNotice.getType()) {
-                // do nothing
-            } else {
-                logger.warn("unknow type : {}, bpmTaskDefNotice.id : {}",
-                        bpmTaskDefNotice.getType(), bpmTaskDefNotice.getId());
-            }
-        }
-    }
-
-    public void processArrival(DelegateTask delegateTask,
-            BpmTaskDefNotice bpmTaskDefNotice) {
-        String receiver = bpmTaskDefNotice.getReceiver();
-        BpmMailTemplate bpmMailTemplate = bpmTaskDefNotice.getBpmMailTemplate();
-        ExpressionManager expressionManager = Context
-                .getProcessEngineConfiguration().getExpressionManager();
-        String to = null;
-        String subject = expressionManager
-                .createExpression(bpmMailTemplate.getSubject())
-                .getValue(delegateTask).toString();
-
-        String content = expressionManager
-                .createExpression(bpmMailTemplate.getContent())
-                .getValue(delegateTask).toString();
-
-        if ("任务接收人".equals(receiver)) {
-            to = delegateTask.getAssignee() + "@gmail.com";
-        } else if ("流程发起人".equals(receiver)) {
-            to = delegateTask.getAssignee() + "@gmail.com";
-        } else {
-            HistoricProcessInstanceEntity historicProcessInstanceEntity = Context
-                    .getCommandContext()
-                    .getHistoricProcessInstanceEntityManager()
-                    .findHistoricProcessInstance(
-                            delegateTask.getProcessInstanceId());
-            to = historicProcessInstanceEntity.getStartUserId() + "@gmail.com";
-        }
-
-        mailFacade.sendMail("no-reply@lemon.mossle.com", to, subject, content);
-    }
-
-    public void processComplete(DelegateTask delegateTask,
-            BpmTaskDefNotice bpmTaskDefNotice) {
-        String receiver = bpmTaskDefNotice.getReceiver();
-        BpmMailTemplate bpmMailTemplate = bpmTaskDefNotice.getBpmMailTemplate();
-        ExpressionManager expressionManager = Context
-                .getProcessEngineConfiguration().getExpressionManager();
-
-        String to = receiver + "@gmail.com";
-        String subject = expressionManager
-                .createExpression(bpmMailTemplate.getSubject())
-                .getValue(delegateTask).toString();
-
-        String content = expressionManager
-                .createExpression(bpmMailTemplate.getContent())
-                .getValue(delegateTask).toString();
-        mailFacade.sendMail("no-reply@lemon.mossle.com", to, subject, content);
-    }
-
-    public void processTimeout(DelegateTask delegateTask,
-            BpmTaskDefNotice bpmTaskDefNotice) {
-    }
-
-    @Resource
-    public void setMailFacade(MailFacade mailFacade) {
-        this.mailFacade = mailFacade;
-    }
-
-    @Resource
-    public void setBpmProcessManager(BpmProcessManager bpmProcessManager) {
-        this.bpmProcessManager = bpmProcessManager;
-    }
-
-    @Resource
-    public void setBpmTaskDefNoticeManager(
-            BpmTaskDefNoticeManager bpmTaskDefNoticeManager) {
-        this.bpmTaskDefNoticeManager = bpmTaskDefNoticeManager;
+        completeNotice.process(delegateTask);
     }
 }

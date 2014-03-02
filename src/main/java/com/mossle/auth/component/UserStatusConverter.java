@@ -6,7 +6,7 @@ import java.util.List;
 import javax.annotation.Resource;
 
 import com.mossle.api.scope.ScopeConnector;
-import com.mossle.api.scope.ScopeInfo;
+import com.mossle.api.scope.ScopeDTO;
 
 import com.mossle.auth.domain.Role;
 import com.mossle.auth.domain.UserStatus;
@@ -25,7 +25,7 @@ public class UserStatusConverter {
         userStatusDto.setUsername(userStatus.getUsername());
         userStatusDto.setEnabled(Integer.valueOf(1).equals(
                 userStatus.getStatus()));
-        userStatusDto.setReference(userStatus.getReference());
+        userStatusDto.setRef(userStatus.getRef());
 
         StringBuilder buff = new StringBuilder();
 
@@ -33,10 +33,9 @@ public class UserStatusConverter {
             if (scopeId.equals(role.getScopeId())) {
                 buff.append(role.getName()).append(",");
             } else {
-                ScopeInfo scopeInfo = scopeConnector
-                        .findById(role.getScopeId());
+                ScopeDTO scopeDto = scopeConnector.findById(role.getScopeId());
                 buff.append(role.getName()).append("(")
-                        .append(scopeInfo.getName()).append("),");
+                        .append(scopeDto.getName()).append("),");
             }
         }
 

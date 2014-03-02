@@ -21,13 +21,13 @@ $(function() {
         rules: {
             name: {
                 remote: {
-                    url: 'role!checkName.do',
+                    url: 'role-checkName.do',
                     data: {
-                        <s:if test="model != null">
+                        <c:if test="${model != null}">
                         id: function() {
                             return $('#role_id').val();
                         }
-                        </s:if>
+                        </c:if>
                     }
                 }
             }
@@ -58,10 +58,10 @@ $(function() {
 
 		<div class="content content-inner">
 
-<form id="roleForm" method="post" action="role!save.do?operationMode=STORE" class="form-horizontal">
-  <s:if test="model != null">
+<form id="roleForm" method="post" action="role-save.do" class="form-horizontal">
+  <c:if test="${model != null}">
   <input id="role_id" type="hidden" name="id" value="${model.id}">
-  </s:if>
+  </c:if>
   <!--
   <div class="control-group">
 	<label class="control-label" for="role_name"><spring:message code='auth.role.input.name' text='名称'/></label>
@@ -74,9 +74,9 @@ $(function() {
     <label class="control-label" for="role_roleDef">模板</label>
     <div class="controls">
 	  <select id="role_roleDef" name="roleDefId">
-	  <s:iterator value="roleDefs" var="item">
+	  <c:forEach items="${roleDefs}" var="item">
 	   <option value="${item.id}">${item.name}</option>
-	  </s:iterator>
+	  </c:forEach>
 	  </select>
     </div>
   </div>
@@ -88,7 +88,7 @@ $(function() {
   </div>
   <div class="control-group">
     <div class="controls">
-      <button id="submitButton" class="btn"><spring:message code='core.input.save' text='保存'/></button>
+      <button id="submitButton" class="btn a-submit"><spring:message code='core.input.save' text='保存'/></button>
 	  &nbsp;
       <button type="button" onclick="history.back();" class="btn"><spring:message code='core.input.back' text='返回'/></button>
     </div>

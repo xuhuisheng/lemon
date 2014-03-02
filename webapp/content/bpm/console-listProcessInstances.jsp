@@ -38,28 +38,28 @@
     </thead>
 
     <tbody>
-      <s:iterator value="processInstances" var="item">
+      <c:forEach items="${processInstances}" var="item">
       <tr>
 	    <td>${item.id}</td>
 	    <td>${item.processDefinitionId}</td>
 	    <td>${item.activityId}</td>
 	    <td>
-		  <s:if test="%{suspended}">
+		  <c:if test="${item.suspended}">
 		    挂起
-            <a href="console!activeProcessInstance.do?processInstanceId=${item.id}">(激活)</a>
-		  </s:if>
-		  <s:else>
+            <a href="console-activeProcessInstance.do?processInstanceId=${item.id}">(激活)</a>
+		  </c:if>
+		  <c:if test="${not item.suspended}">
 		    激活
-            <a href="console!suspendProcessInstance.do?processInstanceId=${item.id}">(挂起)</a>
-		  </s:else>
+            <a href="console-suspendProcessInstance.do?processInstanceId=${item.id}">(挂起)</a>
+		  </c:if>
 		</td>
         <td>
-          <a href="console!removeProcessInstance.do?processInstanceId=${item.id}">删除</a>
-          <a href="workspace!viewHistory.do?processInstanceId=${item.id}">历史</a>
-          <a href="${scopePrefix}/diagram-viewer/index.html?processInstanceId=${item.id}&processDefinitionId=${item.processDefinitionId}">diagram-viewer</a>
+          <a href="console-removeProcessInstance.do?processInstanceId=${item.id}">删除</a>
+          <a href="workspace-viewHistory.do?processInstanceId=${item.id}">历史</a>
+          <a href="${scopePrefix}/widgets/diagram-viewer/index.html?processInstanceId=${item.id}&processDefinitionId=${item.processDefinitionId}">diagram-viewer</a>
         </td>
       </tr>
-      </s:iterator>
+      </c:forEach>
     </tbody>
   </table>
         </div>

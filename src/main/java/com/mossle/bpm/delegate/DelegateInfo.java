@@ -5,7 +5,9 @@ import java.util.Date;
 public class DelegateInfo {
     private Long id;
     private String assignee;
+    private String assigneeDisplayName;
     private String attorney;
+    private String attorneyDisplayName;
     private Date startTime;
     private Date endTime;
     private String processDefinitionId;
@@ -65,5 +67,22 @@ public class DelegateInfo {
 
     public void setStatus(int status) {
         this.status = status;
+    }
+
+    // ~ ==================================================
+    public String getAssigneeDisplayName() {
+        return assigneeDisplayName;
+    }
+
+    public void setAssigneeDisplayName(String assigneeDisplayName) {
+        this.assigneeDisplayName = assigneeDisplayName;
+    }
+
+    public String getAttorneyDisplayName() {
+        return attorneyDisplayName;
+    }
+
+    public void setAttorneyDisplayName(String attorneyDisplayName) {
+        this.attorneyDisplayName = attorneyDisplayName;
     }
 }

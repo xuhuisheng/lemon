@@ -17,9 +17,9 @@ public class FindTaskDefinitionsCmd implements Command<List<TaskDefinition>> {
     }
 
     public List<TaskDefinition> execute(CommandContext commandContext) {
-        ProcessDefinitionEntity processDefinitionEntity = Context
-                .getProcessEngineConfiguration().getProcessDefinitionCache()
-                .get(processDefinitionId);
+        ProcessDefinitionEntity processDefinitionEntity = new FindProcessDefinitionEntityCmd(
+                processDefinitionId).execute(commandContext);
+
         List<TaskDefinition> taskDefinitions = new ArrayList<TaskDefinition>();
         taskDefinitions.addAll(processDefinitionEntity.getTaskDefinitions()
                 .values());

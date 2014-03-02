@@ -39,7 +39,7 @@ $(function() {
 
 		<div class="content content-inner">
 
-<form id="userForm" method="post" action="user-status!initPassword.do?operationMode=STORE" class="form-horizontal">
+<form id="userForm" method="post" action="user-status-initPassword.do?operationMode=STORE" class="form-horizontal">
   <input type="hidden" name="id" value="${param.id}">
   <div class="control-group">
     <label class="control-label" for="oldPassword"><spring:message code="user.user.changepassword.new" text="新密码"/></label>

@@ -37,14 +37,20 @@ public class MailHelper {
 
     public void send(String from, String to, String subject, String content,
             MailServerInfo mailServerInfo) {
+        String targetFrom = from;
+
+        if (targetFrom == null) {
+            targetFrom = mailServerInfo.getDefaultFrom();
+        }
+
         if (mailServerInfo.isSkip()) {
-            logger.info("send mail from {} to {}", from, to);
+            logger.info("send mail from {} to {}", targetFrom, to);
 
             logger.info("subject : {}, content : {}", subject, content);
         } else if (mailServerInfo.isTest()) {
-            this.sendTestMail(from, to, subject, content, mailServerInfo);
+            this.sendTestMail(targetFrom, to, subject, content, mailServerInfo);
         } else {
-            this.sendRealMail(from, to, subject, content, mailServerInfo);
+            this.sendRealMail(targetFrom, to, subject, content, mailServerInfo);
         }
     }
 

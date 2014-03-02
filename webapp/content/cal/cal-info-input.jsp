@@ -39,10 +39,10 @@ $(function() {
 
 		<div class="content content-inner">
 
-<form id="cal-infoForm" method="post" action="cal-info!save.do?operationMode=STORE" class="form-horizontal">
-  <s:if test="model != null">
+<form id="cal-infoForm" method="post" action="cal-info-save.do" class="form-horizontal">
+  <c:if test="${model != null}">
   <input id="cal-info_id" type="hidden" name="id" value="${model.id}">
-  </s:if>
+  </c:if>
   <div class="control-group">
     <label class="control-label" for="cal-info_name"><spring:message code="cal-info.cal-info.input.name" text="名称"/></label>
 	<div class="controls">
@@ -65,7 +65,7 @@ $(function() {
     <label class="control-label" for="cal-info_startTIme">开始时间</label>
 	<div class="controls">
       <div class="input-append datepicker date" style="padding-left: 0px;">
-	    <input id="cal-info_startTIme" type="text" name="startTime" value="${model.startTime}" size="40" class="text required" minlength="2" maxlength="10" readonly style="background-color:white;cursor:default; width: 175px;">
+	    <input id="cal-info_startTIme" type="text" name="startTime" value="<fmt:formatDate value='${model.startTime}' pattern='yyyy-MM-dd'/>" size="40" class="text required" minlength="2" maxlength="10" readonly style="background-color:white;cursor:default; width: 175px;">
 	    <span class="add-on" style="padding-top: 2px; padding-bottom: 2px;"><i class="icon-calendar"></i></span>
 	  </div>
     </div>
@@ -74,7 +74,7 @@ $(function() {
     <label class="control-label" for="cal-info_endTime">结束时间</label>
 	<div class="controls">
       <div class="input-append datepicker date" style="padding-left: 0px;">
-	    <input id="cal-info_endTime" type="text" name="endTime" value="${model.endTime}" size="40" class="text required" minlength="2" maxlength="10" readonly style="background-color:white;cursor:default; width: 175px;">
+	    <input id="cal-info_endTime" type="text" name="endTime" value="<fmt:formatDate value='${model.endTime}' pattern='yyyy-MM-dd'/>" size="40" class="text required" minlength="2" maxlength="10" readonly style="background-color:white;cursor:default; width: 175px;">
 	    <span class="add-on" style="padding-top: 2px; padding-bottom: 2px;"><i class="icon-calendar"></i></span>
 	  </div>
     </div>

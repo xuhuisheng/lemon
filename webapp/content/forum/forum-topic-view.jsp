@@ -24,7 +24,7 @@ var config = {
     },
 	selectedItemClass: 'selectedItem',
 	gridFormId: 'cal-infoGridForm',
-	exportUrl: 'cal-info!exportExcel.do'
+	exportUrl: 'cal-info-export.do'
 };
 
 var table;
@@ -48,7 +48,7 @@ $(function() {
       <section id="m-main" class="span10">
 
 	  <article class="m-blank">
-		<button class="btn btn-small a-insert" onclick="location.href='forum-topic!create.do'">新帖</button>
+		<button class="btn btn-small a-insert" onclick="location.href='forum-topic-create.do'">新帖</button>
 	  </article>
 
       <article class="m-widget">
@@ -69,15 +69,15 @@ $(function() {
                 </tr>
             </thead>
             <tbody>
-<s:iterator var="item" value="forumTopics" status="status">
+<c:forEach var="item" items="${forumTopics}" varStatus="status">
                 <tr class="${status.index % 2 != 0 ? 'odd' : 'even'}">
-                    <td><a href="${scopePrefix}/forum/forum-post!view.do?id=${item.id}">${item.title}</a></td>
+                    <td><a href="${scopePrefix}/forum/forum-post-view.do?id=${item.id}">${item.title}</a></td>
                     <td>${item.postCount}</td>
                     <td>${item.userId}</td>
                     <td>${item.hitCount}</td>
                     <td>${item.updateTime}</td>
                 </tr>
-</s:iterator>
+</c:forEach>
             </tbody>
         </table>
 

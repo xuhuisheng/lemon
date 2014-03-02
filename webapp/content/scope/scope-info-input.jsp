@@ -21,12 +21,12 @@ $(function() {
         rules: {
             name: {
                 remote: {
-                    url: 'scope-info!checkName.do',
+                    url: 'scope-info-checkName.do',
                     data: {
-                        <s:if test="model != null">
+                        <c:if test="${model != null}">
                         id: ${model.id},
-                        </s:if>
-						scopeGlobalId: function() {
+                        </c:if>
+						scopeId: function() {
 							return $('#scope-info_global').val();
 						}
                     }
@@ -63,7 +63,7 @@ $(function() {
 
 		<div class="content content-inner">
 
-<form id="scope-infoForm" method="post" action="scope-info!save.do?operationMode=STORE" class="form-horizontal">
+<form id="scope-infoForm" method="post" action="scope-info-save.do?operationMode=STORE" class="form-horizontal">
   <s:if test="model != null">
   <input id="scope-info_id" type="hidden" name="id" value="${model.id}">
   </s:if>
@@ -95,9 +95,9 @@ $(function() {
     <label class="control-label" for="scope-info_global">登录方式</label>
 	<div class="controls">
 	  <select id="scope-info_global" name="userRepoRef">
-      <s:iterator value="userRepoDtos" var="item">
+      <c:forEach items="${userRepoDtos}" var="item">
 	    <option value="${item.id}" ${item.id==model.userRepoRef ? 'selected' : ''}>${item.code}</option>
-	  </s:iterator>
+	  </c:forEach>
 	  </select>
     </div>
   </div>

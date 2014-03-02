@@ -18,7 +18,7 @@ public class MailConsumer implements Runnable {
     public void start() {
         active = true;
         thread = new Thread(this);
-		thread.setDaemon(true);
+        thread.setDaemon(true);
         thread.start();
         executorService = Executors.newFixedThreadPool(10);
     }

@@ -37,7 +37,7 @@
   <userTask id='taskuser-3' name='人事审批' activiti:formKey='人事审批'>
     <humanPerformer>
       <resourceAssignmentExpression>
-        <formalExpression>adam</formalExpression>
+        <formalExpression>7</formalExpression>
       </resourceAssignmentExpression>
     </humanPerformer>
   </userTask>

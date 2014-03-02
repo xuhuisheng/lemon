@@ -28,16 +28,13 @@ public class BpmProcess implements java.io.Serializable {
     private Long id;
 
     /** null. */
+    private BpmConfBase bpmConfBase;
+
+    /** null. */
     private BpmCategory bpmCategory;
 
     /** null. */
     private String name;
-
-    /** null. */
-    private String processDefinitionKey;
-
-    /** null. */
-    private Integer processDefinitionVersion;
 
     /** null. */
     private Integer priority;
@@ -47,6 +44,9 @@ public class BpmProcess implements java.io.Serializable {
 
     /** null. */
     private Integer useTaskConf;
+
+    /** null. */
+    private String code;
 
     /** . */
     private Set<BpmTaskDef> bpmTaskDefs = new HashSet<BpmTaskDef>(0);
@@ -58,17 +58,17 @@ public class BpmProcess implements java.io.Serializable {
     public BpmProcess() {
     }
 
-    public BpmProcess(BpmCategory bpmCategory, String name,
-            String processDefinitionKey, Integer processDefinitionVersion,
-            Integer priority, String descn, Integer useTaskConf,
-            Set<BpmTaskDef> bpmTaskDefs, Set<BpmTaskDefNotice> bpmTaskDefNotices) {
+    public BpmProcess(BpmConfBase bpmConfBase, BpmCategory bpmCategory,
+            String name, Integer priority, String descn, Integer useTaskConf,
+            String code, Set<BpmTaskDef> bpmTaskDefs,
+            Set<BpmTaskDefNotice> bpmTaskDefNotices) {
+        this.bpmConfBase = bpmConfBase;
         this.bpmCategory = bpmCategory;
         this.name = name;
-        this.processDefinitionKey = processDefinitionKey;
-        this.processDefinitionVersion = processDefinitionVersion;
         this.priority = priority;
         this.descn = descn;
         this.useTaskConf = useTaskConf;
+        this.code = code;
         this.bpmTaskDefs = bpmTaskDefs;
         this.bpmTaskDefNotices = bpmTaskDefNotices;
     }
@@ -87,6 +87,21 @@ public class BpmProcess implements java.io.Serializable {
      */
     public void setId(Long id) {
         this.id = id;
+    }
+
+    /** @return null. */
+    @ManyToOne(fetch = FetchType.LAZY)
+    @JoinColumn(name = "CONF_BASE_ID")
+    public BpmConfBase getBpmConfBase() {
+        return this.bpmConfBase;
+    }
+
+    /**
+     * @param bpmConfBase
+     *            null.
+     */
+    public void setBpmConfBase(BpmConfBase bpmConfBase) {
+        this.bpmConfBase = bpmConfBase;
     }
 
     /** @return null. */
@@ -116,34 +131,6 @@ public class BpmProcess implements java.io.Serializable {
      */
     public void setName(String name) {
         this.name = name;
-    }
-
-    /** @return null. */
-    @Column(name = "PROCESS_DEFINITION_KEY", length = 200)
-    public String getProcessDefinitionKey() {
-        return this.processDefinitionKey;
-    }
-
-    /**
-     * @param processDefinitionKey
-     *            null.
-     */
-    public void setProcessDefinitionKey(String processDefinitionKey) {
-        this.processDefinitionKey = processDefinitionKey;
-    }
-
-    /** @return null. */
-    @Column(name = "PROCESS_DEFINITION_VERSION")
-    public Integer getProcessDefinitionVersion() {
-        return this.processDefinitionVersion;
-    }
-
-    /**
-     * @param processDefinitionVersion
-     *            null.
-     */
-    public void setProcessDefinitionVersion(Integer processDefinitionVersion) {
-        this.processDefinitionVersion = processDefinitionVersion;
     }
 
     /** @return null. */
@@ -186,6 +173,20 @@ public class BpmProcess implements java.io.Serializable {
      */
     public void setUseTaskConf(Integer useTaskConf) {
         this.useTaskConf = useTaskConf;
+    }
+
+    /** @return null. */
+    @Column(name = "CODE", length = 64)
+    public String getCode() {
+        return this.code;
+    }
+
+    /**
+     * @param code
+     *            null.
+     */
+    public void setCode(String code) {
+        this.code = code;
     }
 
     /** @return . */

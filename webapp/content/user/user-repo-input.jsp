@@ -38,10 +38,10 @@ $(function() {
 		</header>
 		<div class="content content-inner">
 
-<form id="userRepoForm" method="post" action="user-repo!save.do?userRepoationMode=STORE" class="form-horizontal">
-  <s:if test="model != null">
+<form id="userRepoForm" method="post" action="user-repo-save.do?userRepoationMode=STORE" class="form-horizontal">
+  <c:if test="${model != null}">
   <input id="userRepo_id" type="hidden" name="id" value="${model.id}">
-  </s:if>
+  </c:if>
   <div class="control-group">
 	<label class="control-label" for="user-repo_code"><spring:message code='auth.userRepo.input.code' text='代码'/></label>
     <div class="controls">
@@ -52,6 +52,12 @@ $(function() {
 	<label class="control-label" for="user-repo_name"><spring:message code='auth.userRepo.input.name' text='名称'/></label>
     <div class="controls">
       <input id="user-repo_name" type="text" name="name" value="${model.name}" size="40" class="text required" minlength="1" maxlength="50">
+    </div>
+  </div>
+  <div class="control-group">
+	<label class="control-label" for="user-repo_ref">引用</label>
+    <div class="controls">
+      <input id="user-repo_ref" type="text" name="ref" value="${model.ref}" size="40" class="text">
     </div>
   </div>
   <div class="control-group">

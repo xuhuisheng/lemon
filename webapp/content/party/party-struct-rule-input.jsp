@@ -39,17 +39,27 @@ $(function() {
 
 		<div class="content content-inner">
 
-<form id="orgStructRuleForm" method="post" action="party-struct-rule!save.do?operationMode=STORE" class="form-horizontal">
-  <s:if test="model != null">
+<form id="orgStructRuleForm" method="post" action="party-struct-rule-save.do" class="form-horizontal">
+  <c:if test="${model != null}">
   <input id="orgStructRule_orgStructRuleId" type="hidden" name="id" value="${model.id}">
-  </s:if>
+  </c:if>
+  <div class="control-group">
+	<label class="control-label" for="orgStructRule_partyDimId">维度</label>
+	<div class="controls">
+	  <select id="orgStructRule_partyDimId" name="partyDimId">
+	    <c:forEach items="${partyDims}" var="item">
+	    <option value="${item.id}" ${model.partyDim.id==item.id ? 'selected' : ''}>${item.name}</option>
+		</c:forEach>
+	  </select>
+    </div>
+  </div>
   <div class="control-group">
 	<label class="control-label" for="orgStructRule_orgStructType"><spring:message code="org.structrule.input.type" text="类型"/></label>
 	<div class="controls">
 	  <select id="orgStructRule_orgStructType" name="partyStructTypeId">
-	    <s:iterator value="partyStructTypes" var="item">
+	    <c:forEach items="${partyStructTypes}" var="item">
 	    <option value="${item.id}" ${model.partyStructType.id==item.id ? 'selected' : ''}>${item.name}</option>
-		</s:iterator>
+		</c:forEach>
 	  </select>
     </div>
   </div>
@@ -57,9 +67,9 @@ $(function() {
     <label class="control-label" for="orgStructRule_parentOrgType"><spring:message code="org.structrule.input.parenttype" text="上级类型"/></label>
     <div class="controls">
       <select id="orgStructRule_parentOrgType" name="parentTypeId">
-	    <s:iterator value="partyTypes" var="item">
+	    <c:forEach items="${partyTypes}" var="item">
 	    <option value="${item.id}" ${model.parentType.id==item.id ? 'selected' : ''}>${item.name}</option>
-		</s:iterator>
+		</c:forEach>
 	  </select>
     </div>
   </div>
@@ -67,9 +77,9 @@ $(function() {
     <label class="control-label" for="orgStructRule_childOrgType"><spring:message code="org.structrule.input.childtype" text="下级类型"/></label>
     <div class="controls">
       <select id="orgStructRule_childOrgType" name="childTypeId">
-	    <s:iterator value="partyTypes" var="item">
+	    <c:forEach items="${partyTypes}" var="item">
 	    <option value="${item.id}" ${model.childType.id==item.id ? 'selected' : ''}>${item.name}</option>
-		</s:iterator>
+		</c:forEach>
 	  </select>
     </div>
   </div>

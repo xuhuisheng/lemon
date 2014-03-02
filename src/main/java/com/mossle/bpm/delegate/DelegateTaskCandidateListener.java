@@ -13,9 +13,6 @@ import org.activiti.engine.task.IdentityLink;
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
 
-import org.springframework.stereotype.Component;
-
-@Component("delegateTaskCreateListener")
 public class DelegateTaskCandidateListener extends DefaultTaskListener {
     private static Logger logger = LoggerFactory
             .getLogger(DelegateTaskCandidateListener.class);

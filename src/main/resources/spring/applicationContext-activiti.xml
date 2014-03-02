@@ -15,7 +15,17 @@
 
  		<property name="customDefaultBpmnParseHandlers">
     	 	<list>
-				<bean class="com.mossle.bpm.listener.ProxyUserTaskBpmnParseHandler"/>
+				<bean class="com.mossle.bpm.listener.ProxyUserTaskBpmnParseHandler">
+					<property name="taskListenerId" value="customTaskListener"/>
+					<property name="useDefaultUserTaskParser" value="true"/>
+				</bean>
+    	 	</list>
+		</property>
+ 		<property name="postBpmnParseHandlers">
+    	 	<list>
+				<bean class="com.mossle.bpm.listener.ProxyUserTaskBpmnParseHandler">
+					<property name="taskListenerId" value="postTaskListener"/>
+				</bean>
     	 	</list>
 		</property>
 
@@ -84,7 +94,7 @@
     <bean id="managementService" factory-bean="processEngine" factory-method="getManagementService"/>
 
 	<!-- 自动部署 -->
-	<bean id="autoDeployer" class="com.mossle.bpm.support.AutoDeployer">
+	<bean id="autoDeployer" class="com.mossle.bpm.support.AutoDeployer" depends-on="applicationContextHelper">
 		<property name="processEngine" ref="processEngine"/>
         <property name="deploymentResources">
             <list>
@@ -94,13 +104,21 @@
 	</bean>
 
 	<!-- 全局任务监听器 -->
-	<bean id="proxyTaskListener" class="com.mossle.bpm.listener.ProxyTaskListener">
+	<bean id="customTaskListener" class="com.mossle.bpm.listener.ProxyTaskListener">
 		<property name="taskListeners">
 			<list>
-				<bean class="com.mossle.bpm.delegate.DelegateTaskListener"/>
-				<bean class="com.mossle.bpm.listener.AutoCompleteFirstTaskListener"/>
-				<bean class="com.mossle.bpm.listener.AssigneeAliasTaskListener"/>
+				<bean class="com.mossle.bpm.listener.ConfUserTaskListener"/>
 				<bean class="com.mossle.bpm.listener.TaskConfTaskListener"/>
+				<bean class="com.mossle.bpm.listener.AssigneeAliasTaskListener"/>
+				<bean class="com.mossle.bpm.listener.DelegateTaskListener"/>
+			</list>
+		</property>
+	</bean>
+
+	<bean id="postTaskListener" class="com.mossle.bpm.listener.ProxyTaskListener">
+		<property name="taskListeners">
+			<list>
+				<bean class="com.mossle.bpm.listener.AutoCompleteFirstTaskListener"/>
 				<bean class="com.mossle.bpm.listener.NoticeTaskListener"/>
 			</list>
 		</property>

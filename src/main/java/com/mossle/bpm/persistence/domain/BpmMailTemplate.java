@@ -38,15 +38,20 @@ public class BpmMailTemplate implements java.io.Serializable {
     private Set<BpmTaskDefNotice> bpmTaskDefNotices = new HashSet<BpmTaskDefNotice>(
             0);
 
+    /** . */
+    private Set<BpmConfNotice> bpmConfNotices = new HashSet<BpmConfNotice>(0);
+
     public BpmMailTemplate() {
     }
 
     public BpmMailTemplate(String name, String subject, String content,
-            Set<BpmTaskDefNotice> bpmTaskDefNotices) {
+            Set<BpmTaskDefNotice> bpmTaskDefNotices,
+            Set<BpmConfNotice> bpmConfNotices) {
         this.name = name;
         this.subject = subject;
         this.content = content;
         this.bpmTaskDefNotices = bpmTaskDefNotices;
+        this.bpmConfNotices = bpmConfNotices;
     }
 
     /** @return null. */
@@ -119,5 +124,19 @@ public class BpmMailTemplate implements java.io.Serializable {
      */
     public void setBpmTaskDefNotices(Set<BpmTaskDefNotice> bpmTaskDefNotices) {
         this.bpmTaskDefNotices = bpmTaskDefNotices;
+    }
+
+    /** @return . */
+    @OneToMany(fetch = FetchType.LAZY, mappedBy = "bpmMailTemplate")
+    public Set<BpmConfNotice> getBpmConfNotices() {
+        return this.bpmConfNotices;
+    }
+
+    /**
+     * @param bpmConfNotices
+     *            .
+     */
+    public void setBpmConfNotices(Set<BpmConfNotice> bpmConfNotices) {
+        this.bpmConfNotices = bpmConfNotices;
     }
 }

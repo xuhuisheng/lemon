@@ -58,6 +58,8 @@ public class ProxyServlet implements Servlet {
 
     public void service(ServletRequest req, ServletResponse res)
             throws ServletException, IOException {
+        logger.trace("{}", name);
+
         if (enable) {
             servlet.service(req, res);
         } else {

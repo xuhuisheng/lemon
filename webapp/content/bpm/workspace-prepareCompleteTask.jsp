@@ -27,27 +27,27 @@
 
 		<div class="content content-inner">
 
-<form id="demoForm" method="post" action="workspace!completeTask.do?operationMode=STORE" class="form-horizontal">
+<form id="demoForm" method="post" action="workspace-completeTask.do" class="form-horizontal">
   <input id="demo_id" type="hidden" name="taskId" value="${taskId}">
-  <s:iterator value="taskFormData.formProperties" var="item">
+  <c:forEach items="${taskFormData.formProperties}" var="item">
   <div class="control-group">
     <label class="control-label">${item.name}</label>
 	<div class="controls">
-	  <s:if test="type.name=='enum'">
-	  <s:iterator value="type.getInformation('values')">
+	  <c:if test="${item.type.name=='enum'}">
+	  <c:forEach items="${item.type.getInformation('values')}">
 	    <label class="checkbox inline">
 	    <input type="radio" name="${item.id}" value="${key}" ${item.value == key ? 'checked' : ''}>
-		${value}
+		${item.value}
 		</label>
-	  </s:iterator>
+	  </c:forEach>
 	  </select>
-	  </s:if>
-	  <s:else>
+	  </c:if>
+	  <c:if test="${item.type.name != 'enum'}">
 	  <input type="text" name="${id}" value="${item.value}" size="40" class="text ${item.required ? 'required' : ''}" ${item.writable ? '' : 'readonly'}>
-	  </s:else>
+	  </c:if>
     </div>
   </div>
-  </s:iterator>
+  </c:forEach>
   <div class="control-group">
     <div class="controls">
       <button id="submitButton" type="submit" class="btn">保存</button>

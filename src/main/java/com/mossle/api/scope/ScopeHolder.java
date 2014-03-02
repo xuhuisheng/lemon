@@ -1,35 +1,35 @@
 package com.mossle.api.scope;
 
 public class ScopeHolder {
-    private static ThreadLocal<ScopeInfo> scopeThreadLocal = new ThreadLocal<ScopeInfo>();
+    private static ThreadLocal<ScopeDTO> scopeThreadLocal = new ThreadLocal<ScopeDTO>();
 
     protected ScopeHolder() {
     }
 
     public static String getScopeId() {
-        return getScopeInfo().getId();
+        return getScopeDto().getId();
     }
 
     public static String getScopeCode() {
-        return getScopeInfo().getCode();
+        return getScopeDto().getCode();
     }
 
     public static String getUserRepoRef() {
-        return getScopeInfo().getUserRepoRef();
+        return getScopeDto().getUserRepoRef();
     }
 
-    public static ScopeInfo getScopeInfo() {
-        ScopeInfo scopeInfo = scopeThreadLocal.get();
+    public static ScopeDTO getScopeDto() {
+        ScopeDTO scopeDto = scopeThreadLocal.get();
 
-        if (scopeInfo == null) {
+        if (scopeDto == null) {
             throw new IllegalStateException("cannot find scope");
         }
 
-        return scopeInfo;
+        return scopeDto;
     }
 
-    public static void setScopeInfo(ScopeInfo scopeInfo) {
-        scopeThreadLocal.set(scopeInfo);
+    public static void setScopeDto(ScopeDTO scopeDto) {
+        scopeThreadLocal.set(scopeDto);
     }
 
     public static void clear() {

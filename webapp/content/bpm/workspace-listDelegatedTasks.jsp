@@ -40,19 +40,19 @@
     </thead>
 
     <tbody>
-      <s:iterator value="tasks" var="item">
+      <c:forEach items="${tasks}" var="item">
       <tr>
         <td><input type="checkbox" class="selectedItem" name="selectedItem" value="${item.id}"></td>
 	    <td>${item.id}</td>
 	    <td>${item.name}</td>
-	    <td>${item.createTime}</td>
-	    <td>${item.assignee}</td>
+	    <td><fmt:formatDate value="${item.createTime}" pattern="yyyy-MM-dd HH:mm:ss" /></td>
+	    <td><tags:user userId="${item.assignee}"/></td>
 	    <td>${item.suspended ? '挂起' : '激活'}</td>
         <td>
-          <a href="workspace!viewHistory.do?processInstanceId=${item.processInstanceId}">历史</a>
+          <a href="workspace-viewHistory.do?processInstanceId=${item.processInstanceId}">历史</a>
         </td>
       </tr>
-      </s:iterator>
+      </c:forEach>
     </tbody>
   </table>
         </div>

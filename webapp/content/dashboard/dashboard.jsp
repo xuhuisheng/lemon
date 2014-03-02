@@ -100,7 +100,7 @@ $(function(){
 
 	  <article class="m-widget-2">
         <header class="header">
-		  <h4 class="title">待办任务</h4>
+		  <h4 class="title"><i class="icon-user"></i>待办任务</h4>
 		  <div class="ctrl">
 		    <a class="btn"><i class="icon-chevron-up"></i></a>
 		  </div>
@@ -116,16 +116,16 @@ $(function(){
 			  </tr>
 			</thead>
 			<tbody>
-			<s:iterator value="personalTasks" var="item">
+			<c:forEach items="${personalTasks}" var="item">
 			  <tr>
 				<td>${item.id}</td>
 				<td>${item.name}</td>
-				<td><s:date name="createTime" format="yyyy-MM-dd HH:mm:ss" /></td>
+				<td><fmt:formatDate value="${item.createTime}" pattern="yyyy-MM-dd HH:mm:ss" /></td>
 				<td>
-				  <a href="${scopePrefix}/form/form!viewTaskForm.do?taskId=${item.id}" class="btn btn-small btn-primary">处理</a>
+				  <a href="${scopePrefix}/form/form-viewTaskForm.do?taskId=${item.id}" class="btn btn-small btn-primary">处理</a>
 				</td>
 			  </tr>
-			  </s:iterator>
+			  </c:forEach>
 			</tbody>
 		  </table>
 		</div>
@@ -133,19 +133,19 @@ $(function(){
 
 	  <article class="m-widget-2">
         <header class="header">
-		  <h4 class="title">通知公告</h4>
+		  <h4 class="title"><i class="icon-user"></i>通知公告</h4>
 		  <div class="ctrl">
 		    <a class="btn"><i class="icon-chevron-up"></i></a>
 		  </div>
 		</header>
         <div class="content content-inner">
 		  <marquee direction="up" scrollamount="2" >
-		  <s:iterator value="cmsArticles" var="item">
+		  <c:forEach items="${cmsArticles}" var="item">
 		    <div>
 			  <h4>${item.name}</h4>
 			  <p>${item.content}</p>
 			</div>
-			</s:iterator>
+			</c:forEach>
 		  </marquee>
 		</div>
 	  </article>
@@ -156,7 +156,7 @@ $(function(){
 
 	  <article class="m-widget-2">
         <header class="header">
-		  <h4 class="title">我的流程</h4>
+		  <h4 class="title"><i class="icon-user"></i>我的流程</h4>
 		  <div class="ctrl">
 		    <a class="btn"><i class="icon-chevron-up"></i></a>
 		  </div>
@@ -173,16 +173,16 @@ $(function(){
 			</thead>
 
 			<tbody>
-			<s:iterator value="historicProcessInstances" var="item">
+			<c:forEach items="${historicProcessInstances}" var="item">
 			  <tr>
 				<td>${item.id}</td>
 				<td>${item.processDefinitionId}</td>
-				<td><s:date name="startTime" format="yyyy-MM-dd HH:mm:ss" /></td>
+				<td><fmt:formatDate value="${item.startTime}" pattern="yyyy-MM-dd HH:mm:ss" /></td>
 				<td>
-                  <a href="${scopePrefix}/bpm/workspace!viewHistory.do?processInstanceId=${item.id}" class="btn btn-small btn-primary">历史</a>
+                  <a href="${scopePrefix}/bpm/workspace-viewHistory.do?processInstanceId=${item.id}" class="btn btn-small btn-primary">历史</a>
 				</td>
 			  </tr>
-			  </s:iterator>
+			  </c:forEach>
 			</tbody>
 		  </table>
 		</div>
@@ -190,7 +190,7 @@ $(function(){
 
 	  <article class="m-widget-2">
         <header class="header">
-		  <h4 class="title">常用工具</h4>
+		  <h4 class="title"><i class="icon-user"></i>常用工具</h4>
 		  <div class="ctrl">
 		    <a class="btn"><i class="icon-chevron-up"></i></a>
 		  </div>
@@ -217,7 +217,7 @@ $(function(){
 
 	  <article class="m-widget-2">
         <header class="header">
-		  <h4 class="title">常用流程</h4>
+		  <h4 class="title"><i class="icon-user"></i>常用流程</h4>
 		  <div class="ctrl">
 		    <a class="btn"><i class="icon-chevron-up"></i></a>
 		  </div>
@@ -226,23 +226,19 @@ $(function(){
 		  <table class="m-table table-hover">
 			<thead>
 			  <tr>
-				<th>代码</th>
 				<th>名称</th>
-				<th>版本</th>
-				<th>&nbsp;</th>
+				<th width="20%">&nbsp;</th>
 			  </tr>
 			</thead>
 			<tbody>
-			<s:iterator value="processDefinitions" var="item">
+			<c:forEach items="${bpmProcesses}" var="item">
 			  <tr>
-				<td>${item.key}</td>
 				<td>${item.name}</td>
-				<td>${item.version}</td>
 				<td>
-				  <a href="${scopePrefix}/form/form!viewStartForm.do?processDefinitionId=${item.id}" class="btn btn-small btn-primary">发起</a>
+				  <a href="${scopePrefix}/form/form-viewStartForm.do?bpmProcessId=${item.id}" class="btn btn-small btn-primary">发起</a>
 				</td>
 			  </tr>
-			  </s:iterator>
+			  </c:forEach>
 			</tbody>
 		  </table>
 		</div>
@@ -250,7 +246,7 @@ $(function(){
 
 	  <article class="m-widget-2">
         <header class="header">
-		  <h4 class="title">天气预报</h4>
+		  <h4 class="title"><i class="icon-user"></i>天气预报</h4>
 		  <div class="ctrl">
 		    <a class="btn"><i class="icon-chevron-up"></i></a>
 		  </div>

@@ -24,7 +24,7 @@ var config = {
     },
 	selectedItemClass: 'selectedItem',
 	gridFormId: 'cal-infoGridForm',
-	exportUrl: 'cal-info!exportExcel.do'
+	exportUrl: 'cal-info-export.do'
 };
 
 var table;
@@ -64,7 +64,7 @@ $(function() {
                     <td><pre>${forumTopic.content}</pre></td>
                 </tr>
             </tbody>
-<s:iterator var="item" value="forumTopic.forumPosts" status="status">
+<c:forEach var="item" items="${forumTopic.forumPosts}" varStatus="status">
             <tbody class="${status.index % 2 != 0 ? 'odd' : 'even'}">
                 <tr>
                     <td>${status.index + 1}楼</td>
@@ -75,12 +75,12 @@ $(function() {
                     <td><pre>${item.content}</pre></td>
                 </tr>
             </tbody>
-</s:iterator>
+</c:forEach>
         </table>
         <br />
         <fieldset>
             <legend>回复</legend>
-            <form name="f" action="${scopePrefix}/forum/forum-post!createPost.do?method=post" method="post" onsubmit="return beforeSubmit();">
+            <form name="f" action="${scopePrefix}/forum/forum-post-createPost.do?method=post" method="post" onsubmit="return beforeSubmit();">
                 <input type="hidden" name="forumTopicId" value="${forumTopic.id}" />
                 <table>
                     <tbody>

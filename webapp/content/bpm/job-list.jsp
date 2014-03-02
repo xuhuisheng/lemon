@@ -42,7 +42,7 @@
     </thead>
 
     <tbody>
-      <s:iterator value="jobs" var="item">
+      <c:forEach items="${jobs}" var="item">
       <tr>
         <td><input type="checkbox" class="selectedItem" name="selectedItem" value="${item.id}"></td>
 	    <td>${item.id}</td>
@@ -53,11 +53,11 @@
 	    <td>${item.retries}</td>
 	    <td>${item.exceptionMessage}</td>
         <td>
-		  <a href="job!executeJob.do?id=${item.id}">执行</a>
-		  <a href="job!removeJob.do?id=${item.id}">删除</a>
+		  <a href="job-executeJob.do?id=${item.id}">执行</a>
+		  <a href="job-removeJob.do?id=${item.id}">删除</a>
         </td>
       </tr>
-      </s:iterator>
+      </c:forEach>
     </tbody>
   </table>
         </div>

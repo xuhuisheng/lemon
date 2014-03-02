@@ -21,13 +21,13 @@ $(function() {
         rules: {
             username: {
                 remote: {
-                    url: 'user-status!checkUsername.do',
+                    url: 'user-status-checkUsername.do',
                     data: {
-                        <s:if test="model != null">
+                        <ccif test="${model != null}">
                         id: function() {
                             return $('#user_id').val();
                         }
-                        </s:if>
+                        </c:if>
                     }
                 }
             }
@@ -58,17 +58,17 @@ $(function() {
 
 		<div class="content content-inner">
 
-<form id="userForm" method="post" action="user-status!save.do?operationMode=STORE" class="form-horizontal">
-  <s:if test="model != null">
+<form id="userForm" method="post" action="user-status-save.do" class="form-horizontal">
+  <c:if test="${model != null}">
   <input id="user_id" type="hidden" name="id" value="${model.id}">
-  </s:if>
+  </c:if>
   <div class="control-group">
     <label class="control-label" for="user_username"><spring:message code="user.user.input.username" text="账号"/></label>
 	<div class="controls">
 	  <input id="user_username" type="text" name="username" value="${model.username}" size="40" class="text required" minlength="2" maxlength="50">
     </div>
   </div>
-  <s:if test="model == null">
+  <c:if test="${model == null}">
   <div class="control-group">
     <label class="control-label" for="user_password"><spring:message code="user.user.input.password" text="密码"/></label>
 	<div class="controls">
@@ -81,7 +81,7 @@ $(function() {
 	  <input id="user_confirmpassword" type="password" name="confirmPassword" size="40" class="text required" maxlength="10" equalTo="#user_password">
     </div>
   </div>
-  </s:if>
+  </c:if>
   <div class="control-group">
     <label class="control-label" for="user_status"><spring:message code="user.user.input.enabled" text="启用"/></label>
 	<div class="controls">
@@ -89,9 +89,9 @@ $(function() {
     </div>
   </div>
   <div class="control-group">
-    <label class="control-label" for="user_reference"><spring:message code="user.user.input.reference" text="引用"/></label>
+    <label class="control-label" for="user_ref"><spring:message code="user.user.input.ref" text="引用"/></label>
 	<div class="controls">
-	  <input id="user_reference" type="text" name="reference" value="${model.reference}">
+	  <input id="user_ref" type="text" name="ref" value="${model.ref}">
     </div>
   </div>
   <div class="control-group">

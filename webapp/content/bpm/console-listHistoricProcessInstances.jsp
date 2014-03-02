@@ -34,33 +34,24 @@
         <th class="sorting" name="name">开始时间</th>
         <th class="sorting" name="name">结束时间</th>
         <th class="sorting" name="name">发起人</th>
-        <th class="sorting" name="name">状态</th>
         <th width="170">&nbsp;</th>
       </tr>
     </thead>
 
     <tbody>
-      <s:iterator value="historicProcessInstances" var="item">
+      <c:forEach items="${historicProcessInstances}" var="item">
       <tr>
 	    <td>${item.id}</td>
 	    <td>${item.processDefinitionId}</td>
-	    <td>${item.startTime}</td>
-	    <td>${item.endTime}</td>
-	    <td>${item.startUserId}</td>
-	    <td>
-		  <s:if test="%{suspended}">
-		    挂起
-		  </s:if>
-		  <s:else>
-		    激活
-		  </s:else>
-		</td>
+	    <td><fmt:formatDate value="${item.startTime}" pattern="yyyy-MM-dd HH:mm:ss"/></td>
+	    <td><fmt:formatDate value="${item.endTime}" pattern="yyyy-MM-dd HH:mm:ss"/></td>
+	    <td><tags:user userId="${item.startUserId}"/></td>
         <td>
-          <a href="workspace!viewHistory.do?processInstanceId=${item.id}">历史</a>
-          <a href="${scopePrefix}/diagram-viewer/index.html?processInstanceId=${item.id}&processDefinitionId=${item.processDefinitionId}">diagram-viewer</a>
+          <a href="workspace-viewHistory.do?processInstanceId=${item.id}">历史</a>
+          <a href="${scopePrefix}/widgets/diagram-viewer/index.html?processInstanceId=${item.id}&processDefinitionId=${item.processDefinitionId}">diagram-viewer</a>
         </td>
       </tr>
-      </s:iterator>
+      </c:forEach>
     </tbody>
   </table>
         </div>

@@ -40,20 +40,20 @@
     </thead>
 
     <tbody>
-      <s:iterator value="historicTaskInstances" var="item">
+      <c:forEach items="${historicTaskInstances}" var="item">
       <tr>
 	    <td>${item.id}</td>
 	    <td>${item.processDefinitionId}</td>
-	    <td>${item.startTime}</td>
-	    <td>${item.endTime}</td>
-	    <td>${item.assignee}</td>
-	    <td>${item.claimTime}</td>
+	    <td><fmt:formatDate value="${item.startTime}" pattern="yyyy-MM-dd HH:mm:ss"/></td>
+	    <td><fmt:formatDate value="${item.endTime}" pattern="yyyy-MM-dd HH:mm:ss"/></td>
+	    <td><tags:user userId="${item.assignee}"/></td>
+	    <td><fmt:formatDate value="${item.claimTime}" pattern="yyyy-MM-dd HH:mm:ss"/></td>
 		<td>
-          <a href="workspace!viewHistory.do?processInstanceId=${item.processInstanceId}">历史</a>
-          <a href="${scopePrefix}/diagram-viewer/index.html?processInstanceId=${item.id}&processDefinitionId=${item.processDefinitionId}">diagram-viewer</a>
+          <a href="workspace-viewHistory.do?processInstanceId=${item.processInstanceId}">历史</a>
+          <a href="${scopePrefix}/widgets/diagram-viewer/index.html?processInstanceId=${item.id}&processDefinitionId=${item.processDefinitionId}">diagram-viewer</a>
         </td>
       </tr>
-      </s:iterator>
+      </c:forEach>
     </tbody>
   </table>
         </div>

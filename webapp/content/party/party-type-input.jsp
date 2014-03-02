@@ -39,14 +39,21 @@ $(function() {
 
 		<div class="content content-inner">
 
-<form id="orgTypeForm" method="post" action="party-type!save.do?operationMode=STORE" class="form-horizontal">
-  <s:if test="model != null">
+<form id="orgTypeForm" method="post" action="party-type-save.do" class="form-horizontal">
+  <c:if test="${model != null}">
   <input id="orgType_id" type="hidden" name="id" value="${model.id}">
-  </s:if>
+  </c:if>
   <div class="control-group">
 	<label class="control-label" for="orgType_name"><spring:message code="org.type.input.name" text="名称"/></label>
 	<div class="controls">
       <input id="orgType_name" type="text" name="name" value="${model.name}" size="40" class="text required" maxlength="10">
+    </div>
+  </div>
+  <div class="control-group">
+	<label class="control-label" for="orgType_person0">是否人员</label>
+	<div class="controls">
+      <label><input id="orgType_person1" type="radio" name="person" value="1" ${model.person == 1 ? 'checked' : ''}>是</label>
+      <label><input id="orgType_person0" type="radio" name="person" value="0" ${model.person != 1 ? 'checked' : ''}>否</label>
     </div>
   </div>
   <div class="control-group">

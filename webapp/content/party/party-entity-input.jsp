@@ -39,17 +39,17 @@ $(function() {
 
 		<div class="content content-inner">
 
-<form id="orgEntityForm" method="post" action="party-entity!save.do?operationMode=STORE" class="form-horizontal">
-  <s:if test="model != null">
+<form id="orgEntityForm" method="post" action="party-entity-save.do" class="form-horizontal">
+  <c:if test="${model != null}">
   <input id="orgentity_id" type="hidden" name="id" value="${model.id}">
-  </s:if>
+  </c:if>
   <div class="control-group">
     <label class="control-label" for="orgentity_orgType"><spring:message code="org.org.input.type" text="类型"/>:</label>
 	<div class="controls">
 	  <select id="orgentity_orgType" name="partyTypeId">
-	    <s:iterator value="partyTypes" var="item">
+	    <c:forEach items="${partyTypes}" var="item">
 	    <option value="${item.id}" ${model.partyType.id==item.id ? 'selected' : ''}>${item.name}</option>
-		</s:iterator>
+		</c:forEach>
 	  </select>
     </div>
   </div>
@@ -57,6 +57,12 @@ $(function() {
     <label class="control-label" for="orgentity_name"><spring:message code="org.org.input.name" text="名称"/>:</label>
     <div class="controls">
 	  <input id="orgentity_name" type="text" name="name" value="${model.name}" class="text required" maxlength="50">
+    </div>
+  </div>
+  <div class="control-group">
+    <label class="control-label" for="orgentity_ref">引用:</label>
+    <div class="controls">
+	  <input id="orgentity_ref" type="text" name="ref" value="${model.ref}" class="text" maxlength="50">
     </div>
   </div>
   <div class="control-group">

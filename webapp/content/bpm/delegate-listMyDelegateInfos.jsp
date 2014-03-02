@@ -42,19 +42,19 @@
     </thead>
 
     <tbody>
-      <s:iterator value="delegateInfos" var="item">
+      <c:forEach items="${bpmDelegateInfos}" var="item">
       <tr>
         <td><input type="checkbox" class="selectedItem" name="selectedItem" value="${item.id}"></td>
 	    <td>${item.id}</td>
-	    <td>${item.assignee}</td>
-	    <td>${item.attorney}</td>
-	    <td>${item.start_time}</td>
-	    <td>${item.end_time}</td>
-	    <td>${item.process_definition_id}</td>
-	    <td>${item.status}</td>
-	    <td><a href="delegate!removeDelegateInfo.do?id=${item.id}">删除</a></td>
+	    <td><tags:user userId="${item.assignee}"/></td>
+	    <td><tags:user userId="${item.attorney}"/></td>
+	    <td><fmt:formatDate value="${item.startTime}" pattern="yyyy-MM-dd"/></td>
+	    <td><fmt:formatDate value="${item.endTime}" pattern="yyyy-MM-dd"/></td>
+	    <td>${item.processDefinitionId}</td>
+	    <td>${item.status == 1 ? '有效' : '无效'}</td>
+	    <td><a href="delegate-removeDelegateInfo.do?id=${item.id}">删除</a></td>
       </tr>
-      </s:iterator>
+      </c:forEach>
     </tbody>
   </table>
         </div>

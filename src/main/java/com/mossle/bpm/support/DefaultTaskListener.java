@@ -2,6 +2,7 @@ package com.mossle.bpm.support;
 
 import org.activiti.engine.delegate.DelegateTask;
 import org.activiti.engine.delegate.TaskListener;
+import org.activiti.engine.impl.persistence.entity.TaskEntity;
 
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
@@ -12,6 +13,8 @@ public class DefaultTaskListener implements TaskListener {
 
     public void notify(DelegateTask delegateTask) {
         String eventName = delegateTask.getEventName();
+        logger.debug("{}", this);
+        logger.debug("{} : {}", eventName, delegateTask);
 
         if ("create".equals(eventName)) {
             try {
@@ -44,6 +47,8 @@ public class DefaultTaskListener implements TaskListener {
                 logger.error(ex.getMessage(), ex);
             }
         }
+
+        ((TaskEntity) delegateTask).setEventName(eventName);
     }
 
     public void onCreate(DelegateTask delegateTask) throws Exception {

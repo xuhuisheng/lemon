@@ -26,6 +26,10 @@ public class MailFacade {
         mailStore.stop();
     }
 
+    public void sendMail(String to, String subject, String content) {
+        this.sendMail(null, to, subject, content);
+    }
+
     public void sendMail(String from, String to, String subject, String content) {
         MailDTO mailDto = new MailDTO();
         mailDto.setFrom(from);

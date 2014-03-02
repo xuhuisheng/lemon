@@ -32,7 +32,7 @@ public class UserRepo implements java.io.Serializable {
     private String name;
 
     /** null. */
-    private String reference;
+    private String ref;
 
     /** null. */
     private String scopeId;
@@ -46,11 +46,11 @@ public class UserRepo implements java.io.Serializable {
     public UserRepo() {
     }
 
-    public UserRepo(String code, String name, String reference, String scopeId,
+    public UserRepo(String code, String name, String ref, String scopeId,
             Set<UserBase> userBases, Set<UserSchema> userSchemas) {
         this.code = code;
         this.name = name;
-        this.reference = reference;
+        this.ref = ref;
         this.scopeId = scopeId;
         this.userBases = userBases;
         this.userSchemas = userSchemas;
@@ -101,17 +101,17 @@ public class UserRepo implements java.io.Serializable {
     }
 
     /** @return null. */
-    @Column(name = "REFERENCE", length = 50)
-    public String getReference() {
-        return this.reference;
+    @Column(name = "REF", length = 50)
+    public String getRef() {
+        return this.ref;
     }
 
     /**
-     * @param reference
+     * @param ref
      *            null.
      */
-    public void setReference(String reference) {
-        this.reference = reference;
+    public void setRef(String ref) {
+        this.ref = ref;
     }
 
     /** @return null. */

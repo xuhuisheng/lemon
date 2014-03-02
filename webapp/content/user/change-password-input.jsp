@@ -24,10 +24,10 @@ $(function() {
   </head>
 
   <body>
-    <%@include file="/header/auth.jsp"%>
+    <%@include file="/header/user.jsp"%>
 
     <div class="row-fluid">
-	<%@include file="/menu/auth.jsp"%>
+	<%@include file="/menu/user.jsp"%>
 
 	<!-- start of main -->
     <section id="m-main" class="span10">
@@ -39,7 +39,7 @@ $(function() {
 
 		<div class="content content-inner">
 
-<form id="userForm" method="post" action="change-password!save.do?operationMode=STORE" class="form-horizontal">
+<form id="userForm" method="post" action="change-password-save.do?operationMode=STORE" class="form-horizontal">
   <div class="control-group">
     <label class="control-label" for="oldPassword"><spring:message code="user.user.changepassword.old" text="原密码"/></label>
 	<div class="controls">
@@ -60,7 +60,7 @@ $(function() {
   </div>
   <div class="control-group">
     <div class="controls">
-      <button id="submitButton" class="btn"><spring:message code='core.input.save' text='保存'/></button>
+      <button id="submitButton" class="btn a-submit"><spring:message code='core.input.save' text='保存'/></button>
 	  &nbsp;
       <button type="button" onclick="history.back();" class="btn"><spring:message code='core.input.back' text='返回'/></button>
     </div>

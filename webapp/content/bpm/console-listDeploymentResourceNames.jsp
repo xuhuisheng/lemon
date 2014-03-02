@@ -36,14 +36,14 @@
     </thead>
 
     <tbody>
-      <s:iterator value="deploymentResourceNames" var="item">
+      <c:forEach items="${deploymentResourceNames}" var="item">
       <tr>
         <td><input type="checkbox" class="selectedItem" name="selectedItem" value="${item}"></td>
 	    <td>${item}</td>
         <td>
         </td>
       </tr>
-      </s:iterator>
+      </c:forEach>
     </tbody>
   </table>
         </div>

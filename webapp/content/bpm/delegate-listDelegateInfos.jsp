@@ -37,23 +37,22 @@
         <th class="sorting" name="version">结束时间</th>
         <th class="sorting" name="description">流程定义</th>
         <th class="sorting" name="suspended">状态</th>
-        <th width="150">&nbsp;</th>
       </tr>
     </thead>
 
     <tbody>
-      <s:iterator value="delegateInfos" var="item">
+      <c:forEach items="${bpmDelegateInfos}" var="item">
       <tr>
         <td><input type="checkbox" class="selectedItem" name="selectedItem" value="${item.id}"></td>
 	    <td>${item.id}</td>
-	    <td>${item.assignee}</td>
-	    <td>${item.attorney}</td>
-	    <td>${item.start_time}</td>
-	    <td>${item.end_time}</td>
-	    <td>${item.process_definition_id}</td>
-	    <td>${item.status}</td>
+	    <td><tags:user userId="${item.assignee}"/></td>
+	    <td><tags:user userId="${item.attorney}"/></td>
+	    <td><fmt:formatDate value="${item.startTime}" pattern="yyyy-MM-dd"/></td>
+	    <td><fmt:formatDate value="${item.endTime}" pattern="yyyy-MM-dd"/></td>
+	    <td>${item.processDefinitionId}</td>
+	    <td>${item.status == 1 ? '有效' : '无效'}</td>
       </tr>
-      </s:iterator>
+      </c:forEach>
     </tbody>
   </table>
         </div>

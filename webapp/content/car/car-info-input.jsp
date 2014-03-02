@@ -39,10 +39,10 @@ $(function() {
 
 		<div class="content content-inner">
 
-<form id="car-infoForm" method="post" action="car-info!save.do?operationMode=STORE" class="form-horizontal">
-  <s:if test="model != null">
+<form id="car-infoForm" method="post" action="car-info-save.do" class="form-horizontal">
+  <c:if test="${model != null}">
   <input id="car-info_id" type="hidden" name="id" value="${model.id}">
-  </s:if>
+  </c:if>
   <div class="control-group">
     <label class="control-label" for="car-info_name"><spring:message code="car-info.car-info.input.name" text="名称"/></label>
 	<div class="controls">
@@ -58,19 +58,19 @@ $(function() {
   <div class="control-group">
     <label class="control-label" for="car-info_type">状态</label>
 	<div class="controls">
-	  <input id="car-info_type" type="text" name="status" value="${model.status}" size="40" class="text">
+	  <input id="car-info_type" type="text" name="status" value="${model.status}" size="40" class="text number">
     </div>
   </div>
   <div class="control-group">
     <label class="control-label" for="car-info_startTIme">载重</label>
 	<div class="controls">
-	  <input id="car-info_type" type="text" name="weight" value="${model.weight}" size="40" class="text">
+	  <input id="car-info_type" type="text" name="weight" value="${model.weight}" size="40" class="text number">
     </div>
   </div>
   <div class="control-group">
     <label class="control-label" for="car-info_endTime">载人</label>
 	<div class="controls">
-	  <input id="car-info_type" type="text" name="people" value="${model.people}" size="40" class="text">
+	  <input id="car-info_type" type="text" name="people" value="${model.people}" size="40" class="text number">
     </div>
   </div>
   <div class="control-group">

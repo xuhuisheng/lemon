@@ -21,7 +21,7 @@
     <section id="m-main" class="span10" style="float:right">
 
 	  <article style="margin-bottom:10px;">
-	    <a href="modeler!open.do" class="btn btn-small" target="_blank">新建模型</a>
+	    <a href="modeler-open.do" class="btn btn-small" target="_blank">新建模型</a>
 
 	    <div class="m-clear"></div>
 	  </article>
@@ -49,7 +49,7 @@
     </thead>
 
     <tbody>
-      <s:iterator value="models" var="item">
+      <c:forEach items="${models}" var="item">
       <tr>
         <td><input type="checkbox" class="selectedItem" name="selectedItem" value="${item.id}"></td>
 	    <td>${item.id}</td>
@@ -62,12 +62,12 @@
 	    <td>${item.deploymentId}</td>
 	    <td>${item.metaInfo}</td>
         <td>
-		  <a href="modeler!open.do?id=${item.id}" target="_blank">编辑</a>
-		  <a href="modeler!removeModel.do?id=${item.id}">删除</a>
-		  <a href="modeler!deploy.do?id=${item.id}">发布</a>
+		  <a href="modeler-open.do?id=${item.id}" target="_blank">编辑</a>
+		  <a href="modeler-remove.do?id=${item.id}">删除</a>
+		  <a href="modeler-deploy.do?id=${item.id}">发布</a>
         </td>
       </tr>
-      </s:iterator>
+      </c:forEach>
     </tbody>
   </table>
         </div>

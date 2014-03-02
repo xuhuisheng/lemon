@@ -7,7 +7,7 @@
 
   <head>
     <%@include file="/common/meta.jsp"%>
-    <title><spring:message code="org.org.input.title" text="编辑用户"/></title>
+    <title>编辑小组</title>
     <%@include file="/common/s.jsp"%>
     <script type="text/javascript">
 $(function() {
@@ -21,20 +21,20 @@ $(function() {
         rules: {
             orgname: {
                 remote: {
-                    url: 'org-group!checkOrgname.do',
+                    url: 'org-group-checkOrgname.do',
                     data: {
-                        <s:if test="model != null">
+                        <c:if test="${model != null}">
                         id: function() {
                             return $('#org_id').val();
                         }
-                        </s:if>
+                        </c:if>
                     }
                 }
             }
         },
         messages: {
             orgname: {
-                remote: "<spring:message code='org.org.input.duplicate' text='存在重复账号'/>"
+                remote: "存在重复小组"
             }
         }
     });
@@ -53,15 +53,15 @@ $(function() {
 
       <article class="m-widget">
         <header class="header">
-		  <h4 class="title"><spring:message code="org.org.input.title" text="编辑用户"/></h4>
+		  <h4 class="title">编辑小组</h4>
 		</header>
 
 		<div class="content content-inner">
 
-<form id="orgForm" method="post" action="org-group!save.do?operationMode=STORE" class="form-horizontal">
-  <s:if test="model != null">
+<form id="orgForm" method="post" action="org-group-save.do" class="form-horizontal">
+  <c:if test="${model != null}">
   <input id="org_id" type="hidden" name="id" value="${model.id}">
-  </s:if>
+  </c:if>
   <div class="control-group">
     <label class="control-label" for="org_orgname"><spring:message code="org.org.input.orgname" text="名称"/></label>
 	<div class="controls">
@@ -70,7 +70,7 @@ $(function() {
   </div>
   <div class="control-group">
     <div class="controls">
-      <button id="submitButton" class="btn"><spring:message code='core.input.save' text='保存'/></button>
+      <button id="submitButton" class="btn a-submit"><spring:message code='core.input.save' text='保存'/></button>
       <button type="button" onclick="history.back();" class="btn"><spring:message code='core.input.back' text='返回'/></button>
     </div>
   </div>

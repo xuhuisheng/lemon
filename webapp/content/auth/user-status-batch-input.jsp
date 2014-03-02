@@ -29,7 +29,7 @@ $(function() {
 
 function doPrev() {
     $('#accessForm').attr('method', 'get');
-    $('#accessForm').attr('action', 'user-status-batch.do');
+    $('#accessForm').attr('action', 'user-status-batch-list.do');
     $('#accessForm').submit();
 }
     </script>
@@ -51,7 +51,7 @@ function doPrev() {
 
         <div class="content content-inner">
 
-<form id="accessForm" method="post" action="user-status-batch!save.do" class="form-horizontal">
+<form id="accessForm" method="post" action="user-status-batch-save.do" class="form-horizontal">
   <div class="control-group">
     <label class="control-label" for="access_perm">用户</label>
     <div class="controls">
@@ -65,14 +65,14 @@ function doPrev() {
 		  </tr>
         </thead>
         <tbody>
-          <s:iterator value="userStatuses">
+          <c:forEach items="${userStatuses}" var="item">
             <tr>
               <td><input type="checkbox" class="selectedItem" name="userIds" value="${id}"></td>
-              <td>${id}</td>
-              <td>${username}</td>
-              <td>${status == 1 ? 'enable' : 'disable'}</td>
+              <td>${item.id}</td>
+              <td>${item.username}</td>
+              <td>${item.status == 1 ? '启用' : '急用'}</td>
             </tr>
-          </s:iterator>
+          </c:forEach>
         </tbody>
       </table>
     </div>
@@ -81,9 +81,9 @@ function doPrev() {
     <label class="control-label" for="access_role">角色</label>
     <div class="controls">
 	  <select name="roleIds" size="10" multiple>
-	    <s:iterator value="roles" var="item">
+	    <c:forEach items="${roles}" var="item">
 		  <option value="${item.id}">${item.name}</option>
-		</s:iterator>
+		</c:forEach>
 	  </select>
     </div>
   </div>

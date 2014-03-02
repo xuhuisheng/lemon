@@ -21,13 +21,13 @@ $(function() {
         rules: {
             name: {
                 remote: {
-                    url: 'role-def!checkName.do',
+                    url: 'role-def-checkName.do',
                     data: {
-                        <s:if test="model != null">
+                        <c:if test="${model != null}">
                         id: function() {
                             return $('#roleDef_id').val();
                         }
-                        </s:if>
+                        </c:if>
                     }
                 }
             }
@@ -58,10 +58,10 @@ $(function() {
 
 		<div class="content content-inner">
 
-<form id="roleDefForm" method="post" action="role-def!save.do?operationMode=STORE" class="form-horizontal">
-  <s:if test="model != null">
+<form id="roleDefForm" method="post" action="role-def-save.do" class="form-horizontal">
+  <c:if test="${model != null}">
   <input id="roleDef_id" type="hidden" name="id" value="${model.id}">
-  </s:if>
+  </c:if>
   <div class="control-group">
 	<label class="control-label" for="roleDef_name"><spring:message code='auth.roleDef.input.name' text='名称'/></label>
     <div class="controls">
@@ -76,7 +76,7 @@ $(function() {
   </div>
   <div class="control-group">
     <div class="controls">
-      <button id="submitButton" class="btn"><spring:message code='core.input.save' text='保存'/></button>
+      <button id="submitButton" class="btn a-submit"><spring:message code='core.input.save' text='保存'/></button>
 	  &nbsp;
       <button type="button" onclick="history.back();" class="btn"><spring:message code='core.input.back' text='返回'/></button>
     </div>

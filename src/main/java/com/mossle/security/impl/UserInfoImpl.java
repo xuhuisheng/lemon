@@ -7,12 +7,22 @@ import java.util.Map;
 import com.mossle.security.api.UserInfo;
 
 public class UserInfoImpl implements UserInfo {
+    private String id;
     private String username;
     private String displayName;
     private String password;
+    private String scopeId;
     private List<String> authorities;
     private List<String> attributes;
     private Map<String, Object> extra = new HashMap<String, Object>();
+
+    public String getId() {
+        return id;
+    }
+
+    public void setId(String id) {
+        this.id = id;
+    }
 
     public String getUsername() {
         return username;
@@ -36,6 +46,14 @@ public class UserInfoImpl implements UserInfo {
 
     public void setPassword(String password) {
         this.password = password;
+    }
+
+    public String getScopeId() {
+        return scopeId;
+    }
+
+    public void setScopeId(String scopeId) {
+        this.scopeId = scopeId;
     }
 
     public List<String> getAuthorities() {

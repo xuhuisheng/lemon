@@ -40,28 +40,28 @@
     </thead>
 
     <tbody>
-      <s:iterator value="tasks" var="item">
+      <c:forEach items="${tasks}" var="item">
       <tr>
         <td><input type="checkbox" class="selectedItem" name="selectedItem" value="${item.id}"></td>
 	    <td>${item.id}</td>
 	    <td>${item.name}</td>
-	    <td><s:date name="createTime" format="yyyy-MM-dd HH:mm:ss" /></td>
-	    <td>${item.assignee}</td>
+	    <td><fmt:formatDate value="${item.createTime}" pattern="yyyy-MM-dd HH:mm:ss" /></td>
+	    <td><tags:user userId="${item.assignee}"/></td>
 	    <td>${item.suspended ? '挂起' : '激活'}</td>
         <td>
-          <a href="${scopePrefix}/form/form!viewTaskForm.do?taskId=${item.id}">完成</a>
-		  <s:if test="delegationState != 'PENDING'">
-          <a href="workspace!prepareDelegateTask.do?taskId=${item.id}">代理</a>
-		  </s:if>
-		  <s:else>
-          <a href="workspace!resolveTask.do?taskId=${item.id}">处理</a>
-		  </s:else>
-          <a href="workspace!rollback.do?taskId=${item.id}">回退</a>
-          <a href="workspace!viewHistory.do?processInstanceId=${item.processInstanceId}">历史</a>
-          <a href="workspace!changeCounterSign.do?taskId=${item.id}">加减签</a>
+          <a href="${scopePrefix}/form/form-viewTaskForm.do?taskId=${item.id}">完成</a>
+		  <c:if test="${delegationState != 'PENDING'}">
+          <a href="workspace-prepareDelegateTask.do?taskId=${item.id}">代理</a>
+		  </c:if>
+		  <c:if test="${delegationState == 'PENDING'}">
+          <a href="workspace-resolveTask.do?taskId=${item.id}">处理</a>
+		  </c:if>
+          <a href="workspace-rollback.do?taskId=${item.id}">回退</a>
+          <a href="workspace-viewHistory.do?processInstanceId=${item.processInstanceId}">历史</a>
+          <a href="workspace-changeCounterSign.do?taskId=${item.id}">加减签</a>
         </td>
       </tr>
-      </s:iterator>
+      </c:forEach>
     </tbody>
   </table>
         </div>

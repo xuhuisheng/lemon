@@ -21,13 +21,17 @@ import org.slf4j.LoggerFactory;
 public class ProxyUserTaskBpmnParseHandler implements BpmnParseHandler {
     private static Logger logger = LoggerFactory
             .getLogger(ProxyUserTaskBpmnParseHandler.class);
+    private String taskListenerId;
+    private boolean useDefaultUserTaskParser;
 
     public void parse(BpmnParse bpmnParse, BaseElement baseElement) {
         if (!(baseElement instanceof UserTask)) {
             return;
         }
 
-        new UserTaskParseHandler().parse(bpmnParse, baseElement);
+        if (useDefaultUserTaskParser) {
+            new UserTaskParseHandler().parse(bpmnParse, baseElement);
+        }
 
         UserTask userTask = (UserTask) baseElement;
         logger.info("bpmnParse : {}, userTask : {}", bpmnParse, userTask);
@@ -52,7 +56,7 @@ public class ProxyUserTaskBpmnParseHandler implements BpmnParseHandler {
         activitiListener.setEvent(eventName);
         activitiListener
                 .setImplementationType(ImplementationType.IMPLEMENTATION_TYPE_DELEGATEEXPRESSION);
-        activitiListener.setImplementation("#{proxyTaskListener}");
+        activitiListener.setImplementation("#{" + taskListenerId + "}");
         taskDefinition
                 .addTaskListener(eventName, bpmnParse.getListenerFactory()
                         .createDelegateExpressionTaskListener(activitiListener));
@@ -62,5 +66,13 @@ public class ProxyUserTaskBpmnParseHandler implements BpmnParseHandler {
         List types = Collections.singletonList(UserTask.class);
 
         return types;
+    }
+
+    public void setTaskListenerId(String taskListenerId) {
+        this.taskListenerId = taskListenerId;
+    }
+
+    public void setUseDefaultUserTaskParser(boolean useDefaultUserTaskParser) {
+        this.useDefaultUserTaskParser = useDefaultUserTaskParser;
     }
 }
