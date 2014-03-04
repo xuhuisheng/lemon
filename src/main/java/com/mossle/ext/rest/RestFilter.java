@@ -113,6 +113,10 @@ public class RestFilter implements Filter {
                                 || (parameterTypeArray[i] == int.class)) {
                             arguments.add(Integer.parseInt(value));
                         }
+                    } else {
+                        if (parameterTypeArray[i] == String.class) {
+                            arguments.add(null);
+                        }
                     }
                 }
             }

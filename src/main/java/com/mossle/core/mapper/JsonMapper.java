@@ -56,7 +56,7 @@ public class JsonMapper {
         }
 
         try {
-            return mapper.readValue(jsonString, typeReference);
+            return (T) mapper.readValue(jsonString, typeReference);
         } catch (IOException e) {
             logger.warn("parse json string error:" + jsonString, e);
 
