@@ -109,7 +109,7 @@ $(function() {
 		<div id="__gef_canvas__" style="float:left;clear:right;overflow:auto;">
 		  <div id="xf-center" class="xf-center" unselectable="on">
 			<div id="xf-layer-form" class="xf-layer-form">
-			  <form id="xf-form" method="post" action="${scopePrefix}/form/form-completeTask.do?operationMode=STORE" class="xf-form">
+			  <form id="xf-form" method="post" action="${scopePrefix}/form/form-completeTask.do" class="xf-form">
 <input id="taskId" type="hidden" name="taskId" value="${formInfo.taskId}">
 <input id="businessKey" type="hidden" name="businessKey" value="${dynamicModel.id}">
 <!--

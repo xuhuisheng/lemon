@@ -60,8 +60,8 @@ $(function() {
 					var item = data[i];
 					html +=
 					  '<tr>'
-						+'<td><input id="selectedItem' + i + '" type="checkbox" class="selectedItem" name="selectedItem" value="' + item + '"></td>'
-						+'<td>' + item + '</td>'
+						+'<td><input id="selectedItem' + i + '" type="checkbox" class="selectedItem" name="selectedItem" value="' + item.id + '"></td>'
+						+'<td>' + item.displayName + '</td>'
 					  +'</tr>'
 				}
 				$('#userPickerBody').html(html);
@@ -103,7 +103,7 @@ $(function() {
 			<div id="xf-layer-form" class="xf-layer-form">
 			  <form id="xf-form" method="post" action="${scopePrefix}/form/form-startProcessInstance.do" class="xf-form">
 <input id="processDefinitionId" type="hidden" name="processDefinitionId" value="${formInfo.processDefinitionId}">
-<input id="processDefinitionId" type="hidden" name="bpmProcessId" value="${bpmProcessId}">
+<input id="bpmProcessId" type="hidden" name="bpmProcessId" value="${bpmProcessId}">
 <input id="autoCompleteFirstTask" type="hidden" name="autoCompleteFirstTask" value="${formInfo.autoCompleteFirstTask}">
 <input id="businessKey" type="hidden" name="businessKey" value="${businessKey}">
 <!--
