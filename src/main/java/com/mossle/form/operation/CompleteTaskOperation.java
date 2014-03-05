@@ -68,6 +68,11 @@ public class CompleteTaskOperation extends AbstractOperation<Void> {
 
         TaskService taskService = processEngine.getTaskService();
         Task task = taskService.createTaskQuery().taskId(taskId).singleResult();
+
+        if (task == null) {
+            throw new IllegalStateException("任务不存在");
+        }
+
         logger.info("{}", task.getDelegationState());
 
         if (DelegationState.PENDING == task.getDelegationState()) {

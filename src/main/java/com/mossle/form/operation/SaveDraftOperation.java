@@ -40,6 +40,11 @@ public class SaveDraftOperation extends AbstractOperation<String> {
             // TODO: 分支肯定有问题
             Task task = getProcessEngine().getTaskService().createTaskQuery()
                     .taskId(taskId).singleResult();
+
+            if (task == null) {
+                throw new IllegalStateException("任务不存在");
+            }
+
             String processInstanceId = task.getProcessInstanceId();
             Record record = keyValue.findByRef(processInstanceId);
 

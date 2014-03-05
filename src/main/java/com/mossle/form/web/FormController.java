@@ -22,6 +22,7 @@ import com.mossle.bpm.persistence.manager.BpmProcessManager;
 import com.mossle.bpm.persistence.manager.BpmTaskConfManager;
 
 import com.mossle.core.mapper.JsonMapper;
+import com.mossle.core.spring.MessageHelper;
 
 import com.mossle.form.domain.FormTemplate;
 import com.mossle.form.keyvalue.KeyValue;
@@ -81,6 +82,7 @@ public class FormController {
     private FormTemplateManager formTemplateManager;
     private JsonMapper jsonMapper = new JsonMapper();
     private KeyValue keyValue;
+    private MessageHelper messageHelper;
 
     /**
      * 保存草稿.
@@ -276,9 +278,16 @@ public class FormController {
      */
     @RequestMapping("form-viewTaskForm")
     public String viewTaskForm(@RequestParam("taskId") String taskId,
-            Model model) throws Exception {
+            Model model, RedirectAttributes redirectAttributes)
+            throws Exception {
         TaskService taskService = processEngine.getTaskService();
         Task task = taskService.createTaskQuery().taskId(taskId).singleResult();
+
+        if (task == null) {
+            messageHelper.addFlashMessage(redirectAttributes, "任务不存在");
+
+            return "redirect:/bpm/workspace-listPersonalTasks.do";
+        }
 
         FormService formService = processEngine.getFormService();
         String taskFormKey = formService.getTaskFormKey(
@@ -334,8 +343,8 @@ public class FormController {
      */
     @RequestMapping("form-completeTask")
     public String completeTask(
-            @RequestParam MultiValueMap<String, String> multiValueMap)
-            throws Exception {
+            @RequestParam MultiValueMap<String, String> multiValueMap,
+            RedirectAttributes redirectAttributes) throws Exception {
         Map<String, String[]> parameterMap = new HashMap<String, String[]>();
 
         for (Map.Entry<String, List<String>> entry : multiValueMap.entrySet()) {
@@ -343,7 +352,14 @@ public class FormController {
                     entry.getValue().toArray(new String[0]));
         }
 
-        new CompleteTaskOperation().execute(parameterMap);
+        try {
+            new CompleteTaskOperation().execute(parameterMap);
+        } catch (IllegalStateException ex) {
+            logger.error(ex.getMessage(), ex);
+            messageHelper.addFlashMessage(redirectAttributes, ex.getMessage());
+
+            return "redirect:/bpm/workspace-listPersonalTasks.do";
+        }
 
         return "form/form-completeTask";
     }
@@ -378,5 +394,10 @@ public class FormController {
     @Resource
     public void setKeyValue(KeyValue keyValue) {
         this.keyValue = keyValue;
+    }
+
+    @Resource
+    public void setMessageHelper(MessageHelper messageHelper) {
+        this.messageHelper = messageHelper;
     }
 }
