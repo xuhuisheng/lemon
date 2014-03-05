@@ -1,11 +1,15 @@
 package com.mossle.ext.rest;
 
 import java.io.IOException;
+import java.io.InputStream;
 
 import java.lang.annotation.Annotation;
 import java.lang.reflect.Method;
 
+import java.net.URLDecoder;
+
 import java.util.ArrayList;
+import java.util.HashMap;
 import java.util.List;
 import java.util.Map;
 
@@ -30,6 +34,7 @@ import javax.ws.rs.core.MediaType;
 
 import com.mossle.core.mapper.JsonMapper;
 import com.mossle.core.spring.ApplicationContextHelper;
+import com.mossle.core.util.IoUtils;
 
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
@@ -59,7 +64,9 @@ public class RestFilter implements Filter {
 
             for (Method method : clz.getDeclaredMethods()) {
                 if (this.matches(request, method)) {
-                    this.invokeMethod(request, res, object, method);
+                    Map<String, String> parameters = parseBody(request
+                            .getInputStream());
+                    this.invokeMethod(request, res, object, method, parameters);
 
                     return;
                 }
@@ -69,8 +76,37 @@ public class RestFilter implements Filter {
         filterChain.doFilter(req, res);
     }
 
+    public Map<String, String> parseBody(InputStream inputStream)
+            throws IOException {
+        String body = IoUtils.readString(inputStream);
+        body = URLDecoder.decode(body, "UTF-8");
+        logger.debug("body : {}", body);
+
+        Map<String, String> parameters = new HashMap<String, String>();
+
+        for (String text : body.split("&")) {
+            logger.debug("text : {}", text);
+
+            if (text.indexOf("=") == -1) {
+                continue;
+            }
+
+            String[] array = text.split("=");
+            String key = array[0];
+            String value = "";
+
+            if (array.length == 2) {
+                value = array[1];
+            }
+
+            parameters.put(key, value);
+        }
+
+        return parameters;
+    }
+
     public void invokeMethod(HttpServletRequest request, ServletResponse res,
-            Object object, Method method) {
+            Object object, Method method, Map<String, String> parameters) {
         try {
             List arguments = new ArrayList();
 
@@ -96,7 +132,7 @@ public class RestFilter implements Filter {
                     } else if (annotation instanceof FormParam) {
                         name = ((FormParam) annotation).value();
                         type = "form";
-                        value = request.getParameter(name);
+                        value = parameters.get(name);
                     } else if (annotation instanceof HeaderParam) {
                         name = ((HeaderParam) annotation).value();
                         type = "header";
