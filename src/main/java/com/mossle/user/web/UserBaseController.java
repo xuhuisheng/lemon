@@ -131,6 +131,7 @@ public class UserBaseController {
 
         if (id != null) {
             dest = userBaseManager.get(id);
+			dest.setStatus(0);
             beanMapper.copy(userBase, dest);
             userService.updateUser(dest, userRepoId, parameters);
         } else {
