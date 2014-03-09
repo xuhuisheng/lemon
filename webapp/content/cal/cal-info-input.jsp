@@ -58,7 +58,7 @@ $(function() {
   <div class="control-group">
     <label class="control-label" for="cal-info_type">类型</label>
 	<div class="controls">
-	  <input id="cal-info_type" type="text" name="type" value="${model.type}" size="40" class="text required" minlength="1" maxlength="10">
+	  <input id="cal-info_type" type="text" name="type" value="${model.type}" size="40" class="text required number" minlength="1" maxlength="10">
     </div>
   </div>
   <div class="control-group">
@@ -82,13 +82,16 @@ $(function() {
   <div class="control-group">
     <label class="control-label" for="cal-info_alertTime">提醒时间</label>
 	<div class="controls">
-	  <input id="cal-info_alertTime" type="text" name="alertTime" value="${model.alertTime}" size="40" class="text">
+      <div class="input-append datepicker date" style="padding-left: 0px;">
+	    <input id="cal-info_alertTime" type="text" name="alertTime" value="<fmt:formatDate value='${model.alertTime}' pattern='yyyy-MM-dd'/>" size="40" class="text" minlength="2" maxlength="10" readonly style="background-color:white;cursor:default; width: 175px;">
+	    <span class="add-on" style="padding-top: 2px; padding-bottom: 2px;"><i class="icon-calendar"></i></span>
+	  </div>
     </div>
   </div>
   <div class="control-group">
     <label class="control-label" for="cal-info_priority">优先级</label>
 	<div class="controls">
-	  <input id="cal-info_priority" type="text" name="priority" value="${model.priority}" size="40" class="text">
+	  <input id="cal-info_priority" type="text" name="priority" value="${model.priority}" size="40" class="text number">
     </div>
   </div>
   <div class="control-group">
