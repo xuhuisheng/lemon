@@ -27,7 +27,7 @@ public class SpringSecurityUserAuth extends UserAuthDTO implements UserDetails {
     }
 
     public boolean isEnabled() {
-        return true;
+        return "1".equals(this.getStatus());
     }
 
     public boolean isCredentialsNonExpired() {
