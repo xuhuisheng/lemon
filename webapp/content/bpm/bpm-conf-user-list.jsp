@@ -82,7 +82,7 @@ $(function() {
         <div id="bpmCategorySearch" class="content content-inner">
 
 		  <form name="bpmCategoryForm" method="post" action="bpm-conf-user-save.do" class="form-inline">
-			<input type="hidden" name="bpmConfNodeId" value="${bpmConfNodeId}">
+			<input type="hidden" name="bpmConfNodeId" value="${param.bpmConfNodeId}">
 		    <label for="_task_name_key">参与者:</label>
 		    <div class="input-append userPicker">
 			  <input id="_task_name_key" type="hidden" name="value" class="input-medium" value="">
