@@ -21,6 +21,7 @@
     <section id="m-main" class="span10" style="float:right">
 
 <c:forEach items="${bpmCategories}" var="bpmCategory">
+      <div class="row-fluid">
       <div class="page-header">
         <h3>${bpmCategory.name}</h3>
       </div>
@@ -35,6 +36,7 @@
           </div>
         </div>
       </c:forEach>
+	  </div>
 
 </c:forEach>
 
