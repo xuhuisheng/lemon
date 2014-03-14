@@ -26,7 +26,6 @@ import com.mossle.group.manager.OrgCompanyManager;
 
 import com.mossle.party.domain.PartyEntity;
 import com.mossle.party.domain.PartyStruct;
-import com.mossle.party.domain.PartyStructId;
 import com.mossle.party.manager.PartyEntityManager;
 import com.mossle.party.manager.PartyStructManager;
 import com.mossle.party.manager.PartyTypeManager;
@@ -49,6 +48,7 @@ public class OrgCompanyController {
     private MessageHelper messageHelper;
     private Exportor exportor;
     private BeanMapper beanMapper = new BeanMapper();
+    private PartyService partyService;
 
     @RequestMapping("org-company-list")
     public String list(@ModelAttribute Page page,
@@ -90,13 +90,19 @@ public class OrgCompanyController {
 
         if (id == null) {
             dest.setScopeId(ScopeHolder.getScopeId());
-
-            // TODO: sync party
-        } else {
-            // TODO: sync party
         }
 
         orgCompanyManager.save(dest);
+
+        if (id == null) {
+            // TODO: sync party
+            partyService.insertPartyEntity(Long.toString(dest.getId()),
+                    "company", dest.getName());
+        } else {
+            // TODO: sync party
+            partyService.updatePartyEntity(Long.toString(dest.getId()),
+                    "company", dest.getName());
+        }
 
         messageHelper.addFlashMessage(redirectAttributes, "core.success.save",
                 "保存成功");
@@ -112,6 +118,8 @@ public class OrgCompanyController {
 
         for (OrgCompany orgCompany : orgCompanies) {
             orgCompanyManager.remove(orgCompany);
+            partyService.removePartyEntity(Long.toString(orgCompany.getId()),
+                    "company");
         }
 
         messageHelper.addFlashMessage(redirectAttributes,
@@ -151,5 +159,10 @@ public class OrgCompanyController {
     @Resource
     public void setExportor(Exportor exportor) {
         this.exportor = exportor;
+    }
+
+    @Resource
+    public void setPartyService(PartyService partyService) {
+        this.partyService = partyService;
     }
 }

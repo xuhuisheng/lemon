@@ -20,6 +20,7 @@ import org.activiti.engine.ActivitiException;
 import org.activiti.engine.history.HistoricActivityInstance;
 import org.activiti.engine.impl.HistoricActivityInstanceQueryImpl;
 import org.activiti.engine.impl.Page;
+import org.activiti.engine.impl.cmd.GetDeploymentProcessDefinitionCmd;
 import org.activiti.engine.impl.context.Context;
 import org.activiti.engine.impl.interceptor.Command;
 import org.activiti.engine.impl.interceptor.CommandContext;
@@ -45,6 +46,9 @@ public class RollbackTaskCmd implements Command<Integer> {
             .getLogger(RollbackTaskCmd.class);
     private String taskId;
 
+    /**
+     * 这个taskId是运行阶段task的id.
+     */
     public RollbackTaskCmd(String taskId) {
         this.taskId = taskId;
     }
@@ -55,7 +59,8 @@ public class RollbackTaskCmd implements Command<Integer> {
      * @return 0-退回成功 1-流程结束 2-下一结点已经通过,不能退回
      */
     public Integer execute(CommandContext commandContext) {
-        String historyTaskId = findNearestUserTask();
+        // 尝试查找最近的上游userTask
+        String historyTaskId = this.findNearestUserTask();
 
         if (historyTaskId == null) {
             logger.info("cannot rollback {}", taskId);
@@ -63,9 +68,12 @@ public class RollbackTaskCmd implements Command<Integer> {
             return 2;
         }
 
+        // 先找到历史任务
         HistoricTaskInstanceEntity historicTaskInstanceEntity = Context
                 .getCommandContext().getHistoricTaskInstanceEntityManager()
                 .findHistoricTaskInstanceById(historyTaskId);
+
+        // 再反向查找历史任务对应的历史节点
         HistoricActivityInstanceEntity historicActivityInstanceEntity = getHistoricActivityInstanceEntity(historyTaskId);
 
         Graph graph = new ActivitiHistoryGraphBuilder(
@@ -133,8 +141,8 @@ public class RollbackTaskCmd implements Command<Integer> {
                 String.class, taskId);
         Node node = graph.findById(historicActivityInstanceId);
 
-        String previousHistoricActivityInstanceId = findIncomingNode(graph,
-                node);
+        String previousHistoricActivityInstanceId = this.findIncomingNode(
+                graph, node);
 
         if (previousHistoricActivityInstanceId == null) {
             logger.debug(
@@ -160,9 +168,15 @@ public class RollbackTaskCmd implements Command<Integer> {
             }
 
             if ("userTask".equals(srcType)) {
-                return src.getId();
+                boolean isSkip = isSkipActivity(src.getId());
+
+                if (isSkip) {
+                    return this.findIncomingNode(graph, src);
+                } else {
+                    return src.getId();
+                }
             } else if (srcType.endsWith("Gateway")) {
-                return findIncomingNode(graph, src);
+                return this.findIncomingNode(graph, src);
             } else {
                 logger.info("cannot rollback, previous node is not userTask : "
                         + src.getId() + " " + srcType + "(" + src.getName()
@@ -212,15 +226,19 @@ public class RollbackTaskCmd implements Command<Integer> {
 
             if ("userTask".equals(type)) {
                 if (!dest.isActive()) {
-                    logger.info("cannot rollback, " + type + "("
-                            + dest.getName() + ") is complete.");
+                    boolean isSkip = isSkipActivity(dest.getId());
 
-                    return false;
+                    if (isSkip) {
+                        return checkCouldRollback(dest);
+                    } else {
+                        logger.info("cannot rollback, " + type + "("
+                                + dest.getName() + ") is complete.");
+
+                        return false;
+                    }
                 }
             } else if (type.endsWith("Gateway")) {
-                if (!checkCouldRollback(dest)) {
-                    return false;
-                }
+                return checkCouldRollback(dest);
             } else {
                 logger.info("cannot rollback, " + type + "(" + dest.getName()
                         + ") is complete.");
@@ -323,7 +341,7 @@ public class RollbackTaskCmd implements Command<Integer> {
 
     public ActivityImpl getActivity(
             HistoricActivityInstanceEntity historicActivityInstanceEntity) {
-        ProcessDefinitionEntity processDefinitionEntity = new FindProcessDefinitionEntityCmd(
+        ProcessDefinitionEntity processDefinitionEntity = new GetDeploymentProcessDefinitionCmd(
                 historicActivityInstanceEntity.getProcessDefinitionId())
                 .execute(Context.getCommandContext());
 
@@ -331,6 +349,9 @@ public class RollbackTaskCmd implements Command<Integer> {
                 .findActivity(historicActivityInstanceEntity.getActivityId());
     }
 
+    /**
+     * 删除未完成任务.
+     */
     public void deleteActiveTask() {
         TaskEntity taskEntity = Context.getCommandContext()
                 .getTaskEntityManager().findTaskById(taskId);
@@ -352,5 +373,20 @@ public class RollbackTaskCmd implements Command<Integer> {
                     .update("update ACT_HI_ACTINST set end_time_=?,duration_=? where id_=?",
                             now, duration, map.get("id_"));
         }
+    }
+
+    public boolean isSkipActivity(String historyActivityId) {
+        JdbcTemplate jdbcTemplate = ApplicationContextHelper
+                .getBean(JdbcTemplate.class);
+        String historyTaskId = jdbcTemplate.queryForObject(
+                "select task_id_ from ACT_HI_ACTINST where id_=?",
+                String.class, historyActivityId);
+
+        HistoricTaskInstanceEntity historicTaskInstanceEntity = Context
+                .getCommandContext().getHistoricTaskInstanceEntityManager()
+                .findHistoricTaskInstanceById(historyTaskId);
+        String deleteReason = historicTaskInstanceEntity.getDeleteReason();
+
+        return "跳过".equals(deleteReason);
     }
 }

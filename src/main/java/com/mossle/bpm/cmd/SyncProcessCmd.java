@@ -26,6 +26,7 @@ import org.activiti.bpmn.model.Process;
 import org.activiti.bpmn.model.UserTask;
 
 import org.activiti.engine.impl.cmd.GetBpmnModelCmd;
+import org.activiti.engine.impl.cmd.GetDeploymentProcessDefinitionCmd;
 import org.activiti.engine.impl.context.Context;
 import org.activiti.engine.impl.interceptor.Command;
 import org.activiti.engine.impl.interceptor.CommandContext;
@@ -48,7 +49,7 @@ public class SyncProcessCmd implements Command<Void> {
     }
 
     public Void execute(CommandContext commandContext) {
-        ProcessDefinitionEntity processDefinitionEntity = new FindProcessDefinitionEntityCmd(
+        ProcessDefinitionEntity processDefinitionEntity = new GetDeploymentProcessDefinitionCmd(
                 processDefinitionId).execute(commandContext);
         String processDefinitionKey = processDefinitionEntity.getKey();
         int processDefinitionVersion = processDefinitionEntity.getVersion();

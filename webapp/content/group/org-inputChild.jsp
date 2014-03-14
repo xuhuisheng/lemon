@@ -59,7 +59,7 @@ $(function() {
 		<div class="content content-inner">
 
 <form id="orgForm" method="post" action="org-saveChild.do" class="form-horizontal">
-  <input id="group-base_groupBaseId" type="hidden" name="partyDimId" value="${partyDimId}">
+  <input id="group-base_groupBaseId" type="hidden" name="partyStructTypeId" value="${partyStructTypeId}">
   <input id="group-base_groupBaseId" type="hidden" name="partyEntityId" value="${partyEntityId}">
   <c:if test="${model != null}">
   <input id="org_id" type="hidden" name="id" value="${model.id}">

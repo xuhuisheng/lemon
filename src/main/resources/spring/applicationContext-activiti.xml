@@ -9,10 +9,10 @@
 		<property name="databaseSchemaUpdate" value="true" />
 		<!-- job executor configurations -->
 		<property name="jobExecutorActivate" value="false" />
-		<!-- mail server configurations -->
-		<property name="mailServerPort" value="5025" />
+
 		<property name="history" value="audit" />
 
+		<!-- 添加的自定义监听器 -->
  		<property name="customDefaultBpmnParseHandlers">
     	 	<list>
 				<bean class="com.mossle.bpm.listener.ProxyUserTaskBpmnParseHandler">
@@ -33,7 +33,6 @@
 			<bean class="com.mossle.bpm.parser.CustomBpmnParser" />
 		</property>
 
-
 		<property name="transactionManager" ref="transactionManager"/>
 		<!-- (databaseType 不用修改,即使连接其他类型数据库)  act引擎会自动替换成相应的type,这里加上是因为act不识别hsqldb类型,故直接映射成H2-->
 		<property name="databaseType" value="${application.database.type}"/>
@@ -42,17 +41,7 @@
         <property name="activityFontName" value="宋体"/>
         <property name="labelFontName" value="宋体"/>
 
-        <!-- 缓存支持
-        <property name="processDefinitionCache">
-            <bean class="me.kafeitu.demo.activiti.util.cache.DistributedCache" />
-        </property>-->
-
-        <!-- 自定义表单字段类型 -->
-        <property name="customFormTypes">
-            <list>
-                <bean class="com.mossle.bpm.support.UsersFormType"/>
-            </list>
-        </property>
+		<!-- 组织机构适配 -->
         <property name="customSessionFactories">
 			<list>
 				<bean class="com.mossle.bpm.CustomGroupEntityManagerFactory" >
@@ -67,14 +56,6 @@
 
 		<property name="businessCalendarManager" ref="businessCalendarManager"/>
 
-        <!-- 自动部署 -->
-		<!--
-        <property name="deploymentResources">
-            <list>
-                <value>classpath*:/bpmn2/*</value>
-            </list>
-        </property>
-		-->
 		<!-- //更换id生成策略
 		<property name="idGenerator">
 			<bean class="org.activiti.engine.impl.persistence.StrongUuidGenerator" />
@@ -103,7 +84,7 @@
         </property>
 	</bean>
 
-	<!-- 全局任务监听器 -->
+	<!-- 在记录history之前执行的TaskListener -->
 	<bean id="customTaskListener" class="com.mossle.bpm.listener.ProxyTaskListener">
 		<property name="taskListeners">
 			<list>
@@ -115,10 +96,12 @@
 		</property>
 	</bean>
 
+	<!-- 在记录history之后执行的TaskListener -->
 	<bean id="postTaskListener" class="com.mossle.bpm.listener.ProxyTaskListener">
 		<property name="taskListeners">
 			<list>
 				<bean class="com.mossle.bpm.listener.AutoCompleteFirstTaskListener"/>
+				<bean class="com.mossle.bpm.listener.SkipTaskListener"/>
 				<bean class="com.mossle.bpm.listener.NoticeTaskListener"/>
 			</list>
 		</property>

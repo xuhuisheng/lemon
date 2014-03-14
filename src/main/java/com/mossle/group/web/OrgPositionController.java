@@ -26,7 +26,6 @@ import com.mossle.group.manager.OrgPositionManager;
 
 import com.mossle.party.domain.PartyEntity;
 import com.mossle.party.domain.PartyStruct;
-import com.mossle.party.domain.PartyStructId;
 import com.mossle.party.manager.PartyEntityManager;
 import com.mossle.party.manager.PartyStructManager;
 import com.mossle.party.manager.PartyTypeManager;
@@ -49,6 +48,7 @@ public class OrgPositionController {
     private MessageHelper messageHelper;
     private Exportor exportor;
     private BeanMapper beanMapper = new BeanMapper();
+    private PartyService partyService;
 
     @RequestMapping("org-position-list")
     public String list(@ModelAttribute Page page,
@@ -90,13 +90,19 @@ public class OrgPositionController {
 
         if (id == null) {
             dest.setScopeId(ScopeHolder.getScopeId());
-
-            // TODO: sync party
-        } else {
-            // TODO: sync party
         }
 
         orgPositionManager.save(dest);
+
+        if (id == null) {
+            // sync party
+            partyService.insertPartyEntity(Long.toString(dest.getId()),
+                    "position", dest.getName());
+        } else {
+            // sync party
+            partyService.updatePartyEntity(Long.toString(dest.getId()),
+                    "position", dest.getName());
+        }
 
         messageHelper.addFlashMessage(redirectAttributes, "core.success.save",
                 "保存成功");
@@ -107,11 +113,13 @@ public class OrgPositionController {
     @RequestMapping("org-position-remove")
     public String remove(@RequestParam("selectedItem") List<Long> selectedItem,
             RedirectAttributes redirectAttributes) {
-        List<OrgPosition> orgCompanies = orgPositionManager
+        List<OrgPosition> orgPositions = orgPositionManager
                 .findByIds(selectedItem);
 
-        for (OrgPosition orgPosition : orgCompanies) {
+        for (OrgPosition orgPosition : orgPositions) {
             orgPositionManager.remove(orgPosition);
+            partyService.removePartyEntity(Long.toString(orgPosition.getId()),
+                    "position");
         }
 
         messageHelper.addFlashMessage(redirectAttributes,
@@ -151,5 +159,10 @@ public class OrgPositionController {
     @Resource
     public void setExportor(Exportor exportor) {
         this.exportor = exportor;
+    }
+
+    @Resource
+    public void setPartyService(PartyService partyService) {
+        this.partyService = partyService;
     }
 }

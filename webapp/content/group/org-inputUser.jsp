@@ -58,36 +58,46 @@ $(function() {
 		<div class="content content-inner">
 
 <form id="orgForm" method="post" action="org-saveUser.do" class="form-horizontal">
-  <input id="group-base_groupBaseId" type="hidden" name="partyDimId" value="${partyDimId}">
+  <input id="group-base_groupBaseId" type="hidden" name="partyStructTypeId" value="${partyStructTypeId}">
   <input id="group-base_groupBaseId" type="hidden" name="partyEntityId" value="${partyEntityId}">
   <div class="control-group">
     <label class="control-label" for="org_orgname"><spring:message code="org.org.input.orgname" text="名称"/></label>
 	<div class="controls">
-	  <input id="group-base_name" type="text" name="name" value="" size="40" class="text required" minlength="2" maxlength="50" autocomplete="off">
+	  <input id="group-base_name" type="text" name="name" value="" size="40" class="text required" minlength="1" maxlength="50" autocomplete="off">
     </div>
   </div>
   <div class="control-group">
-    <label class="control-label" for="orgInputUser_status">单选</label>
+    <label class="control-label" for="orgInputUser_partTime0">兼职</label>
 	<div class="controls">
-	  <label for="orgInputUser_status1" class="radio inline">
-	    <input id="orgInputUser_status1" type="radio" name="status" value="1" class="required">
+	  <label for="orgInputUser_partTime0" class="radio inline">
+	    <input id="orgInputUser_partTime0" type="radio" name="partTime" value="0" class="required" checked>
 		主职
 	  </label>
-	  <label for="orgInputUser_status2" class="radio inline">
-	    <input id="orgInputUser_status2" type="radio" name="status" value="2" class="required">
+	  <label for="orgInputUser_partTime1" class="radio inline">
+	    <input id="orgInputUser_partTime1" type="radio" name="partTime" value="1" class="required">
 		兼职
 	  </label>
 	  <label for="orgInputUser_status2" class="validate-error" generated="true" style="display:none;"></label>
     </div>
   </div>
   <div class="control-group">
-    <label class="control-label" for="scope-local_global">岗位</label>
+    <label class="control-label" for="orgInputUser_priority">排序</label>
 	<div class="controls">
-	  <select id="org_partyTypeId" name="partyStructTypeId">
-      <c:forEach items="${partyStructTypes}" var="item">
-	    <option value="${item.id}" ${item.id==model.partyStructType.id ? 'selected' : ''}>${item.name}</option>
-	  </c:forEach>
-	  </select>
+	  <input id="orgInputUser_priority" type="text" name="priority" value="" size="40" class="text required number" minlength="1" maxlength="50" autocomplete="off">
+    </div>
+  </div>
+  <div class="control-group">
+    <label class="control-label" for="orgInputUser_admin0">管理</label>
+	<div class="controls">
+	  <label for="orgInputUser_admin0" class="radio inline">
+	    <input id="orgInputUser_admin0" type="radio" name="admin" value="0" class="required" checked>
+		员工
+	  </label>
+	  <label for="orgInputUser_admin1" class="radio inline">
+	    <input id="orgInputUser_admin1" type="radio" name="admin" value="1" class="required">
+		负责人
+	  </label>
+	  <label for="orgInputUser_status2" class="validate-error" generated="true" style="display:none;"></label>
     </div>
   </div>
   <div class="control-group">

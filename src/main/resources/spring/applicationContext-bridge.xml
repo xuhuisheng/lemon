@@ -65,4 +65,10 @@
 		<property name="scopeConnector" ref="scopeConnector"/>
 	</bean>
 
+	<!-- ================================================== -->
+
+	<bean id="orgConnector" class="com.mossle.bridge.org.DatabaseOrgConnector">
+		<property name="jdbcTemplate" ref="jdbcTemplate"/>
+	</bean>
+
 </beans>

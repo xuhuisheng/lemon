@@ -59,8 +59,8 @@ $(function() {
 <!--
 		  <button class="btn" onclick="location.href='group-base-inputRoot.do'">添加顶级部门</button>
 -->
-		  <button class="btn" onclick="location.href='org-users.do?partyDimId=${partyDimId}&partyEntityId=${partyEntityId}'">管理下属</button>
-		  <button class="btn" onclick="location.href='org-children.do?partyDimId=${partyDimId}&partyEntityId=${partyEntityId}'">下级组织</button>
+		  <button class="btn" onclick="location.href='org-users.do?partyStructTypeId=${partyStructTypeId}&partyEntityId=${partyEntityId}'">管理下属</button>
+		  <button class="btn" onclick="location.href='org-children.do?partyStructTypeId=${partyStructTypeId}&partyEntityId=${partyEntityId}'">下级组织</button>
 		  <br>
 		  <br>
 
@@ -70,7 +70,7 @@ $(function() {
 	  <article class="m-blank">
 	    <div class="pull-left">
 		  <region:region-permission permission="org:create">
-		  <button class="btn btn-small a-insert" onclick="location.href='org-inputChild.do?partyDimId=${partyDimId}&partyEntityId=${partyEntityId}'">新建</button>
+		  <button class="btn btn-small a-insert" onclick="location.href='org-inputChild.do?partyStructTypeId=${partyStructTypeId}&partyEntityId=${partyEntityId}'">新建</button>
 		  </region:region-permission>
 		  <region:region-permission permission="org:delete">
 		  <button class="btn btn-small a-remove" onclick="table.removeAll()">删除</button>
@@ -97,7 +97,7 @@ $(function() {
 		</header>
 		<div class="content">
 
-<form id="orgGridForm" name="orgGridForm" method='post' action="org-removeChild.do?partyDimId=${partyDimId}&partyEntityId=${partyEntityId}" class="m-form-blank">
+<form id="orgGridForm" name="orgGridForm" method='post' action="org-removeChild.do?partyStructTypeId=${partyStructTypeId}&partyEntityId=${partyEntityId}" class="m-form-blank">
   <table id="orgGrid" class="m-table table-hover">
     <thead>
       <tr>
@@ -112,7 +112,7 @@ $(function() {
       <tr>
         <td><input type="checkbox" class="selectedItem a-check" name="selectedItem" value="${item.id}"></td>
         <td>${item.id}</td>
-        <td>${item.name}</td>
+        <td>${item.childEntity.name}</td>
       </tr>
       </c:forEach>
     </tbody>

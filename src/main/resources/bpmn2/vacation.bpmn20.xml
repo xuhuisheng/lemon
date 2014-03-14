@@ -22,7 +22,7 @@
   <userTask id='taskuser-2' name='部门领导审批' activiti:formKey='上级审批'>
     <humanPerformer>
       <resourceAssignmentExpression>
-        <formalExpression>部门经理</formalExpression>
+        <formalExpression>常用语:直接上级</formalExpression>
       </resourceAssignmentExpression>
     </humanPerformer>
   </userTask>

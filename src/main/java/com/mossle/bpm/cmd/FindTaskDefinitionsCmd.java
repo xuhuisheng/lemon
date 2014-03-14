@@ -3,6 +3,7 @@ package com.mossle.bpm.cmd;
 import java.util.ArrayList;
 import java.util.List;
 
+import org.activiti.engine.impl.cmd.GetDeploymentProcessDefinitionCmd;
 import org.activiti.engine.impl.context.Context;
 import org.activiti.engine.impl.interceptor.Command;
 import org.activiti.engine.impl.interceptor.CommandContext;
@@ -17,7 +18,7 @@ public class FindTaskDefinitionsCmd implements Command<List<TaskDefinition>> {
     }
 
     public List<TaskDefinition> execute(CommandContext commandContext) {
-        ProcessDefinitionEntity processDefinitionEntity = new FindProcessDefinitionEntityCmd(
+        ProcessDefinitionEntity processDefinitionEntity = new GetDeploymentProcessDefinitionCmd(
                 processDefinitionId).execute(commandContext);
 
         List<TaskDefinition> taskDefinitions = new ArrayList<TaskDefinition>();

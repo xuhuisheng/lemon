@@ -14,6 +14,7 @@ import com.mossle.bpm.support.DefaultTaskListener;
 
 import org.activiti.engine.delegate.DelegateTask;
 import org.activiti.engine.impl.context.Context;
+import org.activiti.engine.impl.el.ExpressionManager;
 import org.activiti.engine.impl.persistence.entity.TaskEntity;
 
 import org.slf4j.Logger;
@@ -32,32 +33,36 @@ public class ConfUserTaskListener extends DefaultTaskListener {
                                 .getExecution().getCurrentActivityId());
         logger.debug("{}", bpmConfUsers);
 
+        ExpressionManager expressionManager = Context
+                .getProcessEngineConfiguration().getExpressionManager();
+
         try {
             for (BpmConfUser bpmConfUser : bpmConfUsers) {
                 logger.debug("status : {}, type: {}", bpmConfUser.getStatus(),
                         bpmConfUser.getType());
                 logger.debug("value : {}", bpmConfUser.getValue());
 
+                String value = expressionManager
+                        .createExpression(bpmConfUser.getValue())
+                        .getValue(delegateTask).toString();
+
                 if (bpmConfUser.getStatus() == 1) {
                     if (bpmConfUser.getType() == 0) {
-                        delegateTask.setAssignee(bpmConfUser.getValue());
+                        delegateTask.setAssignee(value);
                     } else if (bpmConfUser.getType() == 1) {
-                        delegateTask.addCandidateUser(bpmConfUser.getValue());
+                        delegateTask.addCandidateUser(value);
                     } else if (bpmConfUser.getType() == 2) {
-                        delegateTask.addCandidateGroup(bpmConfUser.getValue());
+                        delegateTask.addCandidateGroup(value);
                     }
                 } else if (bpmConfUser.getStatus() == 2) {
                     if (bpmConfUser.getType() == 0) {
-                        if (delegateTask.getAssignee().equals(
-                                bpmConfUser.getValue())) {
+                        if (delegateTask.getAssignee().equals(value)) {
                             delegateTask.setAssignee(null);
                         }
                     } else if (bpmConfUser.getType() == 1) {
-                        delegateTask
-                                .deleteCandidateUser(bpmConfUser.getValue());
+                        delegateTask.deleteCandidateUser(value);
                     } else if (bpmConfUser.getType() == 2) {
-                        delegateTask.deleteCandidateGroup(bpmConfUser
-                                .getValue());
+                        delegateTask.deleteCandidateGroup(value);
                     }
                 }
             }

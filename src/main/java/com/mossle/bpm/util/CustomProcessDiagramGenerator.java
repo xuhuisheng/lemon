@@ -24,7 +24,6 @@ import java.util.List;
 
 import javax.imageio.ImageIO;
 
-import com.mossle.bpm.cmd.FindProcessDefinitionEntityCmd;
 import com.mossle.bpm.graph.ActivitiHistoryGraphBuilder;
 import com.mossle.bpm.graph.Edge;
 import com.mossle.bpm.graph.Graph;
@@ -45,6 +44,7 @@ import org.activiti.engine.history.HistoricProcessInstance;
 import org.activiti.engine.impl.HistoricActivityInstanceQueryImpl;
 import org.activiti.engine.impl.Page;
 import org.activiti.engine.impl.cmd.GetBpmnModelCmd;
+import org.activiti.engine.impl.cmd.GetDeploymentProcessDefinitionCmd;
 import org.activiti.engine.impl.context.Context;
 import org.activiti.engine.impl.persistence.entity.ProcessDefinitionEntity;
 import org.activiti.engine.impl.pvm.PvmTransition;
@@ -64,6 +64,7 @@ public class CustomProcessDiagramGenerator {
     private static List<String> subProcessType = new ArrayList<String>();
     private static Color RUNNING_COLOR = Color.RED;
     private static Color HISTORY_COLOR = Color.GREEN;
+    private static Color SKIP_COLOR = Color.GRAY;
     private static Stroke THICK_BORDER_STROKE = new BasicStroke(3.0f);
     private int minX;
     private int minY;
@@ -119,7 +120,7 @@ public class CustomProcessDiagramGenerator {
         this.minX -= 5;
         this.minY -= 5;
 
-        ProcessDefinitionEntity definition = new FindProcessDefinitionEntityCmd(
+        ProcessDefinitionEntity definition = new GetDeploymentProcessDefinitionCmd(
                 processDefinitionId).execute(Context.getCommandContext());
         String diagramResourceName = definition.getDiagramResourceName();
         String deploymentId = definition.getDeploymentId();
@@ -150,17 +151,36 @@ public class CustomProcessDiagramGenerator {
             ActivityImpl activity = definition.findActivity(historicActivityId);
 
             if (activity != null) {
-                if (historicActivityInstance.getEndTime() == null) { // 节点正在运行中
+                if (historicActivityInstance.getEndTime() == null) {
+                    // 节点正在运行中
                     signRunningNode(image, activity.getX() - this.minX,
                             activity.getY() - this.minY, activity.getWidth(),
                             activity.getHeight(),
                             historicActivityInstance.getActivityType());
                 } else {
+                    String deleteReason = null;
+
+                    if (historicActivityInstance.getTaskId() != null) {
+                        deleteReason = Context
+                                .getCommandContext()
+                                .getHistoricTaskInstanceEntityManager()
+                                .findHistoricTaskInstanceById(
+                                        historicActivityInstance.getTaskId())
+                                .getDeleteReason();
+                    }
+
                     // 节点已经结束
-                    signHistoryNode(image, activity.getX() - this.minX,
-                            activity.getY() - this.minY, activity.getWidth(),
-                            activity.getHeight(),
-                            historicActivityInstance.getActivityType());
+                    if ("跳过".equals(deleteReason)) {
+                        signSkipNode(image, activity.getX() - this.minX,
+                                activity.getY() - this.minY,
+                                activity.getWidth(), activity.getHeight(),
+                                historicActivityInstance.getActivityType());
+                    } else {
+                        signHistoryNode(image, activity.getX() - this.minX,
+                                activity.getY() - this.minY,
+                                activity.getWidth(), activity.getHeight(),
+                                historicActivityInstance.getActivityType());
+                    }
                 }
             }
         }
@@ -224,6 +244,19 @@ public class CustomProcessDiagramGenerator {
     private static void signHistoryNode(BufferedImage image, int x, int y,
             int width, int height, String activityType) {
         Color nodeColor = HISTORY_COLOR;
+        Graphics2D graphics = image.createGraphics();
+
+        try {
+            drawNodeBorder(x, y, width, height, graphics, nodeColor,
+                    activityType);
+        } finally {
+            graphics.dispose();
+        }
+    }
+
+    private static void signSkipNode(BufferedImage image, int x, int y,
+            int width, int height, String activityType) {
+        Color nodeColor = SKIP_COLOR;
         Graphics2D graphics = image.createGraphics();
 
         try {

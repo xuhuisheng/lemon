@@ -1,3 +1,6 @@
+//Activiti官方5.14汉化版
+//qalong@gmail.com
+//2014-02-28
 {
   "title" : "BPMN 2.0",
   "namespace" : "http://b3mn.org/stencilset/bpmn2.0#",
@@ -7,9 +10,9 @@
     "properties" : [ {
       "id" : "overrideid",
       "type" : "String",
-      "title" : "编号",
+      "title" : "编号(Id)",
       "value" : "",
-      "description" : "元素的唯一标识符.",
+      "description" : "元素的唯一标识符..",
       "popular" : true
     } ]
   }, {
@@ -25,7 +28,7 @@
     }, {
       "id" : "documentation",
       "type" : "Text",
-      "title" : "说明",
+      "title" : "描述",
       "value" : "",
       "description" : "BPMN元素的描述性名称.",
       "popular" : true
@@ -49,17 +52,17 @@
     }, {
       "id" : "process_executable",
 	  "type" : "Choice",
-	  "title" : "Executable",
+	  "title" : "可执行",
 	  "value" : "Yes",
 	  "description" : "Define if the process is executable.",
 	  "popular" : true,
 	  "items" : [ {
 	    "id" : "no",
-	    "title" : "No",
+	    "title" : "否(No)",
 	    "value" : "No"
 	  }, {
 	    "id" : "yes",
-	    "title" : "Yes",
+	    "title" : "是(Yes)",
 	    "value" : "Yes"
 	  }]
     }, {
@@ -72,9 +75,9 @@
     }, {
       "id" : "process_namespace",
       "type" : "String",
-      "title" : "指向命名空间",
-      "value" : "",
-      "description" : "定义流程的指向命名空间.",
+      "title" : "目标命名空间",
+      "value" : "http://www.activiti.org/processdef",
+      "description" : "定义流程的目标命名空间.",
       "popular" : false
     } ]
   }, {
@@ -82,9 +85,9 @@
     "properties" : [ {
       "id" : "formkeydefinition",
       "type" : "String",
-      "title" : "表单模版",
+      "title" : "表单键值",
       "value" : "",
-      "description" : "用户任务的表单模版.",
+      "description" : "用户任务的表单键值.",
       "popular" : true
     }, {
       "id" : "duedatedefinition",
@@ -106,9 +109,9 @@
     "properties" : [ {
       "id" : "usertaskassignment",
       "type" : "Complex",
-      "title" : "分配",
+      "title" : "任务分配",
       "value" : "",
-      "description" : "分配定义用户任务",
+      "description" : "用户任务的负责人分配",
       "popular" : true,
       "complexItems" : [ {
         "id" : "assignment_type",
@@ -143,7 +146,7 @@
         "name_de" : "Zuordnungs-Ausdruck",
         "type" : "String",
         "description" : "这定义了用于资源分配的表达.",
-        "description_de" : "Definiert den Ausdruck, der f?r die Zordung von Ressourcen genutzt wird.",
+        "description_de" : "Definiert den Ausdruck, der fr die Zordung von Ressourcen genutzt wird.",
         "value" : "",
         "width" : 200,
         "optional" : true
@@ -153,7 +156,7 @@
     "name" : "formdefinition",
     "properties" : [ {
       "id" : "formproperties",
-      "type" : "Complex",
+      "type" : "multiplecomplex",
       "title" : "表单属性",
       "value" : "",
       "description" : "用列表的形式定义表单属性",
@@ -164,7 +167,7 @@
         "name_de" : "Typ",
         "type" : "String",
         "description" : "这里所定义的用于资源分配的表达式.",
-        "description_de" : "Definiert den Ausdruck, der f?r die Zordung von Ressourcen genutzt wird.",
+        "description_de" : "Definiert den Ausdruck, der fr die Zordung von Ressourcen genutzt wird.",
         "value" : "",
         "width" : 150,
         "optional" : false
@@ -174,7 +177,7 @@
         "name_de" : "Typ",
         "type" : "String",
         "description" : "这里所定义的用于资源分配的表达式.",
-        "description_de" : "Definiert den Ausdruck, der f?r die Zordung von Ressourcen genutzt wird.",
+        "description_de" : "Definiert den Ausdruck, der fr die Zordung von Ressourcen genutzt wird.",
         "value" : "",
         "width" : 150,
         "optional" : false
@@ -205,14 +208,14 @@
           "value" : "long",
           "refToView" : ""
         }, {
-          "id" : "c3",
+          "id" : "c4",
           "title" : "布尔(boolean)",
           "title_de" : "Boolean",
           "value" : "boolean",
           "refToView" : ""
         }, {
           "id" : "c5",
-          "title" : "Enum",
+          "title" : "枚举(Enum)",
           "title_de" : "Enum",
           "value" : "enum",
           "refToView" : ""
@@ -223,7 +226,7 @@
         "name_de" : "Typ",
         "type" : "String",
         "description" : "这里所定义的用于资源分配的表达式.",
-        "description_de" : "Definiert den Ausdruck, der f?r die Zordung von Ressourcen genutzt wird.",
+        "description_de" : "Definiert den Ausdruck, der fr die Zordung von Ressourcen genutzt wird.",
         "value" : "",
         "width" : 200,
         "optional" : false
@@ -233,13 +236,13 @@
         "name_de" : "Typ",
         "type" : "String",
         "description" : "这里所定义的用于资源分配的表达式.",
-        "description_de" : "Definiert den Ausdruck, der f?r die Zordung von Ressourcen genutzt wird.",
+        "description_de" : "Definiert den Ausdruck, der fr die Zordung von Ressourcen genutzt wird.",
         "value" : "",
         "width" : 200,
         "optional" : false
       }, {
         "id" : "formproperty_required",
-        "name" : "Required",
+        "name" : "必填",
         "name_de" : "Typ",
         "type" : "Choice",
         "value" : "No",
@@ -247,16 +250,16 @@
         "optional" : false,
         "items" : [ {
           "id" : "yes",
-          "title" : "Yes",
+          "title" : "是(Yes)",
           "value" : "Yes"
         }, {
           "id" : "no",
-          "title" : "No",
+          "title" : "否(No)",
           "value" : "No"
         } ]
       }, {
         "id" : "formproperty_readable",
-        "name" : "Readable",
+        "name" : "可读",
         "name_de" : "Typ",
         "type" : "Choice",
         "value" : "Yes",
@@ -264,16 +267,16 @@
         "optional" : false,
         "items" : [ {
           "id" : "yes",
-          "title" : "Yes",
+          "title" : "是(Yes)",
           "value" : "Yes"
         }, {
           "id" : "no",
-          "title" : "No",
+          "title" : "否(No)",
           "value" : "No"
         } ]
       }, {
         "id" : "formproperty_writeable",
-        "name" : "Writeable",
+        "name" : "可写",
         "name_de" : "Typ",
         "type" : "Choice",
         "value" : "Yes",
@@ -281,30 +284,30 @@
         "optional" : false,
         "items" : [ {
           "id" : "yes",
-          "title" : "Yes",
+          "title" : "是(Yes)",
           "value" : "Yes"
         }, {
           "id" : "no",
-          "title" : "No",
+          "title" : "否(No)",
           "value" : "No"
         } ]
       }, {
         "id" : "formproperty_formvalues",
-        "name" : "Form values",
+        "name" : "表单值",
         "name_de" : "Typ",
         "type" : "Complex",
         "width" : 300,
         "optional" : false,
         "complexItems" : [ {
           "id" : "formproperty_formvalue_id",
-          "name" : "Id",
+          "name" : "编号(Id)",
           "type" : "String",
           "value" : "",
           "width" : 100,
           "optional" : false
         }, {
           "id" : "formproperty_formvalue_name",
-          "name" : "Name",
+          "name" : "名称(Name)",
           "type" : "String",
           "value" : "",
           "width" : 200,
@@ -317,9 +320,9 @@
     "properties" : [ {
       "id" : "tasklisteners",
       "type" : "multiplecomplex",
-      "title" : "任务监听",
+      "title" : "任务监听器",
       "value" : "",
-      "description" : "监听用户任务",
+      "description" : "用户任务的监听器",
       "popular" : true,
       "complexItems" : [ {
         "id" : "task_listener_event_type",
@@ -514,16 +517,16 @@
       "id" : "ruletask_exclude",
       "type" : "Choice",
       "title" : "排除",
-      "value" : "否",
+      "value" : "No",
       "description" : "作为排除使用规则属性.",
       "popular" : true,
       "items" : [ {
         "id" : "no",
-        "title" : "否",
+        "title" : "否(No)",
         "value" : "No"
       }, {
         "id" : "yes",
-        "title" : "是",
+        "title" : "是(Yes)",
         "value" : "Yes"
       } ]
     } ]
@@ -708,18 +711,18 @@
     "properties" : [ {
       "id" : "cancelactivity",
       "type" : "Choice",
-      "title" : "Cancel activity",
+      "title" : "取消任务",
       "value" : "yes",
       "description" : "Define activity cancelation",
       "popular" : true,
       "items" : [ {
         "id" : "yes",
-        "title" : "Yes",
+        "title" : "是(Yes)",
         "title_de" : "Yes",
         "value" : "yes"
       }, {
         "id" : "no",
-        "title" : "No",
+        "title" : "否(No)",
         "title_de" : "No",
         "value" : "no"
       } ]
@@ -790,11 +793,11 @@
     }, {
       "id" : "formkeydefinition",
       "type" : "String",
-      "title" : "表单标识",
+      "title" : "表单键",
       "value" : "",
-      "description" : "开始事件的表单标识.",
+      "description" : "开始节点的表单键.",
       "popular" : true
-    } ]
+    }]
   }, {
     "name" : "textannotationbase",
     "properties" : [ {
@@ -812,32 +815,32 @@
       "id" : "asynchronousdefinition",
       "type" : "Choice",
       "title" : "异步",
-      "value" : "否",
+      "value" : "No",
       "description" : "活动定义为异步.",
       "popular" : true,
       "items" : [ {
         "id" : "no",
-        "title" : "否",
+        "title" : "否(No)",
         "value" : "No"
       }, {
         "id" : "yes",
-        "title" : "是",
+        "title" : "是(Yes)",
         "value" : "Yes"
       } ]
     }, {
       "id" : "exclusivedefinition",
       "type" : "Choice",
-      "title" : "独家",
-      "value" : "是",
+      "title" : "独占",
+      "value" : "Yes",
       "description" : "定义活动为独家.",
       "popular" : true,
       "items" : [ {
         "id" : "no",
-        "title" : "否",
+        "title" : "否(No)",
         "value" : "No"
       }, {
         "id" : "yes",
-        "title" : "是",
+        "title" : "是(Yes)",
         "value" : "Yes"
       } ]
     } ]
@@ -994,16 +997,16 @@
       "id" : "multiinstance_sequential",
       "type" : "Choice",
       "title" : "顺序 （多实例）",
-      "value" : "是",
+      "value" : "Yes",
       "description" : "定义为连续多实例。",
       "popular" : true,
       "items" : [ {
         "id" : "no",
-        "title" : "否",
+        "title" : "否(No)",
         "value" : "No"
       }, {
         "id" : "yes",
-        "title" : "是",
+        "title" : "是(Yes)",
         "value" : "Yes"
       } ]
     }, {
@@ -1254,7 +1257,7 @@
     "view" : "intermediateevent/timer.svg",
     "icon" : "catching/timer.png",
     "groups" : [ "边界事件" ],
-    "propertyPackages" : [ "elementbase", "baseattributes", "timerdefinition" ],
+    "propertyPackages" : [ "elementbase", "baseattributes", "cancelactivityattribute", "timerdefinition" ],
     "roles" : [ "sequence_start", "BoundaryEventsMorph", "IntermediateEventOnActivityBoundary" ]
   }, {
     "type" : "node",
@@ -1264,7 +1267,7 @@
     "view" : "intermediateevent/signal.catching.svg",
     "icon" : "catching/signal.png",
     "groups" : [ "边界事件" ],
-    "propertyPackages" : [ "elementbase", "baseattributes", "signalrefdefinition" ],
+    "propertyPackages" : [ "elementbase", "baseattributes", "cancelactivityattribute", "signalrefdefinition" ],
     "roles" : [ "sequence_start", "BoundaryEventsMorph", "IntermediateEventOnActivityBoundary" ]
   }, {
     "type" : "node",

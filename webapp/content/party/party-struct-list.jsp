@@ -105,27 +105,29 @@ $(function() {
       <thead>
         <tr>
           <th width="10" class="m-table-check"><input type="checkbox" name="checkAll" onchange="toggleSelectedItems(this.checked)"></th>
-          <th class="sorting" name="partyDim.id">维度</th>
           <th class="sorting" name="partyStructType.id"><spring:message code="org.struct.list.type" text="类型"/></th>
           <th class="sorting" name="parentEntity.id"><spring:message code="org.struct.list.parententity" text="上级组织"/></th>
           <th class="sorting" name="childEntity.id"><spring:message code="org.struct.list.childentity" text="下级组织"/></th>
-          <th class="sorting" name="status">状态</th>
+          <th class="sorting" name="partTime">兼职</th>
+          <th class="sorting" name="link">关联</th>
           <th class="sorting" name="priority">排序</th>
+          <th class="sorting" name="admin">管理</th>
           <th width="50">&nbsp;</th>
         </tr>
       </thead>
       <tbody>
         <c:forEach items="${page.result}" var="item">
         <tr>
-          <td><input type="checkbox" class="selectedItem" name="selectedItem" value="${item.partyStructType.id}:${item.parentEntity.id}:${item.childEntity.id}"></td>
-          <td>${item.partyDim.name}</td>
+          <td><input type="checkbox" class="selectedItem" name="selectedItem" value="${item.id}"></td>
           <td>${item.partyStructType.name}</td>
           <td>${item.parentEntity.name}</td>
           <td>${item.childEntity.name}</td>
-          <td>${item.status == 1 ? '全职' : '兼职'}</td>
+          <td>${item.partTime}</td>
+          <td>${item.link}</td>
           <td>${item.priority}</td>
+          <td>${item.admin}</td>
           <td>
-            <a href="party-struct-input.do?partyStructId=${item.partyStructType.id},${item.parentEntity.id},${item.childEntity.id}"><spring:message code="core.list.edit" text="编辑"/></a>
+            <a href="party-struct-input.do?id=${item.id}"><spring:message code="core.list.edit" text="编辑"/></a>
           </td>
         </tr>
         </c:forEach>

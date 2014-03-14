@@ -11,10 +11,10 @@
             </a>
           </div>
           <div id="collapse-group" class="accordion-body collapse ${currentMenu == 'group' ? 'in' : ''}">
-		    <select style="width:100%" onchange="location.href='org-users.do?partyDimId=' + this.value">
-			  <s:iterator value="partyDims" var="item">
-			  <option value="${item.id}" ${item.id == param.partyDimId ? 'selected' : ''}>${item.name}</option>
-			  </s:iterator>
+		    <select style="width:100%" onchange="location.href='org-list.do?partyStructTypeId=' + this.value">
+			  <c:forEach items="${partyStructTypes}" var="item">
+			  <option value="${item.id}" ${item.id == param.partyStructTypeId ? 'selected' : ''}>${item.name}</option>
+			  </c:forEach>
 			</select>
             <ul id="treeMenu" class="ztree"></ul>
           </div>
@@ -31,11 +31,11 @@
 		var setting = {
 			async: {
 				enable: true,
-				url: "${scopePrefix}/rs/party/tree?partyDimId=${partyDim.id}"
+				url: "${scopePrefix}/rs/party/tree?partyStructTypeId=${partyStructType.id}"
 			},
 			callback: {
 				onClick: function(event, treeId, treeNode) {
-					location.href = '${scopePrefix}/group/org-users.do?partyDimId=${partyDim.id}&partyEntityId=' + treeNode.id;
+					location.href = '${scopePrefix}/group/org-users.do?partyStructTypeId=${partyStructTypeId}&partyEntityId=' + treeNode.id;
 				}
 			}
 		};

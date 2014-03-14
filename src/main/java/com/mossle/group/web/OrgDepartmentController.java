@@ -26,7 +26,6 @@ import com.mossle.group.manager.OrgDepartmentManager;
 
 import com.mossle.party.domain.PartyEntity;
 import com.mossle.party.domain.PartyStruct;
-import com.mossle.party.domain.PartyStructId;
 import com.mossle.party.manager.PartyEntityManager;
 import com.mossle.party.manager.PartyStructManager;
 import com.mossle.party.manager.PartyTypeManager;
@@ -49,6 +48,7 @@ public class OrgDepartmentController {
     private MessageHelper messageHelper;
     private Exportor exportor;
     private BeanMapper beanMapper = new BeanMapper();
+    private PartyService partyService;
 
     @RequestMapping("org-department-list")
     public String list(@ModelAttribute Page page,
@@ -89,13 +89,19 @@ public class OrgDepartmentController {
 
         if (id == null) {
             dest.setScopeId(ScopeHolder.getScopeId());
-
-            // TODO: sync party
-        } else {
-            // TODO: sync party
         }
 
         orgDepartmentManager.save(dest);
+
+        if (id == null) {
+            // sync party
+            partyService.insertPartyEntity(Long.toString(dest.getId()),
+                    "department", dest.getName());
+        } else {
+            // sync party
+            partyService.updatePartyEntity(Long.toString(dest.getId()),
+                    "department", dest.getName());
+        }
 
         messageHelper.addFlashMessage(redirectAttributes, "core.success.save",
                 "保存成功");
@@ -106,11 +112,13 @@ public class OrgDepartmentController {
     @RequestMapping("org-department-remove")
     public String remove(@RequestParam("selectedItem") List<Long> selectedItem,
             RedirectAttributes redirectAttributes) {
-        List<OrgDepartment> orgCompanies = orgDepartmentManager
+        List<OrgDepartment> orgDepartments = orgDepartmentManager
                 .findByIds(selectedItem);
 
-        for (OrgDepartment orgDepartment : orgCompanies) {
+        for (OrgDepartment orgDepartment : orgDepartments) {
             orgDepartmentManager.remove(orgDepartment);
+            partyService.removePartyEntity(
+                    Long.toString(orgDepartment.getId()), "department");
         }
 
         messageHelper.addFlashMessage(redirectAttributes,
@@ -152,5 +160,10 @@ public class OrgDepartmentController {
     @Resource
     public void setExportor(Exportor exportor) {
         this.exportor = exportor;
+    }
+
+    @Resource
+    public void setPartyService(PartyService partyService) {
+        this.partyService = partyService;
     }
 }

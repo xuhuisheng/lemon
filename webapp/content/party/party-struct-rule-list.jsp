@@ -105,7 +105,6 @@ $(function() {
       <thead>
         <tr>
           <th width="10" class="m-table-check"><input type="checkbox" name="checkAll" onchange="toggleSelectedItems(this.checked)"></th>
-          <th class="sorting" name="partyDim.id">维度</th>
           <th class="sorting" name="partyStructType.id"><spring:message code="org.structrule.list.type" text="结构类型"/></th>
           <th class="sorting" name="parentType.id"><spring:message code="org.structrule.list.parentype" text="上级类型"/></th>
           <th class="sorting" name="childType.id"><spring:message code="org.structrule.list.childtype" text="下级类型"/></th>
@@ -115,13 +114,12 @@ $(function() {
       <tbody>
         <c:forEach items="${page.result}" var="item">
         <tr>
-          <td><input type="checkbox" class="selectedItem" name="selectedItem" value="${item.partyStructType.id}:${item.parentType.id}:${item.childType.id}"></td>
-          <td>${item.partyDim.name}</td>
+          <td><input type="checkbox" class="selectedItem" name="selectedItem" value="${item.id}"></td>
           <td>${item.partyStructType.name}</td>
           <td>${item.parentType.name}</td>
           <td>${item.childType.name}</td>
           <td>
-            <a href="party-struct-rule-input.do?partyStructRuleId=${item.partyStructType.id}:${item.parentType.id}:${item.childType.id}"><spring:message code="core.list.edit" text="编辑"/></a>
+            <a href="party-struct-rule-input.do?id=${item.id}"><spring:message code="core.list.edit" text="编辑"/></a>
           </td>
         </tr>
         </c:forEach>

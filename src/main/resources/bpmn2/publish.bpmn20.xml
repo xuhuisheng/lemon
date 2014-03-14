@@ -2,7 +2,7 @@
 <definitions xmlns="http://www.omg.org/spec/BPMN/20100524/MODEL" xmlns:xsi="http://www.w3.org/2001/XMLSchema-instance" xmlns:activiti="http://activiti.org/bpmn" xmlns:bpmndi="http://www.omg.org/spec/BPMN/20100524/DI" xmlns:omgdc="http://www.omg.org/spec/DD/20100524/DC" xmlns:omgdi="http://www.omg.org/spec/DD/20100524/DI" typeLanguage="http://www.w3.org/2001/XMLSchema" expressionLanguage="http://www.w3.org/1999/XPath" targetNamespace="http://www.mossle.com">
   <process id="publish" name="公文发布">
     <userTask id="taskuser-1" name="发文" activiti:assignee="${initiator}" activiti:formKey="发文"></userTask>
-    <userTask id="taskuser-2" name="部门领导审批" activiti:assignee="部门经理" activiti:formKey="经理审批"></userTask>
+    <userTask id="taskuser-2" name="部门领导审批" activiti:assignee="常用语:直接上级" activiti:formKey="经理审批"></userTask>
     <userTask id="taskuser-3" name="会签" activiti:formKey="会签审批">
     <humanPerformer>
       <resourceAssignmentExpression>

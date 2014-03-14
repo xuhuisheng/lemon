@@ -11,6 +11,10 @@
 
     ApplicationContext ctx = WebApplicationContextUtils.getWebApplicationContext(application);
     UserConnector userConnector = ctx.getBean(UserConnector.class);
-    out.print(userConnector.findById(userId.toString()).getDisplayName());
+    try {
+      out.print(userConnector.findById(userId.toString()).getDisplayName());
+    } catch(Exception ex) {
+      System.out.println(userId);
+    }
   }
 %>

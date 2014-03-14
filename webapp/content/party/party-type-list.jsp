@@ -102,7 +102,7 @@ $(function() {
           <th width="10" class="m-table-check"><input type="checkbox" name="checkAll" onchange="toggleSelectedItems(this.checked)"></th>
           <th class="sorting" name="id"><spring:message code="org.type.list.id" text="编号"/></th>
           <th class="sorting" name="name"><spring:message code="org.type.list.name" text="名称"/></th>
-          <th class="sorting" name="person">是否人员</th>
+          <th class="sorting" name="type">类型</th>
           <th width="50">&nbsp;</th>
         </tr>
       </thead>
@@ -112,7 +112,7 @@ $(function() {
           <td><input type="checkbox" class="selectedItem" name="selectedItem" value="${item.id}"></td>
           <td>${item.id}</td>
           <td>${item.name}</td>
-          <td>${item.person == 1 ? '是' : '否'}</td>
+          <td>${item.type == 0 ? '组织' : item.type == 1 ? '岗位' : '人员'}</td>
           <td>
             <a href="party-type-input.do?id=${item.id}"><spring:message code="core.list.edit" text="编辑"/></a>
           </td>

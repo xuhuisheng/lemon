@@ -26,7 +26,6 @@ import com.mossle.group.manager.OrgPositionTypeManager;
 
 import com.mossle.party.domain.PartyEntity;
 import com.mossle.party.domain.PartyStruct;
-import com.mossle.party.domain.PartyStructId;
 import com.mossle.party.manager.PartyEntityManager;
 import com.mossle.party.manager.PartyStructManager;
 import com.mossle.party.manager.PartyTypeManager;
@@ -90,10 +89,6 @@ public class OrgPositionTypeController {
 
         if (id == null) {
             dest.setScopeId(ScopeHolder.getScopeId());
-
-            // TODO: sync party
-        } else {
-            // TODO: sync party
         }
 
         orgPositionTypeManager.save(dest);

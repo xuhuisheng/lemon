@@ -115,6 +115,19 @@ public class SpringSecurityUtils {
         SecurityContextHolder.getContext().setAuthentication(authentication);
     }
 
+    public static void saveUserDetailsToContext(UserDetails userDetails,
+            HttpServletRequest request, SecurityContext securityContext) {
+        PreAuthenticatedAuthenticationToken authentication = new PreAuthenticatedAuthenticationToken(
+                userDetails, userDetails.getPassword(),
+                userDetails.getAuthorities());
+
+        if (request != null) {
+            authentication.setDetails(new WebAuthenticationDetails(request));
+        }
+
+        securityContext.setAuthentication(authentication);
+    }
+
     /**
      * 取得Authentication, 如当前SecurityContext为空时返回null.
      */

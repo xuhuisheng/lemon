@@ -6,7 +6,6 @@ import javax.annotation.Resource;
 
 import com.mossle.party.domain.PartyEntity;
 import com.mossle.party.domain.PartyStruct;
-import com.mossle.party.domain.PartyStructId;
 import com.mossle.party.domain.PartyStructType;
 import com.mossle.party.domain.PartyType;
 import com.mossle.party.manager.PartyEntityManager;
@@ -75,45 +74,39 @@ public class PartyService {
     }
 
     // ~ ======================================================================
-    public void insertPartyEntity(String ref, Long partyTypeId, String name) {
+    /**
+     * 同步更新PartyEntity，比如company,department,group,position,user里改了什么信息，就同步修改PartyEntity里的信息.
+     */
+    public void insertPartyEntity(String partyEntityRef, String partyTypeRef,
+            String name) {
         PartyEntity partyEntity = new PartyEntity();
-        partyEntity.setRef(ref);
+        partyEntity.setRef(partyEntityRef);
         partyEntity.setName(name);
 
-        PartyType partyType = partyTypeManager.get(partyTypeId);
+        PartyType partyType = partyTypeManager
+                .findUniqueBy("ref", partyTypeRef);
         partyEntity.setPartyType(partyType);
         partyEntityManager.save(partyEntity);
     }
 
-    public void updatePartyEntity(String ref, Long partyTypeId, String name) {
+    public void updatePartyEntity(String partyEntityRef, String partyTypeRef,
+            String name) {
+        PartyType partyType = partyTypeManager
+                .findUniqueBy("ref", partyTypeRef);
         PartyEntity partyEntity = partyEntityManager.findUnique(
-                "from PartyEntity where ref=? and partyTypeId=?", ref,
-                partyTypeId);
+                "from PartyEntity where ref=? and partyType.id=?",
+                partyEntityRef, partyType.getId());
         partyEntity.setName(name);
         partyEntityManager.save(partyEntity);
     }
 
-    public void removePartyEntity(String ref, Long partyTypeId) {
+    public void removePartyEntity(String partyEntityRef, String partyTypeRef) {
+        PartyType partyType = partyTypeManager
+                .findUniqueBy("ref", partyTypeRef);
         PartyEntity partyEntity = partyEntityManager.findUnique(
-                "from PartyEntity where ref=? and partyTypeId=?", ref,
-                partyTypeId);
+                "from PartyEntity where ref=? and partyType.id=?",
+                partyEntityRef, partyType.getId());
         partyEntityManager.remove(partyEntity);
-    }
-
-    public void insertPartyStruct(Long partyStructTypeId,
-            Long parentPartyEntityId, Long childPartyEntityId) {
-        PartyStructId partyStructId = new PartyStructId(partyStructTypeId,
-                parentPartyEntityId, childPartyEntityId);
-        PartyStruct partyStruct = new PartyStruct();
-        partyStruct.setId(partyStructId);
-        partyStructManager.save(partyStruct);
-    }
-
-    public void removePartyStruct(Long partyStructTypeId,
-            Long parentPartyEntityId, Long childPartyEntityId) {
-        PartyStructId partyStructId = new PartyStructId(partyStructTypeId,
-                parentPartyEntityId, childPartyEntityId);
-        partyStructManager.removeById(partyStructId);
     }
 
     // ~ ======================================================================
@@ -132,6 +125,12 @@ public class PartyService {
                 defaultPartyStructTypeId, defaultPartyStructTypeId);
 
         return partyEntity.getRef();
+    }
+
+    public List<PartyEntity> getTopPartyEntities(Long partyStructTypeId) {
+        String hql = "select ps.childEntity from PartyStruct ps where ps.parentEntity is null and ps.partyStructType.id=?";
+
+        return partyEntityManager.find(hql, partyStructTypeId);
     }
 
     // ~ ======================================================================

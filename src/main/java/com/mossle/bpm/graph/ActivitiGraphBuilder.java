@@ -3,8 +3,7 @@ package com.mossle.bpm.graph;
 import java.util.HashSet;
 import java.util.Set;
 
-import com.mossle.bpm.cmd.FindProcessDefinitionEntityCmd;
-
+import org.activiti.engine.impl.cmd.GetDeploymentProcessDefinitionCmd;
 import org.activiti.engine.impl.context.Context;
 import org.activiti.engine.impl.persistence.entity.ProcessDefinitionEntity;
 import org.activiti.engine.impl.pvm.PvmActivity;
@@ -32,7 +31,7 @@ public class ActivitiGraphBuilder {
     }
 
     public void fetchProcessDefinitionEntity() {
-        FindProcessDefinitionEntityCmd cmd = new FindProcessDefinitionEntityCmd(
+        GetDeploymentProcessDefinitionCmd cmd = new GetDeploymentProcessDefinitionCmd(
                 processDefinitionId);
         processDefinitionEntity = cmd.execute(Context.getCommandContext());
     }

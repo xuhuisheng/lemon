@@ -20,6 +20,7 @@ import com.mossle.party.domain.PartyType;
 import com.mossle.party.manager.PartyEntityManager;
 import com.mossle.party.manager.PartyStructManager;
 import com.mossle.party.manager.PartyTypeManager;
+import com.mossle.party.service.PartyService;
 
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
@@ -33,6 +34,7 @@ public class PartyResource {
     private PartyTypeManager partyTypeManager;
     private PartyEntityManager partyEntityManager;
     private PartyStructManager partyStructManager;
+    private PartyService partyService;
 
     @GET
     @Path("types")
@@ -76,16 +78,16 @@ public class PartyResource {
     @POST
     @Path("tree")
     @Produces(MediaType.APPLICATION_JSON)
-    public List<Map> tree(@QueryParam("partyDimId") long partyDimId) {
-        String hql = "select pdr.partyEntity from PartyDimRoot pdr where pdr.partyDim.id=?";
-        List<PartyEntity> partyEntities = partyEntityManager.find(hql,
-                partyDimId);
+    public List<Map> tree(
+            @QueryParam("partyStructTypeId") long partyStructTypeId) {
+        List<PartyEntity> partyEntities = partyService
+                .getTopPartyEntities(partyStructTypeId);
 
-        return generatePartyEntities(partyEntities, partyDimId);
+        return generatePartyEntities(partyEntities, partyStructTypeId);
     }
 
     public List<Map> generatePartyEntities(List<PartyEntity> partyEntities,
-            long partyDimId) {
+            long partyStructTypeId) {
         if (partyEntities == null) {
             return null;
         }
@@ -94,7 +96,7 @@ public class PartyResource {
 
         try {
             for (PartyEntity partyEntity : partyEntities) {
-                list.add(generatePartyEntity(partyEntity, partyDimId));
+                list.add(generatePartyEntity(partyEntity, partyStructTypeId));
             }
         } catch (Exception ex) {
             logger.error(ex.getMessage(), ex);
@@ -104,7 +106,7 @@ public class PartyResource {
     }
 
     public Map<String, Object> generatePartyEntity(PartyEntity partyEntity,
-            long partyDimId) {
+            long partyStructTypeId) {
         Map<String, Object> map = new HashMap<String, Object>();
 
         try {
@@ -118,10 +120,10 @@ public class PartyResource {
             List<PartyEntity> partyEntities = new ArrayList<PartyEntity>();
 
             for (PartyStruct partyStruct : partyStructs) {
-                if (partyStruct.getPartyDim().getId() == partyDimId) {
+                if (partyStruct.getPartyStructType().getId() == partyStructTypeId) {
                     PartyEntity childPartyEntity = partyStruct.getChildEntity();
 
-                    if (childPartyEntity.getPartyType().getPerson() != 1) {
+                    if (childPartyEntity.getPartyType().getType() == 0) {
                         partyEntities.add(childPartyEntity);
                     }
                 }
@@ -132,7 +134,7 @@ public class PartyResource {
             } else {
                 map.put("open", true);
                 map.put("children",
-                        generatePartyEntities(partyEntities, partyDimId));
+                        generatePartyEntities(partyEntities, partyStructTypeId));
             }
 
             return map;
@@ -155,6 +157,7 @@ public class PartyResource {
         return names;
     }
 
+    // ~ ==================================================
     @Resource
     public void setPartyTypeManager(PartyTypeManager partyTypeManager) {
         this.partyTypeManager = partyTypeManager;
@@ -170,6 +173,12 @@ public class PartyResource {
         this.partyStructManager = partyStructManager;
     }
 
+    @Resource
+    public void setPartyService(PartyService partyService) {
+        this.partyService = partyService;
+    }
+
+    // ~ ==================================================
     public static class PartyTypeDTO {
         private long id;
         private String name;

@@ -14,6 +14,7 @@ import com.mossle.bpm.support.DefaultTaskListener;
 
 import org.activiti.engine.delegate.DelegateTask;
 import org.activiti.engine.impl.context.Context;
+import org.activiti.engine.impl.el.ExpressionManager;
 import org.activiti.engine.impl.persistence.entity.TaskEntity;
 
 import org.slf4j.Logger;
@@ -33,6 +34,9 @@ public class TaskConfTaskListener extends DefaultTaskListener implements
                 .getProcessBusinessKey();
         String taskDefinitionKey = delegateTask.getTaskDefinitionKey();
 
+        ExpressionManager expressionManager = Context
+                .getProcessEngineConfiguration().getExpressionManager();
+
         try {
             String sql = "select assignee from bpm_task_conf where business_key=? and task_definition_key=?";
             String assignee = jdbcTemplate.queryForObject(sql, String.class,
@@ -51,7 +55,9 @@ public class TaskConfTaskListener extends DefaultTaskListener implements
                 logger.info("candidateUsers : {}", candidateUsers);
                 delegateTask.addCandidateUsers(candidateUsers);
             } else {
-                delegateTask.setAssignee(assignee);
+                String value = expressionManager.createExpression(assignee)
+                        .getValue(delegateTask).toString();
+                delegateTask.setAssignee(value);
             }
         } catch (Exception ex) {
             logger.debug(ex.getMessage(), ex);

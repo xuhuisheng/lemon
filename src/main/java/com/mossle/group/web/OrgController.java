@@ -13,20 +13,21 @@ import com.mossle.api.scope.ScopeHolder;
 import com.mossle.api.user.UserConnector;
 import com.mossle.api.user.UserDTO;
 
+import com.mossle.core.mapper.BeanMapper;
 import com.mossle.core.page.Page;
 
-import com.mossle.party.domain.PartyDim;
 import com.mossle.party.domain.PartyEntity;
 import com.mossle.party.domain.PartyStruct;
-import com.mossle.party.domain.PartyStructId;
 import com.mossle.party.domain.PartyStructType;
 import com.mossle.party.domain.PartyType;
-import com.mossle.party.manager.PartyDimManager;
 import com.mossle.party.manager.PartyEntityManager;
 import com.mossle.party.manager.PartyStructManager;
 import com.mossle.party.manager.PartyStructTypeManager;
 import com.mossle.party.manager.PartyTypeManager;
-import com.mossle.party.manager.PartyTypeManager;
+import com.mossle.party.service.PartyService;
+
+import org.slf4j.Logger;
+import org.slf4j.LoggerFactory;
 
 import org.springframework.stereotype.Controller;
 
@@ -43,44 +44,48 @@ import org.springframework.web.servlet.mvc.support.RedirectAttributes;
 @Controller
 @RequestMapping("group")
 public class OrgController {
-    private PartyDimManager partyDimManager;
+    private static Logger logger = LoggerFactory.getLogger(OrgController.class);
     private PartyEntityManager partyEntityManager;
     private PartyTypeManager partyTypeManager;
     private PartyStructManager partyStructManager;
     private PartyStructTypeManager partyStructTypeManager;
     private UserConnector userConnector;
+    private PartyService partyService;
+    private BeanMapper beanMapper = new BeanMapper();
 
-    public void init(Model model, Long partyDimId, Long partyEntityId) {
-        List<PartyDim> partyDims = partyDimManager.getAll("priority", true);
-        PartyDim partyDim = null;
+    public void init(Model model, Long partyStructTypeId, Long partyEntityId) {
+        List<PartyStructType> partyStructTypes = partyStructTypeManager.getAll(
+                "priority", true);
+        PartyStructType partyStructType = null;
 
-        if (partyDimId == null) {
-            partyDim = partyDims.get(0);
-            partyDimId = partyDim.getId();
+        if (partyStructTypeId == null) {
+            partyStructType = partyStructTypes.get(0);
+            partyStructTypeId = partyStructType.getId();
         } else {
-            partyDim = partyDimManager.get(partyDimId);
+            partyStructType = partyStructTypeManager.get(partyStructTypeId);
         }
 
         if (partyEntityId == null) {
-            partyEntityId = partyDim.getPartyDimRoots().iterator().next()
-                    .getPartyEntity().getId();
+            partyEntityId = partyService.getTopPartyEntities(partyStructTypeId)
+                    .get(0).getId();
         }
 
-        model.addAttribute("partyDim", partyDim);
-        model.addAttribute("partyDimId", partyDimId);
+        model.addAttribute("partyStructType", partyStructType);
+        model.addAttribute("partyStructTypeId", partyStructTypeId);
         model.addAttribute("partyEntityId", partyEntityId);
+        model.addAttribute("partyStructTypes", partyStructTypes);
     }
 
     @RequestMapping("org-users")
     public String users(
             Model model,
-            @RequestParam(value = "partyDimId", required = false) Long partyDimId,
+            @RequestParam(value = "partyStructTypeId", required = false) Long partyStructTypeId,
             @RequestParam(value = "partyEntityId", required = false) Long partyEntityId,
             @ModelAttribute Page page) {
-        init(model, partyDimId, partyEntityId);
+        init(model, partyStructTypeId, partyEntityId);
 
-        String hql = "from PartyStruct where childEntity.partyType.person=1 and parentEntity.id=?";
-        page = partyDimManager.pagedQuery(hql, page.getPageNo(),
+        String hql = "from PartyStruct where childEntity.partyType.type=1 and parentEntity.id=?";
+        page = partyStructTypeManager.pagedQuery(hql, page.getPageNo(),
                 page.getPageSize(), partyEntityId);
         model.addAttribute("page", page);
 
@@ -90,10 +95,10 @@ public class OrgController {
     @RequestMapping("org-inputUser")
     public String inputUser(
             Model model,
-            @RequestParam(value = "partyDimId", required = false) Long partyDimId,
+            @RequestParam(value = "partyStructTypeId", required = false) Long partyStructTypeId,
             @RequestParam(value = "partyEntityId", required = false) Long partyEntityId)
             throws Exception {
-        init(model, partyDimId, partyEntityId);
+        init(model, partyStructTypeId, partyEntityId);
 
         List<PartyStructType> partyStructTypes = partyStructTypeManager
                 .getAll();
@@ -104,69 +109,59 @@ public class OrgController {
     }
 
     @RequestMapping("org-saveUser")
-    public String saveUser(@RequestParam("name") String name,
+    public String saveUser(@ModelAttribute PartyStruct partyStruct,
+            @RequestParam("name") String name,
             @RequestParam("partyEntityId") Long partyEntityId,
-            @RequestParam("partyStructTypeId") Long partyStructTypeId,
-            @RequestParam("partyDimId") Long partyDimId,
-            @RequestParam("status") int status) throws Exception {
+            @RequestParam("partyStructTypeId") Long partyStructTypeId)
+            throws Exception {
         UserDTO userDto = userConnector.findByUsername(name,
                 ScopeHolder.getUserRepoRef());
+        logger.debug("user id : {}", userDto.getId());
+
         PartyEntity child = partyEntityManager.findUnique(
-                "from PartyEntity where partyType.person=1 and ref=?",
+                "from PartyEntity where partyType.type=1 and ref=?",
                 userDto.getId());
-        PartyEntity parent = partyEntityManager.findUnique(
-                "from PartyEntity where partyType.person<>1 and ref=?",
-                Long.toString(partyEntityId));
+        logger.debug("child : {}", child);
 
-        PartyStruct partyStruct = new PartyStruct();
-        PartyStructId partyStructId = new PartyStructId(partyStructTypeId,
-                parent.getId(), child.getId());
-        partyStruct.setId(partyStructId);
-        partyStruct.setPartyDim(partyDimManager.get(partyDimId));
-        partyStruct.setStatus(status);
-        partyStructManager.save(partyStruct);
+        PartyEntity parent = partyEntityManager.get(partyEntityId);
 
-        return "redirect:/group/org-users.do?partyDimId=" + partyDimId
-                + "&partyEntityId=" + partyEntityId;
+        PartyStruct dest = new PartyStruct();
+        beanMapper.copy(partyStruct, dest);
+        dest.setPartyStructType(partyStructTypeManager.get(partyStructTypeId));
+        dest.setParentEntity(parent);
+        dest.setChildEntity(child);
+        partyStructManager.save(dest);
+
+        return "redirect:/group/org-users.do?partyStructTypeId="
+                + partyStructTypeId + "&partyEntityId=" + partyEntityId;
     }
 
     @RequestMapping("org-removeUser")
     public String removeUser(
             @RequestParam("selectedItem") List<Long> selectedItem,
             @RequestParam("partyEntityId") Long partyEntityId,
-            @RequestParam("partyDimId") Long partyDimId,
             @RequestParam("partyStructTypeId") Long partyStructTypeId) {
         for (Long childId : selectedItem) {
-            PartyEntity parent = partyEntityManager.findUnique(
-                    "from PartyEntity where partyType.person<>1 and id=?",
-                    partyEntityId);
-            PartyEntity child = partyEntityManager.findUnique(
-                    "from PartyEntity where partyType.person=1 and id=?",
-                    childId);
-
-            PartyStructId partyStructId = new PartyStructId(partyStructTypeId,
-                    parent.getId(), child.getId());
-
-            PartyStruct partyStruct = partyStructManager.get(partyStructId);
+            PartyStruct partyStruct = partyStructManager.get(childId);
             partyStructManager.remove(partyStruct);
         }
 
         // addActionMessage(messages.getMessage("core.success.delete", "删除成功"));
-        return "redirect:/group/org-users.do?partyDimId=" + partyDimId
-                + "&partyEntityId=" + partyEntityId;
+        return "redirect:/group/org-users.do?partyStructTypeId="
+                + partyStructTypeId + "&partyEntityId=" + partyEntityId;
     }
 
     // ~ ==================================================
     @RequestMapping("org-children")
     public String children(
             Model model,
-            @RequestParam(value = "partyDimId", required = false) Long partyDimId,
+            @RequestParam(value = "partyStructTypeId", required = false) Long partyStructTypeId,
             @RequestParam(value = "partyEntityId", required = false) Long partyEntityId,
             @ModelAttribute Page page) throws Exception {
-        init(model, partyDimId, partyEntityId);
+        init(model, partyStructTypeId, partyEntityId);
 
-        String hql = "select child from PartyEntity child join child.parentStructs ps join ps.parentEntity parent"
-                + " where child.partyType.person<>1 and parent.id=?";
+        String hql = "select ps from PartyEntity child join child.parentStructs ps join ps.parentEntity parent"
+                + " where child.partyType.type=0 and parent.id=?";
         page = partyEntityManager.pagedQuery(hql, page.getPageNo(),
                 page.getPageSize(), partyEntityId);
         model.addAttribute("page", page);
@@ -177,13 +172,13 @@ public class OrgController {
     @RequestMapping("org-inputChild")
     public String inputChild(
             Model model,
-            @RequestParam(value = "partyDimId", required = false) Long partyDimId,
+            @RequestParam(value = "partyStructTypeId", required = false) Long partyStructTypeId,
             @RequestParam(value = "partyEntityId", required = false) Long partyEntityId)
             throws Exception {
-        init(model, partyDimId, partyEntityId);
+        init(model, partyStructTypeId, partyEntityId);
 
         List<PartyType> partyTypes = partyTypeManager
-                .find("from PartyType where person<>1");
+                .find("from PartyType where type=0");
 
         model.addAttribute("partyTypes", partyTypes);
 
@@ -194,56 +189,40 @@ public class OrgController {
     public String saveChild(@RequestParam("name") String name,
             @RequestParam("partyTypeId") Long partyTypeId,
             @RequestParam("partyEntityId") Long partyEntityId,
-            @RequestParam("partyDimId") Long partyDimId) {
+            @RequestParam("partyStructTypeId") Long partyStructTypeId) {
         PartyEntity child = partyEntityManager.findUnique(
                 "from PartyEntity where name=? and partyType.id=?", name,
                 partyTypeId);
-        PartyEntity parent = partyEntityManager.findUnique(
-                "from PartyEntity where partyType.person<>1 and ref=?",
-                Long.toString(partyEntityId));
+        PartyEntity parent = partyEntityManager.get(partyEntityId);
         Assert.notNull(child, name + "(" + partyTypeId + ") is null");
         Assert.notNull(parent, partyEntityId + " is null");
 
         PartyStruct partyStruct = new PartyStruct();
-        PartyStructId partyStructId = new PartyStructId(1L, parent.getId(),
-                child.getId());
-        partyStruct.setId(partyStructId);
-        partyStruct.setPartyDim(partyDimManager.get(partyDimId));
+        partyStruct.setPartyStructType(partyStructTypeManager
+                .get(partyStructTypeId));
+        partyStruct.setParentEntity(partyEntityManager.get(parent.getId()));
+        partyStruct.setChildEntity(partyEntityManager.get(child.getId()));
         partyStructManager.save(partyStruct);
 
-        return "redirect:/group/org-children.do?partyDimId=" + partyDimId
-                + "&partyEntityId=" + partyEntityId;
+        return "redirect:/group/org-children.do?partyStructTypeId="
+                + partyStructTypeId + "&partyEntityId=" + partyEntityId;
     }
 
     @RequestMapping("org-removeChild")
     public String removeChild(
             @RequestParam("selectedItem") List<Long> selectedItem,
             @RequestParam("partyEntityId") Long partyEntityId,
-            @RequestParam("partyDimId") Long partyDimId) {
+            @RequestParam("partyStructTypeId") Long partyStructTypeId) {
         for (Long childId : selectedItem) {
-            PartyEntity parent = partyEntityManager.findUnique(
-                    "from PartyEntity where partyType.person<>1 and id=?",
-                    partyEntityId);
-            PartyEntity child = partyEntityManager.findUnique(
-                    "from PartyEntity where partyType.person<>1 and id=?",
-                    childId);
-
-            PartyStructId partyStructId = new PartyStructId(1L, parent.getId(),
-                    child.getId());
-            PartyStruct partyStruct = partyStructManager.get(partyStructId);
+            PartyStruct partyStruct = partyStructManager.get(childId);
             partyStructManager.remove(partyStruct);
         }
 
-        return "redirect:/group/org-children.do?partyDimId=" + partyDimId
-                + "&partyEntityId=" + partyEntityId;
+        return "redirect:/group/org-children.do?partyStructTypeId="
+                + partyStructTypeId + "&partyEntityId=" + partyEntityId;
     }
 
     // ~ ==================================================
-    @Resource
-    public void setPartyDimManager(PartyDimManager partyDimManager) {
-        this.partyDimManager = partyDimManager;
-    }
-
     @Resource
     public void setPartyEntityManager(PartyEntityManager partyEntityManager) {
         this.partyEntityManager = partyEntityManager;
@@ -268,5 +247,10 @@ public class OrgController {
     @Resource
     public void setUserConnector(UserConnector userConnector) {
         this.userConnector = userConnector;
+    }
+
+    @Resource
+    public void setPartyService(PartyService partyService) {
+        this.partyService = partyService;
     }
 }

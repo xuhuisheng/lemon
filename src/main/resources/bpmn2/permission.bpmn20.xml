@@ -1,39 +1,48 @@
 <?xml version="1.0" encoding="UTF-8"?>
 <definitions xmlns="http://www.omg.org/spec/BPMN/20100524/MODEL" xmlns:xsi="http://www.w3.org/2001/XMLSchema-instance" xmlns:activiti="http://activiti.org/bpmn" xmlns:bpmndi="http://www.omg.org/spec/BPMN/20100524/DI" xmlns:omgdc="http://www.omg.org/spec/DD/20100524/DC" xmlns:omgdi="http://www.omg.org/spec/DD/20100524/DI" typeLanguage="http://www.w3.org/2001/XMLSchema" expressionLanguage="http://www.w3.org/1999/XPath" targetNamespace="http://www.mossle.com">
   <process id="permission" name="审批权限" isExecutable="true">
-    <startEvent id="startEvent-1" activiti:initiator="initiator" activiti:formKey="permission发起申请"></startEvent>
-    <userTask id="userTask-1" name="经理审批" activiti:assignee="部门经理" activiti:candidateUsers="1,2" activiti:candidateGroups="1,2" activiti:formKey="permission经理审批"></userTask>
-    <sequenceFlow id="sequenceFlow-1" sourceRef="startEvent-1" targetRef="userTask-1"></sequenceFlow>
-    <userTask id="userTask-2" name="模块负责人审批" activiti:assignee="1" activiti:formKey="permission模块负责人审批"></userTask>
-    <sequenceFlow id="sequenceFlow-2" sourceRef="userTask-1" targetRef="userTask-2"></sequenceFlow>
-    <endEvent id="endEvent-1"></endEvent>
-    <sequenceFlow id="flow1" sourceRef="userTask-2" targetRef="endEvent-1"></sequenceFlow>
+    <startEvent id="startEvent-1" activiti:initiator="initiator"></startEvent>
+    <userTask id="usertask1" name="发起申请" activiti:formKey="permission发起申请" activiti:assignee="${initiator}"></userTask>
+    <sequenceFlow id="flow1" sourceRef="startEvent-1" targetRef="usertask1"></sequenceFlow>
+    <userTask id="usertask2" name="部门经理审批" activiti:assignee="岗位:部门经理" activiti:formKey="permission经理审批"></userTask>
+    <sequenceFlow id="flow2" sourceRef="usertask1" targetRef="usertask2"></sequenceFlow>
+    <userTask id="usertask3" name="总经理审批" activiti:assignee="岗位:总经理" activiti:formKey="permission总经理审批"></userTask>
+    <sequenceFlow id="flow3" sourceRef="usertask2" targetRef="usertask3"></sequenceFlow>
+    <endEvent id="endevent1" name="End"></endEvent>
+    <sequenceFlow id="flow4" sourceRef="usertask3" targetRef="endevent1"></sequenceFlow>
   </process>
   <bpmndi:BPMNDiagram id="BPMNDiagram_permission">
     <bpmndi:BPMNPlane bpmnElement="permission" id="BPMNPlane_permission">
       <bpmndi:BPMNShape bpmnElement="startEvent-1" id="BPMNShape_startEvent-1">
         <omgdc:Bounds height="35.0" width="35.0" x="40.0" y="60.0"></omgdc:Bounds>
       </bpmndi:BPMNShape>
-      <bpmndi:BPMNShape bpmnElement="userTask-1" id="BPMNShape_userTask-1">
-        <omgdc:Bounds height="80.0" width="100.0" x="110.0" y="38.0"></omgdc:Bounds>
+      <bpmndi:BPMNShape bpmnElement="usertask1" id="BPMNShape_usertask1">
+        <omgdc:Bounds height="55.0" width="105.0" x="120.0" y="50.0"></omgdc:Bounds>
       </bpmndi:BPMNShape>
-      <bpmndi:BPMNShape bpmnElement="userTask-2" id="BPMNShape_userTask-2">
-        <omgdc:Bounds height="80.0" width="100.0" x="280.0" y="38.0"></omgdc:Bounds>
+      <bpmndi:BPMNShape bpmnElement="usertask2" id="BPMNShape_usertask2">
+        <omgdc:Bounds height="55.0" width="105.0" x="280.0" y="50.0"></omgdc:Bounds>
       </bpmndi:BPMNShape>
-      <bpmndi:BPMNShape bpmnElement="endEvent-1" id="BPMNShape_endEvent-1">
-        <omgdc:Bounds height="35.0" width="35.0" x="430.0" y="60.0"></omgdc:Bounds>
+      <bpmndi:BPMNShape bpmnElement="usertask3" id="BPMNShape_usertask3">
+        <omgdc:Bounds height="55.0" width="105.0" x="440.0" y="50.0"></omgdc:Bounds>
       </bpmndi:BPMNShape>
-      <bpmndi:BPMNEdge bpmnElement="sequenceFlow-2" id="BPMNEdge_sequenceFlow-2">
-        <omgdi:waypoint x="210.0" y="78.0"></omgdi:waypoint>
-        <omgdi:waypoint x="280.0" y="78.0"></omgdi:waypoint>
-      </bpmndi:BPMNEdge>
-      <bpmndi:BPMNEdge bpmnElement="sequenceFlow-1" id="BPMNEdge_sequenceFlow-1">
-        <omgdi:waypoint x="75.0" y="77.0"></omgdi:waypoint>
-        <omgdi:waypoint x="110.0" y="78.0"></omgdi:waypoint>
-      </bpmndi:BPMNEdge>
+      <bpmndi:BPMNShape bpmnElement="endevent1" id="BPMNShape_endevent1">
+        <omgdc:Bounds height="35.0" width="35.0" x="600.0" y="60.0"></omgdc:Bounds>
+      </bpmndi:BPMNShape>
       <bpmndi:BPMNEdge bpmnElement="flow1" id="BPMNEdge_flow1">
-        <omgdi:waypoint x="380.0" y="78.0"></omgdi:waypoint>
-        <omgdi:waypoint x="430.0" y="77.0"></omgdi:waypoint>
+        <omgdi:waypoint x="75.0" y="77.0"></omgdi:waypoint>
+        <omgdi:waypoint x="120.0" y="77.0"></omgdi:waypoint>
+      </bpmndi:BPMNEdge>
+      <bpmndi:BPMNEdge bpmnElement="flow2" id="BPMNEdge_flow2">
+        <omgdi:waypoint x="225.0" y="77.0"></omgdi:waypoint>
+        <omgdi:waypoint x="280.0" y="77.0"></omgdi:waypoint>
+      </bpmndi:BPMNEdge>
+      <bpmndi:BPMNEdge bpmnElement="flow3" id="BPMNEdge_flow3">
+        <omgdi:waypoint x="385.0" y="77.0"></omgdi:waypoint>
+        <omgdi:waypoint x="440.0" y="77.0"></omgdi:waypoint>
+      </bpmndi:BPMNEdge>
+      <bpmndi:BPMNEdge bpmnElement="flow4" id="BPMNEdge_flow4">
+        <omgdi:waypoint x="545.0" y="77.0"></omgdi:waypoint>
+        <omgdi:waypoint x="600.0" y="77.0"></omgdi:waypoint>
       </bpmndi:BPMNEdge>
     </bpmndi:BPMNPlane>
   </bpmndi:BPMNDiagram>

@@ -35,6 +35,7 @@ public class PrefixScopeFilter implements Filter {
         excludes.add("xform");
         excludes.add("h2database");
         excludes.add("widgets");
+        excludes.add("j_spring_security_logout");
     }
 
     public void init(FilterConfig filterConfig) throws ServletException {

@@ -17,7 +17,6 @@ import org.slf4j.LoggerFactory;
 
 import org.springframework.stereotype.Component;
 
-@Component("autoCompleteFirstTaskListener")
 public class AutoCompleteFirstTaskListener extends DefaultTaskListener {
     private static Logger logger = LoggerFactory
             .getLogger(AutoCompleteFirstTaskListener.class);

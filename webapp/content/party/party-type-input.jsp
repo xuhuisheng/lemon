@@ -50,10 +50,11 @@ $(function() {
     </div>
   </div>
   <div class="control-group">
-	<label class="control-label" for="orgType_person0">是否人员</label>
+	<label class="control-label" for="orgType_type0">类型</label>
 	<div class="controls">
-      <label><input id="orgType_person1" type="radio" name="person" value="1" ${model.person == 1 ? 'checked' : ''}>是</label>
-      <label><input id="orgType_person0" type="radio" name="person" value="0" ${model.person != 1 ? 'checked' : ''}>否</label>
+      <label><input id="orgType_type0" type="radio" name="type" value="0" ${model.type == 0 ? 'checked' : ''}>组织</label>
+      <label><input id="orgType_type1" type="radio" name="type" value="1" ${model.type == 1 ? 'checked' : ''}>岗位</label>
+      <label><input id="orgType_type2" type="radio" name="type" value="2" ${model.type == 2 ? 'checked' : ''}>人员</label>
     </div>
   </div>
   <div class="control-group">

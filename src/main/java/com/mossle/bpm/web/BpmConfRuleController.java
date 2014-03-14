@@ -55,6 +55,32 @@ public class BpmConfRuleController {
         return "bpm/bpm-conf-rule-list";
     }
 
+    @RequestMapping("bpm-conf-rule-save")
+    public String save(@ModelAttribute BpmConfRule bpmConfRule,
+            @RequestParam("bpmConfNodeId") Long bpmConfNodeId) {
+        if ((bpmConfRule.getValue() == null)
+                || "".equals(bpmConfRule.getValue())) {
+            return "redirect:/bpm/bpm-conf-rule-list.do?bpmConfNodeId="
+                    + bpmConfNodeId;
+        }
+
+        bpmConfRule.setBpmConfNode(bpmConfNodeManager.get(bpmConfNodeId));
+        bpmConfRuleManager.save(bpmConfRule);
+
+        return "redirect:/bpm/bpm-conf-rule-list.do?bpmConfNodeId="
+                + bpmConfNodeId;
+    }
+
+    @RequestMapping("bpm-conf-rule-remove")
+    public String remove(@RequestParam("id") Long id) {
+        BpmConfRule bpmConfRule = bpmConfRuleManager.get(id);
+        Long bpmConfNodeId = bpmConfRule.getBpmConfNode().getId();
+        bpmConfRuleManager.remove(bpmConfRule);
+
+        return "redirect:/bpm/bpm-conf-rule-list.do?bpmConfNodeId="
+                + bpmConfNodeId;
+    }
+
     // ~ ======================================================================
     @Resource
     public void setBpmConfNodeManager(BpmConfNodeManager bpmConfNodeManager) {

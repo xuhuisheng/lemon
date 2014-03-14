@@ -26,7 +26,6 @@ import com.mossle.group.manager.OrgGroupManager;
 
 import com.mossle.party.domain.PartyEntity;
 import com.mossle.party.domain.PartyStruct;
-import com.mossle.party.domain.PartyStructId;
 import com.mossle.party.manager.PartyEntityManager;
 import com.mossle.party.manager.PartyStructManager;
 import com.mossle.party.manager.PartyTypeManager;
@@ -49,6 +48,7 @@ public class OrgGroupController {
     private MessageHelper messageHelper;
     private Exportor exportor;
     private BeanMapper beanMapper = new BeanMapper();
+    private PartyService partyService;
 
     @RequestMapping("org-group-list")
     public String list(@ModelAttribute Page page,
@@ -90,13 +90,19 @@ public class OrgGroupController {
 
         if (id == null) {
             dest.setScopeId(ScopeHolder.getScopeId());
-
-            // TODO: sync party
-        } else {
-            // TODO: sync party
         }
 
         orgGroupManager.save(dest);
+
+        if (id == null) {
+            // sync party
+            partyService.insertPartyEntity(Long.toString(dest.getId()),
+                    "group", dest.getName());
+        } else {
+            // sync party
+            partyService.updatePartyEntity(Long.toString(dest.getId()),
+                    "group", dest.getName());
+        }
 
         messageHelper.addFlashMessage(redirectAttributes, "core.success.save",
                 "保存成功");
@@ -111,6 +117,8 @@ public class OrgGroupController {
 
         for (OrgGroup orgGroup : orgGroups) {
             orgGroupManager.remove(orgGroup);
+            partyService.removePartyEntity(Long.toString(orgGroup.getId()),
+                    "group");
         }
 
         messageHelper.addFlashMessage(redirectAttributes,
@@ -150,5 +158,10 @@ public class OrgGroupController {
     @Resource
     public void setExportor(Exportor exportor) {
         this.exportor = exportor;
+    }
+
+    @Resource
+    public void setPartyService(PartyService partyService) {
+        this.partyService = partyService;
     }
 }

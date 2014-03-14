@@ -7,12 +7,11 @@ import javax.annotation.Resource;
 
 import javax.servlet.http.HttpServletResponse;
 
-import com.mossle.party.domain.PartyDim;
 import com.mossle.party.domain.PartyEntity;
 import com.mossle.party.domain.PartyStructType;
-import com.mossle.party.manager.PartyDimManager;
 import com.mossle.party.manager.PartyEntityManager;
 import com.mossle.party.manager.PartyStructTypeManager;
+import com.mossle.party.service.PartyService;
 
 import org.springframework.stereotype.Controller;
 
@@ -29,18 +28,18 @@ import org.springframework.web.servlet.mvc.support.RedirectAttributes;
 public class TreeController {
     private PartyEntityManager partyEntityManager;
     private PartyStructTypeManager partyStructTypeManager;
-    private PartyDimManager partyDimManager;
+    private PartyService partyService;
 
     @RequestMapping("tree-list")
     public String list(
-            @RequestParam(value = "partyDimId", required = false) Long partyDimId,
+            @RequestParam(value = "partyStructTypeId", required = false) Long partyStructTypeId,
             Model model) {
-        List<PartyDim> partyDims = partyDimManager.getAll();
+        List<PartyStructType> partyStructTypes = partyStructTypeManager
+                .getAll();
 
-        String hql = "select pdr.partyEntity from PartyDimRoot pdr where pdr.partyDim.id=?";
-        List<PartyEntity> partyEntities = partyEntityManager.find(hql,
-                partyDimId);
-        model.addAttribute("partyDims", partyDims);
+        List<PartyEntity> partyEntities = partyService
+                .getTopPartyEntities(partyStructTypeId);
+        model.addAttribute("partyStructTypes", partyStructTypes);
         model.addAttribute("partyEntities", partyEntities);
 
         return "party/tree-list";
@@ -59,7 +58,7 @@ public class TreeController {
     }
 
     @Resource
-    public void setPartyDimManager(PartyDimManager partyDimManager) {
-        this.partyDimManager = partyDimManager;
+    public void setPartyService(PartyService partyService) {
+        this.partyService = partyService;
     }
 }

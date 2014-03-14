@@ -5,14 +5,14 @@
 <%@page import="java.util.*"%>
 <%@page import="com.mossle.party.domain.*"%>
 <%!
-	public String generatePartyEntities(List<PartyEntity> partyEntities, long partyDimId) {
+	public String generatePartyEntities(List<PartyEntity> partyEntities, long partyStructTypeId) {
 		if (partyEntities == null) {
 			return "";
 		}
 		try {
 			String text = "<ul>";
 			for (PartyEntity partyEntity : partyEntities) {
-				text += generatePartyEntity(partyEntity, partyDimId);
+				text += generatePartyEntity(partyEntity, partyStructTypeId);
 			}
 			text += "</ul>";
 			return text;
@@ -23,17 +23,17 @@
 		}
 	}
 
-	public String generatePartyEntity(PartyEntity partyEntity, long partyDimId) {
+	public String generatePartyEntity(PartyEntity partyEntity, long partyStructTypeId) {
 		try {
 			String text = "<li>";
 			text += partyEntity.getName();
 			List<PartyEntity> partyEntities = new ArrayList<PartyEntity>();
 			for (PartyStruct partyStruct : partyEntity.getChildStructs()) {
-				if (partyStruct.getPartyDim().getId() == partyDimId) {
+				if (partyStruct.getPartyStructType().getId() == partyStructTypeId) {
 					partyEntities.add(partyStruct.getChildEntity());
 				}
 			}
-			text += generatePartyEntities(partyEntities, partyDimId);
+			text += generatePartyEntities(partyEntities, partyStructTypeId);
 			text += "</li>";
 			return text;
 		} catch(Exception ex) {
@@ -71,9 +71,9 @@
         <div id="orgSearch" class="content content-inner">
 
 		  <form name="orgForm" method="post" action="tree-list.do" class="form-inline">
-			<select name="partyDimId">
-			  <c:forEach items="${partyDims}" var="item">
-			  <option value="${item.id}" ${param.partyDimId == item.id ? 'selected' : ''}>${item.name}</option>
+			<select name="partyStructTypeId">
+			  <c:forEach items="${partyStructTypes}" var="item">
+			  <option value="${item.id}" ${param.partyStructTypeId == item.id ? 'selected' : ''}>${item.name}</option>
 			  </c:forEach>
 			</select>
 			<button class="btn"><spring:message code='org.tree.list.view' text='查看'/></button>
@@ -90,14 +90,14 @@
 
 <c:set var="partyEntities" value="${partyEntities}"/>
 <%
-long partyDimId = 0L;
-String id = request.getParameter("partyDimId");
+long partyStructTypeId = 0L;
+String id = request.getParameter("partyStructTypeId");
 try {
-	partyDimId = Long.parseLong(id);
+	partyStructTypeId = Long.parseLong(id);
 } catch(Exception ex) {
 }
 List<PartyEntity> partyEntities = (List<PartyEntity>) pageContext.getAttribute("partyEntities");
-out.print(generatePartyEntities(partyEntities, partyDimId));
+out.print(generatePartyEntities(partyEntities, partyStructTypeId));
 %>
         </div>
       </article>

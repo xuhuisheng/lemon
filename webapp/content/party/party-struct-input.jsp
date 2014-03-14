@@ -44,16 +44,6 @@ $(function() {
   <input id="orgStruct_orgStructId" type="hidden" name="id" value="${model.id}">
   </c:if>
   <div class="control-group">
-	<label class="control-label" for="orgStruct_partyDimId">维度</label>
-	<div class="controls">
-	  <select id="orgStruct_partyDimId" name="partyDimId">
-	    <c:forEach items="${partyDims}" var="item">
-	    <option value="${item.id}" ${model.partyDim.id==item.id ? 'selected' : ''}>${item.name}</option>
-		</c:forEach>
-	  </select>
-    </div>
-  </div>
-  <div class="control-group">
 	<label class="control-label" for="orgStruct_partyStructType"><spring:message code="org.struct.input.type" text="类型"/></label>
 	<div class="controls">
 	  <select id="orgStruct_partyStructType" name="partyStructTypeId">
@@ -84,16 +74,29 @@ $(function() {
     </div>
   </div>
   <div class="control-group">
-    <label class="control-label" for="orgStruct_status0">状态</label>
+    <label class="control-label" for="orgStruct_partTime0">兼职</label>
     <div class="controls">
-      <label><input id="orgType_status1" type="radio" name="status" value="1" ${model.status == 1 ? 'checked' : ''}>全职</label>
-      <label><input id="orgType_status0" type="radio" name="status" value="0" ${model.status != 1 ? 'checked' : ''}>兼职</label>
+      <label><input id="orgStruct_partTime0" type="radio" name="partTime" value="0" ${model.partTime == 0 ? 'checked' : ''}>全职</label>
+      <label><input id="orgStruct_partTime1" type="radio" name="partTime" value="1" ${model.partTime != 0 ? 'checked' : ''}>兼职</label>
+    </div>
+  </div>
+  <div class="control-group">
+    <label class="control-label" for="orgStruct_link">关联</label>
+    <div class="controls">
+      <input id="orgStruct_link" type="text" name="link" value="${model.link}" size="40" class="text number" maxlength="10">
     </div>
   </div>
   <div class="control-group">
 	<label class="control-label" for="orgStruct_priority">排序</label>
 	<div class="controls">
       <input id="orgStruct_priority" type="text" name="priority" value="${model.priority}" size="40" class="text number" maxlength="10">
+    </div>
+  </div>
+  <div class="control-group">
+    <label class="control-label" for="orgStruct_admin0">管理</label>
+    <div class="controls">
+      <label><input id="orgStruct_admin0" type="radio" name="admin" value="0" ${model.admin == 0 ? 'checked' : ''}>员工</label>
+      <label><input id="orgStruct_admin0" type="radio" name="admin" value="1" ${model.admin != 0 ? 'checked' : ''}>负责人</label>
     </div>
   </div>
   <div class="control-group">

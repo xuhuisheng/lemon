@@ -9,15 +9,13 @@ import javax.annotation.Resource;
 import javax.servlet.http.HttpServletResponse;
 
 import com.mossle.core.hibernate.PropertyFilter;
+import com.mossle.core.mapper.BeanMapper;
 import com.mossle.core.page.Page;
 import com.mossle.core.spring.MessageHelper;
 
-import com.mossle.party.domain.PartyDim;
 import com.mossle.party.domain.PartyEntity;
 import com.mossle.party.domain.PartyStruct;
-import com.mossle.party.domain.PartyStructId;
 import com.mossle.party.domain.PartyStructType;
-import com.mossle.party.manager.PartyDimManager;
 import com.mossle.party.manager.PartyEntityManager;
 import com.mossle.party.manager.PartyStructManager;
 import com.mossle.party.manager.PartyStructTypeManager;
@@ -38,8 +36,8 @@ public class PartyStructController {
     private PartyEntityManager partyEntityManager;
     private PartyStructManager partyStructManager;
     private PartyStructTypeManager partyStructTypeManager;
-    private PartyDimManager partyDimManager;
     private MessageHelper messageHelper;
+    private BeanMapper beanMapper = new BeanMapper();
 
     @RequestMapping("party-struct-list")
     public String list(@ModelAttribute Page page,
@@ -57,19 +55,16 @@ public class PartyStructController {
     }
 
     @RequestMapping("party-struct-input")
-    public String input(
-            @RequestParam(value = "partyStructId", required = false) String partyStructId,
+    public String input(@RequestParam(value = "id", required = false) Long id,
             Model model) {
         List<PartyStructType> partyStructTypes = partyStructTypeManager
                 .getAll();
         List<PartyEntity> partyEntities = partyEntityManager.getAll();
-        List<PartyDim> partyDims = partyDimManager.getAll();
         model.addAttribute("partyStructTypes", partyStructTypes);
         model.addAttribute("partyEntities", partyEntities);
-        model.addAttribute("partyDims", partyDims);
 
-        if (partyStructId != null) {
-            PartyStruct partyStruct = convertPartyStruct(partyStructId);
+        if (id != null) {
+            PartyStruct partyStruct = partyStructManager.get(id);
             model.addAttribute("model", partyStruct);
         }
 
@@ -77,28 +72,25 @@ public class PartyStructController {
     }
 
     @RequestMapping("party-struct-save")
-    public String save(
-            @RequestParam(value = "partyStructId", required = false) String partyStructId,
-            @RequestParam("partyDimId") Long partyDimId,
+    public String save(@ModelAttribute PartyStruct partyStruct,
             @RequestParam("partyStructTypeId") Long partyStructTypeId,
             @RequestParam("parentEntityId") Long parentEntityId,
             @RequestParam("childEntityId") Long childEntityId,
-            @RequestParam("status") int status,
-            @RequestParam("priority") int priority,
             RedirectAttributes redirectAttributes) {
-        if (partyStructId != null) {
-            PartyStruct partyStruct = convertPartyStruct(partyStructId);
-            partyStructManager.remove(partyStruct);
+        PartyStruct dest = null;
+        Long id = partyStruct.getId();
+
+        if (id != null) {
+            dest = partyStructManager.get(id);
+            beanMapper.copy(partyStruct, dest);
+        } else {
+            dest = partyStruct;
         }
 
-        PartyStructId thePartyStructId = new PartyStructId(partyStructTypeId,
-                parentEntityId, childEntityId);
-        PartyStruct partyStruct = new PartyStruct();
-        partyStruct.setId(thePartyStructId);
-        partyStruct.setStatus(status);
-        partyStruct.setPriority(priority);
-        partyStruct.setPartyDim(partyDimManager.get(partyDimId));
-        partyStructManager.save(partyStruct);
+        dest.setPartyStructType(partyStructTypeManager.get(partyStructTypeId));
+        dest.setParentEntity(partyEntityManager.get(parentEntityId));
+        dest.setChildEntity(partyEntityManager.get(childEntityId));
+        partyStructManager.save(dest);
         messageHelper.addFlashMessage(redirectAttributes, "core.success.save",
                 "保存成功");
 
@@ -106,16 +98,10 @@ public class PartyStructController {
     }
 
     @RequestMapping("party-struct-remove")
-    public String remove(
-            @RequestParam("selectedItem") List<String> selectedItem,
+    public String remove(@RequestParam("selectedItem") List<Long> selectedItem,
             RedirectAttributes redirectAttributes) {
-        List<PartyStructId> ids = new ArrayList<PartyStructId>();
-
-        for (String id : selectedItem) {
-            ids.add(convertPartyStructId(id));
-        }
-
-        partyStructManager.removeAll(partyStructManager.findByIds(ids));
+        partyStructManager
+                .removeAll(partyStructManager.findByIds(selectedItem));
         messageHelper.addFlashMessage(redirectAttributes,
                 "core.success.delete", "删除成功");
 
@@ -140,29 +126,7 @@ public class PartyStructController {
     }
 
     @Resource
-    public void setPartyDimManager(PartyDimManager partyDimManager) {
-        this.partyDimManager = partyDimManager;
-    }
-
-    @Resource
     public void setMessageHelper(MessageHelper messageHelper) {
         this.messageHelper = messageHelper;
-    }
-
-    // ~ ======================================================================
-    protected PartyStructId convertPartyStructId(String id) {
-        String[] array = id.split(":");
-        Long partyStructTypeId = Long.parseLong(array[0]);
-        Long parentEntityId = Long.parseLong(array[1]);
-        Long childEntityId = Long.parseLong(array[2]);
-
-        PartyStructId thePartyStructId = new PartyStructId(partyStructTypeId,
-                parentEntityId, childEntityId);
-
-        return thePartyStructId;
-    }
-
-    protected PartyStruct convertPartyStruct(String id) {
-        return partyStructManager.get(convertPartyStructId(id));
     }
 }

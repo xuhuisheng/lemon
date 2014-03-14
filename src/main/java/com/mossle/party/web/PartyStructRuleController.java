@@ -12,12 +12,9 @@ import com.mossle.core.hibernate.PropertyFilter;
 import com.mossle.core.page.Page;
 import com.mossle.core.spring.MessageHelper;
 
-import com.mossle.party.domain.PartyDim;
 import com.mossle.party.domain.PartyStructRule;
-import com.mossle.party.domain.PartyStructRuleId;
 import com.mossle.party.domain.PartyStructType;
 import com.mossle.party.domain.PartyType;
-import com.mossle.party.manager.PartyDimManager;
 import com.mossle.party.manager.PartyStructRuleManager;
 import com.mossle.party.manager.PartyStructTypeManager;
 import com.mossle.party.manager.PartyTypeManager;
@@ -38,7 +35,6 @@ public class PartyStructRuleController {
     private PartyStructRuleManager partyStructRuleManager;
     private PartyStructTypeManager partyStructTypeManager;
     private PartyTypeManager partyTypeManager;
-    private PartyDimManager partyDimManager;
     private MessageHelper messageHelper;
 
     @RequestMapping("party-struct-rule-list")
@@ -57,19 +53,16 @@ public class PartyStructRuleController {
     }
 
     @RequestMapping("party-struct-rule-input")
-    public String input(
-            @RequestParam(value = "partyStructRuleId", required = false) String partyStructRuleId,
+    public String input(@RequestParam(value = "id", required = false) Long id,
             Model model) {
         List<PartyStructType> partyStructTypes = partyStructTypeManager
                 .getAll();
         List<PartyType> partyTypes = partyTypeManager.getAll();
-        List<PartyDim> partyDims = partyDimManager.getAll();
         model.addAttribute("partyStructTypes", partyStructTypes);
         model.addAttribute("partyTypes", partyTypes);
-        model.addAttribute("partyDims", partyDims);
 
-        if (partyStructRuleId != null) {
-            PartyStructRule partyStructRule = convertPartyStructRule(partyStructRuleId);
+        if (id != null) {
+            PartyStructRule partyStructRule = partyStructRuleManager.get(id);
             model.addAttribute("model", partyStructRule);
         }
 
@@ -77,24 +70,22 @@ public class PartyStructRuleController {
     }
 
     @RequestMapping("party-struct-rule-save")
-    public String save(
-            @RequestParam(value = "partyStructRuleId", required = false) String partyStructRuleId,
-            @RequestParam("partyDimId") Long partyDimId,
+    public String save(@RequestParam(value = "id", required = false) Long id,
             @RequestParam("partyStructTypeId") Long partyStructTypeId,
             @RequestParam("parentTypeId") Long parentTypeId,
             @RequestParam("childTypeId") Long childTypeId,
             RedirectAttributes redirectAttributes) {
-        if (partyStructRuleId != null) {
-            PartyStructRule partyStructRule = convertPartyStructRule(partyStructRuleId);
+        if (id != null) {
+            PartyStructRule partyStructRule = partyStructRuleManager.get(id);
             partyStructRuleManager.remove(partyStructRule);
         }
 
         PartyStructRule partyStructRule = new PartyStructRule();
+        partyStructRule.setPartyStructType(partyStructTypeManager
+                .get(partyStructTypeId));
+        partyStructRule.setParentType(partyTypeManager.get(parentTypeId));
+        partyStructRule.setChildType(partyTypeManager.get(childTypeId));
 
-        PartyStructRuleId thePartyStructRuleId = new PartyStructRuleId(
-                partyStructTypeId, parentTypeId, childTypeId);
-        partyStructRule.setId(thePartyStructRuleId);
-        partyStructRule.setPartyDim(partyDimManager.get(partyDimId));
         partyStructRuleManager.save(partyStructRule);
         messageHelper.addFlashMessage(redirectAttributes, "core.success.save",
                 "保存成功");
@@ -103,16 +94,10 @@ public class PartyStructRuleController {
     }
 
     @RequestMapping("party-struct-rule-remove")
-    public String remove(
-            @RequestParam("selectedItem") List<String> selectedItem,
+    public String remove(@RequestParam("selectedItem") List<Long> selectedItem,
             RedirectAttributes redirectAttributes) {
-        List<PartyStructRuleId> ids = new ArrayList<PartyStructRuleId>();
-
-        for (String id : selectedItem) {
-            ids.add(convertPartyStructRuleId(id));
-        }
-
-        partyStructRuleManager.removeAll(partyStructRuleManager.findByIds(ids));
+        partyStructRuleManager.removeAll(partyStructRuleManager
+                .findByIds(selectedItem));
         messageHelper.addFlashMessage(redirectAttributes,
                 "core.success.delete", "删除成功");
 
@@ -138,28 +123,7 @@ public class PartyStructRuleController {
     }
 
     @Resource
-    public void setPartyDimManager(PartyDimManager partyDimManager) {
-        this.partyDimManager = partyDimManager;
-    }
-
-    @Resource
     public void setMessageHelper(MessageHelper messageHelper) {
         this.messageHelper = messageHelper;
-    }
-
-    protected PartyStructRuleId convertPartyStructRuleId(String id) {
-        String[] array = id.split(":");
-        Long partyStructTypeId = Long.parseLong(array[0]);
-        Long parentTypeId = Long.parseLong(array[1]);
-        Long childTypeId = Long.parseLong(array[2]);
-
-        PartyStructRuleId thePartyStructRuleId = new PartyStructRuleId(
-                partyStructTypeId, parentTypeId, childTypeId);
-
-        return thePartyStructRuleId;
-    }
-
-    protected PartyStructRule convertPartyStructRule(String id) {
-        return partyStructRuleManager.get(convertPartyStructRuleId(id));
     }
 }

@@ -14,9 +14,9 @@ import com.mossle.core.spring.MessageHelper;
 
 import com.mossle.party.domain.PartyEntity;
 import com.mossle.party.domain.PartyStruct;
-import com.mossle.party.domain.PartyStructId;
 import com.mossle.party.manager.PartyEntityManager;
 import com.mossle.party.manager.PartyStructManager;
+import com.mossle.party.manager.PartyStructTypeManager;
 
 import org.springframework.stereotype.Controller;
 
@@ -35,6 +35,7 @@ public class AdminBatchController {
     private UserConnector userConnector;
     private PartyEntityManager partyEntityManager;
     private PartyStructManager partyStructManager;
+    private PartyStructTypeManager partyStructTypeManager;
 
     @RequestMapping("user-repo-list")
     public String list(@RequestParam("id") Long id, Model model) {
@@ -96,10 +97,10 @@ public class AdminBatchController {
                             group, user);
 
             if (partyStruct == null) {
-                PartyStructId partyStructId = new PartyStructId(2L,
-                        group.getId(), user.getId());
                 partyStruct = new PartyStruct();
-                partyStruct.setId(partyStructId);
+                partyStruct.setPartyStructType(partyStructTypeManager.get(2L));
+                partyStruct.setChildEntity(group);
+                partyStruct.setParentEntity(user);
                 partyStructManager.save(partyStruct);
             }
         }
@@ -158,5 +159,11 @@ public class AdminBatchController {
     @Resource
     public void setPartyStructManager(PartyStructManager partyStructManager) {
         this.partyStructManager = partyStructManager;
+    }
+
+    @Resource
+    public void setPartyStructTypeManager(
+            PartyStructTypeManager partyStructTypeManager) {
+        this.partyStructTypeManager = partyStructTypeManager;
     }
 }

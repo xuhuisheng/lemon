@@ -6,12 +6,11 @@ import java.util.HashMap;
 import java.util.List;
 import java.util.Map;
 
-import com.mossle.bpm.cmd.FindProcessDefinitionEntityCmd;
-
 import org.activiti.engine.ProcessEngine;
 import org.activiti.engine.history.HistoricActivityInstance;
 import org.activiti.engine.impl.HistoricActivityInstanceQueryImpl;
 import org.activiti.engine.impl.Page;
+import org.activiti.engine.impl.cmd.GetDeploymentProcessDefinitionCmd;
 import org.activiti.engine.impl.context.Context;
 import org.activiti.engine.impl.persistence.entity.ProcessDefinitionEntity;
 import org.activiti.engine.impl.pvm.PvmActivity;
@@ -79,7 +78,7 @@ public class ActivitiHistoryGraphBuilder {
                 .getHistoricProcessInstanceEntityManager()
                 .findHistoricProcessInstance(processInstanceId)
                 .getProcessDefinitionId();
-        FindProcessDefinitionEntityCmd cmd = new FindProcessDefinitionEntityCmd(
+        GetDeploymentProcessDefinitionCmd cmd = new GetDeploymentProcessDefinitionCmd(
                 processDefinitionId);
         processDefinitionEntity = cmd.execute(Context.getCommandContext());
     }

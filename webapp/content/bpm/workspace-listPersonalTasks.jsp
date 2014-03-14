@@ -50,6 +50,7 @@
 	    <td>${item.suspended ? '挂起' : '激活'}</td>
         <td>
           <a href="${scopePrefix}/form/form-viewTaskForm.do?taskId=${item.id}">完成</a>
+		  <%--
 		  <c:if test="${delegationState != 'PENDING'}">
           <a href="workspace-prepareDelegateTask.do?taskId=${item.id}">代理</a>
 		  </c:if>
@@ -57,8 +58,11 @@
           <a href="workspace-resolveTask.do?taskId=${item.id}">处理</a>
 		  </c:if>
           <a href="workspace-rollback.do?taskId=${item.id}">回退</a>
+		  --%>
           <a href="workspace-viewHistory.do?processInstanceId=${item.processInstanceId}">历史</a>
+		  <%--
           <a href="workspace-changeCounterSign.do?taskId=${item.id}">加减签</a>
+		  --%>
         </td>
       </tr>
       </c:forEach>
