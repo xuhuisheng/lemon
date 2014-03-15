@@ -13,6 +13,7 @@ import javax.servlet.http.HttpServletResponse;
 
 import com.mossle.bpm.cmd.JumpCmd;
 import com.mossle.bpm.cmd.ListActivityCmd;
+import com.mossle.bpm.cmd.MigrateCmd;
 import com.mossle.bpm.cmd.ProcessDefinitionDiagramCmd;
 import com.mossle.bpm.cmd.SyncProcessCmd;
 import com.mossle.bpm.cmd.UpdateProcessCmd;
@@ -361,6 +362,27 @@ public class ConsoleController {
         UpdateProcessCmd updateProcessCmd = new UpdateProcessCmd(
                 processDefinitionId, bytes);
         processEngine.getManagementService().executeCommand(updateProcessCmd);
+
+        return "redirect:/bpm/console-listProcessInstances.do";
+    }
+
+    @RequestMapping("console-migrateInput")
+    public String migrateInput(
+            @RequestParam("processInstanceId") String processInstanceId,
+            Model model) {
+        model.addAttribute("processInstanceId", processInstanceId);
+        model.addAttribute("processDefinitions", processEngine
+                .getRepositoryService().createProcessDefinitionQuery().list());
+
+        return "bpm/console-migrateInput";
+    }
+
+    @RequestMapping("console-migrateSave")
+    public String migrateInput(
+            @RequestParam("processInstanceId") String processInstanceId,
+            @RequestParam("processDefinitionId") String processDefinitionId) {
+        processEngine.getManagementService().executeCommand(
+                new MigrateCmd(processInstanceId, processDefinitionId));
 
         return "redirect:/bpm/console-listProcessInstances.do";
     }

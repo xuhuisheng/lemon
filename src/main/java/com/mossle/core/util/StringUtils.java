@@ -56,7 +56,7 @@ public class StringUtils {
     }
 
     public static String escapeXml(String text) {
-        return StringEscapeUtils.escapeXml(text);
+        return StringEscapeUtils.escapeXml11(text);
     }
 
     public static String unescapeXml(String text) {
