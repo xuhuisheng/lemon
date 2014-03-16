@@ -47,6 +47,7 @@
 	    <td><fmt:formatDate value="${item.endTime}" pattern="yyyy-MM-dd HH:mm:ss"/></td>
 	    <td><tags:user userId="${item.startUserId}"/></td>
         <td>
+          <a href="console-reopen.do?processInstanceId=${item.id}">重启</a>
           <a href="workspace-viewHistory.do?processInstanceId=${item.id}">历史</a>
           <a href="${scopePrefix}/widgets/diagram-viewer/index.html?processInstanceId=${item.id}&processDefinitionId=${item.processDefinitionId}">diagram-viewer</a>
         </td>

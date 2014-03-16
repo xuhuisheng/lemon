@@ -15,6 +15,7 @@ import com.mossle.bpm.cmd.JumpCmd;
 import com.mossle.bpm.cmd.ListActivityCmd;
 import com.mossle.bpm.cmd.MigrateCmd;
 import com.mossle.bpm.cmd.ProcessDefinitionDiagramCmd;
+import com.mossle.bpm.cmd.ReOpenProcessCmd;
 import com.mossle.bpm.cmd.SyncProcessCmd;
 import com.mossle.bpm.cmd.UpdateProcessCmd;
 
@@ -385,6 +386,15 @@ public class ConsoleController {
                 new MigrateCmd(processInstanceId, processDefinitionId));
 
         return "redirect:/bpm/console-listProcessInstances.do";
+    }
+
+    @RequestMapping("console-reopen")
+    public String reopen(
+            @RequestParam("processInstanceId") String processInstanceId) {
+        processEngine.getManagementService().executeCommand(
+                new ReOpenProcessCmd(processInstanceId));
+
+        return "redirect:/bpm/console-listHistoricProcessInstances.do";
     }
 
     // ~ ======================================================================

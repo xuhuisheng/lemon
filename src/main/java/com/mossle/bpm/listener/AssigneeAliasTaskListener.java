@@ -82,7 +82,10 @@ public class AssigneeAliasTaskListener extends DefaultTaskListener {
                 .getStartUserId();
         List<String> userIds = assigneeRule.process(value, startUserId);
         logger.debug("userIds : {}", userIds);
-        delegateTask.setAssignee(userIds.get(0));
+
+        if (!userIds.isEmpty()) {
+            delegateTask.setAssignee(userIds.get(0));
+        }
     }
 
     @Resource

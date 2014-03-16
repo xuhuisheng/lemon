@@ -58,7 +58,7 @@ public class CounterSignService {
         }
 
         logger.debug("execution: {}"
-                + ToStringBuilder.reflectionToString(execution));
+                , ToStringBuilder.reflectionToString(execution));
         logger.debug(
                 "rate={}, nrOfInstances={}, nrOfActiveInstances={}, nrOfComptetedInstances={}, loopCounter={}",
                 new Object[] { rate, nrOfInstances, nrOfActiveInstances,
