@@ -1064,7 +1064,7 @@
 
     <servlet.version>3.0.1</servlet.version>
     <jsp.version>2.1</jsp.version>
-    <jetty.version>8.1.14.v20131031</jetty.version>
+    <jetty.version>7.6.14.v20131031</jetty.version>
 
     <spring.version>4.0.2.RELEASE</spring.version>
     <struts2.version>2.3.16.1</struts2.version>
