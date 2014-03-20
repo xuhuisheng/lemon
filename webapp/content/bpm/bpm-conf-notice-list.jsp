@@ -86,7 +86,7 @@ $(function() {
 		</header>
 		<div class="content">
 
-  <form id="bpmCategoryGridForm" name="bpmCategoryGridForm" method='post' action="bpm-task-def-user-save.do" style="margin:0px;">
+  <form id="bpmCategoryGridForm" name="bpmCategoryGridForm" method='post' action="bpm-conf-notice-remove.do" style="margin:0px;">
     <input type="hidden" name="bpmTaskDefId" value="${bpmTaskDefId}">
     <table id="bpmCategoryGrid" class="m-table table-hover">
       <thead>

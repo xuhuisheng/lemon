@@ -86,7 +86,7 @@ $(function() {
 		</header>
 		<div class="content">
 
-  <form id="bpmCategoryGridForm" name="bpmCategoryGridForm" method='post' action="bpm-task-def-user-save.do" style="margin:0px;">
+  <form id="bpmCategoryGridForm" name="bpmCategoryGridForm" method='post' action="bpm-conf-rule-remove.do" style="margin:0px;">
     <input type="hidden" name="bpmTaskDefId" value="${bpmTaskDefId}">
     <table id="bpmCategoryGrid" class="m-table table-hover">
       <thead>
@@ -105,7 +105,7 @@ $(function() {
           <td>${item.id}</td>
           <td>${item.value}</td>
           <td>
-		    <a href="bpm-node-user-remove.do?id=${item.id}">删除</a>
+		    <a href="bpm-conf-rule-remove.do?id=${item.id}">删除</a>
           </td>
         </tr>
         </c:forEach>

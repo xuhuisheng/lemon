@@ -70,7 +70,7 @@ $(function() {
 		</header>
         <div id="bpmCategorySearch" class="content content-inner">
 
-		  <form name="bpmCategoryForm" method="post" action="bpm-task-def-user-save.do" class="form-inline">
+		  <form name="bpmCategoryForm" method="post" action="bpm-conf-listener-input.do" class="form-inline">
 			<input type="hidden" name="bpmTaskDefId" value="${bpmTaskDefId}">
 		    <label for="participant">监听器:</label>
 		    <input type="text" id="participant" name="participant" value="">
@@ -96,7 +96,7 @@ $(function() {
 		</header>
 		<div class="content">
 
-  <form id="bpmCategoryGridForm" name="bpmCategoryGridForm" method='post' action="bpm-task-def-user-save.do" style="margin:0px;">
+  <form id="bpmCategoryGridForm" name="bpmCategoryGridForm" method='post' action="bpm-conf-listener-remove.do" style="margin:0px;">
     <input type="hidden" name="bpmTaskDefId" value="${bpmTaskDefId}">
     <table id="bpmCategoryGrid" class="m-table table-hover">
       <thead>
@@ -118,7 +118,7 @@ $(function() {
           <td>${item.type == 0 ? '开始' : '结束'}</td>
           <td>${item.status == 0 ? '默认' : ''}</td>
           <td>
-		    <a href="bpm-node-user-remove.do?id=${item.id}">删除</a>
+		    <a href="bpm-conf-listener-remove.do?id=${item.id}">删除</a>
           </td>
         </tr>
         </c:forEach>
