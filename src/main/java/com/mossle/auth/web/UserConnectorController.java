@@ -70,7 +70,7 @@ public class UserConnectorController {
             model.addAttribute("page", page);
         } else {
             // 如果设置了查询条件，就根据条件查询
-            page = userConnector.pagedQuery(page, parameters);
+            page = userConnector.pagedQuery(page, parameterMap);
 
             List<UserDTO> userDtos = (List<UserDTO>) page.getResult();
             List<UserStatusDTO> userStatusDtos = new ArrayList<UserStatusDTO>();
