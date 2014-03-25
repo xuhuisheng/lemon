@@ -23,7 +23,7 @@ $(function() {
                 remote: {
                     url: 'user-status-checkUsername.do',
                     data: {
-                        <ccif test="${model != null}">
+                        <c:if test="${model != null}">
                         id: function() {
                             return $('#user_id').val();
                         }
