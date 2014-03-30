@@ -101,6 +101,33 @@ $(function() {
 		</div>
 	  </article>
 
+<c:if test="${not empty bpmConfCountersign}">
+	  <article class="m-widget">
+        <header class="header">
+		  <h4 class="title">会签</h4>
+		  <div class="ctrl">
+		    <a class="btn"><i id="bpmConfCountersignSearchIcon" class="icon-chevron-up"></i></a>
+		  </div>
+		</header>
+        <div id="bpmConfCountersignSearchIcon" class="content content-inner">
+
+		  <form name="bpmConfCountersignForm" method="post" action="bpm-conf-countersign-save.do" class="form-inline">
+		    <input type="hidden" name="id" value="${bpmConfCountersign.id}">
+			<input type="hidden" name="bpmConfNodeId" value="${param.bpmConfNodeId}">
+		    <label for="type">会签类型:</label>
+			<select name="type">
+			  <option value="0" ${bpmConfCountersign.type==0 ? 'selected' : ''}>全票通过</option>
+			  <option value="1" ${bpmConfCountersign.type==1 ? 'selected' : ''}>比例通过</option>
+			</select>
+		    <label for="bpmConfCountersign_rate">通过率:</label>
+		    <input id="bpmConfCountersign_rate" type="text" name="rate" class="input-medium number" value="${bpmConfCountersign.rate}">
+			<button class="btn btn-small" onclick="document.bpmConfCountersignForm.submit()">提交</button>
+		  </form>
+
+		</div>
+	  </article>
+</c:if>
+
       <article class="m-widget">
         <header class="header">
 		  <h4 class="title">参与者</h4>

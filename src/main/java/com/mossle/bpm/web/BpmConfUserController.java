@@ -8,9 +8,11 @@ import javax.annotation.Resource;
 
 import javax.servlet.http.HttpServletResponse;
 
+import com.mossle.bpm.persistence.domain.BpmConfCountersign;
 import com.mossle.bpm.persistence.domain.BpmConfNode;
 import com.mossle.bpm.persistence.domain.BpmConfUser;
 import com.mossle.bpm.persistence.domain.BpmProcess;
+import com.mossle.bpm.persistence.manager.BpmConfCountersignManager;
 import com.mossle.bpm.persistence.manager.BpmConfNodeManager;
 import com.mossle.bpm.persistence.manager.BpmConfUserManager;
 import com.mossle.bpm.persistence.manager.BpmProcessManager;
@@ -40,6 +42,7 @@ public class BpmConfUserController {
     private BeanMapper beanMapper = new BeanMapper();
     private ProcessEngine processEngine;
     private BpmProcessManager bpmProcessManager;
+    private BpmConfCountersignManager bpmConfCountersignManager;
 
     @RequestMapping("bpm-conf-user-list")
     public String list(@RequestParam("bpmConfNodeId") Long bpmConfNodeId,
@@ -51,6 +54,8 @@ public class BpmConfUserController {
 
         model.addAttribute("bpmConfBaseId", bpmConfBaseId);
         model.addAttribute("bpmConfUsers", bpmConfUsers);
+        model.addAttribute("bpmConfCountersign", bpmConfCountersignManager
+                .findUniqueBy("bpmConfNode", bpmConfNode));
 
         return "bpm/bpm-conf-user-list";
     }
@@ -105,5 +110,11 @@ public class BpmConfUserController {
     @Resource
     public void setProcessEngine(ProcessEngine processEngine) {
         this.processEngine = processEngine;
+    }
+
+    @Resource
+    public void setBpmConfCountersignManager(
+            BpmConfCountersignManager bpmConfCountersignManager) {
+        this.bpmConfCountersignManager = bpmConfCountersignManager;
     }
 }

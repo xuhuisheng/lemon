@@ -33,7 +33,7 @@ import org.springframework.web.servlet.mvc.support.RedirectAttributes;
 
 /**
  * modeler.
- *
+ * 
  * @author Lingo
  */
 @Controller
@@ -91,8 +91,9 @@ public class ModelerController {
                 .name(modelData.getName())
                 .addString(processName, new String(bpmnBytes, "UTF-8"))
                 .deploy();
-		modelData.setDeploymentId(deployment.getId());
-		repositoryService.saveModel(modelData);
+        modelData.setDeploymentId(deployment.getId());
+        repositoryService.saveModel(modelData);
+
         List<ProcessDefinition> processDefinitions = repositoryService
                 .createProcessDefinitionQuery()
                 .deploymentId(deployment.getId()).list();

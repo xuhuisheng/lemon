@@ -146,8 +146,8 @@ public class FormController {
 
             model.addAttribute("nextStep", nextStep);
 
-            FormTemplate formTemplate = formTemplateManager.findUniqueBy(
-                    "name", formInfo.getFormKey());
+            FormTemplate formTemplate = formTemplateManager.get(Long
+                    .parseLong(formInfo.getFormKey()));
 
             if (Integer.valueOf(1).equals(formTemplate.getType())) {
                 String redirectUrl = formTemplate.getContent();
@@ -292,8 +292,8 @@ public class FormController {
         FormService formService = processEngine.getFormService();
         String taskFormKey = formService.getTaskFormKey(
                 task.getProcessDefinitionId(), task.getTaskDefinitionKey());
-        FormTemplate formTemplate = formTemplateManager.findUniqueBy("name",
-                taskFormKey);
+        FormTemplate formTemplate = formTemplateManager.get(Long
+                .parseLong(taskFormKey));
         model.addAttribute("formTemplate", formTemplate);
 
         FormInfo formInfo = new FormInfo();

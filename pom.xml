@@ -1056,19 +1056,19 @@
 
     <junit.version>4.11</junit.version>
     <mockito.version>1.9.5</mockito.version>
-    <selenium2.version>2.40.0</selenium2.version>
+    <selenium2.version>2.41.0</selenium2.version>
 	<xml-apis.version>1.4.01</xml-apis.version>
     <dbunit.version>2.4.9</dbunit.version>
-    <commons-lang.version>3.3</commons-lang.version>
+    <commons-lang.version>3.3.1</commons-lang.version>
     <commons-fileupload.version>1.3.1</commons-fileupload.version>
 
     <servlet.version>3.0.1</servlet.version>
     <jsp.version>2.1</jsp.version>
     <jetty.version>7.6.14.v20131031</jetty.version>
 
-    <spring.version>4.0.2.RELEASE</spring.version>
+    <spring.version>4.0.3.RELEASE</spring.version>
     <struts2.version>2.3.16.1</struts2.version>
-    <spring-security.version>3.2.2.RELEASE</spring-security.version>
+    <spring-security.version>3.2.3.RELEASE</spring-security.version>
     <hibernate.version>4.3.4.Final</hibernate.version>
     <hibernate-validator.version>5.1.0.Final</hibernate-validator.version>
     <javassist.version>3.18.1-GA</javassist.version>
@@ -1093,12 +1093,12 @@
     <inspektr.version>1.1.GA</inspektr.version>
     <quartz.version>2.2.1</quartz.version>
     <h2.version>1.3.175</h2.version>
-    <mysql.version>5.1.29</mysql.version>
-    <activiti.version>5.14</activiti.version>
+    <mysql.version>5.1.30</mysql.version>
+    <activiti.version>5.15</activiti.version>
     <cxf.version>2.7.8</cxf.version>
 	<flyway.version>2.3.1</flyway.version>
 	<javasimon.version>3.4.0</javasimon.version>
-	<orika.version>1.4.4</orika.version>
+	<orika.version>1.4.5</orika.version>
 	<jmemcached.version>1.0.0</jmemcached.version>
 	<spymemcached.version>2.10.6</spymemcached.version>
 	<jms.version>1.1.1</jms.version>
@@ -1118,13 +1118,13 @@
     <maven-site-plugin.version>3.3</maven-site-plugin.version>
     <maven-project-info-reports-plugin.version>2.7</maven-project-info-reports-plugin.version>
     <maven-javadoc-plugin.version>2.9.1</maven-javadoc-plugin.version>
-    <maven-surefire-plugin.version>2.16</maven-surefire-plugin.version>
-    <maven-failsafe-plugin.version>2.16</maven-failsafe-plugin.version>
+    <maven-surefire-plugin.version>2.17</maven-surefire-plugin.version>
+    <maven-failsafe-plugin.version>2.17</maven-failsafe-plugin.version>
     <maven-overview-plugin.version>1.6</maven-overview-plugin.version>
     <stat-scm.version>1.2.0</stat-scm.version>
     <versions-maven-plugin.version>2.1</versions-maven-plugin.version>
     <native2ascii-maven-plugin.version>1.0-beta-1</native2ascii-maven-plugin.version>
-    <jacoco-maven-plugin.version>0.6.5.201403032054</jacoco-maven-plugin.version>
+    <jacoco-maven-plugin.version>0.7.0.201403182114</jacoco-maven-plugin.version>
 
   </properties>
 

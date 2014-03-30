@@ -11,7 +11,7 @@
 <process id='vacation' name='请假流程' isExecutable='true'>
   <startEvent id='vacation_1' name='填写请假单' activiti:initiator='initiator'/>
   <sequenceFlow id='transition-1' sourceRef='vacation_1' targetRef='taskuser-1'/>
-  <userTask id='taskuser-1' name='填写请假单' activiti:formKey='申请单'>
+  <userTask id='taskuser-1' name='填写请假单' activiti:formKey='1'>
     <humanPerformer>
       <resourceAssignmentExpression>
         <formalExpression>${initiator}</formalExpression>
@@ -19,7 +19,7 @@
     </humanPerformer>
   </userTask>
   <sequenceFlow id='transition-2' sourceRef='taskuser-1' targetRef='taskuser-2'/>
-  <userTask id='taskuser-2' name='部门领导审批' activiti:formKey='上级审批'>
+  <userTask id='taskuser-2' name='部门领导审批' activiti:formKey='2'>
     <humanPerformer>
       <resourceAssignmentExpression>
         <formalExpression>常用语:直接上级</formalExpression>
@@ -34,7 +34,7 @@
   <sequenceFlow id='transition-9' name="不同意" sourceRef='exclusive-1' targetRef='taskuser-5'>
     <conditionExpression xsi:type='tFormalExpression'>${leaderComment==&apos;不同意&apos;}</conditionExpression>
   </sequenceFlow>
-  <userTask id='taskuser-3' name='人事审批' activiti:formKey='人事审批'>
+  <userTask id='taskuser-3' name='人事审批' activiti:formKey='3'>
     <humanPerformer>
       <resourceAssignmentExpression>
         <formalExpression>7</formalExpression>
@@ -49,7 +49,7 @@
   <sequenceFlow id='transition-13' name="同意" sourceRef='exclusive-2' targetRef='taskuser-6'>
     <conditionExpression xsi:type='tFormalExpression'>${hrComment==&apos;同意&apos;}</conditionExpression>
   </sequenceFlow>
-  <userTask id='taskuser-5' name='调整申请' activiti:formKey='调整申请'>
+  <userTask id='taskuser-5' name='调整申请' activiti:formKey='4'>
     <humanPerformer>
       <resourceAssignmentExpression>
         <formalExpression>${initiator}</formalExpression>
@@ -64,7 +64,7 @@
   <sequenceFlow id='transition-15' name="撤销申请" sourceRef='exclusive-3' targetRef='endnone-2'>
     <conditionExpression xsi:type='tFormalExpression'>${initiatorComment==&apos;撤销申请&apos;}</conditionExpression>
   </sequenceFlow>
-  <userTask id='taskuser-6' name='销假' activiti:formKey='销假'>
+  <userTask id='taskuser-6' name='销假' activiti:formKey='5'>
     <humanPerformer>
       <resourceAssignmentExpression>
         <formalExpression>${initiator}</formalExpression>

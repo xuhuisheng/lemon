@@ -302,7 +302,7 @@ public class RollbackTaskCmd implements Command<Integer> {
          */
 
         // 创建新任务
-        TaskEntity task = TaskEntity.create();
+        TaskEntity task = TaskEntity.create(new Date());
         task.setProcessDefinitionId(historicTaskInstanceEntity
                 .getProcessDefinitionId());
         // task.setId(historicTaskInstanceEntity.getId());

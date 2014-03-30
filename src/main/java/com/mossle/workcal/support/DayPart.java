@@ -1,17 +1,17 @@
-package com.mossle.bpm.calendar;
+package com.mossle.workcal.support;
 
 import java.util.Calendar;
 import java.util.Date;
 
 public class DayPart {
-    private Day day;
+    private WorkDay workDay;
     private int index;
     private int fromHour;
     private int fromMinute;
     private int toHour;
     private int toMinute;
 
-    public Date add(Date date, long millis, boolean useBusinessTime) {
+    public Date add(Date date, long millis) {
         Date end = null;
 
         Calendar calendar = Calendar.getInstance();
@@ -38,14 +38,13 @@ public class DayPart {
                     - remainderMillis);
 
             // 找到下一个工作时间段
-            Object[] result = new Object[2];
-            day.findNextDayPartStart(index + 1, dayPartEndDate, result);
+            DayPartResult dayPartResult = workDay.findNextDayPartStart(
+                    index + 1, dayPartEndDate);
 
-            Date nextDayPartStart = (Date) result[0];
-            DayPart nextDayPart = (DayPart) result[1];
+            Date nextDayPartStart = dayPartResult.getDate();
+            DayPart nextDayPart = dayPartResult.getDayPart();
             // 继续从下一个时间段查找
-            end = nextDayPart.add(nextDayPartStart, remainderMillis,
-                    useBusinessTime);
+            end = nextDayPart.add(nextDayPartStart, remainderMillis);
         }
 
         return end;
@@ -80,12 +79,12 @@ public class DayPart {
         return calendar.getTime();
     }
 
-    public Day getDay() {
-        return day;
+    public WorkDay getWorkDay() {
+        return workDay;
     }
 
-    public void setDay(Day day) {
-        this.day = day;
+    public void setWorkDay(WorkDay workDay) {
+        this.workDay = workDay;
     }
 
     public int getIndex() {

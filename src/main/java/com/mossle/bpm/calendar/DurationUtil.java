@@ -9,7 +9,6 @@ import javax.xml.datatype.DatatypeFactory;
 import javax.xml.datatype.Duration;
 
 import org.activiti.engine.ActivitiIllegalArgumentException;
-import org.activiti.engine.impl.util.ClockUtil;
 
 import org.joda.time.DateTime;
 
@@ -90,13 +89,13 @@ public class DurationUtil {
         // 如果只设置了一个时间段，既没有开始也没有结束时间
         if ((this.start == null) && (this.end == null)) {
             // 就把当前时间设置为开始时间
-            this.start = ClockUtil.getCurrentTime();
+            this.start = new Date();
         }
     }
 
     public Date getDateAfter() {
         if (this.isRepeat) {
-            return this.getDateAfterRepeat(ClockUtil.getCurrentTime());
+            return this.getDateAfterRepeat(new Date());
         }
 
         // TODO: is this correct?

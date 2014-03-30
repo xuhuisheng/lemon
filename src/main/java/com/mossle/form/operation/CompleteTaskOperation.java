@@ -92,8 +92,8 @@ public class CompleteTaskOperation extends AbstractOperation<Void> {
         Map<String, String> formTypeMap = new HashMap<String, String>();
 
         if (formInfo.isFormExists()) {
-            FormTemplate formTemplate = formTemplateManager.findUniqueBy(
-                    "name", formInfo.getFormKey());
+            FormTemplate formTemplate = formTemplateManager.get(Long
+                    .parseLong(formInfo.getFormKey()));
 
             String content = formTemplate.getContent();
             logger.debug("content : {}", content);

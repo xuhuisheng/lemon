@@ -26,6 +26,7 @@
 
 	<bean id="passwordEncoder" class="com.mossle.security.util.PasswordEncoderFactoryBean">
 		<property name="type" value="${security.passwordencoder.type}"/>
+		<property name="salt" value="${security.passwordencoder.salt}"/>
 	</bean>
 
 	<bean id="simplePasswordEncoder" factory-bean="&amp;passwordEncoder" factory-method="getSimplePasswordEncoder"/>

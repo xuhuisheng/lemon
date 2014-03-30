@@ -17,7 +17,6 @@ public class AdvancedBusinessCalendarManager implements BusinessCalendarManager 
     }
 
     public void addBusinessCalendar(AdvancedBusinessCalendar businessCalendar) {
-        businessCalendar.init();
         businessCalendarMap.put(businessCalendar.getName(), businessCalendar);
     }
 

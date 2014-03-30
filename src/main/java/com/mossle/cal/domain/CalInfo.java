@@ -40,7 +40,7 @@ public class CalInfo implements java.io.Serializable {
     private Date endTime;
 
     /** null. */
-    private Integer alertTime;
+    private String alertTime;
 
     /** null. */
     private Integer priority;
@@ -55,7 +55,7 @@ public class CalInfo implements java.io.Serializable {
     }
 
     public CalInfo(String name, String address, Integer type, Date startTime,
-            Date endTime, Integer alertTime, Integer priority, Long userId,
+            Date endTime, String alertTime, Integer priority, Long userId,
             String descn) {
         this.name = name;
         this.address = address;
@@ -157,8 +157,8 @@ public class CalInfo implements java.io.Serializable {
     }
 
     /** @return null. */
-    @Column(name = "ALERT_TIME")
-    public Integer getAlertTime() {
+    @Column(name = "ALERT_TIME", length = 50)
+    public String getAlertTime() {
         return this.alertTime;
     }
 
@@ -166,7 +166,7 @@ public class CalInfo implements java.io.Serializable {
      * @param alertTime
      *            null.
      */
-    public void setAlertTime(Integer alertTime) {
+    public void setAlertTime(String alertTime) {
         this.alertTime = alertTime;
     }
 

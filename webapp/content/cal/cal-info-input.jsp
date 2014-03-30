@@ -82,10 +82,7 @@ $(function() {
   <div class="control-group">
     <label class="control-label" for="cal-info_alertTime">提醒时间</label>
 	<div class="controls">
-      <div class="input-append datepicker date" style="padding-left: 0px;">
-	    <input id="cal-info_alertTime" type="text" name="alertTime" value="<fmt:formatDate value='${model.alertTime}' pattern='yyyy-MM-dd'/>" size="40" class="text" minlength="2" maxlength="10" readonly style="background-color:white;cursor:default; width: 175px;">
-	    <span class="add-on" style="padding-top: 2px; padding-bottom: 2px;"><i class="icon-calendar"></i></span>
-	  </div>
+	    <input id="cal-info_alertTime" type="text" name="alertTime" value="${model.alertTime}'">
     </div>
   </div>
   <div class="control-group">

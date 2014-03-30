@@ -5,6 +5,7 @@ import java.sql.SQLException;
 import java.sql.Statement;
 
 import java.util.ArrayList;
+import java.util.Date;
 import java.util.List;
 
 import com.mossle.bpm.graph.ActivitiHistoryGraphBuilder;
@@ -204,7 +205,7 @@ public class WithdrawTaskCmd implements Command<Integer> {
         historicActivityInstanceEntity.setEndTime(null);
         historicActivityInstanceEntity.setDurationInMillis(null);
 
-        TaskEntity task = TaskEntity.create();
+        TaskEntity task = TaskEntity.create(new Date());
         task.setProcessDefinitionId(historicTaskInstanceEntity
                 .getProcessDefinitionId());
         task.setId(historicTaskInstanceEntity.getId());
