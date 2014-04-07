@@ -1,6 +1,6 @@
 <%@page contentType="text/html;charset=UTF-8"%>
 <%@taglib prefix="sec" uri="http://www.springframework.org/security/tags" %>
-<%@taglib prefix="region" uri="http://www.mossle.com/region/tags" %>
+<%@ taglib prefix="tags" tagdir="/WEB-INF/tags" %>
 <%pageContext.setAttribute("ctx", request.getContextPath());%>
 <html>
   <head>
@@ -23,9 +23,9 @@ function switchUser() {
   </head>
   <body>
     <div align="center">
-	  <perm:permission permission="util,ROLE_PREVIOUS_ADMINISTRATOR">
+	  <tags:hasPerm value="util,ROLE_PREVIOUS_ADMINISTRATOR">
 		<a href="#" onclick="switchUser()">切换用户</a>
-	  </perm:permission>
+	  </tags:hasPerm>
 	  <sec:authorize ifAnyGranted="ROLE_PREVIOUS_ADMINISTRATOR">
 	    <a href="${ctx}/j_spring_security_exit_user">退出切换用户</a>
 	  </sec:authorize>
