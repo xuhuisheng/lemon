@@ -77,7 +77,7 @@ $(function() {
 		  <tags:hasPerm value="user:create">
 		  <button class="btn btn-small" onclick="location.href='user-status-input.do'">新建</button>
 		  </tags:hasPerm>
-		  <tags:hasPerm permission="user:delete">
+		  <tags:hasPerm value="user:delete">
 		  <button class="btn btn-small" onclick="table.removeAll()">删除</button>
 		  </tags:hasPerm>
 		  <button class="btn btn-small" onclick="table.exportExcel()">导出</button>
