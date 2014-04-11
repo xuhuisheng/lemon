@@ -64,13 +64,13 @@ $(function() {
   <div class="control-group">
     <label class="control-label" for="car-info_startTIme">载重</label>
 	<div class="controls">
-	  <input id="car-info_type" type="text" name="weight" value="${model.weight}" size="40" class="text number">
+	  <input id="car-info_startTIme" type="text" name="weight" value="${model.weight}" size="40" class="text number">
     </div>
   </div>
   <div class="control-group">
     <label class="control-label" for="car-info_endTime">载人</label>
 	<div class="controls">
-	  <input id="car-info_type" type="text" name="people" value="${model.people}" size="40" class="text number">
+	  <input id="car-info_endTime" type="text" name="people" value="${model.people}" size="40" class="text number">
     </div>
   </div>
   <div class="control-group">
