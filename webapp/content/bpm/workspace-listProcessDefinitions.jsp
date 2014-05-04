@@ -42,7 +42,7 @@
     </thead>
 
     <tbody>
-      <s:iterator value="processDefinitions" var="item">
+      <c:forEach items="${processDefinitions}" var="item">
       <tr>
         <td><input type="checkbox" class="selectedItem" name="selectedItem" value="${item.id}"></td>
 	    <td>${item.id}</td>
@@ -53,11 +53,11 @@
 	    <td>${item.description}</td>
 	    <td>${item.suspended ? '挂起' : '激活'}</td>
         <td>
-          <a href="${scopePrefix}/form/form!viewStartForm.do?processDefinitionId=${item.id}">发起流程</a>
-          <a href="workspace!graphProcessDefinition.do?processDefinitionId=${item.id}" target="_blank">流程图</a>
+          <a href="${scopePrefix}/form/form-viewStartForm.do?processDefinitionId=${item.id}">发起流程</a>
+          <a href="workspace-graphProcessDefinition.do?processDefinitionId=${item.id}" target="_blank">流程图</a>
         </td>
       </tr>
-      </s:iterator>
+      </c:forEach>
     </tbody>
   </table>
         </div>

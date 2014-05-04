@@ -14,7 +14,6 @@
     background-color: #EEEEEE;
 }
     </style>
-    <script type="text/javascript" src="${ctx}/jquery.tablednd.0.7.min.js"></script>
     <script type="text/javascript">
 $(function() {
     $("#accessForm").validate({
@@ -29,7 +28,7 @@ $(function() {
 
 function doPrev() {
     $('#accessForm').attr('method', 'get');
-    $('#accessForm').attr('action', 'access-batch.do');
+    $('#accessForm').attr('action', 'user-connector-batch-list.do');
     $('#accessForm').submit();
 }
     </script>
@@ -51,28 +50,28 @@ function doPrev() {
 
         <div class="content content-inner">
 
-<form id="accessForm" method="post" action="user-connector-batch!save.do" class="form-horizontal">
+<form id="accessForm" method="post" action="user-connector-batch-save.do" class="form-horizontal">
   <div class="control-group">
     <label class="control-label" for="access_perm">用户</label>
     <div class="controls">
       <table class="table table-striped table-bordered table-hover" style="width:auto;">
         <thead>
 		  <tr>
-			<th width="10" style="text-indent:0px;text-align:center;"><input type="checkbox" name="checkAll" onchange="toggleSelectedItems(this.checked)"></th>
+			<th width="10" style="text-indent:0px;text-align:center;"><input type="checkbox" name="checkAll" class="a-check-all" onchange="toggleSelectedItems(this.checked)"></th>
 			<th class="sorting" name="id"><spring:message code="user.user.list.id" text="编号"/></th>
 			<th class="sorting" name="username"><spring:message code="user.user.list.username" text="账号"/></th>
 			<th class="sorting" name="status"><spring:message code="user.user.list.status" text="状态"/></th>
 		  </tr>
         </thead>
         <tbody>
-          <s:iterator value="userStatuses">
+          <c:forEach items="${userStatuses}" var="item">
             <tr>
-              <td><input type="checkbox" class="selectedItem" name="userIds" value="${id}"></td>
-              <td>${id}</td>
-              <td>${username}</td>
-              <td>${status == 1 ? 'enable' : 'disable'}</td>
+              <td><input type="checkbox" class="selectedItem a-check" name="userIds" value="${item.id}"></td>
+              <td>${item.id}</td>
+              <td>${item.username}</td>
+              <td>${item.status == 1 ? '启用' : '禁用'}</td>
             </tr>
-          </s:iterator>
+          </c:forEach>
         </tbody>
       </table>
     </div>
@@ -80,10 +79,10 @@ function doPrev() {
   <div class="control-group">
     <label class="control-label" for="access_role">角色</label>
     <div class="controls">
-	  <select name="roleIds" size="10" multiple>
-	    <s:iterator value="roleDtos" var="item">
+	  <select id="roleIds" name="roleIds" size="10" multiple>
+	    <c:forEach items="${roleDtos}" var="item">
 		  <option value="${item.id}">${item.name}</option>
-		</s:iterator>
+		</c:forEach>
 	  </select>
     </div>
   </div>
@@ -91,7 +90,7 @@ function doPrev() {
     <div class="controls">
       <button type="button" class="btn" onclick="doPrev()"><spring:message code='core.step.prev' text='上一步'/></button>
 	  &nbsp;
-      <button id="submitButton" class="btn btn-primary"><spring:message code='core.step.next' text='下一步'/></button>
+      <button id="submitButton" class="btn btn-primary a-submit"><spring:message code='core.step.next' text='下一步'/></button>
     </div>
   </div>
 </form>

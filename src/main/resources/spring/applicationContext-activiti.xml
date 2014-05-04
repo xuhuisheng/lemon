@@ -9,20 +9,29 @@
 		<property name="databaseSchemaUpdate" value="true" />
 		<!-- job executor configurations -->
 		<property name="jobExecutorActivate" value="false" />
-		<!-- mail server configurations -->
-		<property name="mailServerPort" value="5025" />
+
 		<property name="history" value="audit" />
 
+		<!-- 添加的自定义监听器 -->
  		<property name="customDefaultBpmnParseHandlers">
     	 	<list>
-				<bean class="com.mossle.bpm.listener.ProxyUserTaskBpmnParseHandler"/>
+				<bean class="com.mossle.bpm.listener.ProxyUserTaskBpmnParseHandler">
+					<property name="taskListenerId" value="customTaskListener"/>
+					<property name="useDefaultUserTaskParser" value="true"/>
+				</bean>
+    	 	</list>
+		</property>
+ 		<property name="postBpmnParseHandlers">
+    	 	<list>
+				<bean class="com.mossle.bpm.listener.ProxyUserTaskBpmnParseHandler">
+					<property name="taskListenerId" value="postTaskListener"/>
+				</bean>
     	 	</list>
 		</property>
 
 		<property name="bpmnParser">
 			<bean class="com.mossle.bpm.parser.CustomBpmnParser" />
 		</property>
-
 
 		<property name="transactionManager" ref="transactionManager"/>
 		<!-- (databaseType 不用修改,即使连接其他类型数据库)  act引擎会自动替换成相应的type,这里加上是因为act不识别hsqldb类型,故直接映射成H2-->
@@ -32,17 +41,7 @@
         <property name="activityFontName" value="宋体"/>
         <property name="labelFontName" value="宋体"/>
 
-        <!-- 缓存支持
-        <property name="processDefinitionCache">
-            <bean class="me.kafeitu.demo.activiti.util.cache.DistributedCache" />
-        </property>-->
-
-        <!-- 自定义表单字段类型 -->
-        <property name="customFormTypes">
-            <list>
-                <bean class="com.mossle.bpm.support.UsersFormType"/>
-            </list>
-        </property>
+		<!-- 组织机构适配 -->
         <property name="customSessionFactories">
 			<list>
 				<bean class="com.mossle.bpm.CustomGroupEntityManagerFactory" >
@@ -57,14 +56,6 @@
 
 		<property name="businessCalendarManager" ref="businessCalendarManager"/>
 
-        <!-- 自动部署 -->
-		<!--
-        <property name="deploymentResources">
-            <list>
-                <value>classpath*:/bpmn2/*</value>
-            </list>
-        </property>
-		-->
 		<!-- //更换id生成策略
 		<property name="idGenerator">
 			<bean class="org.activiti.engine.impl.persistence.StrongUuidGenerator" />
@@ -84,7 +75,7 @@
     <bean id="managementService" factory-bean="processEngine" factory-method="getManagementService"/>
 
 	<!-- 自动部署 -->
-	<bean id="autoDeployer" class="com.mossle.bpm.support.AutoDeployer">
+	<bean id="autoDeployer" class="com.mossle.bpm.support.AutoDeployer" depends-on="applicationContextHelper">
 		<property name="processEngine" ref="processEngine"/>
         <property name="deploymentResources">
             <list>
@@ -93,14 +84,24 @@
         </property>
 	</bean>
 
-	<!-- 全局任务监听器 -->
-	<bean id="proxyTaskListener" class="com.mossle.bpm.listener.ProxyTaskListener">
+	<!-- 在记录history之前执行的TaskListener -->
+	<bean id="customTaskListener" class="com.mossle.bpm.listener.ProxyTaskListener">
 		<property name="taskListeners">
 			<list>
-				<bean class="com.mossle.bpm.delegate.DelegateTaskListener"/>
-				<bean class="com.mossle.bpm.listener.AutoCompleteFirstTaskListener"/>
-				<bean class="com.mossle.bpm.listener.AssigneeAliasTaskListener"/>
+				<bean class="com.mossle.bpm.listener.ConfUserTaskListener"/>
 				<bean class="com.mossle.bpm.listener.TaskConfTaskListener"/>
+				<bean class="com.mossle.bpm.listener.AssigneeAliasTaskListener"/>
+				<bean class="com.mossle.bpm.listener.DelegateTaskListener"/>
+			</list>
+		</property>
+	</bean>
+
+	<!-- 在记录history之后执行的TaskListener -->
+	<bean id="postTaskListener" class="com.mossle.bpm.listener.ProxyTaskListener">
+		<property name="taskListeners">
+			<list>
+				<bean class="com.mossle.bpm.listener.AutoCompleteFirstTaskListener"/>
+				<bean class="com.mossle.bpm.listener.SkipTaskListener"/>
 				<bean class="com.mossle.bpm.listener.NoticeTaskListener"/>
 			</list>
 		</property>
@@ -108,13 +109,8 @@
 
 	<!-- 工作日历 -->
 	<bean id="businessCalendarManager" class="com.mossle.bpm.calendar.AdvancedBusinessCalendarManagerFactoryBean">
-		<property name="sunday" value="9:00-12:00 and 13:00-18:00"/>
-		<property name="monday" value="9:00-12:00 and 13:00-18:00"/>
-		<property name="tuesday" value="9:00-12:00 and 13:00-18:00"/>
-		<property name="wednesday" value="9:00-12:00 and 13:00-18:00"/>
-		<property name="thursday" value="9:00-12:00 and 13:00-18:00"/>
-		<property name="friday" value="9:00-12:00 and 13:00-18:00"/>
-		<property name="saturday" value="9:00-12:00 and 13:00-18:00"/>
-		<property name="holiday" value="01/07/2008 - 31/08/2008"/>
+		<property name="workCalendarService" ref="workCalendarService"/>
 	</bean>
+
+	<bean id="workCalendarService" class="com.mossle.workcal.service.WorkCalendarService"/>
 </beans>

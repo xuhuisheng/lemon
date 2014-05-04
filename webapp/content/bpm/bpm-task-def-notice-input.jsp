@@ -32,7 +32,7 @@ $(function() {
 	<!-- start of main -->
     <section id="m-main" class="span10">
 
-<form id="noticeForm" method="post" action="bpm-task-def-notice!save.do" class="form-horizontal">
+<form id="noticeForm" method="post" action="bpm-task-def-notice-save.do" class="form-horizontal">
 
   <input id="bpm-process_id" type="hidden" name="bpmProcessId" value="${param.bpmProcessId}">
   <input id="taskDefinitionKey" type="hidden" name="taskDefinitionKey" value="${param.taskDefinitionKey}">
@@ -62,9 +62,9 @@ $(function() {
     <label class="control-label">邮件模板</label>
 	<div class="controls">
 	  <select name="bpmMailTemplateId">
-	    <s:iterator value="bpmMailTemplates" var="item">
+	    <c:forEach items="${bpmMailTemplates}" var="item">
 	    <option value="${item.id}">${item.name}</option>
-		</s:iterator>
+		</c:forEach>
 	  </select>
     </div>
   </div>

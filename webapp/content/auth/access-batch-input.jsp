@@ -14,7 +14,6 @@
     background-color: #EEEEEE;
 }
     </style>
-    <script type="text/javascript" src="${ctx}/jquery.tablednd.0.7.min.js"></script>
     <script type="text/javascript">
 $(function() {
     $("#accessForm").validate({
@@ -29,7 +28,7 @@ $(function() {
 
 function doPrev() {
     $('#accessForm').attr('method', 'get');
-    $('#accessForm').attr('action', 'access-batch.do');
+    $('#accessForm').attr('action', 'access-batch-list.do');
     $('#accessForm').submit();
 }
     </script>
@@ -51,7 +50,7 @@ function doPrev() {
 
 		<div class="content content-inner">
 
-<form id="accessForm" method="post" action="access-batch!edit.do" class="form-horizontal">
+<form id="accessForm" method="post" action="access-batch-save.do" class="form-horizontal">
   <div class="control-group">
     <label class="control-label"><spring:message code='auth.access.input.type' text='类型'/></label>
     <div class="controls">
@@ -60,37 +59,16 @@ function doPrev() {
     </div>
   </div>
   <div class="control-group">
-	<label class="control-label" for="access_perm"><spring:message code='auth.access.input.import' text='批量导入'/></label>
+	<label class="control-label" for="access_text"><spring:message code='auth.access.input.import' text='批量导入'/></label>
     <div class="controls">
-	  <textarea name="perm" style="width:600px;" rows="10">${perm}</textarea>
-    </div>
-  </div>
-  <div class="control-group">
-    <label class="control-label" for="access_perm"><spring:message code='auth.access.input.perm' text='资源'/></label>
-    <div class="controls">
-      <table class="table table-striped table-bordered table-hover" style="width:auto;">
-        <thead>
-		  <tr>
-		    <th>${type}</th>
-			<th>权限</th>
-		  </tr>
-        </thead>
-        <tbody>
-          <s:iterator value="accessDtos">
-            <tr>
-              <td>${value}</td>
-              <td>${perm}</td>
-            </tr>
-          </s:iterator>
-        </tbody>
-      </table>
+	  <textarea id="access_text" name="text" style="width:600px;" rows="10">${text}</textarea>
     </div>
   </div>
   <div class="control-group">
     <div class="controls">
       <button type="button" class="btn" onclick="doPrev()"><spring:message code='core.step.prev' text='上一步'/></button>
 	  &nbsp;
-      <button id="submitButton" class="btn btn-primary"><spring:message code='core.step.next' text='下一步'/></button>
+      <button id="submitButton" class="btn btn-primary a-submit"><spring:message code='core.step.next' text='下一步'/></button>
     </div>
   </div>
 </form>

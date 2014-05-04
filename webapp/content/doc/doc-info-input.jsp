@@ -39,10 +39,10 @@ $(function() {
 
 		<div class="content content-inner">
 
-<form id="msg-infoForm" method="post" action="doc-info!save.do?operationMode=STORE" class="form-horizontal" enctype="multipart/form-data">
-  <s:if test="model != null">
+<form id="msg-infoForm" method="post" action="doc-info-save.do" class="form-horizontal" enctype="multipart/form-data">
+  <c:if test="${model != null}">
   <input id="msg-info_id" type="hidden" name="id" value="${model.id}">
-  </s:if>
+  </c:if>
   <div class="control-group">
     <label class="control-label" for="msg-info_name"><spring:message code="msg-info.msg-info.input.name" text="名称"/></label>
 	<div class="controls">

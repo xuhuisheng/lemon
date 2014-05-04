@@ -21,13 +21,13 @@ $(function() {
         rules: {
             username: {
                 remote: {
-                    url: 'user-base!checkUsername.do',
+                    url: 'user-base-checkUsername.do',
                     data: {
-                        <s:if test="model != null">
+                        <c:if test="${model != null}">
                         id: function() {
                             return $('#user-base_id').val();
                         }
-                        </s:if>
+                        </c:if>
                     }
                 }
             }
@@ -57,18 +57,18 @@ $(function() {
 		</header>
 		<div class="content content-inner">
 
-<form id="userForm" method="post" action="user-base!save.do?operationMode=STORE" class="form-horizontal">
+<form id="userForm" method="post" action="user-base-save.do?operationMode=STORE" class="form-horizontal">
   <input id="user-base_userRepoId" type="hidden" name="userRepoId" value="1">
-  <s:if test="model != null">
+  <c:if test="${model != null}">
   <input id="user-base_id" type="hidden" name="id" value="${model.id}">
-  </s:if>
+  </c:if>
   <div class="control-group">
     <label class="control-label" for="user-base_username"><spring:message code="user.user.input.username" text="账号"/></label>
 	<div class="controls">
 	  <input id="user-base_username" type="text" name="username" value="${model.username}" size="40" class="text required" minlength="2" maxlength="50">
     </div>
   </div>
-  <s:if test="model == null || model.password == null">
+  <c:if test="${model == null || model.password == null}">
   <div class="control-group">
     <label class="control-label" for="user-base_password"><spring:message code="user.user.input.password" text="密码"/></label>
 	<div class="controls">
@@ -81,7 +81,7 @@ $(function() {
 	  <input id="user-base_confirmPassword" type="password" name="confirmPassword" size="40" class="text required" maxlength="10" equalTo="#user-base_password">
     </div>
   </div>
-  </s:if>
+  </c:if>
   <div class="control-group">
     <label class="control-label" for="user-base_status"><spring:message code="user.user.input.enabled" text="启用"/></label>
 	<div class="controls">
@@ -95,19 +95,31 @@ $(function() {
     </div>
   </div>
   <div class="control-group">
-    <label class="control-label" for="user-base_reference"><spring:message code="user.user.input.reference" text="引用"/></label>
+    <label class="control-label" for="user-base_email">邮箱</label>
 	<div class="controls">
-	  <input id="user-base_reference" type="text" name="reference" value="${model.reference}">
+	  <input id="user-base_email" type="text" name="email" value="${model.email}">
     </div>
   </div>
-  <s:iterator value="userBaseWrapper.userAttrWrappers" var="item">
+  <div class="control-group">
+    <label class="control-label" for="user-base_mobile">手机</label>
+	<div class="controls">
+	  <input id="user-base_mobile" type="text" name="mobile" value="${model.mobile}">
+    </div>
+  </div>
+  <div class="control-group">
+    <label class="control-label" for="user-base_ref"><spring:message code="user.user.input.ref" text="引用"/></label>
+	<div class="controls">
+	  <input id="user-base_ref" type="text" name="ref" value="${model.ref}">
+    </div>
+  </div>
+  <c:forEach items="${userBaseWrapper.userAttrWrappers}" var="item">
   <div class="control-group">
     <label class="control-label" for="user-base_${item.code}">${item.name}</label>
 	<div class="controls">
 	  <input id="user-base_${item.code}" type="text" name="_user_attr_${item.code}" size="40" class="text" maxlength="50" value="${item.value}">
     </div>
   </div>
-  </s:iterator>
+  </c:forEach>
   <div class="control-group">
     <div class="controls">
       <button id="submitButton" class="btn a-submit"><spring:message code='core.input.save' text='保存'/></button>

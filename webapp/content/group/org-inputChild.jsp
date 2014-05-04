@@ -58,12 +58,12 @@ $(function() {
 
 		<div class="content content-inner">
 
-<form id="orgForm" method="post" action="org!saveChild.do?operationMode=STORE" class="form-horizontal">
-  <input id="group-base_groupBaseId" type="hidden" name="partyDimId" value="${partyDimId}">
+<form id="orgForm" method="post" action="org-saveChild.do" class="form-horizontal">
+  <input id="group-base_groupBaseId" type="hidden" name="partyStructTypeId" value="${partyStructTypeId}">
   <input id="group-base_groupBaseId" type="hidden" name="partyEntityId" value="${partyEntityId}">
-  <s:if test="model != null">
+  <c:if test="${model != null}">
   <input id="org_id" type="hidden" name="id" value="${model.id}">
-  </s:if>
+  </c:if>
   <div class="control-group">
     <label class="control-label" for="org_name"><spring:message code="org.org.input.orgname" text="名称"/></label>
 	<div class="controls">
@@ -74,15 +74,15 @@ $(function() {
     <label class="control-label" for="scope-local_global">类型</label>
 	<div class="controls">
 	  <select id="org_partyTypeId" name="partyTypeId">
-      <s:iterator value="partyTypes" var="item">
+      <c:forEach items="${partyTypes}" var="item">
 	    <option value="${item.id}" ${item.id==model.partyType.id ? 'selected' : ''}>${item.name}</option>
-	  </s:iterator>
+	  </c:forEach>
 	  </select>
     </div>
   </div>
   <div class="control-group">
     <div class="controls">
-      <button id="submitButton" class="btn"><spring:message code='core.input.save' text='保存'/></button>
+      <button id="submitButton" class="btn a-submit"><spring:message code='core.input.save' text='保存'/></button>
       <button type="button" onclick="history.back();" class="btn"><spring:message code='core.input.back' text='返回'/></button>
     </div>
   </div>

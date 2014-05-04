@@ -12,8 +12,8 @@ import javax.ws.rs.Produces;
 import javax.ws.rs.QueryParam;
 import javax.ws.rs.core.MediaType;
 
-import com.mossle.api.UserConnector;
 import com.mossle.api.scope.ScopeHolder;
+import com.mossle.api.user.UserConnector;
 
 import com.mossle.auth.domain.Access;
 import com.mossle.auth.domain.Role;
@@ -34,7 +34,7 @@ import org.springframework.stereotype.Component;
 @Path("auth")
 public class AuthResource {
     private static Logger logger = LoggerFactory.getLogger(AuthResource.class);
-    public static final String HQL_AUTHORITY = "select p.name from Perm p join p.roleDefs rd join rd.roles r join r.userStatuses u"
+    public static final String HQL_AUTHORITY = "select p.code from Perm p join p.roleDefs rd join rd.roles r join r.userStatuses u"
             + " where u.id=? and r.localId=?";
     public static final String HQL_ATTRIBUTE = "select r.name from Role r join r.userStatuses u"
             + " where u.id=? and r.localId=?";
@@ -57,7 +57,8 @@ public class AuthResource {
         }
 
         try {
-            com.mossle.api.UserDTO apiUserDto = userConnector.findById(userId);
+            com.mossle.api.user.UserDTO apiUserDto = userConnector
+                    .findById(userId);
 
             UserDTO userDto = new UserDTO();
 
@@ -135,8 +136,8 @@ public class AuthResource {
         logger.debug("username : {}", username);
 
         try {
-            com.mossle.api.UserDTO apiUserDto = userConnector.findByUsername(
-                    username, ScopeHolder.getUserRepoRef());
+            com.mossle.api.user.UserDTO apiUserDto = userConnector
+                    .findByUsername(username, ScopeHolder.getUserRepoRef());
 
             UserDTO userDto = new UserDTO();
 
@@ -205,7 +206,7 @@ public class AuthResource {
         for (Access access : accesses) {
             AccessDTO dto = new AccessDTO();
             dto.setAccess(access.getValue());
-            dto.setPermission(access.getPerm().getName());
+            dto.setPermission(access.getPerm().getCode());
             accessDtos.add(dto);
         }
 
@@ -284,8 +285,8 @@ public class AuthResource {
         logger.debug("globalId : {}", globalId);
         logger.debug("localId : {}", localId);
 
-        com.mossle.api.UserDTO apiUserDto = userConnector.findByUsername(
-                username, globalId);
+        com.mossle.api.user.UserDTO apiUserDto = userConnector.findByUsername(
+                username, Long.toString(globalId));
 
         if (apiUserDto == null) {
             return null;
@@ -294,12 +295,11 @@ public class AuthResource {
         String userId = apiUserDto.getId();
 
         UserStatus userStatus = userStatusManager.findUnique(
-                "from UserStatus where reference=? and localId=?", userId,
-                localId);
+                "from UserStatus where ref=? and localId=?", userId, localId);
 
         if (userStatus == null) {
             userStatus = new UserStatus();
-            userStatus.setReference(userId);
+            userStatus.setRef(userId);
             userStatus.setUsername(username);
             userStatus.setStatus(1);
             userStatus.setUserRepoRef(ScopeHolder.getUserRepoRef());

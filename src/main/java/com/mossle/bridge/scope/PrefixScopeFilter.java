@@ -14,7 +14,7 @@ import javax.servlet.ServletResponse;
 import javax.servlet.http.HttpServletRequest;
 import javax.servlet.http.HttpServletResponse;
 
-import com.mossle.api.scope.ScopeCache;
+import com.mossle.api.scope.ScopeConnector;
 import com.mossle.api.scope.ScopeHolder;
 
 import org.slf4j.Logger;
@@ -25,7 +25,7 @@ public class PrefixScopeFilter implements Filter {
             .getLogger(PrefixScopeFilter.class);
     private Set<String> excludes = new HashSet<String>();
     private String defaultScopeCode = "default";
-    private ScopeCache scopeCache;
+    private ScopeConnector scopeConnector;
 
     public PrefixScopeFilter() {
         excludes.add("s");
@@ -35,6 +35,7 @@ public class PrefixScopeFilter implements Filter {
         excludes.add("xform");
         excludes.add("h2database");
         excludes.add("widgets");
+        excludes.add("j_spring_security_logout");
     }
 
     public void init(FilterConfig filterConfig) throws ServletException {
@@ -90,7 +91,7 @@ public class PrefixScopeFilter implements Filter {
             HttpServletRequest request, HttpServletResponse response,
             FilterChain filterChain) throws ServletException, IOException {
         try {
-            ScopeHolder.setScopeInfo(scopeCache.getByCode(scopeCode));
+            ScopeHolder.setScopeDto(scopeConnector.findByCode(scopeCode));
 
             request.setAttribute("scopePrefix", request.getContextPath() + "/"
                     + scopeCode);
@@ -137,7 +138,7 @@ public class PrefixScopeFilter implements Filter {
         this.defaultScopeCode = defaultScopeCode;
     }
 
-    public void setScopeCache(ScopeCache scopeCache) {
-        this.scopeCache = scopeCache;
+    public void setScopeConnector(ScopeConnector scopeConnector) {
+        this.scopeConnector = scopeConnector;
     }
 }

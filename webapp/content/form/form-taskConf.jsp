@@ -27,11 +27,11 @@
 
 		<div class="content content-inner">
 
-<form id="demoForm" method="post" action="form!startProcessInstance.do?operationMode=STORE" class="form-horizontal">
-  <input id="demo_processDefinitionId" type="hidden" name="processDefinitionId" value="${processDefinitionId}">
+<form id="demoForm" method="post" action="form-confirmStartProcess.do" class="form-horizontal">
+  <input id="demo_bpmProcessId" type="hidden" name="bpmProcessId" value="${bpmProcessId}">
   <input id="demo_businessKey" type="hidden" name="businessKey" value="${businessKey}">
   <input id="demo_status" type="hidden" name="status" value="taskConf">
-  <s:if test="taskDefinitions != null">
+  <c:if test="${taskDefinitions != null}">
   <table class="table table-border">
     <thead>
 	  <tr>
@@ -40,15 +40,15 @@
 	  </tr>
 	</thead>
 	<tbody>
-  <s:iterator value="taskDefinitions" var="item">
+  <c:forEach items="${taskDefinitions}" var="item">
       <tr>
 	    <td><input type="hidden" name="taskDefinitionKeys" value="${item.key}">${item.nameExpression}</td>
 	    <td><input type="text" name="taskAssignees" value="${item.assigneeExpression}"></td>
 	  </tr>
-  </s:iterator>
+  </c:forEach>
     </tbody>
   </table>
-  </s:if>
+  </c:if>
   <div class="control-group">
     <div class="controls">
       <button id="submitButton" type="submit" class="btn">保存</button>

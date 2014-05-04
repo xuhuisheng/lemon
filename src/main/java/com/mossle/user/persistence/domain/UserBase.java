@@ -43,10 +43,16 @@ public class UserBase implements java.io.Serializable {
     private Integer status;
 
     /** null. */
-    private String reference;
+    private String ref;
 
     /** null. */
     private String scopeId;
+
+    /** null. */
+    private String email;
+
+    /** null. */
+    private String mobile;
 
     /** . */
     private Set<UserAttr> userAttrs = new HashSet<UserAttr>(0);
@@ -55,15 +61,17 @@ public class UserBase implements java.io.Serializable {
     }
 
     public UserBase(UserRepo userRepo, String username, String displayName,
-            String password, Integer status, String reference, String scopeId,
-            Set<UserAttr> userAttrs) {
+            String password, Integer status, String ref, String scopeId,
+            String email, String mobile, Set<UserAttr> userAttrs) {
         this.userRepo = userRepo;
         this.username = username;
         this.displayName = displayName;
         this.password = password;
         this.status = status;
-        this.reference = reference;
+        this.ref = ref;
         this.scopeId = scopeId;
+        this.email = email;
+        this.mobile = mobile;
         this.userAttrs = userAttrs;
     }
 
@@ -155,17 +163,17 @@ public class UserBase implements java.io.Serializable {
     }
 
     /** @return null. */
-    @Column(name = "REFERENCE", length = 200)
-    public String getReference() {
-        return this.reference;
+    @Column(name = "REF", length = 200)
+    public String getRef() {
+        return this.ref;
     }
 
     /**
-     * @param reference
+     * @param ref
      *            null.
      */
-    public void setReference(String reference) {
-        this.reference = reference;
+    public void setRef(String ref) {
+        this.ref = ref;
     }
 
     /** @return null. */
@@ -180,6 +188,34 @@ public class UserBase implements java.io.Serializable {
      */
     public void setScopeId(String scopeId) {
         this.scopeId = scopeId;
+    }
+
+    /** @return null. */
+    @Column(name = "EMAIL", length = 100)
+    public String getEmail() {
+        return this.email;
+    }
+
+    /**
+     * @param email
+     *            null.
+     */
+    public void setEmail(String email) {
+        this.email = email;
+    }
+
+    /** @return null. */
+    @Column(name = "MOBILE", length = 50)
+    public String getMobile() {
+        return this.mobile;
+    }
+
+    /**
+     * @param mobile
+     *            null.
+     */
+    public void setMobile(String mobile) {
+        this.mobile = mobile;
     }
 
     /** @return . */

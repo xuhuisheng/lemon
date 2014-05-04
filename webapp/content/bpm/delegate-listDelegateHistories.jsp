@@ -40,16 +40,16 @@
     </thead>
 
     <tbody>
-      <s:iterator value="delegateHistories" var="item">
+      <c:forEach items="${bpmDelegateHistories}" var="item">
       <tr>
         <td><input type="checkbox" class="selectedItem" name="selectedItem" value="${item.id}"></td>
 	    <td>${item.id}</td>
-	    <td>${item.assignee}</td>
-	    <td>${item.attorney}</td>
-	    <td>${item.delegate_time}</td>
-	    <td>${item.status}</td>
+	    <td><tags:user userId="${item.assignee}"/></td>
+	    <td><tags:user userId="${item.attorney}"/></td>
+	    <td><fmt:formatDate value="${item.delegateTime}" pattern="yyyy-MM-dd HH:mm:ss"/></td>
+	    <td>${item.status == 1 ? '有效' : '无效'}</td>
       </tr>
-      </s:iterator>
+      </c:forEach>
     </tbody>
   </table>
         </div>

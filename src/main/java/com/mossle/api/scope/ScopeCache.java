@@ -1,11 +1,13 @@
 package com.mossle.api.scope;
 
 public interface ScopeCache {
-    ScopeInfo getByRef(String ref);
+    ScopeDTO findById(String id);
 
-    ScopeInfo getByCode(String code);
+    ScopeDTO findByRef(String ref);
 
-    void updateScopeInfo(ScopeInfo scopeInfo);
+    ScopeDTO findByCode(String code);
 
-    void refresh();
+    void updateScope(ScopeDTO scopeDto);
+
+    void removeScope(ScopeDTO scopeDto);
 }

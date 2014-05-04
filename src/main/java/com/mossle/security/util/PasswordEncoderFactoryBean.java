@@ -15,10 +15,11 @@ public class PasswordEncoderFactoryBean implements FactoryBean,
             .getLogger(PasswordEncoderFactoryBean.class);
     private String type;
     private PasswordEncoder passwordEncoder;
+    private CharSequence salt;
 
     public void afterPropertiesSet() {
         if ("md5".equals(type)) {
-            this.passwordEncoder = new MessageDigestPasswordEncoder("md5");
+            this.passwordEncoder = new Md5PasswordEncoder(salt);
         } else {
             this.passwordEncoder = NoOpPasswordEncoder.getInstance();
         }
@@ -44,5 +45,9 @@ public class PasswordEncoderFactoryBean implements FactoryBean,
 
     public SimplePasswordEncoder getSimplePasswordEncoder() {
         return new SimplePasswordEncoder(this.passwordEncoder);
+    }
+
+    public void setSalt(CharSequence salt) {
+        this.salt = salt;
     }
 }

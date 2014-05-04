@@ -68,7 +68,7 @@ public class FindStartFormCmd implements Command<FormInfo> {
                 logger.info("first activity is not userTask, just skip");
             } else {
                 String taskDefinitionKey = targetActivity.getId();
-                logger.info("activityId : {}", targetActivity.getId());
+                logger.debug("activityId : {}", targetActivity.getId());
 
                 TaskDefinition taskDefinition = processDefinitionEntity
                         .getTaskDefinitions().get(taskDefinitionKey);
@@ -77,9 +77,9 @@ public class FindStartFormCmd implements Command<FormInfo> {
 
                 if (expression != null) {
                     String expressionText = expression.getExpressionText();
-                    logger.info("{}", expressionText);
-                    logger.info("{}", startActivity.getProperties());
-                    logger.info("{}", processDefinitionEntity.getProperties());
+                    logger.debug("{}", expressionText);
+                    logger.debug("{}", startActivity.getProperties());
+                    logger.debug("{}", processDefinitionEntity.getProperties());
 
                     String initiatorVariableName = (String) processDefinitionEntity
                             .getProperty(BpmnParse.PROPERTYNAME_INITIATOR_VARIABLE_NAME);

@@ -41,6 +41,9 @@ public class Perm implements java.io.Serializable {
     /** null. */
     private String scopeId;
 
+    /** null. */
+    private Integer priority;
+
     /** . */
     private Set<RoleDef> roleDefs = new HashSet<RoleDef>(0);
 
@@ -55,11 +58,12 @@ public class Perm implements java.io.Serializable {
     }
 
     public Perm(PermType permType, String code, String name, String scopeId,
-            Set<RoleDef> roleDefs, Set<Access> accesses) {
+            Integer priority, Set<RoleDef> roleDefs, Set<Access> accesses) {
         this.permType = permType;
         this.code = code;
         this.name = name;
         this.scopeId = scopeId;
+        this.priority = priority;
         this.roleDefs = roleDefs;
         this.accesses = accesses;
     }
@@ -135,6 +139,20 @@ public class Perm implements java.io.Serializable {
      */
     public void setScopeId(String scopeId) {
         this.scopeId = scopeId;
+    }
+
+    /** @return null. */
+    @Column(name = "PRIORITY")
+    public Integer getPriority() {
+        return this.priority;
+    }
+
+    /**
+     * @param priority
+     *            null.
+     */
+    public void setPriority(Integer priority) {
+        this.priority = priority;
     }
 
     /** @return . */

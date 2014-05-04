@@ -7,7 +7,7 @@
 
   <head>
     <%@include file="/common/meta.jsp"%>
-    <title>权限分类</title>
+    <title>编辑权限类型</title>
     <%@include file="/common/s.jsp"%>
     <script type="text/javascript">
 $(function() {
@@ -34,15 +34,15 @@ $(function() {
 
       <article class="m-widget">
         <header class="header">
-		  <h4 class="title">权限分类</h4>
+		  <h4 class="title">编辑权限类型</h4>
 		</header>
 
 		<div class="content content-inner">
 
-<form id="permTypeForm" method="post" action="perm-type!save.do?operationMode=STORE" class="form-horizontal">
-  <s:if test="model != null">
+<form id="permTypeForm" method="post" action="perm-type-save.do" class="form-horizontal">
+  <c:if test="${model != null}">
   <input id="permType_id" type="hidden" name="id" value="${model.id}">
-  </s:if>
+  </c:if>
   <div class="control-group">
 	<label class="control-label" for="permType_name"><spring:message code='auth.permType.input.name' text='名称'/></label>
     <div class="controls">
@@ -71,7 +71,7 @@ $(function() {
   </div>
   <div class="control-group">
     <div class="controls">
-      <button id="submitButton" class="btn"><spring:message code='core.input.save' text='保存'/></button>
+      <button id="submitButton" class="btn a-submit"><spring:message code='core.input.save' text='保存'/></button>
 	  &nbsp;
       <button type="button" onclick="history.back();" class="btn"><spring:message code='core.input.back' text='返回'/></button>
     </div>

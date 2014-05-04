@@ -39,17 +39,17 @@ $(function() {
 
 		<div class="content content-inner">
 
-<form id="orgStructForm" method="post" action="org-struct!save.do?operationMode=STORE" class="form-horizontal">
-  <s:if test="model != null">
+<form id="orgStructForm" method="post" action="party-struct-save.do" class="form-horizontal">
+  <c:if test="${model != null}">
   <input id="orgStruct_orgStructId" type="hidden" name="id" value="${model.id}">
-  </s:if>
+  </c:if>
   <div class="control-group">
-	<label class="control-label" for="orgStruct_orgStructType"><spring:message code="org.struct.input.type" text="类型"/></label>
+	<label class="control-label" for="orgStruct_partyStructType"><spring:message code="org.struct.input.type" text="类型"/></label>
 	<div class="controls">
-	  <select id="orgStruct_orgStructType" name="orgStructTypeId">
-	    <s:iterator value="partyStructTypes" var="item">
-	    <option value="${item.id}" ${model.orgStructType.id==item.id ? 'selected' : ''}>${item.name}</option>
-		</s:iterator>
+	  <select id="orgStruct_partyStructType" name="partyStructTypeId">
+	    <c:forEach items="${partyStructTypes}" var="item">
+	    <option value="${item.id}" ${model.partyStructType.id==item.id ? 'selected' : ''}>${item.name}</option>
+		</c:forEach>
 	  </select>
     </div>
   </div>
@@ -57,9 +57,9 @@ $(function() {
     <label class="control-label" for="orgStruct_parentEntity"><spring:message code="org.struct.input.parententity" text="上级组织"/></label>
     <div class="controls">
       <select id="orgStruct_parentEntity" name="parentEntityId">
-	    <s:iterator value="orgEntities" var="item">
+	    <c:forEach items="${partyEntities}" var="item">
 	    <option value="${item.id}" ${model.parentEntity.id==item.id ? 'selected' : ''}>${item.name}</option>
-		</s:iterator>
+		</c:forEach>
 	  </select>
     </div>
   </div>
@@ -67,10 +67,36 @@ $(function() {
     <label class="control-label" for="orgStruct_childEntity"><spring:message code="org.struct.input.childentity" text="下级组织"/></label>
     <div class="controls">
       <select id="orgStruct_childEntity" name="childEntityId">
-	    <s:iterator value="orgEntities" var="item">
+	    <c:forEach items="${partyEntities}" var="item">
 	    <option value="${item.id}" ${model.childEntity.id==item.id ? 'selected' : ''}>${item.name}</option>
-		</s:iterator>
+		</c:forEach>
 	  </select>
+    </div>
+  </div>
+  <div class="control-group">
+    <label class="control-label" for="orgStruct_partTime0">兼职</label>
+    <div class="controls">
+      <label><input id="orgStruct_partTime0" type="radio" name="partTime" value="0" ${model.partTime == 0 ? 'checked' : ''}>全职</label>
+      <label><input id="orgStruct_partTime1" type="radio" name="partTime" value="1" ${model.partTime != 0 ? 'checked' : ''}>兼职</label>
+    </div>
+  </div>
+  <div class="control-group">
+    <label class="control-label" for="orgStruct_link">关联</label>
+    <div class="controls">
+      <input id="orgStruct_link" type="text" name="link" value="${model.link}" size="40" class="text number" maxlength="10">
+    </div>
+  </div>
+  <div class="control-group">
+	<label class="control-label" for="orgStruct_priority">排序</label>
+	<div class="controls">
+      <input id="orgStruct_priority" type="text" name="priority" value="${model.priority}" size="40" class="text number" maxlength="10">
+    </div>
+  </div>
+  <div class="control-group">
+    <label class="control-label" for="orgStruct_admin0">管理</label>
+    <div class="controls">
+      <label><input id="orgStruct_admin0" type="radio" name="admin" value="0" ${model.admin == 0 ? 'checked' : ''}>员工</label>
+      <label><input id="orgStruct_admin0" type="radio" name="admin" value="1" ${model.admin != 0 ? 'checked' : ''}>负责人</label>
     </div>
   </div>
   <div class="control-group">

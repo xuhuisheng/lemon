@@ -38,11 +38,11 @@ $(function() {
 		</header>
 		<div class="content content-inner">
 
-<form id="userSchemaForm" method="post" action="user-schema!save.do?userSchemaationMode=STORE" class="form-horizontal">
+<form id="userSchemaForm" method="post" action="user-schema-save.do?userSchemaationMode=STORE" class="form-horizontal">
   <input type="hidden" name="userRepoId" value="${param.userRepoId}">
-  <s:if test="model != null">
+  <c:if test="${model != null}">
   <input id="userSchema_id" type="hidden" name="id" value="${model.id}">
-  </s:if>
+  </c:if>
   <div class="control-group">
 	<label class="control-label" for="user-schema_name"><spring:message code='auth.userSchema.input.name' text='名称'/></label>
     <div class="controls">

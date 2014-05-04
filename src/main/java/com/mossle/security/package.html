@@ -3,4 +3,9 @@ client部分是与springsecurity的集成部分
 假设client与server端是分离的，client端只负责两件事情
 	1.用户成功登录以后，根据username和ip(或者appId)获得对应的权限（json array）
 	2.在server端更新用户的权限之后，需要同步更新client端的权限设置缓存（Listener）
+
+<p>三种情况</p>
+<p>1.通过username和password登录，这时需要返回密码</p>
+<p>2.通过单点登录，这时参数是ref和scopeId，不需要范围密码</p>
+<p>3.登录成功之后，直接通过id和scopeId从缓存中获得权限</p>
 </body>

@@ -11,12 +11,12 @@ import javax.servlet.ServletResponse;
 import javax.servlet.http.HttpServletRequest;
 import javax.servlet.http.HttpServletResponse;
 
-import com.mossle.api.scope.ScopeCache;
+import com.mossle.api.scope.ScopeConnector;
 import com.mossle.api.scope.ScopeHolder;
 
 public class HeaderCodeScopeFilter implements Filter {
     private String defaultScopeCode = "default";
-    private ScopeCache scopeCache;
+    private ScopeConnector scopeConnector;
     private String scopeHeaderName = "x-scope-code";
 
     public void init(FilterConfig filterConfig) throws ServletException {
@@ -41,7 +41,7 @@ public class HeaderCodeScopeFilter implements Filter {
         }
 
         try {
-            ScopeHolder.setScopeInfo(scopeCache.getByCode(scopeCode));
+            ScopeHolder.setScopeDto(scopeConnector.findByCode(scopeCode));
 
             request.setAttribute("scopePrefix", request.getContextPath());
             filterChain.doFilter(request, response);
@@ -55,8 +55,8 @@ public class HeaderCodeScopeFilter implements Filter {
         this.defaultScopeCode = defaultScopeCode;
     }
 
-    public void setScopeCache(ScopeCache scopeCache) {
-        this.scopeCache = scopeCache;
+    public void setScopeConnector(ScopeConnector scopeConnector) {
+        this.scopeConnector = scopeConnector;
     }
 
     public void setScopeHeaderName(String scopeHeaderName) {

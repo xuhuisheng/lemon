@@ -14,7 +14,7 @@ public class DatabaseMethodSourceFetcher extends AbstractDatabaseSourceFetcher
         String sql = "select ac.value as access,p.code as perm"
                 + " from AUTH_ACCESS ac,AUTH_PERM p"
                 + " where ac.perm_id=p.id and ac.type='METHOD'"
-                + " order by priority";
+                + " order by ac.priority";
         this.setQuery(sql);
     }
 }

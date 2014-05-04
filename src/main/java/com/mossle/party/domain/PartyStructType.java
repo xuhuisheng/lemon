@@ -9,8 +9,6 @@ import javax.persistence.Entity;
 import javax.persistence.FetchType;
 import javax.persistence.GeneratedValue;
 import javax.persistence.Id;
-import javax.persistence.JoinColumn;
-import javax.persistence.ManyToOne;
 import javax.persistence.OneToMany;
 import javax.persistence.Table;
 
@@ -28,9 +26,6 @@ public class PartyStructType implements java.io.Serializable {
     private Long id;
 
     /** null. */
-    private PartyDim partyDim;
-
-    /** null. */
     private String name;
 
     /** null. */
@@ -38,6 +33,9 @@ public class PartyStructType implements java.io.Serializable {
 
     /** null. */
     private String scopeId;
+
+    /** null. */
+    private Integer priority;
 
     /** . */
     private Set<PartyStructRule> partyStructRules = new HashSet<PartyStructRule>(
@@ -49,13 +47,13 @@ public class PartyStructType implements java.io.Serializable {
     public PartyStructType() {
     }
 
-    public PartyStructType(PartyDim partyDim, String name, String ref,
-            String scopeId, Set<PartyStructRule> partyStructRules,
+    public PartyStructType(String name, String ref, String scopeId,
+            Integer priority, Set<PartyStructRule> partyStructRules,
             Set<PartyStruct> partyStructs) {
-        this.partyDim = partyDim;
         this.name = name;
         this.ref = ref;
         this.scopeId = scopeId;
+        this.priority = priority;
         this.partyStructRules = partyStructRules;
         this.partyStructs = partyStructs;
     }
@@ -74,21 +72,6 @@ public class PartyStructType implements java.io.Serializable {
      */
     public void setId(Long id) {
         this.id = id;
-    }
-
-    /** @return null. */
-    @ManyToOne(fetch = FetchType.LAZY)
-    @JoinColumn(name = "DIM_ID")
-    public PartyDim getPartyDim() {
-        return this.partyDim;
-    }
-
-    /**
-     * @param partyDim
-     *            null.
-     */
-    public void setPartyDim(PartyDim partyDim) {
-        this.partyDim = partyDim;
     }
 
     /** @return null. */
@@ -131,6 +114,20 @@ public class PartyStructType implements java.io.Serializable {
      */
     public void setScopeId(String scopeId) {
         this.scopeId = scopeId;
+    }
+
+    /** @return null. */
+    @Column(name = "PRIORITY")
+    public Integer getPriority() {
+        return this.priority;
+    }
+
+    /**
+     * @param priority
+     *            null.
+     */
+    public void setPriority(Integer priority) {
+        this.priority = priority;
     }
 
     /** @return . */

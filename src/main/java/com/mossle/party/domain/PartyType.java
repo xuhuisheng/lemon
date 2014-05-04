@@ -29,10 +29,13 @@ public class PartyType implements java.io.Serializable {
     private String name;
 
     /** null. */
-    private Integer person;
+    private String scopeId;
 
     /** null. */
-    private String scopeId;
+    private Integer type;
+
+    /** null. */
+    private String ref;
 
     /** . */
     private Set<PartyStructRule> parentStructRules = new HashSet<PartyStructRule>(
@@ -48,13 +51,14 @@ public class PartyType implements java.io.Serializable {
     public PartyType() {
     }
 
-    public PartyType(String name, Integer person, String scopeId,
+    public PartyType(String name, String scopeId, Integer type, String ref,
             Set<PartyStructRule> parentStructRules,
             Set<PartyStructRule> childStructRules,
             Set<PartyEntity> partyEntities) {
         this.name = name;
-        this.person = person;
         this.scopeId = scopeId;
+        this.type = type;
+        this.ref = ref;
         this.parentStructRules = parentStructRules;
         this.childStructRules = childStructRules;
         this.partyEntities = partyEntities;
@@ -91,20 +95,6 @@ public class PartyType implements java.io.Serializable {
     }
 
     /** @return null. */
-    @Column(name = "PERSON")
-    public Integer getPerson() {
-        return this.person;
-    }
-
-    /**
-     * @param person
-     *            null.
-     */
-    public void setPerson(Integer person) {
-        this.person = person;
-    }
-
-    /** @return null. */
     @Column(name = "SCOPE_ID", length = 50)
     public String getScopeId() {
         return this.scopeId;
@@ -116,6 +106,34 @@ public class PartyType implements java.io.Serializable {
      */
     public void setScopeId(String scopeId) {
         this.scopeId = scopeId;
+    }
+
+    /** @return null. */
+    @Column(name = "TYPE")
+    public Integer getType() {
+        return this.type;
+    }
+
+    /**
+     * @param type
+     *            null.
+     */
+    public void setType(Integer type) {
+        this.type = type;
+    }
+
+    /** @return null. */
+    @Column(name = "REF", length = 50)
+    public String getRef() {
+        return this.ref;
+    }
+
+    /**
+     * @param ref
+     *            null.
+     */
+    public void setRef(String ref) {
+        this.ref = ref;
     }
 
     /** @return . */

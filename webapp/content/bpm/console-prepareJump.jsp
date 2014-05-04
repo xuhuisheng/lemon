@@ -27,15 +27,15 @@
 
 		<div class="content content-inner">
 
-<form id="demoForm" method="post" action="console!jump.do?operationMode=STORE" class="form-horizontal">
+<form id="demoForm" method="post" action="console-jump.do?operationMode=STORE" class="form-horizontal">
   <input id="demo_id" type="hidden" name="executionId" value="${executionId}">
   <div class="control-group">
     <label class="control-label">目的地</label>
 	<div class="controls">
 	  <select name="activityId">
-	    <s:iterator value="activityMap">
-	    <option value="${key}">${value}</option>
-		</s:iterator>
+	    <c:forEach items="${activityMap}" var="item">
+	    <option value="${item.key}">${item.value}</option>
+		</c:forEach>
 	  </select>
     </div>
   </div>

@@ -1,8 +1,14 @@
 package com.mossle.bpm.service;
 
+import javax.annotation.Resource;
+
+import com.mossle.bpm.persistence.domain.BpmConfCountersign;
+import com.mossle.bpm.persistence.manager.BpmConfCountersignManager;
+
 import org.activiti.engine.HistoryService;
 import org.activiti.engine.RuntimeService;
 import org.activiti.engine.TaskService;
+import org.activiti.engine.impl.persistence.entity.ExecutionEntity;
 import org.activiti.engine.runtime.Execution;
 
 import org.apache.commons.lang3.builder.ToStringBuilder;
@@ -22,12 +28,10 @@ import org.springframework.stereotype.Service;
 @Service
 public class CounterSignService {
     private Logger logger = LoggerFactory.getLogger(CounterSignService.class);
-    @Autowired
-    protected RuntimeService runtimeService;
-    @Autowired
-    protected TaskService taskService;
-    @Autowired
-    protected HistoryService historyService;
+    private RuntimeService runtimeService;
+    private TaskService taskService;
+    private HistoryService historyService;
+    private BpmConfCountersignManager bpmConfCountersignManager;
 
     public Boolean canComplete(Execution execution, Integer nrOfInstances,
             Integer nrOfActiveInstances, Integer nrOfCompletedInstances,
@@ -42,6 +46,19 @@ public class CounterSignService {
     public Boolean canComplete(Execution execution, Integer rate,
             Integer nrOfInstances, Integer nrOfActiveInstances,
             Integer nrOfCompletedInstances, Integer loopCounter) {
+        String activityId = execution.getActivityId();
+        String processDefinitionId = ((ExecutionEntity) execution)
+                .getProcessInstance().getProcessDefinitionId();
+
+        BpmConfCountersign bpmConfCountersign = bpmConfCountersignManager
+                .findUnique(
+                        "from BpmConfCountersign where bpmConfNode.bpmConfBase.processDefinitionId=? and bpmConfNode.code=?",
+                        processDefinitionId, activityId);
+
+        if (bpmConfCountersign != null) {
+            rate = bpmConfCountersign.getRate();
+        }
+
         String agreeCounterName = "agreeCounter";
         Object agreeCounter = runtimeService.getVariable(execution.getId(),
                 agreeCounterName);
@@ -57,8 +74,8 @@ public class CounterSignService {
                     ++integerCounter);
         }
 
-        logger.debug("execution: {}"
-                + ToStringBuilder.reflectionToString(execution));
+        logger.debug("execution: {}",
+                ToStringBuilder.reflectionToString(execution));
         logger.debug(
                 "rate={}, nrOfInstances={}, nrOfActiveInstances={}, nrOfComptetedInstances={}, loopCounter={}",
                 new Object[] { rate, nrOfInstances, nrOfActiveInstances,
@@ -72,5 +89,26 @@ public class CounterSignService {
                 rate, completeRate, canComlete });
 
         return canComlete;
+    }
+
+    @Resource
+    public void setRuntimeService(RuntimeService runtimeService) {
+        this.runtimeService = runtimeService;
+    }
+
+    @Resource
+    public void setTaskService(TaskService taskService) {
+        this.taskService = taskService;
+    }
+
+    @Resource
+    public void setHistoryService(HistoryService historyService) {
+        this.historyService = historyService;
+    }
+
+    @Resource
+    public void setBpmConfCountersignManager(
+            BpmConfCountersignManager bpmConfCountersignManager) {
+        this.bpmConfCountersignManager = bpmConfCountersignManager;
     }
 }

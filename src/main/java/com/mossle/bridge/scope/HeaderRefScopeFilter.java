@@ -11,12 +11,12 @@ import javax.servlet.ServletResponse;
 import javax.servlet.http.HttpServletRequest;
 import javax.servlet.http.HttpServletResponse;
 
-import com.mossle.api.scope.ScopeCache;
+import com.mossle.api.scope.ScopeConnector;
 import com.mossle.api.scope.ScopeHolder;
 
 public class HeaderRefScopeFilter implements Filter {
     private String defaultScopeRef = "1";
-    private ScopeCache scopeCache;
+    private ScopeConnector scopeConnector;
     private String scopeHeaderName = "x-scope-ref";
 
     public void init(FilterConfig filterConfig) throws ServletException {
@@ -46,7 +46,7 @@ public class HeaderRefScopeFilter implements Filter {
         }
 
         try {
-            ScopeHolder.setScopeInfo(scopeCache.getByRef(scopeRef));
+            ScopeHolder.setScopeDto(scopeConnector.findByRef(scopeRef));
 
             request.setAttribute("scopePrefix", request.getContextPath());
             filterChain.doFilter(request, response);
@@ -60,8 +60,8 @@ public class HeaderRefScopeFilter implements Filter {
         this.defaultScopeRef = defaultScopeRef;
     }
 
-    public void setScopeCache(ScopeCache scopeCache) {
-        this.scopeCache = scopeCache;
+    public void setScopeConnector(ScopeConnector scopeConnector) {
+        this.scopeConnector = scopeConnector;
     }
 
     public void setScopeHeaderName(String scopeHeaderName) {

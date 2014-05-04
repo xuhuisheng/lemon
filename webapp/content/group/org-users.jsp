@@ -25,7 +25,7 @@ var config = {
     },
 	selectedItemClass: 'selectedItem',
 	gridFormId: 'orgGridForm',
-	exportUrl: 'group-base!exportExcel.do'
+	exportUrl: 'group-base-export.do'
 };
 
 var table;
@@ -57,10 +57,10 @@ $(function() {
 		</header>
         <div id="orgSearch" class="content content-inner">
 <!--
-		  <button class="btn" onclick="location.href='group-base!inputRoot.do'">添加顶级部门</button>
+		  <button class="btn" onclick="location.href='group-base-inputRoot.do'">添加顶级部门</button>
 -->
-		  <button class="btn" onclick="location.href='org!users.do?partyDimId=${partyDimId}&partyEntityId=${partyEntityId}'">管理下属</button>
-		  <button class="btn" onclick="location.href='org!children.do?partyDimId=${partyDimId}&partyEntityId=${partyEntityId}'">下级组织</button>
+		  <button class="btn" onclick="location.href='org-users.do?partyStructTypeId=${partyStructTypeId}&partyEntityId=${partyEntityId}'">管理下属</button>
+		  <button class="btn" onclick="location.href='org-children.do?partyStructTypeId=${partyStructTypeId}&partyEntityId=${partyEntityId}'">下级组织</button>
 		  <br>
 		  <br>
 
@@ -70,14 +70,14 @@ $(function() {
 	  <article class="m-blank">
 	    <div class="pull-left">
 		  <region:region-permission permission="org:create">
-		  <button class="btn btn-small" onclick="location.href='org!inputUser.do?partyDimId=${partyDimId}&partyEntityId=${partyEntityId}'">新建</button>
+		  <button class="btn btn-small a-insert" onclick="location.href='org-inputUser.do?partyStructTypeId=${partyStructTypeId}&partyEntityId=${partyEntityId}'">新建</button>
 		  </region:region-permission>
 		  <%--
 		  <region:region-permission permission="org:delete">
-		  <button class="btn btn-small" onclick="table.removeAll()">删除</button>
+		  <button class="btn btn-small a-remove" onclick="table.removeAll()">删除</button>
 		  </region:region-permission>
 		  --%>
-		  <button class="btn btn-small" onclick="table.exportExcel()">导出</button>
+		  <button class="btn btn-small a-export" onclick="table.exportExcel()">导出</button>
 		</div>
 
 		<div class="pull-right">
@@ -99,30 +99,36 @@ $(function() {
 		</header>
 		<div class="content">
 
-<form id="orgGridForm" name="orgGridForm" method='post' action="org!removeUser.do?partyDimId=${partyDimId}&partyEntityId=${partyEntityId}" class="m-form-blank">
+<form id="orgGridForm" name="orgGridForm" method='post' action="org-removeUser.do?partyDimId=${partyDimId}&partyEntityId=${partyEntityId}" class="m-form-blank">
   <table id="orgGrid" class="m-table table-hover">
     <thead>
       <tr>
         <th width="10" class="m-table-check"><input type="checkbox" name="checkAll" onchange="toggleSelectedItems(this.checked)"></th>
         <th class="sorting" name="id"><spring:message code="org.org.list.id" text="编号"/></th>
         <th class="sorting" name="name">名称</th>
-        <th class="sorting" name="name">兼职</th>
-        <th class="sorting" name="name">岗位</th>
-        <th class="sorting" name="name">删除</th>
+        <th class="sorting" name="partTime">兼职</th>
+        <th class="sorting" name="link">关联</th>
+        <th class="sorting" name="priorty">排序</th>
+        <th class="sorting" name="admin">管理</th>
+        <th>操作</th>
       </tr>
     </thead>
 
     <tbody>
-      <s:iterator value="page.result" var="item">
+      <c:forEach items="${page.result}" var="item">
       <tr>
         <td><input type="checkbox" class="selectedItem" name="selectedItem" value="${item.childEntity.id}"></td>
         <td>${item.childEntity.id}</td>
         <td>${item.childEntity.name}</td>
-        <td>${item.status == 2}</td>
-        <td>${item.partyStructType.name}</td>
-        <td><a href="org!removeUser.do?partyDimId=${partyDimId}&partyEntityId=${partyEntityId}&selectedItem=${item.childEntity.id}&partyStructTypeId=${item.partyStructType.id}">删除</a></td>
+        <td>${item.partTime == 1}</td>
+        <td>${item.link}</td>
+        <td>${item.priority}</td>
+        <td>${item.admin == 1}</td>
+        <td>
+		  <a href="org-removeUser.do?selectedItem=${item.id}&partyStructTypeId=${param.partyStructTypeId}&partyEntityId=${param.partyEntityId}" class="a-remove">删除</a>
+		</td>
       </tr>
-      </s:iterator>
+      </c:forEach>
     </tbody>
   </table>
 </form>

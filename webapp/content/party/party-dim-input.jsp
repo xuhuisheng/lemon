@@ -39,14 +39,20 @@ $(function() {
 
 		<div class="content content-inner">
 
-<form id="orgTypeForm" method="post" action="party-dim-root!save.do?operationMode=STORE" class="form-horizontal">
-  <s:if test="model != null">
+<form id="orgTypeForm" method="post" action="party-dim-save.do" class="form-horizontal">
+  <c:if test="${model != null}">
   <input id="orgType_id" type="hidden" name="id" value="${model.id}">
-  </s:if>
+  </c:if>
   <div class="control-group">
 	<label class="control-label" for="orgType_name"><spring:message code="org.type.input.name" text="名称"/></label>
 	<div class="controls">
       <input id="orgType_name" type="text" name="name" value="${model.name}" size="40" class="text required" maxlength="10">
+    </div>
+  </div>
+  <div class="control-group">
+	<label class="control-label" for="orgType_priority">排序</label>
+	<div class="controls">
+      <input id="orgType_priority" type="text" name="priority" value="${model.priority}" size="40" class="text number" maxlength="10">
     </div>
   </div>
   <div class="control-group">

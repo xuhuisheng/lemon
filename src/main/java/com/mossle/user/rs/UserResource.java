@@ -1,6 +1,9 @@
 package com.mossle.user.rs;
 
+import java.util.ArrayList;
+import java.util.HashMap;
 import java.util.List;
+import java.util.Map;
 
 import javax.annotation.Resource;
 
@@ -10,6 +13,7 @@ import javax.ws.rs.Produces;
 import javax.ws.rs.QueryParam;
 import javax.ws.rs.core.MediaType;
 
+import com.mossle.user.persistence.domain.UserBase;
 import com.mossle.user.persistence.manager.UserBaseManager;
 
 import org.springframework.stereotype.Component;
@@ -22,12 +26,21 @@ public class UserResource {
     @GET
     @Path("search")
     @Produces(MediaType.APPLICATION_JSON)
-    public List<String> search(@QueryParam("username") String username) {
-        List<String> usernames = userBaseManager.find(
-                "select username from UserBase where username like ?", "%"
-                        + username + "%");
+    public List<Map<String, Object>> search(
+            @QueryParam("username") String username) {
+        List<UserBase> userBases = userBaseManager.find(
+                "from UserBase where username like ?", "%" + username + "%");
+        List<Map<String, Object>> list = new ArrayList<Map<String, Object>>();
 
-        return usernames;
+        for (UserBase userBase : userBases) {
+            Map<String, Object> map = new HashMap<String, Object>();
+            map.put("id", userBase.getId());
+            map.put("username", userBase.getUsername());
+            map.put("displayName", userBase.getDisplayName());
+            list.add(map);
+        }
+
+        return list;
     }
 
     @Resource

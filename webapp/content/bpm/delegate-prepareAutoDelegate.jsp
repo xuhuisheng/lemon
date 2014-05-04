@@ -9,6 +9,17 @@
     <%@include file="/common/meta.jsp"%>
     <title>编辑</title>
     <%@include file="/common/s.jsp"%>
+
+    <link type="text/css" rel="stylesheet" href="${scopePrefix}/widgets/userpicker/userpicker.css">
+    <script type="text/javascript" src="${scopePrefix}/widgets/userpicker/userpicker.js"></script>
+	<script type="text/javascript">
+$(function() {
+	createUserPicker({
+		modalId: 'userPicker',
+		url: '${scopePrefix}/rs/user/search'
+	});
+})
+    </script>
   </head>
 
   <body>
@@ -27,12 +38,16 @@
 
 		<div class="content content-inner">
 
-<form id="demoForm" method="post" action="delegate!autoDelegate.do?operationMode=STORE" class="form-horizontal">
+<form id="demoForm" method="post" action="delegate-autoDelegate.do" class="form-horizontal">
   <input id="demo_id" type="hidden" name="taskId" value="${taskId}">
   <div class="control-group">
     <label class="control-label">代理人</label>
 	<div class="controls">
-	  <input type="text" name="attorney" value="">
+      <div class="input-append userPicker">
+		<input type="hidden" name="attorney" class="input-medium" value="">
+		<input type="text" style="width: 175px;" value="">
+		<span class="add-on"><i class="icon-user"></i></span>
+      </div>
     </div>
   </div>
   <div class="control-group">
@@ -40,7 +55,7 @@
 	<div class="controls">
       <div class="input-append datepicker date" style="padding-left: 0px;">
 	    <input type="text" name="startTime" value="" readonly style="background-color:white;cursor:default; width: 175px;">
-	    <span class="add-on"><i class="icon-calendar"></i></span>
+	    <span class="add-on" style="padding:2px;"><i class="icon-calendar"></i></span>
 	  </div>
     </div>
   </div>
@@ -49,7 +64,7 @@
 	<div class="controls">
       <div class="input-append datepicker date" style="padding-left: 0px;">
 	    <input type="text" name="endTime" value="" readonly style="background-color:white;cursor:default; width: 175px;">
-	    <span class="add-on"><i class="icon-calendar"></i></span>
+	    <span class="add-on" style="padding:2px;"><i class="icon-calendar"></i></span>
 	  </div>
     </div>
   </div>
@@ -58,9 +73,9 @@
 	<div class="controls">
 	  <select name="processDefinitionId">
 	    <option value=""></option>
-		<s:iterator value="processDefinitions" var="item">
+		<c:forEach items="${processDefinitions}" var="item">
 	    <option value="${item.id}">${item.name}</option>
-		</s:iterator>
+		</c:forEach>
 	  </select>
     </div>
   </div>

@@ -40,20 +40,20 @@
     </thead>
 
     <tbody>
-      <s:iterator value="historicTasks" var="item">
+      <c:forEach items="${historicTasks}" var="item">
       <tr>
 	    <td>${item.id}</td>
 	    <td>${item.name}</td>
-	    <td><s:date name="startTime" format="yyyy-MM-dd HH:mm:ss" /></td>
-	    <td><s:date name="endTime" format="yyyy-MM-dd HH:mm:ss" /></td>
-	    <td>${item.assignee}</td>
+	    <td><fmt:formatDate value="${item.startTime}" pattern="yyyy-MM-dd HH:mm:ss" /></td>
+	    <td><fmt:formatDate value="${item.endTime}" pattern="yyyy-MM-dd HH:mm:ss" /></td>
+	    <td><tags:user userId="${item.assignee}"/></td>
 	    <td>${item.deleteReason}</td>
         <td>
-          <a href="workspace!withdraw.do?taskId=${item.id}">撤销</a>
-          <a href="workspace!viewHistory.do?processInstanceId=${item.processInstanceId}">历史</a>
+          <a href="workspace-withdraw.do?taskId=${item.id}">撤销</a>
+          <a href="workspace-viewHistory.do?processInstanceId=${item.processInstanceId}">历史</a>
         </td>
       </tr>
-      </s:iterator>
+      </c:forEach>
     </tbody>
   </table>
         </div>

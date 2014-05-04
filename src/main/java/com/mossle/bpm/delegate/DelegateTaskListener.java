@@ -6,9 +6,6 @@ import com.mossle.bpm.support.DefaultTaskListener;
 
 import org.activiti.engine.delegate.DelegateTask;
 
-import org.springframework.stereotype.Component;
-
-@Component("delegateTaskListener")
 public class DelegateTaskListener extends DefaultTaskListener {
     private DelegateService delegateService;
 

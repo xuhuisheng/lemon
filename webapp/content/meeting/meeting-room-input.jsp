@@ -39,10 +39,10 @@ $(function() {
 
 		<div class="content content-inner">
 
-<form id="car-infoForm" method="post" action="meeting-room!save.do?operationMode=STORE" class="form-horizontal">
-  <s:if test="model != null">
+<form id="car-infoForm" method="post" action="meeting-room-save.do" class="form-horizontal">
+  <c:if test="${model != null}">
   <input id="car-info_id" type="hidden" name="id" value="${model.id}">
-  </s:if>
+  </c:if>
   <div class="control-group">
     <label class="control-label" for="car-info_name"><spring:message code="car-info.car-info.input.name" text="名称"/></label>
 	<div class="controls">
@@ -52,7 +52,7 @@ $(function() {
   <div class="control-group">
     <label class="control-label" for="car-info_address">人数</label>
 	<div class="controls">
-	  <input id="car-info_address" type="text" name="people" value="${model.people}" size="40" class="text">
+	  <input id="car-info_address" type="text" name="people" value="${model.people}" size="40" class="text number">
     </div>
   </div>
   <div class="control-group">

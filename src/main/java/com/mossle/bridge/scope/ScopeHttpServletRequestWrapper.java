@@ -7,6 +7,7 @@ public class ScopeHttpServletRequestWrapper extends HttpServletRequestWrapper {
     private String requestUri;
     private String servletPath;
     private String oldServletPath;
+    private String oldRequestUri;
 
     public ScopeHttpServletRequestWrapper(
             HttpServletRequest httpServletRequest, String scopeCode) {
@@ -19,10 +20,18 @@ public class ScopeHttpServletRequestWrapper extends HttpServletRequestWrapper {
                         index + contextPath.length());
         this.servletPath = httpServletRequest.getServletPath().substring(index);
         this.oldServletPath = httpServletRequest.getServletPath();
+        this.oldRequestUri = httpServletRequest.getRequestURI();
     }
 
     public String getRequestURI() {
-        return requestUri;
+        String newRequestUri = ((HttpServletRequest) getRequest())
+                .getRequestURI();
+
+        if (oldRequestUri.equals(newRequestUri)) {
+            return requestUri;
+        } else {
+            return newRequestUri;
+        }
     }
 
     public String getServletPath() {

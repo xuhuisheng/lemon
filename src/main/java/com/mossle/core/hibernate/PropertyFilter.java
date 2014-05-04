@@ -4,6 +4,7 @@ import java.util.ArrayList;
 import java.util.Collection;
 import java.util.List;
 import java.util.Map;
+import java.util.TreeMap;
 
 import javax.servlet.http.HttpServletRequest;
 
@@ -105,7 +106,7 @@ public class PropertyFilter {
      */
     public static List<PropertyFilter> buildFromHttpRequest(
             final HttpServletRequest request) {
-        return buildFromHttpRequest(request, "filter");
+        return buildFromHttpRequest(request, "filter_");
     }
 
     /**
@@ -121,19 +122,46 @@ public class PropertyFilter {
             final HttpServletRequest request, final String filterPrefix) {
         // 从request中获取含属性前缀名的参数,构造去除前缀名后的参数Map.
         Map<String, Object> filterParamMap = ServletUtils
-                .getParametersStartingWith(request, filterPrefix + "_");
+                .getParametersStartingWith(request, filterPrefix);
 
-        return buildFromMap(filterParamMap);
+        return build(filterParamMap);
     }
 
     public static List<PropertyFilter> buildFromMap(
-            Map<String, Object> filterParamMap) {
+            Map<String, Object> parameterMap) {
+        return buildFromMap(parameterMap, "filter_");
+    }
+
+    public static List<PropertyFilter> buildFromMap(
+            Map<String, Object> parameterMap, String filterPrefix) {
+        Map<String, Object> filterParamMap = new TreeMap<String, Object>();
+
+        for (Map.Entry<String, Object> entry : parameterMap.entrySet()) {
+            String key = entry.getKey();
+            Object value = entry.getValue();
+
+            if (key.startsWith(filterPrefix)) {
+                filterParamMap.put(key.substring(filterPrefix.length()), value);
+            }
+        }
+
+        return build(filterParamMap);
+    }
+
+    public static List<PropertyFilter> build(Map<String, Object> filterParamMap) {
         List<PropertyFilter> filterList = new ArrayList<PropertyFilter>();
 
         // 分析参数Map,构造PropertyFilter列表
         for (Map.Entry<String, Object> entry : filterParamMap.entrySet()) {
             String filterName = entry.getKey();
-            String value = (String) entry.getValue();
+            Object filterValue = entry.getValue();
+            String value = null;
+
+            if (filterValue instanceof String[]) {
+                value = ((String[]) filterValue)[0];
+            } else {
+                value = (String) filterValue;
+            }
 
             // 如果value值为空,则忽略此filter.
             if (StringUtils.isNotBlank(value)) {

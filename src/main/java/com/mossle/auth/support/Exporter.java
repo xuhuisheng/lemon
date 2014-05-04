@@ -11,7 +11,7 @@ public class Exporter {
 
     public String execute() {
         StringBuilder buff = new StringBuilder();
-        buff.append("ref:\n").append(ScopeHolder.getScopeInfo().getRef())
+        buff.append("ref:\n").append(ScopeHolder.getScopeDto().getRef())
                 .append("\n\n");
         buff.append("code:\n").append(ScopeHolder.getScopeCode())
                 .append("\n\n");

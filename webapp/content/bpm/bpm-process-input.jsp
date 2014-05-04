@@ -38,10 +38,10 @@ $(function() {
 		</header>
 		<div class="content content-inner">
 
-<form id="userRepoForm" method="post" action="bpm-process!save.do?userRepoationMode=STORE" class="form-horizontal">
-  <s:if test="model != null">
+<form id="userRepoForm" method="post" action="bpm-process-save.do" class="form-horizontal">
+  <c:if test="${model != null}">
   <input id="userRepo_id" type="hidden" name="id" value="${model.id}">
-  </s:if>
+  </c:if>
   <div class="control-group">
 	<label class="control-label" for="bpm-process_name">名称</label>
     <div class="controls">
@@ -52,22 +52,20 @@ $(function() {
 	<label class="control-label" for="bpm-process_bpmCategoryId">流程分类</label>
     <div class="controls">
       <select id="bpm-process_bpmCategoryId" name="bpmCategoryId">
-      <s:iterator value="bpmCategories" var="item">
+      <c:forEach items="${bpmCategories}" var="item">
 	    <option value="${item.id}" ${item.id==model.bpmCategory.id ? 'selected' : ''}>${item.name}</option>
-	  </s:iterator>
+	  </c:forEach>
 	  </select>
     </div>
   </div>
   <div class="control-group">
-	<label class="control-label" for="bpm-process_processDefinitionId">流程定义key</label>
+	<label class="control-label" for="bpm-process_bpmConfBaseId">绑定流程</label>
     <div class="controls">
-      <input id="bpm-process_processDefinitionId" type="text" name="processDefinitionKey" value="${model.processDefinitionKey}" size="40" class="text">
-    </div>
-  </div>
-  <div class="control-group">
-	<label class="control-label" for="bpm-process_processDefinitionId">流程定义version</label>
-    <div class="controls">
-      <input id="bpm-process_processDefinitionId" type="text" name="processDefinitionVersion" value="${model.processDefinitionVersion}" size="40" class="text">
+      <select id="bpm-process_bpmConfBaseId" name="bpmConfBaseId">
+      <c:forEach items="${bpmConfBases}" var="item">
+	    <option value="${item.id}" ${item.id==model.bpmConfBase.id ? 'selected' : ''}>${item.processDefinitionId}</option>
+	  </c:forEach>
+	  </select>
     </div>
   </div>
   <div class="control-group">
@@ -79,8 +77,8 @@ $(function() {
   <div class="control-group">
 	<label class="control-label" for="bpm-process_useTaskConf">配置任务负责人</label>
     <div class="controls">
-      <label><input id="bpm-process_useTaskConf_0" type="radio" name="useTaskConf" value="0" ${model.useTaskConf == 1 ? 'checked' : ''}>开启</label>
-      <label><input id="bpm-process_useTaskConf_1" type="radio" name="useTaskConf" value="1" ${model.useTaskConf != 1 ? 'checked' : ''}>关闭</label>
+      <label><input id="bpm-process_useTaskConf_0" type="radio" name="useTaskConf" value="1" ${model.useTaskConf == 1 ? 'checked' : ''}>开启</label>
+      <label><input id="bpm-process_useTaskConf_1" type="radio" name="useTaskConf" value="0" ${model.useTaskConf != 1 ? 'checked' : ''}>关闭</label>
     </div>
   </div>
   <div class="control-group">

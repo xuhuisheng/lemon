@@ -27,7 +27,7 @@
 
 		<div class="content content-inner">
 
-<form id="demoForm" method="post" action="workspace!saveCounterSign.do?operationMode=STORE" class="form-horizontal">
+<form id="demoForm" method="post" action="workspace-saveCounterSign.do?operationMode=STORE" class="form-horizontal">
   <input id="demo_id" type="hidden" name="taskId" value="${taskId}">
   <div class="control-group">
     <label class="control-label">分配人</label>

@@ -39,14 +39,20 @@ $(function() {
 
 		<div class="content content-inner">
 
-<form id="orgStructTypeForm" method="post" action="party-struct-type!save.do?operationMode=STORE" class="form-horizontal">
-  <s:if test="model != null">
+<form id="orgStructTypeForm" method="post" action="party-struct-type-save.do" class="form-horizontal">
+  <c:if test="${model != null}">
   <input id="orgStructType_id" type="hidden" name="id" value="${model.id}">
-  </s:if>
+  </c:if>
   <div class="control-group">
 	<label class="control-label" for="orgStructType_name"><spring:message code="org.structtype.input.name" text="名称"/></label>
 	<div class="controls">
       <input id="orgStructType_name" type="text" name="name" value="${model.name}" size="40" class="text required" maxlength="10">
+    </div>
+  </div>
+  <div class="control-group">
+	<label class="control-label" for="orgStructType_ref">引用</label>
+	<div class="controls">
+      <input id="orgStructType_ref" type="text" name="ref" value="${model.ref}" size="40" class="text" maxlength="10">
     </div>
   </div>
   <div class="control-group">

@@ -11,12 +11,12 @@
           </div>
           <div id="collapse-auth" class="accordion-body collapse ${currentMenu == 'auth' ? 'in' : ''}">
             <ul class="accordion-inner nav nav-list">
-			  <li><a href="${scopePrefix}/auth/user-connector.do"><i class="icon-user"></i><spring:message code="layout.leftmenu.usermanage" text="用户管理"/></a></li>
-			  <li><a href="${scopePrefix}/auth/role-def.do"><i class="icon-user"></i>角色模板</a></li>
-			  <li><a href="${scopePrefix}/auth/role.do"><i class="icon-user"></i><spring:message code="layout.leftmenu.rolemanage" text="角色管理"/></a></li>
-			  <li><a href="${scopePrefix}/auth/perm-type.do"><i class="icon-user"></i>授权分类</a></li>
-			  <li><a href="${scopePrefix}/auth/perm.do"><i class="icon-user"></i><spring:message code="layout.leftmenu.permmanage" text="授权管理"/></a></li>
-			  <li><a href="${scopePrefix}/auth/access.do"><i class="icon-user"></i><spring:message code="layout.leftmenu.accessmanage" text="访问权限"/></a></li>
+			  <li><a href="${scopePrefix}/auth/user-connector-list.do"><i class="icon-user"></i><spring:message code="layout.leftmenu.usermanage" text="用户管理"/></a></li>
+			  <li><a href="${scopePrefix}/auth/role-def-list.do"><i class="icon-user"></i>角色模板</a></li>
+			  <li><a href="${scopePrefix}/auth/role-list.do"><i class="icon-user"></i><spring:message code="layout.leftmenu.rolemanage" text="角色管理"/></a></li>
+			  <li><a href="${scopePrefix}/auth/perm-type-list.do"><i class="icon-user"></i>授权分类</a></li>
+			  <li><a href="${scopePrefix}/auth/perm-list.do"><i class="icon-user"></i><spring:message code="layout.leftmenu.permmanage" text="授权管理"/></a></li>
+			  <li><a href="${scopePrefix}/auth/access-list.do"><i class="icon-user"></i><spring:message code="layout.leftmenu.accessmanage" text="访问权限"/></a></li>
 		    </ul>
           </div>
         </div>

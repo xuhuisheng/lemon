@@ -3,6 +3,7 @@ package com.mossle.core.http;
 import java.util.ArrayList;
 import java.util.List;
 import java.util.Map;
+import java.util.concurrent.atomic.AtomicInteger;
 import java.util.concurrent.locks.ReadWriteLock;
 import java.util.concurrent.locks.ReentrantReadWriteLock;
 
@@ -16,7 +17,7 @@ public class HttpConnectionPool implements Runnable {
     private List<HttpConnectionInfo> activeHttpConnectionInfos = new ArrayList<HttpConnectionInfo>();
     private List<HttpConnectionInfo> suspendedHttpConnectionInfos = new ArrayList<HttpConnectionInfo>();
     private String urls;
-    private int index;
+    private AtomicInteger index = new AtomicInteger(0);
     private ReadWriteLock readWriteLock = new ReentrantReadWriteLock();
     private Thread thread;
     private boolean running;
@@ -76,11 +77,10 @@ public class HttpConnectionPool implements Runnable {
                         "active HttpConnectionInfos is empty");
             }
 
-            if (index >= activeHttpConnectionInfos.size()) {
-                index = 0;
-            }
+            int temperaryIndex = index.incrementAndGet()
+                    % activeHttpConnectionInfos.size();
 
-            return activeHttpConnectionInfos.get(index++);
+            return activeHttpConnectionInfos.get(temperaryIndex);
         } finally {
             readWriteLock.readLock().unlock();
         }
@@ -120,10 +120,10 @@ public class HttpConnectionPool implements Runnable {
 
             List<HttpConnectionInfo> checkedHttpConnectionInfos = new ArrayList(
                     suspendedHttpConnectionInfos);
-            logger.info("suspended : {}", checkedHttpConnectionInfos.size());
+            logger.debug("suspended : {}", checkedHttpConnectionInfos.size());
 
             for (HttpConnectionInfo httpConnectionInfo : checkedHttpConnectionInfos) {
-                logger.info("check : {}", httpConnectionInfo.getUrl());
+                logger.debug("check : {}", httpConnectionInfo.getUrl());
 
                 if (httpConnectionInfo.check()) {
                     active(httpConnectionInfo);

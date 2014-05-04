@@ -39,7 +39,7 @@ $(function() {
 
 		<div class="content content-inner">
 
-<form id="userForm" method="post" action="change-password!save.do?operationMode=STORE" class="form-horizontal">
+<form id="userForm" method="post" action="change-password-save.do" class="form-horizontal">
   <div class="control-group">
     <label class="control-label" for="oldPassword"><spring:message code="user.user.changepassword.old" text="原密码"/></label>
 	<div class="controls">

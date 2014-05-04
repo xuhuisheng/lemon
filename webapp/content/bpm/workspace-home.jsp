@@ -20,23 +20,25 @@
     <!-- start of main -->
     <section id="m-main" class="span10" style="float:right">
 
-<s:iterator value="bpmCategories" var="bpmCategory">
+<c:forEach items="${bpmCategories}" var="bpmCategory">
+      <div class="row-fluid">
       <div class="page-header">
         <h3>${bpmCategory.name}</h3>
       </div>
 
-      <s:iterator value="#bpmCategory.bpmProcesses" var="bpmProcess">
+      <c:forEach items="${bpmCategory.bpmProcesses}" var="bpmProcess">
         <div class="well span2">
-          <h4>${bpmProcess.name}</h4>
-          <p>${bpmProcess.descn}</p>
+          <h4>${bpmProcess.name}&nbsp;</h4>
+          <p>${bpmProcess.descn}&nbsp;</p>
           <div class="btn-group">
-            <a class="btn btn-small" href="${scopePrefix}/form/form!viewStartForm.do?processDefinitionKey=${bpmProcess.processDefinitionKey}&processDefinitionVersion=${bpmProcess.processDefinitionVersion}"><li class="icon-play"></li>发起</a>
-            <a class="btn btn-small" href="workspace!graphProcessDefinition.do?processDefinitionKey=${bpmProcess.processDefinitionKey}&processDefinitionVersion=${bpmProcess.processDefinitionVersion}" target="_blank"><li class="icon-picture"></li>图形</a>
+            <a class="btn btn-small" href="${scopePrefix}/form/form-viewStartForm.do?bpmProcessId=${bpmProcess.id}"><li class="icon-play"></li>发起</a>
+            <a class="btn btn-small" href="workspace-graphProcessDefinition.do?bpmProcessId=${bpmProcess.id}" target="_blank"><li class="icon-picture"></li>图形</a>
           </div>
         </div>
-      </s:iterator>
+      </c:forEach>
+	  </div>
 
-</s:iterator>
+</c:forEach>
 
     </section>
     <!-- end of main -->

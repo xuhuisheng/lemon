@@ -9,10 +9,10 @@
     <%@include file="/common/meta.jsp"%>
     <title><spring:message code="demo.demo.input.title" text="编辑"/></title>
     <%@include file="/common/s.jsp"%>
-	<link href="${ctx}/xform/styles/xform.css" rel="stylesheet">
-    <script type="text/javascript" src="${ctx}/xform/designer-xform-packed.js"></script>
-    <script type="text/javascript" src="${ctx}/xform/container-layout.js"></script>
-    <script type="text/javascript" src="${ctx}/xform/adaptor.js"></script>
+	<link href="${scopePrefix}/widgets/xform/styles/xform.css" rel="stylesheet">
+    <script type="text/javascript" src="${scopePrefix}/widgets/xform/designer-xform-packed.js"></script>
+    <script type="text/javascript" src="${scopePrefix}/widgets/xform/container-layout.js"></script>
+    <script type="text/javascript" src="${scopePrefix}/widgets/xform/adaptor.js"></script>
     <script type="text/javascript">
 document.onmousedown = function(e) {};
 document.onmousemove = function(e) {};
@@ -30,11 +30,12 @@ $(function() {
     });
 
 	$(document).delegate('#button0', 'click', function(e) {
-		$('#xf-form').attr('action', 'workspace!saveDraft.do');
+		$('#xf-form').attr('action', 'form-saveDraft.do');
 		$('#xf-form').submit();
 	});
 
 	$(document).delegate('#button1', 'click', function(e) {
+		$('#xf-form').attr('action', 'form-${nextStep}.do');
 		$('#xf-form').submit();
 	});
 
@@ -59,8 +60,8 @@ $(function() {
 					var item = data[i];
 					html +=
 					  '<tr>'
-						+'<td><input id="selectedItem' + i + '" type="checkbox" class="selectedItem" name="selectedItem" value="' + item + '"></td>'
-						+'<td>' + item + '</td>'
+						+'<td><input id="selectedItem' + i + '" type="checkbox" class="selectedItem" name="selectedItem" value="' + item.id + '"></td>'
+						+'<td>' + item.displayName + '</td>'
 					  +'</tr>'
 				}
 				$('#userPickerBody').html(html);
@@ -100,10 +101,11 @@ $(function() {
 		<div id="__gef_canvas__" style="float:left;clear:right;overflow:auto;">
 		  <div id="xf-center" class="xf-center" unselectable="on">
 			<div id="xf-layer-form" class="xf-layer-form">
-			  <form id="xf-form" method="post" action="${scopePrefix}/form/form!startProcessInstance.do?operationMode=STORE" class="xf-form">
+			  <form id="xf-form" method="post" action="${scopePrefix}/form/form-startProcessInstance.do" class="xf-form">
 <input id="processDefinitionId" type="hidden" name="processDefinitionId" value="${formInfo.processDefinitionId}">
+<input id="bpmProcessId" type="hidden" name="bpmProcessId" value="${bpmProcessId}">
 <input id="autoCompleteFirstTask" type="hidden" name="autoCompleteFirstTask" value="${formInfo.autoCompleteFirstTask}">
-<input id="businessKey" type="hidden" name="businessKey" value="${param.businessKey}">
+<input id="businessKey" type="hidden" name="businessKey" value="${businessKey}">
 <!--
 <input id="taskId" type="hidden" name="taskId" value="${taskId}">
 -->
@@ -121,7 +123,7 @@ $(function() {
     </section>
 	<!-- end of main -->
 
-    <form id="f" action="form-template!save.do" method="post" style="display:none;">
+    <form id="f" action="form-template-save.do" method="post" style="display:none;">
 	  <textarea id="__gef_content__" name="content">${formTemplate.content}</textarea>
 	</form>
 

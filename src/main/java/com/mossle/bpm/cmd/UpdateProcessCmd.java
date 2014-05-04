@@ -7,7 +7,7 @@ import org.activiti.engine.impl.persistence.entity.ProcessDefinitionEntity;
 
 import org.springframework.jdbc.core.JdbcTemplate;
 
-public class UpdateProcessCmd implements Command<Object> {
+public class UpdateProcessCmd implements Command<Void> {
     private String processDefinitionId;
     private byte[] bytes;
 
@@ -16,7 +16,7 @@ public class UpdateProcessCmd implements Command<Object> {
         this.bytes = bytes;
     }
 
-    public Object execute(CommandContext commandContext) {
+    public Void execute(CommandContext commandContext) {
         ProcessDefinitionEntity processDefinitionEntity = commandContext
                 .getProcessDefinitionEntityManager().findProcessDefinitionById(
                         processDefinitionId);
