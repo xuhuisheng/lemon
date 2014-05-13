@@ -91,13 +91,9 @@ public class RestFilter implements Filter {
                 continue;
             }
 
-            String[] array = text.split("=");
-            String key = array[0];
-            String value = "";
-
-            if (array.length == 2) {
-                value = array[1];
-            }
+            int index = text.indexOf("=");
+            String key = text.substring(0, index);
+            String value = text.substring(index + 1);
 
             parameters.put(key, value);
         }
