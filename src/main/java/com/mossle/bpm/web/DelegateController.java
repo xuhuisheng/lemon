@@ -102,34 +102,19 @@ public class DelegateController {
      * @return
      */
     @RequestMapping("delegate-autoDelegate")
-    public String autoDelegate(@RequestParam("startTime") String startTime,
-            @RequestParam("endTime") String endTime,
+    public String autoDelegate(
+            @RequestParam(value = "startTime", required = false) Date startTime,
+            @RequestParam(value = "endTime", required = false) Date endTime,
             @RequestParam("processDefinitionId") String processDefinitionId,
             @RequestParam("attorney") String attorney) throws Exception {
         String userId = SpringSecurityUtils.getCurrentUserId();
-        DateFormat dateFormat = new SimpleDateFormat("yyyy-mm-dd");
-        Date startDate = null;
-
-        try {
-            startDate = dateFormat.parse(startTime);
-        } catch (Exception ex) {
-            logger.debug(ex.getMessage(), ex);
-        }
-
-        Date endDate = null;
-
-        try {
-            endDate = dateFormat.parse(endTime);
-        } catch (Exception ex) {
-            logger.debug(ex.getMessage(), ex);
-        }
 
         if ((processDefinitionId != null)
                 && "".equals(processDefinitionId.trim())) {
             processDefinitionId = null;
         }
 
-        delegateService.addDelegateInfo(userId, attorney, startDate, endDate,
+        delegateService.addDelegateInfo(userId, attorney, startTime, endTime,
                 processDefinitionId);
 
         return "redirect:/bpm/delegate-listMyDelegateInfos.do";
