@@ -101,7 +101,7 @@ $(function() {
       <tbody>
         <c:forEach items="${bpmConfNotices}" var="item">
         <tr>
-		  <td>${item.type == 1 ? '到达' : '超时'}</td>
+		  <td>${item.type == 0 ? '到达' : item.type == 1 ? '完成' : '超时'}</td>
 		  <td>${item.receiver}</td>
 		  <td>${item.dueDate}</td>
 		  <td>${item.bpmMailTemplate.name}</td>
