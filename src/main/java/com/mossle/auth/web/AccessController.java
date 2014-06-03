@@ -132,7 +132,7 @@ public class AccessController {
         TableModel tableModel = new TableModel();
         tableModel.setName("access");
         tableModel.addHeaders("id", "type", "value", "perm.name", "priority",
-                "app.name");
+                "scopeId");
         tableModel.setData(accesses);
         exportor.export(response, tableModel);
     }
