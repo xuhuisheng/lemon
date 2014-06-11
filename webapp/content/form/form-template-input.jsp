@@ -10,8 +10,7 @@
     <title>designer</title>
     <%@include file="/common/s.jsp"%>
 	<link href="${scopePrefix}/widgets/xform/styles/xform.css" rel="stylesheet">
-    <script type="text/javascript" src="${scopePrefix}/widgets/xform/designer-xform-packed.js"></script>
-    <script type="text/javascript" src="${scopePrefix}/widgets/xform/container-layout.js"></script>
+    <script type="text/javascript" src="${scopePrefix}/widgets/xform/xform-packed.js"></script>
     <script type="text/javascript" src="${scopePrefix}/widgets/xform/adaptor.js"></script>
   </head>
 
@@ -24,103 +23,97 @@
 	<!-- start of main -->
     <section id="m-main" class="span10">
 	  <div id="__gef_container__" style="padding-left:5px;">
-	    <div id="__gef_toolbar__">
-		  <div id="__gef_toolbar_blank__" style="float:left;">&nbsp;</div>
-		  <div class="btn-group">
-		    <button class="btn btn-small" onclick="openWindow()"><img src="${scopePrefix}/widgets/xform/images/visualpharm/Properties_16x16.png">导入</button>
-		    <button class="btn btn-small" onclick="var json = xform.model.serial();alert(json);"><img src="${scopePrefix}/widgets/xform/images/visualpharm/Copy_16x16.png">导出</button>
-		    <button class="btn btn-small" onclick="save()"><img src="${scopePrefix}/widgets/xform/images/visualpharm/Save-16x16.png">保存</button>
-		  </div>
-		  <div class="btn-group">
-		    <button class="btn btn-small" onclick="xform.model.changeTemplate('oneColumn')"><img src="${scopePrefix}/widgets/xform/images/visualpharm/New-16x16.png">一列</button>
-		    <button class="btn btn-small" onclick="xform.model.changeTemplate('twoColumn')"><img src="${scopePrefix}/widgets/xform/images/visualpharm/New-16x16.png">两列</button>
-		    <button class="btn btn-small" onclick="xform.model.changeTemplate('threeColumn')"><img src="${scopePrefix}/widgets/xform/images/visualpharm/New-16x16.png">三列</button>
-	      </div>
-		</div>
-	    <div id="__gef_palette__" style="float:left;">
-		  <div style="border: 1px solid #CCCCCC; border-radius: 4px;padding: 2px;">
-		    <div id="startnone" class="paletteItem-startnone" style="text-align:center;font-size:12px;cursor:pointer;" unselectable="on">
-		      <img class="xf-textfield" src="${scopePrefix}/widgets/xform/images/xform/new_input.png" unselectable="on" title="文本">
-		    </div>
-		    <div id="endnone" class="paletteItem-endnone" style="text-align:center;font-size:12px;cursor:pointer;" unselectable="on">
-		      <img class="xf-radio" src="${scopePrefix}/widgets/xform/images/xform/new_item.png" unselectable="on" title="单选">
-		    </div>
-		    <div id="endnone" class="paletteItem-endnone" style="text-align:center;font-size:12px;cursor:pointer;" unselectable="on">
-		      <img class="xf-checkbox" src="${scopePrefix}/widgets/xform/images/xform/new_itemset.png" unselectable="on" title="多选">
-		    </div>
-		    <div id="endnone" class="paletteItem-endnone" style="text-align:center;font-size:12px;cursor:pointer;" unselectable="on">
-		      <img class="xf-password" src="${scopePrefix}/widgets/xform/images/xform/new_secret.png" unselectable="on" title="密码">
-		    </div>
-		    <div id="endnone" class="paletteItem-endnone" style="text-align:center;font-size:12px;cursor:pointer;" unselectable="on">
-		      <img class="xf-select" src="${scopePrefix}/widgets/xform/images/xform/new_select1.png" unselectable="on" title="下拉">
-		    </div>
-		    <div id="endnone" class="paletteItem-endnone" style="text-align:center;font-size:12px;cursor:pointer;" unselectable="on">
-		      <img class="xf-textarea" src="${scopePrefix}/widgets/xform/images/xform/new_textarea.png" unselectable="on" title="多行文本">
-		    </div>
-		    <div id="endnone" class="paletteItem-endnone" style="text-align:center;font-size:12px;cursor:pointer;" unselectable="on">
-		      <img class="xf-fileupload" src="${scopePrefix}/widgets/xform/images/xform/new_upload.png" unselectable="on" title="上传">
-		    </div>
-		    <div id="endnone" class="paletteItem-endnone" style="text-align:center;font-size:12px;cursor:pointer;" unselectable="on">
-		      <img class="xf-userPicker" src="${scopePrefix}/widgets/xform/images/xform/userpicker.png" unselectable="on" title="人员">
-		    </div>
+	    <div id="__gef_palette__" style="float:left;width:260px;">
+		  <ul class="nav nav-tabs" id="myTab">
+            <li class="active"><a href="#operation" data-toggle="tab">操作</a></li>
+			<li><a href="#form" data-toggle="tab">表单</a></li>
+		  </ul> 
+		  <div class="tab-content">
+			<div class="tab-pane active" id="operation">
+			  <div>
+				<div class="xf-pallete" title="label">
+				  <img src="${scopePrefix}/widgets/xform/images/xform/new_label.png">
+				  label
+				</div>
+				<div class="xf-pallete" title="textfield">
+				  <img src="${scopePrefix}/widgets/xform/images/xform/new_input.png">
+				  textfield
+				</div>
+				<div class="xf-pallete" title="password">
+				  <img src="${scopePrefix}/widgets/xform/images/xform/new_secret.png">
+				  password
+				</div>
+				<div class="xf-pallete" title="textarea">
+				  <img src="${scopePrefix}/widgets/xform/images/xform/new_textarea.png">
+				  textarea
+				</div>
+				<div class="xf-pallete" title="select">
+				  <img src="${scopePrefix}/widgets/xform/images/xform/new_select.png">
+				  select
+				</div>
+				<div class="xf-pallete" title="radio">
+				  <img src="${scopePrefix}/widgets/xform/images/xform/new_item.png">
+				  radio
+				</div>
+				<div class="xf-pallete" title="checkbox">
+				  <img src="${scopePrefix}/widgets/xform/images/xform/new_itemset.png">
+				  checkbox
+				</div>
+				<div class="xf-pallete" title="fileupload">
+				  <img src="${scopePrefix}/widgets/xform/images/xform/new_upload.png">
+				  fileupload
+				</div>
+				<div class="xf-pallete" title="datepicker">
+				  <img src="${scopePrefix}/widgets/xform/images/xform/new_range.png">
+				  datepicker
+				</div>
+				<div class="xf-pallete" title="userpicker">
+				  <img src="${scopePrefix}/widgets/xform/images/xform/userpicker.png">
+				  userpicker
+				</div>
+			  </div>
+			</div>
+			<div class="tab-pane" id="form">
+			  <div class="popover" style="display:block;position:relative;">
+				<h3 class="popover-title">title</h3>
+				<div class="popover-content">
+				  <div id="xf-form-attribute" class="controls"></div>
+				</div>
+			  </div>
+			</div>
 		  </div>
 	    </div>
-		<div id="__gef_canvas__" style="float:left;clear:right;overflow:auto;">
+
+		<div class="__gef_center__">
+		<div id="__gef_toolbar__">
+		  <div style="width:50px;float:left;">&nbsp;</div>
+		  <div class="btn-group">
+			<button class="btn" onclick="doSave()">save</button>
+<!--
+			<button class="btn" onclick="alert(xform.doExport())">export</button>
+			<button class="btn" onclick="doImport()">import</button>
+-->
+			<button class="btn" onclick="xform.addRow()">add row</button>
+			<button class="btn" onclick="doChangeMode(this)">change to merge mode</button>
+			<button class="btn" onclick="doMerge()">merge</button>
+			<button class="btn" onclick="doSplit()">split</button>
+		  </div>
+		</div>
+
+
+		<div id="__gef_canvas__" style="overflow:auto;">
 		  <div id="xf-center" class="xf-center" unselectable="on">
 			<div id="xf-layer-form" class="xf-layer-form">
-			  <form id="xf-form" method="post" action="#" class="xf-form">
-				<table id="xf-form-table" class="xf-form-table">
-				  <thead id="xf-form-table-head"><tr><th>Title</th></tr></thead>
-				  <tbody id="xf-form-table-body"><tr><td>Body</td></tr></tbody>
-				  <tfoot id="xf-form-table-foot"><tr><td>Footer</td></tr></tfoot>
-				</table>
+			  <form id="xf-form" action="#" method="post" class="controls">
 			  </form>
 			</div>
 			<div id="xf-layer-mask" class="xf-layer-mask">
 			</div>
 		  </div>
 		</div>
-	    <div id="__gef_property__" style="clear:left;background-color:white;overflow:auto;">
-	    </div>
 	  </div>
 
-	  <div id="__gef_form__" class="modal hide" style="width:900px;">
-	    <div class="modal-body">
-		  <table class="table">
-		    <thead>
-			  <tr>
-			    <th>&nbsp;</th>
-			    <th>id</th>
-			    <th>name</th>
-			    <th>type</th>
-			    <th>required</th>
-			    <th>writable</th>
-			  </tr>
-			</thead>
-		    <tbody id="__gef_form_tbody__">
-			  <tr>
-			    <td>&nbsp;</td>
-			    <td>&nbsp;</td>
-			    <td>&nbsp;</td>
-			    <td>&nbsp;</td>
-			    <td>&nbsp;</td>
-			    <td>&nbsp;</td>
-			  </tr>
-			</tbody>
-		  </table>
-	    </div>
-	    <div class="modal-footer">
-		  <a id="__gef_bpmn2_form_add__" href="#" class="btn">添加一行</a>
-		  <a id="__gef_bpmn2_form_close__" href="#" class="btn">关闭</a>
-		  <a id="__gef_bpmn2_form_save__" href="#" class="btn btn-primary">保存</a>
-	    </div>
-	  </div>
-      <div id="__gef_menu__">
-	    <ul class="dropdown-menu" style="min-width:auto;">
-		  <li><a href="#">a</a></li>
-		  <li><a href="#">b</a></li>
-		</ul>
-	  </div>
+		</div>
 
     </section>
 	<!-- end of main -->

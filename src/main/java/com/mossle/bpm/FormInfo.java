@@ -8,6 +8,7 @@ public class FormInfo {
     private String processDefinitionId;
     private String taskId;
     private boolean autoCompleteFirstTask;
+    private String activityId;
     private List<String> buttons = new ArrayList<String>();
 
     public String getFormKey() {
@@ -40,6 +41,14 @@ public class FormInfo {
 
     public void setAutoCompleteFirstTask(boolean autoCompleteFirstTask) {
         this.autoCompleteFirstTask = autoCompleteFirstTask;
+    }
+
+    public String getActivityId() {
+        return activityId;
+    }
+
+    public void setActivityId(String activityId) {
+        this.activityId = activityId;
     }
 
     public String getRelatedId() {

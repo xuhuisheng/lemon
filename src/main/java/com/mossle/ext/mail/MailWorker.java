@@ -10,7 +10,6 @@ public class MailWorker implements Runnable {
     }
 
     public void run() {
-        mailHelper.send(mailDto.getFrom(), mailDto.getTo(),
-                mailDto.getSubject(), mailDto.getContent());
+        mailHelper.send(mailDto);
     }
 }

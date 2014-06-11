@@ -59,6 +59,7 @@
 		  </c:if>
           <a href="workspace-viewHistory.do?processInstanceId=${item.processInstanceId}">历史</a>
           <a href="console-prepareJump.do?executionId=${item.executionId}">自由跳转</a>
+          <a href="console-addSubTaskInput.do?taskId=${item.id}">添加子任务</a>
         </td>
       </tr>
       </c:forEach>

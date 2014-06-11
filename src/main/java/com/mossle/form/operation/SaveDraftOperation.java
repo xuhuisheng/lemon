@@ -11,6 +11,8 @@ import com.mossle.form.keyvalue.Prop;
 import com.mossle.form.keyvalue.Record;
 import com.mossle.form.keyvalue.RecordBuilder;
 
+import com.mossle.security.util.SpringSecurityUtils;
+
 import org.activiti.engine.ProcessEngine;
 import org.activiti.engine.impl.interceptor.Command;
 import org.activiti.engine.impl.interceptor.CommandContext;
@@ -33,6 +35,7 @@ public class SaveDraftOperation extends AbstractOperation<String> {
         String taskId = getParameter(OPERATION_TASK_ID);
         String businessKey = getParameter(OPERATION_BUSINESS_KEY);
         String bpmProcessId = getParameter(OPERATION_BPM_PROCESS_ID);
+        String userId = SpringSecurityUtils.getCurrentUserId();
         KeyValue keyValue = getKeyValue();
 
         if (this.notEmpty(taskId)) {
@@ -48,10 +51,12 @@ public class SaveDraftOperation extends AbstractOperation<String> {
             String processInstanceId = task.getProcessInstanceId();
             Record record = keyValue.findByRef(processInstanceId);
 
-            record = new RecordBuilder().build(record, STATUS_DRAFT_TASK,
-                    getParameters());
-            keyValue.save(record);
-            businessKey = record.getCode();
+            if (record != null) {
+                record = new RecordBuilder().build(record, STATUS_DRAFT_TASK,
+                        getParameters());
+                keyValue.save(record);
+                businessKey = record.getCode();
+            }
         } else if (this.notEmpty(businessKey)) {
             // 如果是流程草稿，直接通过businessKey获得record，更新数据
             Record record = keyValue.findByCode(businessKey);
@@ -62,7 +67,7 @@ public class SaveDraftOperation extends AbstractOperation<String> {
         } else {
             // 如果是第一次保存草稿，肯定是流程草稿，先初始化record，再保存数据
             Record record = new RecordBuilder().build(bpmProcessId,
-                    STATUS_DRAFT_PROCESS, getParameters());
+                    STATUS_DRAFT_PROCESS, getParameters(), userId);
             keyValue.save(record);
             businessKey = record.getCode();
         }

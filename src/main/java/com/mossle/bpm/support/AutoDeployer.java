@@ -29,10 +29,15 @@ import org.springframework.core.io.Resource;
 public class AutoDeployer {
     private Logger logger = LoggerFactory.getLogger(AutoDeployer.class);
     private ProcessEngine processEngine;
-    protected Resource[] deploymentResources = new Resource[0];
+    private Resource[] deploymentResources = new Resource[0];
+    private boolean enable = true;
 
     @PostConstruct
     public void init() {
+        if (!enable) {
+            return;
+        }
+
         if ((deploymentResources == null) || (deploymentResources.length == 0)) {
             return;
         }
@@ -113,5 +118,9 @@ public class AutoDeployer {
 
     public void setDeploymentResources(Resource[] deploymentResources) {
         this.deploymentResources = deploymentResources;
+    }
+
+    public void setEnable(boolean enable) {
+        this.enable = enable;
     }
 }

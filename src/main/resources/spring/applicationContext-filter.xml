@@ -10,6 +10,7 @@
 				<ref bean="acceptLanguageHeaderFilter"/>
 				<ref bean="javasimonFilter"/>
 				<ref bean="scopeFilter"/>
+				<ref bean="cmsFilter"/>
 				<ref bean="springSecurityFilterChainProxy"/>
 				<ref bean="openSessionInViewFilter"/>
 				<ref bean="auditTrailFilter"/>
@@ -41,35 +42,34 @@
 		<property name="filter">
 			<bean class="org.javasimon.javaee.SimonServletFilter"/>
 		</property>
+		<property name="map">
+			<map>
+				<entry key="stopwatch-source-props">
+					<value>includeHttpMethodName=ALWAYS</value>
+				</entry>
+			</map>
+		</property>
 	</bean>
-
-<!--
-	<filter>
-                <filter-name>simon-filter</filter-name>
-                <filter-class>org.javasimon.javaee.SimonServletFilter</filter-class>
-                <init-param>
-                        <param-name>prefix</param-name>
-                        <param-value>com.my.app.web</param-value>
-                </init-param>
-                <init-param>
-                        <param-name>console-path</param-name>
-                        <param-value>/simon-filter</param-value>
-                </init-param>
-                <init-param>
-                        <param-name>report-threshold-ms</param-name>
-                        <param-value>1000</param-value>
-                </init-param>
-                <init-param>
-                        <param-name>request-reporter-class</param-name>
-                        <param-value>org.javasimon.javaee.reqreporter.StandardRequestReporter</param-value>
-                </init-param>
-        </filter>
--->
 
 	<bean id="scopeFilter" class="com.mossle.core.servlet.ProxyFilter">
 		<property name="name" value="scope"/>
-		<property name="filter" ref="${application.scope.type}ScopeFilter"/>
+		<property name="filter">
+			<bean class="com.mossle.bridge.scope.ScopeFilterFactoryBean">
+				<property name="scopeConnector" ref="scopeConnector"/>
+				<property name="type" value="${application.scope.type}"/>
+			</bean>
+		</property>
 		<property name="enable" value="${filter.scope.enable}"/>
+	</bean>
+
+	<bean id="cmsFilter" class="com.mossle.core.servlet.ProxyFilter">
+		<property name="name" value="sms"/>
+		<property name="filter">
+			<bean class="com.mossle.bridge.cms.CmsFilter">
+				<property name="baseDir" value="${store.baseDir}/cms/html"/>
+			</bean>
+		</property>
+		<property name="enable" value="${filter.cms.enable}"/>
 	</bean>
 
 	<bean id="springSecurityFilterChainProxy" class="com.mossle.core.servlet.ProxyFilter">
@@ -149,18 +149,5 @@
 		</constructor-arg>
 	</bean>
 
-	<!-- ====================================================================== -->
-
-	<bean id="prefixScopeFilter" class="com.mossle.bridge.scope.PrefixScopeFilter">
-		<property name="scopeConnector" ref="scopeConnector"/>
-	</bean>
-
-	<bean id="headerCodeScopeFilter" class="com.mossle.bridge.scope.HeaderCodeScopeFilter">
-		<property name="scopeConnector" ref="scopeConnector"/>
-	</bean>
-
-	<bean id="headerRefScopeFilter" class="com.mossle.bridge.scope.HeaderRefScopeFilter">
-		<property name="scopeConnector" ref="scopeConnector"/>
-	</bean>
 
 </beans>

@@ -10,17 +10,29 @@
     <title><spring:message code="demo.demo.input.title" text="编辑"/></title>
     <%@include file="/common/s.jsp"%>
 	<link href="${scopePrefix}/widgets/xform/styles/xform.css" rel="stylesheet">
-    <script type="text/javascript" src="${scopePrefix}/widgets/xform/designer-xform-packed.js"></script>
+    <script type="text/javascript" src="${scopePrefix}/widgets/xform/xform-packed.js"></script>
     <script type="text/javascript" src="${scopePrefix}/widgets/xform/container-layout.js"></script>
-    <script type="text/javascript" src="${scopePrefix}/widgets/xform/adaptor.js"></script>
-    <script type="text/javascript">
+	<script type="text/javascript">
 document.onmousedown = function(e) {};
 document.onmousemove = function(e) {};
 document.onmouseup = function(e) {};
 document.ondblclick = function(e) {};
 
+var xform;
+
 $(function() {
-    $("#demoForm").validate({
+	xform = new xf.Xform('xf-form-table');
+	xform.render();
+
+	if ($('#__gef_content__').val() != '') {
+		xform.doImport($('#__gef_content__').val());
+	}
+
+	if ('${json}' != '') {
+		xform.setValue(${json});
+	}
+
+	$("#demoForm").validate({
         submitHandler: function(form) {
 			bootbox.animate(false);
 			var box = bootbox.dialog('<div class="progress progress-striped active" style="margin:0px;"><div class="bar" style="width: 100%;"></div></div>');
@@ -38,14 +50,6 @@ $(function() {
 		$('#xf-form').attr('action', 'form-${nextStep}.do');
 		$('#xf-form').submit();
 	});
-
-	setTimeout(function() {
-		xform.setValue(${json});
-
-		var id = '#xf-form-table-body-row' + (xform.model.template.positions.length - 1);
-		var el = $(id)[0];
-		el.parentNode.removeChild(el);
-	}, 500);
 
 	$(document).delegate('.userPickerBtn', 'click', function(e) {
 		$('#userPicker').modal();
@@ -97,11 +101,7 @@ $(function() {
 	<!-- start of main -->
     <section id="m-main" class="span10" style="float:right">
 
-	  <div id="__gef_container__" style="padding-left:5px;">
-		<div id="__gef_canvas__" style="float:left;clear:right;overflow:auto;">
-		  <div id="xf-center" class="xf-center" unselectable="on">
-			<div id="xf-layer-form" class="xf-layer-form">
-			  <form id="xf-form" method="post" action="${scopePrefix}/form/form-startProcessInstance.do" class="xf-form">
+      <form id="xf-form" method="post" action="${scopePrefix}/form/form-startProcessInstance.do" class="xf-form">
 <input id="processDefinitionId" type="hidden" name="processDefinitionId" value="${formInfo.processDefinitionId}">
 <input id="bpmProcessId" type="hidden" name="bpmProcessId" value="${bpmProcessId}">
 <input id="autoCompleteFirstTask" type="hidden" name="autoCompleteFirstTask" value="${formInfo.autoCompleteFirstTask}">
@@ -109,16 +109,13 @@ $(function() {
 <!--
 <input id="taskId" type="hidden" name="taskId" value="${taskId}">
 -->
-				<table id="xf-form-table" class="xf-form-table">
-				  <thead id="xf-form-table-head"><tr><th>Title</th></tr></thead>
-				  <tbody id="xf-form-table-body"><tr><td>Body</td></tr></tbody>
-				  <tfoot id="xf-form-table-foot"><tr><td>Footer</td></tr></tfoot>
-				</table>
-			  </form>
-			</div>
-		  </div>
+		<div id="xf-form-table"></div>
+		<br>
+		<div style="text-align:center;">
+		  <button id="button0" type="button">保存草稿</button>
+		  <button id="button1" type="button">发起流程</button>
 		</div>
-	  </div>
+	  </form>
 
     </section>
 	<!-- end of main -->

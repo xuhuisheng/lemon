@@ -26,6 +26,9 @@ public class UserAuthConnectorFactoryBean implements FactoryBean {
     private String type = "database";
     private JdbcTemplate jdbcTemplate;
     private UserAuthCache userAuthCache;
+    private String sqlFindPassword;
+    private String sqlFindPermissions;
+    private String sqlFindRoles;
 
     @PostConstruct
     public void afterPropertiesSet() {
@@ -33,11 +36,18 @@ public class UserAuthConnectorFactoryBean implements FactoryBean {
         Assert.notNull(userConnector, "userConnector cannot be null");
         Assert.notNull(scopeConnector, "scopeConnector cannot be null");
 
-        if ("database".equals(type)) {
-            processDatabase();
+        if ("mock".equals(type)) {
+            this.processMock();
+        } else if ("database".equals(type)) {
+            this.processDatabase();
         } else {
             throw new IllegalArgumentException("unsupported type : " + type);
         }
+    }
+
+    public void processMock() {
+        MockUserAuthConnector mockUserAuthConnector = new MockUserAuthConnector();
+        userAuthConnector = mockUserAuthConnector;
     }
 
     public void processDatabase() {
@@ -47,6 +57,18 @@ public class UserAuthConnectorFactoryBean implements FactoryBean {
         databaseUserAuthConnector.setJdbcTemplate(jdbcTemplate);
         databaseUserAuthConnector.setUserConnector(userConnector);
         databaseUserAuthConnector.setScopeConnector(scopeConnector);
+
+        if (sqlFindPassword != null) {
+            databaseUserAuthConnector.setSqlFindPassword(sqlFindPassword);
+        }
+
+        if (sqlFindPermissions != null) {
+            databaseUserAuthConnector.setSqlFindPermission(sqlFindPermissions);
+        }
+
+        if (sqlFindRoles != null) {
+            databaseUserAuthConnector.setSqlFindRole(sqlFindRoles);
+        }
 
         if (userAuthCache != null) {
             logger.debug("use cache for UserAuthConnector");
@@ -92,5 +114,17 @@ public class UserAuthConnectorFactoryBean implements FactoryBean {
 
     public void setUserAuthCache(UserAuthCache userAuthCache) {
         this.userAuthCache = userAuthCache;
+    }
+
+    public void setSqlFindPassword(String sqlFindPassword) {
+        this.sqlFindPassword = sqlFindPassword;
+    }
+
+    public void setSqlFindPermission(String sqlFindPermissions) {
+        this.sqlFindPermissions = sqlFindPermissions;
+    }
+
+    public void setSqlFindRole(String sqlFindRoles) {
+        this.sqlFindRoles = sqlFindRoles;
     }
 }

@@ -2,7 +2,7 @@
   <modelVersion>4.0.0</modelVersion>
   <groupId>com.mossle</groupId>
   <artifactId>lemon</artifactId>
-  <version>1.2.0-SNAPSHOT</version>
+  <version>1.2.0</version>
   <name>lemon</name>
   <packaging>war</packaging>
   <description>Lemon is an OA.</description>
@@ -173,6 +173,10 @@
       <groupId>org.activiti</groupId>
       <artifactId>activiti-json-converter</artifactId>
 	  <version>${activiti.version}</version>
+    </dependency><dependency>
+      <groupId>org.freemarker</groupId>
+      <artifactId>freemarker</artifactId>
+	  <version>${freemarker.version}</version>
     </dependency></dependencies>
 
   <dependencyManagement>
@@ -644,6 +648,12 @@
         <artifactId>spymemcached</artifactId>
         <version>${spymemcached.version}</version>
       </dependency>
+
+	  <dependency>
+        <groupId>org.freemarker</groupId>
+        <artifactId>freemarker</artifactId>
+        <version>${freemarker.version}</version>
+      </dependency>
     </dependencies>
   </dependencyManagement>
 
@@ -729,6 +739,11 @@
             <compilerArgument>-Xlint:unchecked</compilerArgument>
             -->
           </configuration>
+        </plugin>
+        <plugin>
+          <groupId>org.apache.maven.plugins</groupId>
+          <artifactId>maven-release-plugin</artifactId>
+          <version>${maven-release-plugin.version}</version>
         </plugin>
         <plugin>
           <groupId>org.apache.maven.plugins</groupId>
@@ -1056,57 +1071,59 @@
 
     <junit.version>4.11</junit.version>
     <mockito.version>1.9.5</mockito.version>
-    <selenium2.version>2.41.0</selenium2.version>
+    <selenium2.version>2.42.2</selenium2.version>
 	<xml-apis.version>1.4.01</xml-apis.version>
-    <dbunit.version>2.4.9</dbunit.version>
-    <commons-lang.version>3.3.1</commons-lang.version>
+    <dbunit.version>2.5.0</dbunit.version>
+    <commons-lang.version>3.3.2</commons-lang.version>
     <commons-fileupload.version>1.3.1</commons-fileupload.version>
 
     <servlet.version>3.0.1</servlet.version>
     <jsp.version>2.1</jsp.version>
-    <jetty.version>7.6.14.v20131031</jetty.version>
+    <jetty.version>7.6.15.v20140411</jetty.version>
 
-    <spring.version>4.0.3.RELEASE</spring.version>
-    <struts2.version>2.3.16.1</struts2.version>
-    <spring-security.version>3.2.3.RELEASE</spring-security.version>
-    <hibernate.version>4.3.4.Final</hibernate.version>
-    <hibernate-validator.version>5.1.0.Final</hibernate-validator.version>
-    <javassist.version>3.18.1-GA</javassist.version>
-    <ehcache.version>2.8.1</ehcache.version>
-    <hsqldb.version>2.3.1</hsqldb.version>
-    <slf4j.version>1.7.6</slf4j.version>
-    <logback.version>1.1.1</logback.version>
+    <spring.version>4.0.5.RELEASE</spring.version>
+    <struts2.version>2.3.16.3</struts2.version>
+    <spring-security.version>3.2.4.RELEASE</spring-security.version>
+    <hibernate.version>4.3.5.Final</hibernate.version>
+    <hibernate-validator.version>5.1.1.Final</hibernate-validator.version>
+    <javassist.version>3.18.2-GA</javassist.version>
+    <ehcache.version>2.8.3</ehcache.version>
+    <hsqldb.version>2.3.2</hsqldb.version>
+    <slf4j.version>1.7.7</slf4j.version>
+    <logback.version>1.1.2</logback.version>
     <jansi.version>1.11</jansi.version>
     <janino.version>2.6.1</janino.version>
     <commons-dbcp.version>1.4</commons-dbcp.version>
-    <commons-beanutils.version>1.9.1</commons-beanutils.version>
+    <commons-beanutils.version>1.9.2</commons-beanutils.version>
     <commons-codec.version>1.9</commons-codec.version>
     <commons-io.version>2.4</commons-io.version>
     <poi.version>3.10-FINAL</poi.version>
-    <jolokia.version>1.2.0</jolokia.version>
+    <jolokia.version>1.2.1</jolokia.version>
     <log4jdbc-remix.version>0.2.7</log4jdbc-remix.version>
-    <jersey.version>2.7</jersey.version>
+    <jersey.version>2.9.1</jersey.version>
 	<rs-api.version>2.0</rs-api.version>
-    <jackson-jaxrs-json-provider.version>2.3.2</jackson-jaxrs-json-provider.version>
-    <jackson-datatype-hibernate4.version>2.3.2</jackson-datatype-hibernate4.version>
+    <jackson-jaxrs-json-provider.version>2.4.0</jackson-jaxrs-json-provider.version>
+    <jackson-datatype-hibernate4.version>2.4.0</jackson-datatype-hibernate4.version>
     <mail.version>1.4.7</mail.version>
     <inspektr.version>1.1.GA</inspektr.version>
     <quartz.version>2.2.1</quartz.version>
-    <h2.version>1.3.175</h2.version>
-    <mysql.version>5.1.30</mysql.version>
-    <activiti.version>5.15</activiti.version>
-    <cxf.version>2.7.8</cxf.version>
+    <h2.version>1.4.178</h2.version>
+    <mysql.version>5.1.31</mysql.version>
+    <activiti.version>5.15.1</activiti.version>
+    <cxf.version>3.0.0</cxf.version>
 	<flyway.version>2.3.1</flyway.version>
-	<javasimon.version>3.4.0</javasimon.version>
+	<javasimon.version>3.5.1</javasimon.version>
 	<orika.version>1.4.5</orika.version>
 	<jmemcached.version>1.0.0</jmemcached.version>
-	<spymemcached.version>2.10.6</spymemcached.version>
+	<spymemcached.version>2.11.3</spymemcached.version>
 	<jms.version>1.1.1</jms.version>
 	<jstl.version>1.2</jstl.version>
+	<freemarker.version>2.3.20</freemarker.version>
 
     <maven-antrun-plugin.version>1.7</maven-antrun-plugin.version>
     <maven-clean-plugin.version>2.5</maven-clean-plugin.version>
     <maven-compiler-plugin.version>3.1</maven-compiler-plugin.version>
+	<maven-release-plugin.version>2.5</maven-release-plugin.version>
     <maven-install-plugin.version>2.5.1</maven-install-plugin.version>
     <maven-source-plugin.version>2.2.1</maven-source-plugin.version>
     <maven-war-plugin.version>2.4</maven-war-plugin.version>
@@ -1124,7 +1141,7 @@
     <stat-scm.version>1.2.0</stat-scm.version>
     <versions-maven-plugin.version>2.1</versions-maven-plugin.version>
     <native2ascii-maven-plugin.version>1.0-beta-1</native2ascii-maven-plugin.version>
-    <jacoco-maven-plugin.version>0.7.0.201403182114</jacoco-maven-plugin.version>
+    <jacoco-maven-plugin.version>0.7.1.201405082137</jacoco-maven-plugin.version>
 
   </properties>
 

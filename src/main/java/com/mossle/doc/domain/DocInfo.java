@@ -39,16 +39,20 @@ public class DocInfo implements java.io.Serializable {
     /** null. */
     private Long userId;
 
+    /** null. */
+    private String descn;
+
     public DocInfo() {
     }
 
     public DocInfo(String name, String path, Integer type, Date createTime,
-            Long userId) {
+            Long userId, String descn) {
         this.name = name;
         this.path = path;
         this.type = type;
         this.createTime = createTime;
         this.userId = userId;
+        this.descn = descn;
     }
 
     /** @return null. */
@@ -136,5 +140,19 @@ public class DocInfo implements java.io.Serializable {
      */
     public void setUserId(Long userId) {
         this.userId = userId;
+    }
+
+    /** @return null. */
+    @Column(name = "DESCN")
+    public String getDescn() {
+        return this.descn;
+    }
+
+    /**
+     * @param descn
+     *            null.
+     */
+    public void setDescn(String descn) {
+        this.descn = descn;
     }
 }

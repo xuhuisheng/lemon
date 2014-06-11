@@ -21,6 +21,8 @@ import org.springframework.dao.EmptyResultDataAccessException;
 
 import org.springframework.jdbc.core.JdbcTemplate;
 
+import org.springframework.util.Assert;
+
 public class DatabaseUserAuthConnector implements UserAuthConnector {
     private static Logger logger = LoggerFactory
             .getLogger(DatabaseUserAuthConnector.class);
@@ -43,6 +45,8 @@ public class DatabaseUserAuthConnector implements UserAuthConnector {
         ScopeDTO scopeDto = scopeConnector.findById(scopeId);
         UserDTO userDto = userConnector.findByUsername(username,
                 scopeDto.getUserRepoRef());
+        Assert.notNull(userDto, "cannot find user by (" + username + ","
+                + scopeId + ")");
 
         return process(userDto, scopeDto, true);
     }

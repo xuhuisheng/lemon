@@ -1,80 +1,80 @@
 
-div.xf-right {
-    width: 200px;
-    float: right;
-    -moz-user-select: none;
+#xf-pallete {
+	float:left;
+	width: 20%;
 }
 
-div.xf-right span {
-    cursor: pointer;
+#xf-form {
+	float:left;
+	width: 100%;
 }
 
-div.xf-center {
-    text-align: center;
+.xf-button {
+	width: 80%;
+	border: 1px dotted gray;
+	margin: 2px;
+	text-align: center;
+	cursor: pointer;
+	-moz-user-select: none;
 }
 
-div.xf-layer-form {
-    /*
-	position: absolute;
-    left: 0px;
-    top: 0px;
-    width: 800px;
-    height: 400px;
-	*/
-    text-align: center;
-    padding: 10px;
+.xf-pallete {
+	width: 80%;
+	border: 1px dotted gray;
+	margin: 2px;
+	text-align: center;
+	cursor: move;
+	-moz-user-select: none;
 }
 
-div.xf-layer-mask {
-    position: absolute;
-    background-color: white;
-    left: 0px;
-    top: 0px;
-    width: 800px;
-    height: 600px;
-    opacity: 0;
-    filter: alpha(opacity = 0);
+table.xf-table {
 }
 
-form.xf-form {
+td.xf-cell {
+	-moz-user-select: none;
 }
 
-form.xf-form input,
-form.xf-form select,
-form.xf-form textarea {
-    border: 1px solid gray;
-	margin: 0px;
+td.xf-cell div {
+	height: 22px;
 }
 
-form.xf-form input[type=submit] {
-    background-color: #EEEEEE;
+td.xf-cell-top {
+	border-top: black 1px solid;
 }
 
-table.xf-form-table {
-    margin: 0px;
-    width: 80%;
-    border-collapse: collapse;
-    border: none;
+td.xf-cell-bottom {
+	border-bottom: black 1px solid;
 }
 
-table.xf-form-table th {
-    background-color: #EEFFCC;
+td.xf-cell-left {
+	border-left: black 1px solid;
 }
 
-table.xf-form-table tfoot td {
-    background-color: #DDEEFF;
+td.xf-cell-right {
+	border-right: black 1px solid;
 }
 
-table.xf-form-table th,
-table.xf-form-table td {
-    border: solid #999 1px;
-    padding: 3px 4px 3px 4px;
+td.xf-cell.active {
+	background-color: #EEEEEE;
 }
 
-table.xf-form-table tr.odd {
-    background-color: #EEEEEE;
+td.xf-cell-top.active {
+	border-top: black 1px dotted;
 }
 
-table.xf-form-table tr.even {
-    background-color: #CCCCCC;
+td.xf-cell-bottom.active {
+	border-bottom: black 1px dotted;
+}
+
+td.xf-cell-left.active {
+	border-left: black 1px dotted;
+}
+
+td.xf-cell-right.active {
+	border-right: black 1px dotted;
+}
+
+.xf-handler {
+	cursor: move;
+	height: auto;
 }

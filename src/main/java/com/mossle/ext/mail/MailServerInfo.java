@@ -2,10 +2,15 @@ package com.mossle.ext.mail;
 
 import java.util.Properties;
 
+import org.slf4j.Logger;
+import org.slf4j.LoggerFactory;
+
 import org.springframework.mail.javamail.JavaMailSender;
 import org.springframework.mail.javamail.JavaMailSenderImpl;
 
 public class MailServerInfo {
+    private static Logger logger = LoggerFactory
+            .getLogger(MailServerInfo.class);
     public static final String MODE_NORMAL = "normal";
     public static final String MODE_TEST = "test";
     public static final String MODE_SKIP = "skip";
@@ -121,11 +126,19 @@ public class MailServerInfo {
         javaMailSender = new JavaMailSenderImpl();
 
         javaMailSender.setHost(host);
-        javaMailSender.setUsername(username);
-        javaMailSender.setPassword(password);
+
+        if (smtpAuth) {
+            javaMailSender.setUsername(username);
+            javaMailSender.setPassword(password);
+        }
+
         javaMailSender.setDefaultEncoding("UTF-8");
 
         javaMailSender.setJavaMailProperties(this.getProperties());
+        logger.info("host : {}", host);
+        logger.info("username : {}", username);
+        logger.info("password : {}", password);
+        logger.info("getProperties : {}", getProperties());
     }
 
     public boolean isSkip() {

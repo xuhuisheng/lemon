@@ -48,6 +48,8 @@ public class FindStartFormCmd implements Command<FormInfo> {
             if (formHandler.getFormKey() != null) {
                 String formKey = formHandler.getFormKey().getExpressionText();
                 formInfo.setFormKey(formKey);
+                formInfo.setActivityId(processDefinitionEntity.getInitial()
+                        .getId());
             }
         } else {
             formInfo.setAutoCompleteFirstTask(true);
@@ -94,6 +96,8 @@ public class FindStartFormCmd implements Command<FormInfo> {
                                     .getExpressionText();
                             formInfo.setFormKey(formKey);
                         }
+
+                        formInfo.setActivityId(taskDefinitionKey);
                     }
                 }
             }

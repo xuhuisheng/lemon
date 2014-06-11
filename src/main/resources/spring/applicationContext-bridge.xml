@@ -71,4 +71,10 @@
 		<property name="jdbcTemplate" ref="jdbcTemplate"/>
 	</bean>
 
+	<!-- ================================================== -->
+
+	<bean id="formConnector" class="com.mossle.bridge.form.DatabaseFormConnector">
+		<property name="jdbcTemplate" ref="jdbcTemplate"/>
+	</bean>
+
 </beans>

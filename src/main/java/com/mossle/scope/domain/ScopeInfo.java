@@ -35,16 +35,20 @@ public class ScopeInfo implements java.io.Serializable {
     /** null. */
     private String userRepoRef;
 
+    /** null. */
+    private Integer type;
+
     public ScopeInfo() {
     }
 
     public ScopeInfo(String name, String code, String ref, Integer shared,
-            String userRepoRef) {
+            String userRepoRef, Integer type) {
         this.name = name;
         this.code = code;
         this.ref = ref;
         this.shared = shared;
         this.userRepoRef = userRepoRef;
+        this.type = type;
     }
 
     /** @return null. */
@@ -131,5 +135,19 @@ public class ScopeInfo implements java.io.Serializable {
      */
     public void setUserRepoRef(String userRepoRef) {
         this.userRepoRef = userRepoRef;
+    }
+
+    /** @return null. */
+    @Column(name = "TYPE")
+    public Integer getType() {
+        return this.type;
+    }
+
+    /**
+     * @param type
+     *            null.
+     */
+    public void setType(Integer type) {
+        this.type = type;
     }
 }

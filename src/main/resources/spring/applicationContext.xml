@@ -32,4 +32,12 @@
 
 	<bean id="exportor" class="com.mossle.ext.export.CsvExportor"/>
 
+	<bean id="storeConnector" class="com.mossle.ext.store.FileStoreConnector">
+		<property name="baseDir" value="${store.baseDir}"/>
+	</bean>
+
+	<bean id="templateService" class="com.mossle.ext.template.FreemarkerTemplateService">
+		<property name="baseDir" value="${store.baseDir}/cms/template"/>
+	</bean>
+
 </beans>

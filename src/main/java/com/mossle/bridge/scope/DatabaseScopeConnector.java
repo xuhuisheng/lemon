@@ -23,19 +23,19 @@ public class DatabaseScopeConnector implements ScopeConnector {
 
     // ~
     private String sqlFindById = "select id as id,code as code,name as name,ref as ref,"
-            + " shared as shared,user_repo_ref as userRepoRef"
+            + " shared as shared,user_repo_ref as userRepoRef,type as type"
             + " from SCOPE_INFO where id=?";
     private String sqlFindByCode = "select id as id,code as code,name as name,ref as ref,"
-            + " shared as shared,user_repo_ref as userRepoRef"
+            + " shared as shared,user_repo_ref as userRepoRef,type as type"
             + " from SCOPE_INFO where code=?";
     private String sqlFindByRef = "select id as id,code as code,name as name,ref as ref,"
-            + " shared as shared,user_repo_ref as userRepoRef"
+            + " shared as shared,user_repo_ref as userRepoRef,type as type"
             + " from SCOPE_INFO where ref=?";
     private String sqlFindAll = "select id as id,code as code,name as name,ref as ref,"
-            + " shared as shared,user_repo_ref as userRepoRef"
+            + " shared as shared,user_repo_ref as userRepoRef,type as type"
             + " from SCOPE_INFO";
     private String sqlFindSharedScopes = "select id as id,code as code,name as name,ref as ref,"
-            + " shared as shared,user_repo_ref as userRepoRef"
+            + " shared as shared,user_repo_ref as userRepoRef,type as type"
             + " from SCOPE_INFO where shared=1";
 
     public ScopeDTO findById(String id) {
@@ -113,21 +113,36 @@ public class DatabaseScopeConnector implements ScopeConnector {
         logger.debug("{}", map);
 
         ScopeDTO scopeDto = new ScopeDTO();
-        scopeDto.setId(getValue(map.get("id")));
-        scopeDto.setCode(this.getValue(map.get("code")));
-        scopeDto.setName(this.getValue(map.get("name")));
-        scopeDto.setUserRepoRef(this.getValue(map.get("userRepoRef")));
+        scopeDto.setId(this.getString(map.get("id")));
+        scopeDto.setCode(this.getString(map.get("code")));
+        scopeDto.setName(this.getString(map.get("name")));
+        scopeDto.setUserRepoRef(this.getString(map.get("userRepoRef")));
         scopeDto.setShared(Integer.valueOf(1).equals(map.get("shared")));
+        scopeDto.setType(this.getInt(map.get("type")));
 
         return scopeDto;
     }
 
-    private String getValue(Object value) {
+    private String getString(Object value) {
         if (value == null) {
             return null;
         }
 
         return value.toString();
+    }
+
+    private int getInt(Object value) {
+        String str = this.getString(value);
+
+        if (str == null) {
+            return 0;
+        }
+
+        try {
+            return Integer.parseInt(str);
+        } catch (Exception ex) {
+            return 0;
+        }
     }
 
     @Resource

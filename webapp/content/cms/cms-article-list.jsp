@@ -3,15 +3,15 @@
 <%pageContext.setAttribute("currentHeader", "cms");%>
 <%pageContext.setAttribute("currentMenu", "cms");%>
 <!doctype html>
-<html lang="en">
+<html>
 
   <head>
     <%@include file="/common/meta.jsp"%>
-    <title><spring:message code="dev.cms-article.list.title" text="列表"/></title>
+    <title>文章列表</title>
     <%@include file="/common/s.jsp"%>
     <script type="text/javascript">
 var config = {
-    id: 'cms-articleGrid',
+    id: 'cmsArticleGrid',
     pageNo: ${page.pageNo},
     pageSize: ${page.pageSize},
     totalCount: ${page.totalCount},
@@ -20,10 +20,11 @@ var config = {
     orderBy: '${page.orderBy == null ? "" : page.orderBy}',
     asc: ${page.asc},
     params: {
-        'filter_LIKES_name': '${param.filter_LIKES_name}'
+        'filter_LIKES_cmsArticlename': '${param.filter_LIKES_cmsArticlename}',
+        'filter_EQI_status': '${param.filter_EQI_status}'
     },
 	selectedItemClass: 'selectedItem',
-	gridFormId: 'cms-articleGridForm',
+	gridFormId: 'cmsArticleGridForm',
 	exportUrl: 'cms-article-export.do'
 };
 
@@ -39,27 +40,33 @@ $(function() {
   </head>
 
   <body>
-    <%@include file="/header/cms-article.jsp"%>
+    <%@include file="/header/cms.jsp"%>
 
     <div class="row-fluid">
-	  <%@include file="/menu/cms-article.jsp"%>
+	  <%@include file="/menu/cms.jsp"%>
 
-	  <!-- start of main -->
-      <section id="m-main" class="span10">
+	<!-- start of main -->
+    <section id="m-main" class="span10">
 
 	  <article class="m-widget">
         <header class="header">
 		  <h4 class="title">查询</h4>
 		  <div class="ctrl">
-		    <a class="btn"><i id="cms-articleSearchIcon" class="icon-chevron-up"></i></a>
+			<a class="btn"><i id="cmsArticleSearchIcon" class="icon-chevron-up"></i></a>
 		  </div>
 		</header>
-        <div id="cms-articleSearch" class="content content-inner">
+        <div id="cmsArticleSearch" class="content content-inner">
 
-		  <form name="cms-articleForm" method="post" action="cms-article-list.do" class="form-inline">
-		    <label for="cms-article_name"><spring:message code='cms-article.cms-article.list.search.name' text='名称'/>:</label>
-		    <input type="text" id="cms-article_name" name="filter_LIKES_name" value="${param.filter_LIKES_name}">
-			<button class="btn btn-small a-search" onclick="document.cms-articleForm.submit()">查询</button>&nbsp;
+		  <form name="cmsArticleForm" method="post" action="cms-article-list.do" class="form-inline">
+		    <label for="cmsArticle_cmsArticlename"><spring:message code='cmsArticle.cmsArticle.list.search.cmsArticlename' text='账号'/>:</label>
+		    <input type="text" id="cmsArticle_cmsArticlename" name="filter_LIKES_cmsArticlename" value="${param.filter_LIKES_cmsArticlename}">
+		    <label for="cmsArticle_enabled"><spring:message code='cmsArticle.cmsArticle.list.search.status' text='状态'/>:</label>
+		    <select id="cmsArticle_enabled" name="filter_EQI_status" class="input-mini">
+			  <option value=""></option>
+			  <option value="1" ${param.filter_EQI_status == 1 ? 'selected' : ''}><spring:message code='cmsArticle.cmsArticle.list.search.enabled.true' text='启用'/></option>
+			  <option value="0" ${param.filter_EQI_status == 0 ? 'selected' : ''}><spring:message code='cmsArticle.cmsArticle.list.search.enabled.false' text='禁用'/></option>
+		    </select>
+			<button class="btn btn-small" onclick="document.cmsArticleForm.submit()">查询</button>
 		  </form>
 
 		</div>
@@ -67,10 +74,10 @@ $(function() {
 
 	  <article class="m-blank">
 	    <div class="pull-left">
-		  <region:region-permission permission="cms-article:create">
+		  <region:region-permission permission="cmsArticle:create">
 		  <button class="btn btn-small a-insert" onclick="location.href='cms-article-input.do'">新建</button>
 		  </region:region-permission>
-		  <region:region-permission permission="cms-article:delete">
+		  <region:region-permission permission="cmsArticle:delete">
 		  <button class="btn btn-small a-remove" onclick="table.removeAll()">删除</button>
 		  </region:region-permission>
 		  <button class="btn btn-small a-export" onclick="table.exportExcel()">导出</button>
@@ -91,17 +98,20 @@ $(function() {
 
       <article class="m-widget">
         <header class="header">
-		  <h4 class="title"><spring:message code="cms-article.cms-article.list.title" text="列表"/></h4>
+		  <h4 class="title">文章列表</h4>
 		</header>
-        <div class="content">
-<form id="cms-articleGridForm" name="cms-articleGridForm" method='post' action="cms-article-remove.do" class="m-form-blank">
-  <table id="cms-articleGrid" class="m-table table-hover">
+		<div class="content">
+
+<form id="cmsArticleGridForm" name="cmsArticleGridForm" method='post' action="cms-article-remove.do" class="m-form-blank">
+  <table id="cmsArticleGrid" class="m-table table-hover">
     <thead>
       <tr>
         <th width="10" class="m-table-check"><input type="checkbox" name="checkAll" onchange="toggleSelectedItems(this.checked)"></th>
-        <th class="sorting" name="id"><spring:message code="cms-article.cms-article.list.id" text="编号"/></th>
-        <th class="sorting" name="name">标题</th>
-        <th class="sorting" name="name">发布时间</th>
+        <th class="sorting" name="id"><spring:message code="cmsArticle.cmsArticle.list.id" text="编号"/></th>
+        <th class="sorting" name="title">标题</th>
+        <th class="sorting" name="status">状态</th>
+        <th class="sorting" name="userId">作者</th>
+        <th class="sorting" name="createTime">创建时间</th>
         <th width="80">&nbsp;</th>
       </tr>
     </thead>
@@ -111,9 +121,13 @@ $(function() {
       <tr>
         <td><input type="checkbox" class="selectedItem a-check" name="selectedItem" value="${item.id}"></td>
         <td>${item.id}</td>
-        <td>${item.name}</td>
+        <td>${item.title}</td>
+        <td>${item.status}</td>
+        <td>${item.userId}</td>
         <td>${item.createTime}</td>
         <td>
+          <a href="cms-article-view.do?id=${item.id}">预览</a>
+          <a href="cms-article-publish.do?id=${item.id}">发布</a>
           <a href="cms-article-input.do?id=${item.id}" class="a-update"><spring:message code="core.list.edit" text="编辑"/></a>
         </td>
       </tr>
@@ -138,10 +152,8 @@ $(function() {
 	    <div class="m-clear"></div>
       </article>
 
-      <div class="m-spacer"></div>
-
-      </section>
-	  <!-- end of main -->
+    </section>
+	<!-- end of main -->
 	</div>
 
   </body>

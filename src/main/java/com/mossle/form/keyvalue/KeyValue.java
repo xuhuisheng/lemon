@@ -11,5 +11,5 @@ public interface KeyValue {
 
     void removeByCode(String code);
 
-    List<Record> findByStatus(int status);
+    List<Record> findByStatus(int status, String userId);
 }

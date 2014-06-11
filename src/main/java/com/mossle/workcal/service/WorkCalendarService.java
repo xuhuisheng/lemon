@@ -1,5 +1,5 @@
 package com.mossle.workcal.service;
-
+import java.util.Calendar;
 import java.text.DateFormat;
 import java.text.SimpleDateFormat;
 
@@ -24,7 +24,7 @@ import com.mossle.workcal.manager.WorkcalPartManager;
 import com.mossle.workcal.manager.WorkcalRuleManager;
 import com.mossle.workcal.support.*;
 import com.mossle.workcal.support.WorkCalendar;
-
+import com.mossle.api.workcal.WorkCalendarConnector;
 import org.springframework.stereotype.Controller;
 
 import org.springframework.ui.Model;
@@ -35,7 +35,7 @@ import org.springframework.web.bind.annotation.RequestParam;
 import org.springframework.web.bind.annotation.ResponseBody;
 import org.springframework.web.servlet.mvc.support.RedirectAttributes;
 
-public class WorkCalendarService {
+public class WorkCalendarService implements WorkCalendarConnector {
     public static final int STATUS_WEEK = 0;
     public static final int STATUS_HOLIDAY = 1;
     public static final int STATUS_HOLIDAY_TO_WORKDAY = 2;
@@ -83,10 +83,14 @@ public class WorkCalendarService {
                         .parse(workcalPart.getStartTime());
                 Date endDate = new SimpleDateFormat(hourFormatText)
                         .parse(workcalPart.getEndTime());
-                dayPart.setFromHour(startDate.getHours());
-                dayPart.setFromMinute(startDate.getMinutes());
-                dayPart.setToHour(endDate.getHours());
-                dayPart.setToMinute(endDate.getMinutes());
+			Calendar startCalendar = Calendar.getInstance();
+			startCalendar.setTime(startDate);
+			Calendar endCalendar = Calendar.getInstance();
+			endCalendar.setTime(endDate);
+            dayPart.setFromHour(startCalendar.get(Calendar.HOUR));
+            dayPart.setFromMinute(startCalendar.get(Calendar.MINUTE));
+            dayPart.setToHour(endCalendar.get(Calendar.HOUR));
+            dayPart.setToMinute(endCalendar.get(Calendar.MINUTE));
                 dayParts.add(dayPart);
             }
 
@@ -119,10 +123,14 @@ public class WorkCalendarService {
                     .parse(workcalPart.getStartTime());
             Date endDate = new SimpleDateFormat(hourFormatText)
                     .parse(workcalPart.getEndTime());
-            dayPart.setFromHour(startDate.getHours());
-            dayPart.setFromMinute(startDate.getMinutes());
-            dayPart.setToHour(endDate.getHours());
-            dayPart.setToMinute(endDate.getMinutes());
+			Calendar startCalendar = Calendar.getInstance();
+			startCalendar.setTime(startDate);
+			Calendar endCalendar = Calendar.getInstance();
+			endCalendar.setTime(endDate);
+            dayPart.setFromHour(startCalendar.get(Calendar.HOUR));
+            dayPart.setFromMinute(startCalendar.get(Calendar.MINUTE));
+            dayPart.setToHour(endCalendar.get(Calendar.HOUR));
+            dayPart.setToMinute(endCalendar.get(Calendar.MINUTE));
             dayParts.add(dayPart);
         }
 
@@ -145,7 +153,7 @@ public class WorkCalendarService {
                 this.processWorkDay(workcalRule);
             } else {
                 this.processHoliday(workcalRule);
-                ;
+                
             }
         }
     }

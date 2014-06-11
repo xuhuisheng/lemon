@@ -142,7 +142,7 @@ $(function(){
 		  <marquee direction="up" scrollamount="2" >
 		  <c:forEach items="${cmsArticles}" var="item">
 		    <div>
-			  <h4>${item.name}</h4>
+			  <h4>${item.title}</h4>
 			  <p>${item.content}</p>
 			</div>
 			</c:forEach>

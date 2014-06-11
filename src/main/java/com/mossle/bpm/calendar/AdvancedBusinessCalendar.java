@@ -11,7 +11,7 @@ import java.util.TimeZone;
 
 import javax.xml.datatype.Duration;
 
-import com.mossle.workcal.service.WorkCalendarService;
+import com.mossle.api.workcal.WorkCalendarConnector;
 
 import org.activiti.engine.impl.calendar.BusinessCalendar;
 
@@ -21,14 +21,14 @@ import org.slf4j.LoggerFactory;
 public abstract class AdvancedBusinessCalendar implements BusinessCalendar {
     private static Logger logger = LoggerFactory
             .getLogger(AdvancedBusinessCalendar.class);
-    private WorkCalendarService workCalendarService;
+    private WorkCalendarConnector workCalendarConnector;
 
     public Date processDate(Date date, boolean useBusinessTime) {
         if (!useBusinessTime) {
             return date;
         }
 
-        return workCalendarService.processDate(date);
+        return workCalendarConnector.processDate(date);
     }
 
     public Date add(Date date, Duration duration, boolean useBusinessTime) {
@@ -41,11 +41,12 @@ public abstract class AdvancedBusinessCalendar implements BusinessCalendar {
             return calendar.getTime();
         }
 
-        return workCalendarService.add(date, duration);
+        return workCalendarConnector.add(date, duration);
     }
 
-    public void setWorkCalendarService(WorkCalendarService workCalendarService) {
-        this.workCalendarService = workCalendarService;
+    public void setWorkCalendarConnector(
+            WorkCalendarConnector workCalendarConnector) {
+        this.workCalendarConnector = workCalendarConnector;
     }
 
     // ~ ======================================================================

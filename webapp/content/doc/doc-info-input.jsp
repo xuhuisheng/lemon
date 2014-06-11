@@ -44,15 +44,15 @@ $(function() {
   <input id="msg-info_id" type="hidden" name="id" value="${model.id}">
   </c:if>
   <div class="control-group">
-    <label class="control-label" for="msg-info_name"><spring:message code="msg-info.msg-info.input.name" text="名称"/></label>
-	<div class="controls">
-	  <input id="msg-info_name" type="text" name="name" value="${model.name}" size="40" class="text required" minlength="2" maxlength="10">
-    </div>
-  </div>
-  <div class="control-group">
     <label class="control-label" for="msg-info_address">文件</label>
 	<div class="controls">
 	  <input id="msg-info_address" type="file" name="attachment" value="" size="40" class="text">
+    </div>
+  </div>
+  <div class="control-group">
+    <label class="control-label" for="docInfo_descn">备注</label>
+	<div class="controls">
+	  <input id="docInfo_descn" type="text" name="descn" value="${model.descn}" size="40" class="text">
     </div>
   </div>
   <div class="control-group">

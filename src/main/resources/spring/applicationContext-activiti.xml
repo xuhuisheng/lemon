@@ -76,6 +76,7 @@
 
 	<!-- 自动部署 -->
 	<bean id="autoDeployer" class="com.mossle.bpm.support.AutoDeployer" depends-on="applicationContextHelper">
+		<property name="enable" value="${bpm.auto.deploy}"/>
 		<property name="processEngine" ref="processEngine"/>
         <property name="deploymentResources">
             <list>
@@ -92,6 +93,7 @@
 				<bean class="com.mossle.bpm.listener.TaskConfTaskListener"/>
 				<bean class="com.mossle.bpm.listener.AssigneeAliasTaskListener"/>
 				<bean class="com.mossle.bpm.listener.DelegateTaskListener"/>
+				<bean class="com.mossle.bpm.listener.CopyTaskListener"/>
 			</list>
 		</property>
 	</bean>
@@ -109,7 +111,7 @@
 
 	<!-- 工作日历 -->
 	<bean id="businessCalendarManager" class="com.mossle.bpm.calendar.AdvancedBusinessCalendarManagerFactoryBean">
-		<property name="workCalendarService" ref="workCalendarService"/>
+		<property name="workCalendarConnector" ref="workCalendarService"/>
 	</bean>
 
 	<bean id="workCalendarService" class="com.mossle.workcal.service.WorkCalendarService"/>

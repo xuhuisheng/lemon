@@ -94,6 +94,7 @@ $(function() {
 			  <option value="0">负责人</option>
 			  <option value="1">候选人</option>
 			  <option value="2">候选组</option>
+			  <option value="3">抄送人</option>
 			</select>
 			<button class="btn btn-small" onclick="document.bpmCategoryForm.submit()">提交</button>
 		  </form>
@@ -162,6 +163,9 @@ $(function() {
 		    <c:if test="${item.type==2}">
 			  ${item.value}
 			</c:if>
+		    <c:if test="${item.type==3}">
+			  ${item.value}
+			</c:if>
 		  </td>
           <td>
 		    <c:if test="${item.type==0}">
@@ -172,6 +176,9 @@ $(function() {
 			</c:if>
 			<c:if test="${item.type==2}">
 			  候选组
+			</c:if>
+			<c:if test="${item.type==3}">
+			  抄送人
 			</c:if>
 		  </td>
           <td>

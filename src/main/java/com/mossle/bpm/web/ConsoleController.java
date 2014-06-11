@@ -11,6 +11,7 @@ import javax.annotation.Resource;
 
 import javax.servlet.http.HttpServletResponse;
 
+import com.mossle.bpm.cmd.ChangeSubTaskCmd;
 import com.mossle.bpm.cmd.JumpCmd;
 import com.mossle.bpm.cmd.ListActivityCmd;
 import com.mossle.bpm.cmd.MigrateCmd;
@@ -48,6 +49,9 @@ import org.springframework.web.bind.annotation.RequestParam;
 import org.springframework.web.bind.annotation.ResponseBody;
 import org.springframework.web.servlet.mvc.support.RedirectAttributes;
 
+/**
+ * 管理控制台.
+ */
 @Controller
 @RequestMapping("bpm")
 public class ConsoleController {
@@ -315,6 +319,9 @@ public class ConsoleController {
     }
 
     // ~ ======================================================================
+    /**
+     * 自由流执行之前，选择跳转到哪个节点.
+     */
     @RequestMapping("console-prepareJump")
     public String prepareJump(@RequestParam("executionId") String executionId,
             Model model) {
@@ -328,6 +335,9 @@ public class ConsoleController {
         return "bpm/console-prepareJump";
     }
 
+    /**
+     * 自由流.
+     */
     @RequestMapping("console-jump")
     public String jump(@RequestParam("executionId") String executionId,
             @RequestParam("activityId") String activityId) {
@@ -338,6 +348,9 @@ public class ConsoleController {
         return "redirect:/bpm/console-listTasks.do";
     }
 
+    /**
+     * 更新流程之前，填写xml.
+     */
     @RequestMapping("console-beforeUpdateProcess")
     public String beforeUpdateProcess(
             @RequestParam("processDefinitionId") String processDefinitionId,
@@ -355,6 +368,9 @@ public class ConsoleController {
         return "bpm/console-beforeUpdateProcess";
     }
 
+    /**
+     * 更新流程，不生成新版本.
+     */
     @RequestMapping("console-doUpdateProcess")
     public String doUpdateProcess(
             @RequestParam("processDefinitionId") String processDefinitionId,
@@ -367,6 +383,9 @@ public class ConsoleController {
         return "redirect:/bpm/console-listProcessInstances.do";
     }
 
+    /**
+     * 准备迁移流程.
+     */
     @RequestMapping("console-migrateInput")
     public String migrateInput(
             @RequestParam("processInstanceId") String processInstanceId,
@@ -378,6 +397,9 @@ public class ConsoleController {
         return "bpm/console-migrateInput";
     }
 
+    /**
+     * 迁移流程实例.
+     */
     @RequestMapping("console-migrateSave")
     public String migrateInput(
             @RequestParam("processInstanceId") String processInstanceId,
@@ -388,6 +410,9 @@ public class ConsoleController {
         return "redirect:/bpm/console-listProcessInstances.do";
     }
 
+    /**
+     * 重新开启流程.
+     */
     @RequestMapping("console-reopen")
     public String reopen(
             @RequestParam("processInstanceId") String processInstanceId) {
@@ -395,6 +420,36 @@ public class ConsoleController {
                 new ReOpenProcessCmd(processInstanceId));
 
         return "redirect:/bpm/console-listHistoricProcessInstances.do";
+    }
+
+    /**
+     * 添加子任务，之前，设置添加的子任务的执行人.
+     */
+    @RequestMapping("console-addSubTaskInput")
+    public String addSubTaskInput(@RequestParam("taskId") String taskId) {
+        return "bpm/console-addSubTaskInput";
+    }
+
+    /**
+     * 添加子任务.
+     */
+    @RequestMapping("console-addSubTask")
+    public String addSubTask(@RequestParam("taskId") String taskId,
+            @RequestParam("userId") String userId) {
+        processEngine.getManagementService().executeCommand(
+                new ChangeSubTaskCmd(taskId, userId));
+
+        return "redirect:/bpm/console-listTasks.do";
+    }
+
+    /**
+     * 直接完成任务.
+     */
+    @RequestMapping("console-completeTask")
+    public String completeTask(@RequestParam("taskId") String taskId) {
+        processEngine.getTaskService().complete(taskId);
+
+        return "redirect:/bpm/console-listTasks.do";
     }
 
     // ~ ======================================================================

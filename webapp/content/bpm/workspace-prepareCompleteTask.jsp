@@ -27,20 +27,21 @@
 
 		<div class="content content-inner">
 
-<form id="demoForm" method="post" action="workspace-completeTask.do" class="form-horizontal">
-  <input id="demo_id" type="hidden" name="taskId" value="${taskId}">
+<form id="demoForm" method="post" action="console-completeTask.do" class="form-horizontal">
+  <input id="demo_id" type="hidden" name="taskId" value="${param.taskId}">
   <c:forEach items="${taskFormData.formProperties}" var="item">
   <div class="control-group">
     <label class="control-label">${item.name}</label>
 	<div class="controls">
 	  <c:if test="${item.type.name=='enum'}">
+	  <%--
 	  <c:forEach items="${item.type.getInformation('values')}">
 	    <label class="checkbox inline">
 	    <input type="radio" name="${item.id}" value="${key}" ${item.value == key ? 'checked' : ''}>
 		${item.value}
 		</label>
 	  </c:forEach>
-	  </select>
+	  --%>
 	  </c:if>
 	  <c:if test="${item.type.name != 'enum'}">
 	  <input type="text" name="${id}" value="${item.value}" size="40" class="text ${item.required ? 'required' : ''}" ${item.writable ? '' : 'readonly'}>

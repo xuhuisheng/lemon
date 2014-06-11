@@ -6,10 +6,10 @@ import java.util.List;
 import com.mossle.api.userrepo.UserRepoConnector;
 import com.mossle.api.userrepo.UserRepoDTO;
 
-public class MemoryUserRepoConnector implements UserRepoConnector {
+public class MockUserRepoConnector implements UserRepoConnector {
     private UserRepoDTO userRepoDto = new UserRepoDTO();
 
-    public MemoryUserRepoConnector() {
+    public MockUserRepoConnector() {
         userRepoDto.setId("1");
         userRepoDto.setCode("default");
     }

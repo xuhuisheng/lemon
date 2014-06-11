@@ -13,6 +13,8 @@ import com.mossle.core.mail.HostGeneratorImpl;
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
 
+import org.springframework.core.io.InputStreamSource;
+
 import org.springframework.mail.javamail.JavaMailSender;
 import org.springframework.mail.javamail.JavaMailSenderImpl;
 import org.springframework.mail.javamail.MimeMessageHelper;
@@ -37,25 +39,45 @@ public class MailHelper {
 
     public void send(String from, String to, String subject, String content,
             MailServerInfo mailServerInfo) {
-        String targetFrom = from;
+        MailDTO mailDto = new MailDTO();
+        mailDto.setFrom(from);
+        mailDto.setTo(to);
+        mailDto.setSubject(subject);
+        mailDto.setContent(content);
+        this.send(mailDto, mailServerInfo);
+    }
 
-        if (targetFrom == null) {
-            targetFrom = mailServerInfo.getDefaultFrom();
+    public void send(MailDTO mailDto) {
+        this.send(mailDto, this.getDefaultMailServerInfo());
+    }
+
+    public void send(MailDTO mailDto, MailServerInfo mailServerInfo) {
+        String from = mailDto.getFrom();
+        String to = mailDto.getTo();
+        String subject = mailDto.getSubject();
+        String content = mailDto.getContent();
+
+        if (from == null) {
+            from = mailServerInfo.getDefaultFrom();
+            mailDto.setFrom(from);
         }
 
         if (mailServerInfo.isSkip()) {
-            logger.info("send mail from {} to {}", targetFrom, to);
+            logger.info("send mail from {} to {}", from, to);
 
             logger.info("subject : {}, content : {}", subject, content);
         } else if (mailServerInfo.isTest()) {
-            this.sendTestMail(targetFrom, to, subject, content, mailServerInfo);
+            this.sendTestMail(mailDto, mailServerInfo);
         } else {
-            this.sendRealMail(targetFrom, to, subject, content, mailServerInfo);
+            this.sendRealMail(mailDto, mailServerInfo);
         }
     }
 
-    protected void sendTestMail(String from, String to, String subject,
-            String content, MailServerInfo mailServerInfo) {
+    protected void sendTestMail(MailDTO mailDto, MailServerInfo mailServerInfo) {
+        String from = mailDto.getFrom();
+        String to = mailDto.getTo();
+        String subject = mailDto.getSubject();
+        String content = mailDto.getContent();
         String address = "";
 
         try {
@@ -76,12 +98,19 @@ public class MailHelper {
 
         logger.info("subject : {}, content : {}", decoratedSubject,
                 decoratedContent);
-        this.sendRealMail(decoratedFrom, testMail, decoratedSubject,
-                decoratedContent, mailServerInfo);
+        mailDto.setFrom(decoratedFrom);
+        mailDto.setTo(testMail);
+        mailDto.setSubject(decoratedSubject);
+        mailDto.setContent(decoratedContent);
+        this.sendRealMail(mailDto, mailServerInfo);
     }
 
-    protected void sendRealMail(String from, String to, String subject,
-            String content, MailServerInfo mailServerInfo) {
+    protected void sendRealMail(MailDTO mailDto, MailServerInfo mailServerInfo) {
+        String from = mailDto.getFrom();
+        String to = mailDto.getTo();
+        String subject = mailDto.getSubject();
+        String content = mailDto.getContent();
+
         try {
             JavaMailSender javaMailSender = mailServerInfo.getJavaMailSender();
             MimeMessage msg = javaMailSender.createMimeMessage();
@@ -90,6 +119,19 @@ public class MailHelper {
             helper.setSubject(subject);
             helper.setTo(to);
             helper.setText(content, true);
+
+            if (mailDto.getCc() != null) {
+                helper.setCc(mailDto.getCc());
+            }
+
+            if (mailDto.getBcc() != null) {
+                helper.setBcc(mailDto.getBcc());
+            }
+
+            for (Map.Entry<String, InputStreamSource> entry : mailDto
+                    .getAttachments().entrySet()) {
+                helper.addAttachment(entry.getKey(), entry.getValue());
+            }
 
             javaMailSender.send(msg);
             logger.debug("send mail from {} to {}", from, to);

@@ -14,9 +14,11 @@ import com.mossle.bpm.FormInfo;
 import com.mossle.bpm.cmd.CompleteTaskWithCommentCmd;
 import com.mossle.bpm.cmd.FindStartFormCmd;
 import com.mossle.bpm.cmd.FindTaskDefinitionsCmd;
+import com.mossle.bpm.persistence.domain.BpmConfForm;
 import com.mossle.bpm.persistence.domain.BpmConfOperation;
 import com.mossle.bpm.persistence.domain.BpmProcess;
 import com.mossle.bpm.persistence.domain.BpmTaskConf;
+import com.mossle.bpm.persistence.manager.BpmConfFormManager;
 import com.mossle.bpm.persistence.manager.BpmConfOperationManager;
 import com.mossle.bpm.persistence.manager.BpmProcessManager;
 import com.mossle.bpm.persistence.manager.BpmTaskConfManager;
@@ -79,6 +81,7 @@ public class FormController {
     private BpmProcessManager bpmProcessManager;
     private BpmTaskConfManager bpmTaskConfManager;
     private BpmConfOperationManager bpmConfOperationManager;
+    private BpmConfFormManager bpmConfFormManager;
     private FormTemplateManager formTemplateManager;
     private JsonMapper jsonMapper = new JsonMapper();
     private KeyValue keyValue;
@@ -108,7 +111,9 @@ public class FormController {
      */
     @RequestMapping("form-listDrafts")
     public String listDrafts(Model model) throws Exception {
-        List<Record> records = keyValue.findByStatus(STATUS_DRAFT_PROCESS);
+        String userId = SpringSecurityUtils.getCurrentUserId();
+        List<Record> records = keyValue.findByStatus(STATUS_DRAFT_PROCESS,
+                userId);
         model.addAttribute("records", records);
 
         return "form/form-listDrafts";
@@ -146,11 +151,29 @@ public class FormController {
 
             model.addAttribute("nextStep", nextStep);
 
+            List<BpmConfForm> bpmConfForms = bpmConfFormManager
+                    .find("from BpmConfForm where bpmConfNode.bpmConfBase.processDefinitionId=? and bpmConfNode.code=?",
+                            formInfo.getProcessDefinitionId(),
+                            formInfo.getActivityId());
+
+            if (!bpmConfForms.isEmpty()) {
+                if (Integer.valueOf(1).equals(bpmConfForms.get(0).getType())) {
+                    String redirectUrl = bpmConfForms.get(0).getValue()
+                            + "?processDefinitionId="
+                            + formInfo.getProcessDefinitionId();
+
+                    return "redirect:" + redirectUrl;
+                }
+            }
+
             FormTemplate formTemplate = formTemplateManager.get(Long
                     .parseLong(formInfo.getFormKey()));
 
             if (Integer.valueOf(1).equals(formTemplate.getType())) {
-                String redirectUrl = formTemplate.getContent();
+                String redirectUrl = formTemplate.getContent()
+                        + "?processDefinitionId="
+                        + formInfo.getProcessDefinitionId();
+                ;
 
                 return "redirect:" + redirectUrl;
             }
@@ -309,6 +332,21 @@ public class FormController {
             formInfo.getButtons().add(bpmConfOperation.getValue());
         }
 
+        String processDefinitionId = task.getProcessDefinitionId();
+        String activitiyId = task.getTaskDefinitionKey();
+        List<BpmConfForm> bpmConfForms = bpmConfFormManager
+                .find("from BpmConfForm where bpmConfNode.bpmConfBase.processDefinitionId=? and bpmConfNode.code=?",
+                        processDefinitionId, activitiyId);
+
+        if (!bpmConfForms.isEmpty()) {
+            if (Integer.valueOf(1).equals(bpmConfForms.get(0).getType())) {
+                String redirectUrl = bpmConfForms.get(0).getValue()
+                        + "?taskId=" + taskId;
+
+                return "redirect:" + redirectUrl;
+            }
+        }
+
         if ((formTemplate != null)
                 && Integer.valueOf(1).equals(formTemplate.getType())) {
             String redirectUrl = formTemplate.getContent() + "?taskId="
@@ -399,5 +437,10 @@ public class FormController {
     @Resource
     public void setMessageHelper(MessageHelper messageHelper) {
         this.messageHelper = messageHelper;
+    }
+
+    @Resource
+    public void setBpmConfFormManager(BpmConfFormManager bpmConfFormManager) {
+        this.bpmConfFormManager = bpmConfFormManager;
     }
 }

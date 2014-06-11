@@ -6,10 +6,13 @@ import java.io.FileOutputStream;
 import java.io.InputStream;
 import java.io.OutputStream;
 
+import java.text.SimpleDateFormat;
+
 import java.util.ArrayList;
 import java.util.Date;
 import java.util.List;
 import java.util.Map;
+import java.util.UUID;
 
 import javax.annotation.Resource;
 
@@ -23,12 +26,15 @@ import com.mossle.core.mapper.BeanMapper;
 import com.mossle.core.page.Page;
 import com.mossle.core.spring.MessageHelper;
 import com.mossle.core.util.IoUtils;
+import com.mossle.core.util.ServletUtils;
 
 import com.mossle.doc.domain.DocInfo;
 import com.mossle.doc.manager.DocInfoManager;
 
 import com.mossle.ext.export.Exportor;
 import com.mossle.ext.export.TableModel;
+import com.mossle.ext.store.StoreConnector;
+import com.mossle.ext.store.StoreDTO;
 
 import com.mossle.security.util.SpringSecurityUtils;
 
@@ -51,6 +57,7 @@ public class DocInfoController {
     private BeanMapper beanMapper = new BeanMapper();
     private UserConnector userConnector;
     private MessageHelper messageHelper;
+    private StoreConnector storeConnector;
 
     @RequestMapping("doc-info-list")
     public String list(@ModelAttribute Page page,
@@ -99,13 +106,11 @@ public class DocInfoController {
             dest.setUserId(Long.parseLong(userId));
         }
 
-        new File("target/uploaded").mkdirs();
+        StoreDTO storeDto = storeConnector.save("docinfo",
+                attachment.getInputStream(), attachment.getOriginalFilename());
 
-        File targetFile = new File("target/uploaded", attachment.getName());
-
-        attachment.transferTo(targetFile);
-
-        dest.setPath(targetFile.getName());
+        dest.setName(attachment.getOriginalFilename());
+        dest.setPath(storeDto.getKey());
 
         docInfoManager.save(dest);
 
@@ -119,11 +124,12 @@ public class DocInfoController {
     public void download(@RequestParam("id") Long id,
             HttpServletResponse response) throws Exception {
         DocInfo docInfo = docInfoManager.get(id);
-        File file = new File("target/uploaded", docInfo.getPath());
         InputStream is = null;
 
         try {
-            is = new FileInputStream(file);
+            ServletUtils.setFileDownloadHeader(response, docInfo.getName());
+            is = storeConnector.get("docinfo", docInfo.getPath())
+                    .getInputStream();
             IoUtils.copyStream(is, response.getOutputStream());
         } finally {
             if (is != null) {
@@ -180,5 +186,10 @@ public class DocInfoController {
     @Resource
     public void setMessageHelper(MessageHelper messageHelper) {
         this.messageHelper = messageHelper;
+    }
+
+    @Resource
+    public void setStoreConnector(StoreConnector storeConnector) {
+        this.storeConnector = storeConnector;
     }
 }

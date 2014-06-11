@@ -40,6 +40,10 @@ public class MailFacade {
         mailStore.sendMail(mailDto);
     }
 
+    public void sendMail(MailDTO mailDto) {
+        mailStore.sendMail(mailDto);
+    }
+
     public void setMailStore(MailStore mailStore) {
         this.mailStore = mailStore;
     }

@@ -1,6 +1,6 @@
 package com.mossle.bpm.calendar;
 
-import com.mossle.workcal.service.WorkCalendarService;
+import com.mossle.api.workcal.WorkCalendarConnector;
 
 import org.springframework.beans.factory.FactoryBean;
 import org.springframework.beans.factory.InitializingBean;
@@ -8,7 +8,7 @@ import org.springframework.beans.factory.InitializingBean;
 public class AdvancedBusinessCalendarManagerFactoryBean implements
         InitializingBean, FactoryBean<AdvancedBusinessCalendarManager> {
     private AdvancedBusinessCalendarManager advancedBusinessCalendarManager;
-    private WorkCalendarService workCalendarService;
+    private WorkCalendarConnector workCalendarConnector;
 
     public AdvancedBusinessCalendarManager getObject() {
         return advancedBusinessCalendarManager;
@@ -30,12 +30,13 @@ public class AdvancedBusinessCalendarManagerFactoryBean implements
     }
 
     public void addBusinessCalendar(AdvancedBusinessCalendar businessCalendar) {
-        businessCalendar.setWorkCalendarService(workCalendarService);
+        businessCalendar.setWorkCalendarConnector(workCalendarConnector);
         this.advancedBusinessCalendarManager
                 .addBusinessCalendar(businessCalendar);
     }
 
-    public void setWorkCalendarService(WorkCalendarService workCalendarService) {
-        this.workCalendarService = workCalendarService;
+    public void setWorkCalendarConnector(
+            WorkCalendarConnector workCalendarConnector) {
+        this.workCalendarConnector = workCalendarConnector;
     }
 }

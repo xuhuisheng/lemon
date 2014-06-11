@@ -10,10 +10,9 @@
     <title><spring:message code="demo.demo.input.title" text="编辑"/></title>
     <%@include file="/common/s.jsp"%>
 	<link href="${scopePrefix}/widgets/xform/styles/xform.css" rel="stylesheet">
-    <script type="text/javascript" src="${scopePrefix}/widgets/xform/designer-xform-packed.js"></script>
+    <script type="text/javascript" src="${scopePrefix}/widgets/xform/xform-packed.js"></script>
     <script type="text/javascript" src="${scopePrefix}/widgets/xform/container-layout.js"></script>
-    <script type="text/javascript" src="${scopePrefix}/widgets/xform/adaptor.js"></script>
-    <script type="text/javascript">
+	<script type="text/javascript">
 document.onmousedown = function(e) {};
 document.onmousemove = function(e) {};
 document.onmouseup = function(e) {};
@@ -28,8 +27,27 @@ if (buttons.length == 0) {
 	buttons = ['保存草稿', '完成任务'];
 }
 
+var html = '';
+
+for (var i = 0; i < buttons.length; i++) {
+	html += '<button type="button">' + buttons[i] + '</button>';
+}
+
+var xform;
+
 $(function() {
-    $("#demoForm").validate({
+	$('#xf-form-button').html(html);
+
+	xform = new xf.Xform('xf-form-table');
+	xform.render();
+
+	if ($('#__gef_content__').val() != '') {
+		xform.doImport($('#__gef_content__').val());
+	}
+
+	xform.setValue(${json});
+
+	$("#demoForm").validate({
         submitHandler: function(form) {
 			bootbox.animate(false);
 			var box = bootbox.dialog('<div class="progress progress-striped active" style="margin:0px;"><div class="bar" style="width: 100%;"></div></div>');
@@ -38,7 +56,7 @@ $(function() {
         errorClass: 'validate-error'
     });
 
-	$(document).delegate('#xf-form-table-foot button', 'click', function(e) {
+	$(document).delegate('#xf-form-button button', 'click', function(e) {
 		switch($(this).html()) {
 			case '保存草稿':
 				$('#xf-form').attr('action', 'form-saveDraft.do');
@@ -66,25 +84,10 @@ $(function() {
 				break;
 		}
 	});
-
-	setTimeout(function() {
-		if (!!xform.model.template) {
-			xform.setValue(${json});
-			xform.model.template.buttons = buttons;
-			xform.model.template.initFoot();
-
-			var id = '#xf-form-table-body-row' + (xform.model.template.positions.length - 1);
-			var el = $(id)[0];
-			el.parentNode.removeChild(el);
-		} else {
-			$('#__gef_container__').hide();
-			$('#m-main').append('<form action="${scopePrefix}/form/form-completeTask.do"><button name="taskId" value="${formInfo.taskId}">完成</button></form>');
-		}
-	}, 500);
 })
     </script>
-
-    <link type="text/css" rel="stylesheet" href="${scopePrefix}/widgets/userpicker/userpicker.css">
+	
+	<link type="text/css" rel="stylesheet" href="${scopePrefix}/widgets/userpicker/userpicker.css">
     <script type="text/javascript" src="${scopePrefix}/widgets/userpicker/userpicker.js"></script>
 	<script type="text/javascript">
 $(function() {
@@ -105,26 +108,14 @@ $(function() {
 	<!-- start of main -->
     <section id="m-main" class="span10" style="float:right">
 
-	  <div id="__gef_container__" style="padding-left:5px;">
-		<div id="__gef_canvas__" style="float:left;clear:right;overflow:auto;">
-		  <div id="xf-center" class="xf-center" unselectable="on">
-			<div id="xf-layer-form" class="xf-layer-form">
-			  <form id="xf-form" method="post" action="${scopePrefix}/form/form-completeTask.do" class="xf-form">
-<input id="taskId" type="hidden" name="taskId" value="${formInfo.taskId}">
-<input id="businessKey" type="hidden" name="businessKey" value="${dynamicModel.id}">
-<!--
-<input id="processDefinitionId" type="hidden" name="processDefinitionId" value="${processDefinitionId}">
--->
-				<table id="xf-form-table" class="xf-form-table">
-				  <thead id="xf-form-table-head"><tr><th>Title</th></tr></thead>
-				  <tbody id="xf-form-table-body"><tr><td>Body</td></tr></tbody>
-				  <tfoot id="xf-form-table-foot"><tr><td>Footer</td></tr></tfoot>
-				</table>
-			  </form>
-			</div>
-		  </div>
+	  <form id="xf-form" method="post" action="${scopePrefix}/form/form-completeTask.do" class="xf-form">
+		<input id="taskId" type="hidden" name="taskId" value="${formInfo.taskId}">
+		<input id="businessKey" type="hidden" name="businessKey" value="${dynamicModel.id}">
+		<div id="xf-form-table"></div>
+		<br>
+		<div id="xf-form-button" style="text-align:center;">
 		</div>
-	  </div>
+	  </form>
 
     </section>
 	<!-- end of main -->
@@ -133,19 +124,72 @@ $(function() {
 	  <textarea id="__gef_content__" name="content">${formTemplate.content}</textarea>
 	</form>
 
-	<div id="modal" class="modal hide fade">
-	  <div class="modal-body">
-	  <form>
-	    <input type="hidden" name="taskId" value="${formInfo.taskId}"/>
-        <div class="input-append userPicker">
-		  <input type="hidden" name="attorney" class="input-medium" value="">
-		  <input type="text" style="width: 175px;" value="">
-		  <span class="add-on"><i class="icon-user"></i></span>
+<div id="userPicker" class="modal hide fade">
+  <div class="modal-header">
+    <button type="button" class="close" data-dismiss="modal" aria-hidden="true">&times;</button>
+    <h3>选择用户</h3>
+  </div>
+  <div class="modal-body">
+
+
+
+      <!--
+	  <article class="m-blank">
+	    <div class="pull-left">
+		  <form name="userForm" method="post" action="javascript:void(0);return false;" class="form-inline m-form-bottom">
+    	    <label for="user_username">账号:</label>
+			<input type="text" id="user_username" name="filter_LIKES_username" value="">
+			<button class="btn btn-small" onclick="document.userForm.submit()">查询</button>
+		  </form>
+		</div>
+	    <div class="m-clear"></div>
+	  </article>
+      -->
+
+      <article class="m-widget">
+        <header class="header">
+		  <h4 class="title">用户列表</h4>
+		</header>
+		<div class="content">
+
+<form id="userPickerForm" name="userPickerForm" method='post' action="#" class="m-form-blank">
+  <table id="userPickerGrid" class="m-table table-hover">
+    <thead>
+      <tr>
+        <th width="10" class="m-table-check">&nbsp;</th>
+        <th>账号</th>
+      </tr>
+    </thead>
+
+    <tbody id="userPickerBody">
+
+      <tr>
+        <td><input id="selectedItem1" type="checkbox" class="selectedItem" name="selectedItem" value="1"></td>
+        <td>admin</td>
+      </tr>
+
+      <tr>
+        <td><input id="selectedItem2" type="checkbox" class="selectedItem" name="selectedItem" value="2"></td>
+        <td>user</td>
+      </tr>
+
+    </tbody>
+  </table>
+</form>
+
         </div>
-		<br>
-		<button class="btn">提交</button>
-	  </div>
-	</div>
+      </article>
+
+
+
+  </div>
+  <div class="modal-footer">
+    <span id="userPickerResult"></span>
+    <a id="userPickerBtnClose" href="#" class="btn">关闭</a>
+    <a id="userPickerBtnSelect" href="#" class="btn btn-primary">选择</a>
+  </div>
+</div>
+
   </body>
 
 </html>

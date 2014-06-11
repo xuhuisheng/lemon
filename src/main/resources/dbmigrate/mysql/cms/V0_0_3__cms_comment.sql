@@ -1,16 +1,16 @@
 
 
 -------------------------------------------------------------------------------
---  cms article
+--  cms comment
 -------------------------------------------------------------------------------
-CREATE TABLE CMS_ARTICLE(
+CREATE TABLE CMS_COMMENT(
         ID BIGINT auto_increment,
-	NAME VARCHAR(200),
+	TITLE VARCHAR(200),
 	CONTENT VARCHAR(200),
-	TYPE INTEGER,
+	STATUS INT,
 	CREATE_TIME TIMESTAMP,
-	USER_ID BIGINT,
-	STATUS INTEGER,
-        CONSTRAINT PK_CMS_ARTICLE PRIMARY KEY(ID)
+	USER_ID VARCHAR(200),
+	ARTICLE_ID BIGINT,
+        CONSTRAINT PK_CMS_COMMENT PRIMARY KEY(ID),
+	CONSTRAINT FK_CMS_COMMENT_ARTICLE FOREIGN KEY(ARTICLE_ID) REFERENCES CMS_ARTICLE(ID)
 ) engine=innodb;
-

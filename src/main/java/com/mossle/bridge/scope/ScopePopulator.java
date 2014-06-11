@@ -23,9 +23,9 @@ public class ScopePopulator {
             .getLogger(ScopePopulator.class);
     private JdbcTemplate jdbcTemplate;
     private ScopeCache scopeCache;
-    private String sql = "select si.id as scopeId,si.name as scopeName,si.code as scopeCode,"
-            + " si.ref as scopeRef,si.shared as shared,si.user_repo_ref as userRepoRef"
-            + " from scope_info si";
+    private String sql = "select si.ID as scopeId,si.NAME as scopeName,si.CODE as scopeCode,"
+            + " si.REF as scopeRef,si.SHARED as shared,si.USER_REPO_REF as userRepoRef"
+            + " from SCOPE_INFO si";
     private boolean debug;
 
     @PostConstruct

@@ -1,5 +1,7 @@
 package com.mossle.bridge.user;
 
+import java.util.Map;
+
 import javax.annotation.PostConstruct;
 
 import com.mossle.api.user.UserCache;
@@ -22,16 +24,29 @@ public class UserConnectorFactoryBean implements FactoryBean {
     private String type = "database";
     private JdbcTemplate jdbcTemplate;
     private UserCache userCache;
+    private String sqlFindById;
+    private String sqlFindByUsername;
+    private String sqlFindByRef;
+    private String sqlPagedQueryCount;
+    private String sqlPagedQuerySelect;
+    private Map<String, String> aliasMap;
 
     @PostConstruct
     public void afterPropertiesSet() {
         Assert.notNull(type, "type cannot be null");
 
-        if ("database".equals(type)) {
-            processDatabase();
+        if ("mock".equals(type)) {
+            this.processMock();
+        } else if ("database".equals(type)) {
+            this.processDatabase();
         } else {
             throw new IllegalArgumentException("unsupported type : " + type);
         }
+    }
+
+    public void processMock() {
+        MockUserConnector mockUserConnector = new MockUserConnector();
+        userConnector = mockUserConnector;
     }
 
     public void processDatabase() {
@@ -39,6 +54,30 @@ public class UserConnectorFactoryBean implements FactoryBean {
 
         DatabaseUserConnector databaseUserConnector = new DatabaseUserConnector();
         databaseUserConnector.setJdbcTemplate(jdbcTemplate);
+
+        if (sqlFindById != null) {
+            databaseUserConnector.setSqlFindById(sqlFindById);
+        }
+
+        if (sqlFindByUsername != null) {
+            databaseUserConnector.setSqlFindByUsername(sqlFindByUsername);
+        }
+
+        if (sqlFindByRef != null) {
+            databaseUserConnector.setSqlFindByRef(sqlFindByRef);
+        }
+
+        if (aliasMap != null) {
+            databaseUserConnector.setAliasMap(aliasMap);
+        }
+
+        if (sqlPagedQuerySelect != null) {
+            databaseUserConnector.setSqlPagedQuerySelect(sqlPagedQuerySelect);
+        }
+
+        if (sqlPagedQueryCount != null) {
+            databaseUserConnector.setSqlPagedQueryCount(sqlPagedQueryCount);
+        }
 
         if (userCache != null) {
             logger.debug("use cache for UserConnector");
@@ -74,5 +113,29 @@ public class UserConnectorFactoryBean implements FactoryBean {
 
     public void setUserCache(UserCache userCache) {
         this.userCache = userCache;
+    }
+
+    public void setSqlFindById(String sqlFindById) {
+        this.sqlFindById = sqlFindById;
+    }
+
+    public void setSqlFindByUsername(String sqlFindByUsername) {
+        this.sqlFindByUsername = sqlFindByUsername;
+    }
+
+    public void setSqlFindByRef(String sqlFindByRef) {
+        this.sqlFindByRef = sqlFindByRef;
+    }
+
+    public void setAliasMap(Map<String, String> aliasMap) {
+        this.aliasMap = aliasMap;
+    }
+
+    public void setSqlPagedQuerySelect(String sqlPagedQuerySelect) {
+        this.sqlPagedQuerySelect = sqlPagedQuerySelect;
+    }
+
+    public void setSqlPagedQueryCount(String sqlPagedQueryCount) {
+        this.sqlPagedQueryCount = sqlPagedQueryCount;
     }
 }

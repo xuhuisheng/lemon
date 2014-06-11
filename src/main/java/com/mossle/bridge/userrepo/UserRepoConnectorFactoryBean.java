@@ -22,18 +22,26 @@ public class UserRepoConnectorFactoryBean implements FactoryBean {
     private String type = "database";
     private JdbcTemplate jdbcTemplate;
     private UserRepoCache userRepoCache;
+    private String sqlFindById;
+    private String sqlFindByCode;
+    private String sqlFindAll;
 
     @PostConstruct
     public void afterPropertiesSet() {
         Assert.notNull(type, "type cannot be null");
 
-        if ("database".equals(type)) {
+        if ("mock".equals(type)) {
+            processMock();
+        } else if ("database".equals(type)) {
             processDatabase();
-        } else if ("memory".equals(type)) {
-            processMemory();
         } else {
             throw new IllegalArgumentException("unsupported type : " + type);
         }
+    }
+
+    public void processMock() {
+        MockUserRepoConnector mockUserRepoConnector = new MockUserRepoConnector();
+        userRepoConnector = mockUserRepoConnector;
     }
 
     public void processDatabase() {
@@ -41,6 +49,18 @@ public class UserRepoConnectorFactoryBean implements FactoryBean {
 
         DatabaseUserRepoConnector databaseUserRepoConnector = new DatabaseUserRepoConnector();
         databaseUserRepoConnector.setJdbcTemplate(jdbcTemplate);
+
+        if (sqlFindById != null) {
+            databaseUserRepoConnector.setSqlFindById(sqlFindById);
+        }
+
+        if (sqlFindByCode != null) {
+            databaseUserRepoConnector.setSqlFindByCode(sqlFindByCode);
+        }
+
+        if (sqlFindAll != null) {
+            databaseUserRepoConnector.setSqlFindAll(sqlFindAll);
+        }
 
         if (userRepoCache != null) {
             logger.debug("use cache for UserRepoConnector");
@@ -54,10 +74,6 @@ public class UserRepoConnectorFactoryBean implements FactoryBean {
         } else {
             userRepoConnector = databaseUserRepoConnector;
         }
-    }
-
-    public void processMemory() {
-        userRepoConnector = new MemoryUserRepoConnector();
     }
 
     public Object getObject() {
@@ -82,5 +98,17 @@ public class UserRepoConnectorFactoryBean implements FactoryBean {
 
     public void setUserRepoCache(UserRepoCache userRepoCache) {
         this.userRepoCache = userRepoCache;
+    }
+
+    public void setSqlFindById(String sqlFindById) {
+        this.sqlFindById = sqlFindById;
+    }
+
+    public void setSqlFindByCode(String sqlFindByCode) {
+        this.sqlFindByCode = sqlFindByCode;
+    }
+
+    public void setSqlFindAll(String sqlFindAll) {
+        this.sqlFindAll = sqlFindAll;
     }
 }

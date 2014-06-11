@@ -1,6 +1,12 @@
 package com.mossle.api.scope;
 
 public class ScopeDTO {
+    /** 普通的管理后台的类型. */
+    public static final int TYPE_NORMAL = 0;
+
+    /** cms前端显示静态页面的类型. */
+    public static final int TYPE_CMS = 1;
+
     /** 数据库里的逻辑id. */
     private String id;
 
@@ -18,6 +24,9 @@ public class ScopeDTO {
 
     /** 我们可以认为每个scope都是一个租户，每个租户当然需要关联一种登录的方式. */
     private String userRepoRef;
+
+    /** 类型. */
+    private int type;
 
     public String getId() {
         return id;
@@ -65,5 +74,13 @@ public class ScopeDTO {
 
     public void setUserRepoRef(String userRepoRef) {
         this.userRepoRef = userRepoRef;
+    }
+
+    public int getType() {
+        return type;
+    }
+
+    public void setType(int type) {
+        this.type = type;
     }
 }

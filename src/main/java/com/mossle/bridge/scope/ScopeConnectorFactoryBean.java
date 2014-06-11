@@ -22,16 +22,28 @@ public class ScopeConnectorFactoryBean implements FactoryBean {
     private String type = "database";
     private JdbcTemplate jdbcTemplate;
     private ScopeCache scopeCache;
+    private String sqlFindById;
+    private String sqlFindByCode;
+    private String sqlFindByRef;
+    private String sqlFindAll;
+    private String sqlFindSharedScopes;
 
     @PostConstruct
     public void afterPropertiesSet() {
         Assert.notNull(type, "type cannot be null");
 
-        if ("database".equals(type)) {
+        if ("mock".equals(type)) {
+            processMock();
+        } else if ("database".equals(type)) {
             processDatabase();
         } else {
             throw new IllegalArgumentException("unsupported type : " + type);
         }
+    }
+
+    public void processMock() {
+        MockScopeConnector mockScopeConnector = new MockScopeConnector();
+        scopeConnector = mockScopeConnector;
     }
 
     public void processDatabase() {
@@ -39,6 +51,26 @@ public class ScopeConnectorFactoryBean implements FactoryBean {
 
         DatabaseScopeConnector databaseScopeConnector = new DatabaseScopeConnector();
         databaseScopeConnector.setJdbcTemplate(jdbcTemplate);
+
+        if (sqlFindById != null) {
+            databaseScopeConnector.setSqlFindById(sqlFindById);
+        }
+
+        if (sqlFindByCode != null) {
+            databaseScopeConnector.setSqlFindByCode(sqlFindByCode);
+        }
+
+        if (sqlFindByRef != null) {
+            databaseScopeConnector.setSqlFindByRef(sqlFindByRef);
+        }
+
+        if (sqlFindAll != null) {
+            databaseScopeConnector.setSqlFindAll(sqlFindAll);
+        }
+
+        if (sqlFindSharedScopes != null) {
+            databaseScopeConnector.setSqlFindSharedScopes(sqlFindSharedScopes);
+        }
 
         if (scopeCache != null) {
             logger.debug("use cache for ScopeConnector");
@@ -74,5 +106,25 @@ public class ScopeConnectorFactoryBean implements FactoryBean {
 
     public void setScopeCache(ScopeCache scopeCache) {
         this.scopeCache = scopeCache;
+    }
+
+    public void setSqlFindById(String sqlFindById) {
+        this.sqlFindById = sqlFindById;
+    }
+
+    public void setSqlFindByCode(String sqlFindByCode) {
+        this.sqlFindByCode = sqlFindByCode;
+    }
+
+    public void setSqlFindByRef(String sqlFindByRef) {
+        this.sqlFindByRef = sqlFindByRef;
+    }
+
+    public void setSqlFindAll(String sqlFindAll) {
+        this.sqlFindAll = sqlFindAll;
+    }
+
+    public void setSqlFindSharedScopes(String sqlFindSharedScopes) {
+        this.sqlFindSharedScopes = sqlFindSharedScopes;
     }
 }

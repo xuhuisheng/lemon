@@ -52,6 +52,33 @@ public class StartProcessOperation extends AbstractOperation<Void> {
     public static final int STATUS_RUNNING = 2;
     private JsonMapper jsonMapper = new JsonMapper();
 
+    public Map<String, String> fetchFormTypeMap(String content) {
+        logger.debug("content : {}", content);
+
+        Map map = jsonMapper.fromJson(content, Map.class);
+        logger.debug("map : {}", map);
+
+        List<Map> sections = (List<Map>) map.get("sections");
+        logger.debug("sections : {}", sections);
+
+        Map<String, String> formTypeMap = new HashMap<String, String>();
+
+        for (Map section : sections) {
+            if (!"grid".equals(section.get("type"))) {
+                continue;
+            }
+
+            List<Map> fields = (List<Map>) section.get("fields");
+
+            for (Map field : fields) {
+                formTypeMap.put((String) field.get("name"),
+                        (String) field.get("type"));
+            }
+        }
+
+        return formTypeMap;
+    }
+
     public Void execute(CommandContext commandContext) {
         ProcessEngine processEngine = getProcessEngine();
         FormTemplateManager formTemplateManager = getFormTemplateManager();
@@ -83,18 +110,7 @@ public class StartProcessOperation extends AbstractOperation<Void> {
                     .parseLong(formInfo.getFormKey()));
 
             String content = formTemplate.getContent();
-            logger.debug("content : {}", content);
-
-            Map map = jsonMapper.fromJson(content, Map.class);
-            logger.debug("map : {}", map);
-
-            List<Map> list = (List<Map>) map.get("fields");
-            logger.debug("list : {}", list);
-
-            for (Map item : list) {
-                formTypeMap.put((String) item.get("name"),
-                        (String) item.get("type"));
-            }
+            formTypeMap = this.fetchFormTypeMap(content);
         }
 
         Record record = keyValue.findByCode(businessKey);
@@ -107,7 +123,7 @@ public class StartProcessOperation extends AbstractOperation<Void> {
             String value = prop.getValue();
             String formType = this.getFormType(formTypeMap, key);
 
-            if ("userPicker".equals(formType)) {
+            if ("userpicker".equals(formType)) {
                 processParameters.put(key,
                         new ArrayList(Arrays.asList(value.split(","))));
             } else if (formType != null) {

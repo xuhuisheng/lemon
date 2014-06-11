@@ -1,41 +1,43 @@
 package com.mossle.bpm.cmd;
 
-
 import org.activiti.engine.impl.interceptor.Command;
 import org.activiti.engine.impl.interceptor.CommandContext;
 import org.activiti.engine.impl.persistence.entity.ExecutionEntity;
+import org.activiti.engine.impl.persistence.entity.TaskEntity;
 import org.activiti.engine.impl.pvm.process.ActivityImpl;
 import org.activiti.engine.impl.pvm.process.ProcessDefinitionImpl;
 
 public class JumpCmd implements Command<Object> {
-	private String activityId;
-	private String processInstanceId;
-	private String jumpOrigin;
+    private String activityId;
+    private String executionId;
+    private String jumpOrigin;
 
-	public JumpCmd(String processInstanceId, String activityId) {
-		this(processInstanceId,activityId,"jump");
-	}
-	public JumpCmd(String processInstanceId, String activityId , String jumpOrigin) {
-		this.activityId = activityId;
-		this.processInstanceId = processInstanceId;
-		this.jumpOrigin = jumpOrigin;
-	}
+    public JumpCmd(String executionId, String activityId) {
+        this(executionId, activityId, "jump");
+    }
 
-	public Object execute(CommandContext commandContext) {
-        //parent execution
-		ExecutionEntity executionEntity = commandContext.getExecutionEntityManager().findExecutionById(processInstanceId);
+    public JumpCmd(String executionId, String activityId, String jumpOrigin) {
+        this.activityId = activityId;
+        this.executionId = executionId;
+        this.jumpOrigin = jumpOrigin;
+    }
 
-        //1. 删除当前execution的所有子execution
-        //2. 删除当前execution下的所有task
-        //3. 删除当前execution下的所有job
-        executionEntity.destroyScope(jumpOrigin);
+    public Object execute(CommandContext commandContext) {
+        for (TaskEntity taskEntity : commandContext.getTaskEntityManager()
+                .findTasksByExecutionId(executionId)) {
+            taskEntity.setVariableLocal("跳转原因", jumpOrigin);
+            commandContext.getTaskEntityManager().deleteTask(taskEntity,
+                    jumpOrigin, false);
+        }
 
-		ProcessDefinitionImpl processDefinition = executionEntity.getProcessDefinition();
-		ActivityImpl activity = processDefinition.findActivity(activityId);
+        ExecutionEntity executionEntity = commandContext
+                .getExecutionEntityManager().findExecutionById(executionId);
+        ProcessDefinitionImpl processDefinition = executionEntity
+                .getProcessDefinition();
+        ActivityImpl activity = processDefinition.findActivity(activityId);
 
-		executionEntity.executeActivity(activity);
+        executionEntity.executeActivity(activity);
 
-
-		return null;
-	}
+        return null;
+    }
 }
