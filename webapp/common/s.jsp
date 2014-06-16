@@ -41,8 +41,10 @@
     <!-- datepicker -->
     <link type="text/css" rel="stylesheet" href="${ctx}/s/bootstrap-datepicker/datepicker.css">
     <script type="text/javascript" src="${ctx}/s/bootstrap-datepicker/bootstrap-datepicker.js"></script>
+    <script type="text/javascript" src="${ctx}/s/bootstrap-datepicker/locales/bootstrap-datepicker.${locale}.js"></script>
     <link href="${ctx}/s/bootstrap-datetimepicker/css/datetimepicker.css" rel="stylesheet">
     <script type="text/javascript" src="${ctx}/s/bootstrap-datetimepicker/js/bootstrap-datetimepicker.js"></script>
+    <script type="text/javascript" src="${ctx}/s/bootstrap-datetimepicker/js/locales/bootstrap-datetimepicker.${locale}.js"></script>
 
 	<!-- tree -->
     <link rel="stylesheet" href="${ctx}/s/ztree/zTreeStyle/zTreeStyle.css" type="text/css" />
@@ -80,9 +82,13 @@ $(function() {
         fileButtonHtml: '选择文件'
     });
 
-    $('.datepicker').datepicker({format:'yyyy-mm-dd'});
+    $('.datepicker').datepicker({
+		language: '${locale}',
+		format: 'yyyy-mm-dd'
+	});
 
     $('.datetimepicker').datetimepicker({
+		language: '${locale}',
         format: "yyyy-mm-dd hh:ii",
         autoclose: true,
         todayBtn: true,
