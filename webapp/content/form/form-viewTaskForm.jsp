@@ -11,7 +11,6 @@
     <%@include file="/common/s.jsp"%>
 	<link href="${scopePrefix}/widgets/xform/styles/xform.css" rel="stylesheet">
     <script type="text/javascript" src="${scopePrefix}/widgets/xform/xform-packed.js"></script>
-    <script type="text/javascript" src="${scopePrefix}/widgets/xform/container-layout.js"></script>
 	<script type="text/javascript">
 document.onmousedown = function(e) {};
 document.onmousemove = function(e) {};
@@ -84,6 +83,13 @@ $(function() {
 				break;
 		}
 	});
+
+	setTimeout(function() {
+		$('.datepicker').datepicker({
+			language: 'zh_CN',
+			format: 'yyyy-mm-dd'
+		})
+	}, 500);
 })
     </script>
 	
