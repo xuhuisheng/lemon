@@ -10,6 +10,7 @@ import javax.persistence.FetchType;
 import javax.persistence.GeneratedValue;
 import javax.persistence.Id;
 import javax.persistence.OneToMany;
+import javax.persistence.OrderBy;
 import javax.persistence.Table;
 
 /**
@@ -90,6 +91,7 @@ public class BpmCategory implements java.io.Serializable {
 
     /** @return . */
     @OneToMany(fetch = FetchType.LAZY, mappedBy = "bpmCategory")
+    @OrderBy("priority")
     public Set<BpmProcess> getBpmProcesses() {
         return this.bpmProcesses;
     }
