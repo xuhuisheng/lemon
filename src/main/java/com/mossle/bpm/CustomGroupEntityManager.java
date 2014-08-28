@@ -2,7 +2,11 @@ package com.mossle.bpm;
 
 import java.util.ArrayList;
 import java.util.List;
-import java.util.Map;
+
+import javax.annotation.Resource;
+
+import com.mossle.api.org.OrgConnector;
+import com.mossle.api.org.OrgDTO;
 
 import org.activiti.engine.identity.Group;
 import org.activiti.engine.impl.persistence.entity.GroupEntity;
@@ -11,32 +15,29 @@ import org.activiti.engine.impl.persistence.entity.GroupEntityManager;
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
 
-import org.springframework.jdbc.core.JdbcTemplate;
-
 public class CustomGroupEntityManager extends GroupEntityManager {
     private static Logger logger = LoggerFactory
             .getLogger(CustomGroupEntityManager.class);
-    private JdbcTemplate jdbcTemplate;
+    private OrgConnector orgConnector;
 
     @Override
     public List<Group> findGroupsByUser(String userId) {
         logger.debug("findGroupsByUser : {}", userId);
 
-        String sql = "select parent.name as name from party_entity parent, party_struct ps, party_entity child"
-                + " where parent.id=ps.parent_entity_id and child.id=ps.child_entity_id and child.name=?";
-        List<Map<String, Object>> list = jdbcTemplate.queryForList(sql, userId);
         List<Group> groups = new ArrayList<Group>();
 
-        for (Map<String, Object> map : list) {
-            String name = (String) map.get("name");
-            GroupEntity groupEntity = new GroupEntity(name);
+        for (OrgDTO orgDto : orgConnector.getOrgsByUserId(userId)) {
+            GroupEntity groupEntity = new GroupEntity(orgDto.getId());
+            groupEntity.setName(orgDto.getName());
+            groupEntity.setType(orgDto.getTypeName());
             groups.add(groupEntity);
         }
 
         return groups;
     }
 
-    public void setJdbcTemplate(JdbcTemplate jdbcTemplate) {
-        this.jdbcTemplate = jdbcTemplate;
+    @Resource
+    public void setOrgConnector(OrgConnector orgConnector) {
+        this.orgConnector = orgConnector;
     }
 }

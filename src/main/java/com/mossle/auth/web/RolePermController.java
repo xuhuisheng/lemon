@@ -14,10 +14,12 @@ import com.mossle.api.scope.ScopeHolder;
 import com.mossle.auth.component.RoleDefChecker;
 import com.mossle.auth.domain.Perm;
 import com.mossle.auth.domain.PermType;
+import com.mossle.auth.domain.Role;
 import com.mossle.auth.domain.RoleDef;
 import com.mossle.auth.manager.PermManager;
 import com.mossle.auth.manager.PermTypeManager;
 import com.mossle.auth.manager.RoleDefManager;
+import com.mossle.auth.manager.RoleManager;
 import com.mossle.auth.support.CheckRoleException;
 
 import com.mossle.core.spring.MessageHelper;
@@ -45,6 +47,7 @@ public class RolePermController {
     private PermTypeManager permTypeManager;
     private MessageHelper messageHelper;
     private RoleDefChecker roleDefChecker;
+    private RoleManager roleManager;
 
     @RequestMapping("role-perm-save")
     public String save(
@@ -57,7 +60,8 @@ public class RolePermController {
         }
 
         try {
-            RoleDef roleDef = roleDefManager.get(id);
+            Role role = roleManager.get(id);
+            RoleDef roleDef = role.getRoleDef();
             roleDefChecker.check(roleDef);
             roleDef.getPerms().clear();
 
@@ -81,7 +85,8 @@ public class RolePermController {
 
     @RequestMapping("role-perm-input")
     public String input(@RequestParam("id") Long id, Model model) {
-        RoleDef roleDef = roleDefManager.get(id);
+        Role role = roleManager.get(id);
+        RoleDef roleDef = role.getRoleDef();
         List<Long> selectedItem = new ArrayList<Long>();
 
         for (Perm perm : roleDef.getPerms()) {
@@ -122,5 +127,10 @@ public class RolePermController {
     @Resource
     public void setMessageHelper(MessageHelper messageHelper) {
         this.messageHelper = messageHelper;
+    }
+
+    @Resource
+    public void setRoleManager(RoleManager roleManager) {
+        this.roleManager = roleManager;
     }
 }

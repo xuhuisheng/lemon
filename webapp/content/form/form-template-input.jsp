@@ -10,7 +10,7 @@
     <title>designer</title>
     <%@include file="/common/s.jsp"%>
 	<link href="${scopePrefix}/widgets/xform/styles/xform.css" rel="stylesheet">
-    <script type="text/javascript" src="${scopePrefix}/widgets/xform/xform-packed.js"></script>
+    <script type="text/javascript" src="${scopePrefix}/widgets/xform/xform-all.js"></script>
     <script type="text/javascript" src="${scopePrefix}/widgets/xform/adaptor.js"></script>
   </head>
 
@@ -27,6 +27,7 @@
 		  <ul class="nav nav-tabs" id="myTab">
             <li class="active"><a href="#operation" data-toggle="tab">操作</a></li>
 			<li><a href="#form" data-toggle="tab">表单</a></li>
+			<li><a href="#prop" data-toggle="tab">属性</a></li>
 		  </ul> 
 		  <div class="tab-content">
 			<div class="tab-pane active" id="operation">
@@ -81,6 +82,23 @@
 				</div>
 			  </div>
 			</div>
+			<div class="tab-pane" id="prop">
+			  <div class="popover" style="display:block;position:relative;">
+				<h3 class="popover-title">属性</h3>
+				<div class="popover-content">
+				  <div id="xf-form-attribute" class="controls">
+				    <label>
+					  名称
+				      <input id="xFormName" type="text">
+					</label>
+				    <label>
+					  标识
+				      <input id="xFormCode" type="text">
+                    </label>
+				  </div>
+				</div>
+			  </div>
+			</div>
 		  </div>
 	    </div>
 
@@ -123,6 +141,7 @@
 	  <input id="__gef_id__" name="id" value="${model.id}">
     </c:if>
 	  <input id="__gef_name__" name="name" value="${model.name}">
+	  <input id="__gef_code__" name="code" value="${model.code}">
 	  <textarea id="__gef_content__" name="content">${model.content}</textarea>
 	</form>
 	</div>

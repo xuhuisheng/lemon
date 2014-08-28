@@ -2,10 +2,12 @@ package com.mossle.ext.store;
 
 import java.io.InputStream;
 
+import org.springframework.core.io.Resource;
+
 public class StoreDTO {
     private String model;
     private String key;
-    private InputStream inputStream;
+    private Resource resource;
 
     public String getModel() {
         return model;
@@ -23,11 +25,11 @@ public class StoreDTO {
         this.key = key;
     }
 
-    public InputStream getInputStream() {
-        return inputStream;
+    public Resource getResource() {
+        return resource;
     }
 
-    public void setInputStream(InputStream inputStream) {
-        this.inputStream = inputStream;
+    public void setResource(Resource resource) {
+        this.resource = resource;
     }
 }

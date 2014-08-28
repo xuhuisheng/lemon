@@ -2,7 +2,9 @@ package com.mossle.bpm.notice;
 
 import java.util.List;
 
+import com.mossle.api.msg.MsgConnector;
 import com.mossle.api.user.UserConnector;
+import com.mossle.api.user.UserDTO;
 
 import com.mossle.bpm.persistence.domain.BpmConfNotice;
 import com.mossle.bpm.persistence.domain.BpmMailTemplate;
@@ -57,22 +59,21 @@ public class CompleteNotice {
         BpmMailTemplate bpmMailTemplate = bpmConfNotice.getBpmMailTemplate();
         ExpressionManager expressionManager = Context
                 .getProcessEngineConfiguration().getExpressionManager();
-        String to = null;
+        UserDTO userDto = null;
 
         if ("任务接收人".equals(receiver)) {
-            to = userConnector.findById(delegateTask.getAssignee()).getEmail();
+            userDto = userConnector.findById(delegateTask.getAssignee());
         } else if ("流程发起人".equals(receiver)) {
-            to = userConnector.findById(
-                    (String) delegateTask.getVariables().get("initiator"))
-                    .getEmail();
+            userDto = userConnector.findById((String) delegateTask
+                    .getVariables().get("initiator"));
         } else {
             HistoricProcessInstanceEntity historicProcessInstanceEntity = Context
                     .getCommandContext()
                     .getHistoricProcessInstanceEntityManager()
                     .findHistoricProcessInstance(
                             delegateTask.getProcessInstanceId());
-            to = userConnector.findById(
-                    historicProcessInstanceEntity.getStartUserId()).getEmail();
+            userDto = userConnector.findById(historicProcessInstanceEntity
+                    .getStartUserId());
         }
 
         String subject = expressionManager
@@ -82,7 +83,20 @@ public class CompleteNotice {
         String content = expressionManager
                 .createExpression(bpmMailTemplate.getContent())
                 .getValue(taskEntity).toString();
-        mailFacade.sendMail(to, subject, content);
+        this.sendMail(userDto, subject, content);
+        this.sendSiteMessage(userDto, subject, content);
+    }
+
+    public void sendMail(UserDTO userDto, String subject, String content) {
+        MailFacade mailFacade = ApplicationContextHelper
+                .getBean(MailFacade.class);
+        mailFacade.sendMail(userDto.getEmail(), subject, content);
+    }
+
+    public void sendSiteMessage(UserDTO userDto, String subject, String content) {
+        MsgConnector msgConnector = ApplicationContextHelper
+                .getBean(MsgConnector.class);
+        msgConnector.send(subject, content, userDto.getId(), null);
     }
 
     public String getInitiator(UserConnector userConnector,

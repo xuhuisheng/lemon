@@ -22,7 +22,11 @@ public class ResourceSubscriber implements Subscribable<String> {
         }
     }
 
-    public String getTopic() {
+    public boolean isTopic() {
+        return true;
+    }
+
+    public String getName() {
         return "topic.security.resource";
     }
 

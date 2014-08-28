@@ -33,6 +33,7 @@ import com.mossle.doc.manager.DocInfoManager;
 
 import com.mossle.ext.export.Exportor;
 import com.mossle.ext.export.TableModel;
+import com.mossle.ext.store.MultipartFileResource;
 import com.mossle.ext.store.StoreConnector;
 import com.mossle.ext.store.StoreDTO;
 
@@ -107,7 +108,8 @@ public class DocInfoController {
         }
 
         StoreDTO storeDto = storeConnector.save("docinfo",
-                attachment.getInputStream(), attachment.getOriginalFilename());
+                new MultipartFileResource(attachment),
+                attachment.getOriginalFilename());
 
         dest.setName(attachment.getOriginalFilename());
         dest.setPath(storeDto.getKey());
@@ -128,7 +130,7 @@ public class DocInfoController {
 
         try {
             ServletUtils.setFileDownloadHeader(response, docInfo.getName());
-            is = storeConnector.get("docinfo", docInfo.getPath())
+            is = storeConnector.get("docinfo", docInfo.getPath()).getResource()
                     .getInputStream();
             IoUtils.copyStream(is, response.getOutputStream());
         } finally {

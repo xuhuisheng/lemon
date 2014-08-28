@@ -99,11 +99,9 @@ $(function() {
     <thead>
       <tr>
         <th width="10" class="m-table-check"><input type="checkbox" name="checkAll" onchange="toggleSelectedItems(this.checked)"></th>
-        <th class="sorting" name="id"><spring:message code="msg-info.msg-info.list.id" text="编号"/></th>
-        <th class="sorting" name="name"><spring:message code="msg-info.msg-info.list.name" text="名称"/></th>
-        <th class="sorting" name="name">创建时间</th>
-        <th class="sorting" name="name">接收人</th>
-        <th class="sorting" name="name">发送人</th>
+        <th class="sorting" name="name">标题</th>
+        <th class="sorting" name="name">收件人</th>
+        <th class="sorting" name="name">发送时间</th>
         <th class="sorting" name="name">状态</th>
         <th width="80">&nbsp;</th>
       </tr>
@@ -113,11 +111,9 @@ $(function() {
       <c:forEach items="${page.result}" var="item">
       <tr>
         <td><input type="checkbox" class="selectedItem a-check" name="selectedItem" value="${item.id}"></td>
-        <td>${item.id}</td>
         <td>${item.name}</td>
-        <td>${item.createTime}</td>
         <td>${item.receiverUsername}</td>
-        <td>${item.senderUsername}</td>
+        <td>${item.createTime}</td>
         <td>${item.status == 0 ? '未读' : '已读'}</td>
         <td>
           <a href="msg-info-input.do?id=${item.id}" class="a-update"><spring:message code="core.list.edit" text="编辑"/></a>

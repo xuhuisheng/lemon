@@ -17,7 +17,13 @@ $(function() {
 			var box = bootbox.dialog('<div class="progress progress-striped active" style="margin:0px;"><div class="bar" style="width: 100%;"></div></div>');
             form.submit();
         },
-        errorClass: 'validate-error'
+        errorClass: 'validate-error',
+        'rules': {
+            'username': {
+                'required': true,
+                'remote': '${scopePrefix}/rs/user/exists'
+            }
+		}
     });
 })
     </script>
@@ -46,7 +52,7 @@ $(function() {
   <div class="control-group">
     <label class="control-label" for="msg-info_priority">收件人</label>
 	<div class="controls">
-	  <input id="msg-info_priority" type="text" name="receiverUsername" value="${model.receiverUsername}" size="40" class="text">
+	  <input id="msgInfo_username" type="text" name="username" value="" size="40" class="text">
     </div>
   </div>
   <div class="control-group">

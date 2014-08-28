@@ -123,7 +123,7 @@ public class PartyResource {
                 if (partyStruct.getPartyStructType().getId() == partyStructTypeId) {
                     PartyEntity childPartyEntity = partyStruct.getChildEntity();
 
-                    if (childPartyEntity.getPartyType().getType() == 0) {
+                    if (childPartyEntity.getPartyType().getType() != 1) {
                         partyEntities.add(childPartyEntity);
                     }
                 }

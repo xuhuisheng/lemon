@@ -1,95 +1,142 @@
 var createUserPicker = function(conf) {
-	if (!conf) {
-		conf = {
-			modalId: 'userPicker',
-			multiple: false,
-			url: '/mossle-web-user/default/rs/user/search'
-		};
+	conf = conf ? conf : {};
+	var defaults = {
+		modalId: 'userPicker',
+		multiple: false,
+		url: '/mossle-web-user/default/rs/user/search'
+	};
+	for (var key in defaults) {
+		if (!conf[key]) {
+			conf[key] = defaults[key];
+		}
 	}
-	if ($('#' + conf.modalId).length == 0) {
-		$(document.body).append(
+
+    if ($('#' + conf.modalId).length == 0) {
+        $(document.body).append(
 '<div id="' + conf.modalId + '" class="modal hide fade">'
 +'  <div class="modal-header">'
 +'    <button type="button" class="close" data-dismiss="modal" aria-hidden="true">&times;</button>'
 +'    <h3>选择用户</h3>'
 +'  </div>'
 +'  <div class="modal-body">'
-+'      <!--'
-+'	  <article class="m-blank">'
-+'	    <div class="pull-left">'
-+'		  <form name="userForm" method="post" action="javascript:void(0);return false;" class="form-inline m-form-bottom">'
-+'    	    <label for="user_username">账号:</label>'
-+'			<input type="text" id="user_username" name="filter_LIKES_username" value="">'
-+'			<button class="btn btn-small" onclick="document.userForm.submit()">查询</button>'
-+'		  </form>'
-+'		</div>'
-+'	    <div class="m-clear"></div>'
-+'	  </article>'
-+'      -->'
-+'      <article class="m-widget">'
-+'        <header class="header">'
-+'		  <h4 class="title">用户列表</h4>'
-+'		</header>'
-+'		<div class="content">'
-+'<form id="userPickerForm" name="userPickerForm" method="post" action="#" class="m-form-blank">'
-+'  <table id="userPickerGrid" class="m-table table-hover">'
++'    <article class="m-blank">'
++'      <div class="pull-left" style="display:table"><div style="display:table-cell">'
++'        <label for="' + conf.modalId + '_username" style="display:inline">账号:</label>'
++'        <input type="text" id="' + conf.modalId + '_username" value="" style="margin-bottom:0px;">'
++'        <button id="' + conf.modalId + '_search" class="btn btn-small">查询</button></div>'
++'      </div>'
++'      <div class="m-clear"></div>'
++'    </article>'
++'    <article class="m-widget">'
++'      <header class="header">'
++'        <h4 class="title">用户</h4>'
++'      </header>'
++'      <div class="content">'
++'  <table id="' + conf.modalId + '_grid" class="m-table table-hover">'
 +'    <thead>'
 +'      <tr>'
 +'        <th width="10" class="m-table-check">&nbsp;</th>'
-+'        <th>账号</th>'
++'        <th>姓名</th>'
 +'      </tr>'
 +'    </thead>'
-+'    <tbody id="userPickerBody">'
++'    <tbody id="' + conf.modalId + '_body">'
 +'      <tr>'
-+'        <td><input id="selectedItem1" type="checkbox" class="selectedItem" name="selectedItem" value="1"></td>'
++'        <td><input id="' + conf.modalId + '_item_1" type="' + (conf.multiple ? 'checkbox' : 'radio') + '" name="selectedItem" class="selectedItem" value="1" title="admin" style="margin-top:0px;"></td>'
 +'        <td>admin</td>'
 +'      </tr>'
 +'      <tr>'
-+'        <td><input id="selectedItem2" type="checkbox" class="selectedItem" name="selectedItem" value="2"></td>'
++'        <td><input id="' + conf.modalId + '_item_2" type="' + (conf.multiple ? 'checkbox' : 'radio') + '" name="selectedItem" class="selectedItem" value="2" title="user" style="margin-top:0px;"></td>'
 +'        <td>user</td>'
 +'      </tr>'
 +'    </tbody>'
 +'  </table>'
-+'</form>'
-+'        </div>'
-+'      </article>'
++'      </div>'
++'    </article>'
 +'  </div>'
 +'  <div class="modal-footer">'
-+'    <span id="userPickerResult"></span>'
-+'    <a id="userPickerBtnClose" href="#" class="btn" data-dismiss="modal">关闭</a>'
-+'    <a id="userPickerBtnSelect" href="#" class="btn btn-primary">选择</a>'
++'    <span id="' + conf.modalId + '_result" style="float:left;"></span>'
++'    <a id="' + conf.modalId + '_close" href="#" class="btn" data-dismiss="modal">关闭</a>'
++'    <a id="' + conf.modalId + '_select" href="#" class="btn btn-primary">选择</a>'
 +'  </div>'
 +'</div>');
+    }
+
+	var doSearch = function(username) {
+        $.ajax({
+            url: conf.url,
+            data: {
+                username: username
+            },
+            success: function(data) {
+                var html = '';
+                for (var i = 0; i < data.length; i++) {
+                    var item = data[i];
+                    html +=
+                      '<tr>'
+                        +'<td><input id="' + conf.modalId + '_item_' + i + '" type="' + (conf.multiple ? 'checkbox' : 'radio') + '" class="selectedItem" value="'
+                        + item.id + '" title="' + item.displayName + '"></td>'
+                        +'<td><label for="' + conf.modalId + '_item_' + i + '">' + item.displayName + '</label></td>'
+                      +'</tr>'
+                }
+                $('#' + conf.modalId + '_body').html(html);
+            }
+        });
 	}
 
-	$(document).delegate('.userPicker .add-on', 'click', function(e) {
-		$('#' + conf.modalId).data('userPicker', $(this).parent());
-		$('#' + conf.modalId).modal();
-		$.ajax({
-			url: conf.url,
-			data: {
-				username: ''
-			},
-			success: function(data) {
-				var html = '';
-				for (var i = 0; i < data.length; i++) {
-					var item = data[i];
-					html +=
-					  '<tr>'
-						+'<td><input id="selectedItem' + i + '" type="radio" class="selectedItem" name="selectedItem" value="'
-						+ item.id + '" title="' + item.displayName + '"></td>'
-						+'<td><label for="selectedItem' + i + '">' + item.displayName + '</label></td>'
-					  +'</tr>'
-				}
-				$('#' + conf.modalId + 'Body').html(html);
+    $(document).delegate('.userPicker .add-on', 'click', function(e) {
+        $('#' + conf.modalId).data('userPicker', $(this).parent());
+        $('#' + conf.modalId).modal();
+
+		doSearch('');
+    });
+
+    // $(document).delegate('#' + conf.modalId + '_body tr', 'click', function(e) {
+	//	$('input[type=radio].selectedItem').prop('checked', false);
+	//	$(this).find('.selectedItem').prop('checked', true);
+    // });
+
+    $(document).delegate('#' + conf.modalId + '_body .selectedItem', 'click', function(e) {
+		if (conf.multiple) {
+			var el = $(this);
+			if (el.prop('checked')) {
+				var html = '&nbsp;<span class="label" id="' + $(this).val() + '" title="' + $(this).attr('title') + '">' + $(this).attr('title') + '<i class="icon-minus-sign" style="cursor:pointer;"></i></span>';
+				$('#' + conf.modalId + '_result').append(html);
+			} else {
+				$('#' + conf.modalId + '_result #' + el.val()).remove();
 			}
-		});
+		} else {
+			var html = '<span class="label" id="' + $(this).val() + '" title="' + $(this).attr('title') + '">' + $(this).attr('title') + '<i class="icon-minus-sign" style="cursor:pointer;"></i></span>';
+			$('#' + conf.modalId + '_result').html(html);
+		}
 	});
 
-	$(document).delegate('#' + conf.modalId + 'BtnSelect', 'click', function(e) {
-		$('#' + conf.modalId).modal('hide');
-		var userPickerElement = $('#' + conf.modalId).data('userPicker');
-		userPickerElement.children('input[type=hidden]').val($('.selectedItem:checked').val());
-		userPickerElement.children('input[type=text]').val($('.selectedItem:checked').attr('title'));
+	$(document).delegate('.icon-minus-sign', 'click', function(e) {
+		var id = $(this).parent().attr('id');
+		$('#' + conf.modalId + '_item_' + id).prop('checked', false);
+		$(this).parent().remove();
 	});
+
+	$(document).delegate('#' + conf.modalId + '_search', 'click', function(e) {
+		doSearch($('#' + conf.modalId + '_username').val());
+	});
+
+    $(document).delegate('#' + conf.modalId + '_select', 'click', function(e) {
+        $('#' + conf.modalId).modal('hide');
+        var userPickerElement = $('#' + conf.modalId).data('userPicker');
+		if (conf.multiple) {
+			var el = $('#' + conf.modalId + '_result .label');
+			var ids = [];
+			var names = [];
+			el.each(function(index, item) {
+				ids.push($(item).attr('id'));
+				names.push($(item).attr('title'));
+			});
+			userPickerElement.children('input[type=hidden]').val(ids.join(','));
+			userPickerElement.children('input[type=text]').val(names.join(','));
+		} else {
+			var el = $('#' + conf.modalId + '_result .label');
+			userPickerElement.children('input[type=hidden]').val(el.attr('id'));
+			userPickerElement.children('input[type=text]').val(el.attr('title'));
+		}
+    });
 }

@@ -8,7 +8,9 @@ import java.util.Map;
 import javax.annotation.Resource;
 
 import com.mossle.api.scope.ScopeHolder;
+import com.mossle.api.user.UserDTO;
 
+import com.mossle.user.component.UserPublisher;
 import com.mossle.user.notification.DefaultUserNotification;
 import com.mossle.user.notification.UserNotification;
 import com.mossle.user.persistence.domain.UserAttr;
@@ -36,8 +38,11 @@ public class UserService {
     private UserRepoManager userRepoManager;
     private UserAttrManager userAttrManager;
     private UserSchemaManager userSchemaManager;
-    private UserNotification userNotification = new DefaultUserNotification();
+    private UserPublisher userPublisher;
 
+    /**
+     * 添加用户.
+     */
     public void insertUser(UserBase userBase, Long userRepoId,
             Map<String, Object> parameters) {
         // user repo
@@ -53,6 +58,13 @@ public class UserService {
             UserSchema userSchema = userSchemaManager.findUnique(
                     "from UserSchema where code=? and userRepo.id=?", key,
                     userRepoId);
+
+            if (userSchema == null) {
+                logger.debug("skip : {}", key);
+
+                continue;
+            }
+
             UserAttr userAttr = new UserAttr();
             userAttr.setUserSchema(userSchema);
             userAttr.setUserBase(userBase);
@@ -84,9 +96,12 @@ public class UserService {
             userAttrManager.save(userAttr);
         }
 
-        userNotification.insertUser(userBase);
+        userPublisher.notifyUserCreated(this.convertUserDto(userBase));
     }
 
+    /**
+     * 更新用户.
+     */
     public void updateUser(UserBase userBase, Long userRepoId,
             Map<String, Object> parameters) {
         // user repo
@@ -95,11 +110,18 @@ public class UserService {
 
         for (Map.Entry<String, Object> entry : parameters.entrySet()) {
             String key = entry.getKey();
-            String value = (String) entry.getValue();
+            String value = this.getStringValue(entry.getValue());
 
             UserSchema userSchema = userSchemaManager.findUnique(
                     "from UserSchema where code=? and userRepo.id=?", key,
                     userRepoId);
+
+            if (userSchema == null) {
+                logger.debug("skip : {}", key);
+
+                continue;
+            }
+
             UserAttr userAttr = userAttrManager.findUnique(
                     "from UserAttr where userSchema=? and userBase=?",
                     userSchema, userBase);
@@ -136,13 +158,39 @@ public class UserService {
             userAttrManager.save(userAttr);
         }
 
-        userNotification.updateUser(userBase);
+        userPublisher.notifyUserUpdated(this.convertUserDto(userBase));
     }
 
+    /**
+     * 删除用户.
+     */
     public void removeUser(UserBase userBase) {
         userBaseManager.removeAll(userBase.getUserAttrs());
         userBaseManager.remove(userBase);
-        userNotification.removeUser(userBase);
+        userPublisher.notifyUserRemoved(this.convertUserDto(userBase));
+    }
+
+    public String getStringValue(Object value) {
+        if (value == null) {
+            return null;
+        }
+
+        if (value instanceof String) {
+            return (String) value;
+        }
+
+        return value.toString();
+    }
+
+    public UserDTO convertUserDto(UserBase userBase) {
+        UserDTO userDto = new UserDTO();
+        userDto.setId(Long.toString(userBase.getId()));
+        userDto.setUsername(userBase.getUsername());
+        userDto.setDisplayName(userBase.getNickName());
+        userDto.setEmail(userBase.getEmail());
+        userDto.setMobile(userBase.getMobile());
+
+        return userDto;
     }
 
     @Resource
@@ -165,8 +213,8 @@ public class UserService {
         this.userSchemaManager = userSchemaManager;
     }
 
-    @Autowired(required = false)
-    public void setUserNotification(UserNotification userNotification) {
-        this.userNotification = userNotification;
+    @Resource
+    public void setUserPublisher(UserPublisher userPublisher) {
+        this.userPublisher = userPublisher;
     }
 }

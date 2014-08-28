@@ -1,0 +1,33 @@
+{
+	"code":"permission-request",
+	"name":"发起申请",
+	"sections":[{
+		"type":"text",
+		"tag":"h1",
+		"text":"发起申请"
+	},{
+		"type":"grid",
+		"row":"1",
+		"col":"4",
+		"merge":[{
+			"startId":"0-1",
+			"minRow":0,
+			"minCol":1,
+			"maxRow":0,
+			"maxCol":3
+		}],
+		"fields":[{
+			"type":"label",
+			"row":0,
+			"col":0,
+			"text":"申请"
+		},{
+			"type":"textfield",
+			"row":0,
+			"col":1,
+			"name":"name",
+			"required":false,
+			"readOnly":false
+		}]
+	}]
+}

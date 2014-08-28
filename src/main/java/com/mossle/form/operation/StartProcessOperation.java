@@ -1,7 +1,10 @@
 package com.mossle.form.operation;
 
+import java.io.IOException;
+
 import java.util.ArrayList;
 import java.util.Arrays;
+import java.util.Collections;
 import java.util.HashMap;
 import java.util.List;
 import java.util.Map;
@@ -55,28 +58,34 @@ public class StartProcessOperation extends AbstractOperation<Void> {
     public Map<String, String> fetchFormTypeMap(String content) {
         logger.debug("content : {}", content);
 
-        Map map = jsonMapper.fromJson(content, Map.class);
-        logger.debug("map : {}", map);
+        try {
+            Map map = jsonMapper.fromJson(content, Map.class);
+            logger.debug("map : {}", map);
 
-        List<Map> sections = (List<Map>) map.get("sections");
-        logger.debug("sections : {}", sections);
+            List<Map> sections = (List<Map>) map.get("sections");
+            logger.debug("sections : {}", sections);
 
-        Map<String, String> formTypeMap = new HashMap<String, String>();
+            Map<String, String> formTypeMap = new HashMap<String, String>();
 
-        for (Map section : sections) {
-            if (!"grid".equals(section.get("type"))) {
-                continue;
+            for (Map section : sections) {
+                if (!"grid".equals(section.get("type"))) {
+                    continue;
+                }
+
+                List<Map> fields = (List<Map>) section.get("fields");
+
+                for (Map field : fields) {
+                    formTypeMap.put((String) field.get("name"),
+                            (String) field.get("type"));
+                }
             }
 
-            List<Map> fields = (List<Map>) section.get("fields");
+            return formTypeMap;
+        } catch (IOException ex) {
+            logger.error(ex.getMessage(), ex);
 
-            for (Map field : fields) {
-                formTypeMap.put((String) field.get("name"),
-                        (String) field.get("type"));
-            }
+            return Collections.emptyMap();
         }
-
-        return formTypeMap;
     }
 
     public Void execute(CommandContext commandContext) {
@@ -106,8 +115,8 @@ public class StartProcessOperation extends AbstractOperation<Void> {
         Map<String, String> formTypeMap = new HashMap<String, String>();
 
         if (formInfo.isFormExists()) {
-            FormTemplate formTemplate = formTemplateManager.get(Long
-                    .parseLong(formInfo.getFormKey()));
+            FormTemplate formTemplate = formTemplateManager.findUniqueBy(
+                    "code", formInfo.getFormKey());
 
             String content = formTemplate.getContent();
             formTypeMap = this.fetchFormTypeMap(content);

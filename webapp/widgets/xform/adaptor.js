@@ -19,9 +19,19 @@ window.onload = function() {
 
 	xform.render();
 
+	xf.$('xFormName').onblur = function() {
+		xform.name = this.value;
+	}
+	xf.$('xFormCode').onblur = function() {
+		xform.code = this.value;
+	}
+
 	if ($('#__gef_content__').val() != '') {
 		try {
 			xform.doImport($('#__gef_content__').val());
+
+			xf.$('xFormName').value = xform.name;
+			xf.$('xFormCode').value = xform.code;
 		} catch(e) {
 			console.error(e);
 			xform.sections = [];
@@ -33,9 +43,12 @@ window.onload = function() {
 }
 
 function doImport() {
-	var value = prompt('text', '{"sections":[{"type":"text","tag":"h1",text:"title"},{"type":"grid","row":"2",col:"4","fields":[{"type":"label","row":0,"col":0,"text":"11111111111"},{"type":"textfield","row":0,"col":1,"name":"test","required":true}]}]}');
+	var value = prompt('text', '{"name":"name","code":"code","sections":[{"type":"text","tag":"h1",text:"title"},{"type":"grid","row":"2",col:"4","fields":[{"type":"label","row":0,"col":0,"text":"11111111111"},{"type":"textfield","row":0,"col":1,"name":"test","required":true}]}]}');
 	if (value != '') {
 		xform.doImport(value);
+
+		xf.$('xFormName').value = xform.name;
+		xf.$('xFormCode').value = xform.code;
 	}
 }
 
@@ -62,7 +75,8 @@ function doSplit() {
 }
 
 function doSave() {
-	$('#__gef_name__').val(xform.sections[0].text);
+	xf.$('__gef_name__').value = xform.name;
+	xf.$('__gef_code__').value = xform.code;
 	$('#__gef_content__').val(xform.doExport());
 	$('#f').submit();
 }

@@ -63,7 +63,7 @@
 	</bean>
 
 	<bean id="cmsFilter" class="com.mossle.core.servlet.ProxyFilter">
-		<property name="name" value="sms"/>
+		<property name="name" value="cms"/>
 		<property name="filter">
 			<bean class="com.mossle.bridge.cms.CmsFilter">
 				<property name="baseDir" value="${store.baseDir}/cms/html"/>

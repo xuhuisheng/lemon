@@ -6,10 +6,11 @@ import java.util.Collections;
 
 import org.activiti.bpmn.model.BpmnModel;
 
-import org.activiti.engine.impl.bpmn.diagram.ProcessDiagramGenerator;
 import org.activiti.engine.impl.cmd.GetBpmnModelCmd;
 import org.activiti.engine.impl.interceptor.Command;
 import org.activiti.engine.impl.interceptor.CommandContext;
+
+import org.activiti.image.impl.DefaultProcessDiagramGenerator;
 
 public class ProcessDefinitionDiagramCmd implements Command<InputStream> {
     protected String processDefinitionId;
@@ -23,8 +24,8 @@ public class ProcessDefinitionDiagramCmd implements Command<InputStream> {
                 processDefinitionId);
         BpmnModel bpmnModel = getBpmnModelCmd.execute(commandContext);
 
-        InputStream is = ProcessDiagramGenerator.generateDiagram(bpmnModel,
-                "png", Collections.EMPTY_LIST);
+        InputStream is = new DefaultProcessDiagramGenerator().generateDiagram(
+                bpmnModel, "png", Collections.EMPTY_LIST);
 
         return is;
     }

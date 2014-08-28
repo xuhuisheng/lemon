@@ -39,6 +39,9 @@ public class PartyEntity implements java.io.Serializable {
     /** null. */
     private String scopeId;
 
+    /** null. */
+    private Integer level;
+
     /** . */
     private Set<PartyStruct> parentStructs = new HashSet<PartyStruct>(0);
 
@@ -49,12 +52,13 @@ public class PartyEntity implements java.io.Serializable {
     }
 
     public PartyEntity(PartyType partyType, String name, String ref,
-            String scopeId, Set<PartyStruct> parentStructs,
+            String scopeId, Integer level, Set<PartyStruct> parentStructs,
             Set<PartyStruct> childStructs) {
         this.partyType = partyType;
         this.name = name;
         this.ref = ref;
         this.scopeId = scopeId;
+        this.level = level;
         this.parentStructs = parentStructs;
         this.childStructs = childStructs;
     }
@@ -130,6 +134,20 @@ public class PartyEntity implements java.io.Serializable {
      */
     public void setScopeId(String scopeId) {
         this.scopeId = scopeId;
+    }
+
+    /** @return null. */
+    @Column(name = "LEVEL")
+    public Integer getLevel() {
+        return this.level;
+    }
+
+    /**
+     * @param level
+     *            null.
+     */
+    public void setLevel(Integer level) {
+        this.level = level;
     }
 
     /** @return . */

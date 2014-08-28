@@ -62,4 +62,17 @@ public class StringUtils {
     public static String unescapeXml(String text) {
         return StringEscapeUtils.unescapeXml(text);
     }
+
+    public static String trim(String text) {
+        if (text == null) {
+            return null;
+        }
+
+        text = text.replace("" + ((char) 160), " ");
+
+        text = org.apache.commons.lang3.StringUtils.trim(text);
+        text = org.apache.commons.lang3.StringUtils.strip(text, "　");
+
+        return text;
+    }
 }

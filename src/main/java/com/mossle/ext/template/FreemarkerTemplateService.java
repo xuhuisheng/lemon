@@ -34,6 +34,22 @@ public class FreemarkerTemplateService implements TemplateService {
         configuration.setDirectoryForTemplateLoading(templateDir);
     }
 
+    public String renderText(String text, Map<String, Object> data) {
+        try {
+            Template template = new Template(text, text, configuration);
+            StringWriter writer = new StringWriter();
+            template.process(data, writer);
+
+            return writer.toString();
+        } catch (TemplateException ex) {
+            logger.error(ex.getMessage(), ex);
+        } catch (IOException ex) {
+            logger.error(ex.getMessage(), ex);
+        }
+
+        return null;
+    }
+
     public String render(String templatePath, Map<String, Object> data) {
         try {
             Template template = configuration.getTemplate(templatePath,

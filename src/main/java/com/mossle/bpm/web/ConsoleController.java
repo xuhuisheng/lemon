@@ -11,6 +11,8 @@ import javax.annotation.Resource;
 
 import javax.servlet.http.HttpServletResponse;
 
+import com.mossle.api.process.ProcessConnector;
+
 import com.mossle.bpm.cmd.ChangeSubTaskCmd;
 import com.mossle.bpm.cmd.JumpCmd;
 import com.mossle.bpm.cmd.ListActivityCmd;
@@ -20,6 +22,7 @@ import com.mossle.bpm.cmd.ReOpenProcessCmd;
 import com.mossle.bpm.cmd.SyncProcessCmd;
 import com.mossle.bpm.cmd.UpdateProcessCmd;
 
+import com.mossle.core.page.Page;
 import com.mossle.core.util.IoUtils;
 
 import org.activiti.engine.HistoryService;
@@ -56,17 +59,15 @@ import org.springframework.web.servlet.mvc.support.RedirectAttributes;
 @RequestMapping("bpm")
 public class ConsoleController {
     private ProcessEngine processEngine;
+    private ProcessConnector processConnector;
 
     /**
      * 部署列表.
      */
     @RequestMapping("console-listDeployments")
-    public String listDeployments(Model model) {
-        RepositoryService repositoryService = processEngine
-                .getRepositoryService();
-        List<Deployment> deployments = repositoryService
-                .createDeploymentQuery().list();
-        model.addAttribute("deployments", deployments);
+    public String listDeployments(@ModelAttribute Page page, Model model) {
+        page = processConnector.findDeployments(page);
+        model.addAttribute("page", page);
 
         return "bpm/console-listDeployments";
     }
@@ -134,12 +135,9 @@ public class ConsoleController {
      * 显示流程定义列表.
      */
     @RequestMapping("console-listProcessDefinitions")
-    public String listProcessDefinitions(Model model) {
-        RepositoryService repositoryService = processEngine
-                .getRepositoryService();
-        List<ProcessDefinition> processDefinitions = repositoryService
-                .createProcessDefinitionQuery().list();
-        model.addAttribute("processDefinitions", processDefinitions);
+    public String listProcessDefinitions(@ModelAttribute Page page, Model model) {
+        page = processConnector.findProcessDefinitions(page);
+        model.addAttribute("page", page);
 
         return "bpm/console-listProcessDefinitions";
     }
@@ -213,12 +211,9 @@ public class ConsoleController {
      * 显示流程实例列表.
      */
     @RequestMapping("console-listProcessInstances")
-    public String listProcessInstances(Model model) {
-        RuntimeService runtimeService = processEngine.getRuntimeService();
-
-        List<ProcessInstance> processInstances = runtimeService
-                .createProcessInstanceQuery().list();
-        model.addAttribute("processInstances", processInstances);
+    public String listProcessInstances(@ModelAttribute Page page, Model model) {
+        page = processConnector.findProcessInstances(page);
+        model.addAttribute("page", page);
 
         return "bpm/console-listProcessInstances";
     }
@@ -264,10 +259,9 @@ public class ConsoleController {
      * 显示任务列表.
      */
     @RequestMapping("console-listTasks")
-    public String listTasks(Model model) {
-        TaskService taskService = processEngine.getTaskService();
-        List<Task> tasks = taskService.createTaskQuery().list();
-        model.addAttribute("tasks", tasks);
+    public String listTasks(@ModelAttribute Page page, Model model) {
+        page = processConnector.findTasks(page);
+        model.addAttribute("page", page);
 
         return "bpm/console-listTasks";
     }
@@ -277,13 +271,11 @@ public class ConsoleController {
      * 显示历史流程实例.
      */
     @RequestMapping("console-listHistoricProcessInstances")
-    public String listHistoricProcessInstances(Model model) {
-        HistoryService historyService = processEngine.getHistoryService();
+    public String listHistoricProcessInstances(@ModelAttribute Page page,
+            Model model) {
+        page = processConnector.findHistoricProcessInstances(page);
 
-        List<HistoricProcessInstance> historicProcessInstances = historyService
-                .createHistoricProcessInstanceQuery().list();
-
-        model.addAttribute("historicProcessInstances", historicProcessInstances);
+        model.addAttribute("page", page);
 
         return "bpm/console-listHistoricProcessInstances";
     }
@@ -292,13 +284,10 @@ public class ConsoleController {
      * 显示历史节点实例.
      */
     @RequestMapping("console-listHistoricActivityInstances")
-    public String listHistoricActivityInstances(Model model) {
-        HistoryService historyService = processEngine.getHistoryService();
-
-        List<HistoricActivityInstance> historicActivityInstances = historyService
-                .createHistoricActivityInstanceQuery().list();
-        model.addAttribute("historicActivityInstances",
-                historicActivityInstances);
+    public String listHistoricActivityInstances(@ModelAttribute Page page,
+            Model model) {
+        page = processConnector.findHistoricActivityInstances(page);
+        model.addAttribute("page", page);
 
         return "bpm/console-listHistoricActivityInstances";
     }
@@ -307,13 +296,9 @@ public class ConsoleController {
      * 显示历史任务.
      */
     @RequestMapping("console-listHistoricTasks")
-    public String listHistoricTasks(Model model) {
-        HistoryService historyService = processEngine.getHistoryService();
-
-        List<HistoricTaskInstance> historicTaskInstances = historyService
-                .createHistoricTaskInstanceQuery().list();
-
-        model.addAttribute("historicTaskInstances", historicTaskInstances);
+    public String listHistoricTasks(@ModelAttribute Page page, Model model) {
+        page = processConnector.findHistoricTaskInstances(page);
+        model.addAttribute("page", page);
 
         return "bpm/console-listHistoricTasks";
     }
@@ -456,5 +441,10 @@ public class ConsoleController {
     @Resource
     public void setProcessEngine(ProcessEngine processEngine) {
         this.processEngine = processEngine;
+    }
+
+    @Resource
+    public void setProcessConnector(ProcessConnector processConnector) {
+        this.processConnector = processConnector;
     }
 }

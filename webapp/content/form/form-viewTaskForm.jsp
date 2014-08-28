@@ -86,6 +86,7 @@ $(function() {
 
 	setTimeout(function() {
 		$('.datepicker').datepicker({
+			autoclose: true,
 			language: 'zh_CN',
 			format: 'yyyy-mm-dd'
 		})
@@ -114,6 +115,33 @@ $(function() {
 	<!-- start of main -->
     <section id="m-main" class="span10" style="float:right">
 
+		<div id="previousStep">
+		</div>
+		  <script>
+		  $.getJSON('${scopePrefix}/rs/bpm/previous', {
+			  processDefinitionId: '${formInfo.processDefinitionId}',
+			  activityId: '${formInfo.activityId}'
+		  }, function(data) {
+			  $('#previousStep').append('上个环节：');
+			  for (var i = 0; i < data.length; i++) {
+				  $('#previousStep').append(data[i].name);
+			  }
+		  });
+		  </script>
+		<div id="nextStep">
+		</div>
+		  <script>
+		  $.getJSON('${scopePrefix}/rs/bpm/next', {
+			  processDefinitionId: '${formInfo.processDefinitionId}',
+			  activityId: '${formInfo.activityId}'
+		  }, function(data) {
+			  $('#nextStep').append('下个环节：');
+			  for (var i = 0; i < data.length; i++) {
+				  $('#nextStep').append(data[i].name);
+			  }
+		  });
+		  </script>
+
 	  <form id="xf-form" method="post" action="${scopePrefix}/form/form-completeTask.do" class="xf-form">
 		<input id="taskId" type="hidden" name="taskId" value="${formInfo.taskId}">
 		<input id="businessKey" type="hidden" name="businessKey" value="${dynamicModel.id}">
@@ -122,7 +150,6 @@ $(function() {
 		<div id="xf-form-button" style="text-align:center;">
 		</div>
 	  </form>
-
     </section>
 	<!-- end of main -->
 

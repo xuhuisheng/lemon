@@ -1,5 +1,7 @@
 package com.mossle.workcal.web;
 
+import java.io.IOException;
+
 import java.text.DateFormat;
 import java.text.SimpleDateFormat;
 
@@ -19,6 +21,9 @@ import com.mossle.workcal.domain.WorkcalRule;
 import com.mossle.workcal.manager.WorkcalPartManager;
 import com.mossle.workcal.manager.WorkcalRuleManager;
 
+import org.slf4j.Logger;
+import org.slf4j.LoggerFactory;
+
 import org.springframework.stereotype.Controller;
 
 import org.springframework.ui.Model;
@@ -32,6 +37,8 @@ import org.springframework.web.servlet.mvc.support.RedirectAttributes;
 @Controller
 @RequestMapping("/workcal")
 public class WorkcalController {
+    private static Logger logger = LoggerFactory
+            .getLogger(WorkcalController.class);
     public static final int STATUS_WEEK = 0;
     public static final int STATUS_HOLIDAY = 1;
     public static final int STATUS_HOLIDAY_TO_WORKDAY = 2;
@@ -51,7 +58,11 @@ public class WorkcalController {
             weeks.add(Integer.valueOf(workcalRule.getWeek() - 1));
         }
 
-        model.addAttribute("weeks", jsonMapper.toJson(weeks));
+        try {
+            model.addAttribute("weeks", jsonMapper.toJson(weeks));
+        } catch (IOException ex) {
+            logger.error(ex.getMessage(), ex);
+        }
 
         DateFormat dateFormat = new SimpleDateFormat("yyyyMd");
 
@@ -77,9 +88,23 @@ public class WorkcalController {
             }
         }
 
-        model.addAttribute("holidays", jsonMapper.toJson(holidays));
-        model.addAttribute("workdays", jsonMapper.toJson(workdays));
-        model.addAttribute("extrdays", jsonMapper.toJson(extrdays));
+        try {
+            model.addAttribute("holidays", jsonMapper.toJson(holidays));
+        } catch (IOException ex) {
+            logger.error(ex.getMessage(), ex);
+        }
+
+        try {
+            model.addAttribute("workdays", jsonMapper.toJson(workdays));
+        } catch (IOException ex) {
+            logger.error(ex.getMessage(), ex);
+        }
+
+        try {
+            model.addAttribute("extrdays", jsonMapper.toJson(extrdays));
+        } catch (IOException ex) {
+            logger.error(ex.getMessage(), ex);
+        }
 
         return "workcal/workcal-view";
     }

@@ -4,6 +4,10 @@ import java.util.List;
 
 import javax.annotation.Resource;
 
+import com.mossle.api.process.ProcessConnector;
+
+import com.mossle.core.page.Page;
+
 import org.activiti.engine.ProcessEngine;
 import org.activiti.engine.runtime.Job;
 
@@ -27,13 +31,13 @@ import org.springframework.web.servlet.mvc.support.RedirectAttributes;
 @RequestMapping("bpm")
 public class JobController {
     private ProcessEngine processEngine;
+    private ProcessConnector processConnector;
 
     /** 作业列表 */
     @RequestMapping("job-list")
-    public String list(Model model) {
-        List<Job> jobs = processEngine.getManagementService().createJobQuery()
-                .list();
-        model.addAttribute("jobs", jobs);
+    public String list(@ModelAttribute Page page, Model model) {
+        page = processConnector.findJobs(page);
+        model.addAttribute("page", page);
 
         return "bpm/job-list";
     }
@@ -58,5 +62,10 @@ public class JobController {
     @Resource
     public void setProcessEngine(ProcessEngine processEngine) {
         this.processEngine = processEngine;
+    }
+
+    @Resource
+    public void setProcessConnector(ProcessConnector processConnector) {
+        this.processConnector = processConnector;
     }
 }

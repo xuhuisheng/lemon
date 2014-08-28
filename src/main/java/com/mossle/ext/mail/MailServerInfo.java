@@ -135,10 +135,10 @@ public class MailServerInfo {
         javaMailSender.setDefaultEncoding("UTF-8");
 
         javaMailSender.setJavaMailProperties(this.getProperties());
-        logger.info("host : {}", host);
-        logger.info("username : {}", username);
-        logger.info("password : {}", password);
-        logger.info("getProperties : {}", getProperties());
+        logger.debug("host : {}", host);
+        logger.debug("username : {}", username);
+        logger.debug("password : {}", password);
+        logger.debug("getProperties : {}", getProperties());
     }
 
     public boolean isSkip() {

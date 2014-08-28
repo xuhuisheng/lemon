@@ -1,5 +1,7 @@
 package com.mossle.core.mapper;
 
+import java.util.List;
+
 import ma.glasnost.orika.MapperFacade;
 import ma.glasnost.orika.MapperFactory;
 import ma.glasnost.orika.converter.builtin.PassThroughConverter;
@@ -29,5 +31,9 @@ public class BeanMapper {
      */
     public void copy(Object src, Object dest) {
         mapper.map(src, dest);
+    }
+
+    public <S, D> List<D> copyList(List<S> src, Class<D> clz) {
+        return mapper.mapAsList(src, clz);
     }
 }

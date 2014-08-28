@@ -1,5 +1,7 @@
 package com.mossle.user.web;
 
+import java.io.OutputStream;
+
 import java.util.ArrayList;
 import java.util.HashMap;
 import java.util.List;
@@ -8,6 +10,7 @@ import java.util.Map;
 import javax.annotation.Resource;
 
 import javax.servlet.http.HttpServletResponse;
+import javax.servlet.http.HttpSession;
 
 import com.mossle.api.scope.ScopeHolder;
 import com.mossle.api.user.UserCache;
@@ -17,10 +20,14 @@ import com.mossle.core.hibernate.PropertyFilter;
 import com.mossle.core.mapper.BeanMapper;
 import com.mossle.core.page.Page;
 import com.mossle.core.spring.MessageHelper;
+import com.mossle.core.util.IoUtils;
 import com.mossle.core.util.ServletUtils;
 
 import com.mossle.ext.export.Exportor;
 import com.mossle.ext.export.TableModel;
+import com.mossle.ext.store.MultipartFileResource;
+import com.mossle.ext.store.StoreConnector;
+import com.mossle.ext.store.StoreDTO;
 
 import com.mossle.security.util.SimplePasswordEncoder;
 
@@ -39,6 +46,7 @@ import org.springframework.web.bind.annotation.ModelAttribute;
 import org.springframework.web.bind.annotation.RequestMapping;
 import org.springframework.web.bind.annotation.RequestParam;
 import org.springframework.web.bind.annotation.ResponseBody;
+import org.springframework.web.multipart.MultipartFile;
 import org.springframework.web.servlet.mvc.support.RedirectAttributes;
 
 @Controller
@@ -52,6 +60,7 @@ public class UserBaseController {
     private BeanMapper beanMapper = new BeanMapper();
     private SimplePasswordEncoder simplePasswordEncoder;
     private UserService userService;
+    private StoreConnector storeConnector;
 
     @RequestMapping("user-base-list")
     public String list(@ModelAttribute Page page,
@@ -105,7 +114,8 @@ public class UserBaseController {
             @RequestParam(value = "confirmPassword", required = false) String confirmPassword,
             @RequestParam("userRepoId") Long userRepoId,
             @RequestParam Map<String, Object> parameterMap,
-            RedirectAttributes redirectAttributes) throws Exception {
+            RedirectAttributes redirectAttributes, HttpSession httpSession)
+            throws Exception {
         // 先进行校验
         if (userBase.getPassword() != null) {
             if (!userBase.getPassword().equals(confirmPassword)) {
@@ -131,12 +141,14 @@ public class UserBaseController {
 
         if (id != null) {
             dest = userBaseManager.get(id);
-			dest.setStatus(0);
+            dest.setStatus(0);
             beanMapper.copy(userBase, dest);
             userService.updateUser(dest, userRepoId, parameters);
         } else {
             dest = userBase;
+            dest.setAvatar((String) httpSession.getAttribute("temporaryAvatar"));
             userService.insertUser(dest, userRepoId, parameters);
+            httpSession.removeAttribute("temporaryAvatar");
         }
 
         messageHelper.addFlashMessage(redirectAttributes, "core.success.save",
@@ -234,6 +246,47 @@ public class UserBaseController {
         return result;
     }
 
+    /**
+     * 上传附件.
+     */
+    @RequestMapping("user-base-upload")
+    @ResponseBody
+    public String upload(@RequestParam(value = "id", required = false) Long id,
+            @RequestParam("avatar") MultipartFile avatar,
+            HttpSession httpSession) throws Exception {
+        StoreDTO storeDto = storeConnector
+                .save("avatar", new MultipartFileResource(avatar),
+                        avatar.getOriginalFilename());
+
+        if (id != null) {
+            UserBase userBase = userBaseManager.get(id);
+            userBase.setAvatar(storeDto.getKey());
+            userBaseManager.save(userBase);
+        } else {
+            httpSession.setAttribute("temporaryAvatar", storeDto.getKey());
+        }
+
+        return "{\"success\":true,\"id\":\"" + ((id == null) ? "" : id) + "\"}";
+    }
+
+    @RequestMapping("user-base-avatar")
+    @ResponseBody
+    public void avatar(@RequestParam(value = "id", required = false) Long id,
+            OutputStream os, HttpSession httpSession) throws Exception {
+        if (id != null) {
+            UserBase userBase = userBaseManager.get(id);
+            StoreDTO storeDto = storeConnector.get("avatar",
+                    userBase.getAvatar());
+
+            IoUtils.copyStream(storeDto.getResource().getInputStream(), os);
+        } else {
+            StoreDTO storeDto = storeConnector.get("avatar",
+                    (String) httpSession.getAttribute("temporaryAvatar"));
+
+            IoUtils.copyStream(storeDto.getResource().getInputStream(), os);
+        }
+    }
+
     // ~ ======================================================================
     @Resource
     public void setUserBaseManager(UserBaseManager userBaseManager) {
@@ -269,5 +322,10 @@ public class UserBaseController {
     @Resource
     public void setUserService(UserService userService) {
         this.userService = userService;
+    }
+
+    @Resource
+    public void setStoreConnector(StoreConnector storeConnector) {
+        this.storeConnector = storeConnector;
     }
 }

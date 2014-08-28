@@ -84,7 +84,8 @@ $(function() {
 
     $('.datepicker').datepicker({
 		language: '${locale}',
-		format: 'yyyy-mm-dd'
+		format: 'yyyy-mm-dd',
+        autoclose: true
 	});
 
     $('.datetimepicker').datetimepicker({

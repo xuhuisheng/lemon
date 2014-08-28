@@ -166,8 +166,8 @@ public class FormController {
                 }
             }
 
-            FormTemplate formTemplate = formTemplateManager.get(Long
-                    .parseLong(formInfo.getFormKey()));
+            FormTemplate formTemplate = formTemplateManager.findUniqueBy(
+                    "code", formInfo.getFormKey());
 
             if (Integer.valueOf(1).equals(formTemplate.getType())) {
                 String redirectUrl = formTemplate.getContent()
@@ -315,8 +315,9 @@ public class FormController {
         FormService formService = processEngine.getFormService();
         String taskFormKey = formService.getTaskFormKey(
                 task.getProcessDefinitionId(), task.getTaskDefinitionKey());
-        FormTemplate formTemplate = formTemplateManager.get(Long
-                .parseLong(taskFormKey));
+
+        FormTemplate formTemplate = formTemplateManager.findUniqueBy("code",
+                taskFormKey);
         model.addAttribute("formTemplate", formTemplate);
 
         FormInfo formInfo = new FormInfo();
@@ -333,10 +334,13 @@ public class FormController {
         }
 
         String processDefinitionId = task.getProcessDefinitionId();
-        String activitiyId = task.getTaskDefinitionKey();
+        String activityId = task.getTaskDefinitionKey();
+        formInfo.setProcessDefinitionId(processDefinitionId);
+        formInfo.setActivityId(activityId);
+
         List<BpmConfForm> bpmConfForms = bpmConfFormManager
                 .find("from BpmConfForm where bpmConfNode.bpmConfBase.processDefinitionId=? and bpmConfNode.code=?",
-                        processDefinitionId, activitiyId);
+                        processDefinitionId, activityId);
 
         if (!bpmConfForms.isEmpty()) {
             if (Integer.valueOf(1).equals(bpmConfForms.get(0).getType())) {

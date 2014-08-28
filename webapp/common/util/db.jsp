@@ -36,6 +36,8 @@
 	}
 %>
 <%
+	request.setCharacterEncoding("utf-8");
+
 	String action = request.getParameter("action");
 	if ("connect".equals(action)) {
 		String driver = request.getParameter("driver");
@@ -131,7 +133,7 @@ td {
 %>
 		  </td>
 		  <td style="vertical-align:top;">
-		    <form action="db.jsp?action=select">
+		    <form method="post" action="db.jsp?action=select">
 		      <textarea id="jdbc_sql" name="sql" style="width:100%">${param.sql}</textarea>
 			  <button>execute</button>
 			</form>

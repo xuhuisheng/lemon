@@ -11,13 +11,13 @@ import javax.jms.Destination;
 import javax.jms.JMSException;
 import javax.jms.Message;
 import javax.jms.MessageConsumer;
+import javax.jms.MessageProducer;
 import javax.jms.Session;
 import javax.jms.Topic;
 
 public class ProxyConnectionFactory implements ConnectionFactory {
-    private Map<String, List<String>> data = new HashMap<String, List<String>>();
+    private Map<String, Destination> destinationMap = new HashMap<String, Destination>();
     private ProxyConnection connection;
-    private Map<String, List<ProxyMessageConsumer>> messageConsumerMap = new HashMap<String, List<ProxyMessageConsumer>>();
 
     public ProxyConnectionFactory() {
         connection = new ProxyConnection(this);
@@ -37,69 +37,92 @@ public class ProxyConnectionFactory implements ConnectionFactory {
         String destinationName = destination.toString();
 
         if (destination instanceof Topic) {
-            sendTopic(destinationName, text);
+            // sendTopic(destinationName, text);
+            ProxyTopic proxyTopic = (ProxyTopic) destinationMap
+                    .get(destinationName);
+
+            if (proxyTopic != null) {
+                proxyTopic.sendMessage(text);
+            }
         } else {
-            sendQueue(destinationName, text);
+            // sendQueue(destinationName, text);
+            ProxyQueue proxyQueue = (ProxyQueue) destinationMap
+                    .get(destinationName);
+
+            if (proxyQueue == null) {
+                proxyQueue = new ProxyQueue(destinationName);
+                destinationMap.put(destinationName, proxyQueue);
+            }
+
+            proxyQueue.sendMessage(text);
         }
     }
 
-    public void sendTopic(String destinationName, String text) {
-        List<ProxyMessageConsumer> messageConsumers = messageConsumerMap
-                .get(destinationName);
+    public Message getMessage(ProxyMessageConsumer proxyMessageConsumer) {
+        String destinationName = proxyMessageConsumer.getDestination()
+                .toString();
+        Destination destination = destinationMap.get(destinationName);
 
-        if (messageConsumers == null) {
-            return;
+        if (destination instanceof Topic) {
+            ProxyTopic proxyTopic = (ProxyTopic) destinationMap
+                    .get(destinationName);
+
+            String text = proxyTopic.getMessage(proxyMessageConsumer);
+
+            if (text == null) {
+                return null;
+            }
+
+            ProxyTextMessage message = new ProxyTextMessage();
+            message.setText(text);
+
+            return message;
+        } else {
+            ProxyQueue proxyQueue = (ProxyQueue) destinationMap
+                    .get(destinationName);
+
+            if (proxyQueue == null) {
+                return null;
+            }
+
+            String text = proxyQueue.getMessage();
+
+            if (text == null) {
+                return null;
+            }
+
+            ProxyTextMessage message = new ProxyTextMessage();
+            message.setText(text);
+
+            return message;
         }
-
-        for (ProxyMessageConsumer messageConsumer : messageConsumers) {
-            messageConsumer.sendMessage(text);
-        }
-    }
-
-    public void sendQueue(String destinationName, String text) {
-        // send to queue
-        List<String> list = this.data.get(destinationName);
-
-        if (list == null) {
-            list = new ArrayList<String>();
-            this.data.put(destinationName, list);
-        }
-
-        list.add(text);
-    }
-
-    public Message getMessage(String destinationName) {
-        List<String> list = data.get(destinationName);
-
-        if (list == null) {
-            return null;
-        }
-
-        if (list.isEmpty()) {
-            return null;
-        }
-
-        String text = list.remove(0);
-        ProxyTextMessage message = new ProxyTextMessage();
-        message.setText(text);
-
-        return message;
     }
 
     public MessageConsumer createConsumer(Destination destination,
             ProxySession session) {
         String destinationName = destination.toString();
-        List<ProxyMessageConsumer> messageConsumers = messageConsumerMap
-                .get(destinationName);
-
-        if (messageConsumers == null) {
-            messageConsumers = new ArrayList<ProxyMessageConsumer>();
-            messageConsumerMap.put(destinationName, messageConsumers);
-        }
-
         ProxyMessageConsumer messageConsumer = new ProxyMessageConsumer(session);
         messageConsumer.setDestination(destination);
-        messageConsumers.add(messageConsumer);
+
+        if (destination instanceof Topic) {
+            ProxyTopic proxyTopic = (ProxyTopic) destinationMap
+                    .get(destinationName);
+
+            if (proxyTopic == null) {
+                proxyTopic = new ProxyTopic(destinationName);
+                destinationMap.put(destinationName, proxyTopic);
+            }
+
+            proxyTopic.addConsumer(messageConsumer);
+        } else {
+            ProxyQueue proxyQueue = (ProxyQueue) destinationMap
+                    .get(destinationName);
+
+            if (proxyQueue == null) {
+                proxyQueue = new ProxyQueue(destinationName);
+                destinationMap.put(destinationName, proxyQueue);
+            }
+        }
 
         return messageConsumer;
     }
@@ -107,13 +130,22 @@ public class ProxyConnectionFactory implements ConnectionFactory {
     public void removeMessageConsumer(ProxyMessageConsumer messageConsumer) {
         Destination destination = messageConsumer.getDestination();
         String destinationName = destination.toString();
-        List<ProxyMessageConsumer> messageConsumers = messageConsumerMap
+        ProxyTopic proxyTopic = (ProxyTopic) destinationMap
                 .get(destinationName);
 
-        if (messageConsumers == null) {
+        if (proxyTopic == null) {
             return;
         }
 
-        messageConsumers.remove(messageConsumer);
+        proxyTopic.removeConsumer(messageConsumer);
+    }
+
+    public MessageProducer createProducer(Destination destination,
+            ProxySession session) {
+        ProxyMessageProducer proxyMessageProducer = new ProxyMessageProducer(
+                session);
+        proxyMessageProducer.setDestination(destination);
+
+        return proxyMessageProducer;
     }
 }

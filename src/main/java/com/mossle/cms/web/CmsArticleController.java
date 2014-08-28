@@ -22,6 +22,7 @@ import com.mossle.core.spring.MessageHelper;
 
 import com.mossle.ext.export.Exportor;
 import com.mossle.ext.export.TableModel;
+import com.mossle.ext.store.MultipartFileResource;
 import com.mossle.ext.store.StoreConnector;
 import com.mossle.ext.store.StoreDTO;
 
@@ -174,7 +175,8 @@ public class CmsArticleController {
     public String uploadImage(@RequestParam("CKEditorFuncNum") String callback,
             @RequestParam("upload") MultipartFile attachment) throws Exception {
         StoreDTO storeDto = storeConnector.save("cms/html/r/images",
-                attachment.getInputStream(), attachment.getOriginalFilename());
+                new MultipartFileResource(attachment),
+                attachment.getOriginalFilename());
 
         return "<script type='text/javascript'>"
                 + "window.parent.CKEDITOR.tools.callFunction(" + callback

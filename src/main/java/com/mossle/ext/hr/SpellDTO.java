@@ -1,0 +1,29 @@
+package com.mossle.ext.hr;
+
+import java.util.ArrayList;
+import java.util.List;
+
+public class SpellDTO {
+    private char name;
+    private List<String> list;
+
+    public SpellDTO(char c) {
+        this.name = name;
+    }
+
+    public char getName() {
+        return name;
+    }
+
+    public void setList(List<String> list) {
+        this.list = list;
+    }
+
+    public List<String> getList() {
+        return list;
+    }
+
+    public String getFirst() {
+        return this.list.get(0);
+    }
+}

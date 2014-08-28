@@ -8,6 +8,7 @@ import javax.jms.ExceptionListener;
 import javax.jms.JMSException;
 import javax.jms.Message;
 import javax.jms.MessageConsumer;
+import javax.jms.MessageProducer;
 import javax.jms.ServerSessionPool;
 import javax.jms.Session;
 import javax.jms.Topic;
@@ -71,8 +72,8 @@ public class ProxyConnection implements Connection {
         this.connectionFactory.sendMessage(destination, text);
     }
 
-    public Message getMessage(String destinationName) {
-        return connectionFactory.getMessage(destinationName);
+    public Message getMessage(ProxyMessageConsumer proxyMessageConsumer) {
+        return connectionFactory.getMessage(proxyMessageConsumer);
     }
 
     public MessageConsumer createConsumer(Destination destination,
@@ -82,5 +83,10 @@ public class ProxyConnection implements Connection {
 
     public void removeMessageConsumer(ProxyMessageConsumer messageConsumer) {
         connectionFactory.removeMessageConsumer(messageConsumer);
+    }
+
+    public MessageProducer createProducer(Destination destination,
+            ProxySession session) {
+        return connectionFactory.createProducer(destination, session);
     }
 }

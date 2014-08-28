@@ -31,17 +31,17 @@ public class DatabaseUserConnector implements UserConnector {
 
     // ~
     private String sqlFindById = "select id as id,username as username,status as status,"
-            + "display_name as display_name,email as email,mobile as mobile,user_repo_id as user_repo_ref"
+            + "nick_name as nick_name,email as email,mobile as mobile,user_repo_id as user_repo_ref"
             + " from USER_BASE where id=?";
     private String sqlFindByUsername = "select ub.id as id,ub.username as username,ub.status as status,"
-            + "display_name as display_name,email as email,mobile as mobile,user_repo_id as user_repo_ref"
+            + "nick_name as nick_name,email as email,mobile as mobile,user_repo_id as user_repo_ref"
             + " from USER_BASE ub where ub.username=? and ub.user_repo_id=?";
     private String sqlFindByRef = "select ub.id as id,ub.username as username,ub.status as status,"
-            + "display_name as display_name,email as email,mobile as mobile,user_repo_id as user_repo_ref"
+            + "nick_name as nick_name,email as email,mobile as mobile,user_repo_id as user_repo_ref"
             + " from USER_BASE ub where ub.ref=? and ub.user_repo_id=?";
     private String sqlPagedQueryCount = "select count(*) from USER_BASE";
     private String sqlPagedQuerySelect = "select id as id,username as username,status as status,"
-            + "display_name as display_name,email as email,mobile as mobile,user_repo_id as user_repo_ref"
+            + "nick_name as nick_name,email as email,mobile as mobile,user_repo_id as user_repo_ref"
             + " from USER_BASE";
 
     public UserDTO findById(String id) {
@@ -138,7 +138,7 @@ public class DatabaseUserConnector implements UserConnector {
         UserDTO userDTO = new UserDTO();
         userDTO.setId(convertString(map.get("id")));
         userDTO.setUsername(convertString(map.get("username")));
-        userDTO.setDisplayName(convertString(map.get("display_name")));
+        userDTO.setDisplayName(convertString(map.get("nick_name")));
         userDTO.setEmail(convertString(map.get("email")));
         userDTO.setMobile(convertString(map.get("mobile")));
         userDTO.setUserRepoRef(convertString(map.get("user_repo_ref")));

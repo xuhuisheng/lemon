@@ -36,7 +36,7 @@ public class DefaultUserDetailsService implements UserDetailsService {
 
         if (debug) {
             SpringSecurityUserAuth userAuth = new SpringSecurityUserAuth();
-            userAuth.setId("0");
+            userAuth.setId("1");
             userAuth.setUsername(username);
             userAuth.setDisplayName(username);
             userAuth.setPermissions(Collections.singletonList("*"));

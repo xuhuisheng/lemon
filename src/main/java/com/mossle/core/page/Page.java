@@ -39,16 +39,16 @@ public class Page {
     private Object result;
 
     /** 总记录数，默认值为-1，表示totalCount不可用. */
-    private int totalCount = -1;
+    private long totalCount = -1L;
 
     /** 是否计算数据库中的记录总数. */
     private boolean autoCount;
 
     /** 当前页第一条记录的索引，默认值为0，既第一页第一条记录. */
-    private int start;
+    private long start;
 
     /** 总页数，默认值为-1，表示pageCount不可用. */
-    private int pageCount = -1;
+    private long pageCount = -1;
 
     // ==========================================
     // constructor...
@@ -258,7 +258,7 @@ public class Page {
     }
 
     /** @return totalCount. */
-    public int getTotalCount() {
+    public long getTotalCount() {
         return totalCount;
     }
 
@@ -266,7 +266,7 @@ public class Page {
      * @param totalCount
      *            int.
      */
-    public void setTotalCount(int totalCount) {
+    public void setTotalCount(long totalCount) {
         this.totalCount = totalCount;
         this.calculatePageCount();
     }
@@ -285,12 +285,12 @@ public class Page {
     }
 
     /** @return start. */
-    public int getStart() {
+    public long getStart() {
         return start;
     }
 
     /** @return pageCount. */
-    public int getPageCount() {
+    public long getPageCount() {
         return pageCount;
     }
 
@@ -315,6 +315,13 @@ public class Page {
         } else {
             throw new IllegalArgumentException(
                     "order should be 'DESC' or 'ASC'");
+        }
+    }
+
+    public void setDefaultOrder(String orderBy, String order) {
+        if (!this.isOrderEnabled()) {
+            this.setOrderBy(orderBy);
+            this.setOrder(order);
         }
     }
 }

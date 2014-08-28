@@ -46,6 +46,7 @@ public class MailConsumer implements Runnable {
     public void doConsume() {
         try {
             MailDTO mailDto = mailStore.takeMailDto();
+            logger.debug("consume : {}", mailDto);
 
             MailWorker mailWorker = new MailWorker(mailDto, mailHelper);
             executorService.submit(mailWorker);

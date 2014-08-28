@@ -5,6 +5,7 @@ import java.net.UnknownHostException;
 import java.util.HashMap;
 import java.util.Map;
 
+import javax.mail.internet.InternetAddress;
 import javax.mail.internet.MimeMessage;
 
 import com.mossle.core.mail.HostGenerator;
@@ -24,56 +25,77 @@ import org.springframework.util.Assert;
 public class MailHelper {
     private static Logger logger = LoggerFactory.getLogger(MailHelper.class);
     private HostGenerator hostGenerator = new HostGeneratorImpl();
-    private Map<String, MailServerInfo> mailServerInfoMap = new HashMap<String, MailServerInfo>();
-    private MailServerInfo defaultMailServerInfo;
+    private MailServerInfoCache mailServerInfoCache = new MemoryMailServerInfoCache();
 
-    public void send(String from, String to, String subject, String content) {
-        this.send(from, to, subject, content, this.getDefaultMailServerInfo());
+    public MailDTO send(String from, String to, String subject, String content) {
+        return this.send(from, to, subject, content,
+                this.getDefaultMailServerInfo());
     }
 
-    public void send(String from, String to, String subject, String content,
+    public MailDTO send(String from, String to, String subject, String content,
             String mailServerInfoName) {
-        this.send(from, to, subject, content,
-                mailServerInfoMap.get(mailServerInfoName));
+        return this.send(from, to, subject, content,
+                mailServerInfoCache.getMailServerInfo(mailServerInfoName));
     }
 
-    public void send(String from, String to, String subject, String content,
+    public MailDTO send(String from, String to, String subject, String content,
             MailServerInfo mailServerInfo) {
         MailDTO mailDto = new MailDTO();
         mailDto.setFrom(from);
         mailDto.setTo(to);
         mailDto.setSubject(subject);
         mailDto.setContent(content);
-        this.send(mailDto, mailServerInfo);
+
+        MailDTO resultMailDto = this.send(mailDto, mailServerInfo);
+
+        return resultMailDto;
     }
 
-    public void send(MailDTO mailDto) {
-        this.send(mailDto, this.getDefaultMailServerInfo());
+    public MailDTO send(MailDTO mailDto) {
+        logger.debug("send : {}", mailDto);
+
+        return this.send(mailDto, this.getDefaultMailServerInfo());
     }
 
-    public void send(MailDTO mailDto, MailServerInfo mailServerInfo) {
-        String from = mailDto.getFrom();
-        String to = mailDto.getTo();
-        String subject = mailDto.getSubject();
-        String content = mailDto.getContent();
+    public MailDTO send(MailDTO mailDto, MailServerInfo mailServerInfo) {
+        try {
+            if (mailServerInfo == null) {
+                mailServerInfo = this.getDefaultMailServerInfo();
+            }
 
-        if (from == null) {
-            from = mailServerInfo.getDefaultFrom();
-            mailDto.setFrom(from);
+            String from = mailDto.getFrom();
+            String to = mailDto.getTo();
+            String subject = mailDto.getSubject();
+            String content = mailDto.getContent();
+
+            if (this.isBlank(from)) {
+                from = mailServerInfo.getDefaultFrom();
+                mailDto.setFrom(from);
+            }
+
+            logger.debug("{} : {}", from, to);
+
+            if (mailServerInfo.isSkip()) {
+                logger.info("send mail from {} to {}", from, to);
+
+                logger.info("subject : {}, content : {}", subject, content);
+                mailDto.setSuccess(true);
+
+                return mailDto;
+            } else if (mailServerInfo.isTest()) {
+                return this.sendTestMail(mailDto, mailServerInfo);
+            } else {
+                return this.sendRealMail(mailDto, mailServerInfo);
+            }
+        } catch (Exception ex) {
+            logger.error(ex.getMessage(), ex);
+
+            return null;
         }
-
-        if (mailServerInfo.isSkip()) {
-            logger.info("send mail from {} to {}", from, to);
-
-            logger.info("subject : {}, content : {}", subject, content);
-        } else if (mailServerInfo.isTest()) {
-            this.sendTestMail(mailDto, mailServerInfo);
-        } else {
-            this.sendRealMail(mailDto, mailServerInfo);
-        }
     }
 
-    protected void sendTestMail(MailDTO mailDto, MailServerInfo mailServerInfo) {
+    protected MailDTO sendTestMail(MailDTO mailDto,
+            MailServerInfo mailServerInfo) {
         String from = mailDto.getFrom();
         String to = mailDto.getTo();
         String subject = mailDto.getSubject();
@@ -92,7 +114,7 @@ public class MailHelper {
         decoratedContent += ("subject : " + subject + "\ncontent : " + content);
 
         String decoratedSubject = "[test]" + subject;
-        String decoratedFrom = address;
+        String decoratedFrom = from;
         String testMail = mailServerInfo.getTestMail();
         logger.info("send mail from {} to {}", decoratedFrom, testMail);
 
@@ -102,14 +124,36 @@ public class MailHelper {
         mailDto.setTo(testMail);
         mailDto.setSubject(decoratedSubject);
         mailDto.setContent(decoratedContent);
-        this.sendRealMail(mailDto, mailServerInfo);
+
+        return this.sendRealMail(mailDto, mailServerInfo);
     }
 
-    protected void sendRealMail(MailDTO mailDto, MailServerInfo mailServerInfo) {
+    protected MailDTO sendRealMail(MailDTO mailDto,
+            MailServerInfo mailServerInfo) {
         String from = mailDto.getFrom();
         String to = mailDto.getTo();
+        String cc = mailDto.getCc();
+        String bcc = mailDto.getBcc();
         String subject = mailDto.getSubject();
         String content = mailDto.getContent();
+
+        to = to.replaceAll("\n", ",").replaceAll(";", ",");
+
+        if (this.isBlank(cc)) {
+            cc = null;
+        } else {
+            cc = cc.replaceAll("\n", ",").replaceAll(";", ",");
+        }
+
+        if (this.isBlank(bcc)) {
+            bcc = null;
+        } else {
+            bcc = bcc.replaceAll("\n", ",").replaceAll(";", ",");
+        }
+
+        logger.debug("from : {}, to : {}", from, to);
+        logger.debug("cc : {}, bcc : {}", cc, bcc);
+        logger.debug("subject : {}", subject);
 
         try {
             JavaMailSender javaMailSender = mailServerInfo.getJavaMailSender();
@@ -117,15 +161,15 @@ public class MailHelper {
             MimeMessageHelper helper = new MimeMessageHelper(msg, true, "UTF-8");
             helper.setFrom(from);
             helper.setSubject(subject);
-            helper.setTo(to);
+            helper.setTo(InternetAddress.parse(to));
             helper.setText(content, true);
 
-            if (mailDto.getCc() != null) {
-                helper.setCc(mailDto.getCc());
+            if (cc != null) {
+                helper.setCc(InternetAddress.parse(cc));
             }
 
-            if (mailDto.getBcc() != null) {
-                helper.setBcc(mailDto.getBcc());
+            if (bcc != null) {
+                helper.setBcc(InternetAddress.parse(bcc));
             }
 
             for (Map.Entry<String, InputStreamSource> entry : mailDto
@@ -135,19 +179,35 @@ public class MailHelper {
 
             javaMailSender.send(msg);
             logger.debug("send mail from {} to {}", from, to);
+            mailDto.setSuccess(true);
         } catch (Exception e) {
             logger.error("send mail error", e);
+            mailDto.setSuccess(false);
+
+            if (e.getCause() != null) {
+                mailDto.setException(e.getCause());
+            } else {
+                mailDto.setException(e);
+            }
         }
+
+        return mailDto;
+    }
+
+    public boolean isBlank(String text) {
+        return (text == null) || "".equals(text.trim());
+    }
+
+    public boolean notBlank(String text) {
+        return (text != null) && (!"".equals(text.trim()));
     }
 
     public MailServerInfo getDefaultMailServerInfo() {
-        return defaultMailServerInfo;
+        return mailServerInfoCache.getDefaultMailServerInfo();
     }
 
     public void setDefaultMailServerInfo(MailServerInfo defaultMailServerInfo) {
         Assert.notNull(defaultMailServerInfo);
-        this.defaultMailServerInfo = defaultMailServerInfo;
-        mailServerInfoMap.put(defaultMailServerInfo.getName(),
-                defaultMailServerInfo);
+        mailServerInfoCache.setDefaultMailServerInfo(defaultMailServerInfo);
     }
 }

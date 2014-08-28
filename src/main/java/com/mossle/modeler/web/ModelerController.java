@@ -7,6 +7,9 @@ import javax.annotation.Resource;
 
 import javax.servlet.http.HttpServletResponse;
 
+import com.fasterxml.jackson.databind.JsonNode;
+import com.fasterxml.jackson.databind.ObjectMapper;
+
 import com.mossle.bpm.cmd.SyncProcessCmd;
 
 import org.activiti.bpmn.converter.BpmnXMLConverter;
@@ -19,9 +22,6 @@ import org.activiti.engine.RepositoryService;
 import org.activiti.engine.repository.Deployment;
 import org.activiti.engine.repository.Model;
 import org.activiti.engine.repository.ProcessDefinition;
-
-import org.codehaus.jackson.map.ObjectMapper;
-import org.codehaus.jackson.node.ObjectNode;
 
 import org.springframework.stereotype.Controller;
 
@@ -78,7 +78,7 @@ public class ModelerController {
         RepositoryService repositoryService = processEngine
                 .getRepositoryService();
         Model modelData = repositoryService.getModel(id);
-        ObjectNode modelNode = (ObjectNode) new ObjectMapper()
+        JsonNode modelNode = (JsonNode) new ObjectMapper()
                 .readTree(repositoryService.getModelEditorSource(modelData
                         .getId()));
         byte[] bpmnBytes = null;

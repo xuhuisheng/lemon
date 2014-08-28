@@ -127,35 +127,6 @@
           </div>
         </div>
 
-        <div class="accordion-group">
-          <div class="accordion-heading">
-            <a class="accordion-toggle" data-toggle="collapse" data-parent="#m-sidebar" href="#collapse-car">
-              <i class="icon-user"></i>
-              <span class="title">车辆管理</span>
-            </a>
-          </div>
-          <div id="collapse-car" class="accordion-body collapse ${currentMenu == 'car' ? 'in' : ''}">
-            <ul class="accordion-inner nav nav-list">
-			  <li><a href="${scopePrefix}/car/car-info-list.do"><i class="icon-user"></i>车辆管理</a></li>
-            </ul>
-          </div>
-        </div>
-
-        <div class="accordion-group">
-          <div class="accordion-heading">
-            <a class="accordion-toggle" data-toggle="collapse" data-parent="#m-sidebar" href="#collapse-meeting">
-              <i class="icon-user"></i>
-              <span class="title">会议室管理</span>
-            </a>
-          </div>
-          <div id="collapse-meeting" class="accordion-body collapse ${currentMenu == 'meeting' ? 'in' : ''}">
-            <ul class="accordion-inner nav nav-list">
-			  <li><a href="${scopePrefix}/meeting/meeting-room-list.do"><i class="icon-user"></i>会议室管理</a></li>
-			  <li><a href="${scopePrefix}/meeting/meeting-info-list.do"><i class="icon-user"></i>会议预定</a></li>
-            </ul>
-          </div>
-        </div>
-
 		<footer id="m-footer" class="text-center">
 		  <hr>
 		  &copy;Mossle

@@ -7,7 +7,7 @@ import javax.annotation.PostConstruct;
 
 import javax.sql.DataSource;
 
-import com.googlecode.flyway.core.Flyway;
+import org.flywaydb.core.Flyway;
 
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
@@ -53,6 +53,7 @@ public class DatabaseMigrator {
                     databaseMigrateInfo.getLocation());
 
             Flyway flyway = new Flyway();
+            flyway.setPlaceholderPrefix("$${");
             flyway.setInitOnMigrate(true);
             flyway.setInitVersion("0");
             flyway.setDataSource(dataSource);

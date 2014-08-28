@@ -13,6 +13,8 @@ public class MailDTO {
     private String subject;
     private String content;
     private Map<String, InputStreamSource> attachments = new LinkedHashMap<String, InputStreamSource>();
+    private boolean success;
+    private Throwable exception;
 
     public String getFrom() {
         return from;
@@ -72,5 +74,21 @@ public class MailDTO {
 
     public void addAttachment(String name, InputStreamSource attachment) {
         attachments.put(name, attachment);
+    }
+
+    public boolean isSuccess() {
+        return success;
+    }
+
+    public void setSuccess(boolean success) {
+        this.success = success;
+    }
+
+    public Throwable getException() {
+        return exception;
+    }
+
+    public void setException(Throwable exception) {
+        this.exception = exception;
     }
 }

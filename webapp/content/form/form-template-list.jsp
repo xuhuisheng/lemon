@@ -98,6 +98,7 @@ $(function() {
         <th width="10" class="m-table-check"><input type="checkbox" name="checkAll" onchange="toggleSelectedItems(this.checked)"></th>
         <th class="sorting" name="id"><spring:message code="user.user.list.id" text="编号"/></th>
         <th class="sorting" name="name">名称</th>
+        <th class="sorting" name="code">标识</th>
         <th class="sorting" name="type">类型</th>
         <th width="80">&nbsp;</th>
       </tr>
@@ -109,6 +110,7 @@ $(function() {
         <td><input type="checkbox" class="selectedItem" name="selectedItem" value="${item.id}"></td>
         <td>${item.id}</td>
         <td>${item.name}</td>
+        <td>${item.code}</td>
         <td>${item.type == '1' ? '外部' : '内部'}</td>
         <td>
           <a href="form-template-input.do?id=${item.id}"><spring:message code="core.list.edit" text="编辑"/></a>

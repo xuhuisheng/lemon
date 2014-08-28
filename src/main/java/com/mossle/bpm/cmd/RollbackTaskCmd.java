@@ -337,6 +337,9 @@ public class RollbackTaskCmd implements Command<Integer> {
         Context.getCommandContext().getHistoryManager()
                 .recordTaskCreated(task, executionEntity);
         Context.getCommandContext().getHistoryManager().recordTaskId(task);
+        // 更新ACT_HI_ACTIVITY里的assignee字段
+        Context.getCommandContext().getHistoryManager()
+                .recordTaskAssignment(task);
     }
 
     public ActivityImpl getActivity(

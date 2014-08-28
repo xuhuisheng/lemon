@@ -1,5 +1,7 @@
 package com.mossle.bridge.scope;
 
+import java.io.IOException;
+
 import javax.annotation.Resource;
 
 import com.mossle.api.scope.ScopeCache;
@@ -20,18 +22,26 @@ public class ScopeSubscriber implements Subscribable<String> {
     private String destinationName = "topic.scope.update";
 
     public void handleMessage(String message) {
-        ScopeDTO scopeDto = jsonMapper.fromJson(message, ScopeDTO.class);
+        try {
+            ScopeDTO scopeDto = jsonMapper.fromJson(message, ScopeDTO.class);
 
-        if (scopeDto.getName() == null) {
-            scopeCache.removeScope(scopeDto);
-            logger.info("remove scopeDto : {}", message);
-        } else {
-            scopeCache.updateScope(scopeDto);
-            logger.info("update scopeDto : {}", message);
+            if (scopeDto.getName() == null) {
+                scopeCache.removeScope(scopeDto);
+                logger.info("remove scopeDto : {}", message);
+            } else {
+                scopeCache.updateScope(scopeDto);
+                logger.info("update scopeDto : {}", message);
+            }
+        } catch (IOException ex) {
+            logger.error(ex.getMessage(), ex);
         }
     }
 
-    public String getTopic() {
+    public boolean isTopic() {
+        return true;
+    }
+
+    public String getName() {
         return destinationName;
     }
 

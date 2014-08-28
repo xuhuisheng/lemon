@@ -348,6 +348,7 @@ public class HibernateBasicDao implements ApplicationContextAware {
      */
     public String getIdName(Class entityClass) {
         Assert.notNull(entityClass);
+        entityClass = ReflectUtils.getOriginalClass(entityClass);
 
         ClassMetadata meta = this.getSessionFactory().getClassMetadata(
                 entityClass);

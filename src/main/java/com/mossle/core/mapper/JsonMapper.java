@@ -26,45 +26,32 @@ public class JsonMapper {
         mapper.disable(DeserializationFeature.FAIL_ON_UNKNOWN_PROPERTIES);
     }
 
-    public String toJson(Object object) {
-        try {
-            return mapper.writeValueAsString(object);
-        } catch (IOException e) {
-            logger.warn("write to json string error:" + object, e);
-
-            return null;
-        }
+    public String toJson(Object object) throws IOException {
+        return mapper.writeValueAsString(object);
     }
 
-    public <T> T fromJson(String jsonString, Class<T> clazz) {
+    public <T> T fromJson(String jsonString, Class<T> clazz) throws IOException {
         if ((jsonString == null) || "".equals(jsonString.trim())) {
             return null;
         }
 
-        try {
-            return mapper.readValue(jsonString, clazz);
-        } catch (IOException e) {
-            logger.warn("parse json string error:" + jsonString, e);
-
-            return null;
-        }
+        return mapper.readValue(jsonString, clazz);
     }
 
-    public <T> T fromJson(String jsonString, TypeReference typeReference) {
+    /**
+     * new TypeReference<List<String>>(){}
+     */
+    public <T> T fromJson(String jsonString, TypeReference typeReference)
+            throws IOException {
         if ((jsonString == null) || "".equals(jsonString.trim())) {
             return null;
         }
 
-        try {
-            return (T) mapper.readValue(jsonString, typeReference);
-        } catch (IOException e) {
-            logger.warn("parse json string error:" + jsonString, e);
-
-            return null;
-        }
+        return (T) mapper.readValue(jsonString, typeReference);
     }
 
-    public String toJsonP(String functionName, Object object) {
+    public String toJsonP(String functionName, Object object)
+            throws IOException {
         return toJson(new JSONPObject(functionName, object));
     }
 }

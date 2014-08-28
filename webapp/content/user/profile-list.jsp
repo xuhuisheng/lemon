@@ -38,6 +38,11 @@ $(function() {
             }
         }
     });
+
+    $('#myTab a').click(function (e) {
+		e.preventDefault();
+		$(this).tab('show');
+	});
 })
     </script>
   </head>
@@ -56,8 +61,18 @@ $(function() {
 		  <h4 class="title"><spring:message code="user.user.input.title" text="编辑用户"/></h4>
 		</header>
 		<div class="content content-inner">
-
-<form id="userForm" method="post" action="profile-save.do?operationMode=STORE" class="form-horizontal">
+<!--
+		<ul class="nav nav-pills" id="myTab">
+		  <li class="active"><a href="#identity">账号信息</a></li>
+		  <li><a href="#contract">联系方式</a></li>
+		</ul>
+		
+		<hr>
+     
+		<div class="tab-content">
+		  <div class="tab-pane active" id="identity">
+-->
+<form id="userForm" method="post" action="profile-save.do" class="form-horizontal">
   <input id="user-base_userRepoId" type="hidden" name="userRepoId" value="1">
   <c:if test="${model != null}">
   <input id="user-base_id" type="hidden" name="id" value="${model.id}">
@@ -69,21 +84,68 @@ $(function() {
 	</div>
   </div>
   <div class="control-group">
-    <label class="control-label" for="user-base_displayName">显示名</label>
+    <label class="control-label" for="userBase_nickName">显示名</label>
 	<div class="controls">
-	  <input id="user-base_displayName" type="text" name="displayName" value="${model.displayName}" size="40" class="text required" minlength="2" maxlength="50">
+	  <input id="userBase_nickName" type="text" name="nickName" value="${model.nickName}" size="40" class="text required" minlength="2" maxlength="50">
     </div>
   </div>
   <div class="control-group">
-    <label class="control-label" for="user-base_email">邮箱</label>
+    <label class="control-label" for="userBase_email">邮箱</label>
 	<div class="controls">
-	  <input id="user-base_email" type="text" name="email" value="${model.email}">
+	  <input id="userBase_email" type="text" name="email" value="${model.email}">
     </div>
   </div>
   <div class="control-group">
-    <label class="control-label" for="user-base_mobile">手机</label>
+    <label class="control-label" for="userBase_mobile">手机</label>
 	<div class="controls">
-	  <input id="user-base_mobile" type="text" name="mobile" value="${model.mobile}">
+	  <input id="userBase_mobile" type="text" name="mobile" value="${model.mobile}">
+    </div>
+  </div>
+  <c:forEach items="${userBaseWrapper.userAttrWrappers}" var="item">
+  <div class="control-group">
+    <label class="control-label" for="userBase_${item.code}">${item.name}</label>
+	<div class="controls">
+	  <input id="userBase_${item.code}" type="text" name="_user_attr_${item.code}" size="40" class="text" maxlength="50" value="${item.value}">
+    </div>
+  </div>
+  </c:forEach>
+  <div class="control-group">
+    <div class="controls">
+      <button id="submitButton" class="btn a-submit"><spring:message code='core.input.save' text='保存'/></button>
+      <button type="button" onclick="history.back();" class="btn a-cancel"><spring:message code='core.input.back' text='返回'/></button>
+    </div>
+  </div>
+</form>
+<!--
+		  </div>
+		  <div class="tab-pane" id="contract">
+
+<form id="contractForm" method="post" action="profile-contract-save.do" class="form-horizontal">
+  <c:if test="${contract != null}">
+  <input id="contract_id" type="hidden" name="id" value="${contract.id}">
+  </c:if>
+  <div class="control-group">
+    <label class="control-label" for="userBase_username">姓名</label>
+	<div class="controls">
+	  <div style="padding-top:5px;">${contract.name}</div>
+	</div>
+  </div>
+  <div class="control-group">
+    <label class="control-label" for="userBase_nickName"></label>
+	<div class="controls">
+	  <input id="userBase_nickName" type="text" name="nickName" value="${model.nickName}" size="40" class="text required" minlength="2" maxlength="50">
+    </div>
+  </div>
+  <div class="control-group">
+    <label class="control-label" for="userBase_email">邮箱</label>
+	<div class="controls">
+	  <input id="userBase_email" type="text" name="email" value="${model.email}" class="email" maxlength="100">
+    </div>
+  </div>
+  <div class="control-group">
+    <label class="control-label" for="userBase_mobile">手机</label>
+	<div class="controls">
+	  <input id="userBase_mobile" type="text" name="mobile" value="${model.mobile}">
     </div>
   </div>
   <c:forEach items="${userBaseWrapper.userAttrWrappers}" var="item">
@@ -101,6 +163,10 @@ $(function() {
     </div>
   </div>
 </form>
+
+		  </div>
+-->
+        </div>
 		</div>
       </article>
 

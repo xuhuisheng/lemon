@@ -201,6 +201,96 @@ public class RoleController {
     }
 
     // ~ ======================================================================
+    @RequestMapping("role-viewList")
+    public String viewList(@ModelAttribute Page page,
+            @RequestParam Map<String, Object> parameterMap, Model model) {
+        List<PropertyFilter> propertyFilters = PropertyFilter
+                .buildFromMap(parameterMap);
+        propertyFilters.add(new PropertyFilter("EQS_scopeId", ScopeHolder
+                .getScopeId()));
+        page = roleManager.pagedQuery(page, propertyFilters);
+        model.addAttribute("page", page);
+
+        return "auth/role-viewList";
+    }
+
+    @RequestMapping("role-viewInput")
+    public String viewInput(
+            @RequestParam(value = "id", required = false) Long id, Model model) {
+        if (id != null) {
+            Role role = roleManager.get(id);
+            model.addAttribute("model", role);
+        }
+
+        return "auth/role-viewInput";
+    }
+
+    @RequestMapping("role-viewSave")
+    public String viewSave(@ModelAttribute Role role,
+            RedirectAttributes redirectAttributes) {
+        try {
+            // before check
+            roleChecker.check(role);
+
+            // after invoke
+            Role dest = null;
+            Long id = role.getId();
+
+            if (id != null) {
+                dest = roleManager.get(id);
+                beanMapper.copy(role, dest);
+            } else {
+                dest = role;
+            }
+
+            if (id == null) {
+                dest.setScopeId(ScopeHolder.getScopeId());
+
+                RoleDef roleDef = new RoleDef();
+                roleDef.setName(role.getName());
+                roleDef.setDescn(role.getDescn());
+                roleDef.setScopeId(ScopeHolder.getScopeId());
+                roleDefManager.save(roleDef);
+                dest.setRoleDef(roleDef);
+            }
+
+            roleManager.save(dest);
+            messageHelper.addFlashMessage(redirectAttributes,
+                    "core.success.save", "保存成功");
+        } catch (CheckRoleException ex) {
+            logger.warn(ex.getMessage(), ex);
+            redirectAttributes.addFlashAttribute("message", ex.getMessage());
+
+            return "auth/role-viewInput";
+        }
+
+        return "redirect:/auth/role-viewList.do";
+    }
+
+    @RequestMapping("role-viewRemove")
+    public String viewRemove(
+            @RequestParam("selectedItem") List<Long> selectedItem,
+            RedirectAttributes redirectAttributes) {
+        try {
+            List<Role> roles = roleManager.findByIds(selectedItem);
+
+            for (Role role : roles) {
+                roleChecker.check(role);
+                roleManager.remove(role);
+                roleDefManager.remove(role.getRoleDef());
+            }
+
+            messageHelper.addFlashMessage(redirectAttributes,
+                    "core.success.delete", "删除成功");
+        } catch (CheckRoleException ex) {
+            logger.warn(ex.getMessage(), ex);
+            redirectAttributes.addFlashAttribute("message", ex.getMessage());
+        }
+
+        return "redirect:/auth/role-viewList.do";
+    }
+
+    // ~ ======================================================================
     @Resource
     public void setRoleManager(RoleManager roleManager) {
         this.roleManager = roleManager;

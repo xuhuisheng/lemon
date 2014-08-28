@@ -46,9 +46,7 @@
 			<list>
 				<bean class="com.mossle.bpm.CustomGroupEntityManagerFactory" >
 					<property name="groupEntityManager">
-						<bean class="com.mossle.bpm.CustomGroupEntityManager">
-							<property name="jdbcTemplate" ref="jdbcTemplate"/>
-						</bean>
+						<bean class="com.mossle.bpm.CustomGroupEntityManager"/>
                     </property>
                </bean>
            </list>
@@ -115,4 +113,8 @@
 	</bean>
 
 	<bean id="workCalendarService" class="com.mossle.workcal.service.WorkCalendarService"/>
+
+	<bean class="com.mossle.form.support.XFormDeployer">
+		<property name="autoDeploy" value="true"/>
+	</bean>
 </beans>

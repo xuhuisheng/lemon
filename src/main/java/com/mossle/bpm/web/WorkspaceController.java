@@ -12,6 +12,7 @@ import javax.annotation.Resource;
 import javax.servlet.http.HttpServletRequest;
 import javax.servlet.http.HttpServletResponse;
 
+import com.mossle.api.process.ProcessConnector;
 import com.mossle.api.user.UserConnector;
 
 import com.mossle.bpm.cmd.CounterSignCmd;
@@ -24,6 +25,8 @@ import com.mossle.bpm.persistence.domain.BpmCategory;
 import com.mossle.bpm.persistence.domain.BpmProcess;
 import com.mossle.bpm.persistence.manager.BpmCategoryManager;
 import com.mossle.bpm.persistence.manager.BpmProcessManager;
+
+import com.mossle.core.page.Page;
 
 import com.mossle.security.util.SpringSecurityUtils;
 
@@ -70,6 +73,7 @@ public class WorkspaceController {
     private BpmProcessManager bpmProcessManager;
     private ProcessEngine processEngine;
     private UserConnector userConnector;
+    private ProcessConnector processConnector;
 
     @RequestMapping("workspace-home")
     public String home(Model model) {
@@ -125,15 +129,12 @@ public class WorkspaceController {
     }
 
     @RequestMapping("workspace-listRunningProcessInstances")
-    public String listRunningProcessInstances(Model model) {
-        HistoryService historyService = processEngine.getHistoryService();
-
-        // TODO: 改成通过runtime表搜索，提高效率
+    public String listRunningProcessInstances(@ModelAttribute Page page,
+            Model model) {
         String userId = SpringSecurityUtils.getCurrentUserId();
-        List<HistoricProcessInstance> historicProcessInstances = historyService
-                .createHistoricProcessInstanceQuery().startedBy(userId)
-                .unfinished().list();
-        model.addAttribute("historicProcessInstances", historicProcessInstances);
+
+        page = processConnector.findRunningProcessInstances(userId, page);
+        model.addAttribute("page", page);
 
         return "bpm/workspace-listRunningProcessInstances";
     }
@@ -144,14 +145,12 @@ public class WorkspaceController {
      * @return
      */
     @RequestMapping("workspace-listCompletedProcessInstances")
-    public String listCompletedProcessInstances(Model model) {
-        HistoryService historyService = processEngine.getHistoryService();
-
+    public String listCompletedProcessInstances(@ModelAttribute Page page,
+            Model model) {
         String userId = SpringSecurityUtils.getCurrentUserId();
-        List<HistoricProcessInstance> historicProcessInstances = historyService
-                .createHistoricProcessInstanceQuery().startedBy(userId)
-                .finished().list();
-        model.addAttribute("historicProcessInstances", historicProcessInstances);
+
+        page = processConnector.findCompletedProcessInstances(userId, page);
+        model.addAttribute("page", page);
 
         return "bpm/workspace-listCompletedProcessInstances";
     }
@@ -162,15 +161,12 @@ public class WorkspaceController {
      * @return
      */
     @RequestMapping("workspace-listInvolvedProcessInstances")
-    public String listInvolvedProcessInstances(Model model) {
-        HistoryService historyService = processEngine.getHistoryService();
-
+    public String listInvolvedProcessInstances(@ModelAttribute Page page,
+            Model model) {
         // TODO: finished(), unfinished()
         String userId = SpringSecurityUtils.getCurrentUserId();
-        List<HistoricProcessInstance> historicProcessInstances = historyService
-                .createHistoricProcessInstanceQuery().involvedUser(userId)
-                .list();
-        model.addAttribute("historicProcessInstances", historicProcessInstances);
+        page = processConnector.findInvolvedProcessInstances(userId, page);
+        model.addAttribute("page", page);
 
         return "bpm/workspace-listInvolvedProcessInstances";
     }
@@ -205,12 +201,10 @@ public class WorkspaceController {
      * @return
      */
     @RequestMapping("workspace-listPersonalTasks")
-    public String listPersonalTasks(Model model) {
-        TaskService taskService = processEngine.getTaskService();
+    public String listPersonalTasks(@ModelAttribute Page page, Model model) {
         String userId = SpringSecurityUtils.getCurrentUserId();
-        List<Task> tasks = taskService.createTaskQuery().taskAssignee(userId)
-                .active().list();
-        model.addAttribute("tasks", tasks);
+        page = processConnector.findPersonalTasks(userId, page);
+        model.addAttribute("page", page);
 
         return "bpm/workspace-listPersonalTasks";
     }
@@ -221,31 +215,12 @@ public class WorkspaceController {
      * @return
      */
     @RequestMapping("workspace-listGroupTasks")
-    public String listGroupTasks(Model model) {
-        TaskService taskService = processEngine.getTaskService();
+    public String listGroupTasks(@ModelAttribute Page page, Model model) {
         String userId = SpringSecurityUtils.getCurrentUserId();
-        List<Task> tasks = taskService.createTaskQuery()
-                .taskCandidateUser(userId).active().list();
-        model.addAttribute("tasks", tasks);
+        page = processConnector.findGroupTasks(userId, page);
+        model.addAttribute("page", page);
 
         return "bpm/workspace-listGroupTasks";
-    }
-
-    /**
-     * 代理中的任务（代理人还未完成该任务）
-     * 
-     * @return
-     */
-    @RequestMapping("workspace-listDelegatedTasks")
-    public String listDelegatedTasks(Model model) {
-        TaskService taskService = processEngine.getTaskService();
-        String userId = SpringSecurityUtils.getCurrentUserId();
-        List<Task> tasks = taskService.createTaskQuery().taskOwner(userId)
-                .taskDelegationState(DelegationState.PENDING).list();
-
-        model.addAttribute("tasks", tasks);
-
-        return "bpm/workspace-listDelegatedTasks";
     }
 
     /**
@@ -254,15 +229,26 @@ public class WorkspaceController {
      * @return
      */
     @RequestMapping("workspace-listHistoryTasks")
-    public String listHistoryTasks(Model model) {
-        HistoryService historyService = processEngine.getHistoryService();
+    public String listHistoryTasks(@ModelAttribute Page page, Model model) {
         String userId = SpringSecurityUtils.getCurrentUserId();
-        List<HistoricTaskInstance> historicTasks = historyService
-                .createHistoricTaskInstanceQuery().taskAssignee(userId)
-                .finished().list();
-        model.addAttribute("historicTasks", historicTasks);
+        page = processConnector.findHistoryTasks(userId, page);
+        model.addAttribute("page", page);
 
         return "bpm/workspace-listHistoryTasks";
+    }
+
+    /**
+     * 代理中的任务（代理人还未完成该任务）
+     * 
+     * @return
+     */
+    @RequestMapping("workspace-listDelegatedTasks")
+    public String listDelegatedTasks(@ModelAttribute Page page, Model model) {
+        String userId = SpringSecurityUtils.getCurrentUserId();
+        page = processConnector.findGroupTasks(userId, page);
+        model.addAttribute("page", page);
+
+        return "bpm/workspace-listDelegatedTasks";
     }
 
     // ~ ======================================================================
@@ -471,5 +457,10 @@ public class WorkspaceController {
     @Resource
     public void setUserConnector(UserConnector userConnector) {
         this.userConnector = userConnector;
+    }
+
+    @Resource
+    public void setProcessConnector(ProcessConnector processConnector) {
+        this.processConnector = processConnector;
     }
 }

@@ -37,10 +37,10 @@ public class MsgInfo implements java.io.Serializable {
     private Date createTime;
 
     /** null. */
-    private String senderUsername;
+    private String senderId;
 
     /** null. */
-    private String receiverUsername;
+    private String receiverId;
 
     /** null. */
     private Integer status;
@@ -49,13 +49,13 @@ public class MsgInfo implements java.io.Serializable {
     }
 
     public MsgInfo(String name, String content, Integer type, Date createTime,
-            String senderUsername, String receiverUsername, Integer status) {
+            String senderId, String receiverId, Integer status) {
         this.name = name;
         this.content = content;
         this.type = type;
         this.createTime = createTime;
-        this.senderUsername = senderUsername;
-        this.receiverUsername = receiverUsername;
+        this.senderId = senderId;
+        this.receiverId = receiverId;
         this.status = status;
     }
 
@@ -90,7 +90,7 @@ public class MsgInfo implements java.io.Serializable {
     }
 
     /** @return null. */
-    @Column(name = "CONTENT", length = 200)
+    @Column(name = "CONTENT", length = 65535)
     public String getContent() {
         return this.content;
     }
@@ -133,31 +133,31 @@ public class MsgInfo implements java.io.Serializable {
     }
 
     /** @return null. */
-    @Column(name = "SENDER_USERNAME", length = 200)
-    public String getSenderUsername() {
-        return this.senderUsername;
+    @Column(name = "SENDER_ID", length = 64)
+    public String getSenderId() {
+        return this.senderId;
     }
 
     /**
-     * @param senderUsername
+     * @param senderId
      *            null.
      */
-    public void setSenderUsername(String senderUsername) {
-        this.senderUsername = senderUsername;
+    public void setSenderId(String senderId) {
+        this.senderId = senderId;
     }
 
     /** @return null. */
-    @Column(name = "RECEIVER_USERNAME", length = 200)
-    public String getReceiverUsername() {
-        return this.receiverUsername;
+    @Column(name = "RECEIVER_ID", length = 64)
+    public String getReceiverId() {
+        return this.receiverId;
     }
 
     /**
-     * @param receiverUsername
+     * @param receiverId
      *            null.
      */
-    public void setReceiverUsername(String receiverUsername) {
-        this.receiverUsername = receiverUsername;
+    public void setReceiverId(String receiverId) {
+        this.receiverId = receiverId;
     }
 
     /** @return null. */

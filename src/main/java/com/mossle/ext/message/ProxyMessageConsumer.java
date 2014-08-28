@@ -18,7 +18,6 @@ public class ProxyMessageConsumer implements MessageConsumer {
             .getLogger(ProxyMessageConsumer.class);
     private ProxySession session;
     private Destination destination;
-    private List<String> data = new ArrayList<String>();
 
     public ProxyMessageConsumer(ProxySession session) {
         this.session = session;
@@ -74,18 +73,6 @@ public class ProxyMessageConsumer implements MessageConsumer {
     }
 
     public Message getMessage() {
-        if (data.isEmpty()) {
-            return null;
-        }
-
-        String text = data.remove(0);
-        ProxyTextMessage message = new ProxyTextMessage();
-        message.setText(text);
-
-        return message;
-    }
-
-    public void sendMessage(String text) {
-        data.add(text);
+        return this.session.getMessage(this);
     }
 }

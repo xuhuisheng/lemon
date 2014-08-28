@@ -4,6 +4,8 @@ import java.util.Collections;
 import java.util.List;
 import java.util.Map;
 
+import com.mossle.api.org.OrgConnector;
+
 import com.mossle.core.spring.ApplicationContextHelper;
 
 import org.slf4j.Logger;
@@ -17,10 +19,10 @@ import org.springframework.jdbc.core.JdbcTemplate;
  * 获得指定用户的上级领导.
  * 
  */
-public class SuperiorAssigneeRule extends AbstractAssigneeRule {
+public class SuperiorAssigneeRule implements AssigneeRule {
     private static Logger logger = LoggerFactory
             .getLogger(SuperiorAssigneeRule.class);
-    private JdbcTemplate jdbcTemplate;
+    private OrgConnector orgConnector;
 
     public List<String> process(String value, String initiator) {
         return Collections.singletonList(this.process(initiator));
@@ -30,20 +32,10 @@ public class SuperiorAssigneeRule extends AbstractAssigneeRule {
      * 获得员工的直接上级.
      */
     public String process(String initiator) {
-        if (jdbcTemplate == null) {
-            jdbcTemplate = ApplicationContextHelper.getBean(JdbcTemplate.class);
+        if (orgConnector == null) {
+            orgConnector = ApplicationContextHelper.getBean(OrgConnector.class);
         }
 
-        String userEntityId = getUserEntityId(initiator);
-        String managerEntityId = getManagerEntityIdByUserEntityId(userEntityId);
-
-        if (managerEntityId == null) {
-            logger.debug("cannot find directorId for userEntityId : {}",
-                    userEntityId);
-
-            return null;
-        }
-
-        return getUserId(managerEntityId);
+        return orgConnector.getSuperiorId(initiator);
     }
 }

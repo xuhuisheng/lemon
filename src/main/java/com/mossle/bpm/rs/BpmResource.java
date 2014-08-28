@@ -17,6 +17,10 @@ import com.fasterxml.jackson.databind.node.ArrayNode;
 import com.fasterxml.jackson.databind.node.ObjectNode;
 import com.fasterxml.jackson.databind.util.JSONPObject;
 
+import com.mossle.bpm.ActivityDTO;
+import com.mossle.bpm.cmd.FindNextActivitiesCmd;
+import com.mossle.bpm.cmd.FindPreviousActivitiesCmd;
+
 import org.activiti.engine.ActivitiException;
 import org.activiti.engine.HistoryService;
 import org.activiti.engine.ProcessEngine;
@@ -31,6 +35,7 @@ import org.activiti.engine.impl.bpmn.parser.EventSubscriptionDeclaration;
 import org.activiti.engine.impl.jobexecutor.TimerDeclarationImpl;
 import org.activiti.engine.impl.persistence.entity.ExecutionEntity;
 import org.activiti.engine.impl.persistence.entity.ProcessDefinitionEntity;
+import org.activiti.engine.impl.pvm.PvmActivity;
 import org.activiti.engine.impl.pvm.PvmTransition;
 import org.activiti.engine.impl.pvm.delegate.ActivityBehavior;
 import org.activiti.engine.impl.pvm.process.ActivityImpl;
@@ -168,7 +173,7 @@ public class BpmResource {
         JsonNode pdrJSON = getProcessDefinitionResponse(processDefinition);
 
         if (pdrJSON != null) {
-            responseJSON.put("processDefinition", pdrJSON);
+            responseJSON.set("processDefinition", pdrJSON);
         }
 
         // Highlighted activities
@@ -188,8 +193,8 @@ public class BpmResource {
                 flowsArray.add(flow);
             }
 
-            responseJSON.put("highLightedActivities", activityArray);
-            responseJSON.put("highLightedFlows", flowsArray);
+            responseJSON.set("highLightedActivities", activityArray);
+            responseJSON.set("highLightedFlows", flowsArray);
         }
 
         // Pool shape, if process is participant in collaboration
@@ -212,7 +217,7 @@ public class BpmResource {
             participantProcessJSON.put("width", pProc.getWidth());
             participantProcessJSON.put("height", pProc.getHeight());
 
-            responseJSON.put("participantProcess", participantProcessJSON);
+            responseJSON.set("participantProcess", participantProcessJSON);
         }
 
         // Draw lanes
@@ -249,7 +254,7 @@ public class BpmResource {
                             flowNodeIdsArray.add(flowNodeId);
                         }
 
-                        laneJSON.put("flowNodeIds", flowNodeIdsArray);
+                        laneJSON.set("flowNodeIds", flowNodeIdsArray);
 
                         laneArray.add(laneJSON);
                     }
@@ -264,13 +269,13 @@ public class BpmResource {
                     laneSetJSON.put("name", "");
                 }
 
-                laneSetJSON.put("lanes", laneArray);
+                laneSetJSON.set("lanes", laneArray);
 
                 laneSetArray.add(laneSetJSON);
             }
 
             if (laneSetArray.size() > 0) {
-                responseJSON.put("laneSets", laneSetArray);
+                responseJSON.set("laneSets", laneSetArray);
             }
         }
 
@@ -282,8 +287,8 @@ public class BpmResource {
             getActivity(activity, activityArray, sequenceFlowArray);
         }
 
-        responseJSON.put("activities", activityArray);
-        responseJSON.put("sequenceFlows", sequenceFlowArray);
+        responseJSON.set("activities", activityArray);
+        responseJSON.set("sequenceFlows", sequenceFlowArray);
 
         return responseJSON;
     }
@@ -407,8 +412,8 @@ public class BpmResource {
                 flowJSON.put("isHighLighted", isHighLighted);
             }
 
-            flowJSON.put("xPointArray", xPointArray);
-            flowJSON.put("yPointArray", yPointArray);
+            flowJSON.set("xPointArray", xPointArray);
+            flowJSON.set("yPointArray", yPointArray);
 
             sequenceFlowArray.add(flowJSON);
         }
@@ -467,7 +472,7 @@ public class BpmResource {
                 }
 
                 if (timerDeclarationArray.size() > 0) {
-                    propertiesJSON.put(key, timerDeclarationArray);
+                    propertiesJSON.set(key, timerDeclarationArray);
                 }
 
                 // TODO: implement getting description
@@ -500,7 +505,7 @@ public class BpmResource {
                 }
 
                 if (eventDefinitionsArray.size() > 0) {
-                    propertiesJSON.put(key, eventDefinitionsArray);
+                    propertiesJSON.set(key, eventDefinitionsArray);
                 }
 
                 // TODO: implement it
@@ -531,7 +536,7 @@ public class BpmResource {
                 }
 
                 if (errorEventDefinitionsArray.size() > 0) {
-                    propertiesJSON.put(key, errorEventDefinitionsArray);
+                    propertiesJSON.set(key, errorEventDefinitionsArray);
                 }
             }
         }
@@ -592,14 +597,14 @@ public class BpmResource {
                 }
 
                 if (processInstanceArray.size() > 0) {
-                    propertiesJSON.put("processDefinitons",
+                    propertiesJSON.set("processDefinitons",
                             processInstanceArray);
                 }
             }
         }
 
         activityJSON.put("activityId", activity.getId());
-        activityJSON.put("properties", propertiesJSON);
+        activityJSON.set("properties", propertiesJSON);
 
         if (multiInstance != null) {
             activityJSON.put("multiInstance", multiInstance);
@@ -610,7 +615,7 @@ public class BpmResource {
         }
 
         if (nestedActivityArray.size() > 0) {
-            activityJSON.put("nestedActivities", nestedActivityArray);
+            activityJSON.set("nestedActivities", nestedActivityArray);
         }
 
         if (isInterrupting != null) {
@@ -702,8 +707,8 @@ public class BpmResource {
             logger.error(e.getMessage(), e);
         }
 
-        responseJSON.put("activities", activitiesArray);
-        responseJSON.put("flows", flowsArray);
+        responseJSON.set("activities", activitiesArray);
+        responseJSON.set("flows", flowsArray);
 
         return responseJSON;
     }
@@ -754,6 +759,43 @@ public class BpmResource {
                 }
             }
         }
+    }
+
+    @Path("next")
+    @GET
+    public List<ActivityDTO> findNextActivities(
+            @QueryParam("processDefinitionId") String processDefinitionId,
+            @QueryParam("activityId") String activityId) {
+        FindNextActivitiesCmd cmd = new FindNextActivitiesCmd(
+                processDefinitionId, activityId);
+
+        return convertActivityDtos(processEngine.getManagementService()
+                .executeCommand(cmd));
+    }
+
+    @Path("previous")
+    @GET
+    public List<ActivityDTO> findPreviousActivities(
+            @QueryParam("processDefinitionId") String processDefinitionId,
+            @QueryParam("activityId") String activityId) {
+        FindPreviousActivitiesCmd cmd = new FindPreviousActivitiesCmd(
+                processDefinitionId, activityId);
+
+        return convertActivityDtos(processEngine.getManagementService()
+                .executeCommand(cmd));
+    }
+
+    public List<ActivityDTO> convertActivityDtos(List<PvmActivity> pvmActivities) {
+        List<ActivityDTO> activityDtos = new ArrayList<ActivityDTO>();
+
+        for (PvmActivity pvmActivity : pvmActivities) {
+            ActivityDTO activityDto = new ActivityDTO();
+            activityDto.setId(pvmActivity.getId());
+            activityDto.setName((String) pvmActivity.getProperty("name"));
+            activityDtos.add(activityDto);
+        }
+
+        return activityDtos;
     }
 
     @Resource

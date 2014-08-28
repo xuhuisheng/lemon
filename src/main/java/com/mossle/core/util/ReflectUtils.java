@@ -123,4 +123,18 @@ public class ReflectUtils {
 
         return new RuntimeException("Unexpected Checked Exception.", e);
     }
+
+    public static Class<?> getOriginalClass(Class<?> clz) {
+        Class<?> superclass = clz;
+
+        while (superclass.getName().indexOf("_$$_jvst") != -1) {
+            superclass = superclass.getSuperclass();
+
+            if (superclass == null) {
+                return superclass;
+            }
+        }
+
+        return superclass;
+    }
 }

@@ -24,13 +24,9 @@ import javax.jms.TopicSubscriber;
 
 public class ProxySession implements Session {
     private ProxyConnection connection;
-    private ProxyMessageProducer proxyMessageProducer;
-    private ProxyMessageConsumer proxyMessageConsumer;
 
     public ProxySession(ProxyConnection connection) {
         this.connection = connection;
-        proxyMessageProducer = new ProxyMessageProducer(this);
-        proxyMessageConsumer = new ProxyMessageConsumer(this);
     }
 
     public BytesMessage createBytesMessage() throws JMSException {
@@ -102,9 +98,7 @@ public class ProxySession implements Session {
 
     public MessageProducer createProducer(Destination destination)
             throws JMSException {
-        proxyMessageProducer.setDestination(destination);
-
-        return proxyMessageProducer;
+        return this.connection.createProducer(destination, this);
     }
 
     public MessageConsumer createConsumer(Destination destination)
@@ -123,8 +117,7 @@ public class ProxySession implements Session {
     }
 
     public Queue createQueue(String queueName) throws JMSException {
-        throw new UnsupportedOperationException("createQueue(" + queueName
-                + ")");
+        return new ProxyQueue(queueName);
     }
 
     public Topic createTopic(String topicName) throws JMSException {
@@ -166,8 +159,8 @@ public class ProxySession implements Session {
         this.connection.sendMessage(destination, text);
     }
 
-    public Message getMessage(String destinationName) {
-        return connection.getMessage(destinationName);
+    public Message getMessage(ProxyMessageConsumer proxyMessageConsumer) {
+        return connection.getMessage(proxyMessageConsumer);
     }
 
     public void removeMessageConsumer(ProxyMessageConsumer messageConsumer) {

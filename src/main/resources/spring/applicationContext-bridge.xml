@@ -51,6 +51,10 @@
 		<property name="jdbcTemplate" ref="jdbcTemplate"/>
 	</bean>
 
+	<bean class="com.mossle.bridge.user.UserUpdatedSubscriber"/>
+
+	<bean class="com.mossle.bridge.user.UserRemovedSubscriber"/>
+
 	<!-- ================================================== -->
 
 	<bean id="userAuthCache" class="com.mossle.bridge.userauth.UserAuthCacheImpl">
@@ -63,12 +67,6 @@
 		<property name="jdbcTemplate" ref="jdbcTemplate"/>
 		<property name="userConnector" ref="userConnector"/>
 		<property name="scopeConnector" ref="scopeConnector"/>
-	</bean>
-
-	<!-- ================================================== -->
-
-	<bean id="orgConnector" class="com.mossle.bridge.org.DatabaseOrgConnector">
-		<property name="jdbcTemplate" ref="jdbcTemplate"/>
 	</bean>
 
 	<!-- ================================================== -->

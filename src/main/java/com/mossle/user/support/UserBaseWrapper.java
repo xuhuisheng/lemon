@@ -1,7 +1,9 @@
 package com.mossle.user.support;
 
 import java.util.ArrayList;
+import java.util.HashMap;
 import java.util.List;
+import java.util.Map;
 
 import com.mossle.core.mapper.BeanMapper;
 
@@ -43,5 +45,32 @@ public class UserBaseWrapper extends UserBase {
 
     public List<UserAttrWrapper> getUserAttrWrappers() {
         return userAttrWrappers;
+    }
+
+    // ~ ======================================================================
+    public Map<String, Object> toMap() {
+        Map<String, Object> map = new HashMap<String, Object>();
+        this.copyUserBase(map, this);
+
+        for (UserAttrWrapper userAttrWrapper : userAttrWrappers) {
+            this.copyUserAttr(map, userAttrWrapper);
+        }
+
+        return map;
+    }
+
+    public void copyUserBase(Map<String, Object> map, UserBase userBase) {
+        map.put("id", userBase.getId());
+        map.put("username", userBase.getUsername());
+        map.put("displayName", userBase.getDisplayName());
+        map.put("email", userBase.getEmail());
+        map.put("mobile", userBase.getMobile());
+        map.put("ref", userBase.getRef());
+        map.put("status", userBase.getStatus());
+    }
+
+    public void copyUserAttr(Map<String, Object> map,
+            UserAttrWrapper userAttrWrapper) {
+        map.put(userAttrWrapper.getCode(), userAttrWrapper.getValue());
     }
 }
