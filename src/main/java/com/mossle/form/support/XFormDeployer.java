@@ -43,7 +43,11 @@ public class XFormDeployer implements ApplicationContextAware {
 
                 String code = (String) map.get("code");
                 String name = (String) map.get("name");
-                FormTemplate formTemplate = new FormTemplate();
+				FormTemplate formTemplate = formTemplateManager.findUniqueBy("code", code);
+				if (formTemplate != null) {
+					continue;
+				}
+				formTemplate = new FormTemplate();
                 formTemplate.setCode(code);
                 formTemplate.setName(name);
                 formTemplate.setContent(text);

@@ -1,7 +1,7 @@
 <%@ page language="java" pageEncoding="UTF-8" %>
       <!-- start of sidebar -->
       <aside id="m-sidebar" class="accordion span2" data-spy="affix" data-offset-top="100">
-
+<!--
         <div class="accordion-group">
           <div class="accordion-heading">
             <a class="accordion-toggle" data-toggle="collapse" data-parent="#m-sidebar" href="#collapse-scope">
@@ -15,7 +15,7 @@
             </ul>
           </div>
         </div>
-
+-->
         <div class="accordion-group">
           <div class="accordion-heading">
             <a class="accordion-toggle" data-toggle="collapse" data-parent="#m-sidebar" href="#collapse-user-admin">
