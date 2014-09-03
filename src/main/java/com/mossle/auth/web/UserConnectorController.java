@@ -105,8 +105,7 @@ public class UserConnectorController {
     public String configRole(@RequestParam("ref") String ref) {
         logger.debug("ref : {}", ref);
 
-        UserDTO userDto = userConnector.findByRef(ref,
-                ScopeHolder.getUserRepoRef());
+        UserDTO userDto = userConnector.findById(ref);
         Long id = null;
 
         if (userDto != null) {
