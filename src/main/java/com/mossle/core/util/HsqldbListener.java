@@ -17,9 +17,8 @@ import javax.servlet.ServletContextListener;
 import org.hsqldb.Server;
 
 /**
- * 控制数据库的周期.
- * context启动的时候，启动hsqldb数据库服务器，context关闭时shutdown数据库服务器
- *
+ * 控制数据库的周期. context启动的时候，启动hsqldb数据库服务器，context关闭时shutdown数据库服务器
+ * 
  * @author Lingo
  * @version 1.0
  * @since 2007-03-13
@@ -53,17 +52,22 @@ public class HsqldbListener implements ServletContextListener {
 
     /**
      * 处理context初始化事件.
-     * @param sce ServletContextEvent
+     * 
+     * @param sce
+     *            ServletContextEvent
      */
     public void contextInitialized(ServletContextEvent sce) {
         try {
             Properties prop = new Properties();
-            InputStream inputStream = new FileInputStream(System.getProperty("appserver.home") + "/data/db.properties");
+            InputStream inputStream = new FileInputStream(
+                    System.getProperty("appserver.home")
+                            + "/data/db.properties");
 
-			if (inputStream == null) {
-				System.out.println("data/db.properties isnot exists.");
-				return;
-			}
+            if (inputStream == null) {
+                System.out.println("data/db.properties isnot exists.");
+
+                return;
+            }
 
             try {
                 prop.load(inputStream);
@@ -82,10 +86,10 @@ public class HsqldbListener implements ServletContextListener {
             if (hsqlPath.startsWith(TOKEN)) {
                 String webappRoot = sce.getServletContext().getRealPath("/");
                 hsqlPath = hsqlPath.substring(TOKEN.length());
-                //if(hsqlPath.charAt(0) == '/' || hsqlPath.charAt(0) == '\\')
-                //{
-                //  hsqlPath = hsqlPath.substring(1);
-                //}
+                // if(hsqlPath.charAt(0) == '/' || hsqlPath.charAt(0) == '\\')
+                // {
+                // hsqlPath = hsqlPath.substring(1);
+                // }
                 hsqlPath = webappRoot + hsqlPath;
             }
 
@@ -112,7 +116,9 @@ public class HsqldbListener implements ServletContextListener {
 
     /**
      * 处理context销毁事件.
-     * @param sce ServletContextEvent
+     * 
+     * @param sce
+     *            ServletContextEvent
      */
     public void contextDestroyed(ServletContextEvent sce) {
         try {
