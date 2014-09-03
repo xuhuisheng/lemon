@@ -61,6 +61,7 @@ public class RollbackTaskCmd implements Command<Integer> {
     public Integer execute(CommandContext commandContext) {
         // 尝试查找最近的上游userTask
         String historyTaskId = this.findNearestUserTask();
+        logger.info("nearest history user task is : {}", historyTaskId);
 
         if (historyTaskId == null) {
             logger.info("cannot rollback {}", taskId);
@@ -75,6 +76,9 @@ public class RollbackTaskCmd implements Command<Integer> {
 
         // 再反向查找历史任务对应的历史节点
         HistoricActivityInstanceEntity historicActivityInstanceEntity = getHistoricActivityInstanceEntity(historyTaskId);
+
+        logger.info("historic activity instance is : {}",
+                historicActivityInstanceEntity.getId());
 
         Graph graph = new ActivitiHistoryGraphBuilder(
                 historicTaskInstanceEntity.getProcessInstanceId()).build();
@@ -220,7 +224,7 @@ public class RollbackTaskCmd implements Command<Integer> {
 
     public boolean checkCouldRollback(Node node) {
         // TODO: 如果是catchEvent，也应该可以退回，到时候再说
-        for (Edge edge : node.getEdges()) {
+        for (Edge edge : node.getOutgoingEdges()) {
             Node dest = edge.getDest();
             String type = dest.getType();
 
@@ -231,10 +235,10 @@ public class RollbackTaskCmd implements Command<Integer> {
                     if (isSkip) {
                         return checkCouldRollback(dest);
                     } else {
-                        logger.info("cannot rollback, " + type + "("
-                                + dest.getName() + ") is complete.");
-
-                        return false;
+                        // logger.info("cannot rollback, " + type + "("
+                        //        + dest.getName() + ") is complete.");
+                        // return false;
+						return true;
                     }
                 }
             } else if (type.endsWith("Gateway")) {
@@ -275,7 +279,7 @@ public class RollbackTaskCmd implements Command<Integer> {
         logger.info("node : {}, {}, {}", node.getId(), node.getType(),
                 node.getName());
 
-        for (Edge edge : node.getEdges()) {
+        for (Edge edge : node.getOutgoingEdges()) {
             logger.info("edge : {}", edge.getName());
 
             Node dest = edge.getDest();
