@@ -3,10 +3,29 @@ package com.mossle.bpm.graph;
 import java.util.ArrayList;
 import java.util.List;
 
+/**
+ * 节点.
+ */
 public class Node extends GraphElement {
+    /**
+     * 类型，比如userTask，startEvent.
+     */
     private String type;
+
+    /**
+     * 是否还未完成.
+     */
     private boolean active;
-    private List<Edge> edges = new ArrayList<Edge>();
+
+    /**
+     * 进入这个节点的所有连线.
+     */
+    private List<Edge> incomingEdges = new ArrayList<Edge>();
+
+    /**
+     * 外出这个节点的所有连线.
+     */
+    private List<Edge> outgoingEdges = new ArrayList<Edge>();
 
     public String getType() {
         return type;
@@ -24,11 +43,19 @@ public class Node extends GraphElement {
         this.active = active;
     }
 
-    public List<Edge> getEdges() {
-        return edges;
+    public List<Edge> getIncomingEdges() {
+        return incomingEdges;
     }
 
-    public void setEdges(List<Edge> edges) {
-        this.edges = edges;
+    public void setIncomingEdges(List<Edge> incomingEdges) {
+        this.incomingEdges = incomingEdges;
+    }
+
+    public List<Edge> getOutgoingEdges() {
+        return outgoingEdges;
+    }
+
+    public void setOutgoingEdges(List<Edge> outgoingEdges) {
+        this.outgoingEdges = outgoingEdges;
     }
 }

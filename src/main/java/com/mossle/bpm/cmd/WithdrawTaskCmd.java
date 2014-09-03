@@ -123,7 +123,7 @@ public class WithdrawTaskCmd implements Command<Integer> {
 
     public boolean checkCouldWithdraw(Node node) {
         // TODO: 如果是catchEvent，也应该可以撤销，到时候再说
-        for (Edge edge : node.getEdges()) {
+        for (Edge edge : node.getOutgoingEdges()) {
             Node dest = edge.getDest();
             String type = dest.getType();
 
@@ -165,7 +165,7 @@ public class WithdrawTaskCmd implements Command<Integer> {
         logger.info("node : {}, {}, {}", node.getId(), node.getType(),
                 node.getName());
 
-        for (Edge edge : node.getEdges()) {
+        for (Edge edge : node.getOutgoingEdges()) {
             logger.info("edge : {}", edge.getName());
 
             Node dest = edge.getDest();
