@@ -21,6 +21,9 @@ import com.mossle.bpm.cmd.ProcessDefinitionDiagramCmd;
 import com.mossle.bpm.cmd.ReOpenProcessCmd;
 import com.mossle.bpm.cmd.SyncProcessCmd;
 import com.mossle.bpm.cmd.UpdateProcessCmd;
+import com.mossle.bpm.persistence.domain.*;
+import com.mossle.bpm.persistence.domain.BpmConfBase;
+import com.mossle.bpm.persistence.manager.BpmConfBaseManager;
 
 import com.mossle.core.page.Page;
 import com.mossle.core.util.IoUtils;
@@ -60,6 +63,7 @@ import org.springframework.web.servlet.mvc.support.RedirectAttributes;
 public class ConsoleController {
     private ProcessEngine processEngine;
     private ProcessConnector processConnector;
+    private BpmConfBaseManager bpmConfBaseManager;
 
     /**
      * 部署列表.
@@ -95,6 +99,60 @@ public class ConsoleController {
             @RequestParam("deploymentId") String deploymentId) {
         RepositoryService repositoryService = processEngine
                 .getRepositoryService();
+        List<ProcessDefinition> processDefinitions = repositoryService
+                .createProcessDefinitionQuery().deploymentId(deploymentId)
+                .list();
+
+        for (ProcessDefinition processDefinition : processDefinitions) {
+            String hql = "from BpmConfBase where processDefinitionId=? or (processDefinitionKey=? and processDefinitionVersion=?)";
+            List<BpmConfBase> bpmConfBases = bpmConfBaseManager.find(hql,
+                    processDefinition.getId(), processDefinition.getKey(),
+                    processDefinition.getVersion());
+
+            for (BpmConfBase bpmConfBase : bpmConfBases) {
+                for (BpmConfNode bpmConfNode : bpmConfBase.getBpmConfNodes()) {
+                    for (BpmConfCountersign bpmConfCountersign : bpmConfNode
+                            .getBpmConfCountersigns()) {
+                        bpmConfBaseManager.remove(bpmConfCountersign);
+                    }
+
+                    for (BpmConfForm bpmConfForm : bpmConfNode
+                            .getBpmConfForms()) {
+                        bpmConfBaseManager.remove(bpmConfForm);
+                    }
+
+                    for (BpmConfListener bpmConfListener : bpmConfNode
+                            .getBpmConfListeners()) {
+                        bpmConfBaseManager.remove(bpmConfListener);
+                    }
+
+                    for (BpmConfNotice bpmConfNotice : bpmConfNode
+                            .getBpmConfNotices()) {
+                        bpmConfBaseManager.remove(bpmConfNotice);
+                    }
+
+                    for (BpmConfOperation bpmConfOperation : bpmConfNode
+                            .getBpmConfOperations()) {
+                        bpmConfBaseManager.remove(bpmConfOperation);
+                    }
+
+                    for (BpmConfRule bpmConfRule : bpmConfNode
+                            .getBpmConfRules()) {
+                        bpmConfBaseManager.remove(bpmConfRule);
+                    }
+
+                    for (BpmConfUser bpmConfUser : bpmConfNode
+                            .getBpmConfUsers()) {
+                        bpmConfBaseManager.remove(bpmConfUser);
+                    }
+
+                    bpmConfBaseManager.remove(bpmConfNode);
+                }
+
+                bpmConfBaseManager.remove(bpmConfBase);
+            }
+        }
+
         repositoryService.deleteDeployment(deploymentId, true);
 
         return "redirect:/bpm/console-listDeployments.do";
@@ -446,5 +504,10 @@ public class ConsoleController {
     @Resource
     public void setProcessConnector(ProcessConnector processConnector) {
         this.processConnector = processConnector;
+    }
+
+    @Resource
+    public void setBpmConfBaseManager(BpmConfBaseManager bpmConfBaseManager) {
+        this.bpmConfBaseManager = bpmConfBaseManager;
     }
 }
