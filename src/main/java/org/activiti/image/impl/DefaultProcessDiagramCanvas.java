@@ -1120,7 +1120,7 @@ public class DefaultProcessDiagramCanvas {
     	  TextLayout tl = lbm.nextLayout(wrapWidth);
     	  textY += tl.getAscent();
     	  Rectangle2D bb = tl.getBounds();
-    	  double tX = graphicInfo.getX();
+    	  int tX = (int) graphicInfo.getX();
     	  if (centered)
         	  tX += (int) (graphicInfo.getWidth() / 2 - bb.getWidth() / 2);
     	  tl.draw(g, tX, textY);
