@@ -1320,7 +1320,7 @@ xf.field.Checkbox.prototype.doExport = function() {
 		+ ',"col":' + this.col
 		+ ',"name":"' + this.name
 		+ '","items":"' + this.items
-		+ '","required:' + this.required
+		+ '","required":' + this.required
 		+ ',"readOnly":' + this.readOnly
 		+ '}';
 }
