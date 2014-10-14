@@ -37,6 +37,90 @@ $(function() {
     table.configPageSize('.m-page-size');
 });
     </script>
+    <script>
+    var MouseEvent = function(e){
+		this.x = e.clientX;
+		this.y = e.clientY;
+	}
+    var Mouse = function(e){
+		var kdheight = jQuery(document).scrollTop();
+		mouse = new MouseEvent(e);
+		leftpos = mouse.x - 200;
+		var aTop = mouse.y;
+		var aBottom = $(window).height() - mouse.y;
+		if(aBottom > 240){
+			toppos = mouse.y + kdheight;
+		} else if(aTop >240){
+			toppos = mouse.y +kdheight -240;
+		} else {
+			toppos = kdheight;
+		}
+	}
+    var fix = false;
+    	$(function(){
+    		
+    		jQuery(".e1").hover(
+    			function(e){
+    				fix = false;
+    				Mouse(e);
+    				var $cell = $(e.target).closest("tr");
+    				var $childrens = $cell.children();
+    				var $id = $childrens.eq(1);
+    				
+    				var src = "${scopePrefix}/user/qrcode.do?id="+$.trim($id.text());
+        			$("#qrimg").attr("src",src);
+        			$("#erweima").css({ top:toppos,left:leftpos }).fadeIn(100);
+    			},function(){
+    				if(!fix){
+    				$("#erweima").hide();
+    				}
+    			})
+    		
+    			jQuery(".e1").click(function(){
+    				fix = true;
+    			})
+    			jQuery("#closeImg").click(function(){
+    				$("#erweima").hide();
+    			})
+    	})
+    	
+    	
+    </script>
+    <style type="text/css">
+    	#erweima{
+    		display:none;
+    		left:1px;
+    		top:1px;
+    		width:190px;
+    		color:#000000;
+    		background:#ffffff;
+    		position:absolute;
+    		z-index:9999;
+    		border:1px solid gray;
+    		margin:0 auto;
+    		min-height:160px;
+    	}
+    	#qrimg
+    	{
+    	width:170px;
+    	height:150px;
+    	padding:0 10px 2px 10px;
+    	display:block;
+    	}
+    	#closeImg
+    	{
+    	width:15px;
+    	height:15px;
+    	padding:2px 2px 2px 180px;;
+    	}
+    	#divEwm p
+    	{
+    		margin:0;
+    		padding-top:4px;
+    		display:block;
+    		padding-bottom:10px;
+    	}
+    </style>
   </head>
 
   <body>
@@ -112,6 +196,7 @@ $(function() {
         <th class="sorting" name="nickName">显示名</th>
         <th class="sorting" name="status"><spring:message code="user.user.list.status" text="状态"/></th>
         <th width="80">&nbsp;</th>
+        <th>名片</th>
       </tr>
     </thead>
 
@@ -126,9 +211,20 @@ $(function() {
         <td>
           <a href="user-base-input.do?id=${item.id}" class="a-update"><spring:message code="core.list.edit" text="编辑"/></a>
         </td>
+        <td><img class="e1" title="单击二维码固定" style="cursor:pointer;width:15px;height:15px;" src="${scopePrefix}/widgets/xform/images/visualpharm/th.png"></td>
       </tr>
       </c:forEach>
     </tbody>
+    <div id="erweima">
+    <span id="closeImg" style="cursor:pointer">X</span>
+     <img id="qrimg" src=""/>
+     <p style='text-align:center;'>
+     	<font size="4pt" style="font-weight:bold;">二维码名片</font>
+     	<br/>
+     	<font size="2pt">（"扫一扫"如使用微信）</font>
+     </p>
+ 
+    </div>
   </table>
 </form>
         </div>
