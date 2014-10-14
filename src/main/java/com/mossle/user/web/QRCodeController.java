@@ -53,6 +53,8 @@ public class QRCodeController {
 		UserBase userBase = null;
 		if (id != null) {
             userBase = userBaseManager.get(id);
+        }else {
+        	userBase = new UserBase();
         }
 
 		StringBuilder sb = new StringBuilder();
