@@ -157,71 +157,19 @@ $(function() {
 	  <textarea id="__gef_content__" name="content">${formTemplate.content}</textarea>
 	</form>
 
-<div id="userPicker" class="modal hide fade">
-  <div class="modal-header">
-    <button type="button" class="close" data-dismiss="modal" aria-hidden="true">&times;</button>
-    <h3>选择用户</h3>
-  </div>
-  <div class="modal-body">
-
-
-
-      <!--
-	  <article class="m-blank">
-	    <div class="pull-left">
-		  <form name="userForm" method="post" action="javascript:void(0);return false;" class="form-inline m-form-bottom">
-    	    <label for="user_username">账号:</label>
-			<input type="text" id="user_username" name="filter_LIKES_username" value="">
-			<button class="btn btn-small" onclick="document.userForm.submit()">查询</button>
-		  </form>
-		</div>
-	    <div class="m-clear"></div>
-	  </article>
-      -->
-
-      <article class="m-widget">
-        <header class="header">
-		  <h4 class="title">用户列表</h4>
-		</header>
-		<div class="content">
-
-<form id="userPickerForm" name="userPickerForm" method='post' action="#" class="m-form-blank">
-  <table id="userPickerGrid" class="m-table table-hover">
-    <thead>
-      <tr>
-        <th width="10" class="m-table-check">&nbsp;</th>
-        <th>账号</th>
-      </tr>
-    </thead>
-
-    <tbody id="userPickerBody">
-
-      <tr>
-        <td><input id="selectedItem1" type="checkbox" class="selectedItem" name="selectedItem" value="1"></td>
-        <td>admin</td>
-      </tr>
-
-      <tr>
-        <td><input id="selectedItem2" type="checkbox" class="selectedItem" name="selectedItem" value="2"></td>
-        <td>user</td>
-      </tr>
-
-    </tbody>
-  </table>
-</form>
-
+	<div id="modal" class="modal hide fade">
+	  <div class="modal-body">
+	  <form>
+	    <input type="hidden" name="taskId" value="${formInfo.taskId}"/>
+        <div class="input-append userPicker">
+		  <input type="hidden" name="attorney" class="input-medium" value="">
+		  <input type="text" style="width: 175px;" value="">
+		  <span class="add-on"><i class="icon-user"></i></span>
         </div>
-      </article>
-
-
-
-  </div>
-  <div class="modal-footer">
-    <span id="userPickerResult"></span>
-    <a id="userPickerBtnClose" href="#" class="btn">关闭</a>
-    <a id="userPickerBtnSelect" href="#" class="btn btn-primary">选择</a>
-  </div>
-</div>
+		<br>
+		<button class="btn">提交</button>
+	  </div>
+	</div>
 
   </body>
 
