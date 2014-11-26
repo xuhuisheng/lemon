@@ -1,8 +1,28 @@
 package com.mossle.api.process;
 
+import java.util.Map;
+
+import com.mossle.api.form.FormDTO;
+
 import com.mossle.core.page.Page;
 
 public interface ProcessConnector {
+    /**
+     * 获得启动表单.
+     */
+    FormDTO findStartForm(String processDefinitionId);
+
+    /**
+     * 获得流程配置.
+     */
+    ProcessDTO findProcess(String processId);
+
+    /**
+     * 发起流程.
+     */
+    String startProcess(String userId, String businessKey,
+            String processDefinitionId, Map<String, Object> processParemeters);
+
     /**
      * 未结流程.
      */

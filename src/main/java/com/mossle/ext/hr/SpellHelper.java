@@ -15,7 +15,11 @@ import net.sourceforge.pinyin4j.format.HanyuPinyinToneType;
 import net.sourceforge.pinyin4j.format.HanyuPinyinVCharType;
 import net.sourceforge.pinyin4j.format.exception.BadHanyuPinyinOutputFormatCombination;
 
+import org.slf4j.Logger;
+import org.slf4j.LoggerFactory;
+
 public class SpellHelper {
+    private static Logger logger = LoggerFactory.getLogger(SpellHelper.class);
     private String name;
     private String spell;
     private List<String> spellList = new ArrayList<String>();
@@ -51,7 +55,7 @@ public class SpellHelper {
                             .toHanyuPinyinStringArray(c, format)));
                     spellDto.setList(new ArrayList<String>(set));
                 } catch (BadHanyuPinyinOutputFormatCombination ex) {
-                    ex.printStackTrace();
+                    logger.error(ex.getMessage(), ex);
                     spellDto.setList(Collections.singletonList(s));
                 }
             } else {

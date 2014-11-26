@@ -19,10 +19,10 @@ import com.mossle.core.mapper.JsonMapper;
 import com.mossle.core.util.BaseDTO;
 import com.mossle.core.util.StringUtils;
 
+import com.mossle.ext.auth.CurrentUserHolder;
+
 import com.mossle.msg.domain.MsgInfo;
 import com.mossle.msg.manager.MsgInfoManager;
-
-import com.mossle.security.util.SpringSecurityUtils;
 
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
@@ -35,12 +35,13 @@ public class MsgResource {
     private static Logger logger = LoggerFactory.getLogger(MsgResource.class);
     private MsgInfoManager msgInfoManager;
     private JsonMapper jsonMapper = new JsonMapper();
+    private CurrentUserHolder currentUserHolder;
 
     @GET
     @Path("unreadCount")
     @Produces(MediaType.APPLICATION_JSON)
     public BaseDTO unreadCount() {
-        String userId = SpringSecurityUtils.getCurrentUserId();
+        String userId = currentUserHolder.getUserId();
         Integer count = msgInfoManager.getCount(
                 "select count(*) from MsgInfo where receiverId=? and status=0",
                 userId);
@@ -54,5 +55,10 @@ public class MsgResource {
     @Resource
     public void setMsgInfoManager(MsgInfoManager msgInfoManager) {
         this.msgInfoManager = msgInfoManager;
+    }
+
+    @Resource
+    public void setCurrentUserHolder(CurrentUserHolder currentUserHolder) {
+        this.currentUserHolder = currentUserHolder;
     }
 }

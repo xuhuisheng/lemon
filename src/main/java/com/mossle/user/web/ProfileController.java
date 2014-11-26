@@ -11,7 +11,7 @@ import com.mossle.core.page.Page;
 import com.mossle.core.spring.MessageHelper;
 import com.mossle.core.util.ServletUtils;
 
-import com.mossle.security.util.SpringSecurityUtils;
+import com.mossle.ext.auth.CurrentUserHolder;
 
 import com.mossle.user.persistence.domain.UserBase;
 import com.mossle.user.persistence.manager.UserAttrManager;
@@ -38,11 +38,12 @@ public class ProfileController {
     private BeanMapper beanMapper = new BeanMapper();
     private UserBaseWrapper userBaseWrapper;
     private UserService userService;
+    private CurrentUserHolder currentUserHolder;
 
     @RequestMapping("profile-list")
     public String list(Model model) {
         UserBase userBase = userBaseManager.findUniqueBy("username",
-                SpringSecurityUtils.getCurrentUsername());
+                currentUserHolder.getUsername());
         UserBaseWrapper userBaseWrapper = new UserBaseWrapper(userBase);
         model.addAttribute("model", userBase);
         model.addAttribute("userBaseWrapper", userBaseWrapper);
@@ -91,5 +92,10 @@ public class ProfileController {
     @Resource
     public void setUserService(UserService userService) {
         this.userService = userService;
+    }
+
+    @Resource
+    public void setCurrentUserHolder(CurrentUserHolder currentUserHolder) {
+        this.currentUserHolder = currentUserHolder;
     }
 }

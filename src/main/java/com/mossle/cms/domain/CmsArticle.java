@@ -100,6 +100,9 @@ public class CmsArticle implements java.io.Serializable {
     private String userId;
 
     /** . */
+    private Set<CmsAttachment> cmsAttachments = new HashSet<CmsAttachment>(0);
+
+    /** . */
     private Set<CmsFavorite> cmsFavorites = new HashSet<CmsFavorite>(0);
 
     /** . */
@@ -114,8 +117,8 @@ public class CmsArticle implements java.io.Serializable {
             Integer status, Date publishTime, Date closeTime, Integer type,
             Integer top, Integer weight, Date createTime, String template,
             Integer viewCount, Long recommendId, Integer recommendStatus,
-            String userId, Set<CmsFavorite> cmsFavorites,
-            Set<CmsComment> cmsComments) {
+            String userId, Set<CmsAttachment> cmsAttachments,
+            Set<CmsFavorite> cmsFavorites, Set<CmsComment> cmsComments) {
         this.cmsCatalog = cmsCatalog;
         this.title = title;
         this.shortTitle = shortTitle;
@@ -139,6 +142,7 @@ public class CmsArticle implements java.io.Serializable {
         this.recommendId = recommendId;
         this.recommendStatus = recommendStatus;
         this.userId = userId;
+        this.cmsAttachments = cmsAttachments;
         this.cmsFavorites = cmsFavorites;
         this.cmsComments = cmsComments;
     }
@@ -483,6 +487,20 @@ public class CmsArticle implements java.io.Serializable {
      */
     public void setUserId(String userId) {
         this.userId = userId;
+    }
+
+    /** @return . */
+    @OneToMany(fetch = FetchType.LAZY, mappedBy = "cmsArticle")
+    public Set<CmsAttachment> getCmsAttachments() {
+        return this.cmsAttachments;
+    }
+
+    /**
+     * @param cmsAttachments
+     *            .
+     */
+    public void setCmsAttachments(Set<CmsAttachment> cmsAttachments) {
+        this.cmsAttachments = cmsAttachments;
     }
 
     /** @return . */

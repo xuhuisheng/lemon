@@ -31,7 +31,7 @@
   <input id="demo_bpmProcessId" type="hidden" name="bpmProcessId" value="${bpmProcessId}">
   <input id="demo_businessKey" type="hidden" name="businessKey" value="${businessKey}">
   <input id="demo_status" type="hidden" name="status" value="taskConf">
-  <c:if test="${taskDefinitions != null}">
+  <c:if test="${humanTaskDefinitions != null}">
   <table class="table table-border">
     <thead>
 	  <tr>
@@ -40,10 +40,10 @@
 	  </tr>
 	</thead>
 	<tbody>
-  <c:forEach items="${taskDefinitions}" var="item">
+  <c:forEach items="${humanTaskDefinitions}" var="item">
       <tr>
-	    <td><input type="hidden" name="taskDefinitionKeys" value="${item.key}">${item.nameExpression}</td>
-	    <td><input type="text" name="taskAssignees" value="${item.assigneeExpression}"></td>
+	    <td><input type="hidden" name="taskDefinitionKeys" value="${item.key}">${item.name}</td>
+	    <td><input type="text" name="taskAssignees" value="${item.assignee}"></td>
 	  </tr>
   </c:forEach>
     </tbody>

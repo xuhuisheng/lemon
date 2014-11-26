@@ -77,18 +77,18 @@ $(function() {
   </div>
 -->
   <div class="control-group">
+    <label class="control-label" for="cmsArticle_summary">摘要</label>
+	<div class="controls">
+	  <textarea id="cmsArticle_summary" name="summary" maxlength="200">${model.summary}</textarea>
+    </div>
+  </div>
+  <div class="control-group">
     <label class="control-label" for="cms-article_cmsArticlename">内容</label>
 	<div class="controls">
 	  <textarea id="cmsArticle_content" name="content" class="text required" minlength="2" maxlength="50">${model.content}</textarea>
     </div>
   </div>
 <!--
-  <div class="control-group">
-    <label class="control-label" for="cms-article_cmsArticlename">摘要</label>
-	<div class="controls">
-	  <input id="cms-article_cmsArticlename" type="text" name="summary" value="${model.summary}" size="40" class="text" minlength="2" maxlength="50">
-    </div>
-  </div>
   <div class="control-group">
     <label class="control-label" for="cms-article_cmsArticlename">图标</label>
 	<div class="controls">
@@ -166,6 +166,7 @@ $(function() {
     </div>
   </div>
 -->
+
   <div class="control-group">
     <div class="controls">
       <button id="submitButton" class="btn a-submit"><spring:message code='core.input.save' text='保存'/></button>
@@ -173,6 +174,7 @@ $(function() {
     </div>
   </div>
 </form>
+
 		</div>
       </article>
 

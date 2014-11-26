@@ -101,7 +101,7 @@ public class UserResource {
             Map<String, Object> map = new HashMap<String, Object>();
             map.put("id", userBase.getId());
             map.put("username", userBase.getUsername());
-            map.put("displayName", userBase.getDisplayName());
+            map.put("displayName", userBase.getNickName());
             list.add(map);
         }
 

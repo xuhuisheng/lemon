@@ -66,7 +66,7 @@ setInterval(unreadCount, 10000);
                   <b class="caret"></b>
                 </a>
                 <ul class="dropdown-menu">
-                  <li><a href="${ctx}/auth/change-password.do">修改密码</a></li>
+                  <li><a href="${ctx}/user/change-password-input.do">修改密码</a></li>
                   <li class="divider"></li>
 				  <li><a href="${ctx}/j_spring_security_logout">退出</a></li>
                 </ul>

@@ -1,12 +1,17 @@
 package com.mossle.bpm.web;
 
 import java.util.ArrayList;
+import java.util.Collection;
 import java.util.List;
 import java.util.Map;
 
 import javax.annotation.Resource;
 
 import javax.servlet.http.HttpServletResponse;
+
+import com.mossle.api.internal.TemplateConnector;
+import com.mossle.api.internal.TemplateDTO;
+import com.mossle.api.notification.NotificationConnector;
 
 import com.mossle.bpm.persistence.domain.BpmConfNode;
 import com.mossle.bpm.persistence.domain.BpmConfNotice;
@@ -43,6 +48,8 @@ public class BpmConfNoticeController {
     private BeanMapper beanMapper = new BeanMapper();
     private ProcessEngine processEngine;
     private BpmProcessManager bpmProcessManager;
+    private TemplateConnector templateConnector;
+    private NotificationConnector notificationConnector;
 
     @RequestMapping("bpm-conf-notice-list")
     public String list(@RequestParam("bpmConfNodeId") Long bpmConfNodeId,
@@ -63,9 +70,11 @@ public class BpmConfNoticeController {
 
     @RequestMapping("bpm-conf-notice-input")
     public String input(Model model) {
-        List<BpmMailTemplate> bpmMailTemplates = bpmMailTemplateManager
-                .getAll();
-        model.addAttribute("bpmMailTemplates", bpmMailTemplates);
+        List<TemplateDTO> templateDtos = templateConnector.findAll();
+        model.addAttribute("templateDtos", templateDtos);
+
+        Collection<String> types = notificationConnector.getTypes();
+        model.addAttribute("types", types);
 
         return "bpm/bpm-conf-notice-input";
     }
@@ -73,14 +82,31 @@ public class BpmConfNoticeController {
     @RequestMapping("bpm-conf-notice-save")
     public String save(@ModelAttribute BpmConfNotice bpmConfNotice,
             @RequestParam("bpmConfNodeId") Long bpmConfNodeId,
-            @RequestParam("bpmMailTemplateId") Long bpmMailTemplateId) {
+            @RequestParam("templateCode") String templateCode,
+            @RequestParam("notificationTypes") List<String> notificationTypes) {
         bpmConfNotice.setBpmConfNode(bpmConfNodeManager.get(bpmConfNodeId));
-        bpmConfNotice.setBpmMailTemplate(bpmMailTemplateManager
-                .get(bpmMailTemplateId));
+        bpmConfNotice.setTemplateCode(templateCode);
+        bpmConfNotice.setNotificationType(join(notificationTypes));
         bpmConfNoticeManager.save(bpmConfNotice);
 
         return "redirect:/bpm/bpm-conf-notice-list.do?bpmConfNodeId="
                 + bpmConfNodeId;
+    }
+
+    public String join(List<String> notificationTypes) {
+        if (notificationTypes.isEmpty()) {
+            return "";
+        }
+
+        StringBuilder buff = new StringBuilder();
+
+        for (String text : notificationTypes) {
+            buff.append(text).append(",");
+        }
+
+        buff.deleteCharAt(buff.length() - 1);
+
+        return buff.toString();
     }
 
     @RequestMapping("bpm-conf-notice-remove")
@@ -119,5 +145,16 @@ public class BpmConfNoticeController {
     @Resource
     public void setProcessEngine(ProcessEngine processEngine) {
         this.processEngine = processEngine;
+    }
+
+    @Resource
+    public void setTemplateConnector(TemplateConnector templateConnector) {
+        this.templateConnector = templateConnector;
+    }
+
+    @Resource
+    public void setNotificationConnector(
+            NotificationConnector notificationConnector) {
+        this.notificationConnector = notificationConnector;
     }
 }

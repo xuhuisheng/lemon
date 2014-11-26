@@ -64,6 +64,9 @@ $(function() {
 		    <c:if test="${item.confUser == 1}">
 			  <a href="bpm-conf-user-list.do?bpmConfNodeId=${item.id}" class="btn btn-primary"><i class="icon-edit"></i></a>
 			</c:if>
+			<c:if test="${not empty item.bpmConfUsers}">
+              <i class="badge">${fn:length(item.bpmConfUsers)}</i>
+			</c:if>
 			&nbsp;
 	      </td>
           <td>
@@ -72,6 +75,9 @@ $(function() {
 			</c:if>
 		    <c:if test="${item.confListener == 1}">
 			  <a href="bpm-conf-listener-list.do?bpmConfNodeId=${item.id}" class="btn btn-primary"><i class="icon-edit"></i></a>
+			</c:if>
+			<c:if test="${not empty item.bpmConfListeners}">
+              <i class="badge">${fn:length(item.bpmConfListeners)}</i>
 			</c:if>
 			&nbsp;
 	      </td>
@@ -82,6 +88,9 @@ $(function() {
 		    <c:if test="${item.confRule == 1}">
 			  <a href="bpm-conf-rule-list.do?bpmConfNodeId=${item.id}" class="btn btn-primary"><i class="icon-edit"></i></a>
 			</c:if>
+			<c:if test="${not empty item.bpmConfRules}">
+              <i class="badge">${fn:length(item.bpmConfRules)}</i>
+			</c:if>
 			&nbsp;
 	      </td>
           <td>
@@ -90,6 +99,9 @@ $(function() {
 			</c:if>
 		    <c:if test="${item.confForm == 1}">
 			  <a href="bpm-conf-form-list.do?bpmConfNodeId=${item.id}" class="btn btn-primary"><i class="icon-edit"></i></a>
+			</c:if>
+			<c:if test="${not empty item.bpmConfForms}">
+              <i class="badge">${fn:length(item.bpmConfForms)}</i>
 			</c:if>
 			&nbsp;
 	      </td>
@@ -100,6 +112,9 @@ $(function() {
 		    <c:if test="${item.confOperation == 1}">
 			  <a href="bpm-conf-operation-list.do?bpmConfNodeId=${item.id}" class="btn btn-primary"><i class="icon-edit"></i></a>
 			</c:if>
+			<c:if test="${not empty item.bpmConfOperations}">
+              <i class="badge">${fn:length(item.bpmConfOperations)}</i>
+			</c:if>
 			&nbsp;
 	      </td>
           <td>
@@ -108,6 +123,9 @@ $(function() {
 			</c:if>
 		    <c:if test="${item.confNotice == 1}">
 			  <a href="bpm-conf-notice-list.do?bpmConfNodeId=${item.id}" class="btn btn-primary"><i class="icon-edit"></i></a>
+			</c:if>
+			<c:if test="${not empty item.bpmConfNotices}">
+              <i class="badge">${fn:length(item.bpmConfNotices)}</i>
 			</c:if>
 			&nbsp;
 	      </td>

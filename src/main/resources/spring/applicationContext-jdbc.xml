@@ -18,8 +18,9 @@
         <property name="dataSource" ref="dataSource" />
 	</bean>
 
-	<bean id="databaseMigrator" class="com.mossle.core.dbmigrate.DatabaseMigrator">
+	<bean id="databaseMigrator" class="com.mossle.ext.dbmigrate.DatabaseMigrator">
 		<property name="dataSource" ref="dataSource"/>
-		<property name="applicationProperties" ref="applicationProperties"/>
+		<property name="enabled" value="${dbmigrate.enabled}"/>
+		<property name="clean" value="${dbmigrate.clean}"/>
 	</bean>
 </beans>

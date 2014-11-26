@@ -236,9 +236,9 @@ public class RollbackTaskCmd implements Command<Integer> {
                         return checkCouldRollback(dest);
                     } else {
                         // logger.info("cannot rollback, " + type + "("
-                        //        + dest.getName() + ") is complete.");
+                        // + dest.getName() + ") is complete.");
                         // return false;
-						return true;
+                        return true;
                     }
                 }
             } else if (type.endsWith("Gateway")) {

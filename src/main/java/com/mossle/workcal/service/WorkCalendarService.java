@@ -25,8 +25,13 @@ import com.mossle.workcal.domain.WorkcalPart;
 import com.mossle.workcal.domain.WorkcalRule;
 import com.mossle.workcal.manager.WorkcalPartManager;
 import com.mossle.workcal.manager.WorkcalRuleManager;
-import com.mossle.workcal.support.*;
+import com.mossle.workcal.support.DayPart;
+import com.mossle.workcal.support.Holiday;
 import com.mossle.workcal.support.WorkCalendar;
+import com.mossle.workcal.support.WorkDay;
+
+import org.slf4j.Logger;
+import org.slf4j.LoggerFactory;
 
 import org.springframework.stereotype.Controller;
 
@@ -39,6 +44,8 @@ import org.springframework.web.bind.annotation.ResponseBody;
 import org.springframework.web.servlet.mvc.support.RedirectAttributes;
 
 public class WorkCalendarService implements WorkCalendarConnector {
+    private static Logger logger = LoggerFactory
+            .getLogger(WorkCalendarService.class);
     public static final int STATUS_WEEK = 0;
     public static final int STATUS_HOLIDAY = 1;
     public static final int STATUS_HOLIDAY_TO_WORKDAY = 2;
@@ -47,6 +54,7 @@ public class WorkCalendarService implements WorkCalendarConnector {
     private WorkcalRuleManager workcalRuleManager;
     private WorkcalPartManager workcalPartManager;
     private String hourFormatText = "HH:mm";
+    private boolean enabled = true;
 
     public Date processDate(Date date) {
         return workCalendar.findWorkDate(date);
@@ -144,6 +152,12 @@ public class WorkCalendarService implements WorkCalendarConnector {
 
     @PostConstruct
     public void init() throws Exception {
+        if (!enabled) {
+            logger.info("skip work calendar");
+
+            return;
+        }
+
         workCalendar = new WorkCalendar();
         this.processWeek();
 
@@ -170,5 +184,9 @@ public class WorkCalendarService implements WorkCalendarConnector {
     @Resource
     public void setWorkcalPartManager(WorkcalPartManager workcalPartManager) {
         this.workcalPartManager = workcalPartManager;
+    }
+
+    public void setEnabled(boolean enabled) {
+        this.enabled = enabled;
     }
 }

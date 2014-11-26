@@ -64,7 +64,7 @@ public class DelegateTaskCmd implements Command<Void> {
             task.setOwner(assignee);
         }
 
-        task.setAssignee(attorney);
+        task.setAssigneeWithoutCascade(attorney);
         ApplicationContextHelper.getBean(DelegateService.class).saveRecord(
                 assignee, attorney, taskId);
 

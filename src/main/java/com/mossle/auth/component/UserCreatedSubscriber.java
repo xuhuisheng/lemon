@@ -32,8 +32,7 @@ public class UserCreatedSubscriber implements Subscribable<String> {
     public void handleMessage(String message) {
         try {
             UserDTO userDto = jsonMapper.fromJson(message, UserDTO.class);
-            Long typeId = 1L;
-
+            // Long typeId = 1L;
             jdbcTemplate.update(insertSql, userDto.getUsername(),
                     userDto.getId());
 

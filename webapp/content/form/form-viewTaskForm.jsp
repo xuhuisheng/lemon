@@ -18,7 +18,7 @@ document.onmouseup = function(e) {};
 document.ondblclick = function(e) {};
 
 var buttons = [];
-<c:forEach items="${formInfo.buttons}" var="item">
+<c:forEach items="${formDto.buttons}" var="item">
 buttons.push('${item}');
 </c:forEach>
 
@@ -119,8 +119,8 @@ $(function() {
 		</div>
 		  <script>
 		  $.getJSON('${scopePrefix}/rs/bpm/previous', {
-			  processDefinitionId: '${formInfo.processDefinitionId}',
-			  activityId: '${formInfo.activityId}'
+			  processDefinitionId: '${formDto.processDefinitionId}',
+			  activityId: '${formDto.activityId}'
 		  }, function(data) {
 			  $('#previousStep').append('上个环节：');
 			  for (var i = 0; i < data.length; i++) {
@@ -132,8 +132,8 @@ $(function() {
 		</div>
 		  <script>
 		  $.getJSON('${scopePrefix}/rs/bpm/next', {
-			  processDefinitionId: '${formInfo.processDefinitionId}',
-			  activityId: '${formInfo.activityId}'
+			  processDefinitionId: '${formDto.processDefinitionId}',
+			  activityId: '${formDto.activityId}'
 		  }, function(data) {
 			  $('#nextStep').append('下个环节：');
 			  for (var i = 0; i < data.length; i++) {
@@ -143,7 +143,7 @@ $(function() {
 		  </script>
 
 	  <form id="xf-form" method="post" action="${scopePrefix}/form/form-completeTask.do" class="xf-form">
-		<input id="taskId" type="hidden" name="taskId" value="${formInfo.taskId}">
+		<input id="taskId" type="hidden" name="taskId" value="${formDto.taskId}">
 		<input id="businessKey" type="hidden" name="businessKey" value="${dynamicModel.id}">
 		<div id="xf-form-table"></div>
 		<br>
@@ -160,7 +160,7 @@ $(function() {
 	<div id="modal" class="modal hide fade">
 	  <div class="modal-body">
 	  <form>
-	    <input type="hidden" name="taskId" value="${formInfo.taskId}"/>
+	    <input type="hidden" name="taskId" value="${formDto.taskId}"/>
         <div class="input-append userPicker">
 		  <input type="hidden" name="attorney" class="input-medium" value="">
 		  <input type="text" style="width: 175px;" value="">

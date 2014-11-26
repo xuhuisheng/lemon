@@ -104,7 +104,7 @@ $(function() {
 		  <td>${item.type == 0 ? '到达' : item.type == 1 ? '完成' : '超时'}</td>
 		  <td>${item.receiver}</td>
 		  <td>${item.dueDate}</td>
-		  <td>${item.bpmMailTemplate.name}</td>
+		  <td>${item.templateCode}</td>
 		  <td><a class="btn btn-small" href="bpm-conf-notice-remove.do?id=${item.id}">删除</a></td>
         </tr>
         </c:forEach>

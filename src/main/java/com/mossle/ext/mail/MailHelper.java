@@ -173,6 +173,11 @@ public class MailHelper {
             }
 
             for (Map.Entry<String, InputStreamSource> entry : mailDto
+                    .getInlines().entrySet()) {
+                helper.addInline(entry.getKey(), entry.getValue(), "image/png");
+            }
+
+            for (Map.Entry<String, InputStreamSource> entry : mailDto
                     .getAttachments().entrySet()) {
                 helper.addAttachment(entry.getKey(), entry.getValue());
             }

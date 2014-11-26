@@ -9,14 +9,14 @@ var WorkCalendar = function(year) {
 
 WorkCalendar.prototype = {
 	render: function(id) {
-		var html = '<div class="row" style="padding-bottom:10px;"><div style="width:20px;float:left;">&nbsp;</div>';
+		var html = '<div class="container" style="width:960px;"><div class="row" style="padding-bottom:10px;">';
 		for (var i = 0; i < 12; i++) {
 			if (i == 4 || i == 8) {
-				html += '</div><div class="row" style="padding-bottom:10px;"><div style="width:20px;float:left;">&nbsp;</div>';
+				html += '</div><div class="row" style="padding-bottom:10px;">';
 			}
 			html += this.generateMonth(i);
 		}
-		html += '</div>';
+		html += '</div></div>';
 		$(id).append(html);
 	},
 
@@ -53,12 +53,12 @@ WorkCalendar.prototype = {
 		}
 
 		for (var j = 0; j < lastDayOfMonth; j++) {
-			var week = (j + day) %7;
+			var week = (j + day) % 7;
 			if (week == 0) {
 				html += '</tr><tr>';
 			}
 
-			var date = this.year + '' + (month + 1) + '' + (j + 1);
+			var date = this.year + '' + this.completion(month + 1) + '' + this.completion(j + 1);
 			html += '<td class="week' + week + ' date' + date + '">' + (j + 1) + '</td>';
 		}
 
@@ -78,6 +78,14 @@ WorkCalendar.prototype = {
 +'  </div>'
 +'</div>';
 		return html;
+	},
+	
+	completion: function(value) {
+		if (value >= 10) {
+			return '' + value;
+		} else {
+			return '0' + value;
+		}
 	},
 
 	getLastDayOfMonth: function(month) {
@@ -110,7 +118,7 @@ WorkCalendar.prototype = {
 	activeByWeek: function(weeks) {
 		for (var i = 0; i < weeks.length; i++) {
 			$('.week' + weeks[i]).css({
-				backgroundColor: '#ADD8E6'
+				backgroundColor: 'lightgray'
 			});
 		}
 	},
@@ -119,7 +127,7 @@ WorkCalendar.prototype = {
 		for (var i = 0; i < holidays.length; i++) {
 			var item = holidays[i];
 			$('.date' + item.date).css({
-				backgroundColor: 'red'
+				backgroundColor: '#DFF0D8'
 			});
 			$('.date' + item.date).attr('title', item.name);
 		}
@@ -129,7 +137,7 @@ WorkCalendar.prototype = {
 		for (var i = 0; i < workdays.length; i++) {
 			var item = workdays[i];
 			$('.date' + item.date).css({
-				backgroundColor: '#ADD8E6'
+				backgroundColor: '#F2DEDE'
 			});
 			$('.date' + item.date).attr('title', item.name);
 		}
@@ -139,7 +147,7 @@ WorkCalendar.prototype = {
 		for (var i = 0; i < extrdays.length; i++) {
 			var item = extrdays[i];
 			$('.date' + item.date).css({
-				backgroundColor: 'red'
+				backgroundColor: '#ADD8E6'
 			});
 			$('.date' + item.date).attr('title', item.name);
 		}

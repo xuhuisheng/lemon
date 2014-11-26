@@ -12,6 +12,7 @@ public class MailDTO {
     private String bcc;
     private String subject;
     private String content;
+    private Map<String, InputStreamSource> inlines = new LinkedHashMap<String, InputStreamSource>();
     private Map<String, InputStreamSource> attachments = new LinkedHashMap<String, InputStreamSource>();
     private boolean success;
     private Throwable exception;
@@ -74,6 +75,18 @@ public class MailDTO {
 
     public void addAttachment(String name, InputStreamSource attachment) {
         attachments.put(name, attachment);
+    }
+
+    public Map<String, InputStreamSource> getInlines() {
+        return inlines;
+    }
+
+    public void setInlines(Map<String, InputStreamSource> inlines) {
+        this.inlines = inlines;
+    }
+
+    public void addInline(String name, InputStreamSource inline) {
+        inlines.put(name, inline);
     }
 
     public boolean isSuccess() {

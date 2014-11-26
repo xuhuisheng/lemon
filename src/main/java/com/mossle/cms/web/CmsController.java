@@ -25,8 +25,6 @@ import com.mossle.ext.export.TableModel;
 import com.mossle.ext.store.StoreConnector;
 import com.mossle.ext.store.StoreDTO;
 
-import com.mossle.security.util.SpringSecurityUtils;
-
 import org.springframework.stereotype.Controller;
 
 import org.springframework.ui.Model;
@@ -52,7 +50,9 @@ public class CmsController {
     @RequestMapping("index")
     public String index(Model model) {
         List<CmsCatalog> cmsCatalogs = cmsCatalogManager.getAll();
-        model.addAttribute("cmsCatalogs", cmsCatalogs);
+        String html = renderService.viewIndex(cmsCatalogs);
+
+        model.addAttribute("html", html);
 
         return "cms/index";
     }
@@ -60,7 +60,8 @@ public class CmsController {
     @RequestMapping("catalog")
     public String catalog(@RequestParam("id") Long id, Model model) {
         CmsCatalog cmsCatalog = cmsCatalogManager.get(id);
-        model.addAttribute("cmsCatalog", cmsCatalog);
+        String html = renderService.viewCatalog(cmsCatalog);
+        model.addAttribute("html", html);
 
         return "cms/catalog";
     }
@@ -68,7 +69,9 @@ public class CmsController {
     @RequestMapping("article")
     public String article(@RequestParam("id") Long id, Model model) {
         CmsArticle cmsArticle = cmsArticleManager.get(id);
-        model.addAttribute("cmsArticle", cmsArticle);
+        String html = renderService.viewArticle(cmsArticle);
+
+        model.addAttribute("html", html);
 
         return "cms/article";
     }

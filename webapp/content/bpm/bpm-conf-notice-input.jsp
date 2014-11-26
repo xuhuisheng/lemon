@@ -64,11 +64,19 @@ $(function() {
     </div>
   </div>
   <div class="control-group">
-    <label class="control-label">邮件模板</label>
+    <label class="control-label">提醒方式</label>
 	<div class="controls">
-	  <select name="bpmMailTemplateId">
-	    <c:forEach items="${bpmMailTemplates}" var="item">
-	    <option value="${item.id}">${item.name}</option>
+	  <c:forEach items="${types}" var="item">
+	  <label><input type="checkbox" name="notificationTypes" value="${item}">${item}</label>
+	  </c:forEach>
+    </div>
+  </div>
+  <div class="control-group">
+    <label class="control-label">模板</label>
+	<div class="controls">
+	  <select name="templateCode">
+	    <c:forEach items="${templateDtos}" var="item">
+	    <option value="${item.code}">${item.name}</option>
 		</c:forEach>
 	  </select>
     </div>

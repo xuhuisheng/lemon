@@ -126,7 +126,7 @@ $(function() {
           <c:if test="${item.week==7}">周六</c:if>
 		</td>
         <td>${item.name}</td>
-        <td>${item.workDate}</td>
+        <td><fmt:formatDate type="date" value="${item.workDate}"/></td>
         <td>
           <c:if test="${item.status==0}">规则</c:if>
           <c:if test="${item.status==1}">节假日</c:if>

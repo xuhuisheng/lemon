@@ -23,13 +23,12 @@ import com.mossle.core.spring.MessageHelper;
 import com.mossle.core.util.IoUtils;
 import com.mossle.core.util.ServletUtils;
 
+import com.mossle.ext.auth.CustomPasswordEncoder;
 import com.mossle.ext.export.Exportor;
 import com.mossle.ext.export.TableModel;
 import com.mossle.ext.store.MultipartFileResource;
 import com.mossle.ext.store.StoreConnector;
 import com.mossle.ext.store.StoreDTO;
-
-import com.mossle.security.util.SimplePasswordEncoder;
 
 import com.mossle.user.persistence.domain.UserBase;
 import com.mossle.user.persistence.domain.UserRepo;
@@ -58,7 +57,7 @@ public class UserBaseController {
     private MessageHelper messageHelper;
     private Exportor exportor;
     private BeanMapper beanMapper = new BeanMapper();
-    private SimplePasswordEncoder simplePasswordEncoder;
+    private CustomPasswordEncoder customPasswordEncoder;
     private UserService userService;
     private StoreConnector storeConnector;
 
@@ -126,8 +125,8 @@ public class UserBaseController {
                 return "user/user-base-input";
             }
 
-            if (simplePasswordEncoder != null) {
-                userBase.setPassword(simplePasswordEncoder.encode(userBase
+            if (customPasswordEncoder != null) {
+                userBase.setPassword(customPasswordEncoder.encode(userBase
                         .getPassword()));
             }
         }
@@ -309,9 +308,9 @@ public class UserBaseController {
     }
 
     @Resource
-    public void setSimplePasswordEncoder(
-            SimplePasswordEncoder simplePasswordEncoder) {
-        this.simplePasswordEncoder = simplePasswordEncoder;
+    public void setCustomPasswordEncoder(
+            CustomPasswordEncoder customPasswordEncoder) {
+        this.customPasswordEncoder = customPasswordEncoder;
     }
 
     @Resource

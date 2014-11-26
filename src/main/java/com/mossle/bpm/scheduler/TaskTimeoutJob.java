@@ -23,6 +23,8 @@ import org.activiti.engine.task.Task;
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
 
+import org.springframework.scheduling.annotation.Scheduled;
+
 public class TaskTimeoutJob {
     private static Logger logger = LoggerFactory
             .getLogger(TaskTimeoutJob.class);
@@ -33,7 +35,10 @@ public class TaskTimeoutJob {
     private BpmProcessManager bpmProcessManager;
     private BpmTaskDefNoticeManager bpmTaskDefNoticeManager;
 
+    @Scheduled(cron = "0/10 * * * * ?")
     public void execute() throws Exception {
+        logger.info("start");
+
         List<Task> tasks = processEngine.getTaskService().createTaskQuery()
                 .list();
 
@@ -44,6 +49,8 @@ public class TaskTimeoutJob {
                         sendNoticeCmd);
             }
         }
+
+        logger.info("end");
     }
 
     @Resource

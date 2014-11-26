@@ -22,7 +22,7 @@ import com.mossle.bpm.persistence.domain.BpmDelegateInfo;
 import com.mossle.bpm.persistence.manager.BpmDelegateHistoryManager;
 import com.mossle.bpm.persistence.manager.BpmDelegateInfoManager;
 
-import com.mossle.security.util.SpringSecurityUtils;
+import com.mossle.ext.auth.CurrentUserHolder;
 
 import org.activiti.engine.ProcessEngine;
 import org.activiti.engine.repository.ProcessDefinition;
@@ -53,6 +53,7 @@ public class DelegateController {
     private BpmDelegateInfoManager bpmDelegateInfoManager;
     private BpmDelegateHistoryManager bpmDelegateHistoryManager;
     private UserConnector userConnector;
+    private CurrentUserHolder currentUserHolder;
 
     /**
      * 自动委托列表 TODO 可以指定多个自动委托人？
@@ -61,7 +62,7 @@ public class DelegateController {
      */
     @RequestMapping("delegate-listMyDelegateInfos")
     public String listMyDelegateInfos(Model model) {
-        String userId = SpringSecurityUtils.getCurrentUserId();
+        String userId = currentUserHolder.getUserId();
         List<BpmDelegateInfo> bpmDelegateInfos = bpmDelegateInfoManager.findBy(
                 "assignee", userId);
         model.addAttribute("bpmDelegateInfos", bpmDelegateInfos);
@@ -107,7 +108,7 @@ public class DelegateController {
             @RequestParam(value = "endTime", required = false) Date endTime,
             @RequestParam("processDefinitionId") String processDefinitionId,
             @RequestParam("attorney") String attorney) throws Exception {
-        String userId = SpringSecurityUtils.getCurrentUserId();
+        String userId = currentUserHolder.getUserId();
 
         if ((processDefinitionId != null)
                 && "".equals(processDefinitionId.trim())) {
@@ -178,5 +179,10 @@ public class DelegateController {
     @Resource
     public void setUserConnector(UserConnector userConnector) {
         this.userConnector = userConnector;
+    }
+
+    @Resource
+    public void setCurrentUserHolder(CurrentUserHolder currentUserHolder) {
+        this.currentUserHolder = currentUserHolder;
     }
 }

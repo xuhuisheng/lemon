@@ -25,6 +25,7 @@ import org.activiti.bpmn.model.ActivitiListener;
 import org.activiti.bpmn.model.BpmnModel;
 import org.activiti.bpmn.model.FlowElement;
 import org.activiti.bpmn.model.Process;
+import org.activiti.bpmn.model.StartEvent;
 import org.activiti.bpmn.model.UserTask;
 
 import org.activiti.engine.impl.cmd.GetBpmnModelCmd;
@@ -231,7 +232,7 @@ public class SyncProcessCmd implements Command<Void> {
             bpmConfNode.setConfUser(2);
             bpmConfNode.setConfListener(0);
             bpmConfNode.setConfRule(2);
-            bpmConfNode.setConfForm(2);
+            bpmConfNode.setConfForm(0);
             bpmConfNode.setConfOperation(2);
             bpmConfNode.setConfNotice(0);
             bpmConfNode.setPriority(priority);
@@ -241,7 +242,11 @@ public class SyncProcessCmd implements Command<Void> {
 
         FlowElement flowElement = bpmnModel.getFlowElement(node.getId());
         // 配置监听器
-        processListener(flowElement.getExecutionListeners(), bpmConfNode);
+        this.processListener(flowElement.getExecutionListeners(), bpmConfNode);
+
+        StartEvent startEvent = (StartEvent) flowElement;
+        // 配置表单
+        this.processForm(startEvent, bpmConfNode);
     }
 
     /**
@@ -272,7 +277,7 @@ public class SyncProcessCmd implements Command<Void> {
 
         FlowElement flowElement = bpmnModel.getFlowElement(node.getId());
         // 配置监听器
-        processListener(flowElement.getExecutionListeners(), bpmConfNode);
+        this.processListener(flowElement.getExecutionListeners(), bpmConfNode);
     }
 
     /**
@@ -309,7 +314,7 @@ public class SyncProcessCmd implements Command<Void> {
     }
 
     /**
-     * 配置表单.
+     * 配置表单，userTask.
      */
     public void processForm(UserTask userTask, BpmConfNode bpmConfNode) {
         if (userTask.getFormKey() == null) {
@@ -332,6 +337,31 @@ public class SyncProcessCmd implements Command<Void> {
         }
     }
 
+    /**
+     * 配置表单，startEvent.
+     */
+    public void processForm(StartEvent startEvent, BpmConfNode bpmConfNode) {
+        if (startEvent.getFormKey() == null) {
+            return;
+        }
+
+        BpmConfFormManager bpmConfFormManager = getBpmConfFormManager();
+        BpmConfForm bpmConfForm = bpmConfFormManager.findUnique(
+                "from BpmConfForm where bpmConfNode=?", bpmConfNode);
+
+        if (bpmConfForm == null) {
+            bpmConfForm = new BpmConfForm();
+            bpmConfForm.setValue(startEvent.getFormKey());
+            bpmConfForm.setType(0);
+            bpmConfForm.setOriginValue(startEvent.getFormKey());
+            bpmConfForm.setOriginType(0);
+            bpmConfForm.setStatus(0);
+            bpmConfForm.setBpmConfNode(bpmConfNode);
+            bpmConfFormManager.save(bpmConfForm);
+        }
+    }
+
+    // ~ ======================================================================
     public BpmConfBaseManager getBpmConfBaseManager() {
         return ApplicationContextHelper.getBean(BpmConfBaseManager.class);
     }

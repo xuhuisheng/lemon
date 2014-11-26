@@ -12,6 +12,7 @@ import org.hibernate.SessionFactory;
 
 import org.hibernate.criterion.CriteriaSpecification;
 import org.hibernate.criterion.Criterion;
+import org.hibernate.criterion.Order;
 import org.hibernate.criterion.Projection;
 
 import org.hibernate.internal.CriteriaImpl;
@@ -244,21 +245,25 @@ public class HibernatePagingDao extends HibernateGenericDao {
      */
     @Transactional(readOnly = true)
     public <T> Page pagedQuery(Class<T> entityClass, Page page) {
-        String orderBy = page.getOrderBy();
-        String order = page.getOrder();
-
-        Criteria criteria = null;
+        Criteria criteria = createCriteria(entityClass);
 
         if (page.isOrderEnabled()) {
-            criteria = createCriteria(entityClass, orderBy, "ASC".equals(order));
-        } else {
-            criteria = createCriteria(entityClass);
+            for (int i = 0; i < page.getOrderBys().size(); i++) {
+                String orderBy = page.getOrderBys().get(i);
+                String order = page.getOrders().get(i);
+
+                if ("ASC".equals(page.getOrders().get(i))) {
+                    criteria.addOrder(Order.asc(orderBy));
+                } else {
+                    criteria.addOrder(Order.desc(orderBy));
+                }
+            }
         }
 
         Page resultPage = this.pagedQuery(criteria, page.getPageNo(),
                 page.getPageSize());
-        resultPage.setOrderBy(orderBy);
-        resultPage.setOrder(order);
+        resultPage.setOrderBys(page.getOrderBys());
+        resultPage.setOrders(page.getOrders());
 
         return resultPage;
     }
@@ -279,22 +284,27 @@ public class HibernatePagingDao extends HibernateGenericDao {
     @Transactional(readOnly = true)
     public <T> Page pagedQuery(Class<T> entityClass, Page page,
             Criterion... criterions) {
-        String orderBy = page.getOrderBy();
-        String order = page.getOrder();
-
-        Criteria criteria = null;
+        Criteria criteria = createCriteria(entityClass, criterions);
 
         if (page.isOrderEnabled()) {
-            criteria = createCriteria(entityClass, orderBy,
-                    "ASC".equals(order), criterions);
-        } else {
             criteria = createCriteria(entityClass, criterions);
+
+            for (int i = 0; i < page.getOrderBys().size(); i++) {
+                String orderBy = page.getOrderBys().get(i);
+                String order = page.getOrders().get(i);
+
+                if ("ASC".equals(page.getOrders().get(i))) {
+                    criteria.addOrder(Order.asc(orderBy));
+                } else {
+                    criteria.addOrder(Order.desc(orderBy));
+                }
+            }
         }
 
         Page resultPage = this.pagedQuery(criteria, page.getPageNo(),
                 page.getPageSize());
-        resultPage.setOrderBy(orderBy);
-        resultPage.setOrder(order);
+        resultPage.setOrderBys(page.getOrderBys());
+        resultPage.setOrders(page.getOrders());
 
         return resultPage;
     }

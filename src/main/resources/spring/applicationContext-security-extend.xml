@@ -29,7 +29,9 @@
 		<property name="salt" value="${security.passwordencoder.salt}"/>
 	</bean>
 
-	<bean id="simplePasswordEncoder" factory-bean="&amp;passwordEncoder" factory-method="getSimplePasswordEncoder"/>
+	<bean id="currentUserHolder" class="com.mossle.security.client.SpringSecurityCurrentUserHolder"/>
+
+	<bean id="customPasswordEncoder" factory-bean="&amp;passwordEncoder" factory-method="getCustomPasswordEncoder"/>
 
     <bean id="autoLoginFilter" class="com.mossle.security.client.AutoLoginFilter">
 		<property name="enabled" value="${security.autologin.enabled}" />
@@ -80,6 +82,10 @@
 	<bean id="securityContextRepository" class="com.mossle.security.client.CachedSecurityContextRepository">
 		<property name="userAuthConnector" ref="userAuthConnector"/>
 		<property name="debug" value="${security.autologin.enabled}"/>
+	</bean>
+
+	<bean id="authenticationFailureHandler" class="com.mossle.security.util.RememberLastUsernameAuthenticationFailureHandler">
+		<property name="defaultFailureUrl" value="/common/login.jsp?error=true"/>
 	</bean>
 
 </beans>

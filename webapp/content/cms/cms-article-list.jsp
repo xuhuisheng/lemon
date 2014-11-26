@@ -76,6 +76,11 @@ $(function() {
 	    <div class="pull-left">
 		  <region:region-permission permission="cmsArticle:create">
 		  <button class="btn btn-small a-insert" onclick="location.href='cms-article-input.do'">新建</button>
+		  <button class="btn btn-small a-insert" onclick="location.href='cms-article-image.do'">新建图库</button>
+		  <button class="btn btn-small a-insert" onclick="location.href='cms-article-audio.do'">新建音频</button>
+		  <button class="btn btn-small a-insert" onclick="location.href='cms-article-video.do'">新建视频</button>
+		  <button class="btn btn-small a-insert" onclick="location.href='cms-article-pdf.do'">新建文档</button>
+		  <button class="btn btn-small a-insert" onclick="location.href='cms-article-etc.do'">新建附件</button>
 		  </region:region-permission>
 		  <region:region-permission permission="cmsArticle:delete">
 		  <button class="btn btn-small a-remove" onclick="table.removeAll()">删除</button>
@@ -123,7 +128,7 @@ $(function() {
         <td>${item.id}</td>
         <td>${item.title}</td>
         <td>${item.status}</td>
-        <td>${item.userId}</td>
+        <td><tags:user userId="${item.userId}"/></td>
         <td>${item.createTime}</td>
         <td>
           <a href="cms-article-view.do?id=${item.id}">预览</a>

@@ -225,6 +225,11 @@ public class HibernateUtils {
 
             break;
 
+        case NOT:
+            criterion = Restrictions.ne(propertyName, propertyValue);
+
+            break;
+
         default:
             criterion = Restrictions.eq(propertyName, propertyValue);
 

@@ -20,6 +20,8 @@ public enum MatchType {
     GE,
     /** in. */
     IN,
+    /** NOT. */
+    NOT,
     /** unknown. */
     UNKNOWN;
 }

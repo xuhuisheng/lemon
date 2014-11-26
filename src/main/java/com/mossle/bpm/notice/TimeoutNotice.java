@@ -1,13 +1,18 @@
 package com.mossle.bpm.notice;
 
+import java.util.Arrays;
 import java.util.Calendar;
 import java.util.Date;
+import java.util.HashMap;
 import java.util.List;
+import java.util.Map;
 
 import javax.xml.datatype.DatatypeFactory;
 import javax.xml.datatype.Duration;
 
 import com.mossle.api.msg.MsgConnector;
+import com.mossle.api.notification.NotificationConnector;
+import com.mossle.api.notification.NotificationDTO;
 import com.mossle.api.user.UserConnector;
 import com.mossle.api.user.UserDTO;
 
@@ -69,8 +74,11 @@ public class TimeoutNotice {
                     && ((noticeDate.getTime() - now.getTime()) < (60 * 1000))) {
                 UserConnector userConnector = ApplicationContextHelper
                         .getBean(UserConnector.class);
-                MailFacade mailFacade = ApplicationContextHelper
-                        .getBean(MailFacade.class);
+                NotificationConnector notificationConnector = ApplicationContextHelper
+                        .getBean(NotificationConnector.class);
+
+                //
+                Map<String, Object> data = new HashMap<String, Object>();
                 TaskEntity taskEntity = new TaskEntity();
                 taskEntity.setId(delegateTask.getId());
                 taskEntity.setName(delegateTask.getName());
@@ -78,13 +86,17 @@ public class TimeoutNotice {
                         delegateTask.getAssignee()).getDisplayName());
                 taskEntity.setVariableLocal("initiator",
                         getInitiator(userConnector, delegateTask));
+                //
+                data.put("task", taskEntity);
+                data.put("initiator",
+                        this.getInitiator(userConnector, delegateTask));
 
                 String receiver = bpmConfNotice.getReceiver();
-                BpmMailTemplate bpmMailTemplate = bpmConfNotice
-                        .getBpmMailTemplate();
-                ExpressionManager expressionManager = Context
-                        .getProcessEngineConfiguration().getExpressionManager();
 
+                /*
+                 * BpmMailTemplate bpmMailTemplate = bpmConfNotice .getBpmMailTemplate(); ExpressionManager
+                 * expressionManager = Context .getProcessEngineConfiguration().getExpressionManager();
+                 */
                 UserDTO userDto = null;
 
                 if ("任务接收人".equals(receiver)) {
@@ -104,32 +116,27 @@ public class TimeoutNotice {
                                     .getStartUserId());
                 }
 
-                String subject = expressionManager
-                        .createExpression(bpmMailTemplate.getSubject())
-                        .getValue(taskEntity).toString();
-
-                String content = expressionManager
-                        .createExpression(bpmMailTemplate.getContent())
-                        .getValue(taskEntity).toString();
-
-                this.sendMail(userDto, subject, content);
-                this.sendSiteMessage(userDto, subject, content);
+                /*
+                 * String subject = expressionManager .createExpression(bpmMailTemplate.getSubject())
+                 * .getValue(taskEntity).toString();
+                 * 
+                 * String content = expressionManager .createExpression(bpmMailTemplate.getContent())
+                 * .getValue(taskEntity).toString();
+                 * 
+                 * this.sendMail(userDto, subject, content); this.sendSiteMessage(userDto, subject, content);
+                 */
+                NotificationDTO notificationDto = new NotificationDTO();
+                notificationDto.setReceiver(userDto.getId());
+                notificationDto.setReceiverType("userid");
+                notificationDto.setTypes(Arrays.asList(bpmConfNotice
+                        .getNotificationType().split(",")));
+                notificationDto.setData(data);
+                notificationDto.setTemplate(bpmConfNotice.getTemplateCode());
+                notificationConnector.send(notificationDto);
             }
         } catch (Exception ex) {
             logger.error(ex.getMessage(), ex);
         }
-    }
-
-    public void sendMail(UserDTO userDto, String subject, String content) {
-        MailFacade mailFacade = ApplicationContextHelper
-                .getBean(MailFacade.class);
-        mailFacade.sendMail(userDto.getEmail(), subject, content);
-    }
-
-    public void sendSiteMessage(UserDTO userDto, String subject, String content) {
-        MsgConnector msgConnector = ApplicationContextHelper
-                .getBean(MsgConnector.class);
-        msgConnector.send(subject, content, userDto.getId(), null);
     }
 
     public String getInitiator(UserConnector userConnector,

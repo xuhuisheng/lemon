@@ -2,6 +2,8 @@ package com.mossle.core.page;
 
 import java.util.ArrayList;
 import java.util.Collection;
+import java.util.Collections;
+import java.util.List;
 import java.util.Locale;
 
 /**
@@ -30,10 +32,10 @@ public class Page {
     private int pageSize = DEFAULT_PAGE_SIZE;
 
     /** 排序字段名. */
-    private String orderBy;
+    private List<String> orderBys = new ArrayList<String>();
 
     /** 使用正序还是倒序. */
-    private String order = ASC;
+    private List<String> orders = new ArrayList<String>();
 
     /** 查询结果. */
     private Object result;
@@ -86,7 +88,7 @@ public class Page {
     public Page(int pageNo, int pageSize, String orderBy, String order) {
         this.pageNo = pageNo;
         this.pageSize = pageSize;
-        this.orderBy = orderBy;
+        this.setOrderBy(orderBy);
         this.checkAndSetOrder(order);
         this.calculateStart();
     }
@@ -99,7 +101,7 @@ public class Page {
      * @return boolean
      */
     public boolean isAsc() {
-        return !DESC.equalsIgnoreCase(order);
+        return !DESC.equalsIgnoreCase(this.getOrder());
     }
 
     /**
@@ -108,7 +110,7 @@ public class Page {
      * @return 如果dir=='ASC'就返回'DESC'，如果dir='DESC'就返回'ASC'
      */
     public String getInverseOrder() {
-        if (DESC.equalsIgnoreCase(order)) {
+        if (DESC.equalsIgnoreCase(this.getOrder())) {
             return ASC;
         } else {
             return DESC;
@@ -139,7 +141,7 @@ public class Page {
      * @return orderBy是否非空
      */
     public boolean isOrderEnabled() {
-        return (orderBy != null) && (orderBy.trim().length() != 0);
+        return ((!orderBys.isEmpty()) && (!orders.isEmpty()));
     }
 
     /**
@@ -220,7 +222,11 @@ public class Page {
 
     /** @return orderBy. */
     public String getOrderBy() {
-        return orderBy;
+        if (!this.orderBys.isEmpty()) {
+            return this.orderBys.get(0);
+        }
+
+        return null;
     }
 
     /**
@@ -228,12 +234,22 @@ public class Page {
      *            String.
      */
     public void setOrderBy(String orderBy) {
-        this.orderBy = orderBy;
+        if ((orderBy == null) || (orderBy.trim().length() == 0)) {
+            throw new IllegalArgumentException("orderBy should be blank");
+        }
+
+        this.orderBys.clear();
+        this.orderBys.add(orderBy);
+        this.setOrder(ASC);
     }
 
     /** @return order. */
     public String getOrder() {
-        return order;
+        if (!this.orders.isEmpty()) {
+            return this.orders.get(0);
+        }
+
+        return ASC;
     }
 
     /**
@@ -311,7 +327,9 @@ public class Page {
      */
     private void checkAndSetOrder(String text) {
         if (ASC.equalsIgnoreCase(text) || DESC.equalsIgnoreCase(text)) {
-            this.order = text.toUpperCase(Locale.CHINA);
+            text = text.toUpperCase(Locale.CHINA);
+            this.orders.clear();
+            this.orders.add(text);
         } else {
             throw new IllegalArgumentException(
                     "order should be 'DESC' or 'ASC'");
@@ -323,5 +341,38 @@ public class Page {
             this.setOrderBy(orderBy);
             this.setOrder(order);
         }
+    }
+
+    public void addOrder(String orderBy, String order) {
+        if (this.orderBys.size() != this.orders.size()) {
+            this.orderBys.clear();
+            this.orders.clear();
+        }
+
+        this.orderBys.add(orderBy);
+
+        if (ASC.equalsIgnoreCase(order) || DESC.equalsIgnoreCase(order)) {
+            order = order.toUpperCase(Locale.CHINA);
+            this.orders.add(order);
+        } else {
+            throw new IllegalArgumentException(
+                    "order should be 'DESC' or 'ASC'");
+        }
+    }
+
+    public List<String> getOrderBys() {
+        return this.orderBys;
+    }
+
+    public void setOrderBys(List<String> orderBys) {
+        this.orderBys = orderBys;
+    }
+
+    public List<String> getOrders() {
+        return this.orders;
+    }
+
+    public void setOrders(List<String> orders) {
+        this.orders = orders;
     }
 }

@@ -3,11 +3,13 @@ package com.mossle.cms.service;
 import java.io.*;
 
 import java.util.HashMap;
+import java.util.List;
 import java.util.Map;
 
 import javax.annotation.Resource;
 
 import com.mossle.api.scope.ScopeHolder;
+import com.mossle.api.user.UserConnector;
 
 import com.mossle.cms.domain.CmsArticle;
 import com.mossle.cms.domain.CmsCatalog;
@@ -25,6 +27,7 @@ import org.springframework.stereotype.Service;
 public class RenderService {
     private static Logger logger = LoggerFactory.getLogger(RenderService.class);
     private TemplateService templateService;
+    private UserConnector userConnector;
     private String baseDir;
 
     public void render(CmsArticle cmsArticle) {
@@ -76,13 +79,51 @@ public class RenderService {
         CmsCatalog cmsCatalog = cmsArticle.getCmsCatalog();
         data.put("article", cmsArticle);
         data.put("catalog", cmsCatalog);
+        data.put("userConnector", userConnector);
 
         return templateService.render(cmsCatalog.getTemplateDetail(), data);
     }
 
+    // ~ ==================================================
+    public String viewIndex(List<CmsCatalog> cmsCatalogs) {
+        Map<String, Object> data = new HashMap<String, Object>();
+        data.put("catalogs", cmsCatalogs);
+
+        String html = templateService.render("/default/index.html", data);
+
+        return html;
+    }
+
+    public String viewCatalog(CmsCatalog cmsCatalog) {
+        Map<String, Object> data = new HashMap<String, Object>();
+        data.put("catalog", cmsCatalog);
+        data.put("articles", cmsCatalog.getCmsArticles());
+
+        String html = templateService
+                .render(cmsCatalog.getTemplateList(), data);
+
+        return html;
+    }
+
+    public String viewArticle(CmsArticle cmsArticle) {
+        Map<String, Object> data = new HashMap<String, Object>();
+        CmsCatalog cmsCatalog = cmsArticle.getCmsCatalog();
+        data.put("article", cmsArticle);
+        data.put("catalog", cmsCatalog);
+        data.put("userConnector", userConnector);
+
+        return templateService.render(cmsCatalog.getTemplateDetail(), data);
+    }
+
+    // ~ ==================================================
     @Resource
     public void setTemplateService(TemplateService templateService) {
         this.templateService = templateService;
+    }
+
+    @Resource
+    public void setUserConnector(UserConnector userConnector) {
+        this.userConnector = userConnector;
     }
 
     @Value("${store.baseDir}")

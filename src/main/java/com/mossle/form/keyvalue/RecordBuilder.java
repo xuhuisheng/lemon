@@ -2,7 +2,10 @@ package com.mossle.form.keyvalue;
 
 import java.util.Collections;
 import java.util.Date;
+import java.util.List;
 import java.util.Map;
+
+import com.mossle.form.support.FormParameter;
 
 /**
  * 构建Record.
@@ -11,15 +14,15 @@ public class RecordBuilder {
     /**
      * 把status和parameters更新到record里.
      */
-    public Record build(Record record, int status,
-            Map<String, String[]> parameters) {
+    public Record build(Record record, int status, FormParameter formParameter) {
         record.setStatus(status);
 
-        for (Map.Entry<String, String[]> entry : parameters.entrySet()) {
+        for (Map.Entry<String, List<String>> entry : formParameter
+                .getMultiValueMap().entrySet()) {
             String key = entry.getKey();
-            String[] value = entry.getValue();
+            List<String> value = entry.getValue();
 
-            if ((value == null) || (value.length == 0)) {
+            if ((value == null) || (value.isEmpty())) {
                 continue;
             }
 
@@ -37,13 +40,13 @@ public class RecordBuilder {
      * 创建一个新record
      */
     public Record build(String category, int status,
-            Map<String, String[]> parameters, String userId) {
+            FormParameter formParameter, String userId) {
         Record record = new Record();
         record.setCategory(category);
         record.setUserId(userId);
         record.setCreateTime(new Date());
 
-        return build(record, status, parameters);
+        return build(record, status, formParameter);
     }
 
     /**
@@ -51,20 +54,21 @@ public class RecordBuilder {
      */
     public Record build(Record record, int status, String ref) {
         record.setRef(ref);
+        record.setStatus(status);
 
-        return build(record, status, Collections.EMPTY_MAP);
+        return record;
     }
 
     /**
      * 主要是获得多值属性，比如checkbox.
      */
-    public String getValue(String[] values) {
-        if ((values == null) || (values.length == 0)) {
+    public String getValue(List<String> values) {
+        if ((values == null) || (values.isEmpty())) {
             return "";
         }
 
-        if (values.length == 1) {
-            return values[0];
+        if (values.size() == 1) {
+            return values.get(0);
         }
 
         StringBuilder buff = new StringBuilder();

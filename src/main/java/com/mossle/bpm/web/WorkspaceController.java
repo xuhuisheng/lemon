@@ -28,7 +28,7 @@ import com.mossle.bpm.persistence.manager.BpmProcessManager;
 
 import com.mossle.core.page.Page;
 
-import com.mossle.security.util.SpringSecurityUtils;
+import com.mossle.ext.auth.CurrentUserHolder;
 
 import org.activiti.engine.FormService;
 import org.activiti.engine.HistoryService;
@@ -74,6 +74,7 @@ public class WorkspaceController {
     private ProcessEngine processEngine;
     private UserConnector userConnector;
     private ProcessConnector processConnector;
+    private CurrentUserHolder currentUserHolder;
 
     @RequestMapping("workspace-home")
     public String home(Model model) {
@@ -131,7 +132,7 @@ public class WorkspaceController {
     @RequestMapping("workspace-listRunningProcessInstances")
     public String listRunningProcessInstances(@ModelAttribute Page page,
             Model model) {
-        String userId = SpringSecurityUtils.getCurrentUserId();
+        String userId = currentUserHolder.getUserId();
 
         page = processConnector.findRunningProcessInstances(userId, page);
         model.addAttribute("page", page);
@@ -147,7 +148,7 @@ public class WorkspaceController {
     @RequestMapping("workspace-listCompletedProcessInstances")
     public String listCompletedProcessInstances(@ModelAttribute Page page,
             Model model) {
-        String userId = SpringSecurityUtils.getCurrentUserId();
+        String userId = currentUserHolder.getUserId();
 
         page = processConnector.findCompletedProcessInstances(userId, page);
         model.addAttribute("page", page);
@@ -164,7 +165,7 @@ public class WorkspaceController {
     public String listInvolvedProcessInstances(@ModelAttribute Page page,
             Model model) {
         // TODO: finished(), unfinished()
-        String userId = SpringSecurityUtils.getCurrentUserId();
+        String userId = currentUserHolder.getUserId();
         page = processConnector.findInvolvedProcessInstances(userId, page);
         model.addAttribute("page", page);
 
@@ -202,7 +203,7 @@ public class WorkspaceController {
      */
     @RequestMapping("workspace-listPersonalTasks")
     public String listPersonalTasks(@ModelAttribute Page page, Model model) {
-        String userId = SpringSecurityUtils.getCurrentUserId();
+        String userId = currentUserHolder.getUserId();
         page = processConnector.findPersonalTasks(userId, page);
         model.addAttribute("page", page);
 
@@ -216,7 +217,8 @@ public class WorkspaceController {
      */
     @RequestMapping("workspace-listGroupTasks")
     public String listGroupTasks(@ModelAttribute Page page, Model model) {
-        String userId = SpringSecurityUtils.getCurrentUserId();
+        String userId = currentUserHolder.getUserId();
+
         page = processConnector.findGroupTasks(userId, page);
         model.addAttribute("page", page);
 
@@ -230,7 +232,8 @@ public class WorkspaceController {
      */
     @RequestMapping("workspace-listHistoryTasks")
     public String listHistoryTasks(@ModelAttribute Page page, Model model) {
-        String userId = SpringSecurityUtils.getCurrentUserId();
+        String userId = currentUserHolder.getUserId();
+
         page = processConnector.findHistoryTasks(userId, page);
         model.addAttribute("page", page);
 
@@ -244,7 +247,7 @@ public class WorkspaceController {
      */
     @RequestMapping("workspace-listDelegatedTasks")
     public String listDelegatedTasks(@ModelAttribute Page page, Model model) {
-        String userId = SpringSecurityUtils.getCurrentUserId();
+        String userId = currentUserHolder.getUserId();
         page = processConnector.findGroupTasks(userId, page);
         model.addAttribute("page", page);
 
@@ -294,7 +297,7 @@ public class WorkspaceController {
      */
     @RequestMapping("workspace-claimTask")
     public String claimTask(@RequestParam("taskId") String taskId) {
-        String userId = SpringSecurityUtils.getCurrentUserId();
+        String userId = currentUserHolder.getUserId();
 
         TaskService taskService = processEngine.getTaskService();
         taskService.claim(taskId, userId);
@@ -462,5 +465,10 @@ public class WorkspaceController {
     @Resource
     public void setProcessConnector(ProcessConnector processConnector) {
         this.processConnector = processConnector;
+    }
+
+    @Resource
+    public void setCurrentUserHolder(CurrentUserHolder currentUserHolder) {
+        this.currentUserHolder = currentUserHolder;
     }
 }

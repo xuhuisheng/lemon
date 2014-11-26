@@ -61,16 +61,10 @@
 		-->
 	</bean>
 
-	<bean id="processEngine" class="org.activiti.spring.ProcessEngineFactoryBean">
+	<bean id="processEngine" class="com.mossle.bpm.proxy.ProxyProcessEngineFactoryBean">
 		<property name="processEngineConfiguration" ref="processEngineConfiguration"/>
+		<property name="enabled" value="${bpm.enabled}"/>
 	</bean>
-    <bean id="repositoryService" factory-bean="processEngine" factory-method="getRepositoryService"/>
-    <bean id="runtimeService" factory-bean="processEngine" factory-method="getRuntimeService"/>
-    <bean id="formService" factory-bean="processEngine" factory-method="getFormService"/>
-    <bean id="identityService" factory-bean="processEngine" factory-method="getIdentityService"/>
-    <bean id="taskService" factory-bean="processEngine" factory-method="getTaskService"/>
-    <bean id="historyService" factory-bean="processEngine" factory-method="getHistoryService"/>
-    <bean id="managementService" factory-bean="processEngine" factory-method="getManagementService"/>
 
 	<!-- 自动部署 -->
 	<bean id="autoDeployer" class="com.mossle.bpm.support.AutoDeployer" depends-on="applicationContextHelper">
@@ -109,10 +103,8 @@
 
 	<!-- 工作日历 -->
 	<bean id="businessCalendarManager" class="com.mossle.bpm.calendar.AdvancedBusinessCalendarManagerFactoryBean">
-		<property name="workCalendarConnector" ref="workCalendarService"/>
+		<property name="workCalendarConnector" ref="workCalendarConnector"/>
 	</bean>
-
-	<bean id="workCalendarService" class="com.mossle.workcal.service.WorkCalendarService"/>
 
 	<bean class="com.mossle.form.support.XFormDeployer">
 		<property name="autoDeploy" value="true"/>

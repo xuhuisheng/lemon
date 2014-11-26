@@ -75,4 +75,29 @@
 		<property name="jdbcTemplate" ref="jdbcTemplate"/>
 	</bean>
 
+	<bean id="processConnector" class="com.mossle.bridge.process.ProcessConnectorImpl"/>
+
+	<bean id="humanTaskConnector" class="com.mossle.bridge.humantask.HumanTaskConnectorImpl"/>
+
+	<bean id="workCalendarConnector" class="${workcal.connector}"/>
+
+	<bean id="templateConnector" class="com.mossle.bridge.internal.TemplateConnectorImpl">
+		<property name="jdbcTemplate" ref="jdbcTemplate"/>
+	</bean>
+
+	<bean id="notificationConnector" class="com.mossle.bridge.notification.DefaultNotificationConnector">
+		<property name="templateConnector" ref="templateConnector"/>
+		<property name="templateService" ref="templateService"/>
+		<property name="map">
+			<map>  
+				<entry key="msg" value-ref="msgNotificationHandler"/>
+				<entry key="mail" value-ref="mailNotificationHandler"/>
+			</map>
+		</property>
+	</bean>
+
+	<bean id="msgNotificationHandler" class="com.mossle.msg.support.MsgNotificationHandler"/>
+
+	<bean id="mailNotificationHandler" class="com.mossle.internal.mail.support.MailNotificationHandler"/>
+
 </beans>

@@ -28,7 +28,7 @@
 		<div class="content content-inner">
 
 <form id="demoForm" method="post" action="console-jump.do?operationMode=STORE" class="form-horizontal">
-  <input id="demo_id" type="hidden" name="executionId" value="${executionId}">
+  <input id="demo_id" type="hidden" name="executionId" value="${param.executionId}">
   <div class="control-group">
     <label class="control-label">目的地</label>
 	<div class="controls">

@@ -7,7 +7,7 @@ public class SpellDTO {
     private char name;
     private List<String> list;
 
-    public SpellDTO(char c) {
+    public SpellDTO(char name) {
         this.name = name;
     }
 

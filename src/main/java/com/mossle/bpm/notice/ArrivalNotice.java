@@ -1,10 +1,14 @@
 package com.mossle.bpm.notice;
 
+import java.util.ArrayList;
+import java.util.Arrays;
 import java.util.HashMap;
 import java.util.List;
 import java.util.Map;
 
 import com.mossle.api.msg.MsgConnector;
+import com.mossle.api.notification.NotificationConnector;
+import com.mossle.api.notification.NotificationDTO;
 import com.mossle.api.user.UserConnector;
 import com.mossle.api.user.UserDTO;
 
@@ -51,6 +55,11 @@ public class ArrivalNotice {
             BpmConfNotice bpmConfNotice) {
         UserConnector userConnector = ApplicationContextHelper
                 .getBean(UserConnector.class);
+        NotificationConnector notificationConnector = ApplicationContextHelper
+                .getBean(NotificationConnector.class);
+
+        //
+        Map<String, Object> data = new HashMap<String, Object>();
 
         TaskEntity taskEntity = new TaskEntity();
         taskEntity.setId(delegateTask.getId());
@@ -61,20 +70,25 @@ public class ArrivalNotice {
                 getInitiator(userConnector, delegateTask));
         logger.debug("initiator : {}", delegateTask.getVariable("initator"));
         logger.debug("variables : {}", delegateTask.getVariables());
+        //
+        data.put("task", taskEntity);
+        data.put("initiator", this.getInitiator(userConnector, delegateTask));
 
         String receiver = bpmConfNotice.getReceiver();
-        BpmMailTemplate bpmMailTemplate = bpmConfNotice.getBpmMailTemplate();
-        ExpressionManager expressionManager = Context
-                .getProcessEngineConfiguration().getExpressionManager();
+
+        /*
+         * BpmMailTemplate bpmMailTemplate = bpmConfNotice.getBpmMailTemplate(); ExpressionManager expressionManager =
+         * Context .getProcessEngineConfiguration().getExpressionManager();
+         */
         UserDTO userDto = null;
-        String subject = expressionManager
-                .createExpression(bpmMailTemplate.getSubject())
-                .getValue(taskEntity).toString();
 
-        String content = expressionManager
-                .createExpression(bpmMailTemplate.getContent())
-                .getValue(taskEntity).toString();
-
+        /*
+         * String subject = expressionManager .createExpression(bpmMailTemplate.getSubject())
+         * .getValue(taskEntity).toString();
+         * 
+         * String content = expressionManager .createExpression(bpmMailTemplate.getContent())
+         * .getValue(taskEntity).toString();
+         */
         if ("任务接收人".equals(receiver)) {
             userDto = userConnector.findById(delegateTask.getAssignee());
         } else if ("流程发起人".equals(receiver)) {
@@ -90,20 +104,16 @@ public class ArrivalNotice {
                     .getStartUserId());
         }
 
-        this.sendMail(userDto, subject, content);
-        this.sendSiteMessage(userDto, subject, content);
-    }
-
-    public void sendMail(UserDTO userDto, String subject, String content) {
-        MailFacade mailFacade = ApplicationContextHelper
-                .getBean(MailFacade.class);
-        mailFacade.sendMail(userDto.getEmail(), subject, content);
-    }
-
-    public void sendSiteMessage(UserDTO userDto, String subject, String content) {
-        MsgConnector msgConnector = ApplicationContextHelper
-                .getBean(MsgConnector.class);
-        msgConnector.send(subject, content, userDto.getId(), null);
+        // this.sendMail(userDto, subject, content);
+        // this.sendSiteMessage(userDto, subject, content);
+        NotificationDTO notificationDto = new NotificationDTO();
+        notificationDto.setReceiver(userDto.getId());
+        notificationDto.setReceiverType("userid");
+        notificationDto.setTypes(Arrays.asList(bpmConfNotice
+                .getNotificationType().split(",")));
+        notificationDto.setData(data);
+        notificationDto.setTemplate(bpmConfNotice.getTemplateCode());
+        notificationConnector.send(notificationDto);
     }
 
     public String getInitiator(UserConnector userConnector,

@@ -82,6 +82,12 @@ public class PropertyFilterUtils {
 
             break;
 
+        case NOT:
+            buff.append(propertyName).append("<>?");
+            params.add(propertyValue);
+
+            break;
+
         default:
             buff.append(propertyName).append("=?");
             params.add(propertyValue);

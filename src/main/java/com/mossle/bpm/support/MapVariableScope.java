@@ -22,8 +22,16 @@ public class MapVariableScope implements VariableScope {
         return map.get(variableName);
     }
 
+    public <T> T getVariable(String variableName, Class<T> variableType) {
+        return (T) map.get(variableName);
+    }
+
     public Object getVariableLocal(String variableName) {
         return map.get(variableName);
+    }
+
+    public <T> T getVariableLocal(String variableName, Class<T> variableType) {
+        return (T) map.get(variableName);
     }
 
     public Set<String> getVariableNames() {

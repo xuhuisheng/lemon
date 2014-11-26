@@ -27,7 +27,6 @@ import com.mossle.bpm.persistence.domain.BpmConfUser;
 import com.mossle.bpm.persistence.manager.BpmConfRuleManager;
 import com.mossle.bpm.persistence.manager.BpmConfUserManager;
 import com.mossle.bpm.support.DefaultTaskListener;
-import com.mossle.bpm.support.MapVariableScope;
 
 import com.mossle.core.spring.ApplicationContextHelper;
 

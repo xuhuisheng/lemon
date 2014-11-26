@@ -73,9 +73,10 @@ $(function() {
   <table id="demoGrid" class="m-table table-hover">
     <thead>
       <tr>
-        <th class="sorting" name="id">编号</th>
-        <th class="sorting" name="name">名称</th>
-        <th class="sorting" name="name">类型</th>
+        <th class="sorting" name="id">ID</th>
+        <th class="sorting" name="id">节点ID</th>
+        <th class="sorting" name="name">节点名称</th>
+        <th class="sorting" name="name">节点类型</th>
         <th class="sorting" name="name">开始时间</th>
         <th class="sorting" name="name">结束时间</th>
         <th class="sorting" name="name">流程定义</th>
@@ -87,6 +88,7 @@ $(function() {
     <tbody>
       <c:forEach items="${page.result}" var="item">
       <tr>
+	    <td>${item.id}</td>
 	    <td>${item.activityId}</td>
 	    <td>${item.activityName}</td>
 	    <td>${item.activityType}</td>

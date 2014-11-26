@@ -11,7 +11,11 @@ import java.util.Map;
 import java.util.regex.Matcher;
 import java.util.regex.Pattern;
 
+import org.slf4j.Logger;
+import org.slf4j.LoggerFactory;
+
 public class IdCard {
+    private static Logger logger = LoggerFactory.getLogger(IdCard.class);
     private boolean valid;
     private String message;
     private String areaCode;
@@ -174,13 +178,13 @@ public class IdCard {
                 return idCard;
             }
         } catch (NumberFormatException e) {
-            e.printStackTrace();
+            logger.error(e.getMessage(), e);
             idCard.setValid(false);
             idCard.setMessage("身份证生日无效。" + text);
 
             return idCard;
         } catch (java.text.ParseException e) {
-            e.printStackTrace();
+            logger.error(e.getMessage(), e);
             idCard.setValid(false);
             idCard.setMessage("身份证生日无效。" + text);
 

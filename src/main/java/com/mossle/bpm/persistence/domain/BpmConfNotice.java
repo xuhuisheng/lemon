@@ -38,17 +38,25 @@ public class BpmConfNotice implements java.io.Serializable {
     /** null. */
     private String dueDate;
 
+    /** null. */
+    private String templateCode;
+
+    /** null. */
+    private String notificationType;
+
     public BpmConfNotice() {
     }
 
     public BpmConfNotice(BpmMailTemplate bpmMailTemplate,
             BpmConfNode bpmConfNode, Integer type, String receiver,
-            String dueDate) {
+            String dueDate, String templateCode, String notificationType) {
         this.bpmMailTemplate = bpmMailTemplate;
         this.bpmConfNode = bpmConfNode;
         this.type = type;
         this.receiver = receiver;
         this.dueDate = dueDate;
+        this.templateCode = templateCode;
+        this.notificationType = notificationType;
     }
 
     /** @return null. */
@@ -137,5 +145,33 @@ public class BpmConfNotice implements java.io.Serializable {
      */
     public void setDueDate(String dueDate) {
         this.dueDate = dueDate;
+    }
+
+    /** @return null. */
+    @Column(name = "TEMPLATE_CODE", length = 200)
+    public String getTemplateCode() {
+        return this.templateCode;
+    }
+
+    /**
+     * @param templateCode
+     *            null.
+     */
+    public void setTemplateCode(String templateCode) {
+        this.templateCode = templateCode;
+    }
+
+    /** @return null. */
+    @Column(name = "NOTIFICATION_TYPE", length = 200)
+    public String getNotificationType() {
+        return this.notificationType;
+    }
+
+    /**
+     * @param notificationType
+     *            null.
+     */
+    public void setNotificationType(String notificationType) {
+        this.notificationType = notificationType;
     }
 }

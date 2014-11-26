@@ -80,9 +80,9 @@ $(function() {
     <section id="m-main" class="span10" style="float:right">
 
       <form id="xf-form" method="post" action="${scopePrefix}/form/form-startProcessInstance.do" class="xf-form">
-<input id="processDefinitionId" type="hidden" name="processDefinitionId" value="${formInfo.processDefinitionId}">
+<input id="processDefinitionId" type="hidden" name="processDefinitionId" value="${formDto.processDefinitionId}">
 <input id="bpmProcessId" type="hidden" name="bpmProcessId" value="${bpmProcessId}">
-<input id="autoCompleteFirstTask" type="hidden" name="autoCompleteFirstTask" value="${formInfo.autoCompleteFirstTask}">
+<input id="autoCompleteFirstTask" type="hidden" name="autoCompleteFirstTask" value="${formDto.autoCompleteFirstTask}">
 <input id="businessKey" type="hidden" name="businessKey" value="${businessKey}">
 <!--
 <input id="taskId" type="hidden" name="taskId" value="${taskId}">
@@ -93,8 +93,8 @@ $(function() {
 		</div>
 		  <script>
 		  $.getJSON('${scopePrefix}/rs/bpm/next', {
-			  processDefinitionId: '${formInfo.processDefinitionId}',
-			  activityId: '${formInfo.activityId}'
+			  processDefinitionId: '${formDto.processDefinitionId}',
+			  activityId: '${formDto.activityId}'
 		  }, function(data) {
 			  $('#nextStep').append('下个环节：');
 			  for (var i = 0; i < data.length; i++) {

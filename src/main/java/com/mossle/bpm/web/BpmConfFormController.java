@@ -86,7 +86,7 @@ public class BpmConfFormController {
             bpmConfForm.setStatus(2);
             bpmConfFormManager.save(bpmConfForm);
         } else if (bpmConfForm.getStatus() == 2) {
-            bpmConfForm.setStatus(1);
+            bpmConfForm.setStatus(0);
             bpmConfFormManager.save(bpmConfForm);
         } else if (bpmConfForm.getStatus() == 1) {
             if (bpmConfForm.getOriginValue() == null) {

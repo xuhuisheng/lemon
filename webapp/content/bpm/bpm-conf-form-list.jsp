@@ -100,6 +100,7 @@ $(function() {
           <th class="sorting" name="id"><spring:message code="user.bpmCategory.list.id" text="编号"/></th>
           <th class="sorting" name="name"><spring:message code="user.bpmCategory.list.name" text="名称"/></th>
           <th class="sorting" name="priority">类型</th>
+          <th class="sorting" name="status">状态</th>
           <th width="100">&nbsp;</th>
         </tr>
       </thead>
@@ -110,6 +111,11 @@ $(function() {
           <td>${item.id}</td>
           <td>${item.value}</td>
           <td>${item.type == 0 ? '电子表单' : '外部表单'}</td>
+          <td>
+		    <c:if test="${item.status == 0}">默认</c:if>
+		    <c:if test="${item.status == 2}">删除</c:if>
+		    <c:if test="${item.status == 1}">修改</c:if>
+		  </td>
           <td>
 		    <a href="bpm-conf-form-remove.do?id=${item.id}">删除</a>
           </td>

@@ -21,8 +21,10 @@ import javax.servlet.ServletException;
 import javax.servlet.ServletRequest;
 import javax.servlet.ServletResponse;
 import javax.servlet.http.HttpServletRequest;
+import javax.servlet.http.HttpServletResponse;
 
 import javax.ws.rs.DELETE;
+import javax.ws.rs.DefaultValue;
 import javax.ws.rs.FormParam;
 import javax.ws.rs.GET;
 import javax.ws.rs.HeaderParam;
@@ -57,6 +59,7 @@ public class RestFilter implements Filter {
     public void doFilter(ServletRequest req, ServletResponse res,
             FilterChain filterChain) throws IOException, ServletException {
         HttpServletRequest request = (HttpServletRequest) req;
+        HttpServletResponse response = (HttpServletResponse) res;
 
         ApplicationContext ctx = ApplicationContextHelper
                 .getApplicationContext();
@@ -69,7 +72,8 @@ public class RestFilter implements Filter {
                 if (this.matches(request, method)) {
                     Map<String, String> parameters = parseBody(request
                             .getInputStream());
-                    this.invokeMethod(request, res, object, method, parameters);
+                    this.invokeMethod(request, response, object, method,
+                            parameters);
 
                     return;
                 }
@@ -104,8 +108,51 @@ public class RestFilter implements Filter {
         return parameters;
     }
 
-    public void invokeMethod(HttpServletRequest request, ServletResponse res,
-            Object object, Method method, Map<String, String> parameters) {
+    public Map<String, String> getMetaData(Annotation[] annotations) {
+        Map<String, String> metaData = new HashMap<String, String>();
+
+        for (Annotation annotation : annotations) {
+            String name = null;
+            String type = null;
+            String value = null;
+            String defaultValue = null;
+
+            if (annotation instanceof PathParam) {
+                name = ((PathParam) annotation).value();
+                type = "path";
+
+                // value = this.getPathParam(request, name, method);
+            } else if (annotation instanceof QueryParam) {
+                name = ((QueryParam) annotation).value();
+                type = "query";
+
+                // value = request.getParameter(name);
+            } else if (annotation instanceof FormParam) {
+                name = ((FormParam) annotation).value();
+                type = "form";
+
+                // value = parameters.get(name);
+            } else if (annotation instanceof HeaderParam) {
+                name = ((HeaderParam) annotation).value();
+                type = "header";
+
+                // value = request.getHeader(name);
+            } else if (annotation instanceof DefaultValue) {
+                defaultValue = ((DefaultValue) annotation).value();
+            }
+
+            metaData.put("name", name);
+            metaData.put("type", type);
+            metaData.put("value", value);
+            metaData.put("defaultValue", defaultValue);
+        }
+
+        return metaData;
+    }
+
+    public void invokeMethod(HttpServletRequest request,
+            HttpServletResponse response, Object object, Method method,
+            Map<String, String> parameters) {
         try {
             List arguments = new ArrayList();
 
@@ -113,50 +160,84 @@ public class RestFilter implements Filter {
             Class[] parameterTypeArray = method.getParameterTypes();
 
             for (int i = 0; i < annotationArray.length; i++) {
+                if (parameterTypeArray[i]
+                        .isAssignableFrom(HttpServletRequest.class)) {
+                    arguments.add(request);
+
+                    continue;
+                }
+
+                if (parameterTypeArray[i]
+                        .isAssignableFrom(HttpServletResponse.class)) {
+                    arguments.add(response);
+
+                    continue;
+                }
+
                 Annotation[] annotations = annotationArray[i];
+                Map<String, String> metaData = this.getMetaData(annotations);
 
-                for (Annotation annotation : annotations) {
-                    String name = null;
-                    String type = null;
-                    String value = null;
+                String name = metaData.get("name");
+                String value = null;
 
-                    if (annotation instanceof PathParam) {
-                        name = ((PathParam) annotation).value();
-                        type = "path";
-                        value = this.getPathParam(request, name, method);
-                    } else if (annotation instanceof QueryParam) {
-                        name = ((QueryParam) annotation).value();
-                        type = "query";
-                        value = request.getParameter(name);
-                    } else if (annotation instanceof FormParam) {
-                        name = ((FormParam) annotation).value();
-                        type = "form";
-                        value = parameters.get(name);
-                    } else if (annotation instanceof HeaderParam) {
-                        name = ((HeaderParam) annotation).value();
-                        type = "header";
-                        value = request.getHeader(name);
-                    }
+                if ("path".equals(metaData.get("type"))) {
+                    value = this.getPathParam(request, name, method);
+                } else if ("query".equals(metaData.get("type"))) {
+                    value = request.getParameter(name);
+                } else if ("form".equals(metaData.get("type"))) {
+                    value = parameters.get(name);
+                } else if ("header".equals(metaData.get("type"))) {
+                    value = request.getHeader(name);
+                }
 
-                    if (value != null) {
-                        if (parameterTypeArray[i] == String.class) {
-                            arguments.add(value);
-                        } else if ((parameterTypeArray[i] == Long.class)
-                                || (parameterTypeArray[i] == long.class)) {
-                            arguments.add(Long.parseLong(value));
-                        } else if ((parameterTypeArray[i] == Integer.class)
-                                || (parameterTypeArray[i] == int.class)) {
-                            arguments.add(Integer.parseInt(value));
-                        } else if ((parameterTypeArray[i] == Long.class)
-                                || (parameterTypeArray[i] == long.class)) {
-                            arguments.add(Long.parseLong(value));
-                        } else if (parameterTypeArray[i] == Date.class) {
-                            arguments.add(dateConverter.convert(value));
-                        }
+                if ((value == null) && metaData.containsKey("defaultValue")) {
+                    value = metaData.get("defaultValue");
+                }
+
+                if (value != null) {
+                    if (parameterTypeArray[i] == String.class) {
+                        arguments.add(value);
+                    } else if ((parameterTypeArray[i] == Boolean.class)
+                            || (parameterTypeArray[i] == boolean.class)) {
+                        arguments.add(Boolean.valueOf(value));
+                    } else if ((parameterTypeArray[i] == Long.class)
+                            || (parameterTypeArray[i] == long.class)) {
+                        arguments.add(Long.parseLong(value));
+                    } else if ((parameterTypeArray[i] == Integer.class)
+                            || (parameterTypeArray[i] == int.class)) {
+                        arguments.add(Integer.parseInt(value));
+                    } else if ((parameterTypeArray[i] == Long.class)
+                            || (parameterTypeArray[i] == long.class)) {
+                        arguments.add(Long.parseLong(value));
+                    } else if (parameterTypeArray[i] == Date.class) {
+                        arguments.add(dateConverter.convert(value));
                     } else {
-                        if (parameterTypeArray[i] == String.class) {
-                            arguments.add(null);
-                        }
+                        throw new IllegalArgumentException("unsupport type : "
+                                + parameterTypeArray[i]);
+                    }
+                } else {
+                    if (parameterTypeArray[i] == boolean.class) {
+                        arguments.add(false);
+                    } else if (parameterTypeArray[i] == char.class) {
+                        arguments.add((char) 0);
+                    } else if (parameterTypeArray[i] == byte.class) {
+                        arguments.add((byte) 0);
+                    } else if (parameterTypeArray[i] == short.class) {
+                        arguments.add((short) 0);
+                    } else if (parameterTypeArray[i] == int.class) {
+                        arguments.add(0);
+                    } else if (parameterTypeArray[i] == long.class) {
+                        arguments.add(0L);
+                    } else if (parameterTypeArray[i] == float.class) {
+                        arguments.add(0F);
+                    } else if (parameterTypeArray[i] == double.class) {
+                        arguments.add(0D);
+                    } else if (parameterTypeArray[i] == String.class) {
+                        arguments.add(null);
+                    } else {
+                        throw new IllegalArgumentException(
+                                "cannot process method argument, index is : "
+                                        + i);
                     }
                 }
             }
@@ -164,9 +245,16 @@ public class RestFilter implements Filter {
             logger.debug("{}, {}, {}", object, method, arguments);
 
             Object result = method.invoke(object, arguments.toArray());
-            res.setContentType(MediaType.APPLICATION_JSON);
-            res.getOutputStream().write(
-                    jsonMapper.toJson(result).getBytes("UTF-8"));
+
+            if (result instanceof InputStream) {
+                response.setContentType(MediaType.APPLICATION_OCTET_STREAM);
+                IoUtils.copyStream((InputStream) result,
+                        response.getOutputStream());
+            } else {
+                response.setContentType(MediaType.APPLICATION_JSON);
+                response.getOutputStream().write(
+                        jsonMapper.toJson(result).getBytes("UTF-8"));
+            }
         } catch (Exception ex) {
             logger.error(ex.getMessage(), ex);
         }

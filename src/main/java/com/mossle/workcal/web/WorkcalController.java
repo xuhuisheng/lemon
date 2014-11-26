@@ -64,7 +64,7 @@ public class WorkcalController {
             logger.error(ex.getMessage(), ex);
         }
 
-        DateFormat dateFormat = new SimpleDateFormat("yyyyMd");
+        DateFormat dateFormat = new SimpleDateFormat("yyyyMMdd");
 
         // 特殊日期
         List<WorkcalRule> extraWorkcalRules = workcalRuleManager.find(

@@ -18,13 +18,12 @@ import com.mossle.core.mapper.BeanMapper;
 import com.mossle.core.page.Page;
 import com.mossle.core.spring.MessageHelper;
 
+import com.mossle.ext.auth.CurrentUserHolder;
 import com.mossle.ext.export.Exportor;
 import com.mossle.ext.export.TableModel;
 
 import com.mossle.msg.domain.MsgInfo;
 import com.mossle.msg.manager.MsgInfoManager;
-
-import com.mossle.security.util.SpringSecurityUtils;
 
 import org.springframework.stereotype.Controller;
 
@@ -44,11 +43,12 @@ public class MsgInfoController {
     private BeanMapper beanMapper = new BeanMapper();
     private UserConnector userConnector;
     private MessageHelper messageHelper;
+    private CurrentUserHolder currentUserHolder;
 
     @RequestMapping("msg-info-list")
     public String list(@ModelAttribute Page page,
             @RequestParam Map<String, Object> parameterMap, Model model) {
-        String userId = SpringSecurityUtils.getCurrentUserId();
+        String userId = currentUserHolder.getUserId();
         List<PropertyFilter> propertyFilters = PropertyFilter
                 .buildFromMap(parameterMap);
         propertyFilters.add(new PropertyFilter("EQS_senderId", userId));
@@ -62,7 +62,7 @@ public class MsgInfoController {
     @RequestMapping("msg-info-listReceived")
     public String listReceived(@ModelAttribute Page page,
             @RequestParam Map<String, Object> parameterMap, Model model) {
-        String userId = SpringSecurityUtils.getCurrentUserId();
+        String userId = currentUserHolder.getUserId();
         List<PropertyFilter> propertyFilters = PropertyFilter
                 .buildFromMap(parameterMap);
         propertyFilters.add(new PropertyFilter("EQS_receiverId", userId));
@@ -78,7 +78,7 @@ public class MsgInfoController {
     @RequestMapping("msg-info-listSent")
     public String listSent(@ModelAttribute Page page,
             @RequestParam Map<String, Object> parameterMap, Model model) {
-        String userId = SpringSecurityUtils.getCurrentUserId();
+        String userId = currentUserHolder.getUserId();
         List<PropertyFilter> propertyFilters = PropertyFilter
                 .buildFromMap(parameterMap);
 
@@ -117,7 +117,7 @@ public class MsgInfoController {
         } else {
             dest = msgInfo;
 
-            String userId = SpringSecurityUtils.getCurrentUserId();
+            String userId = currentUserHolder.getUserId();
             dest.setSenderId(userId);
 
             UserDTO userDto = userConnector.findByUsername(username, "1");
@@ -170,7 +170,7 @@ public class MsgInfoController {
 
     @RequestMapping("msg-info-view")
     public String view(@RequestParam("id") Long id, Model model) {
-        String userId = SpringSecurityUtils.getCurrentUserId();
+        String userId = currentUserHolder.getUserId();
         MsgInfo msgInfo = msgInfoManager.get(id);
 
         if ((msgInfo.getStatus() == 0)
@@ -203,5 +203,10 @@ public class MsgInfoController {
     @Resource
     public void setMessageHelper(MessageHelper messageHelper) {
         this.messageHelper = messageHelper;
+    }
+
+    @Resource
+    public void setCurrentUserHolder(CurrentUserHolder currentUserHolder) {
+        this.currentUserHolder = currentUserHolder;
     }
 }

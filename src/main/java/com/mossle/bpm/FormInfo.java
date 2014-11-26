@@ -10,6 +10,9 @@ public class FormInfo {
     private boolean autoCompleteFirstTask;
     private String activityId;
     private List<String> buttons = new ArrayList<String>();
+    private boolean redirect;
+    private String url;
+    private String content;
 
     public String getFormKey() {
         return formKey;
@@ -77,5 +80,29 @@ public class FormInfo {
 
     public void setButtons(List<String> buttons) {
         this.buttons = buttons;
+    }
+
+    public boolean isRedirect() {
+        return redirect;
+    }
+
+    public void setRedirect(boolean redirect) {
+        this.redirect = redirect;
+    }
+
+    public String getUrl() {
+        return url;
+    }
+
+    public void setUrl(String url) {
+        this.url = url;
+    }
+
+    public String getContent() {
+        return content;
+    }
+
+    public void setContent(String content) {
+        this.content = content;
     }
 }

@@ -1,6 +1,6 @@
 package com.mossle.bpm.cmd;
 
-import com.mossle.bpm.FormInfo;
+import com.mossle.api.form.FormDTO;
 
 import org.activiti.engine.delegate.Expression;
 import org.activiti.engine.impl.bpmn.parser.BpmnParse;
@@ -17,7 +17,7 @@ import org.activiti.engine.impl.task.TaskDefinition;
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
 
-public class FindStartFormCmd implements Command<FormInfo> {
+public class FindStartFormCmd implements Command<FormDTO> {
     private static Logger logger = LoggerFactory
             .getLogger(FindStartFormCmd.class);
     private String processDefinitionId;
@@ -26,7 +26,7 @@ public class FindStartFormCmd implements Command<FormInfo> {
         this.processDefinitionId = processDefinitionId;
     }
 
-    public FormInfo execute(CommandContext commandContext) {
+    public FormDTO execute(CommandContext commandContext) {
         ProcessDefinitionEntity processDefinitionEntity = Context
                 .getProcessEngineConfiguration().getDeploymentManager()
                 .findDeployedProcessDefinitionById(processDefinitionId);
@@ -36,23 +36,23 @@ public class FindStartFormCmd implements Command<FormInfo> {
                     "cannot find processDefinition : " + processDefinitionId);
         }
 
-        FormInfo formInfo = new FormInfo();
-        formInfo.setProcessDefinitionId(processDefinitionId);
+        FormDTO formDto = new FormDTO();
+        formDto.setProcessDefinitionId(processDefinitionId);
 
         if (processDefinitionEntity.hasStartFormKey()) {
-            formInfo.setAutoCompleteFirstTask(false);
+            formDto.setAutoCompleteFirstTask(false);
 
             DefaultFormHandler formHandler = (DefaultFormHandler) processDefinitionEntity
                     .getStartFormHandler();
 
             if (formHandler.getFormKey() != null) {
                 String formKey = formHandler.getFormKey().getExpressionText();
-                formInfo.setFormKey(formKey);
-                formInfo.setActivityId(processDefinitionEntity.getInitial()
+                formDto.setCode(formKey);
+                formDto.setActivityId(processDefinitionEntity.getInitial()
                         .getId());
             }
         } else {
-            formInfo.setAutoCompleteFirstTask(true);
+            formDto.setAutoCompleteFirstTask(true);
 
             ActivityImpl startActivity = processDefinitionEntity.getInitial();
 
@@ -94,15 +94,15 @@ public class FindStartFormCmd implements Command<FormInfo> {
                         if (formHandler.getFormKey() != null) {
                             String formKey = formHandler.getFormKey()
                                     .getExpressionText();
-                            formInfo.setFormKey(formKey);
+                            formDto.setCode(formKey);
                         }
 
-                        formInfo.setActivityId(taskDefinitionKey);
+                        formDto.setActivityId(taskDefinitionKey);
                     }
                 }
             }
         }
 
-        return formInfo;
+        return formDto;
     }
 }

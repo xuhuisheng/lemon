@@ -15,7 +15,7 @@
             </ul>
           </div>
         </div>
--->
+
         <div class="accordion-group">
           <div class="accordion-heading">
             <a class="accordion-toggle" data-toggle="collapse" data-parent="#m-sidebar" href="#collapse-user-admin">
@@ -29,7 +29,7 @@
             </ul>
           </div>
         </div>
-
+-->
         <div class="accordion-group">
           <div class="accordion-heading">
             <a class="accordion-toggle" data-toggle="collapse" data-parent="#m-sidebar" href="#collapse-party">
@@ -91,6 +91,38 @@
             <ul class="accordion-inner nav nav-list">
 			  <li><a href="${scopePrefix}/meeting/meeting-room-list.do"><i class="icon-user"></i>会议室管理</a></li>
 			  <li><a href="${scopePrefix}/meeting/meeting-info-list.do"><i class="icon-user"></i>会议预定</a></li>
+            </ul>
+          </div>
+        </div>
+
+        <div class="accordion-group">
+          <div class="accordion-heading">
+            <a class="accordion-toggle" data-toggle="collapse" data-parent="#m-sidebar" href="#collapse-template">
+              <i class="icon-user"></i>
+              <span class="title">模板管理</span>
+            </a>
+          </div>
+          <div id="collapse-template" class="accordion-body collapse ${currentMenu == 'template' ? 'in' : ''}">
+            <ul class="accordion-inner nav nav-list">
+			  <li class="m-icn-view-users"><a href="${scopePrefix}/template/template-info-list.do">模板管理</a></li>
+			  <li class="m-icn-view-users"><a href="${scopePrefix}/template/template-field-list.do">模板项管理</a></li>
+            </ul>
+          </div>
+        </div>
+
+        <div class="accordion-group">
+          <div class="accordion-heading">
+            <a class="accordion-toggle" data-toggle="collapse" data-parent="#m-sidebar" href="#collapse-mail">
+              <i class="icon-user"></i>
+              <span class="title">邮件</span>
+            </a>
+          </div>
+          <div id="collapse-mail" class="accordion-body collapse ${currentMenu == 'mail' ? 'in' : ''}">
+            <ul class="accordion-inner nav nav-list">
+              <li><a href="${scopePrefix}/mail/mail-config-list.do">邮件配置</a></li>
+              <li><a href="${scopePrefix}/mail/mail-template-list.do">邮件模板</a></li>
+              <li><a href="${scopePrefix}/mail/mail-queue-list.do">邮件队列</a></li>
+              <li><a href="${scopePrefix}/mail/mail-history-list.do">邮件历史</a></li>
             </ul>
           </div>
         </div>

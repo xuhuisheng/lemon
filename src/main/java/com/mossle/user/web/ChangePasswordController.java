@@ -7,8 +7,8 @@ import javax.annotation.Resource;
 
 import com.mossle.core.spring.MessageHelper;
 
-import com.mossle.security.util.SimplePasswordEncoder;
-import com.mossle.security.util.SpringSecurityUtils;
+import com.mossle.ext.auth.CurrentUserHolder;
+import com.mossle.ext.auth.CustomPasswordEncoder;
 
 import com.mossle.user.persistence.domain.UserBase;
 import com.mossle.user.persistence.manager.UserBaseManager;
@@ -28,7 +28,8 @@ import org.springframework.web.servlet.mvc.support.RedirectAttributes;
 public class ChangePasswordController {
     private UserBaseManager userBaseManager;
     private MessageHelper messageHelper;
-    private SimplePasswordEncoder simplePasswordEncoder;
+    private CustomPasswordEncoder customPasswordEncoder;
+    private CurrentUserHolder currentUserHolder;
 
     @RequestMapping("change-password-input")
     public String input() {
@@ -48,7 +49,7 @@ public class ChangePasswordController {
         }
 
         UserBase userBase = userBaseManager.findUniqueBy("username",
-                SpringSecurityUtils.getCurrentUsername());
+                currentUserHolder.getUsername());
 
         if (!isPasswordValid(oldPassword, userBase.getPassword())) {
             messageHelper.addFlashMessage(redirectAttributes,
@@ -66,16 +67,16 @@ public class ChangePasswordController {
     }
 
     public boolean isPasswordValid(String rawPassword, String encodedPassword) {
-        if (simplePasswordEncoder != null) {
-            return simplePasswordEncoder.matches(rawPassword, encodedPassword);
+        if (customPasswordEncoder != null) {
+            return customPasswordEncoder.matches(rawPassword, encodedPassword);
         } else {
             return rawPassword.equals(encodedPassword);
         }
     }
 
     public String encodePassword(String password) {
-        if (simplePasswordEncoder != null) {
-            return simplePasswordEncoder.encode(password);
+        if (customPasswordEncoder != null) {
+            return customPasswordEncoder.encode(password);
         } else {
             return password;
         }
@@ -93,8 +94,13 @@ public class ChangePasswordController {
     }
 
     @Resource
-    public void setSimplePasswordEncoder(
-            SimplePasswordEncoder simplePasswordEncoder) {
-        this.simplePasswordEncoder = simplePasswordEncoder;
+    public void setCustomPasswordEncoder(
+            CustomPasswordEncoder customPasswordEncoder) {
+        this.customPasswordEncoder = customPasswordEncoder;
+    }
+
+    @Resource
+    public void setCurrentUserHolder(CurrentUserHolder currentUserHolder) {
+        this.currentUserHolder = currentUserHolder;
     }
 }
