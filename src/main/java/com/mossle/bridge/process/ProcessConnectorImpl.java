@@ -37,9 +37,13 @@ import org.activiti.engine.runtime.ProcessInstance;
 import org.activiti.engine.task.DelegationState;
 import org.activiti.engine.task.Task;
 
+import org.slf4j.Logger;
+import org.slf4j.LoggerFactory;
+
 import org.springframework.util.MultiValueMap;
 
 public class ProcessConnectorImpl implements ProcessConnector {
+    private Logger logger = LoggerFactory.getLogger(ProcessConnectorImpl.class);
     private ProcessEngine processEngine;
     private BpmConfFormManager bpmConfFormManager;
     private FormTemplateManager formTemplateManager;
@@ -100,6 +104,8 @@ public class ProcessConnectorImpl implements ProcessConnector {
                 formDto.getCode());
 
         if (formTemplate == null) {
+            logger.error("cannot find form : {}", formDto.getCode());
+
             return formDto;
         }
 

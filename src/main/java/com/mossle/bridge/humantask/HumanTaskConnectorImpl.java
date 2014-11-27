@@ -31,9 +31,14 @@ import org.activiti.engine.impl.task.TaskDefinition;
 import org.activiti.engine.task.DelegationState;
 import org.activiti.engine.task.Task;
 
+import org.slf4j.Logger;
+import org.slf4j.LoggerFactory;
+
 import org.springframework.jdbc.core.JdbcTemplate;
 
 public class HumanTaskConnectorImpl implements HumanTaskConnector {
+    private Logger logger = LoggerFactory
+            .getLogger(HumanTaskConnectorImpl.class);
     private ProcessEngine processEngine;
     private BpmConfOperationManager bpmConfOperationManager;
     private BpmConfFormManager bpmConfFormManager;
@@ -93,6 +98,12 @@ public class HumanTaskConnectorImpl implements HumanTaskConnector {
 
         FormTemplate formTemplate = formTemplateManager.findUniqueBy("code",
                 formDto.getCode());
+
+        if (formTemplate == null) {
+            logger.error("cannot find form : {}", formDto.getCode());
+
+            return formDto;
+        }
 
         if (Integer.valueOf(1).equals(formTemplate.getType())) {
             formDto.setRedirect(true);
