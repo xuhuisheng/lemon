@@ -75,7 +75,7 @@ $(function(){
 	border-bottom: 1px solid #C2C2C3;
 	border-radius: 0px 0px 3px 3px;
 	height: 200px;
-	overflow: hide;
+	overflow: auto;
 }
 
 .m-widget-2 .content.content-inner {
