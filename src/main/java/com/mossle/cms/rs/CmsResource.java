@@ -17,12 +17,12 @@ import javax.ws.rs.Produces;
 import javax.ws.rs.QueryParam;
 import javax.ws.rs.core.MediaType;
 
+import com.mossle.api.internal.StoreConnector;
+import com.mossle.api.internal.StoreDTO;
+
 import com.mossle.core.mapper.JsonMapper;
 import com.mossle.core.util.BaseDTO;
 import com.mossle.core.util.StringUtils;
-
-import com.mossle.ext.store.StoreConnector;
-import com.mossle.ext.store.StoreDTO;
 
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
@@ -39,45 +39,46 @@ public class CmsResource {
     @Path("image")
     @Produces(MediaType.APPLICATION_OCTET_STREAM)
     public InputStream image(@QueryParam("key") String key) throws Exception {
-        StoreDTO storeDto = storeConnector.get("cms/html/r/image", key);
+        StoreDTO storeDto = storeConnector.getStore("cms/html/r/image", key);
 
-        return storeDto.getResource().getInputStream();
+        return storeDto.getDataSource().getInputStream();
     }
 
     @GET
     @Path("video")
     @Produces(MediaType.APPLICATION_OCTET_STREAM)
     public InputStream video(@QueryParam("key") String key) throws Exception {
-        StoreDTO storeDto = storeConnector.get("cms/html/r/video", key);
+        StoreDTO storeDto = storeConnector.getStore("cms/html/r/video", key);
 
-        return storeDto.getResource().getInputStream();
+        return storeDto.getDataSource().getInputStream();
     }
 
     @GET
     @Path("audio")
     @Produces(MediaType.APPLICATION_OCTET_STREAM)
     public InputStream audio(@QueryParam("key") String key) throws Exception {
-        StoreDTO storeDto = storeConnector.get("cms/html/r/audio", key);
+        StoreDTO storeDto = storeConnector.getStore("cms/html/r/audio", key);
 
-        return storeDto.getResource().getInputStream();
+        return storeDto.getDataSource().getInputStream();
     }
 
     @GET
     @Path("pdf")
     @Produces(MediaType.APPLICATION_OCTET_STREAM)
     public InputStream pdf(@QueryParam("key") String key) throws Exception {
-        StoreDTO storeDto = storeConnector.get("cms/html/r/pdf", key);
+        StoreDTO storeDto = storeConnector.getStore("cms/html/r/pdf", key);
 
-        return storeDto.getResource().getInputStream();
+        return storeDto.getDataSource().getInputStream();
     }
 
     @GET
     @Path("attachment")
     @Produces(MediaType.APPLICATION_OCTET_STREAM)
     public InputStream zip(@QueryParam("key") String key) throws Exception {
-        StoreDTO storeDto = storeConnector.get("cms/html/r/attachment", key);
+        StoreDTO storeDto = storeConnector.getStore("cms/html/r/attachment",
+                key);
 
-        return storeDto.getResource().getInputStream();
+        return storeDto.getDataSource().getInputStream();
     }
 
     @Resource

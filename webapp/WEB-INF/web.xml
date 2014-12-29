@@ -26,6 +26,10 @@
         <listener-class>org.springframework.web.context.ContextLoaderListener</listener-class>
     </listener>
 
+    <listener>
+        <listener-class>com.mossle.ext.spring.ProxyServletListener</listener-class>
+    </listener>
+
     <error-page>
         <error-code>401</error-code>
         <location>/common/401.jsp</location>

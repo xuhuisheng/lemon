@@ -100,4 +100,10 @@
 
 	<bean id="mailNotificationHandler" class="com.mossle.internal.mail.support.MailNotificationHandler"/>
 
+	<bean id="storeConnector" class="${store.connector}"/>
+
+	<bean id="dictConnector" class="${dict.connector}"/>
+
+	<bean id="auditConnector" class="${audit.connector}"/>
+
 </beans>

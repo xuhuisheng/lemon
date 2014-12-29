@@ -142,7 +142,7 @@ $(function() {
 		  });
 		  </script>
 
-	  <form id="xf-form" method="post" action="${scopePrefix}/form/form-completeTask.do" class="xf-form">
+	  <form id="xf-form" method="post" action="${scopePrefix}/form/form-completeTask.do" class="xf-form" enctype="multipart/form-data">
 		<input id="taskId" type="hidden" name="taskId" value="${formDto.taskId}">
 		<input id="businessKey" type="hidden" name="businessKey" value="${dynamicModel.id}">
 		<div id="xf-form-table"></div>

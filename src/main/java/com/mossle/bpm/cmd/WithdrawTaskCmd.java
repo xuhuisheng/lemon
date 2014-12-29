@@ -8,6 +8,9 @@ import java.util.ArrayList;
 import java.util.Date;
 import java.util.List;
 
+import com.mossle.api.humantask.HumanTaskConnector;
+import com.mossle.api.humantask.HumanTaskDTO;
+
 import com.mossle.bpm.graph.ActivitiHistoryGraphBuilder;
 import com.mossle.bpm.graph.Edge;
 import com.mossle.bpm.graph.Graph;
@@ -16,6 +19,7 @@ import com.mossle.bpm.graph.Node;
 import com.mossle.core.spring.ApplicationContextHelper;
 
 import org.activiti.engine.ActivitiException;
+import org.activiti.engine.delegate.DelegateTask;
 import org.activiti.engine.history.HistoricActivityInstance;
 import org.activiti.engine.impl.HistoricActivityInstanceQueryImpl;
 import org.activiti.engine.impl.Page;
@@ -224,6 +228,12 @@ public class WithdrawTaskCmd implements Command<Integer> {
 
         Context.getCommandContext().getTaskEntityManager().insert(task);
 
+        try {
+            this.createHumanTask(task);
+        } catch (Exception ex) {
+            logger.error(ex.getMessage(), ex);
+        }
+
         ExecutionEntity executionEntity = Context.getCommandContext()
                 .getExecutionEntityManager()
                 .findExecutionById(historicTaskInstanceEntity.getExecutionId());
@@ -254,5 +264,34 @@ public class WithdrawTaskCmd implements Command<Integer> {
         String deleteReason = historicTaskInstanceEntity.getDeleteReason();
 
         return "跳过".equals(deleteReason);
+    }
+
+    public HumanTaskDTO createHumanTask(DelegateTask delegateTask)
+            throws Exception {
+        HumanTaskConnector humanTaskConnector = ApplicationContextHelper
+                .getBean(HumanTaskConnector.class);
+        HumanTaskDTO humanTaskDto = humanTaskConnector.createHumanTask();
+        humanTaskDto.setName(delegateTask.getName());
+        humanTaskDto.setDescription(delegateTask.getDescription());
+        humanTaskDto.setCode(delegateTask.getTaskDefinitionKey());
+        humanTaskDto.setAssignee(delegateTask.getAssignee());
+        humanTaskDto.setOwner(delegateTask.getOwner());
+        humanTaskDto.setDelegateState("none");
+        humanTaskDto.setPriority(delegateTask.getPriority());
+        humanTaskDto.setCreateTime(new Date());
+        humanTaskDto.setDuration(delegateTask.getDueDate() + "");
+        humanTaskDto.setSuspendState("none");
+        humanTaskDto.setCategory(delegateTask.getCategory());
+        humanTaskDto.setForm(delegateTask.getFormKey());
+        humanTaskDto.setTaskId(delegateTask.getId());
+        humanTaskDto.setExecutionId(delegateTask.getExecutionId());
+        humanTaskDto.setProcessInstanceId(delegateTask.getProcessInstanceId());
+        humanTaskDto.setProcessDefinitionId(delegateTask
+                .getProcessDefinitionId());
+        humanTaskDto.setTenantId(delegateTask.getTenantId());
+        humanTaskDto.setStatus("active");
+        humanTaskDto = humanTaskConnector.saveHumanTask(humanTaskDto);
+
+        return humanTaskDto;
     }
 }

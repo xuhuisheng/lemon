@@ -85,7 +85,7 @@
 				<bean class="com.mossle.bpm.listener.TaskConfTaskListener"/>
 				<bean class="com.mossle.bpm.listener.AssigneeAliasTaskListener"/>
 				<bean class="com.mossle.bpm.listener.DelegateTaskListener"/>
-				<bean class="com.mossle.bpm.listener.CopyTaskListener"/>
+				<bean class="com.mossle.bpm.listener.HumanTaskListener"/>
 			</list>
 		</property>
 	</bean>
@@ -107,6 +107,6 @@
 	</bean>
 
 	<bean class="com.mossle.form.support.XFormDeployer">
-		<property name="autoDeploy" value="true"/>
+		<property name="autoDeploy" value="${form.autoDeploy}"/>
 	</bean>
 </beans>

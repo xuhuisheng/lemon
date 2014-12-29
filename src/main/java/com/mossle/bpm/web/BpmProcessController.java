@@ -8,17 +8,9 @@ import javax.annotation.Resource;
 
 import javax.servlet.http.HttpServletResponse;
 
-import com.mossle.bpm.cmd.FindGraphCmd;
-import com.mossle.bpm.cmd.FindTaskDefinitionsCmd;
-import com.mossle.bpm.graph.ActivitiGraphBuilder;
-import com.mossle.bpm.graph.Graph;
-import com.mossle.bpm.graph.Node;
 import com.mossle.bpm.persistence.domain.BpmCategory;
 import com.mossle.bpm.persistence.domain.BpmConfBase;
-import com.mossle.bpm.persistence.domain.BpmMailTemplate;
 import com.mossle.bpm.persistence.domain.BpmProcess;
-import com.mossle.bpm.persistence.domain.BpmTaskDef;
-import com.mossle.bpm.persistence.domain.BpmTaskDefNotice;
 import com.mossle.bpm.persistence.manager.BpmCategoryManager;
 import com.mossle.bpm.persistence.manager.BpmConfBaseManager;
 import com.mossle.bpm.persistence.manager.BpmMailTemplateManager;
@@ -35,8 +27,6 @@ import com.mossle.ext.export.Exportor;
 import com.mossle.ext.export.TableModel;
 
 import org.activiti.engine.ProcessEngine;
-import org.activiti.engine.impl.task.TaskDefinition;
-import org.activiti.engine.repository.ProcessDefinition;
 
 import org.springframework.stereotype.Controller;
 
@@ -53,8 +43,6 @@ import org.springframework.web.servlet.mvc.support.RedirectAttributes;
 public class BpmProcessController {
     private BpmProcessManager bpmProcessManager;
     private BpmCategoryManager bpmCategoryManager;
-    private BpmTaskDefNoticeManager bpmTaskDefNoticeManager;
-    private BpmMailTemplateManager bpmMailTemplateManager;
     private BpmTaskDefManager bpmTaskDefManager;
     private BpmConfBaseManager bpmConfBaseManager;
     private Exportor exportor;
@@ -151,17 +139,6 @@ public class BpmProcessController {
     @Resource
     public void setBpmCategoryManager(BpmCategoryManager bpmCategoryManager) {
         this.bpmCategoryManager = bpmCategoryManager;
-    }
-
-    @Resource
-    public void setBpmTaskDefNoticeManager(
-            BpmTaskDefNoticeManager bpmTaskDefNoticeManager) {
-        this.bpmTaskDefNoticeManager = bpmTaskDefNoticeManager;
-    }
-
-    @Resource
-    public void setBpmMailTemplate(BpmMailTemplateManager bpmMailTemplateManager) {
-        this.bpmMailTemplateManager = bpmMailTemplateManager;
     }
 
     @Resource

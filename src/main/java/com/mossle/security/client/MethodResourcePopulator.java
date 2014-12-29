@@ -7,8 +7,6 @@ import java.util.Map;
 
 import com.mossle.core.util.BeanUtils;
 
-import com.mossle.security.api.MethodSourceFetcher;
-
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
 

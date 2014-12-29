@@ -127,6 +127,76 @@
           </div>
         </div>
 
+        <div class="accordion-group">
+          <div class="accordion-heading">
+            <a class="accordion-toggle" data-toggle="collapse" data-parent="#m-sidebar" href="#collapse-audit">
+              <i class="icon-user"></i>
+              <span class="title">审计日志</span>
+            </a>
+          </div>
+          <div id="collapse-audit" class="accordion-body collapse ${currentMenu == 'audit' ? 'in' : ''}">
+            <ul class="accordion-inner nav nav-list">
+              <li><a href="${scopePrefix}/audit/audit-base-list.do">审计日志</a></li>
+            </ul>
+          </div>
+        </div>
+
+        <div class="accordion-group">
+          <div class="accordion-heading">
+            <a class="accordion-toggle" data-toggle="collapse" data-parent="#m-sidebar" href="#collapse-store">
+              <i class="icon-user"></i>
+              <span class="title">附件管理</span>
+            </a>
+          </div>
+          <div id="collapse-store" class="accordion-body collapse ${currentMenu == 'audit' ? 'in' : ''}">
+            <ul class="accordion-inner nav nav-list">
+              <li><a href="${scopePrefix}/store/store-info-list.do">附件管理</a></li>
+            </ul>
+          </div>
+        </div>
+
+        <div class="accordion-group">
+          <div class="accordion-heading">
+            <a class="accordion-toggle" data-toggle="collapse" data-parent="#m-sidebar" href="#collapse-whitelist">
+              <i class="icon-user"></i>
+              <span class="title">白名单管理</span>
+            </a>
+          </div>
+          <div id="collapse-whitelist" class="accordion-body collapse ${currentMenu == 'whitelist' ? 'in' : ''}">
+            <ul class="accordion-inner nav nav-list">
+              <li><a href="${scopePrefix}/whitelist/whitelist-admin-list.do">白名单管理</a></li>
+            </ul>
+          </div>
+        </div>
+
+        <div class="accordion-group">
+          <div class="accordion-heading">
+            <a class="accordion-toggle" data-toggle="collapse" data-parent="#m-sidebar" href="#collapse-dict">
+              <i class="icon-user"></i>
+              <span class="title">数据字典</span>
+            </a>
+          </div>
+          <div id="collapse-dict" class="accordion-body collapse ${currentMenu == 'dict' ? 'in' : ''}">
+            <ul class="accordion-inner nav nav-list">
+              <li><a href="${scopePrefix}/dict/dict-type-list.do">数据字典</a></li>
+            </ul>
+          </div>
+        </div>
+
+        <div class="accordion-group">
+          <div class="accordion-heading">
+            <a class="accordion-toggle" data-toggle="collapse" data-parent="#m-sidebar" href="#collapse-online">
+              <i class="icon-user"></i>
+              <span class="title">在线用户</span>
+            </a>
+          </div>
+          <div id="collapse-online" class="accordion-body collapse ${currentMenu == 'online' ? 'in' : ''}">
+            <ul class="accordion-inner nav nav-list">
+              <li><a href="${scopePrefix}/online/online-list.do">在线用户</a></li>
+            </ul>
+          </div>
+        </div>
+
 		<footer id="m-footer" class="text-center">
 		  <hr>
 		  &copy;Mossle

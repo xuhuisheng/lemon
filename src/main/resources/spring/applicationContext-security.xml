@@ -17,6 +17,7 @@
 		<form-login login-page="/common/login.jsp"
                     default-target-url="/"
 					authentication-failure-handler-ref="authenticationFailureHandler"/>
+		<logout success-handler-ref="logoutSuccessHandler" />
 
         <custom-filter ref="autoLoginFilter" after="SECURITY_CONTEXT_FILTER" />
         <custom-filter ref="switchUserFilter" position="SWITCH_USER_FILTER" />

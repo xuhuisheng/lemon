@@ -120,31 +120,35 @@ public class RestFilter implements Filter {
             if (annotation instanceof PathParam) {
                 name = ((PathParam) annotation).value();
                 type = "path";
+                metaData.put("name", name);
+                metaData.put("type", type);
 
                 // value = this.getPathParam(request, name, method);
             } else if (annotation instanceof QueryParam) {
                 name = ((QueryParam) annotation).value();
                 type = "query";
+                metaData.put("name", name);
+                metaData.put("type", type);
 
                 // value = request.getParameter(name);
             } else if (annotation instanceof FormParam) {
                 name = ((FormParam) annotation).value();
                 type = "form";
+                metaData.put("name", name);
+                metaData.put("type", type);
 
                 // value = parameters.get(name);
             } else if (annotation instanceof HeaderParam) {
                 name = ((HeaderParam) annotation).value();
                 type = "header";
+                metaData.put("name", name);
+                metaData.put("type", type);
 
                 // value = request.getHeader(name);
             } else if (annotation instanceof DefaultValue) {
                 defaultValue = ((DefaultValue) annotation).value();
+                metaData.put("defaultValue", defaultValue);
             }
-
-            metaData.put("name", name);
-            metaData.put("type", type);
-            metaData.put("value", value);
-            metaData.put("defaultValue", defaultValue);
         }
 
         return metaData;

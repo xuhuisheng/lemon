@@ -1,6 +1,7 @@
 package com.mossle.bridge.humantask;
 
 import java.util.ArrayList;
+import java.util.Date;
 import java.util.List;
 import java.util.Map;
 
@@ -21,8 +22,16 @@ import com.mossle.bpm.persistence.manager.BpmConfFormManager;
 import com.mossle.bpm.persistence.manager.BpmConfOperationManager;
 import com.mossle.bpm.persistence.manager.BpmTaskConfManager;
 
+import com.mossle.core.mapper.BeanMapper;
+import com.mossle.core.page.Page;
+
 import com.mossle.form.domain.FormTemplate;
 import com.mossle.form.manager.FormTemplateManager;
+
+import com.mossle.humantask.persistence.domain.HtHumantask;
+import com.mossle.humantask.persistence.domain.HtParticipant;
+import com.mossle.humantask.persistence.manager.HtHumantaskManager;
+import com.mossle.humantask.persistence.manager.HtParticipantManager;
 
 import org.activiti.engine.IdentityService;
 import org.activiti.engine.ProcessEngine;
@@ -45,36 +54,71 @@ public class HumanTaskConnectorImpl implements HumanTaskConnector {
     private FormTemplateManager formTemplateManager;
     private BpmTaskConfManager bpmTaskConfManager;
     private JdbcTemplate jdbcTemplate;
+    private HtHumantaskManager htHumantaskManager;
+    private HtParticipantManager htParticipantManager;
+    private BeanMapper beanMapper = new BeanMapper();
 
-    public HumanTaskDTO findHumanTask(String taskId) {
-        TaskService taskService = processEngine.getTaskService();
-        Task task = taskService.createTaskQuery().taskId(taskId).singleResult();
-        HumanTaskDTO humanTaskDto = new HumanTaskDTO();
-        humanTaskDto.setId(task.getId());
-        humanTaskDto.setProcessInstanceId(task.getProcessInstanceId());
-        humanTaskDto.setProcessDefinitionId(task.getProcessDefinitionId());
-        humanTaskDto.setTaskDefinitionKey(task.getTaskDefinitionKey());
+    public HumanTaskDTO createHumanTask() {
+        return new HumanTaskDTO();
+    }
+
+    public HumanTaskDTO saveHumanTask(HumanTaskDTO humanTaskDto) {
+        Long id = null;
+
+        if (humanTaskDto.getId() != null) {
+            try {
+                id = Long.parseLong(humanTaskDto.getId());
+            } catch (Exception ex) {
+                logger.error(ex.getMessage(), ex);
+            }
+        }
+
+        HtHumantask htHumantask = new HtHumantask();
+
+        if (id != null) {
+            htHumantask = htHumantaskManager.get(id);
+        }
+
+        beanMapper.copy(humanTaskDto, htHumantask);
+        htHumantaskManager.save(htHumantask);
+        humanTaskDto.setId(Long.toString(htHumantask.getId()));
 
         return humanTaskDto;
     }
 
-    public FormDTO findTaskForm(String taskId) {
-        HumanTaskDTO humanTaskDto = this.findHumanTask(taskId);
+    public HumanTaskDTO findHumanTaskByTaskId(String taskId) {
+        HtHumantask htHumantask = htHumantaskManager.findUniqueBy("taskId",
+                taskId);
+        HumanTaskDTO humanTaskDto = new HumanTaskDTO();
+        beanMapper.copy(htHumantask, humanTaskDto);
+
+        return humanTaskDto;
+    }
+
+    public HumanTaskDTO findHumanTask(String humanTaskId) {
+        HtHumantask htHumantask = htHumantaskManager.get(Long
+                .parseLong(humanTaskId));
+
+        return convertHumanTaskDto(htHumantask);
+    }
+
+    public FormDTO findTaskForm(String humanTaskId) {
+        HumanTaskDTO humanTaskDto = this.findHumanTask(humanTaskId);
 
         FormDTO formDto = new FormDTO();
-        formDto.setTaskId(taskId);
+        formDto.setTaskId(humanTaskId);
 
         List<BpmConfOperation> bpmConfOperations = bpmConfOperationManager
                 .find("from BpmConfOperation where bpmConfNode.bpmConfBase.processDefinitionId=? and bpmConfNode.code=?",
                         humanTaskDto.getProcessDefinitionId(),
-                        humanTaskDto.getTaskDefinitionKey());
+                        humanTaskDto.getCode());
 
         for (BpmConfOperation bpmConfOperation : bpmConfOperations) {
             formDto.getButtons().add(bpmConfOperation.getValue());
         }
 
         String processDefinitionId = humanTaskDto.getProcessDefinitionId();
-        String activityId = humanTaskDto.getTaskDefinitionKey();
+        String activityId = humanTaskDto.getCode();
         formDto.setProcessDefinitionId(processDefinitionId);
         formDto.setActivityId(activityId);
 
@@ -125,10 +169,17 @@ public class HumanTaskConnectorImpl implements HumanTaskConnector {
         for (TaskDefinition taskDefinition : taskDefinitions) {
             HumanTaskDefinition humanTaskDefinition = new HumanTaskDefinition();
             humanTaskDefinition.setKey(taskDefinition.getKey());
-            humanTaskDefinition.setName(taskDefinition.getNameExpression()
-                    .getExpressionText());
-            humanTaskDefinition.setAssignee(taskDefinition
-                    .getAssigneeExpression().getExpressionText());
+
+            if (taskDefinition.getNameExpression() != null) {
+                humanTaskDefinition.setName(taskDefinition.getNameExpression()
+                        .getExpressionText());
+            }
+
+            if (taskDefinition.getAssigneeExpression() != null) {
+                humanTaskDefinition.setAssignee(taskDefinition
+                        .getAssigneeExpression().getExpressionText());
+            }
+
             humanTaskDefinitions.add(humanTaskDefinition);
         }
 
@@ -154,15 +205,30 @@ public class HumanTaskConnectorImpl implements HumanTaskConnector {
         }
     }
 
-    public void completeTask(String taskId, String userId,
+    /**
+     * 完成任务.
+     */
+    public void completeTask(String humanTaskId, String userId,
             Map<String, Object> taskParameters) {
+        HumanTaskDTO humanTaskDto = findHumanTask(humanTaskId);
+
+        if (humanTaskDto == null) {
+            throw new IllegalStateException("任务不存在");
+        }
+
         TaskService taskService = processEngine.getTaskService();
-        Task task = taskService.createTaskQuery().taskId(taskId).singleResult();
+        Task task = taskService.createTaskQuery()
+                .taskId(humanTaskDto.getTaskId()).singleResult();
+
+        if (task == null) {
+            throw new IllegalStateException("任务不存在");
+        }
 
         // 处理抄送任务
-        if ("copy".equals(task.getCategory())) {
-            processEngine.getManagementService().executeCommand(
-                    new DeleteTaskWithCommentCmd(taskId, "已阅"));
+        if ("copy".equals(humanTaskDto.getCategory())) {
+            humanTaskDto.setStatus("complete");
+            humanTaskDto.setCompleteTime(new Date());
+            this.saveHumanTask(humanTaskDto);
 
             return;
         }
@@ -171,23 +237,23 @@ public class HumanTaskConnectorImpl implements HumanTaskConnector {
         IdentityService identityService = processEngine.getIdentityService();
         identityService.setAuthenticatedUserId(userId);
 
-        if (task == null) {
-            throw new IllegalStateException("任务不存在");
-        }
-
         // logger.info("{}", task.getDelegationState());
 
         // 处理委办任务
         if (DelegationState.PENDING == task.getDelegationState()) {
-            taskService.resolveTask(taskId);
+            taskService.resolveTask(humanTaskDto.getTaskId());
 
             return;
         }
 
+        String taskId = humanTaskDto.getTaskId();
+
         // 处理子任务
         if ("subtask".equals(task.getCategory())) {
-            processEngine.getManagementService().executeCommand(
-                    new DeleteTaskWithCommentCmd(taskId, "完成"));
+            processEngine.getManagementService()
+                    .executeCommand(
+                            new DeleteTaskWithCommentCmd(humanTaskDto
+                                    .getTaskId(), "完成"));
 
             int count = jdbcTemplate.queryForObject(
                     "select count(*) from ACT_RU_TASK where PARENT_TASK_ID_=?",
@@ -202,6 +268,54 @@ public class HumanTaskConnectorImpl implements HumanTaskConnector {
 
         processEngine.getManagementService().executeCommand(
                 new CompleteTaskWithCommentCmd(taskId, taskParameters, "完成"));
+    }
+
+    /**
+     * 待办任务.
+     */
+    public Page findPersonalTasks(String userId, int pageNo, int pageSize) {
+        Page page = htHumantaskManager.pagedQuery(
+                "from HtHumantask where assignee=? and status='active'",
+                pageNo, pageSize, userId);
+        List<HtHumantask> htHumantasks = (List<HtHumantask>) page.getResult();
+        List<HumanTaskDTO> humanTaskDtos = this
+                .convertHumanTaskDtos(htHumantasks);
+        page.setResult(humanTaskDtos);
+
+        return page;
+    }
+
+    /**
+     * 已办任务.
+     */
+    public Page findFinishedTasks(String userId, int pageNo, int pageSize) {
+        Page page = htHumantaskManager.pagedQuery(
+                "from HtHumantask where assignee=? and status='complete'",
+                pageNo, pageSize, userId);
+        List<HtHumantask> htHumantasks = (List<HtHumantask>) page.getResult();
+        List<HumanTaskDTO> humanTaskDtos = this
+                .convertHumanTaskDtos(htHumantasks);
+        page.setResult(humanTaskDtos);
+
+        return page;
+    }
+
+    public List<HumanTaskDTO> convertHumanTaskDtos(
+            List<HtHumantask> htHumantasks) {
+        List<HumanTaskDTO> humanTaskDtos = new ArrayList<HumanTaskDTO>();
+
+        for (HtHumantask htHumantask : htHumantasks) {
+            humanTaskDtos.add(convertHumanTaskDto(htHumantask));
+        }
+
+        return humanTaskDtos;
+    }
+
+    public HumanTaskDTO convertHumanTaskDto(HtHumantask htHumantask) {
+        HumanTaskDTO humanTaskDto = new HumanTaskDTO();
+        beanMapper.copy(htHumantask, humanTaskDto);
+
+        return humanTaskDto;
     }
 
     @Resource
@@ -233,5 +347,16 @@ public class HumanTaskConnectorImpl implements HumanTaskConnector {
     @Resource
     public void setJdbcTemplate(JdbcTemplate jdbcTemplate) {
         this.jdbcTemplate = jdbcTemplate;
+    }
+
+    @Resource
+    public void setHtHumantaskManager(HtHumantaskManager htHumantaskManager) {
+        this.htHumantaskManager = htHumantaskManager;
+    }
+
+    @Resource
+    public void setHtParticipantManager(
+            HtParticipantManager htParticipantManager) {
+        this.htParticipantManager = htParticipantManager;
     }
 }

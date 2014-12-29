@@ -112,6 +112,7 @@
 			<button class="btn" onclick="doImport()">import</button>
 -->
 			<button class="btn" onclick="xform.addRow()">add row</button>
+			<button class="btn" onclick="xform.removeRow()">remove row</button>
 			<button class="btn" onclick="doChangeMode(this)">change to merge mode</button>
 			<button class="btn" onclick="doMerge()">merge</button>
 			<button class="btn" onclick="doSplit()">split</button>

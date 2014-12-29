@@ -5,10 +5,18 @@ import java.util.Map;
 
 import com.mossle.api.form.FormDTO;
 
-public interface HumanTaskConnector {
-    HumanTaskDTO findHumanTask(String taskId);
+import com.mossle.core.page.Page;
 
-    FormDTO findTaskForm(String taskId);
+public interface HumanTaskConnector {
+    HumanTaskDTO createHumanTask();
+
+    HumanTaskDTO saveHumanTask(HumanTaskDTO humanTaskDto);
+
+    HumanTaskDTO findHumanTaskByTaskId(String taskId);
+
+    HumanTaskDTO findHumanTask(String humanTaskId);
+
+    FormDTO findTaskForm(String humanTaskId);
 
     List<HumanTaskDefinition> findHumanTaskDefinitions(
             String processDefinitionId);
@@ -16,6 +24,10 @@ public interface HumanTaskConnector {
     void configTaskDefinitions(String businessKey,
             List<String> taskDefinitionKeys, List<String> taskAssigness);
 
-    void completeTask(String taskId, String userId,
+    void completeTask(String humanTaskId, String userId,
             Map<String, Object> taskParameters);
+
+    Page findPersonalTasks(String userId, int pageNo, int pageSize);
+
+    Page findFinishedTasks(String userId, int pageNo, int pageSize);
 }

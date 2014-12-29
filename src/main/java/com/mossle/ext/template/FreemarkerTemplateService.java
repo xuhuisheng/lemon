@@ -27,7 +27,7 @@ public class FreemarkerTemplateService implements TemplateService {
 
     @PostConstruct
     public void init() throws IOException {
-        configuration = new Configuration();
+        configuration = new Configuration(Configuration.VERSION_2_3_21);
 
         File templateDir = new File(baseDir);
         templateDir.mkdirs();

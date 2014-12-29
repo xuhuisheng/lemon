@@ -149,5 +149,8 @@
 		</constructor-arg>
 	</bean>
 
+	<!-- listener -->
+
+	<bean id="logoutHttpSessionListener" class="com.mossle.ext.spring.LogoutHttpSessionListener"/>
 
 </beans>

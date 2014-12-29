@@ -8,6 +8,8 @@ import org.springframework.stereotype.Component;
 
 @Component
 public class UserModuleSpecification implements ModuleSpecification {
+    private static final String MODULE_NAME = "user";
+    private static final String MODULE_NAME_UPPER = MODULE_NAME.toUpperCase();
     private String type;
     private boolean enabled;
     private boolean initData;
@@ -17,11 +19,11 @@ public class UserModuleSpecification implements ModuleSpecification {
     }
 
     public String getSchemaTable() {
-        return "SCHEMA_VERSION_USER";
+        return "SCHEMA_VERSION_" + MODULE_NAME_UPPER;
     }
 
     public String getSchemaLocation() {
-        return "dbmigrate." + type + ".user";
+        return "dbmigrate." + type + "." + MODULE_NAME;
     }
 
     public boolean isInitData() {
@@ -29,11 +31,11 @@ public class UserModuleSpecification implements ModuleSpecification {
     }
 
     public String getDataTable() {
-        return "SCHEMA_VERSION_DATA_USER";
+        return "SCHEMA_VERSION_DATA_" + MODULE_NAME_UPPER;
     }
 
     public String getDataLocation() {
-        return "dbmigrate." + type + ".data_user";
+        return "dbmigrate." + type + ".data_" + MODULE_NAME;
     }
 
     @Value("${application.database.type}")
@@ -41,12 +43,12 @@ public class UserModuleSpecification implements ModuleSpecification {
         this.type = type;
     }
 
-    @Value("${user.dbmigrate.enabled}")
+    @Value("${" + MODULE_NAME + ".dbmigrate.enabled}")
     public void setEnabled(boolean enabled) {
         this.enabled = enabled;
     }
 
-    @Value("${user.dbmigrate.initData}")
+    @Value("${" + MODULE_NAME + ".dbmigrate.initData}")
     public void setInitData(boolean initData) {
         this.initData = initData;
     }

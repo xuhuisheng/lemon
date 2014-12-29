@@ -109,6 +109,9 @@ public class DatabaseKeyValue implements KeyValue {
     public Record convertRecord(Map<String, Object> recordMap) {
         Record record = new Record();
         record.setCode(getStringValue(recordMap, "id"));
+        record.setName(getStringValue(recordMap, "name"));
+        record.setFormTemplateCode(getStringValue(recordMap,
+                "form_template_code"));
         record.setCategory(getStringValue(recordMap, "category"));
         record.setStatus(getIntValue(recordMap, "status"));
         record.setRef(getStringValue(recordMap, "ref"));
@@ -184,7 +187,9 @@ public class DatabaseKeyValue implements KeyValue {
      * 新建一条数据.
      */
     public void insert(Record record) {
-        String sqlRecordInsert = "insert into KV_RECORD(category,status,ref,create_time,user_id) values(?,?,?,?,?)";
+        String sqlRecordInsert = "insert into KV_RECORD(name,form_template_code,category,status,ref,create_time,user_id) values(?,?,?,?,?,?,?)";
+        String name = record.getName();
+        String formTemplateCode = record.getFormTemplateCode();
         String originalRef = record.getRef();
         String ref = originalRef;
         Date createTime = record.getCreateTime();
@@ -194,8 +199,9 @@ public class DatabaseKeyValue implements KeyValue {
             ref = UUID.randomUUID().toString();
         }
 
-        jdbcTemplate.update(sqlRecordInsert, record.getCategory(),
-                record.getStatus(), ref, createTime, userId);
+        jdbcTemplate.update(sqlRecordInsert, name, formTemplateCode,
+                record.getCategory(), record.getStatus(), ref, createTime,
+                userId);
 
         Record resultRecord = findByRef(ref);
         String code = resultRecord.getCode();
@@ -219,8 +225,9 @@ public class DatabaseKeyValue implements KeyValue {
      * 更新一条数据.
      */
     public void update(Record record) {
-        String sqlRecord = "update KV_RECORD set category=?,status=?,ref=? where id=?";
-        jdbcTemplate.update(sqlRecord, record.getCategory(),
+        String sqlRecord = "update KV_RECORD set name=?,form_template_code=?,category=?,status=?,ref=? where id=?";
+        jdbcTemplate.update(sqlRecord, record.getName(),
+                record.getFormTemplateCode(), record.getCategory(),
                 record.getStatus(), record.getRef(), record.getCode());
 
         Record resultRecord = findByCode(record.getCode());

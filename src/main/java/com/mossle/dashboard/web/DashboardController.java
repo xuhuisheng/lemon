@@ -4,6 +4,9 @@ import java.util.*;
 
 import javax.annotation.Resource;
 
+import com.mossle.api.humantask.HumanTaskConnector;
+import com.mossle.api.humantask.HumanTaskDTO;
+
 import com.mossle.bpm.persistence.domain.BpmProcess;
 import com.mossle.bpm.persistence.manager.BpmProcessManager;
 
@@ -34,18 +37,18 @@ public class DashboardController {
     private ProcessEngine processEngine;
     private BpmProcessManager bpmProcessManager;
     private CmsArticleManager cmsArticleManager;
+    private HumanTaskConnector humanTaskConnector;
 
     @RequestMapping("dashboard")
     public String list(Model model) {
         String userId = SpringSecurityUtils.getCurrentUserId();
-        List<Task> personalTasks = processEngine.getTaskService()
-                .createTaskQuery().taskAssignee(userId).list();
         List<HistoricProcessInstance> historicProcessInstances = processEngine
                 .getHistoryService().createHistoricProcessInstanceQuery()
                 .startedBy(userId).unfinished().list();
         List<BpmProcess> bpmProcesses = bpmProcessManager.getAll();
         List<CmsArticle> cmsArticles = cmsArticleManager.getAll();
-        model.addAttribute("personalTasks", personalTasks);
+        model.addAttribute("personalTasks",
+                humanTaskConnector.findPersonalTasks(userId, 1, 10));
         model.addAttribute("historicProcessInstances", historicProcessInstances);
         model.addAttribute("bpmProcesses", bpmProcesses);
         model.addAttribute("cmsArticles", cmsArticles);
@@ -67,5 +70,10 @@ public class DashboardController {
     @Resource
     public void setCmsArticleManager(CmsArticleManager cmsArticleManager) {
         this.cmsArticleManager = cmsArticleManager;
+    }
+
+    @Resource
+    public void setHumanTaskConnector(HumanTaskConnector humanTaskConnector) {
+        this.humanTaskConnector = humanTaskConnector;
     }
 }

@@ -5,7 +5,14 @@ import java.util.Date;
 import java.util.List;
 import java.util.Map;
 
+import com.mossle.api.internal.StoreConnector;
+
+import com.mossle.ext.MultipartHandler;
+import com.mossle.ext.store.MultipartFileDataSource;
+
 import com.mossle.form.support.FormParameter;
+
+import org.springframework.web.multipart.MultipartFile;
 
 /**
  * 构建Record.
@@ -53,8 +60,66 @@ public class RecordBuilder {
      * 更新record的ref属性.
      */
     public Record build(Record record, int status, String ref) {
+        if (record == null) {
+            record = new Record();
+        }
+
         record.setRef(ref);
         record.setStatus(status);
+
+        return record;
+    }
+
+    public Record build(Record record, MultipartHandler multipartHandler,
+            StoreConnector storeConnector) throws Exception {
+        for (Map.Entry<String, List<String>> entry : multipartHandler
+                .getMultiValueMap().entrySet()) {
+            String key = entry.getKey();
+
+            if (key == null) {
+                continue;
+            }
+
+            List<String> value = entry.getValue();
+
+            if ((value == null) || (value.isEmpty())) {
+                continue;
+            }
+
+            Prop prop = new Prop();
+            prop.setCode(key);
+            prop.setType(0);
+            prop.setValue(this.getValue(value));
+            record.getProps().put(prop.getCode(), prop);
+        }
+
+        if (multipartHandler.getMultiFileMap() == null) {
+            return record;
+        }
+
+        for (Map.Entry<String, List<MultipartFile>> entry : multipartHandler
+                .getMultiFileMap().entrySet()) {
+            String key = entry.getKey();
+
+            if (key == null) {
+                continue;
+            }
+
+            List<MultipartFile> value = entry.getValue();
+
+            if ((value == null) || (value.isEmpty())) {
+                continue;
+            }
+
+            MultipartFile multipartFile = value.get(0);
+
+            Prop prop = new Prop();
+            prop.setCode(key);
+            prop.setType(0);
+            prop.setValue(storeConnector.saveStore("form",
+                    new MultipartFileDataSource(multipartFile)).getKey());
+            record.getProps().put(prop.getCode(), prop);
+        }
 
         return record;
     }

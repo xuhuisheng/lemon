@@ -12,6 +12,8 @@ import javax.annotation.Resource;
 import javax.servlet.http.HttpServletResponse;
 import javax.servlet.http.HttpSession;
 
+import com.mossle.api.internal.StoreConnector;
+import com.mossle.api.internal.StoreDTO;
 import com.mossle.api.scope.ScopeHolder;
 import com.mossle.api.user.UserCache;
 import com.mossle.api.user.UserDTO;
@@ -26,9 +28,7 @@ import com.mossle.core.util.ServletUtils;
 import com.mossle.ext.auth.CustomPasswordEncoder;
 import com.mossle.ext.export.Exportor;
 import com.mossle.ext.export.TableModel;
-import com.mossle.ext.store.MultipartFileResource;
-import com.mossle.ext.store.StoreConnector;
-import com.mossle.ext.store.StoreDTO;
+import com.mossle.ext.store.MultipartFileDataSource;
 
 import com.mossle.user.persistence.domain.UserBase;
 import com.mossle.user.persistence.domain.UserRepo;
@@ -253,9 +253,8 @@ public class UserBaseController {
     public String upload(@RequestParam(value = "id", required = false) Long id,
             @RequestParam("avatar") MultipartFile avatar,
             HttpSession httpSession) throws Exception {
-        StoreDTO storeDto = storeConnector
-                .save("avatar", new MultipartFileResource(avatar),
-                        avatar.getOriginalFilename());
+        StoreDTO storeDto = storeConnector.saveStore("avatar",
+                new MultipartFileDataSource(avatar));
 
         if (id != null) {
             UserBase userBase = userBaseManager.get(id);
@@ -274,15 +273,15 @@ public class UserBaseController {
             OutputStream os, HttpSession httpSession) throws Exception {
         if (id != null) {
             UserBase userBase = userBaseManager.get(id);
-            StoreDTO storeDto = storeConnector.get("avatar",
+            StoreDTO storeDto = storeConnector.getStore("avatar",
                     userBase.getAvatar());
 
-            IoUtils.copyStream(storeDto.getResource().getInputStream(), os);
+            IoUtils.copyStream(storeDto.getDataSource().getInputStream(), os);
         } else {
-            StoreDTO storeDto = storeConnector.get("avatar",
+            StoreDTO storeDto = storeConnector.getStore("avatar",
                     (String) httpSession.getAttribute("temporaryAvatar"));
 
-            IoUtils.copyStream(storeDto.getResource().getInputStream(), os);
+            IoUtils.copyStream(storeDto.getDataSource().getInputStream(), os);
         }
     }
 

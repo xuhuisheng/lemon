@@ -22,10 +22,9 @@ import com.mossle.core.mapper.BeanMapper;
 import com.mossle.core.page.Page;
 import com.mossle.core.spring.MessageHelper;
 
+import com.mossle.ext.auth.CustomPasswordEncoder;
 import com.mossle.ext.export.Exportor;
 import com.mossle.ext.export.TableModel;
-
-import com.mossle.security.util.SimplePasswordEncoder;
 
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
@@ -51,7 +50,7 @@ public class UserStatusController {
     private BeanMapper beanMapper = new BeanMapper();
     private UserStatusConverter userStatusConverter;
     private UserStatusChecker userStatusChecker;
-    private SimplePasswordEncoder simplePasswordEncoder;
+    private CustomPasswordEncoder customPasswordEncoder;
 
     @RequestMapping("user-status-list")
     public String list(@ModelAttribute Page page,
@@ -98,8 +97,8 @@ public class UserStatusController {
                     return "auth/user-status-input";
                 }
 
-                if (simplePasswordEncoder != null) {
-                    userStatus.setPassword(simplePasswordEncoder
+                if (customPasswordEncoder != null) {
+                    userStatus.setPassword(customPasswordEncoder
                             .encode(userStatus.getPassword()));
                 }
             }
@@ -237,9 +236,9 @@ public class UserStatusController {
     }
 
     @Resource
-    public void setSimplePasswordEncoder(
-            SimplePasswordEncoder simplePasswordEncoder) {
-        this.simplePasswordEncoder = simplePasswordEncoder;
+    public void setCustomPasswordEncoder(
+            CustomPasswordEncoder customPasswordEncoder) {
+        this.customPasswordEncoder = customPasswordEncoder;
     }
 
     @Resource

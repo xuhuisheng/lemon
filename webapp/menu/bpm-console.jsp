@@ -12,7 +12,7 @@
           <div id="collapse-bpm-category" class="accordion-body collapse ${currentMenu == 'bpm-category' ? 'in' : ''}">
             <ul class="accordion-inner nav nav-list">
 			  <li><a href="${scopePrefix}/bpm/bpm-category-list.do"><i class="icon-user"></i>流程分类</a></li>
-			  <li><a href="${scopePrefix}/bpm/bpm-process-list.do"><i class="icon-user"></i>流程定义</a></li>
+			  <li><a href="${scopePrefix}/bpm/bpm-process-list.do"><i class="icon-user"></i>流程配置</a></li>
 			  <li><a href="${scopePrefix}/bpm/bpm-mail-template-list.do"><i class="icon-user"></i>邮件模板</a></li>
             </ul>
           </div>

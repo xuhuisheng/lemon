@@ -32,7 +32,7 @@
 
 	<bean id="exportor" class="com.mossle.ext.export.CsvExportor"/>
 
-	<bean id="storeConnector" class="com.mossle.ext.store.FileStoreConnector">
+	<bean id="storeHelper" class="com.mossle.ext.store.FileStoreHelper">
 		<property name="baseDir" value="${store.baseDir}"/>
 	</bean>
 

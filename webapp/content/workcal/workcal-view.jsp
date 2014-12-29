@@ -13,7 +13,7 @@
 	<script type="text/javascript" src="${ctx}/s/mossle/js/WorkCalendar.js"></script>
     <script type="text/javascript">
 $(function() {
-	var workCalendar = new WorkCalendar();
+	var workCalendar = new WorkCalendar(${param.year});
 	workCalendar.render('#m-main');
 	workCalendar.activeByWeek(${weeks});
 	workCalendar.markHolidays(${holidays});

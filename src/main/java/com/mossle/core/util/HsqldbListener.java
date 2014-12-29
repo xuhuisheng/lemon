@@ -1,5 +1,6 @@
 package com.mossle.core.util;
 
+import java.io.File;
 import java.io.FileInputStream;
 import java.io.IOException;
 import java.io.InputStream;
@@ -59,15 +60,16 @@ public class HsqldbListener implements ServletContextListener {
     public void contextInitialized(ServletContextEvent sce) {
         try {
             Properties prop = new Properties();
-            InputStream inputStream = new FileInputStream(
-                    System.getProperty("appserver.home")
-                            + "/data/db.properties");
+            File file = new File(System.getProperty("appserver.home")
+                    + "/data/db.properties");
 
-            if (inputStream == null) {
+            if (!file.exists()) {
                 System.out.println("data/db.properties isnot exists.");
 
                 return;
             }
+
+            InputStream inputStream = new FileInputStream(file);
 
             try {
                 prop.load(inputStream);

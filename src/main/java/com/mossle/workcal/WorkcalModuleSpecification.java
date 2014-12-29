@@ -1,4 +1,4 @@
-package com.mossle.workcal;
+package com.mossle.internal.workcal;
 
 import com.mossle.ext.dbmigrate.ModuleSpecification;
 
@@ -8,6 +8,8 @@ import org.springframework.stereotype.Component;
 
 @Component
 public class WorkcalModuleSpecification implements ModuleSpecification {
+    private static final String MODULE_NAME = "workcal";
+    private static final String MODULE_NAME_UPPER = MODULE_NAME.toUpperCase();
     private String type;
     private boolean enabled;
     private boolean initData;
@@ -17,11 +19,11 @@ public class WorkcalModuleSpecification implements ModuleSpecification {
     }
 
     public String getSchemaTable() {
-        return "SCHEMA_VERSION_WORKCAL";
+        return "SCHEMA_VERSION_" + MODULE_NAME_UPPER;
     }
 
     public String getSchemaLocation() {
-        return "dbmigrate." + type + ".workcal";
+        return "dbmigrate." + type + "." + MODULE_NAME;
     }
 
     public boolean isInitData() {
@@ -29,11 +31,11 @@ public class WorkcalModuleSpecification implements ModuleSpecification {
     }
 
     public String getDataTable() {
-        return "SCHEMA_VERSION_DATA_WORKCAL";
+        return "SCHEMA_VERSION_DATA_" + MODULE_NAME_UPPER;
     }
 
     public String getDataLocation() {
-        return "dbmigrate." + type + ".data_workcal";
+        return "dbmigrate." + type + ".data_" + MODULE_NAME;
     }
 
     @Value("${application.database.type}")
@@ -41,12 +43,12 @@ public class WorkcalModuleSpecification implements ModuleSpecification {
         this.type = type;
     }
 
-    @Value("${workcal.dbmigrate.enabled}")
+    @Value("${" + MODULE_NAME + ".dbmigrate.enabled}")
     public void setEnabled(boolean enabled) {
         this.enabled = enabled;
     }
 
-    @Value("${workcal.dbmigrate.initData}")
+    @Value("${" + MODULE_NAME + ".dbmigrate.initData}")
     public void setInitData(boolean initData) {
         this.initData = initData;
     }

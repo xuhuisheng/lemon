@@ -13,7 +13,12 @@ import com.mossle.core.mapper.JsonMapper;
 
 import com.mossle.internal.mail.service.MailDataService;
 
+import org.slf4j.Logger;
+import org.slf4j.LoggerFactory;
+
 public class MailNotificationHandler implements NotificationHandler {
+    private static Logger logger = LoggerFactory
+            .getLogger(MailNotificationHandler.class);
     private MailDataService mailDataService;
     private UserConnector userConnector;
 
@@ -33,7 +38,7 @@ public class MailNotificationHandler implements NotificationHandler {
             mailDataService.send(email, notificationDto.getSubject(),
                     notificationDto.getContent(), "1");
         } catch (Exception ex) {
-            ex.printStackTrace();
+            logger.error(ex.getMessage(), ex);
         }
     }
 

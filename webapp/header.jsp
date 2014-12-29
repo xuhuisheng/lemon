@@ -33,7 +33,7 @@ setInterval(unreadCount, 10000);
             <span class="icon-bar"></span>
             <span class="icon-bar"></span>
           </a>
-          <a href="${scopePrefix}/" class="brand">Mossle</a>
+          <a href="${scopePrefix}/" class="brand">Lemon <small>1.4.0</small></a>
           <div class="nav-collapse collapse navbar-responsive-collapse">
             <ul class="nav">
               <li class="divider-vertical"></li>
@@ -50,6 +50,7 @@ setInterval(unreadCount, 10000);
                   <li class="divider"></li>
 				  <li><a href="${scopePrefix}/bpm/bpm-process-list.do"><i class="icon-user"></i>流程管理</a></li>
 				  <li><a href="${scopePrefix}/form/form-template-list.do"><i class="icon-user"></i>表单管理</a></li>
+				  <li><a href="${scopePrefix}/humantask/humantask-list.do"><i class="icon-user"></i>任务管理</a></li>
                   <li class="divider"></li>
                   <li><a href="${scopePrefix}/cms/cms-article-list.do"><i class="icon-user"></i>公告管理</a></li>
                   <li><a href="${scopePrefix}/car/car-info-list.do"><i class="icon-user"></i>车辆管理</a></li>
@@ -62,7 +63,8 @@ setInterval(unreadCount, 10000);
             <ul class="nav pull-right">
               <li class="dropdown">
                 <a data-toggle="dropdown" class="dropdown-toggle" href="#">
-                  <sec:authentication property="principal.displayName" />
+			      <img src="${scopePrefix}/rs/avatar?id=<tags:currentUserId/>&width=16" style="width:16px;height:16px;" class="img-circle">
+				  <tags:currentUser/>
                   <b class="caret"></b>
                 </a>
                 <ul class="dropdown-menu">

@@ -987,7 +987,7 @@ xf.field.TextField.prototype.updateName = function(value) {
 	var parentNode = xf.$(this.parentId);
 	parentNode.innerHTML = 
 		'<div class="xf-handler">'
-		+ '<input type="text" name="' + this.name + '" ' + (this.readOnly ? 'readOnly' : '') + ' value="' + (this.value ? this.value : '') + '" style="margin-bottom:0px;cursor:move;">'
+		+ '<input type="text" name="' + this.name + '" ' + (this.readOnly ? 'readOnly' : '') + ' value="' + (this.value ? this.value : '') + '" style="margin-bottom:0px;cursor:move;" maxlength="200">'
 		+ '</div>';
 }
 
@@ -1052,7 +1052,7 @@ xf.field.Password.prototype.updateName = function(value) {
 	var parentNode = xf.$(this.parentId);
 	parentNode.innerHTML = 
 		'<div class="xf-handler">'
-		+ '<input type="password" name="' + this.name + '" ' + (this.readOnly ? 'readOnly' : '') + ' style="margin-bottom:0px;cursor:move;">'
+		+ '<input type="password" name="' + this.name + '" ' + (this.readOnly ? 'readOnly' : '') + ' style="margin-bottom:0px;cursor:move;" maxlength="200">'
 		+ '</div>';
 }
 
@@ -1111,7 +1111,7 @@ xf.field.TextArea.prototype.updateName = function(value) {
 	var parentNode = xf.$(this.parentId);
 	parentNode.innerHTML = 
 		'<div class="xf-handler">'
-		+ '<textarea name="' + this.name + '" ' + (this.readOnly ? 'readOnly' : '') + ' style="margin-bottom:0px;cursor:move;">' + (this.value ? this.value : '') + '</textarea>'
+		+ '<textarea name="' + this.name + '" ' + (this.readOnly ? 'readOnly' : '') + ' style="margin-bottom:0px;cursor:move;" maxlength="200">' + (this.value ? this.value : '') + '</textarea>'
 		+ '</div>';
 }
 
@@ -1433,6 +1433,16 @@ xf.field.FileUpload.prototype.setValue = function(value) {
 	if (this.readOnly) {
 		var parentNode = xf.$(this.parentId);
 		parentNode.innerHTML = value;
+	} else {
+		var parentNode = xf.$(this.parentId);
+		if (parentNode.children.length == 1) {
+			var span = document.createElement('span');
+			span.innerHTML = '<a href="../rs/store/view?model=form&key=' + value.key + '">' + value.label + '</a>';
+			parentNode.appendChild(span);
+		} else {
+			var span = parentNode.children[1];
+			span.innerHTML = '<a href="../rs/store/view?model=form&key=' + value.key + '">' + value.label + '</a>';
+		}
 	}
 }
 

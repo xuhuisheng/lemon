@@ -248,7 +248,7 @@ public class IdCard {
         idCard.setBirthday(birthday);
 
         int sequence = Integer.parseInt(ai.substring(14, 17), 10);
-        idCard.setGender(((sequence % 2) == 1) ? "male" : "female");
+        idCard.setGender(((sequence & 1) == 1) ? "male" : "female");
 
         return idCard;
     }

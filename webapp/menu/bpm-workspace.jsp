@@ -29,10 +29,10 @@
           </div>
           <div id="collapse-bpm-task" class="accordion-body collapse ${currentMenu == 'bpm-task' ? 'in' : ''}">
             <ul class="accordion-inner nav nav-list">
-			  <li><a href="${scopePrefix}/bpm/workspace-listPersonalTasks.do"><i class="icon-user"></i>待办任务</a></li>
-			  <li><a href="${scopePrefix}/bpm/workspace-listGroupTasks.do"><i class="icon-user"></i>待领任务</a></li>
-			  <li><a href="${scopePrefix}/bpm/workspace-listHistoryTasks.do"><i class="icon-user"></i>已办任务</a></li>
-			  <li><a href="${scopePrefix}/bpm/workspace-listDelegatedTasks.do"><i class="icon-user"></i>代理中的任务</a></li>
+			  <li><a href="${scopePrefix}/humantask/workspace-personalTasks.do"><i class="icon-user"></i>待办任务</a></li>
+			  <li><a href="${scopePrefix}/humantask/workspace-groupTasks.do"><i class="icon-user"></i>待领任务</a></li>
+			  <li><a href="${scopePrefix}/humantask/workspace-historyTasks.do"><i class="icon-user"></i>已办任务</a></li>
+			  <li><a href="${scopePrefix}/humantask/workspace-delegatedTasks.do"><i class="icon-user"></i>代理中的任务</a></li>
             </ul>
           </div>
         </div>
@@ -100,21 +100,6 @@
 
         <div class="accordion-group">
           <div class="accordion-heading">
-            <a class="accordion-toggle" data-toggle="collapse" data-parent="#m-sidebar" href="#collapse-forum">
-              <i class="icon-user"></i>
-              <span class="title">论坛</span>
-            </a>
-          </div>
-          <div id="collapse-forum" class="accordion-body collapse ${currentMenu == 'forum' ? 'in' : ''}">
-            <ul class="accordion-inner nav nav-list">
-			  <li><a href="${scopePrefix}/forum/forum-topic-view.do"><i class="icon-user"></i>查看贴子</a></li>
-			  <li><a href="${scopePrefix}/forum/forum-topic-create.do"><i class="icon-user"></i>发表贴子</a></li>
-            </ul>
-          </div>
-        </div>
-
-        <div class="accordion-group">
-          <div class="accordion-heading">
             <a class="accordion-toggle" data-toggle="collapse" data-parent="#m-sidebar" href="#collapse-address-list">
               <i class="icon-user"></i>
               <span class="title">通讯录</span>
@@ -122,7 +107,7 @@
           </div>
           <div id="collapse-address-list" class="accordion-body collapse ${currentMenu == 'address-list' ? 'in' : ''}">
             <ul class="accordion-inner nav nav-list">
-			  <li><a href="${scopePrefix}/addresslist/address-list-list.do"><i class="icon-user"></i>通讯录</a></li>
+			  <li><a href="${scopePrefix}/pim/address-list-list.do"><i class="icon-user"></i>通讯录</a></li>
             </ul>
           </div>
         </div>

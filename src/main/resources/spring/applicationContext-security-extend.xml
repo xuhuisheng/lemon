@@ -88,4 +88,7 @@
 		<property name="defaultFailureUrl" value="/common/login.jsp?error=true"/>
 	</bean>
 
+	<!-- TODO: 以后要记得把它从auth迁移到security里 -->
+	<bean id="logoutSuccessHandler" class="com.mossle.auth.LogoutSuccessHandlerImpl"/>
+
 </beans>

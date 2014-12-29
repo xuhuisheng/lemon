@@ -1,10 +1,29 @@
 package com.mossle.api.humantask;
 
+import java.util.Date;
+
 public class HumanTaskDTO {
     private String id;
+    private String name;
+    private String description;
+    private String assignee;
+    private String owner;
+    private String delegateState;
+    private Date createTime;
+    private String suspendState;
+    private String code;
+    private String taskId;
+    private String executionId;
     private String processInstanceId;
     private String processDefinitionId;
     private String taskDefinitionKey;
+    private int priority;
+    private String duration;
+    private String tenantId;
+    private String category;
+    private String form;
+    private String status;
+    private Date completeTime;
 
     public String getId() {
         return id;
@@ -12,6 +31,86 @@ public class HumanTaskDTO {
 
     public void setId(String id) {
         this.id = id;
+    }
+
+    public String getName() {
+        return name;
+    }
+
+    public void setName(String name) {
+        this.name = name;
+    }
+
+    public String getDescription() {
+        return description;
+    }
+
+    public void setDescription(String description) {
+        this.description = description;
+    }
+
+    public String getAssignee() {
+        return assignee;
+    }
+
+    public void setAssignee(String assignee) {
+        this.assignee = assignee;
+    }
+
+    public String getOwner() {
+        return owner;
+    }
+
+    public void setOwner(String owner) {
+        this.owner = owner;
+    }
+
+    public String getDelegateState() {
+        return delegateState;
+    }
+
+    public void setDelegateState(String delegateState) {
+        this.delegateState = delegateState;
+    }
+
+    public Date getCreateTime() {
+        return createTime;
+    }
+
+    public void setCreateTime(Date createTime) {
+        this.createTime = createTime;
+    }
+
+    public String getSuspendState() {
+        return suspendState;
+    }
+
+    public void setSuspendState(String suspendState) {
+        this.suspendState = suspendState;
+    }
+
+    public String getCode() {
+        return code;
+    }
+
+    public void setCode(String code) {
+        this.code = code;
+    }
+
+    public String getTaskId() {
+        return taskId;
+    }
+
+    public void setTaskId(String taskId) {
+        this.taskId = taskId;
+    }
+
+    public String getExecutionId() {
+        return executionId;
+    }
+
+    public void setExecutionId(String executionId) {
+        this.executionId = executionId;
     }
 
     public String getProcessInstanceId() {
@@ -36,5 +135,61 @@ public class HumanTaskDTO {
 
     public void setTaskDefinitionKey(String taskDefinitionKey) {
         this.taskDefinitionKey = taskDefinitionKey;
+    }
+
+    public int getPriority() {
+        return priority;
+    }
+
+    public void setPriority(int priority) {
+        this.priority = priority;
+    }
+
+    public String getDuration() {
+        return duration;
+    }
+
+    public void setDuration(String duration) {
+        this.duration = duration;
+    }
+
+    public String getTenantId() {
+        return tenantId;
+    }
+
+    public void setTenantId(String tenantId) {
+        this.tenantId = tenantId;
+    }
+
+    public String getCategory() {
+        return category;
+    }
+
+    public void setCategory(String category) {
+        this.category = category;
+    }
+
+    public String getForm() {
+        return form;
+    }
+
+    public void setForm(String form) {
+        this.form = form;
+    }
+
+    public String getStatus() {
+        return status;
+    }
+
+    public void setStatus(String status) {
+        this.status = status;
+    }
+
+    public Date getCompleteTime() {
+        return completeTime;
+    }
+
+    public void setCompleteTime(Date completeTime) {
+        this.completeTime = completeTime;
     }
 }

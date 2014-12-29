@@ -79,7 +79,7 @@ $(function() {
 	<!-- start of main -->
     <section id="m-main" class="span10" style="float:right">
 
-      <form id="xf-form" method="post" action="${scopePrefix}/form/form-startProcessInstance.do" class="xf-form">
+      <form id="xf-form" method="post" action="${scopePrefix}/form/form-startProcessInstance.do" class="xf-form" enctype="multipart/form-data">
 <input id="processDefinitionId" type="hidden" name="processDefinitionId" value="${formDto.processDefinitionId}">
 <input id="bpmProcessId" type="hidden" name="bpmProcessId" value="${bpmProcessId}">
 <input id="autoCompleteFirstTask" type="hidden" name="autoCompleteFirstTask" value="${formDto.autoCompleteFirstTask}">

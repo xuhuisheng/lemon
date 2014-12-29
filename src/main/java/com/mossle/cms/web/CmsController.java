@@ -22,8 +22,6 @@ import com.mossle.core.spring.MessageHelper;
 
 import com.mossle.ext.export.Exportor;
 import com.mossle.ext.export.TableModel;
-import com.mossle.ext.store.StoreConnector;
-import com.mossle.ext.store.StoreDTO;
 
 import org.springframework.stereotype.Controller;
 
@@ -45,7 +43,6 @@ public class CmsController {
     private BeanMapper beanMapper = new BeanMapper();
     private MessageHelper messageHelper;
     private RenderService renderService;
-    private StoreConnector storeConnector;
 
     @RequestMapping("index")
     public String index(Model model) {
@@ -100,10 +97,5 @@ public class CmsController {
     @Resource
     public void setRenderService(RenderService renderService) {
         this.renderService = renderService;
-    }
-
-    @Resource
-    public void setStoreConnector(StoreConnector storeConnector) {
-        this.storeConnector = storeConnector;
     }
 }

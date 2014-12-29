@@ -12,6 +12,9 @@ import javax.annotation.Resource;
 
 import javax.servlet.http.HttpServletResponse;
 
+import com.mossle.api.internal.StoreConnector;
+import com.mossle.api.internal.StoreDTO;
+
 import com.mossle.core.hibernate.PropertyFilter;
 import com.mossle.core.mapper.BeanMapper;
 import com.mossle.core.page.Page;
@@ -24,9 +27,7 @@ import com.mossle.ext.export.TableModel;
 import com.mossle.ext.mail.MailDTO;
 import com.mossle.ext.mail.MailHelper;
 import com.mossle.ext.mail.MailServerInfo;
-import com.mossle.ext.store.MultipartFileResource;
-import com.mossle.ext.store.StoreConnector;
-import com.mossle.ext.store.StoreDTO;
+import com.mossle.ext.store.MultipartFileDataSource;
 
 import com.mossle.internal.mail.domain.MailAttachment;
 import com.mossle.internal.mail.manager.MailAttachmentManager;
@@ -129,9 +130,8 @@ public class MailAttachmentController {
     @ResponseBody
     public String upload(@RequestParam("file") MultipartFile multipartFile)
             throws Exception {
-        StoreDTO storeDto = storeConnector.save("mailattachment",
-                new MultipartFileResource(multipartFile),
-                multipartFile.getOriginalFilename());
+        StoreDTO storeDto = storeConnector.saveStore("mailattachment",
+                new MultipartFileDataSource(multipartFile));
         MailAttachment mailAttachment = new MailAttachment();
         mailAttachment.setName(multipartFile.getOriginalFilename());
         mailAttachment.setPath(storeDto.getKey());
@@ -154,11 +154,11 @@ public class MailAttachmentController {
     public void download(@RequestParam("id") Long id,
             HttpServletResponse response) throws Exception {
         MailAttachment mailAttachment = mailAttachmentManager.get(id);
-        StoreDTO storeDto = storeConnector.get("mailattachment",
+        StoreDTO storeDto = storeConnector.getStore("mailattachment",
                 mailAttachment.getPath());
 
         ServletUtils.setFileDownloadHeader(response, mailAttachment.getName());
-        IoUtils.copyStream(storeDto.getResource().getInputStream(),
+        IoUtils.copyStream(storeDto.getDataSource().getInputStream(),
                 response.getOutputStream());
     }
 

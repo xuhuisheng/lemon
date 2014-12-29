@@ -8,7 +8,6 @@ import java.util.List;
 import javax.servlet.http.HttpServletRequest;
 
 import com.mossle.security.impl.SpringSecurityUserAuth;
-import com.mossle.security.spi.UserStatusDetails;
 
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;

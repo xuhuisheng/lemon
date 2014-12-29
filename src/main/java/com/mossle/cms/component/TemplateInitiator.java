@@ -48,9 +48,13 @@ public class TemplateInitiator implements ApplicationContextAware {
         for (Resource resource : resources) {
             File file = new File(dir, resource.getFilename());
             FileOutputStream fos = new FileOutputStream(file);
-            FileCopyUtils.copy(resource.getInputStream(), fos);
-            fos.flush();
-            fos.close();
+
+            try {
+                FileCopyUtils.copy(resource.getInputStream(), fos);
+                fos.flush();
+            } finally {
+                fos.close();
+            }
         }
     }
 

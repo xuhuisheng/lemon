@@ -5,6 +5,8 @@ import java.util.LinkedHashMap;
 import java.util.Map;
 
 public class Record {
+    private String name;
+    private String formTemplateCode;
     private String code;
     private String category;
     private int status;
@@ -12,6 +14,22 @@ public class Record {
     private Date createTime;
     private String userId;
     private Map<String, Prop> props = new LinkedHashMap<String, Prop>();
+
+    public String getName() {
+        return name;
+    }
+
+    public void setName(String name) {
+        this.name = name;
+    }
+
+    public String getFormTemplateCode() {
+        return formTemplateCode;
+    }
+
+    public void setFormTemplateCode(String formTemplateCode) {
+        this.formTemplateCode = formTemplateCode;
+    }
 
     public String getCode() {
         return code;

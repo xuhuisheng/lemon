@@ -11,18 +11,21 @@ import java.util.Map;
 
 import javax.annotation.Resource;
 
+import javax.servlet.http.HttpServletRequest;
 import javax.servlet.http.HttpServletResponse;
 
 import com.mossle.api.form.FormDTO;
 import com.mossle.api.humantask.HumanTaskConnector;
 import com.mossle.api.humantask.HumanTaskDTO;
 import com.mossle.api.humantask.HumanTaskDefinition;
+import com.mossle.api.internal.StoreConnector;
 import com.mossle.api.process.ProcessConnector;
 import com.mossle.api.process.ProcessDTO;
 
 import com.mossle.core.mapper.JsonMapper;
 import com.mossle.core.spring.MessageHelper;
 
+import com.mossle.ext.MultipartHandler;
 import com.mossle.ext.auth.CurrentUserHolder;
 
 import com.mossle.form.domain.FormTemplate;
@@ -33,6 +36,8 @@ import com.mossle.form.keyvalue.RecordBuilder;
 import com.mossle.form.manager.FormTemplateManager;
 import com.mossle.form.service.FormService;
 import com.mossle.form.support.FormParameter;
+import com.mossle.form.xform.Xform;
+import com.mossle.form.xform.XformBuilder;
 
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
@@ -48,6 +53,9 @@ import org.springframework.web.bind.annotation.ModelAttribute;
 import org.springframework.web.bind.annotation.RequestMapping;
 import org.springframework.web.bind.annotation.RequestParam;
 import org.springframework.web.bind.annotation.ResponseBody;
+import org.springframework.web.multipart.MultipartFile;
+import org.springframework.web.multipart.MultipartHttpServletRequest;
+import org.springframework.web.multipart.MultipartResolver;
 import org.springframework.web.servlet.mvc.support.RedirectAttributes;
 
 /**
@@ -71,6 +79,8 @@ public class FormController {
     private FormService formService;
     private ProcessConnector processConnector;
     private HumanTaskConnector humanTaskConnector;
+    private MultipartResolver multipartResolver;
+    private StoreConnector storeConnector;
 
     /**
      * 保存草稿.
@@ -111,8 +121,8 @@ public class FormController {
     /**
      * 根据taskId获得formDto.
      */
-    public FormDTO findTaskForm(String taskId) {
-        FormDTO formDto = humanTaskConnector.findTaskForm(taskId);
+    public FormDTO findTaskForm(HumanTaskDTO humanTaskDto) {
+        FormDTO formDto = humanTaskConnector.findTaskForm(humanTaskDto.getId());
 
         return formDto;
     }
@@ -255,6 +265,9 @@ public class FormController {
         }
     }
 
+    /**
+     * 确认发起流程.
+     */
     @RequestMapping("form-confirmStartProcess")
     public String confirmStartProcess(
             @RequestParam("bpmProcessId") Long bpmProcessId,
@@ -280,12 +293,33 @@ public class FormController {
      * 发起流程.
      */
     @RequestMapping("form-startProcessInstance")
-    public String startProcessInstance(
-            @RequestParam MultiValueMap<String, String> multiValueMap,
-            Model model) throws Exception {
-        FormParameter formParameter = new FormParameter(multiValueMap);
-        String businessKey = formService.saveDraft(
-                currentUserHolder.getUserId(), formParameter);
+    public String startProcessInstance(HttpServletRequest request, Model model)
+            throws Exception {
+        MultipartHandler multipartHandler = new MultipartHandler(
+                multipartResolver);
+        Record record = null;
+        String businessKey = null;
+        FormParameter formParameter = null;
+
+        try {
+            multipartHandler.handle(request);
+            logger.info("{}", multipartHandler.getMultiValueMap());
+            logger.info("{}", multipartHandler.getMultiFileMap());
+
+            formParameter = new FormParameter(
+                    multipartHandler.getMultiValueMap());
+            businessKey = formService.saveDraft(currentUserHolder.getUserId(),
+                    formParameter);
+            record = keyValue.findByCode(businessKey);
+
+            record = new RecordBuilder().build(record, multipartHandler,
+                    storeConnector);
+
+            keyValue.save(record);
+        } finally {
+            multipartHandler.clear();
+        }
+
         humanTaskConnector.configTaskDefinitions(businessKey,
                 formParameter.getList("taskDefinitionKeys"),
                 formParameter.getList("taskAssignees"));
@@ -297,34 +331,13 @@ public class FormController {
         // 获得form的信息
         FormDTO formDto = processConnector.findStartForm(processDefinitionId);
 
-        // 尝试根据表单里字段的类型，进行转换
-        Map<String, String> formTypeMap = new HashMap<String, String>();
-
-        if (formDto.isExists()) {
-            FormTemplate formTemplate = formTemplateManager.findUniqueBy(
-                    "code", formDto.getCode());
-
-            String content = formTemplate.getContent();
-            formTypeMap = this.fetchFormTypeMap(content);
-        }
-
-        Record record = keyValue.findByCode(businessKey);
-
-        Map<String, Object> processParameters = new HashMap<String, Object>();
-
-        // 如果有表单，就从数据库获取数据
-        for (Prop prop : record.getProps().values()) {
-            String key = prop.getCode();
-            String value = prop.getValue();
-            String formType = this.getFormType(formTypeMap, key);
-
-            if ("userpicker".equals(formType)) {
-                processParameters.put(key,
-                        new ArrayList(Arrays.asList(value.split(","))));
-            } else if (formType != null) {
-                processParameters.put(key, value);
-            }
-        }
+        FormTemplate formTemplate = formTemplateManager.findUniqueBy("code",
+                formDto.getCode());
+        Xform xform = new XformBuilder().setStoreConnector(storeConnector)
+                .setContent(formTemplate.getContent()).setRecord(record)
+                .build();
+        Map<String, Object> processParameters = xform.getMapData();
+        logger.info("processParameters : {}", processParameters);
 
         String processInstanceId = processConnector.startProcess(
                 currentUserHolder.getUserId(), businessKey,
@@ -341,10 +354,11 @@ public class FormController {
      * 显示任务表单.
      */
     @RequestMapping("form-viewTaskForm")
-    public String viewTaskForm(@RequestParam("taskId") String taskId,
+    public String viewTaskForm(@RequestParam("taskId") String humanTaskId,
             Model model, RedirectAttributes redirectAttributes)
             throws Exception {
-        HumanTaskDTO humanTaskDto = humanTaskConnector.findHumanTask(taskId);
+        HumanTaskDTO humanTaskDto = humanTaskConnector
+                .findHumanTask(humanTaskId);
 
         if (humanTaskDto == null) {
             messageHelper.addFlashMessage(redirectAttributes, "任务不存在");
@@ -352,7 +366,7 @@ public class FormController {
             return "redirect:/bpm/workspace-listPersonalTasks.do";
         }
 
-        FormDTO formDto = this.findTaskForm(taskId);
+        FormDTO formDto = this.findTaskForm(humanTaskDto);
 
         if (formDto.isRedirect()) {
             String redirectUrl = formDto.getUrl() + "?taskId="
@@ -367,7 +381,7 @@ public class FormController {
                 formDto.getCode());
         model.addAttribute("formTemplate", formTemplate);
 
-        if ((taskId != null) && (!"".equals(taskId))) {
+        if ((humanTaskId != null) && (!"".equals(humanTaskId))) {
             // 如果是任务草稿，直接通过processInstanceId获得record，更新数据
             // TODO: 分支肯定有问题
             String processInstanceId = humanTaskDto.getProcessInstanceId();
@@ -385,54 +399,49 @@ public class FormController {
      * 完成任务.
      */
     @RequestMapping("form-completeTask")
-    public String completeTask(
-            @RequestParam MultiValueMap<String, String> multiValueMap,
+    public String completeTask(HttpServletRequest request,
             RedirectAttributes redirectAttributes) throws Exception {
-        FormParameter formParameter = new FormParameter(multiValueMap);
-        String taskId = formParameter.getTaskId();
-        formService.saveDraft(
-                currentUserHolder.getUserId(), formParameter);
+        MultipartHandler multipartHandler = new MultipartHandler(
+                multipartResolver);
+        Record record = null;
+        String taskId = null;
+        FormParameter formParameter = null;
+        HumanTaskDTO humanTaskDto = null;
+        FormDTO formDto = null;
 
-        FormDTO formDto = humanTaskConnector.findTaskForm(taskId);
+        try {
+            multipartHandler.handle(request);
+            logger.info("{}", multipartHandler.getMultiValueMap());
+            logger.info("{}", multipartHandler.getMultiFileMap());
 
-        /*
-         * FormService formService = processEngine.getFormService(); String taskFormKey = formService.getTaskFormKey(
-         * task.getProcessDefinitionId(), task.getTaskDefinitionKey()); FormInfo formInfo = new FormInfo();
-         * formInfo.setTaskId(taskId); formInfo.setFormKey(taskFormKey);
-         */
+            formParameter = new FormParameter(
+                    multipartHandler.getMultiValueMap());
 
-        // 尝试根据表单里字段的类型，进行转换
-        Map<String, String> formTypeMap = new HashMap<String, String>();
+            taskId = formParameter.getTaskId();
+            formService.saveDraft(currentUserHolder.getUserId(), formParameter);
 
-        if (formDto.isExists()) {
-            FormTemplate formTemplate = formTemplateManager.findUniqueBy(
-                    "code", formDto.getCode());
+            formDto = humanTaskConnector.findTaskForm(taskId);
 
-            String content = formTemplate.getContent();
-            formTypeMap = this.fetchFormTypeMap(content);
+            humanTaskDto = humanTaskConnector.findHumanTask(taskId);
+
+            String processInstanceId = humanTaskDto.getProcessInstanceId();
+            record = keyValue.findByRef(processInstanceId);
+
+            record = new RecordBuilder().build(record, multipartHandler,
+                    storeConnector);
+
+            keyValue.save(record);
+        } finally {
+            multipartHandler.clear();
         }
 
-        HumanTaskDTO humanTaskDto = humanTaskConnector.findHumanTask(taskId);
-
-        String processInstanceId = humanTaskDto.getProcessInstanceId();
-        Record record = keyValue.findByRef(processInstanceId);
-        Map<String, Object> taskParameters = new HashMap<String, Object>();
-
-        if (record != null) {
-            // 如果有表单，就从数据库获取数据
-            for (Prop prop : record.getProps().values()) {
-                String key = prop.getCode();
-                String value = prop.getValue();
-                String formType = this.getFormType(formTypeMap, key);
-
-                if ("userpicker".equals(formType)) {
-                    taskParameters.put(key,
-                            new ArrayList(Arrays.asList(value.split(","))));
-                } else if (formType != null) {
-                    taskParameters.put(key, value);
-                }
-            }
-        }
+        FormTemplate formTemplate = formTemplateManager.findUniqueBy("code",
+                formDto.getCode());
+        Xform xform = new XformBuilder().setStoreConnector(storeConnector)
+                .setContent(formTemplate.getContent()).setRecord(record)
+                .build();
+        Map<String, Object> taskParameters = xform.getMapData();
+        logger.info("taskParameters : {}", taskParameters);
 
         try {
             humanTaskConnector.completeTask(taskId,
@@ -442,6 +451,10 @@ public class FormController {
             messageHelper.addFlashMessage(redirectAttributes, ex.getMessage());
 
             return "redirect:/bpm/workspace-listPersonalTasks.do";
+        }
+
+        if (record == null) {
+            record = new Record();
         }
 
         record = new RecordBuilder().build(record, STATUS_RUNNING,
@@ -529,5 +542,15 @@ public class FormController {
     @Resource
     public void setHumanTaskConnector(HumanTaskConnector humanTaskConnector) {
         this.humanTaskConnector = humanTaskConnector;
+    }
+
+    @Resource
+    public void setMultipartResolver(MultipartResolver multipartResolver) {
+        this.multipartResolver = multipartResolver;
+    }
+
+    @Resource
+    public void setStoreConnector(StoreConnector storeConnector) {
+        this.storeConnector = storeConnector;
     }
 }

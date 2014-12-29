@@ -10,6 +10,9 @@ import javax.annotation.Resource;
 
 import javax.servlet.http.HttpServletResponse;
 
+import com.mossle.api.internal.StoreConnector;
+import com.mossle.api.internal.StoreDTO;
+
 import com.mossle.cms.CmsConstants;
 import com.mossle.cms.domain.CmsArticle;
 import com.mossle.cms.domain.CmsAttachment;
@@ -28,9 +31,7 @@ import com.mossle.core.spring.MessageHelper;
 import com.mossle.ext.auth.CurrentUserHolder;
 import com.mossle.ext.export.Exportor;
 import com.mossle.ext.export.TableModel;
-import com.mossle.ext.store.MultipartFileResource;
-import com.mossle.ext.store.StoreConnector;
-import com.mossle.ext.store.StoreDTO;
+import com.mossle.ext.store.MultipartFileDataSource;
 
 import org.springframework.stereotype.Controller;
 
@@ -182,9 +183,8 @@ public class CmsArticleController {
     @ResponseBody
     public String uploadImage(@RequestParam("CKEditorFuncNum") String callback,
             @RequestParam("upload") MultipartFile attachment) throws Exception {
-        StoreDTO storeDto = storeConnector.save("cms/html/r/images",
-                new MultipartFileResource(attachment),
-                attachment.getOriginalFilename());
+        StoreDTO storeDto = storeConnector.saveStore("cms/html/r/images",
+                new MultipartFileDataSource(attachment));
 
         return "<script type='text/javascript'>"
                 + "window.parent.CKEDITOR.tools.callFunction(" + callback
@@ -218,9 +218,8 @@ public class CmsArticleController {
     @ResponseBody
     public String upload(@RequestParam("id") Long id,
             @RequestParam("files[]") MultipartFile attachment) throws Exception {
-        StoreDTO storeDto = storeConnector.save("cms/html/r/image",
-                new MultipartFileResource(attachment),
-                attachment.getOriginalFilename());
+        StoreDTO storeDto = storeConnector.saveStore("cms/html/r/image",
+                new MultipartFileDataSource(attachment));
         CmsArticle cmsArticle = cmsArticleManager.get(id);
         CmsAttachment cmsAttachment = new CmsAttachment();
         cmsAttachment.setCmsArticle(cmsArticle);

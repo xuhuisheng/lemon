@@ -18,9 +18,18 @@
         <property name="dataSource" ref="dataSource" />
 	</bean>
 
-	<bean id="databaseMigrator" class="com.mossle.ext.dbmigrate.DatabaseMigrator">
+	<bean id="databaseMigrator" class="com.mossle.ext.dbmigrate.DatabaseMigrator" depends-on="hsqldbServer">
 		<property name="dataSource" ref="dataSource"/>
 		<property name="enabled" value="${dbmigrate.enabled}"/>
 		<property name="clean" value="${dbmigrate.clean}"/>
+	</bean>
+
+	<bean id="hsqldbServer" class="com.mossle.ext.servlet.HsqldbServer">
+		<property name="enabled" value="${hsqldb.enabled}"/>
+		<property name="username" value="${hsqldb.username}"/>
+		<property name="password" value="${hsqldb.password}"/>
+		<property name="port" value="${hsqldb.port}"/>
+		<property name="path" value="${hsqldb.path}"/>
+		<property name="databaseName" value="${hsqldb.databaseName}"/>
 	</bean>
 </beans>

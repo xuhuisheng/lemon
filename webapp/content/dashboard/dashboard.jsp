@@ -116,7 +116,7 @@ $(function(){
 			  </tr>
 			</thead>
 			<tbody>
-			<c:forEach items="${personalTasks}" var="item">
+			<c:forEach items="${personalTasks.result}" var="item">
 			  <tr>
 				<td>${item.id}</td>
 				<td>${item.name}</td>
@@ -142,7 +142,7 @@ $(function(){
 		  <marquee direction="up" scrollamount="2" >
 		  <c:forEach items="${cmsArticles}" var="item">
 		    <div>
-			  <h4>${item.title}</h4>
+			  <h4><a href="${scopePrefix}/cms/cms-article-view.do?id=${item.id}">${item.title}</a></h4>
 			  <p>${item.content}</p>
 			</div>
 			</c:forEach>

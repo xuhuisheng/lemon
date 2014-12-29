@@ -11,6 +11,9 @@ import javax.annotation.Resource;
 
 import javax.servlet.http.HttpServletResponse;
 
+import com.mossle.api.internal.StoreConnector;
+import com.mossle.api.internal.StoreDTO;
+
 import com.mossle.core.hibernate.PropertyFilter;
 import com.mossle.core.mapper.BeanMapper;
 import com.mossle.core.page.Page;
@@ -21,8 +24,7 @@ import com.mossle.ext.export.TableModel;
 import com.mossle.ext.mail.MailDTO;
 import com.mossle.ext.mail.MailHelper;
 import com.mossle.ext.mail.MailServerInfo;
-import com.mossle.ext.store.StoreConnector;
-import com.mossle.ext.store.StoreDTO;
+import com.mossle.ext.store.DataSourceInputStreamSource;
 
 import com.mossle.internal.mail.domain.MailAttachment;
 import com.mossle.internal.mail.domain.MailConfig;
@@ -169,10 +171,10 @@ public class MailTemplateController {
         mailDto.setContent(mailTemplate.getContent());
 
         for (MailAttachment mailAttachment : mailTemplate.getMailAttachments()) {
-            mailDto.addAttachment(
-                    mailAttachment.getName(),
-                    storeConnector.get("mailattachment",
-                            mailAttachment.getPath()).getResource());
+            DataSourceInputStreamSource resource = new DataSourceInputStreamSource(
+                    storeConnector.getStore("mailattachment",
+                            mailAttachment.getPath()).getDataSource());
+            mailDto.addAttachment(mailAttachment.getName(), resource);
         }
 
         MailDTO resultMailDto = new MailHelper().send(mailDto, mailServerInfo);

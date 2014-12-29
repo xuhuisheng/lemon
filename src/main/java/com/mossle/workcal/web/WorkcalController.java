@@ -6,6 +6,7 @@ import java.text.DateFormat;
 import java.text.SimpleDateFormat;
 
 import java.util.ArrayList;
+import java.util.Calendar;
 import java.util.HashMap;
 import java.util.HashSet;
 import java.util.List;
@@ -48,10 +49,17 @@ public class WorkcalController {
     private JsonMapper jsonMapper = new JsonMapper();
 
     @RequestMapping("workcal-view")
-    public String list(Model model) {
+    public String list(
+            @RequestParam(value = "year", required = false) Integer year,
+            Model model) {
+        if (year == null) {
+            year = Calendar.getInstance().get(Calendar.YEAR);
+        }
+
         // 每周的工作规则
-        List<WorkcalRule> workcalRules = workcalRuleManager.findBy("status",
-                STATUS_WEEK);
+        List<WorkcalRule> workcalRules = workcalRuleManager
+                .find("from WorkcalRule where year=? and status=?", year,
+                        STATUS_WEEK);
         Set<Integer> weeks = new HashSet<Integer>();
 
         for (WorkcalRule workcalRule : workcalRules) {
@@ -68,7 +76,8 @@ public class WorkcalController {
 
         // 特殊日期
         List<WorkcalRule> extraWorkcalRules = workcalRuleManager.find(
-                "from WorkcalRule where status<>?", STATUS_WEEK);
+                "from WorkcalRule where year=? and status<>?", year,
+                STATUS_WEEK);
 
         List<Map<String, String>> holidays = new ArrayList<Map<String, String>>();
         List<Map<String, String>> workdays = new ArrayList<Map<String, String>>();

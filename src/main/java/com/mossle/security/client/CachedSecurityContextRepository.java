@@ -1,8 +1,5 @@
 package com.mossle.security.client;
 
-import javax.servlet.http.HttpServletRequest;
-import javax.servlet.http.HttpServletResponse;
-
 import com.mossle.api.userauth.UserAuthConnector;
 import com.mossle.api.userauth.UserAuthDTO;
 
