@@ -1,4 +1,4 @@
-package com.mossle.internal.workcal;
+package com.mossle.workcal;
 
 import com.mossle.ext.dbmigrate.ModuleSpecification;
 
