@@ -78,7 +78,6 @@ $(function() {
         <th class="sorting" name="name">名称</th>
         <th class="sorting" name="createTime">创建时间</th>
         <th class="sorting" name="assignee">负责人</th>
-        <th class="sorting" name="suspended">状态</th>
         <th width="170">&nbsp;</th>
       </tr>
     </thead>
@@ -90,10 +89,14 @@ $(function() {
 	    <td>${item.id}</td>
 	    <td>${item.name}</td>
 	    <td><fmt:formatDate value="${item.createTime}" pattern="yyyy-MM-dd HH:mm:ss" /></td>
-	    <td><tags:user userId="${item.assignee}"/></td>
-	    <td>${item.suspended ? '挂起' : '激活'}</td>
+	    <td>
+		  <tags:user userId="${item.assignee}"/>
+		  <c:if test="${not empty item.owner && item.assignee != item.owner}">
+		  <b>(原执行人:<tags:user userId="${item.owner}"/>)</b>
+		  </c:if>
+		</td>
         <td>
-          <a href="workspace-viewHistory.do?processInstanceId=${item.processInstanceId}">历史</a>
+          <a href="${scopePrefix}/bpm/workspace-viewHistory.do?processInstanceId=${item.processInstanceId}">历史</a>
         </td>
       </tr>
       </c:forEach>

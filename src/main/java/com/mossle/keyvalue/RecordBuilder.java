@@ -1,4 +1,4 @@
-package com.mossle.form.keyvalue;
+package com.mossle.keyvalue;
 
 import java.util.Collections;
 import java.util.Date;
@@ -10,7 +10,8 @@ import com.mossle.api.internal.StoreConnector;
 import com.mossle.ext.MultipartHandler;
 import com.mossle.ext.store.MultipartFileDataSource;
 
-import com.mossle.form.support.FormParameter;
+import org.slf4j.Logger;
+import org.slf4j.LoggerFactory;
 
 import org.springframework.web.multipart.MultipartFile;
 
@@ -18,6 +19,8 @@ import org.springframework.web.multipart.MultipartFile;
  * 构建Record.
  */
 public class RecordBuilder {
+    private static Logger logger = LoggerFactory.getLogger(RecordBuilder.class);
+
     /**
      * 把status和parameters更新到record里.
      */
@@ -112,6 +115,17 @@ public class RecordBuilder {
             }
 
             MultipartFile multipartFile = value.get(0);
+
+            if ((multipartFile.getName() == null)
+                    || "".equals(multipartFile.getName().trim())) {
+                continue;
+            }
+
+            if (multipartFile.getSize() == 0) {
+                logger.info("ignore empty file");
+
+                continue;
+            }
 
             Prop prop = new Prop();
             prop.setCode(key);

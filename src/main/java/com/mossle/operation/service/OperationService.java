@@ -1,4 +1,4 @@
-package com.mossle.form.service;
+package com.mossle.operation.service;
 
 import java.util.*;
 
@@ -6,16 +6,18 @@ import javax.annotation.Resource;
 
 import com.mossle.api.humantask.HumanTaskConnector;
 import com.mossle.api.humantask.HumanTaskDTO;
+import com.mossle.api.process.ProcessConnector;
+import com.mossle.api.process.ProcessDTO;
 
-import com.mossle.form.keyvalue.KeyValue;
-import com.mossle.form.keyvalue.Record;
-import com.mossle.form.keyvalue.RecordBuilder;
-import com.mossle.form.support.FormParameter;
+import com.mossle.keyvalue.FormParameter;
+import com.mossle.keyvalue.KeyValue;
+import com.mossle.keyvalue.Record;
+import com.mossle.keyvalue.RecordBuilder;
 
 import org.springframework.stereotype.Component;
 
 @Component
-public class FormService {
+public class OperationService {
     public static final String OPERATION_BUSINESS_KEY = "businessKey";
     public static final String OPERATION_TASK_ID = "taskId";
     public static final String OPERATION_BPM_PROCESS_ID = "bpmProcessId";
@@ -24,17 +26,18 @@ public class FormService {
     public static final int STATUS_RUNNING = 2;
     private KeyValue keyValue;
     private HumanTaskConnector humanTaskConnector;
+    private ProcessConnector processConnector;
 
     public String saveDraft(String userId, FormParameter formParameter) {
-        String taskId = formParameter.getTaskId();
+        String humanTaskId = formParameter.getHumanTaskId();
         String businessKey = formParameter.getBusinessKey();
         String bpmProcessId = formParameter.getBpmProcessId();
 
-        if (this.notEmpty(taskId)) {
+        if (this.notEmpty(humanTaskId)) {
             // 如果是任务草稿，直接通过processInstanceId获得record，更新数据
             // TODO: 分支肯定有问题
             HumanTaskDTO humanTaskDto = humanTaskConnector
-                    .findHumanTask(taskId);
+                    .findHumanTask(humanTaskId);
 
             if (humanTaskDto == null) {
                 throw new IllegalStateException("任务不存在");
@@ -60,6 +63,8 @@ public class FormService {
             // 如果是第一次保存草稿，肯定是流程草稿，先初始化record，再保存数据
             Record record = new RecordBuilder().build(bpmProcessId,
                     STATUS_DRAFT_PROCESS, formParameter, userId);
+            ProcessDTO processDto = processConnector.findProcess(bpmProcessId);
+            record.setName(processDto.getProcessDefinitionName());
             keyValue.save(record);
             businessKey = record.getCode();
         }
@@ -117,5 +122,10 @@ public class FormService {
     @Resource
     public void setHumanTaskConnector(HumanTaskConnector humanTaskConnector) {
         this.humanTaskConnector = humanTaskConnector;
+    }
+
+    @Resource
+    public void setProcessConnector(ProcessConnector processConnector) {
+        this.processConnector = processConnector;
     }
 }

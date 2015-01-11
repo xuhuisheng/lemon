@@ -98,13 +98,13 @@ $(function() {
 		</td>
 	    <td>${item.status}</td>
         <td>
-          <a href="${scopePrefix}/form/form-viewTaskForm.do?taskId=${item.id}">完成</a>
+          <a href="${scopePrefix}/operation/task-operation-viewTaskForm.do?humanTaskId=${item.id}">处理</a>
 		  <%--
 		  <c:if test="${delegationState != 'PENDING'}">
           <a href="${scopePrefix}/bpm/workspace-prepareDelegateTask.do?taskId=${item.taskId}">代理</a>
 		  </c:if>
 		  <c:if test="${delegationState == 'PENDING'}">
-          <a href="${scopePrefix}/bpm/workspace-resolveTask.do?taskId=${item.taskId}">处理</a>
+          <a href="${scopePrefix}/bpm/workspace-resolveTask.do?taskId=${item.taskId}">还回</a>
 		  </c:if>
           <a href="${scopePrefix}/bpm/workspace-rollback.do?taskId=${item.taskId}">回退</a>
 		  --%>

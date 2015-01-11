@@ -1,4 +1,4 @@
-package com.mossle.form.xform;
+package com.mossle.xform;
 
 public class XformField {
     private String name;

@@ -122,7 +122,7 @@ $(function(){
 				<td>${item.name}</td>
 				<td><fmt:formatDate value="${item.createTime}" pattern="yyyy-MM-dd HH:mm:ss" /></td>
 				<td>
-				  <a href="${scopePrefix}/form/form-viewTaskForm.do?taskId=${item.id}" class="btn btn-small btn-primary">处理</a>
+				  <a href="${scopePrefix}/operation/task-operation-viewTaskForm.do?humanTaskId=${item.id}" class="btn btn-small btn-primary">处理</a>
 				</td>
 			  </tr>
 			  </c:forEach>
@@ -235,7 +235,7 @@ $(function(){
 			  <tr>
 				<td>${item.name}</td>
 				<td>
-				  <a href="${scopePrefix}/form/form-viewStartForm.do?bpmProcessId=${item.id}" class="btn btn-small btn-primary">发起</a>
+				  <a href="${scopePrefix}/operation/process-operation-viewStartForm.do?bpmProcessId=${item.id}" class="btn btn-small btn-primary">发起</a>
 				</td>
 			  </tr>
 			  </c:forEach>

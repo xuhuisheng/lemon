@@ -97,9 +97,9 @@ $(function() {
       <tr>
         <th width="10" class="m-table-check"><input type="checkbox" name="checkAll" onchange="toggleSelectedItems(this.checked)"></th>
         <th class="sorting" name="code">编号</th>
-        <th class="sorting" name="category">分类</th>
+        <th class="sorting" name="name">名称</th>
+        <th class="sorting" name="name">创建时间</th>
         <th class="sorting" name="status">状态</th>
-        <th class="sorting" name="ref">引用</th>
         <th width="80">&nbsp;</th>
       </tr>
     </thead>
@@ -109,11 +109,11 @@ $(function() {
       <tr>
         <td><input type="checkbox" class="selectedItem" name="selectedItem" value="${item.code}"></td>
         <td>${item.code}</td>
-        <td>${item.category}</td>
+        <td>${item.name}</td>
+        <td><fmt:formatDate value="${item.createTime}" type="both"/></td>
         <td>${item.status == 0 ? '流程草稿' : '任务草稿'}</td>
-        <td>${item.ref}</td>
         <td>
-          <a href="form-viewStartForm.do?businessKey=${item.code}&bpmProcessId=${item.category}">发起流程</a>
+          <a href="process-operation-viewStartForm.do?businessKey=${item.code}&bpmProcessId=${item.category}">发起流程</a>
         </td>
       </tr>
       </c:forEach>

@@ -1,4 +1,4 @@
-package com.mossle.form.keyvalue;
+package com.mossle.keyvalue;
 
 import java.util.ArrayList;
 import java.util.Date;

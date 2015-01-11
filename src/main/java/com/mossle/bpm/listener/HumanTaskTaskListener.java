@@ -30,10 +30,10 @@ import org.slf4j.LoggerFactory;
 
 import org.springframework.jdbc.core.JdbcTemplate;
 
-public class HumanTaskListener extends DefaultTaskListener {
+public class HumanTaskTaskListener extends DefaultTaskListener {
     public static final int TYPE_COPY = 3;
     private static Logger logger = LoggerFactory
-            .getLogger(HumanTaskListener.class);
+            .getLogger(HumanTaskTaskListener.class);
     private HumanTaskConnector humanTaskConnector;
     private BpmConfUserManager bpmConfUserManager;
     private BeanMapper beanMapper = new BeanMapper();
@@ -64,11 +64,11 @@ public class HumanTaskListener extends DefaultTaskListener {
         humanTaskDto.setCode(delegateTask.getTaskDefinitionKey());
         humanTaskDto.setAssignee(delegateTask.getAssignee());
         humanTaskDto.setOwner(delegateTask.getOwner());
-        humanTaskDto.setDelegateState("none");
+        humanTaskDto.setDelegateStatus("none");
         humanTaskDto.setPriority(delegateTask.getPriority());
         humanTaskDto.setCreateTime(new Date());
         humanTaskDto.setDuration(delegateTask.getDueDate() + "");
-        humanTaskDto.setSuspendState("none");
+        humanTaskDto.setSuspendStatus("none");
         humanTaskDto.setCategory(delegateTask.getCategory());
         humanTaskDto.setForm(delegateTask.getFormKey());
         humanTaskDto.setTaskId(delegateTask.getId());

@@ -117,7 +117,7 @@ $(function() {
         <th class="sorting" name="status">状态</th>
         <th class="sorting" name="userId">作者</th>
         <th class="sorting" name="createTime">创建时间</th>
-        <th width="80">&nbsp;</th>
+        <th width="100">&nbsp;</th>
       </tr>
     </thead>
 

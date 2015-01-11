@@ -1,4 +1,4 @@
-package com.mossle.form.xform;
+package com.mossle.xform;
 
 import java.util.ArrayList;
 import java.util.Arrays;
@@ -38,8 +38,17 @@ public class Xform {
         for (Map.Entry<String, XformField> entry : fieldMap.entrySet()) {
             XformField xformField = entry.getValue();
 
+            if (xformField.getName() == null) {
+                continue;
+            }
+
             if ("fileupload".equals(xformField.getType())) {
+                if (xformField.getValue() == null) {
+                    continue;
+                }
+
                 Map<String, Object> data = new HashMap<String, Object>();
+
                 data.put("key", xformField.getValue());
                 data.put("label", xformField.getLabel());
                 map.put(xformField.getName(), data);

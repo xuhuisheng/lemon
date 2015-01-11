@@ -15,6 +15,8 @@ import com.mossle.api.humantask.HumanTaskDefinition;
 import com.mossle.bpm.cmd.CompleteTaskWithCommentCmd;
 import com.mossle.bpm.cmd.DeleteTaskWithCommentCmd;
 import com.mossle.bpm.cmd.FindTaskDefinitionsCmd;
+import com.mossle.bpm.cmd.RollbackTaskCmd;
+import com.mossle.bpm.cmd.WithdrawTaskCmd;
 import com.mossle.bpm.persistence.domain.BpmConfForm;
 import com.mossle.bpm.persistence.domain.BpmConfOperation;
 import com.mossle.bpm.persistence.domain.BpmTaskConf;
@@ -36,6 +38,7 @@ import com.mossle.humantask.persistence.manager.HtParticipantManager;
 import org.activiti.engine.IdentityService;
 import org.activiti.engine.ProcessEngine;
 import org.activiti.engine.TaskService;
+import org.activiti.engine.impl.interceptor.Command;
 import org.activiti.engine.impl.task.TaskDefinition;
 import org.activiti.engine.task.DelegationState;
 import org.activiti.engine.task.Task;
@@ -152,6 +155,8 @@ public class HumanTaskConnectorImpl implements HumanTaskConnector {
         if (Integer.valueOf(1).equals(formTemplate.getType())) {
             formDto.setRedirect(true);
             formDto.setUrl(formTemplate.getContent());
+        } else {
+            formDto.setContent(formTemplate.getContent());
         }
 
         return formDto;
@@ -237,7 +242,15 @@ public class HumanTaskConnectorImpl implements HumanTaskConnector {
         IdentityService identityService = processEngine.getIdentityService();
         identityService.setAuthenticatedUserId(userId);
 
-        // logger.info("{}", task.getDelegationState());
+        logger.info("{}", humanTaskDto.getDelegateStatus());
+
+        // 处理协办任务
+        if ("pending".equals(humanTaskDto.getDelegateStatus())) {
+            humanTaskDto.setAssignee(humanTaskDto.getOwner());
+            this.saveHumanTask(humanTaskDto);
+
+            return;
+        }
 
         // 处理委办任务
         if (DelegationState.PENDING == task.getDelegationState()) {
@@ -300,6 +313,66 @@ public class HumanTaskConnectorImpl implements HumanTaskConnector {
         return page;
     }
 
+    /**
+     * 回退到上一步.
+     */
+    public void rollbackPrevious(String humanTaskId) {
+        HumanTaskDTO humanTaskDto = findHumanTask(humanTaskId);
+
+        if (humanTaskDto == null) {
+            throw new IllegalStateException("任务不存在");
+        }
+
+        Command<Integer> cmd = new RollbackTaskCmd(humanTaskDto.getTaskId());
+
+        processEngine.getManagementService().executeCommand(cmd);
+    }
+
+    /**
+     * 撤销.
+     */
+    public void withdraw(String humanTaskId) {
+        HumanTaskDTO humanTaskDto = findHumanTask(humanTaskId);
+
+        if (humanTaskDto == null) {
+            throw new IllegalStateException("任务不存在");
+        }
+
+        Command<Integer> cmd = new WithdrawTaskCmd(humanTaskDto.getTaskId());
+
+        processEngine.getManagementService().executeCommand(cmd);
+    }
+
+    /**
+     * 转办.
+     */
+    public void transfer(String humanTaskId, String userId) {
+        HumanTaskDTO humanTaskDto = this.findHumanTask(humanTaskId);
+        humanTaskDto.setOwner(humanTaskDto.getAssignee());
+        humanTaskDto.setAssignee(userId);
+        this.saveHumanTask(humanTaskDto);
+        processEngine.getTaskService().setAssignee(humanTaskDto.getTaskId(),
+                humanTaskDto.getAssignee());
+        processEngine.getTaskService().setOwner(humanTaskDto.getTaskId(),
+                humanTaskDto.getOwner());
+    }
+
+    /**
+     * 协办.
+     */
+    public void delegateTask(String humanTaskId, String userId) {
+        HumanTaskDTO humanTaskDto = this.findHumanTask(humanTaskId);
+        humanTaskDto.setOwner(humanTaskDto.getAssignee());
+        humanTaskDto.setAssignee(userId);
+        humanTaskDto.setDelegateStatus("pending");
+        this.saveHumanTask(humanTaskDto);
+        processEngine.getTaskService().setAssignee(humanTaskDto.getTaskId(),
+                humanTaskDto.getAssignee());
+        processEngine.getTaskService().setOwner(humanTaskDto.getTaskId(),
+                humanTaskDto.getOwner());
+    }
+
+    // ~ ==================================================
     public List<HumanTaskDTO> convertHumanTaskDtos(
             List<HtHumantask> htHumantasks) {
         List<HumanTaskDTO> humanTaskDtos = new ArrayList<HumanTaskDTO>();
@@ -318,6 +391,7 @@ public class HumanTaskConnectorImpl implements HumanTaskConnector {
         return humanTaskDto;
     }
 
+    // ~ ==================================================
     @Resource
     public void setProcessEngine(ProcessEngine processEngine) {
         this.processEngine = processEngine;

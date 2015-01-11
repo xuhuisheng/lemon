@@ -276,11 +276,11 @@ public class WithdrawTaskCmd implements Command<Integer> {
         humanTaskDto.setCode(delegateTask.getTaskDefinitionKey());
         humanTaskDto.setAssignee(delegateTask.getAssignee());
         humanTaskDto.setOwner(delegateTask.getOwner());
-        humanTaskDto.setDelegateState("none");
+        humanTaskDto.setDelegateStatus("none");
         humanTaskDto.setPriority(delegateTask.getPriority());
         humanTaskDto.setCreateTime(new Date());
         humanTaskDto.setDuration(delegateTask.getDueDate() + "");
-        humanTaskDto.setSuspendState("none");
+        humanTaskDto.setSuspendStatus("none");
         humanTaskDto.setCategory(delegateTask.getCategory());
         humanTaskDto.setForm(delegateTask.getFormKey());
         humanTaskDto.setTaskId(delegateTask.getId());

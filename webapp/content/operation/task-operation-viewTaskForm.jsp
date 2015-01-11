@@ -11,32 +11,22 @@
     <%@include file="/common/s.jsp"%>
 	<link href="${scopePrefix}/widgets/xform/styles/xform.css" rel="stylesheet">
     <script type="text/javascript" src="${scopePrefix}/widgets/xform/xform-packed.js"></script>
+
+	<style type="text/css">
+.xf-handler {
+	cursor: auto;
+}
+	</style>
+
 	<script type="text/javascript">
 document.onmousedown = function(e) {};
 document.onmousemove = function(e) {};
 document.onmouseup = function(e) {};
 document.ondblclick = function(e) {};
 
-var buttons = [];
-<c:forEach items="${formDto.buttons}" var="item">
-buttons.push('${item}');
-</c:forEach>
-
-if (buttons.length == 0) {
-	buttons = ['保存草稿', '完成任务'];
-}
-
-var html = '';
-
-for (var i = 0; i < buttons.length; i++) {
-	html += '<button type="button">' + buttons[i] + '</button>';
-}
-
 var xform;
 
 $(function() {
-	$('#xf-form-button').html(html);
-
 	xform = new xf.Xform('xf-form-table');
 	xform.render();
 
@@ -44,7 +34,7 @@ $(function() {
 		xform.doImport($('#__gef_content__').val());
 	}
 
-	xform.setValue(${json});
+	xform.setValue(${xform.jsonData});
 
 	$("#demoForm").validate({
         submitHandler: function(form) {
@@ -57,9 +47,9 @@ $(function() {
 
 	$(document).delegate('#xf-form-button button', 'click', function(e) {
 		switch($(this).html()) {
-			case '保存草稿':
-				$('#xf-form').attr('action', 'form-saveDraft.do');
-				$('#xf-form').submit();
+			case 'saveDraft':
+				$('#xform').attr('action', 'form-saveDraft.do');
+				$('#xform').submit();
 				break;
 			case '完成任务':
 				$('#xf-form').attr('action', 'form-completeTask.do');
@@ -104,6 +94,13 @@ $(function() {
 	});
 })
     </script>
+
+	<script type="text/javascript" src="${scopePrefix}/widgets/operation/TaskOperation.js"></script>
+	<script type="text/javascript">
+ROOT_URL = '${scopePrefix}';
+var taskOperation = new TaskOperation();
+	</script>
+
   </head>
 
   <body>
@@ -114,6 +111,12 @@ $(function() {
 
 	<!-- start of main -->
     <section id="m-main" class="span10" style="float:right">
+
+      <div id="xformToolbar">
+	    <c:forEach var="item" items="${buttons}">
+		<button id="${item.name}" type="button" class="btn" onclick="taskOperation.${item.name}()">${item.label}</button>
+		</c:forEach>
+      </div>
 
 		<div id="previousStep">
 		</div>
@@ -142,27 +145,23 @@ $(function() {
 		  });
 		  </script>
 
-	  <form id="xf-form" method="post" action="${scopePrefix}/form/form-completeTask.do" class="xf-form" enctype="multipart/form-data">
-		<input id="taskId" type="hidden" name="taskId" value="${formDto.taskId}">
-		<input id="businessKey" type="hidden" name="businessKey" value="${dynamicModel.id}">
+	  <form id="xform" method="post" action="${scopePrefix}/operation/task-operation-completeTask.do" class="xf-form" enctype="multipart/form-data">
+		<input id="humanTaskId" type="hidden" name="humanTaskId" value="${humanTaskId}">
 		<div id="xf-form-table"></div>
-		<br>
-		<div id="xf-form-button" style="text-align:center;">
-		</div>
 	  </form>
     </section>
 	<!-- end of main -->
 
     <form id="f" action="form-template-save.do" method="post" style="display:none;">
-	  <textarea id="__gef_content__" name="content">${formTemplate.content}</textarea>
+	  <textarea id="__gef_content__" name="content">${xform.content}</textarea>
 	</form>
 
 	<div id="modal" class="modal hide fade">
 	  <div class="modal-body">
 	  <form>
-	    <input type="hidden" name="taskId" value="${formDto.taskId}"/>
+	    <input type="hidden" name="humanTaskId" value="${humanTaskId}"/>
         <div class="input-append userPicker">
-		  <input type="hidden" name="attorney" class="input-medium" value="">
+		  <input type="hidden" name="userId" class="input-medium" value="">
 		  <input type="text" style="width: 175px;" value="">
 		  <span class="add-on"><i class="icon-user"></i></span>
         </div>

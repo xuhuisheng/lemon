@@ -69,7 +69,7 @@ $(function() {
 	<!-- start of main -->
     <section id="m-main" class="span10" style="float:right">
 
-      <form id="xf-form" method="post" action="${scopePrefix}/form/form-template-test.do" class="xf-form" enctype="multipart/form-data">
+      <form id="xf-form" method="post" action="${scopePrefix}/operation/form-operation-test.do" class="xf-form" enctype="multipart/form-data">
         <input id="ref" type="hidden" name="ref" value="${record.ref}">
 		<div id="xf-form-table"></div>
 		<br>

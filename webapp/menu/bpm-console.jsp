@@ -13,7 +13,6 @@
             <ul class="accordion-inner nav nav-list">
 			  <li><a href="${scopePrefix}/bpm/bpm-category-list.do"><i class="icon-user"></i>流程分类</a></li>
 			  <li><a href="${scopePrefix}/bpm/bpm-process-list.do"><i class="icon-user"></i>流程配置</a></li>
-			  <li><a href="${scopePrefix}/bpm/bpm-mail-template-list.do"><i class="icon-user"></i>邮件模板</a></li>
             </ul>
           </div>
 		</div>
@@ -40,14 +39,14 @@
           <div class="accordion-heading">
             <a class="accordion-toggle" data-toggle="collapse" data-parent="#m-sidebar" href="#collapse-history">
               <i class="icon-user"></i>
-              <span class="title">历史</span>
+              <span class="title">流程历史</span>
             </a>
           </div>
           <div id="collapse-history" class="accordion-body collapse ${currentMenu == 'history' ? 'in' : ''}">
             <ul class="accordion-inner nav nav-list">
 			  <li><a href="${scopePrefix}/bpm/console-listHistoricProcessInstances.do"><i class="icon-user"></i>流程实例</a></li>
-			  <li><a href="${scopePrefix}/bpm/console-listHistoricActivityInstances.do"><i class="icon-user"></i>节点</a></li>
-			  <li><a href="${scopePrefix}/bpm/console-listHistoricTasks.do"><i class="icon-user"></i>任务</a></li>
+			  <li><a href="${scopePrefix}/bpm/console-listHistoricActivityInstances.do"><i class="icon-user"></i>流程节点</a></li>
+			  <li><a href="${scopePrefix}/bpm/console-listHistoricTasks.do"><i class="icon-user"></i>流程任务</a></li>
             </ul>
           </div>
         </div>

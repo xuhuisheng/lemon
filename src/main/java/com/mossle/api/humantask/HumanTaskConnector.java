@@ -30,4 +30,12 @@ public interface HumanTaskConnector {
     Page findPersonalTasks(String userId, int pageNo, int pageSize);
 
     Page findFinishedTasks(String userId, int pageNo, int pageSize);
+
+    void rollbackPrevious(String humanTaskId);
+
+    void withdraw(String humanTaskId);
+
+    void transfer(String humanTaskId, String userId);
+
+    void delegateTask(String humanTaskId, String userId);
 }

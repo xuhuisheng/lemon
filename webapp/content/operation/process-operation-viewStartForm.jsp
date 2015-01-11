@@ -15,6 +15,12 @@
     <link type="text/css" rel="stylesheet" href="../widgets/userpicker/userpicker.css">
     <script type="text/javascript" src="../widgets/userpicker/userpicker.js"></script>
 
+	<style type="text/css">
+.xf-handler {
+	cursor: auto;
+}
+	</style>
+
 	<script type="text/javascript">
 document.onmousedown = function(e) {};
 document.onmousemove = function(e) {};
@@ -31,8 +37,8 @@ $(function() {
 		xform.doImport($('#__gef_content__').val());
 	}
 
-	if ('${json}' != '') {
-		xform.setValue(${json});
+	if ('${xform.jsonData}' != '') {
+		xform.setValue(${xform.jsonData});
 	}
 
 	$("#demoForm").validate({
@@ -43,16 +49,6 @@ $(function() {
         },
         errorClass: 'validate-error'
     });
-
-	$(document).delegate('#button0', 'click', function(e) {
-		$('#xf-form').attr('action', 'form-saveDraft.do');
-		$('#xf-form').submit();
-	});
-
-	$(document).delegate('#button1', 'click', function(e) {
-		$('#xf-form').attr('action', 'form-${nextStep}.do');
-		$('#xf-form').submit();
-	});
 
 	createUserPicker({
 		multiple: true,
@@ -68,6 +64,13 @@ $(function() {
 	}, 500);
 })
     </script>
+
+	<script type="text/javascript" src="${scopePrefix}/widgets/operation/TaskOperation.js"></script>
+	<script type="text/javascript">
+ROOT_URL = '${scopePrefix}';
+var taskOperation = new TaskOperation();
+	</script>
+
   </head>
 
   <body>
@@ -79,7 +82,13 @@ $(function() {
 	<!-- start of main -->
     <section id="m-main" class="span10" style="float:right">
 
-      <form id="xf-form" method="post" action="${scopePrefix}/form/form-startProcessInstance.do" class="xf-form" enctype="multipart/form-data">
+      <div id="xformToolbar">
+	    <c:forEach var="item" items="${buttons}">
+		<button id="${item.name}" type="button" class="btn" onclick="taskOperation.${item.name}()">${item.label}</button>
+		</c:forEach>
+      </div>
+
+      <form id="xform" method="post" action="${scopePrefix}/operation/process-operation-startProcessInstance.do" class="xf-form" enctype="multipart/form-data">
 <input id="processDefinitionId" type="hidden" name="processDefinitionId" value="${formDto.processDefinitionId}">
 <input id="bpmProcessId" type="hidden" name="bpmProcessId" value="${bpmProcessId}">
 <input id="autoCompleteFirstTask" type="hidden" name="autoCompleteFirstTask" value="${formDto.autoCompleteFirstTask}">
@@ -102,17 +111,13 @@ $(function() {
 			  }
 		  });
 		  </script>
-		<div style="text-align:center;">
-		  <button id="button0" type="button">保存草稿</button>
-		  <button id="button1" type="button">发起流程</button>
-		</div>
 	  </form>
 
     </section>
 	<!-- end of main -->
 
     <form id="f" action="form-template-save.do" method="post" style="display:none;">
-	  <textarea id="__gef_content__" name="content">${formTemplate.content}</textarea>
+	  <textarea id="__gef_content__" name="content">${xform.content}</textarea>
 	</form>
 
   </body>

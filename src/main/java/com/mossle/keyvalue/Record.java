@@ -1,4 +1,4 @@
-package com.mossle.form.keyvalue;
+package com.mossle.keyvalue;
 
 import java.util.Date;
 import java.util.LinkedHashMap;

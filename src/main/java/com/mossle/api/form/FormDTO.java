@@ -7,6 +7,7 @@ public class FormDTO {
     private String id;
     private String code;
     private String name;
+    private String content;
     private boolean redirect;
     private String url;
     private String processDefinitionId;
@@ -37,6 +38,14 @@ public class FormDTO {
 
     public void setName(String name) {
         this.name = name;
+    }
+
+    public String getContent() {
+        return content;
+    }
+
+    public void setContent(String content) {
+        this.content = content;
     }
 
     public boolean isRedirect() {

@@ -1,4 +1,4 @@
-package com.mossle.form.keyvalue;
+package com.mossle.keyvalue;
 
 public class Prop {
     private String code;

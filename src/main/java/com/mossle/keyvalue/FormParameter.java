@@ -1,4 +1,4 @@
-package com.mossle.form.support;
+package com.mossle.keyvalue;
 
 import java.util.HashMap;
 import java.util.List;

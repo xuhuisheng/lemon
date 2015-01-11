@@ -1,4 +1,4 @@
-package com.mossle.form.xform;
+package com.mossle.xform;
 
 import java.io.IOException;
 
@@ -11,8 +11,8 @@ import com.mossle.api.internal.StoreDTO;
 
 import com.mossle.core.mapper.JsonMapper;
 
-import com.mossle.form.keyvalue.Prop;
-import com.mossle.form.keyvalue.Record;
+import com.mossle.keyvalue.Prop;
+import com.mossle.keyvalue.Record;
 
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
