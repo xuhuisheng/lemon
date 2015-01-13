@@ -146,6 +146,11 @@ public class TaskOperationController {
             buttons.add(buttonHelper.findButton(button));
         }
 
+        if (buttons.isEmpty()) {
+            buttons.add(buttonHelper.findButton("saveDraft"));
+            buttons.add(buttonHelper.findButton("completeTask"));
+        }
+
         model.addAttribute("buttons", buttons);
 
         return "operation/task-operation-viewTaskForm";

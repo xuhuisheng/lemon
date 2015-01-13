@@ -10,6 +10,12 @@ import com.mossle.core.page.Page;
 public interface HumanTaskConnector {
     HumanTaskDTO createHumanTask();
 
+    void removeHumanTask(String humanTaskId);
+
+    void removeHumanTaskByTaskId(String taskId);
+
+    void removeHumanTaskByProcessInstanceId(String processInstanceId);
+
     HumanTaskDTO saveHumanTask(HumanTaskDTO humanTaskDto);
 
     HumanTaskDTO findHumanTaskByTaskId(String taskId);

@@ -65,6 +65,28 @@ public class HumanTaskConnectorImpl implements HumanTaskConnector {
         return new HumanTaskDTO();
     }
 
+    public void removeHumanTask(String humanTaskId) {
+        HtHumantask htHumantask = htHumantaskManager.get(Long
+                .parseLong(humanTaskId));
+        htHumantaskManager.remove(htHumantask);
+    }
+
+    public void removeHumanTaskByTaskId(String taskId) {
+        HtHumantask htHumantask = htHumantaskManager.findUniqueBy("taskId",
+                taskId);
+        htHumantaskManager.remove(htHumantask);
+    }
+
+    public void removeHumanTaskByProcessInstanceId(String processInstanceId) {
+        String hql = "from HtHumantask where status='active' and processInstanceId=?";
+        List<HtHumantask> htHumantasks = htHumantaskManager.find(hql,
+                processInstanceId);
+
+        for (HtHumantask htHumantask : htHumantasks) {
+            htHumantaskManager.remove(htHumantask);
+        }
+    }
+
     public HumanTaskDTO saveHumanTask(HumanTaskDTO humanTaskDto) {
         Long id = null;
 

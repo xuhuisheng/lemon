@@ -9,6 +9,9 @@ import java.util.Date;
 import java.util.List;
 import java.util.Map;
 
+import com.mossle.api.humantask.HumanTaskConnector;
+import com.mossle.api.humantask.HumanTaskDTO;
+
 import com.mossle.bpm.graph.ActivitiHistoryGraphBuilder;
 import com.mossle.bpm.graph.Edge;
 import com.mossle.bpm.graph.Graph;
@@ -17,6 +20,7 @@ import com.mossle.bpm.graph.Node;
 import com.mossle.core.spring.ApplicationContextHelper;
 
 import org.activiti.engine.ActivitiException;
+import org.activiti.engine.delegate.DelegateTask;
 import org.activiti.engine.history.HistoricActivityInstance;
 import org.activiti.engine.impl.HistoricActivityInstanceQueryImpl;
 import org.activiti.engine.impl.Page;
@@ -297,6 +301,9 @@ public class RollbackTaskCmd implements Command<Integer> {
          */
     }
 
+    /**
+     * 根据任务历史，创建待办任务.
+     */
     public void processHistoryTask(
             HistoricTaskInstanceEntity historicTaskInstanceEntity,
             HistoricActivityInstanceEntity historicActivityInstanceEntity) {
@@ -344,6 +351,13 @@ public class RollbackTaskCmd implements Command<Integer> {
         // 更新ACT_HI_ACTIVITY里的assignee字段
         Context.getCommandContext().getHistoryManager()
                 .recordTaskAssignment(task);
+
+        try {
+            // humanTask
+            this.createHumanTask(task);
+        } catch (Exception ex) {
+            logger.error(ex.getMessage(), ex);
+        }
     }
 
     public ActivityImpl getActivity(
@@ -361,7 +375,7 @@ public class RollbackTaskCmd implements Command<Integer> {
      */
     public void deleteActiveTask() {
         TaskEntity taskEntity = Context.getCommandContext()
-                .getTaskEntityManager().findTaskById(taskId);
+                .getTaskEntityManager().findTaskById(this.taskId);
         Context.getCommandContext().getTaskEntityManager()
                 .deleteTask(taskEntity, "回退", false);
 
@@ -380,8 +394,20 @@ public class RollbackTaskCmd implements Command<Integer> {
                     .update("update ACT_HI_ACTINST set end_time_=?,duration_=? where id_=?",
                             now, duration, map.get("id_"));
         }
+
+        // 处理humanTask
+        HumanTaskConnector humanTaskConnector = ApplicationContextHelper
+                .getBean(HumanTaskConnector.class);
+        HumanTaskDTO humanTaskDto = humanTaskConnector
+                .findHumanTaskByTaskId(this.taskId);
+        humanTaskDto.setCompleteTime(new Date());
+        humanTaskDto.setStatus("rollback");
+        humanTaskConnector.saveHumanTask(humanTaskDto);
     }
 
+    /**
+     * 判断跳过节点.
+     */
     public boolean isSkipActivity(String historyActivityId) {
         JdbcTemplate jdbcTemplate = ApplicationContextHelper
                 .getBean(JdbcTemplate.class);
@@ -395,5 +421,34 @@ public class RollbackTaskCmd implements Command<Integer> {
         String deleteReason = historicTaskInstanceEntity.getDeleteReason();
 
         return "跳过".equals(deleteReason);
+    }
+
+    public HumanTaskDTO createHumanTask(DelegateTask delegateTask)
+            throws Exception {
+        HumanTaskConnector humanTaskConnector = ApplicationContextHelper
+                .getBean(HumanTaskConnector.class);
+        HumanTaskDTO humanTaskDto = humanTaskConnector.createHumanTask();
+        humanTaskDto.setName(delegateTask.getName());
+        humanTaskDto.setDescription(delegateTask.getDescription());
+        humanTaskDto.setCode(delegateTask.getTaskDefinitionKey());
+        humanTaskDto.setAssignee(delegateTask.getAssignee());
+        humanTaskDto.setOwner(delegateTask.getOwner());
+        humanTaskDto.setDelegateStatus("none");
+        humanTaskDto.setPriority(delegateTask.getPriority());
+        humanTaskDto.setCreateTime(new Date());
+        humanTaskDto.setDuration(delegateTask.getDueDate() + "");
+        humanTaskDto.setSuspendStatus("none");
+        humanTaskDto.setCategory(delegateTask.getCategory());
+        humanTaskDto.setForm(delegateTask.getFormKey());
+        humanTaskDto.setTaskId(delegateTask.getId());
+        humanTaskDto.setExecutionId(delegateTask.getExecutionId());
+        humanTaskDto.setProcessInstanceId(delegateTask.getProcessInstanceId());
+        humanTaskDto.setProcessDefinitionId(delegateTask
+                .getProcessDefinitionId());
+        humanTaskDto.setTenantId(delegateTask.getTenantId());
+        humanTaskDto.setStatus("active");
+        humanTaskDto = humanTaskConnector.saveHumanTask(humanTaskDto);
+
+        return humanTaskDto;
     }
 }

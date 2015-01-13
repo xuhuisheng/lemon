@@ -45,35 +45,6 @@ $(function() {
         errorClass: 'validate-error'
     });
 
-	$(document).delegate('#xf-form-button button', 'click', function(e) {
-		switch($(this).html()) {
-			case 'saveDraft':
-				$('#xform').attr('action', 'form-saveDraft.do');
-				$('#xform').submit();
-				break;
-			case '完成任务':
-				$('#xf-form').attr('action', 'form-completeTask.do');
-				$('#xf-form').submit();
-				break;
-			case '发起流程':
-				$('#xf-form').attr('action', 'form-startProcessInstance.do');
-				$('#xf-form').submit();
-				break;
-			case '驳回':
-				$('#xf-form').attr('action', '${scopePrefix}/bpm/workspace-rollback.do');
-				$('#xf-form').submit();
-				break;
-			case '转办':
-				$('#modal form').attr('action', '${scopePrefix}/bpm/workspace-doDelegate.do');
-				$('#modal').modal();
-				break;
-			case '协办':
-				$('#modal form').attr('action', '${scopePrefix}/bpm/workspace-doDelegateHelp.do');
-				$('#modal').modal();
-				break;
-		}
-	});
-
 	setTimeout(function() {
 		$('.datepicker').datepicker({
 			autoclose: true,
