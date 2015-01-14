@@ -31,7 +31,7 @@
           <h4>${bpmProcess.name}&nbsp;</h4>
           <p>${bpmProcess.descn}&nbsp;</p>
           <div class="btn-group">
-            <a class="btn btn-small" href="${scopePrefix}/form/form-viewStartForm.do?bpmProcessId=${bpmProcess.id}"><li class="icon-play"></li>发起</a>
+            <a class="btn btn-small" href="${scopePrefix}/operation/process-operation-viewStartForm.do?bpmProcessId=${bpmProcess.id}"><li class="icon-play"></li>发起</a>
             <a class="btn btn-small" href="workspace-graphProcessDefinition.do?bpmProcessId=${bpmProcess.id}" target="_blank"><li class="icon-picture"></li>图形</a>
           </div>
         </div>
