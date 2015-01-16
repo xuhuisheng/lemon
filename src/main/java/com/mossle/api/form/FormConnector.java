@@ -4,4 +4,6 @@ import java.util.List;
 
 public interface FormConnector {
     List<FormDTO> getAll(String scopeId);
+
+    FormDTO findForm(String code);
 }

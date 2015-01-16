@@ -100,7 +100,7 @@ $(function() {
         <th class="sorting" name="name">名称</th>
         <th class="sorting" name="code">标识</th>
         <th class="sorting" name="type">类型</th>
-        <th width="80">&nbsp;</th>
+        <th width="100">&nbsp;</th>
       </tr>
     </thead>
 
@@ -114,8 +114,8 @@ $(function() {
         <td>${item.type == '1' ? '外部' : '内部'}</td>
         <td>
           <a href="form-template-input.do?id=${item.id}"><spring:message code="core.list.edit" text="编辑"/></a>
-		  <a href="form-template-preview.do?id=${item.id}">预览</a>
 		  <a href="form-template-copy.do?id=${item.id}">复制</a>
+		  <a href="${scopePrefix}/operation/form-operation-preview.do?code=${item.code}">预览</a>
         </td>
       </tr>
       </c:forEach>

@@ -6,6 +6,6 @@ INSERT INTO BPM_CONF_NODE(ID,code,name,type,conf_base_id,conf_user,conf_listener
 
 INSERT INTO BPM_CONF_RULE(id,value,node_id) values(1,'职位',14);
 
-INSERT INTO BPM_CONF_OPERATION(id,value,node_id) values(14,'保存草稿',16);
-INSERT INTO BPM_CONF_OPERATION(id,value,node_id) values(15,'完成任务',16);
-INSERT INTO BPM_CONF_OPERATION(id,value,node_id) values(16,'驳回',16);
+INSERT INTO BPM_CONF_OPERATION(id,value,node_id) values(14,'saveDraft',16);
+INSERT INTO BPM_CONF_OPERATION(id,value,node_id) values(15,'completeTask',16);
+INSERT INTO BPM_CONF_OPERATION(id,value,node_id) values(16,'rollbackPrevious',16);

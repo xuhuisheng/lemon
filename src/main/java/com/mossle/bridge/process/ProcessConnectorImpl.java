@@ -1,5 +1,8 @@
 package com.mossle.bridge.process;
 
+import java.text.SimpleDateFormat;
+
+import java.util.Date;
 import java.util.List;
 import java.util.Map;
 
@@ -8,6 +11,7 @@ import javax.annotation.Resource;
 import com.mossle.api.form.FormDTO;
 import com.mossle.api.process.ProcessConnector;
 import com.mossle.api.process.ProcessDTO;
+import com.mossle.api.user.UserConnector;
 
 import com.mossle.bpm.cmd.FindStartFormCmd;
 import com.mossle.bpm.persistence.domain.BpmConfForm;
@@ -48,6 +52,7 @@ public class ProcessConnectorImpl implements ProcessConnector {
     private BpmConfFormManager bpmConfFormManager;
     private FormTemplateManager formTemplateManager;
     private BpmProcessManager bpmProcessManager;
+    private UserConnector userConnector;
 
     public String startProcess(String userId, String businessKey,
             String processDefinitionId, Map<String, Object> processParameters) {
@@ -59,6 +64,17 @@ public class ProcessConnectorImpl implements ProcessConnector {
                 .startProcessInstanceById(processDefinitionId, businessKey,
                         processParameters);
 
+        // {流程标题:title}-{发起人:startUser}-{发起时间:startTime}
+        String processDefinitionName = processEngine.getRepositoryService()
+                .createProcessDefinitionQuery()
+                .processDefinitionId(processDefinitionId).singleResult()
+                .getName();
+        String processInstanceName = processDefinitionName + "-"
+                + userConnector.findById(userId).getDisplayName() + "-"
+                + new SimpleDateFormat("yyyy-MM-dd HH:mm").format(new Date());
+        processEngine.getRuntimeService().setProcessInstanceName(
+                processInstance.getId(), processInstanceName);
+
         return processInstance.getId();
     }
 
@@ -68,7 +84,9 @@ public class ProcessConnectorImpl implements ProcessConnector {
                 .get(Long.parseLong(processId));
         String processDefinitionId = bpmProcess.getBpmConfBase()
                 .getProcessDefinitionId();
+        String processDefinitionName = bpmProcess.getName();
         processDto.setProcessDefinitionId(processDefinitionId);
+        processDto.setProcessDefinitionName(processDefinitionName);
         processDto.setConfigTask(Integer.valueOf(1).equals(
                 bpmProcess.getUseTaskConf()));
 
@@ -112,6 +130,8 @@ public class ProcessConnectorImpl implements ProcessConnector {
         if (Integer.valueOf(1).equals(formTemplate.getType())) {
             formDto.setRedirect(true);
             formDto.setUrl(formTemplate.getContent());
+        } else {
+            formDto.setContent(formTemplate.getContent());
         }
 
         return formDto;
@@ -386,5 +406,10 @@ public class ProcessConnectorImpl implements ProcessConnector {
     @Resource
     public void setBpmProcessManager(BpmProcessManager bpmProcessManager) {
         this.bpmProcessManager = bpmProcessManager;
+    }
+
+    @Resource
+    public void setUserConnector(UserConnector userConnector) {
+        this.userConnector = userConnector;
     }
 }

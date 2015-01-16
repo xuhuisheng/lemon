@@ -163,6 +163,12 @@ public class WithdrawTaskCmd implements Command<Integer> {
     public void deleteActiveTasks(String processInstanceId) {
         Context.getCommandContext().getTaskEntityManager()
                 .deleteTasksByProcessInstanceId(processInstanceId, null, true);
+
+        // humantask
+        HumanTaskConnector humanTaskConnector = ApplicationContextHelper
+                .getBean(HumanTaskConnector.class);
+        humanTaskConnector
+                .removeHumanTaskByProcessInstanceId(processInstanceId);
     }
 
     public void collectNodes(Node node, List<String> historyNodeIds) {
@@ -229,6 +235,11 @@ public class WithdrawTaskCmd implements Command<Integer> {
         Context.getCommandContext().getTaskEntityManager().insert(task);
 
         try {
+            HumanTaskConnector humanTaskConnector = ApplicationContextHelper
+                    .getBean(HumanTaskConnector.class);
+            // humantask
+            humanTaskConnector
+                    .removeHumanTaskByTaskId(historicTaskInstanceEntity.getId());
             this.createHumanTask(task);
         } catch (Exception ex) {
             logger.error(ex.getMessage(), ex);
@@ -276,11 +287,11 @@ public class WithdrawTaskCmd implements Command<Integer> {
         humanTaskDto.setCode(delegateTask.getTaskDefinitionKey());
         humanTaskDto.setAssignee(delegateTask.getAssignee());
         humanTaskDto.setOwner(delegateTask.getOwner());
-        humanTaskDto.setDelegateState("none");
+        humanTaskDto.setDelegateStatus("none");
         humanTaskDto.setPriority(delegateTask.getPriority());
         humanTaskDto.setCreateTime(new Date());
         humanTaskDto.setDuration(delegateTask.getDueDate() + "");
-        humanTaskDto.setSuspendState("none");
+        humanTaskDto.setSuspendStatus("none");
         humanTaskDto.setCategory(delegateTask.getCategory());
         humanTaskDto.setForm(delegateTask.getFormKey());
         humanTaskDto.setTaskId(delegateTask.getId());

@@ -6,6 +6,7 @@
 	<bean id="compositeFilter" class="com.mossle.core.servlet.CompositeFilter">
 		<property name="filters">
 			<list>
+			    <ref bean="whitelistFilter"/>
 				<ref bean="characterEncodingFilter"/>
 				<ref bean="acceptLanguageHeaderFilter"/>
 				<ref bean="javasimonFilter"/>
@@ -17,6 +18,17 @@
 				<ref bean="restFilter"/>
 				<ref bean="servletFilter"/>
 			</list>
+		</property>
+	</bean>
+
+	<bean id="whitelistFilter" class="com.mossle.core.servlet.ProxyFilter">
+		<property name="name" value="whitelist"/>
+		<property name="filter">
+			<bean class="com.mossle.ext.whitelist.WhitelistFilter">
+				<property name="value">
+					<value>/ws/*=127.0.0.1</value>
+				</property>
+			</bean>
 		</property>
 	</bean>
 

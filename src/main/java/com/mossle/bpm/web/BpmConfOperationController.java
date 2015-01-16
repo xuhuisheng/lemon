@@ -46,11 +46,11 @@ public class BpmConfOperationController {
     public String list(@RequestParam("bpmConfNodeId") Long bpmConfNodeId,
             Model model) {
         List<String> operations = new ArrayList<String>();
-        operations.add("保存草稿");
-        operations.add("完成任务");
-        operations.add("驳回");
-        operations.add("转办");
-        operations.add("协办");
+        operations.add("saveDraft");
+        operations.add("completeTask");
+        operations.add("rollbackPrevious");
+        operations.add("transfer");
+        operations.add("delegateTask");
 
         BpmConfNode bpmConfNode = bpmConfNodeManager.get(bpmConfNodeId);
         Long bpmConfBaseId = bpmConfNode.getBpmConfBase().getId();

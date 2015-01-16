@@ -7,6 +7,7 @@
 		<property name="dataSource" ref="dataSource" />
 		<!-- Database configurations -->
 		<property name="databaseSchemaUpdate" value="true" />
+		<property name="dbIdentityUsed" value="false"/>
 		<!-- job executor configurations -->
 		<property name="jobExecutorActivate" value="false" />
 
@@ -85,7 +86,7 @@
 				<bean class="com.mossle.bpm.listener.TaskConfTaskListener"/>
 				<bean class="com.mossle.bpm.listener.AssigneeAliasTaskListener"/>
 				<bean class="com.mossle.bpm.listener.DelegateTaskListener"/>
-				<bean class="com.mossle.bpm.listener.HumanTaskListener"/>
+				<bean class="com.mossle.bpm.listener.HumanTaskTaskListener"/>
 			</list>
 		</property>
 	</bean>
@@ -97,6 +98,7 @@
 				<bean class="com.mossle.bpm.listener.AutoCompleteFirstTaskListener"/>
 				<bean class="com.mossle.bpm.listener.SkipTaskListener"/>
 				<bean class="com.mossle.bpm.listener.NoticeTaskListener"/>
+				<bean class="com.mossle.bpm.listener.HumanTaskSyncTaskListener"/>
 			</list>
 		</property>
 	</bean>

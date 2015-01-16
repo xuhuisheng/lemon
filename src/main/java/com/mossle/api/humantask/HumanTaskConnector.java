@@ -10,6 +10,12 @@ import com.mossle.core.page.Page;
 public interface HumanTaskConnector {
     HumanTaskDTO createHumanTask();
 
+    void removeHumanTask(String humanTaskId);
+
+    void removeHumanTaskByTaskId(String taskId);
+
+    void removeHumanTaskByProcessInstanceId(String processInstanceId);
+
     HumanTaskDTO saveHumanTask(HumanTaskDTO humanTaskDto);
 
     HumanTaskDTO findHumanTaskByTaskId(String taskId);
@@ -30,4 +36,12 @@ public interface HumanTaskConnector {
     Page findPersonalTasks(String userId, int pageNo, int pageSize);
 
     Page findFinishedTasks(String userId, int pageNo, int pageSize);
+
+    void rollbackPrevious(String humanTaskId);
+
+    void withdraw(String humanTaskId);
+
+    void transfer(String humanTaskId, String userId);
+
+    void delegateTask(String humanTaskId, String userId);
 }

@@ -33,15 +33,15 @@ setInterval(unreadCount, 10000);
             <span class="icon-bar"></span>
             <span class="icon-bar"></span>
           </a>
-          <a href="${scopePrefix}/" class="brand">Lemon <small>1.4.0</small></a>
+          <a href="${scopePrefix}/" class="brand">Lemon <sub><small>1.5.0-SNAPSHOT</small></sub></a>
           <div class="nav-collapse collapse navbar-responsive-collapse">
             <ul class="nav">
               <li class="divider-vertical"></li>
-              <li class="${currentHeader == 'dashboard' ? 'active' : ''}"><a href="${scopePrefix}/dashboard/dashboard.do">首页</a></li>
-              <li class="${currentHeader == 'bpm-workspace' ? 'active' : ''}"><a href="${scopePrefix}/bpm/workspace-home.do">个人事务</a></li>
-              <li class="${currentHeader == 'report' ? 'active' : ''}"><a href="${scopePrefix}/report/chart-mostActiveProcess.do">统计报表</a></li>
+              <li class="${currentHeader == 'dashboard' ? 'active' : ''}"><a href="${scopePrefix}/dashboard/dashboard.do"><i class="icon-user"></i>首页</a></li>
+              <li class="${currentHeader == 'bpm-workspace' ? 'active' : ''}"><a href="${scopePrefix}/bpm/workspace-home.do"><i class="icon-user"></i>个人事务</a></li>
+              <li class="${currentHeader == 'report' ? 'active' : ''}"><a href="${scopePrefix}/report/chart-mostActiveProcess.do"><i class="icon-user"></i>统计报表</a></li>
               <li class="dropdown ${currentHeader == 'scope' ? 'active' : ''}">
-                <a data-toggle="dropdown" class="dropdown-toggle" href="#">系统管理 <b class="caret"></b></a>
+                <a data-toggle="dropdown" class="dropdown-toggle" href="#"><i class="icon-user"></i>系统管理 <b class="caret"></b></a>
                 <ul class="dropdown-menu">
                   <li><a href="${scopePrefix}/user/user-base-list.do"><i class="icon-user"></i>用户管理</a></li>
                   <li><a href="${scopePrefix}/party/org-list.do"><i class="icon-user"></i>组织机构</a></li>
@@ -68,9 +68,9 @@ setInterval(unreadCount, 10000);
                   <b class="caret"></b>
                 </a>
                 <ul class="dropdown-menu">
-                  <li><a href="${ctx}/user/change-password-input.do">修改密码</a></li>
+                  <li><a href="${ctx}/user/change-password-input.do"><i class="icon-user"></i>修改密码</a></li>
                   <li class="divider"></li>
-				  <li><a href="${ctx}/j_spring_security_logout">退出</a></li>
+				  <li><a href="${ctx}/j_spring_security_logout"><i class="icon-user"></i>退出</a></li>
                 </ul>
               </li>
 			  <li>

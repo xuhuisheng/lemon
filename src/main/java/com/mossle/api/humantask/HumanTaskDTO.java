@@ -8,9 +8,9 @@ public class HumanTaskDTO {
     private String description;
     private String assignee;
     private String owner;
-    private String delegateState;
+    private String delegateStatus;
     private Date createTime;
-    private String suspendState;
+    private String suspendStatus;
     private String code;
     private String taskId;
     private String executionId;
@@ -65,12 +65,12 @@ public class HumanTaskDTO {
         this.owner = owner;
     }
 
-    public String getDelegateState() {
-        return delegateState;
+    public String getDelegateStatus() {
+        return delegateStatus;
     }
 
-    public void setDelegateState(String delegateState) {
-        this.delegateState = delegateState;
+    public void setDelegateStatus(String delegateStatus) {
+        this.delegateStatus = delegateStatus;
     }
 
     public Date getCreateTime() {
@@ -81,12 +81,12 @@ public class HumanTaskDTO {
         this.createTime = createTime;
     }
 
-    public String getSuspendState() {
-        return suspendState;
+    public String getSuspendStatus() {
+        return suspendStatus;
     }
 
-    public void setSuspendState(String suspendState) {
-        this.suspendState = suspendState;
+    public void setSuspendStatus(String suspendStatus) {
+        this.suspendStatus = suspendStatus;
     }
 
     public String getCode() {

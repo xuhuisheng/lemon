@@ -26,7 +26,7 @@ public class StoreResult {
     }
 
     public DataSource getDataSource() {
-        return dataSource = dataSource;
+        return dataSource;
     }
 
     public void setDataSource(DataSource dataSource) {

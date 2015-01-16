@@ -25,12 +25,7 @@ import com.mossle.ext.export.TableModel;
 import com.mossle.ext.store.MultipartFileDataSource;
 
 import com.mossle.form.domain.FormTemplate;
-import com.mossle.form.keyvalue.KeyValue;
-import com.mossle.form.keyvalue.Prop;
-import com.mossle.form.keyvalue.Record;
-import com.mossle.form.keyvalue.RecordBuilder;
 import com.mossle.form.manager.FormTemplateManager;
-import com.mossle.form.xform.*;
 
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
@@ -63,7 +58,6 @@ public class FormTemplateController {
     private BeanMapper beanMapper = new BeanMapper();
     private JsonMapper jsonMapper = new JsonMapper();
     private MessageHelper messageHelper;
-    private KeyValue keyValue;
     private MultipartResolver multipartResolver;
     private StoreConnector storeConnector;
 
@@ -143,63 +137,6 @@ public class FormTemplateController {
         exportor.export(response, tableModel);
     }
 
-    @RequestMapping("form-template-preview")
-    public String preview(@RequestParam("id") Long id, Model model)
-            throws Exception {
-        FormTemplate formTemplate = formTemplateManager.get(id);
-        model.addAttribute("formTemplate", formTemplate);
-
-        Record record = keyValue.findByRef(formTemplate.getCode());
-
-        if (record == null) {
-            record = new Record();
-            record.setName(formTemplate.getName());
-            record.setRef(formTemplate.getCode());
-            keyValue.save(record);
-        }
-
-        model.addAttribute("record", record);
-
-        Xform xform = new XformBuilder().setStoreConnector(storeConnector)
-                .setContent(formTemplate.getContent()).setRecord(record)
-                .build();
-        model.addAttribute("xform", xform);
-
-        return "form/form-template-preview";
-    }
-
-    @RequestMapping("form-template-test")
-    public String test(HttpServletRequest request) throws Exception {
-        MultipartHandler multipartHandler = new MultipartHandler(
-                multipartResolver);
-        FormTemplate formTemplate = null;
-
-        try {
-            multipartHandler.handle(request);
-            logger.info("{}", multipartHandler.getMultiValueMap());
-            logger.info("{}", multipartHandler.getMultiFileMap());
-
-            String ref = multipartHandler.getMultiValueMap().getFirst("ref");
-            formTemplate = formTemplateManager.findUniqueBy("code", ref);
-
-            Record record = keyValue.findByRef(ref);
-
-            record = new RecordBuilder().build(record, multipartHandler,
-                    storeConnector);
-
-            keyValue.save(record);
-        } finally {
-            multipartHandler.clear();
-        }
-
-        if (formTemplate == null) {
-            return "redirect:/form/form-template-list.do";
-        } else {
-            return "redirect:/form/form-template-preview.do?id="
-                    + formTemplate.getId();
-        }
-    }
-
     @RequestMapping("form-template-copy")
     public String copy(@RequestParam("id") Long id,
             RedirectAttributes redirectAttributes) {
@@ -251,11 +188,6 @@ public class FormTemplateController {
     @Resource
     public void setMessageHelper(MessageHelper messageHelper) {
         this.messageHelper = messageHelper;
-    }
-
-    @Resource
-    public void setKeyValue(KeyValue keyValue) {
-        this.keyValue = keyValue;
     }
 
     @Resource

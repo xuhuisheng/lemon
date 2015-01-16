@@ -15,7 +15,7 @@
 			  <li><a href="${scopePrefix}/bpm/workspace-listRunningProcessInstances.do"><i class="icon-user"></i>运行的流程</a></li>
 			  <li><a href="${scopePrefix}/bpm/workspace-listCompletedProcessInstances.do"><i class="icon-user"></i>办结的流程</a></li>
 			  <li><a href="${scopePrefix}/bpm/workspace-listInvolvedProcessInstances.do"><i class="icon-user"></i>参与的流程</a></li>
-			  <li><a href="${scopePrefix}/form/form-listDrafts.do"><i class="icon-user"></i>草稿箱</a></li>
+			  <li><a href="${scopePrefix}/operation/process-operation-listDrafts.do"><i class="icon-user"></i>草稿箱</a></li>
             </ul>
           </div>
         </div>
