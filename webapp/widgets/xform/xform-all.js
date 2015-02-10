@@ -528,7 +528,7 @@ xf.GridSection.prototype.render = function() {
 		html += '<tr id="' + rowId + '">'
 		for (var j = 0; j < this.col; j++) {
 			var cellId = rowId + '-' + j;
-			var cellClassName = 'xf-cell-right xf-cell-bottom';
+			var cellClassName = 'xf-cell xf-cell-right xf-cell-bottom';
 			if (i == 0) {
 				cellClassName += ' xf-cell-top';
 			}
@@ -627,7 +627,7 @@ xf.GridSection.prototype.addRow = function() {
 	for (var i = 0; i < this.col; i++) {
 		var td = document.createElement('td');
 		td.id = tr.id + '-' + i;
-		td.className = 'xf-cell-right xf-cell-bottom';
+		td.className = 'xf-cell xf-cell-right xf-cell-bottom';
 		if (i == 0) {
 			td.className += ' xf-cell-left';
 		}

@@ -33,11 +33,11 @@ table.xf-table {
 td.xf-cell {
 	-moz-user-select: none;
 }
-
+/*
 td.xf-cell div {
 	height: 22px;
 }
-
+*/
 td.xf-cell-top {
 	border-top: black 1px solid;
 }
