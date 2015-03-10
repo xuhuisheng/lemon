@@ -4,7 +4,7 @@
 --  permission type
 -------------------------------------------------------------------------------
 CREATE TABLE AUTH_PERM_TYPE(
-        ID BIGINT auto_increment,
+        ID BIGINT AUTO_INCREMENT,
         NAME VARCHAR(50),
 	TYPE INTEGER,
 	PRIORITY INTEGER,

@@ -25,8 +25,9 @@ public class AddressListController {
     public String list(
             @RequestParam(value = "username", required = false) String username,
             Model model) {
-        String sql = "select ub.id as id,ub.username as username,ub.display_name as displayName,ub.email as email,ub.mobile as mobile"
-                + " from user_base ub" + " where ub.username like ?";
+        String sql = "select ai.id as id,ai.username as username,ai.display_name as displayName,pi.email as email,pi.cellphone as mobile"
+                + " from ACCOUNT_INFO ai left join PERSON_INFO pi on ai.code=pi.code"
+                + " where ai.username like ?";
         List list = jdbcTemplate.queryForList(sql, "%" + username + "%");
         model.addAttribute("list", list);
 

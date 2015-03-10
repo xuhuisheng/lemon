@@ -37,4 +37,6 @@ public interface UserConnector {
      * 分页查询用户.
      */
     Page pagedQuery(Page page, Map<String, Object> parameters);
+
+    UserDTO findByNickName(String nickName);
 }

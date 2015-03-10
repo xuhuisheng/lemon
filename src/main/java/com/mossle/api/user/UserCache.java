@@ -7,6 +7,8 @@ public interface UserCache {
 
     UserDTO findByRef(String ref, String userRepoRef);
 
+    UserDTO findByNickName(String nickName);
+
     void updateUser(UserDTO userDto);
 
     void removeUser(UserDTO userDto);

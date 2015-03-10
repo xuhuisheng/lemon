@@ -4,7 +4,7 @@
 --  cms comment
 -------------------------------------------------------------------------------
 CREATE TABLE CMS_COMMENT(
-        ID BIGINT auto_increment,
+        ID BIGINT AUTO_INCREMENT,
 	TITLE VARCHAR(200),
 	CONTENT VARCHAR(200),
 	STATUS INT,

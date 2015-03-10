@@ -78,6 +78,26 @@ public class UserConnectorWrapper implements UserConnector {
         return userConnector.pagedQuery(page, parameters);
     }
 
+    public UserDTO findByNickName(String nickName) {
+        UserDTO userDto = userCache.findByNickName(nickName);
+
+        if (userDto == null) {
+            synchronized (userCache) {
+                userDto = userCache.findByNickName(nickName);
+
+                if (userDto == null) {
+                    userDto = userConnector.findByNickName(nickName);
+
+                    if (userDto != null) {
+                        userCache.updateUser(userDto);
+                    }
+                }
+            }
+        }
+
+        return userDto;
+    }
+
     public void setUserConnector(UserConnector userConnector) {
         this.userConnector = userConnector;
     }

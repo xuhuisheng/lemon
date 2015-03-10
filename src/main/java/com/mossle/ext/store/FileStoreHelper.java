@@ -94,8 +94,7 @@ public class FileStoreHelper implements StoreHelper {
 
     public StoreResult saveStore(String model, String key, DataSource dataSource)
             throws Exception {
-        String suffix = this.getSuffix(dataSource.getName());
-        String path = key + suffix;
+        String path = key;
         File dir = new File(baseDir + "/" + model);
         dir.mkdirs();
 

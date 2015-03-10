@@ -239,9 +239,9 @@ public class RestFilter implements Filter {
                     } else if (parameterTypeArray[i] == String.class) {
                         arguments.add(null);
                     } else {
-                        throw new IllegalArgumentException(
-                                "cannot process method argument, index is : "
-                                        + i);
+                        String message = "cannot process method argument, index is : "
+                                + i + ", name : " + name + ", value is null";
+                        throw new IllegalArgumentException(message);
                     }
                 }
             }

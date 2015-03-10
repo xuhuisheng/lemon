@@ -13,7 +13,11 @@ import com.mossle.core.util.ServletUtils;
 
 import com.mossle.ext.auth.CurrentUserHolder;
 
+import com.mossle.user.persistence.domain.AccountInfo;
+import com.mossle.user.persistence.domain.PersonInfo;
 import com.mossle.user.persistence.domain.UserBase;
+import com.mossle.user.persistence.manager.AccountInfoManager;
+import com.mossle.user.persistence.manager.PersonInfoManager;
 import com.mossle.user.persistence.manager.UserAttrManager;
 import com.mossle.user.persistence.manager.UserBaseManager;
 import com.mossle.user.persistence.manager.UserSchemaManager;
@@ -33,7 +37,8 @@ import org.springframework.web.servlet.mvc.support.RedirectAttributes;
 @Controller
 @RequestMapping("user")
 public class ProfileController {
-    private UserBaseManager userBaseManager;
+    private AccountInfoManager accountInfoManager;
+    private PersonInfoManager personInfoManager;
     private MessageHelper messageHelper;
     private BeanMapper beanMapper = new BeanMapper();
     private UserBaseWrapper userBaseWrapper;
@@ -42,35 +47,33 @@ public class ProfileController {
 
     @RequestMapping("profile-list")
     public String list(Model model) {
-        UserBase userBase = userBaseManager.findUniqueBy("username",
-                currentUserHolder.getUsername());
-        UserBaseWrapper userBaseWrapper = new UserBaseWrapper(userBase);
-        model.addAttribute("model", userBase);
-        model.addAttribute("userBaseWrapper", userBaseWrapper);
+        Long accountId = Long.parseLong(currentUserHolder.getUserId());
+        AccountInfo accountInfo = accountInfoManager.get(accountId);
+        PersonInfo personInfo = personInfoManager.findUniqueBy("code",
+                accountInfo.getCode());
+        model.addAttribute("accountInfo", accountInfo);
+        model.addAttribute("personInfo", personInfo);
 
         return "user/profile-list";
     }
 
     @RequestMapping("profile-save")
-    public String save(@ModelAttribute UserBase userBase,
-            @RequestParam("userRepoId") Long userRepoId,
-            @RequestParam Map<String, Object> parameterMap,
+    public String save(@ModelAttribute PersonInfo personInfo,
             RedirectAttributes redirectAttributes) throws Exception {
-        Map<String, Object> parameters = ServletUtils
-                .getParametersStartingWith(parameterMap, "_user_attr_");
-        Long id = userBase.getId();
+        Long accountId = Long.parseLong(currentUserHolder.getUserId());
+        AccountInfo accountInfo = accountInfoManager.get(accountId);
+        PersonInfo dest = personInfoManager.findUniqueBy("code",
+                accountInfo.getCode());
 
-        // 再进行数据复制
-        UserBase dest = null;
-
-        if (id != null) {
-            dest = userBaseManager.get(id);
-            beanMapper.copy(userBase, dest);
-            userService.updateUser(dest, userRepoId, parameters);
+        if (dest != null) {
+            beanMapper.copy(personInfo, dest);
         } else {
-            dest = userBase;
-            userService.insertUser(dest, userRepoId, parameters);
+            dest = new PersonInfo();
+            dest.setCode(accountInfo.getCode());
+            beanMapper.copy(personInfo, dest);
         }
+
+        personInfoManager.save(personInfo);
 
         messageHelper.addFlashMessage(redirectAttributes, "core.success.save",
                 "保存成功");
@@ -80,8 +83,13 @@ public class ProfileController {
 
     // ~ ======================================================================
     @Resource
-    public void setUserBaseManager(UserBaseManager userBaseManager) {
-        this.userBaseManager = userBaseManager;
+    public void setAccountInfoManager(AccountInfoManager accountInfoManager) {
+        this.accountInfoManager = accountInfoManager;
+    }
+
+    @Resource
+    public void setPersonInfoManager(PersonInfoManager personInfoManager) {
+        this.personInfoManager = personInfoManager;
     }
 
     @Resource

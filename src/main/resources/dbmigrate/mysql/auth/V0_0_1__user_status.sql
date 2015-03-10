@@ -4,7 +4,7 @@
 --  user status
 -------------------------------------------------------------------------------
 CREATE TABLE AUTH_USER_STATUS(
-	ID BIGINT auto_increment,
+	ID BIGINT AUTO_INCREMENT,
 	USERNAME VARCHAR(50),
 	PASSWORD VARCHAR(50),
 	STATUS INTEGER,

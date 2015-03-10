@@ -4,7 +4,7 @@
 --  form template
 -------------------------------------------------------------------------------
 create table FORM_TEMPLATE(
-	ID BIGINT auto_increment,
+	ID BIGINT AUTO_INCREMENT,
 	TYPE INT,
 	NAME VARCHAR(200),
 	CONTENT VARCHAR(2000),

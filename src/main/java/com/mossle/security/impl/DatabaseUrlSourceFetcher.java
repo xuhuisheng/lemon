@@ -11,7 +11,7 @@ public class DatabaseUrlSourceFetcher extends AbstractDatabaseSourceFetcher
             return;
         }
 
-        String sql = "select ac.value as access,p.code as perm"
+        String sql = "select ac.value as acce,p.code as perm"
                 + " from AUTH_ACCESS ac,AUTH_PERM p"
                 + " where ac.perm_id=p.id and ac.type='URL'"
                 + " order by ac.priority";

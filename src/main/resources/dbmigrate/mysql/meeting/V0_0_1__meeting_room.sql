@@ -4,9 +4,9 @@
 --  meeting room
 -------------------------------------------------------------------------------
 CREATE TABLE MEETING_ROOM(
-        ID BIGINT auto_increment,
+        ID BIGINT AUTO_INCREMENT,
 	NAME VARCHAR(200),
 	PEOPLE INTEGER,
         CONSTRAINT PK_MEETING_ROOM PRIMARY KEY(ID)
-) engine=innodb;
+) ENGINE=INNODB CHARSET=UTF8;
 

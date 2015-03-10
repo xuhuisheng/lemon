@@ -4,7 +4,7 @@
 --  mail queue
 -------------------------------------------------------------------------------
 CREATE TABLE MAIL_QUEUE(
-        ID BIGINT auto_increment,
+        ID BIGINT AUTO_INCREMENT,
         SUBJECT VARCHAR(50),
 	SENDER VARCHAR(200),
 	RECEIVER VARCHAR(200),

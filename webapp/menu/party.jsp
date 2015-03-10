@@ -192,7 +192,22 @@
           </div>
           <div id="collapse-online" class="accordion-body collapse ${currentMenu == 'online' ? 'in' : ''}">
             <ul class="accordion-inner nav nav-list">
-              <li><a href="${scopePrefix}/online/online-list.do">在线用户</a></li>
+              <li><a href="${scopePrefix}/user/account-online-list.do">在线用户</a></li>
+            </ul>
+          </div>
+        </div>
+
+        <div class="accordion-group">
+          <div class="accordion-heading">
+            <a class="accordion-toggle" data-toggle="collapse" data-parent="#m-sidebar" href="#collapse-ticket">
+              <i class="icon-user"></i>
+              <span class="title">桌面支持</span>
+            </a>
+          </div>
+          <div id="collapse-ticket" class="accordion-body collapse ${currentMenu == 'ticke' ? 'in' : ''}">
+            <ul class="accordion-inner nav nav-list">
+              <li><a href="${scopePrefix}/ticket/ticket-catalog-list.do">分类</a></li>
+              <li><a href="${scopePrefix}/ticket/ticket-group-list.do">小组</a></li>
             </ul>
           </div>
         </div>

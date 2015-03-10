@@ -73,6 +73,11 @@ public class CmsController {
         return "cms/article";
     }
 
+    @RequestMapping("export")
+    public String export(Model model) {
+        return "cms/export";
+    }
+
     // ~ ======================================================================
     @Resource
     public void setCmsArticleManager(CmsArticleManager cmsArticleManager) {

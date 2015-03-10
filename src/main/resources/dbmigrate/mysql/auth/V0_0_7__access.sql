@@ -4,7 +4,7 @@
 --  access
 -------------------------------------------------------------------------------
 CREATE TABLE AUTH_ACCESS(
-	ID BIGINT auto_increment,
+	ID BIGINT AUTO_INCREMENT,
 	TYPE VARCHAR(50),
 	VALUE VARCHAR(200),
 	PERM_ID BIGINT,

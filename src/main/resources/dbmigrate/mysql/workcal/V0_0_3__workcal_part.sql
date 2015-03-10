@@ -4,7 +4,7 @@
 --  workcal part
 -------------------------------------------------------------------------------
 CREATE TABLE WORKCAL_PART(
-        ID BIGINT auto_increment,
+        ID BIGINT AUTO_INCREMENT,
         SHIFT INT,
 	START_TIME VARCHAR(5),
 	END_TIME VARCHAR(5),

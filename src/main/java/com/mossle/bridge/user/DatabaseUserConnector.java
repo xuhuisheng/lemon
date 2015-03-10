@@ -30,12 +30,23 @@ public class DatabaseUserConnector implements UserConnector {
     private Map<String, String> aliasMap = new HashMap<String, String>();
 
     // ~
-    private String sqlFindById = "select id as id,username as username,status as status,"
-            + "nick_name as nick_name,email as email,mobile as mobile,user_repo_id as user_repo_ref"
-            + " from USER_BASE where id=?";
-    private String sqlFindByUsername = "select ub.id as id,ub.username as username,ub.status as status,"
-            + "nick_name as nick_name,email as email,mobile as mobile,user_repo_id as user_repo_ref"
-            + " from USER_BASE ub where ub.username=? and ub.user_repo_id=?";
+    // private String sqlFindById = "select id as id,username as username,status as status,"
+    // + "nick_name as nick_name,email as email,mobile as mobile,user_repo_id as user_repo_ref"
+    // + " from USER_BASE where id=?";
+    private String sqlFindById = "select ai.id as id,ai.username as username,ai.status as status,"
+            + "ai.nick_name as nick_name,ai.display_name as display_name,pi.email as email,"
+            + "pi.cellphone as mobile,1 as user_repo_ref"
+            + " from ACCOUNT_INFO ai left join PERSON_INFO pi on ai.code=pi.code"
+            + " where ai.id=?";
+
+    // private String sqlFindByUsername = "select ub.id as id,ub.username as username,ub.status as status,"
+    // + "nick_name as nick_name,email as email,mobile as mobile,user_repo_id as user_repo_ref"
+    // + " from USER_BASE ub where ub.username=? and ub.user_repo_id=?";
+    private String sqlFindByUsername = "select ai.id as id,ai.username as username,ai.status as status,"
+            + "ai.nick_name as nick_name,ai.display_name as display_name,pi.email as email,"
+            + "pi.cellphone as mobile,1 as user_repo_ref"
+            + " from ACCOUNT_INFO ai left join PERSON_INFO pi on ai.code=pi.code"
+            + " where ai.username=? and 1=?";
     private String sqlFindByRef = "select ub.id as id,ub.username as username,ub.status as status,"
             + "nick_name as nick_name,email as email,mobile as mobile,user_repo_id as user_repo_ref"
             + " from USER_BASE ub where ub.ref=? and ub.user_repo_id=?";
@@ -43,6 +54,9 @@ public class DatabaseUserConnector implements UserConnector {
     private String sqlPagedQuerySelect = "select id as id,username as username,status as status,"
             + "nick_name as nick_name,email as email,mobile as mobile,user_repo_id as user_repo_ref"
             + " from USER_BASE";
+    private String sqlFindByNickName = "select id as id,username as username,status as status,"
+            + "nick_name as nick_name,email as email,mobile as mobile,user_repo_id as user_repo_ref"
+            + " from USER_BASE where nick_name=?";
 
     public UserDTO findById(String id) {
         Assert.notNull(id, "user id should not be null");
@@ -126,6 +140,20 @@ public class DatabaseUserConnector implements UserConnector {
         return page;
     }
 
+    public UserDTO findByNickName(String nickName) {
+        try {
+            Map<String, Object> map = jdbcTemplate.queryForMap(
+                    sqlFindByNickName, nickName);
+
+            return convertUserDTO(map);
+        } catch (EmptyResultDataAccessException ex) {
+            logger.debug(ex.getMessage(), ex);
+            logger.info("user[{}] is not exists.", nickName);
+
+            return null;
+        }
+    }
+
     protected UserDTO convertUserDTO(Map<String, Object> map) {
         if ((map == null) || map.isEmpty()) {
             logger.info("user[{}] is null.", map);
@@ -138,11 +166,12 @@ public class DatabaseUserConnector implements UserConnector {
         UserDTO userDTO = new UserDTO();
         userDTO.setId(convertString(map.get("id")));
         userDTO.setUsername(convertString(map.get("username")));
-        userDTO.setDisplayName(convertString(map.get("nick_name")));
+        userDTO.setNickName(convertString(map.get("nick_name")));
+        userDTO.setDisplayName(convertString(map.get("display_name")));
         userDTO.setEmail(convertString(map.get("email")));
         userDTO.setMobile(convertString(map.get("mobile")));
         userDTO.setUserRepoRef(convertString(map.get("user_repo_ref")));
-        userDTO.setStatus(convertInt(map.get("status"), 1));
+        userDTO.setStatus("active".equals(map.get("status")) ? 1 : 0);
 
         return userDTO;
     }

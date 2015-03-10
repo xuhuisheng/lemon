@@ -31,7 +31,10 @@ public class DatabaseUserAuthConnector implements UserAuthConnector {
     private UserConnector userConnector;
 
     // ~
-    private String sqlFindPassword = "select password from USER_BASE where id=?";
+    // private String sqlFindPassword = "select password from USER_BASE where id=?";
+    private String sqlFindPassword = "select ac.password as password"
+            + " from ACCOUNT_CREDENTIAL ac,ACCOUNT_INFO ai"
+            + " where ac.account_id=ai.id and catalog='default' and ai.id=?";
     private String sqlFindPermissions = "select p.code as permission"
             + " from AUTH_USER_STATUS us,AUTH_USER_ROLE ur,AUTH_ROLE r,AUTH_PERM_ROLE_DEF pr,AUTH_PERM p"
             + " where us.id=ur.user_status_id and ur.role_id=r.id and r.role_def_id=pr.role_def_id and pr.perm_id=p.id"

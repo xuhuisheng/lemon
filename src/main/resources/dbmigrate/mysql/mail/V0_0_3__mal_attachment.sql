@@ -4,7 +4,7 @@
 --  mail attachment
 -------------------------------------------------------------------------------
 CREATE TABLE MAIL_ATTACHMENT(
-        ID BIGINT auto_increment,
+        ID BIGINT AUTO_INCREMENT,
         NAME VARCHAR(50),
 	PATH VARCHAR(200),
 	SCOPE_ID VARCHAR(50),

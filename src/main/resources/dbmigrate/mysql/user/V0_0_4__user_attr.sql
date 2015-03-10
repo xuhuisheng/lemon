@@ -4,7 +4,7 @@
 --  user attr
 -------------------------------------------------------------------------------
 CREATE TABLE USER_ATTR(
-        ID BIGINT auto_increment,
+        ID BIGINT AUTO_INCREMENT,
 	BOOLEAN_VALUE INTEGER,
 	DATE_VALUE TIMESTAMP,
 	LONG_VALUE BIGINT,

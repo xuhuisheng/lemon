@@ -73,8 +73,20 @@ public class XformBuilder {
     }
 
     public void handleStructure() throws Exception {
+        if (xform.getContent() == null) {
+            logger.info("cannot find xform content");
+
+            return;
+        }
+
         Map map = jsonMapper.fromJson(xform.getContent(), Map.class);
         logger.debug("map : {}", map);
+
+        if (map == null) {
+            logger.info("cannot find map");
+
+            return;
+        }
 
         List<Map> sections = (List<Map>) map.get("sections");
         logger.debug("sections : {}", sections);

@@ -1,2 +1,2 @@
 
-alter table USER_REPO change reference ref varchar(64);
+ALTER TABLE USER_REPO CHANGE reference ref VARCHAR(200);

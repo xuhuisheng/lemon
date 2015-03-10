@@ -4,7 +4,7 @@
 --  mail config
 -------------------------------------------------------------------------------
 CREATE TABLE MAIL_CONFIG(
-        ID BIGINT auto_increment,
+        ID BIGINT AUTO_INCREMENT,
         NAME VARCHAR(50),
 	HOST VARCHAR(200),
 	USERNAME VARCHAR(200),

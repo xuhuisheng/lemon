@@ -4,11 +4,11 @@
 --  cms article
 -------------------------------------------------------------------------------
 CREATE TABLE CMS_ARTICLE(
-        ID BIGINT auto_increment,
+        ID BIGINT AUTO_INCREMENT,
 	TITLE VARCHAR(200),
 	SHORT_TITLE VARCHAR(200),
 	SUB_TITLE VARCHAR(200),
-	CONTENT VARCHAR(65535),
+	CONTENT TEXT,
 	SUMMARY VARCHAR(200),
 	LOGO VARCHAR(200),
 	KEYWORD VARCHAR(200),

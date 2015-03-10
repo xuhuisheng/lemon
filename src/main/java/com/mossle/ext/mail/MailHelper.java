@@ -10,6 +10,7 @@ import javax.mail.internet.MimeMessage;
 
 import com.mossle.core.mail.HostGenerator;
 import com.mossle.core.mail.HostGeneratorImpl;
+import com.mossle.core.util.StringUtils;
 
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
@@ -68,7 +69,7 @@ public class MailHelper {
             String subject = mailDto.getSubject();
             String content = mailDto.getContent();
 
-            if (this.isBlank(from)) {
+            if (StringUtils.isBlank(from)) {
                 from = mailServerInfo.getDefaultFrom();
                 mailDto.setFrom(from);
             }
@@ -77,6 +78,14 @@ public class MailHelper {
 
             if (mailServerInfo.isSkip()) {
                 logger.info("send mail from {} to {}", from, to);
+
+                if (StringUtils.isNotBlank(mailDto.getCc())) {
+                    logger.info("cc : " + mailDto.getCc() + "\n");
+                }
+
+                if (StringUtils.isNotBlank(mailDto.getBcc())) {
+                    logger.info("bcc : " + mailDto.getBcc() + "\n");
+                }
 
                 logger.info("subject : {}, content : {}", subject, content);
                 mailDto.setSuccess(true);
@@ -111,6 +120,16 @@ public class MailHelper {
         String decoratedContent = "address : " + address + "\nfrom : " + from
                 + "\nto : " + to + "\n";
 
+        if (StringUtils.isNotBlank(mailDto.getCc())) {
+            decoratedContent += ("cc : " + mailDto.getCc() + "\n");
+            mailDto.setCc(null);
+        }
+
+        if (StringUtils.isNotBlank(mailDto.getBcc())) {
+            decoratedContent += ("bcc : " + mailDto.getBcc() + "\n");
+            mailDto.setBcc(null);
+        }
+
         decoratedContent += ("subject : " + subject + "\ncontent : " + content);
 
         String decoratedSubject = "[test]" + subject;
@@ -139,13 +158,13 @@ public class MailHelper {
 
         to = to.replaceAll("\n", ",").replaceAll(";", ",");
 
-        if (this.isBlank(cc)) {
+        if (StringUtils.isBlank(cc)) {
             cc = null;
         } else {
             cc = cc.replaceAll("\n", ",").replaceAll(";", ",");
         }
 
-        if (this.isBlank(bcc)) {
+        if (StringUtils.isBlank(bcc)) {
             bcc = null;
         } else {
             bcc = bcc.replaceAll("\n", ",").replaceAll(";", ",");
@@ -164,11 +183,11 @@ public class MailHelper {
             helper.setTo(InternetAddress.parse(to));
             helper.setText(content, true);
 
-            if (cc != null) {
+            if (StringUtils.isNotBlank(cc)) {
                 helper.setCc(InternetAddress.parse(cc));
             }
 
-            if (bcc != null) {
+            if (StringUtils.isNotBlank(bcc)) {
                 helper.setBcc(InternetAddress.parse(bcc));
             }
 
@@ -197,14 +216,6 @@ public class MailHelper {
         }
 
         return mailDto;
-    }
-
-    public boolean isBlank(String text) {
-        return (text == null) || "".equals(text.trim());
-    }
-
-    public boolean notBlank(String text) {
-        return (text != null) && (!"".equals(text.trim()));
     }
 
     public MailServerInfo getDefaultMailServerInfo() {

@@ -4,7 +4,7 @@
 --  role
 -------------------------------------------------------------------------------
 CREATE TABLE AUTH_ROLE(
-        ID BIGINT auto_increment,
+        ID BIGINT AUTO_INCREMENT,
         NAME VARCHAR(50),
         DESCN VARCHAR(200),
 	ROLE_DEF_ID BIGINT,

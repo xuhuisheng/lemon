@@ -110,7 +110,7 @@ public class WorkspaceController {
         processEngine.getRuntimeService().deleteProcessInstance(
                 processInstanceId, "end");
 
-        return "redirect:/bpm/workspace-listProcessInstances.do";
+        return "redirect:/bpm/workspace-listRunningProcessInstances.do";
     }
 
     /**

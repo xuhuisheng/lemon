@@ -1,5 +1,6 @@
 package com.mossle.keyvalue;
 
+import java.util.Collections;
 import java.util.HashMap;
 import java.util.List;
 import java.util.Map;
@@ -97,6 +98,10 @@ public class FormParameter {
 
     // ~ ==================================================
     public List<String> getList(String key) {
+        if (multiValueMap == null) {
+            return Collections.emptyList();
+        }
+
         return multiValueMap.get(key);
     }
 }

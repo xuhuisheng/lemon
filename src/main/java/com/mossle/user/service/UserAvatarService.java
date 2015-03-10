@@ -22,13 +22,10 @@ import com.mossle.user.ImageUtils;
 import com.mossle.user.component.UserPublisher;
 import com.mossle.user.notification.DefaultUserNotification;
 import com.mossle.user.notification.UserNotification;
-import com.mossle.user.persistence.domain.UserAttr;
-import com.mossle.user.persistence.domain.UserBase;
-import com.mossle.user.persistence.domain.UserSchema;
-import com.mossle.user.persistence.manager.UserAttrManager;
-import com.mossle.user.persistence.manager.UserBaseManager;
-import com.mossle.user.persistence.manager.UserRepoManager;
-import com.mossle.user.persistence.manager.UserSchemaManager;
+import com.mossle.user.persistence.domain.AccountAvatar;
+import com.mossle.user.persistence.domain.AccountInfo;
+import com.mossle.user.persistence.manager.AccountAvatarManager;
+import com.mossle.user.persistence.manager.AccountInfoManager;
 
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
@@ -44,20 +41,31 @@ import org.springframework.transaction.annotation.Transactional;
 public class UserAvatarService {
     private static Logger logger = LoggerFactory
             .getLogger(UserAvatarService.class);
-    private UserBaseManager userBaseManager;
+    private AccountInfoManager accountInfoManager;
+    private AccountAvatarManager accountAvatarManager;
     private StoreConnector storeConnector;
 
-    public DataSource viewAvatar(Long userId, int width) throws Exception {
-        UserBase userBase = userBaseManager.get(userId);
-        StoreDTO storeDto = null;
+    public DataSource viewAvatar(Long accountId, int width) throws Exception {
+        AccountInfo accountInfo = accountInfoManager.get(accountId);
 
-        if ((userBase == null) || (userBase.getAvatar() == null)) {
-            storeDto = storeConnector.getStore("avatar", "default.jpg");
+        String key = null;
 
-            return storeDto.getDataSource();
+        if (accountInfo != null) {
+            String hql = "from AccountAvatar where accountInfo=? and type='default'";
+            AccountAvatar accountAvatar = accountAvatarManager.findUnique(hql,
+                    accountInfo);
+
+            if (accountAvatar != null) {
+                key = accountAvatar.getCode();
+            }
         }
 
-        String key = userBase.getAvatar();
+        if (key == null) {
+            key = "default.jpg";
+        }
+
+        StoreDTO storeDto = null;
+
         storeDto = storeConnector.getStore("avatar", key);
 
         if (storeDto == null) {
@@ -71,7 +79,10 @@ public class UserAvatarService {
         }
 
         StoreDTO originalStoreDto = storeDto;
-        String resizeKey = key + "-" + width;
+        int index = key.lastIndexOf(".");
+        String prefix = key.substring(0, index);
+        String suffix = key.substring(index);
+        String resizeKey = prefix + "-" + width + suffix;
 
         StoreDTO resizeStoreDto = storeConnector.getStore("avatar", resizeKey);
 
@@ -89,8 +100,14 @@ public class UserAvatarService {
     }
 
     @Resource
-    public void setUserBaseManager(UserBaseManager userBaseManager) {
-        this.userBaseManager = userBaseManager;
+    public void setAccountInfoManager(AccountInfoManager accountInfoManager) {
+        this.accountInfoManager = accountInfoManager;
+    }
+
+    @Resource
+    public void setAccountAvatarManager(
+            AccountAvatarManager accountAvatarManager) {
+        this.accountAvatarManager = accountAvatarManager;
     }
 
     @Resource

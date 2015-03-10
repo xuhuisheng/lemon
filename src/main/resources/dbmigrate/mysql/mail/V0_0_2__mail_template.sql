@@ -4,7 +4,7 @@
 --  mail template
 -------------------------------------------------------------------------------
 CREATE TABLE MAIL_TEMPLATE(
-        ID BIGINT auto_increment,
+        ID BIGINT AUTO_INCREMENT,
         NAME VARCHAR(50),
 	RECEIVER VARCHAR(200),
 	SENDER VARCHAR(200),

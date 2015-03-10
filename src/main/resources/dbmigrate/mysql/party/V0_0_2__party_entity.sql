@@ -1,6 +1,6 @@
 
 CREATE TABLE PARTY_ENTITY(
-        ID BIGINT auto_increment,
+        ID BIGINT AUTO_INCREMENT,
         TYPE_ID BIGINT,
         NAME VARCHAR(100),
 	REF VARCHAR(100),

@@ -28,6 +28,12 @@ public class UserCacheImpl implements UserCache {
         return cache.get(key);
     }
 
+    public UserDTO findByNickName(String nickName) {
+        String key = "nickName:" + nickName;
+
+        return cache.get(key);
+    }
+
     public void updateUser(UserDTO userDto) {
         cache.set("userId:" + userDto.getId(), userDto);
         cache.set(
@@ -36,6 +42,7 @@ public class UserCacheImpl implements UserCache {
         cache.set(
                 "userRef:" + userDto.getRef() + ":" + userDto.getUserRepoRef(),
                 userDto);
+        cache.set("nickName:" + userDto.getDisplayName(), userDto);
     }
 
     public void removeUser(UserDTO userDto) {
@@ -44,6 +51,7 @@ public class UserCacheImpl implements UserCache {
                 + userDto.getUserRepoRef());
         cache.remove("userRef:" + userDto.getRef() + ":"
                 + userDto.getUserRepoRef());
+        cache.remove("nickName:" + userDto.getDisplayName());
     }
 
     public void setCacheStrategy(CacheStrategy cacheStrategy) {

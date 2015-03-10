@@ -43,7 +43,7 @@ setInterval(unreadCount, 10000);
               <li class="dropdown ${currentHeader == 'scope' ? 'active' : ''}">
                 <a data-toggle="dropdown" class="dropdown-toggle" href="#"><i class="icon-user"></i>系统管理 <b class="caret"></b></a>
                 <ul class="dropdown-menu">
-                  <li><a href="${scopePrefix}/user/user-base-list.do"><i class="icon-user"></i>用户管理</a></li>
+                  <li><a href="${scopePrefix}/user/account-info-list.do"><i class="icon-user"></i>用户管理</a></li>
                   <li><a href="${scopePrefix}/party/org-list.do"><i class="icon-user"></i>组织机构</a></li>
                   <li class="divider"></li>
                   <li><a href="${scopePrefix}/auth/user-connector-list.do"><i class="icon-user"></i>权限管理</a></li>
@@ -69,6 +69,7 @@ setInterval(unreadCount, 10000);
                 </a>
                 <ul class="dropdown-menu">
                   <li><a href="${ctx}/user/change-password-input.do"><i class="icon-user"></i>修改密码</a></li>
+                  <li><a href="${ctx}/user/profile-list.do"><i class="icon-user"></i>个人信息</a></li>
                   <li class="divider"></li>
 				  <li><a href="${ctx}/j_spring_security_logout"><i class="icon-user"></i>退出</a></li>
                 </ul>

@@ -4,7 +4,7 @@
 --  scope info
 -------------------------------------------------------------------------------
 CREATE TABLE SCOPE_INFO(
-        ID BIGINT auto_increment,
+        ID BIGINT AUTO_INCREMENT,
         NAME VARCHAR(50),
 	CODE VARCHAR(50),
 	REF VARCHAR(50),

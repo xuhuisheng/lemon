@@ -4,7 +4,7 @@
 --  permission
 -------------------------------------------------------------------------------
 CREATE TABLE AUTH_PERM(
-        ID BIGINT auto_increment,
+        ID BIGINT AUTO_INCREMENT,
 	CODE VARCHAR(200),
 	NAME VARCHAR(200),
 	PERM_TYPE_ID BIGINT NOT NULL,

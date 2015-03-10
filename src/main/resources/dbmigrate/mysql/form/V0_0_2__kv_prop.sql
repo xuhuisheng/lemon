@@ -4,7 +4,7 @@
 --  keyvalue property
 -------------------------------------------------------------------------------
 CREATE TABLE KV_PROP(
-        ID BIGINT auto_increment,
+        ID BIGINT AUTO_INCREMENT,
 	CODE VARCHAR(200),
 	TYPE INT,
 	VALUE VARCHAR(200),

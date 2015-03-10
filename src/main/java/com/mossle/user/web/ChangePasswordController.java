@@ -10,7 +10,11 @@ import com.mossle.core.spring.MessageHelper;
 import com.mossle.ext.auth.CurrentUserHolder;
 import com.mossle.ext.auth.CustomPasswordEncoder;
 
+import com.mossle.user.persistence.domain.AccountCredential;
+import com.mossle.user.persistence.domain.AccountInfo;
 import com.mossle.user.persistence.domain.UserBase;
+import com.mossle.user.persistence.manager.AccountCredentialManager;
+import com.mossle.user.persistence.manager.AccountInfoManager;
 import com.mossle.user.persistence.manager.UserBaseManager;
 
 import org.springframework.stereotype.Controller;
@@ -26,7 +30,8 @@ import org.springframework.web.servlet.mvc.support.RedirectAttributes;
 @Controller
 @RequestMapping("/user")
 public class ChangePasswordController {
-    private UserBaseManager userBaseManager;
+    private AccountInfoManager accountInfoManager;
+    private AccountCredentialManager accountCredentialManager;
     private MessageHelper messageHelper;
     private CustomPasswordEncoder customPasswordEncoder;
     private CurrentUserHolder currentUserHolder;
@@ -48,18 +53,28 @@ public class ChangePasswordController {
             return "redirect:/user/change-password-input.do";
         }
 
-        UserBase userBase = userBaseManager.findUniqueBy("username",
-                currentUserHolder.getUsername());
+        Long accountId = Long.parseLong(currentUserHolder.getUserId());
+        AccountInfo accountInfo = accountInfoManager.get(accountId);
+        String hql = "from AccountCredential where accountInfo=? and catalog='default'";
+        AccountCredential accountCredential = accountCredentialManager
+                .findUnique(hql, accountInfo);
 
-        if (!isPasswordValid(oldPassword, userBase.getPassword())) {
+        if (accountCredential == null) {
+            messageHelper.addFlashMessage(redirectAttributes,
+                    "user.user.input.credentialnotexists", "未设置过密码");
+
+            return "redirect:/user/change-password-input.do";
+        }
+
+        if (!isPasswordValid(oldPassword, accountCredential.getPassword())) {
             messageHelper.addFlashMessage(redirectAttributes,
                     "user.user.input.passwordnotcorrect", "密码错误");
 
             return "redirect:/user/change-password-input.do";
         }
 
-        userBase.setPassword(encodePassword(newPassword));
-        userBaseManager.save(userBase);
+        accountCredential.setPassword(encodePassword(newPassword));
+        accountCredentialManager.save(accountCredential);
         messageHelper.addFlashMessage(redirectAttributes, "core.success.save",
                 "保存成功");
 
@@ -84,8 +99,14 @@ public class ChangePasswordController {
 
     // ~ ======================================================================
     @Resource
-    public void setUserBaseManager(UserBaseManager userBaseManager) {
-        this.userBaseManager = userBaseManager;
+    public void setAccountInfoManager(AccountInfoManager accountInfoManager) {
+        this.accountInfoManager = accountInfoManager;
+    }
+
+    @Resource
+    public void setAccountCredentialManager(
+            AccountCredentialManager accountCredentialManager) {
+        this.accountCredentialManager = accountCredentialManager;
     }
 
     @Resource

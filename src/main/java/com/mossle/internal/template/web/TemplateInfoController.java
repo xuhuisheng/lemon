@@ -6,7 +6,6 @@ import java.util.Map;
 
 import javax.annotation.Resource;
 
-
 import com.mossle.core.hibernate.PropertyFilter;
 import com.mossle.core.mapper.BeanMapper;
 import com.mossle.core.page.Page;

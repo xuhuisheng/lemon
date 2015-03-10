@@ -4,7 +4,7 @@
 --  msg info
 -------------------------------------------------------------------------------
 CREATE TABLE MSG_INFO(
-        ID BIGINT auto_increment,
+        ID BIGINT AUTO_INCREMENT,
 	NAME VARCHAR(200),
 	CONTENT TEXT,
 	TYPE INTEGER,

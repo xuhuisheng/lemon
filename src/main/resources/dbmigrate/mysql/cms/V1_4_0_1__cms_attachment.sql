@@ -4,7 +4,7 @@
 --  cms attachment
 -------------------------------------------------------------------------------
 CREATE TABLE CMS_ATTACHMENT(
-        ID BIGINT auto_increment,
+        ID BIGINT AUTO_INCREMENT,
 	TYPE VARCHAR(200),
 	NAME VARCHAR(200),
 	PATH VARCHAR(200),

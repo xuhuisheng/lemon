@@ -52,7 +52,7 @@ public class FindPreviousActivitiesCmd implements Command<List<PvmActivity>> {
         for (PvmTransition pvmTransition : pvmActivity.getIncomingTransitions()) {
             PvmActivity targetActivity = pvmTransition.getDestination();
 
-            if ("userTask".equals(pvmActivity.getProperty("type"))) {
+            if ("userTask".equals(targetActivity.getProperty("type"))) {
                 pvmActivities.add(targetActivity);
             } else {
                 pvmActivities
