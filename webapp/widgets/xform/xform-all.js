@@ -12,6 +12,13 @@ xf.$ = function(id) {
 	return document.getElementById(id);
 }
 
+xf.id = function() {
+	if (typeof xf.sed == 'undefined') {
+		xf.sed = 1;
+	}
+	return 'xf-' + xf.sed++;
+}
+
 xf.addClass = function(el, className) {
 	if ((' ' + el.className).indexOf(' ' + className) == -1) {
 		el.className += ' ' + className;
@@ -123,7 +130,7 @@ xf.Xform = function(id) {
 }
 
 xf.Xform.prototype.addSection = function(section) {
-	section.id = this.getId();
+	section.id = xf.id();
 	section.xform = this;
 	this.sections.push(section);
 }
@@ -244,10 +251,6 @@ xf.Xform.prototype.findSection = function(e) {
 			return null;
 		}
 	}
-}
-
-xf.Xform.prototype.getId = function() {
-	return 'xf-g-' + (this.sed++);
 }
 
 xf.Xform.prototype.addRow = function() {
@@ -941,7 +944,7 @@ xf.field.Label.prototype.updateText = function(text) {
 	var parentNode = xf.$(this.parentId);
 	parentNode.innerHTML = 
 		'<div class="xf-handler">'
-		+ '<label style="display:block;text-align:right;margin-bottom:0px;cursor:move;">' + this.text + '</label>'
+		+ '<label style="display:block;text-align:right;margin-bottom:0px;">' + this.text + '</label>'
 		+ '</div>';
 }
 
@@ -987,7 +990,7 @@ xf.field.TextField.prototype.updateName = function(value) {
 	var parentNode = xf.$(this.parentId);
 	parentNode.innerHTML = 
 		'<div class="xf-handler">'
-		+ '<input type="text" name="' + this.name + '" ' + (this.readOnly ? 'readOnly' : '') + ' value="' + (this.value ? this.value : '') + '" style="margin-bottom:0px;cursor:move;" maxlength="200">'
+		+ '<input type="text" name="' + this.name + '" ' + (this.readOnly ? 'readOnly' : '') + ' value="' + (this.value ? this.value : '') + '" style="margin-bottom:0px;" maxlength="200">'
 		+ '</div>';
 }
 
@@ -1052,7 +1055,7 @@ xf.field.Password.prototype.updateName = function(value) {
 	var parentNode = xf.$(this.parentId);
 	parentNode.innerHTML = 
 		'<div class="xf-handler">'
-		+ '<input type="password" name="' + this.name + '" ' + (this.readOnly ? 'readOnly' : '') + ' style="margin-bottom:0px;cursor:move;" maxlength="200">'
+		+ '<input type="password" name="' + this.name + '" ' + (this.readOnly ? 'readOnly' : '') + ' style="margin-bottom:0px;" maxlength="200">'
 		+ '</div>';
 }
 
@@ -1111,7 +1114,7 @@ xf.field.TextArea.prototype.updateName = function(value) {
 	var parentNode = xf.$(this.parentId);
 	parentNode.innerHTML = 
 		'<div class="xf-handler">'
-		+ '<textarea name="' + this.name + '" ' + (this.readOnly ? 'readOnly' : '') + ' style="margin-bottom:0px;cursor:move;" maxlength="200">' + (this.value ? this.value : '') + '</textarea>'
+		+ '<textarea name="' + this.name + '" ' + (this.readOnly ? 'readOnly' : '') + ' style="margin-bottom:0px;" maxlength="200">' + (this.value ? this.value : '') + '</textarea>'
 		+ '</div>';
 }
 
@@ -1185,7 +1188,7 @@ xf.field.Select.prototype.updateItems = function(value) {
 	var parentNode = xf.$(this.parentId);
 	var html = 
 		'<div class="xf-handler">'
-		+ '<select name="' + this.name + '" ' + (this.readOnly ? 'disabled' : '') + ' style="margin-bottom:0px;cursor:move;">';
+		+ '<select name="' + this.name + '" ' + (this.readOnly ? 'disabled' : '') + ' style="margin-bottom:0px;">';
 	var array = this.items.split(',');
 	for (var i = 0; i < array.length; i++) {
 		var item = array[i];
@@ -1269,7 +1272,7 @@ xf.field.Radio.prototype.updateItems = function(value) {
 	for (var i = 0; i < array.length; i++) {
 		var item = array[i];
 		html += '<label class="radio inline">';
-		html += '<input type="radio" name="' + this.name + '" value="' + item + '" ' + (this.readOnly ? 'readOnly' : '') + ' ' + (this.value == item ? 'checked' : '') + ' style="margin:0px;cursor:move;">';
+		html += '<input type="radio" name="' + this.name + '" value="' + item + '" ' + (this.readOnly ? 'readOnly' : '') + ' ' + (this.value == item ? 'checked' : '') + ' style="margin:0px;">';
 		html += item;
 		html += '</label>';
 	}
@@ -1346,10 +1349,16 @@ xf.field.Checkbox.prototype.updateItems = function(value) {
 	var parentNode = xf.$(this.parentId);
 	var html = '<div class="xf-handler">';
 	var array = this.items.split(',');
+
+	var valueArray = [];
+	if (this.value != null) {
+		valueArray = this.value.split(',');
+	}
+
 	for (var i = 0; i < array.length; i++) {
 		var item = array[i];
 		html += '<label class="checkbox inline">';
-		html += '<input type="checkbox" name="' + this.name + '" value="' + item + '" ' + (this.readOnly ? 'disabled' : '') + ' ' + (this.value == item ? 'checked' : '') + ' style="margin:0px;cursor:move;">';
+		html += '<input type="checkbox" name="' + this.name + '" value="' + item + '" ' + (this.readOnly ? 'disabled' : '') + ' ' + (valueArray.indexOf(item) != -1 ? 'checked' : '') + ' style="margin:0px;">';
 		html += item;
 		html += '</label>';
 	}
@@ -1417,7 +1426,7 @@ xf.field.FileUpload.prototype.updateName = function(value) {
 	var parentNode = xf.$(this.parentId);
 	parentNode.innerHTML = 
 		'<div class="xf-handler">'
-		+ '<input type="file" name="' + this.name + '" ' + (this.readOnly ? 'readOnly' : '') + ' style="cursor:move;">'
+		+ '<input type="file" name="' + this.name + '" ' + (this.readOnly ? 'readOnly' : '') + '>'
 		+ '</div>';
 }
 
