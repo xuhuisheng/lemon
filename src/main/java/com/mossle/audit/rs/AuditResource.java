@@ -15,8 +15,9 @@ import javax.ws.rs.Produces;
 import javax.ws.rs.QueryParam;
 import javax.ws.rs.core.MediaType;
 
-import com.mossle.api.audit.AuditConnector;
 import com.mossle.api.audit.AuditDTO;
+
+import com.mossle.audit.component.AuditQueue;
 
 import com.mossle.core.util.BaseDTO;
 
@@ -29,7 +30,7 @@ import org.springframework.stereotype.Component;
 @Path("audit")
 public class AuditResource {
     private static Logger logger = LoggerFactory.getLogger(AuditResource.class);
-    private AuditConnector auditConnector;
+    private AuditQueue auditQueue;
 
     @POST
     public BaseDTO log(@FormParam("user") String user,
@@ -66,7 +67,7 @@ public class AuditResource {
         BaseDTO baseDto = new BaseDTO();
 
         try {
-            auditConnector.log(auditDto);
+            auditQueue.add(auditDto);
             baseDto.setCode(200);
         } catch (Exception ex) {
             logger.error(ex.getMessage(), ex);
@@ -78,7 +79,7 @@ public class AuditResource {
     }
 
     @Resource
-    public void setAuditConnector(AuditConnector auditConnector) {
-        this.auditConnector = auditConnector;
+    public void setAuditQueue(AuditQueue auditQueue) {
+        this.auditQueue = auditQueue;
     }
 }

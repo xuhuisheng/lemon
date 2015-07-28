@@ -16,11 +16,12 @@ import java.util.UUID;
 
 import javax.annotation.Resource;
 
+import javax.servlet.http.HttpServletRequest;
 import javax.servlet.http.HttpServletResponse;
 
-import com.mossle.api.internal.StoreConnector;
-import com.mossle.api.internal.StoreDTO;
 import com.mossle.api.scope.ScopeHolder;
+import com.mossle.api.store.StoreConnector;
+import com.mossle.api.store.StoreDTO;
 import com.mossle.api.user.UserConnector;
 
 import com.mossle.core.hibernate.PropertyFilter;
@@ -123,12 +124,14 @@ public class DocInfoController {
 
     @RequestMapping("doc-info-download")
     public void download(@RequestParam("id") Long id,
-            HttpServletResponse response) throws Exception {
+            HttpServletRequest request, HttpServletResponse response)
+            throws Exception {
         DocInfo docInfo = docInfoManager.get(id);
         InputStream is = null;
 
         try {
-            ServletUtils.setFileDownloadHeader(response, docInfo.getName());
+            ServletUtils.setFileDownloadHeader(request, response,
+                    docInfo.getName());
             is = storeConnector.getStore("docinfo", docInfo.getPath())
                     .getDataSource().getInputStream();
             IoUtils.copyStream(is, response.getOutputStream());
@@ -154,7 +157,8 @@ public class DocInfoController {
     @RequestMapping("doc-info-export")
     public void export(@ModelAttribute Page page,
             @RequestParam Map<String, Object> parameterMap,
-            HttpServletResponse response) throws Exception {
+            HttpServletRequest request, HttpServletResponse response)
+            throws Exception {
         List<PropertyFilter> propertyFilters = PropertyFilter
                 .buildFromMap(parameterMap);
         page = docInfoManager.pagedQuery(page, propertyFilters);
@@ -165,7 +169,7 @@ public class DocInfoController {
         tableModel.setName("doc info");
         tableModel.addHeaders("id", "name");
         tableModel.setData(docInfos);
-        exportor.export(response, tableModel);
+        exportor.export(request, response, tableModel);
     }
 
     // ~ ======================================================================

@@ -8,10 +8,11 @@ import java.util.Map;
 
 import javax.annotation.Resource;
 
+import javax.servlet.http.HttpServletRequest;
 import javax.servlet.http.HttpServletResponse;
 
-import com.mossle.api.internal.StoreConnector;
-import com.mossle.api.internal.StoreDTO;
+import com.mossle.api.store.StoreConnector;
+import com.mossle.api.store.StoreDTO;
 
 import com.mossle.cms.CmsConstants;
 import com.mossle.cms.domain.CmsArticle;
@@ -125,7 +126,8 @@ public class CmsArticleController {
     @RequestMapping("cms-article-export")
     public void export(@ModelAttribute Page page,
             @RequestParam Map<String, Object> parameterMap,
-            HttpServletResponse response) throws Exception {
+            HttpServletRequest request, HttpServletResponse response)
+            throws Exception {
         List<PropertyFilter> propertyFilters = PropertyFilter
                 .buildFromMap(parameterMap);
         page = cmsArticleManager.pagedQuery(page, propertyFilters);
@@ -136,7 +138,7 @@ public class CmsArticleController {
         tableModel.setName("cmsArticle");
         tableModel.addHeaders("id", "name");
         tableModel.setData(cmsArticles);
-        exportor.export(response, tableModel);
+        exportor.export(request, response, tableModel);
     }
 
     @RequestMapping("cms-article-checkName")

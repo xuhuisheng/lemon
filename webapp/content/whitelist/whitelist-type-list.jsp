@@ -24,7 +24,7 @@ var config = {
     },
 	selectedItemClass: 'selectedItem',
 	gridFormId: 'demoGridForm',
-	exportUrl: 'demo-export.do'
+	exportUrl: 'whitelist-type-export.do'
 };
 
 var table;
@@ -56,7 +56,7 @@ $(function() {
 		</header>
         <div id="demoSearch" class="content content-inner">
 
-		  <form name="demoForm" method="post" action="demo-list.do" class="form-inline">
+		  <form name="demoForm" method="post" action="whitelist-type-list.do" class="form-inline">
 		    <label for="demo_name"><spring:message code='demo.demo.list.search.name' text='名称'/>:</label>
 		    <input type="text" id="demo_name" name="filter_LIKES_name" value="${param.filter_LIKES_name}">
 			<button class="btn btn-small a-search" onclick="document.demoForm.submit()">查询</button>&nbsp;
@@ -68,7 +68,7 @@ $(function() {
 	  <article class="m-blank">
 	    <div class="pull-left">
 		  <region:region-permission permission="demo:create">
-		  <button class="btn btn-small a-insert" onclick="location.href='demo-input.do'">新建</button>
+		  <button class="btn btn-small a-insert" onclick="location.href='whitelist-type-input.do'">新建</button>
 		  </region:region-permission>
 		  <region:region-permission permission="demo:delete">
 		  <button class="btn btn-small a-remove" onclick="table.removeAll()">删除</button>
@@ -94,7 +94,7 @@ $(function() {
 		  <h4 class="title"><spring:message code="demo.demo.list.title" text="列表"/></h4>
 		</header>
         <div class="content">
-<form id="demoGridForm" name="demoGridForm" method='post' action="demo-remove.do" class="m-form-blank">
+<form id="demoGridForm" name="demoGridForm" method='post' action="whitelist-type-remove.do" class="m-form-blank">
   <table id="demoGrid" class="m-table table-hover">
     <thead>
       <tr>
@@ -112,7 +112,7 @@ $(function() {
         <td>${item.id}</td>
         <td>${item.name}</td>
         <td>
-          <a href="demo-input.do?id=${item.id}" class="a-update"><spring:message code="core.list.edit" text="编辑"/></a>
+          <a href="whitelist-type-input.do?id=${item.id}" class="a-update"><spring:message code="core.list.edit" text="编辑"/></a>
         </td>
       </tr>
       </c:forEach>

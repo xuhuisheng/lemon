@@ -5,7 +5,7 @@ import java.util.Date;
 import java.util.List;
 import java.util.Map;
 
-import com.mossle.api.internal.StoreConnector;
+import com.mossle.api.store.StoreConnector;
 
 import com.mossle.ext.MultipartHandler;
 import com.mossle.ext.store.MultipartFileDataSource;

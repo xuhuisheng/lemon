@@ -74,13 +74,21 @@ public class ModelerController {
     }
 
     @RequestMapping("modeler-deploy")
-    public String deploy(@RequestParam("id") String id) throws Exception {
+    public String deploy(@RequestParam("id") String id,
+            org.springframework.ui.Model theModel) throws Exception {
         RepositoryService repositoryService = processEngine
                 .getRepositoryService();
         Model modelData = repositoryService.getModel(id);
-        JsonNode modelNode = (JsonNode) new ObjectMapper()
-                .readTree(repositoryService.getModelEditorSource(modelData
-                        .getId()));
+        byte[] bytes = repositoryService
+                .getModelEditorSource(modelData.getId());
+
+        if (bytes == null) {
+            theModel.addAttribute("message", "模型数据为空，请先设计流程并成功保存，再进行发布。");
+
+            return "modeler/failure";
+        }
+
+        JsonNode modelNode = (JsonNode) new ObjectMapper().readTree(bytes);
         byte[] bpmnBytes = null;
 
         BpmnModel model = new BpmnJsonConverter().convertToBpmnModel(modelNode);

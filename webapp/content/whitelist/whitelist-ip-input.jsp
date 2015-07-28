@@ -40,13 +40,13 @@ $(function() {
 		<div class="content content-inner">
 
 <form id="demoForm" method="post" action="whitelist-ip-save.do" class="form-horizontal">
-  <s:if test="model != null">
+  <s:if test="${model != null}">
   <input id="demo_id" type="hidden" name="id" value="${model.id}">
   </s:if>
   <div class="control-group">
     <label class="control-label" for="demo_name"><spring:message code="demo.demo.input.name" text="名称"/></label>
 	<div class="controls">
-	  <input id="demo_name" type="text" name="name" value="${model.name}" size="40" class="text required" minlength="2" maxlength="10">
+	  <input id="demo_name" type="text" name="value" value="${model.value}" size="40" class="text required" minlength="2" maxlength="10">
     </div>
   </div>
   <div class="control-group">

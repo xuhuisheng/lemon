@@ -6,6 +6,7 @@ import java.util.Map;
 
 import javax.annotation.Resource;
 
+import javax.servlet.http.HttpServletRequest;
 import javax.servlet.http.HttpServletResponse;
 
 import com.mossle.api.scope.ScopeHolder;
@@ -122,7 +123,8 @@ public class UserRepoController {
     @RequestMapping("user-repo-export")
     public void export(@ModelAttribute Page page,
             @RequestParam Map<String, Object> parameterMap,
-            HttpServletResponse response) throws Exception {
+            HttpServletRequest request, HttpServletResponse response)
+            throws Exception {
         List<PropertyFilter> propertyFilters = PropertyFilter
                 .buildFromMap(parameterMap);
         page = userRepoManager.pagedQuery(page, propertyFilters);
@@ -133,7 +135,7 @@ public class UserRepoController {
         tableModel.addHeaders("id", "name", "type", "repoCode", "reference",
                 "descn");
         tableModel.setData(userRepos);
-        exportor.export(response, tableModel);
+        exportor.export(request, response, tableModel);
     }
 
     // ~ ======================================================================

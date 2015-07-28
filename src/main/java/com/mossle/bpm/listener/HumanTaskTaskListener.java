@@ -11,6 +11,7 @@ import javax.annotation.Resource;
 
 import com.mossle.api.humantask.HumanTaskConnector;
 import com.mossle.api.humantask.HumanTaskDTO;
+import com.mossle.api.humantask.ParticipantDTO;
 
 import com.mossle.bpm.expr.Expr;
 import com.mossle.bpm.expr.ExprProcessor;
@@ -24,6 +25,7 @@ import org.activiti.engine.delegate.DelegateTask;
 import org.activiti.engine.impl.context.Context;
 import org.activiti.engine.impl.el.ExpressionManager;
 import org.activiti.engine.impl.persistence.entity.TaskEntity;
+import org.activiti.engine.task.IdentityLink;
 
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
@@ -79,6 +81,21 @@ public class HumanTaskTaskListener extends DefaultTaskListener {
         humanTaskDto.setTenantId(delegateTask.getTenantId());
         humanTaskDto.setStatus("active");
         humanTaskDto = humanTaskConnector.saveHumanTask(humanTaskDto);
+        logger.info("candidates : {}", delegateTask.getCandidates());
+
+        for (IdentityLink identityLink : delegateTask.getCandidates()) {
+            ParticipantDTO participantDto = new ParticipantDTO();
+            participantDto.setType(identityLink.getType());
+            participantDto.setHumanTaskId(humanTaskDto.getId());
+
+            if ("user".equals(participantDto.getType())) {
+                participantDto.setCode(identityLink.getUserId());
+            } else {
+                participantDto.setCode(identityLink.getGroupId());
+            }
+
+            humanTaskConnector.saveParticipant(participantDto);
+        }
 
         return humanTaskDto;
     }

@@ -6,8 +6,8 @@ import java.util.HashMap;
 import java.util.List;
 import java.util.Map;
 
-import com.mossle.api.internal.StoreConnector;
-import com.mossle.api.internal.StoreDTO;
+import com.mossle.api.store.StoreConnector;
+import com.mossle.api.store.StoreDTO;
 
 import com.mossle.core.mapper.JsonMapper;
 

@@ -9,6 +9,7 @@ import java.util.Map;
 
 import javax.annotation.Resource;
 
+import javax.servlet.http.HttpServletRequest;
 import javax.servlet.http.HttpServletResponse;
 
 import com.mossle.core.hibernate.PropertyFilter;
@@ -97,7 +98,8 @@ public class PimInfoController {
     @RequestMapping("pim-info-export")
     public void export(@ModelAttribute Page page,
             @RequestParam Map<String, Object> parameterMap,
-            HttpServletResponse response) throws Exception {
+            HttpServletRequest request, HttpServletResponse response)
+            throws Exception {
         List<PropertyFilter> propertyFilters = PropertyFilter
                 .buildFromMap(parameterMap);
         page = pimInfoManager.pagedQuery(page, propertyFilters);
@@ -108,15 +110,15 @@ public class PimInfoController {
         tableModel.setName("pim info");
         tableModel.addHeaders("id", "name");
         tableModel.setData(pimInfos);
-        exportor.export(response, tableModel);
+        exportor.export(request, response, tableModel);
     }
 
     @RequestMapping("pim-info-vcard")
-    public void vcard(@RequestParam("id") Long id, HttpServletResponse response)
-            throws Exception {
+    public void vcard(@RequestParam("id") Long id, HttpServletRequest request,
+            HttpServletResponse response) throws Exception {
         PimInfo pimInfo = pimInfoManager.get(id);
         response.setContentType("text/vcard");
-        ServletUtils.setFileDownloadHeader(response, "vcard.vcf");
+        ServletUtils.setFileDownloadHeader(request, response, "vcard.vcf");
 
         String text = "BEGIN:VCARD\n" + "VERSION:2.1\n" + "FN:"
                 + pimInfo.getName() + "\n" + "TEL;WORK;VOICE:"

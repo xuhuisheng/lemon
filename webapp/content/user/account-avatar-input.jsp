@@ -84,7 +84,7 @@ $(function () {
 	<div class="controls">
 	  <div id="avatarImage">
 	    <c:if test="${not empty accountAvatar.code}">
-		  <img src="account-base-avatar.do?id=${accountInfo.id}" style="width:512px;">
+		  <img src="account-avatar-view.do?id=${accountInfo.id}" style="width:512px;">
 		</c:if>
 	  </div>
 	  <div id="avatarButton" class="btn btn-success fileinput-button">

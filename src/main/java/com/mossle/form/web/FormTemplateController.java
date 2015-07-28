@@ -10,9 +10,6 @@ import javax.annotation.Resource;
 import javax.servlet.http.HttpServletRequest;
 import javax.servlet.http.HttpServletResponse;
 
-import com.mossle.api.internal.StoreConnector;
-import com.mossle.api.internal.StoreDTO;
-
 import com.mossle.core.hibernate.PropertyFilter;
 import com.mossle.core.mapper.BeanMapper;
 import com.mossle.core.mapper.JsonMapper;
@@ -59,7 +56,6 @@ public class FormTemplateController {
     private JsonMapper jsonMapper = new JsonMapper();
     private MessageHelper messageHelper;
     private MultipartResolver multipartResolver;
-    private StoreConnector storeConnector;
 
     @RequestMapping("form-template-list")
     public String list(@ModelAttribute Page page,
@@ -122,7 +118,8 @@ public class FormTemplateController {
     @RequestMapping("form-template-export")
     public void export(@ModelAttribute Page page,
             @RequestParam Map<String, Object> parameterMap,
-            HttpServletResponse response) throws Exception {
+            HttpServletRequest request, HttpServletResponse response)
+            throws Exception {
         List<PropertyFilter> propertyFilters = PropertyFilter
                 .buildFromMap(parameterMap);
         page = formTemplateManager.pagedQuery(page, propertyFilters);
@@ -134,7 +131,7 @@ public class FormTemplateController {
         tableModel.setName("dynamic model");
         tableModel.addHeaders("id", "name");
         tableModel.setData(dynamicModels);
-        exportor.export(response, tableModel);
+        exportor.export(request, response, tableModel);
     }
 
     @RequestMapping("form-template-copy")
@@ -193,10 +190,5 @@ public class FormTemplateController {
     @Resource
     public void setMultipartResolver(MultipartResolver multipartResolver) {
         this.multipartResolver = multipartResolver;
-    }
-
-    @Resource
-    public void setStoreConnector(StoreConnector storeConnector) {
-        this.storeConnector = storeConnector;
     }
 }

@@ -6,6 +6,7 @@ import java.util.Map;
 
 import javax.annotation.Resource;
 
+import javax.servlet.http.HttpServletRequest;
 import javax.servlet.http.HttpServletResponse;
 
 import com.mossle.audit.domain.AuditBase;
@@ -101,7 +102,8 @@ public class AuditBaseController {
     @RequestMapping("audit-base-export")
     public void export(@ModelAttribute Page page,
             @RequestParam Map<String, Object> parameterMap,
-            HttpServletResponse response) throws Exception {
+            HttpServletRequest request, HttpServletResponse response)
+            throws Exception {
         List<PropertyFilter> propertyFilters = PropertyFilter
                 .buildFromMap(parameterMap);
         page = auditBaseManager.pagedQuery(page, propertyFilters);
@@ -112,7 +114,7 @@ public class AuditBaseController {
         tableModel.setName("audit base");
         tableModel.addHeaders("id", "client", "server", "resource");
         tableModel.setData(auditBases);
-        exportor.export(response, tableModel);
+        exportor.export(request, response, tableModel);
     }
 
     // ~ ======================================================================

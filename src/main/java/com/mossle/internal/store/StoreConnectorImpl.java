@@ -10,7 +10,7 @@ import javax.activation.DataSource;
 
 import javax.annotation.Resource;
 
-import com.mossle.api.internal.StoreDTO;
+import com.mossle.api.store.StoreDTO;
 
 import com.mossle.core.mapper.JsonMapper;
 import com.mossle.core.util.IoUtils;
@@ -33,8 +33,7 @@ import org.springframework.stereotype.Component;
 
 import org.springframework.util.FileCopyUtils;
 
-public class StoreConnectorImpl implements
-        com.mossle.api.internal.StoreConnector {
+public class StoreConnectorImpl implements com.mossle.api.store.StoreConnector {
     private Logger logger = LoggerFactory.getLogger(StoreConnectorImpl.class);
     private StoreHelper storeHelper;
     private StoreService storeService;

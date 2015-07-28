@@ -102,7 +102,7 @@ public class DataSourceServiceFactoryBean implements FactoryBean,
             for (Method method : dataSourceInfo.getClass().getDeclaredMethods()) {
                 String methodName = method.getName();
 
-                if (methodName.startsWith("get")) {
+                if (methodName.startsWith("get") || methodName.startsWith("is")) {
                     String fieldName = BeanUtils.getFieldName(methodName);
                     Object fieldValue = BeanUtils.safeInvokeMethod(
                             dataSourceInfo, method);

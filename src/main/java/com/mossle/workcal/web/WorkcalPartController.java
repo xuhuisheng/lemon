@@ -6,6 +6,7 @@ import java.util.Map;
 
 import javax.annotation.Resource;
 
+import javax.servlet.http.HttpServletRequest;
 import javax.servlet.http.HttpServletResponse;
 
 import com.mossle.core.hibernate.PropertyFilter;
@@ -102,7 +103,8 @@ public class WorkcalPartController {
     @RequestMapping("workcal-part-export")
     public void export(@ModelAttribute Page page,
             @RequestParam Map<String, Object> parameterMap,
-            HttpServletResponse response) throws Exception {
+            HttpServletRequest request, HttpServletResponse response)
+            throws Exception {
         List<PropertyFilter> propertyFilters = PropertyFilter
                 .buildFromMap(parameterMap);
         page = workcalPartManager.pagedQuery(page, propertyFilters);
@@ -113,7 +115,7 @@ public class WorkcalPartController {
         tableModel.setName("workcalPart");
         tableModel.addHeaders("id", "name");
         tableModel.setData(workcalParts);
-        exportor.export(response, tableModel);
+        exportor.export(request, response, tableModel);
     }
 
     @RequestMapping("workcal-part-checkName")

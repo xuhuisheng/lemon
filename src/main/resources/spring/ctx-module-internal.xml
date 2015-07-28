@@ -1,0 +1,37 @@
+<?xml version="1.0" encoding="UTF-8"?>
+<beans xmlns="http://www.springframework.org/schema/beans"
+	xmlns:xsi="http://www.w3.org/2001/XMLSchema-instance"
+	xsi:schemaLocation="http://www.springframework.org/schema/beans http://www.springframework.org/schema/beans/spring-beans.xsd">
+
+	<!-- ================================================== -->
+	<!-- 多租户？已废弃 -->
+	<bean id="scopeCache" class="com.mossle.scope.support.ScopeCacheImpl">
+		<property name="cacheStrategy" ref="localCacheStrategy"/>
+	</bean>
+
+	<bean id="scopeConnector" class="com.mossle.scope.support.ScopeConnectorFactoryBean">
+		<property name="type" value="${bridge.scope.type}"/>
+		<property name="scopeCache" ref="scopeCache"/>
+		<property name="jdbcTemplate" ref="jdbcTemplate"/>
+	</bean>
+
+	<bean class="com.mossle.scope.support.ScopePopulator">
+		<property name="debug" value="${bridge.scope.debug}"/>
+	</bean>
+
+	<!-- ================================================== -->
+	<!-- 工作日历 -->
+	<bean id="workCalendarConnector" class="${workcal.connector}"/>
+
+	<!-- 模板 -->
+	<bean id="templateConnector" class="com.mossle.internal.template.support.TemplateConnectorImpl">
+		<property name="jdbcTemplate" ref="jdbcTemplate"/>
+	</bean>
+
+	<!-- 数据字典 -->
+	<bean id="dictConnector" class="${dict.connector}"/>
+
+	<!-- 审计 -->
+	<bean id="auditConnector" class="${audit.connector}"/>
+
+</beans>

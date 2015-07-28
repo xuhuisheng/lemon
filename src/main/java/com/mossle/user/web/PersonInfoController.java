@@ -12,9 +12,9 @@ import javax.annotation.Resource;
 import javax.servlet.http.HttpServletResponse;
 import javax.servlet.http.HttpSession;
 
-import com.mossle.api.internal.StoreConnector;
-import com.mossle.api.internal.StoreDTO;
 import com.mossle.api.scope.ScopeHolder;
+import com.mossle.api.store.StoreConnector;
+import com.mossle.api.store.StoreDTO;
 import com.mossle.api.user.UserCache;
 import com.mossle.api.user.UserDTO;
 

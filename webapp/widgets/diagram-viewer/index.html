@@ -109,6 +109,9 @@ $(document).ready(function(){
   var baseUrl = window.document.location.protocol + "//" + window.document.location.host + "/";
   var shortenedUrl = window.document.location.href.replace(baseUrl, "");
   baseUrl = baseUrl + shortenedUrl.substring(0, shortenedUrl.indexOf("/"));
+  if (baseUrl.endsWith("/widgets")) {
+    baseUrl = baseUrl.substring(0, baseUrl.length - "widgets".length);
+  }
 
   ActivitiRest.options = {
     //processInstanceHighLightsUrl: baseUrl + "/service/process-instance/{processInstanceId}/highlights?callback=?",

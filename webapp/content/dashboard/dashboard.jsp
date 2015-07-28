@@ -166,8 +166,7 @@ $(function(){
 			<thead>
 			  <tr>
 				<th>编号</th>
-				<th>流程定义</th>
-				<th>创建时间</th>
+				<th>名称</th>
 				<th>&nbsp;</th>
 			  </tr>
 			</thead>
@@ -176,8 +175,7 @@ $(function(){
 			<c:forEach items="${historicProcessInstances}" var="item">
 			  <tr>
 				<td>${item.id}</td>
-				<td>${item.processDefinitionId}</td>
-				<td><fmt:formatDate value="${item.startTime}" pattern="yyyy-MM-dd HH:mm:ss" /></td>
+				<td>${item.name}</td>
 				<td>
                   <a href="${scopePrefix}/bpm/workspace-viewHistory.do?processInstanceId=${item.id}" class="btn btn-small btn-primary">历史</a>
 				</td>

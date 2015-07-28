@@ -79,13 +79,22 @@ public class PersonInfo implements java.io.Serializable {
     private String card;
 
     /** null. */
-    private String company;
+    private String companyCode;
 
     /** null. */
-    private String department;
+    private String companyName;
 
     /** null. */
-    private String position;
+    private String departmentCode;
+
+    /** null. */
+    private String departmentName;
+
+    /** null. */
+    private String positionCode;
+
+    /** null. */
+    private String positionName;
 
     /** null. */
     private String gender;
@@ -119,9 +128,11 @@ public class PersonInfo implements java.io.Serializable {
             String telephone, String email, String im, String country,
             String province, String city, String building, String floor,
             String seat, String employeeNo, String employeeType, String card,
-            String company, String department, String position, String gender,
-            Date birthday, String idCardType, String idCardValue,
-            String nationality, String star, String blood, String clothSize) {
+            String companyCode, String companyName, String departmentCode,
+            String departmentName, String positionCode, String positionName,
+            String gender, Date birthday, String idCardType,
+            String idCardValue, String nationality, String star, String blood,
+            String clothSize) {
         this.code = code;
         this.username = username;
         this.familyName = familyName;
@@ -140,9 +151,12 @@ public class PersonInfo implements java.io.Serializable {
         this.employeeNo = employeeNo;
         this.employeeType = employeeType;
         this.card = card;
-        this.company = company;
-        this.department = department;
-        this.position = position;
+        this.companyCode = companyCode;
+        this.companyName = companyName;
+        this.departmentCode = departmentCode;
+        this.departmentName = departmentName;
+        this.positionCode = positionCode;
+        this.positionName = positionName;
         this.gender = gender;
         this.birthday = birthday;
         this.idCardType = idCardType;
@@ -422,45 +436,87 @@ public class PersonInfo implements java.io.Serializable {
     }
 
     /** @return null. */
-    @Column(name = "COMPANY", length = 200)
-    public String getCompany() {
-        return this.company;
+    @Column(name = "COMPANY_CODE", length = 200)
+    public String getCompanyCode() {
+        return this.companyCode;
     }
 
     /**
-     * @param company
+     * @param companyCode
      *            null.
      */
-    public void setCompany(String company) {
-        this.company = company;
+    public void setCompanyCode(String companyCode) {
+        this.companyCode = companyCode;
     }
 
     /** @return null. */
-    @Column(name = "DEPARTMENT", length = 200)
-    public String getDepartment() {
-        return this.department;
+    @Column(name = "COMPANY_NAME", length = 200)
+    public String getCompanyName() {
+        return this.companyName;
     }
 
     /**
-     * @param department
+     * @param companyName
      *            null.
      */
-    public void setDepartment(String department) {
-        this.department = department;
+    public void setCompanyName(String companyName) {
+        this.companyName = companyName;
     }
 
     /** @return null. */
-    @Column(name = "POSITION", length = 200)
-    public String getPosition() {
-        return this.position;
+    @Column(name = "DEPARTMENT_CODE", length = 200)
+    public String getDepartmentCode() {
+        return this.departmentCode;
     }
 
     /**
-     * @param position
+     * @param departmentCode
      *            null.
      */
-    public void setPosition(String position) {
-        this.position = position;
+    public void setDepartmentCode(String departmentCode) {
+        this.departmentCode = departmentCode;
+    }
+
+    /** @return null. */
+    @Column(name = "DEPARTMENT_NAME", length = 200)
+    public String getDepartmentName() {
+        return this.departmentName;
+    }
+
+    /**
+     * @param departmentName
+     *            null.
+     */
+    public void setDepartmentName(String departmentName) {
+        this.departmentName = departmentName;
+    }
+
+    /** @return null. */
+    @Column(name = "POSITION_CODE", length = 200)
+    public String getPositionCode() {
+        return this.positionCode;
+    }
+
+    /**
+     * @param positionCode
+     *            null.
+     */
+    public void setPositionCode(String positionCode) {
+        this.positionCode = positionCode;
+    }
+
+    /** @return null. */
+    @Column(name = "POSITION_NAME", length = 200)
+    public String getPositionName() {
+        return this.positionName;
+    }
+
+    /**
+     * @param positionName
+     *            null.
+     */
+    public void setPositionName(String positionName) {
+        this.positionName = positionName;
     }
 
     /** @return null. */

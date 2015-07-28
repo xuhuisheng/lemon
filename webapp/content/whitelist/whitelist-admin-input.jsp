@@ -51,11 +51,11 @@ $(function() {
 		<input type="hidden" name="typeId" value="${whitelistType.id}">
 	  </c:if>
 	  <c:if test="${empty whitelistType}">
-	    <c:forEach items="${whitelistTypes}" var="item">
 	    <select name="typeId">
+	      <c:forEach items="${whitelistTypes}" var="item">
 		  <option value="${item.id}">${item.name}</option>
+		  </c:forEach>
 		</select>
-		</c:forEach>
 	  </c:if>
     </div>
   </div>
@@ -83,6 +83,16 @@ $(function() {
 	<div class="controls" id="ipContent">
 	  <textarea id="whitelistApp_ip" name="ip" class="required"><c:forEach items="${model.whitelistIps}" var="item">${item.value}
 </c:forEach></textarea>
+    </div>
+  </div>
+  <div class="control-group">
+    <label class="control-label" for="whitelistApp_level">等级</label>
+	<div class="controls">
+	  <select id="whitelistApp_level" name="level">
+	    <option value="0" ${model.level == 0 ? 'selected' : ''}>低安全级别</option>
+	    <option value="1" ${model.level == 1 || empty model ? 'selected' : ''}>中安全级别</option>
+	    <option value="2" ${model.level == 2 ? 'selected' : ''}>高安全级别</option>
+	  </select>
     </div>
   </div>
   <div class="control-group">

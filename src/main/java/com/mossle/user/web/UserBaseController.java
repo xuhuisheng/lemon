@@ -9,12 +9,13 @@ import java.util.Map;
 
 import javax.annotation.Resource;
 
+import javax.servlet.http.HttpServletRequest;
 import javax.servlet.http.HttpServletResponse;
 import javax.servlet.http.HttpSession;
 
-import com.mossle.api.internal.StoreConnector;
-import com.mossle.api.internal.StoreDTO;
 import com.mossle.api.scope.ScopeHolder;
+import com.mossle.api.store.StoreConnector;
+import com.mossle.api.store.StoreDTO;
 import com.mossle.api.user.UserCache;
 import com.mossle.api.user.UserDTO;
 
@@ -213,7 +214,8 @@ public class UserBaseController {
     @RequestMapping("user-base-export")
     public void export(@ModelAttribute Page page,
             @RequestParam Map<String, Object> parameterMap,
-            HttpServletResponse response) throws Exception {
+            HttpServletRequest request, HttpServletResponse response)
+            throws Exception {
         List<PropertyFilter> propertyFilters = PropertyFilter
                 .buildFromMap(parameterMap);
         page = userBaseManager.pagedQuery(page, propertyFilters);
@@ -224,7 +226,7 @@ public class UserBaseController {
         tableModel.setName("user");
         tableModel.addHeaders("id", "username", "status");
         tableModel.setData(userBases);
-        exportor.export(response, tableModel);
+        exportor.export(request, response, tableModel);
     }
 
     @RequestMapping("user-base-checkUsername")

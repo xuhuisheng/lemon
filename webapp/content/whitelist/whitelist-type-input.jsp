@@ -39,8 +39,8 @@ $(function() {
 
 		<div class="content content-inner">
 
-<form id="demoForm" method="post" action="demo-save.do" class="form-horizontal">
-  <s:if test="model != null">
+<form id="demoForm" method="post" action="whitelist-type-save.do" class="form-horizontal">
+  <s:if test="${model != null}">
   <input id="demo_id" type="hidden" name="id" value="${model.id}">
   </s:if>
   <div class="control-group">

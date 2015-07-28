@@ -18,7 +18,7 @@ import com.mossle.api.form.FormDTO;
 import com.mossle.api.humantask.HumanTaskConnector;
 import com.mossle.api.humantask.HumanTaskDTO;
 import com.mossle.api.humantask.HumanTaskDefinition;
-import com.mossle.api.internal.StoreConnector;
+import com.mossle.api.store.StoreConnector;
 import com.mossle.api.process.ProcessConnector;
 import com.mossle.api.process.ProcessDTO;
 
@@ -220,6 +220,27 @@ public class TaskOperationController {
         keyValue.save(record);
 
         return "operation/task-operation-completeTask";
+    }
+
+    /**
+     * 领取任务.
+     */
+    @RequestMapping("task-operation-claimTask")
+    public String claimTask(@RequestParam("humanTaskId") String humanTaskId) {
+        String userId = currentUserHolder.getUserId();
+        humanTaskConnector.claimTask(humanTaskId, userId);
+
+        return "redirect:/humantask/workspace-personalTasks.do";
+    }
+
+    /**
+     * 释放任务.
+     */
+    @RequestMapping("task-operation-releaseTask")
+    public String releaseTask(@RequestParam("humanTaskId") String humanTaskId) {
+        humanTaskConnector.releaseTask(humanTaskId);
+
+        return "redirect:/humantask/workspace-personalTasks.do";
     }
 
     /**

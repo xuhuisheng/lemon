@@ -373,7 +373,7 @@ public class WorkspaceController {
      */
     @RequestMapping("workspace-rollback")
     public String rollback(@RequestParam("taskId") String taskId) {
-        Command<Integer> cmd = new RollbackTaskCmd(taskId);
+        Command<Object> cmd = new RollbackTaskCmd(taskId, null);
 
         processEngine.getManagementService().executeCommand(cmd);
 

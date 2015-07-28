@@ -6,6 +6,7 @@ import java.util.Map;
 
 import javax.annotation.Resource;
 
+import javax.servlet.http.HttpServletRequest;
 import javax.servlet.http.HttpServletResponse;
 
 import com.mossle.cms.domain.CmsFavorite;
@@ -94,7 +95,8 @@ public class CmsFavoriteController {
     @RequestMapping("cms-favorite-export")
     public void export(@ModelAttribute Page page,
             @RequestParam Map<String, Object> parameterMap,
-            HttpServletResponse response) throws Exception {
+            HttpServletRequest request, HttpServletResponse response)
+            throws Exception {
         List<PropertyFilter> propertyFilters = PropertyFilter
                 .buildFromMap(parameterMap);
         page = cmsFavoriteManager.pagedQuery(page, propertyFilters);
@@ -105,7 +107,7 @@ public class CmsFavoriteController {
         tableModel.setName("cmsFavorite");
         tableModel.addHeaders("id", "name");
         tableModel.setData(cmsFavorites);
-        exportor.export(response, tableModel);
+        exportor.export(request, response, tableModel);
     }
 
     @RequestMapping("cms-favorite-checkName")

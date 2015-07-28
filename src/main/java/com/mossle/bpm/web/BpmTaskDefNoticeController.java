@@ -6,6 +6,7 @@ import java.util.Map;
 
 import javax.annotation.Resource;
 
+import javax.servlet.http.HttpServletRequest;
 import javax.servlet.http.HttpServletResponse;
 
 import com.mossle.bpm.cmd.FindTaskDefinitionsCmd;
@@ -118,7 +119,8 @@ public class BpmTaskDefNoticeController {
     @RequestMapping("bpm-task-def-notice-export")
     public void export(@ModelAttribute Page page,
             @RequestParam Map<String, Object> parameterMap,
-            HttpServletResponse response) throws Exception {
+            HttpServletRequest request, HttpServletResponse response)
+            throws Exception {
         List<PropertyFilter> propertyFilters = PropertyFilter
                 .buildFromMap(parameterMap);
         page = bpmTaskDefNoticeManager.pagedQuery(page, propertyFilters);
@@ -129,7 +131,7 @@ public class BpmTaskDefNoticeController {
         tableModel.setName("bpm-process");
         tableModel.addHeaders("id", "name");
         tableModel.setData(bpmCategories);
-        exportor.export(response, tableModel);
+        exportor.export(request, response, tableModel);
     }
 
     @RequestMapping("bpm-task-def-notice-removeNotice")

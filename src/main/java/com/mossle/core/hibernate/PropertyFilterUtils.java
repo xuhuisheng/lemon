@@ -46,6 +46,12 @@ public class PropertyFilterUtils {
 
             break;
 
+        case NOT:
+            buff.append(propertyName).append("<>?");
+            params.add(propertyValue);
+
+            break;
+
         case LIKE:
             buff.append(propertyName).append(" like ?");
             params.add("%" + propertyValue + "%");
@@ -82,9 +88,13 @@ public class PropertyFilterUtils {
 
             break;
 
-        case NOT:
-            buff.append(propertyName).append("<>?");
-            params.add(propertyValue);
+        case INL:
+            buff.append(propertyName).append(" is null");
+
+            break;
+
+        case NNL:
+            buff.append(propertyName).append(" is not null");
 
             break;
 

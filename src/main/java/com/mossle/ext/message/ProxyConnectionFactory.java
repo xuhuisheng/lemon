@@ -4,6 +4,7 @@ import java.util.ArrayList;
 import java.util.HashMap;
 import java.util.List;
 import java.util.Map;
+import java.util.UUID;
 
 import javax.jms.Connection;
 import javax.jms.ConnectionFactory;
@@ -17,11 +18,8 @@ import javax.jms.Topic;
 
 public class ProxyConnectionFactory implements ConnectionFactory {
     private Map<String, Destination> destinationMap = new HashMap<String, Destination>();
-    private ProxyConnection connection;
-
-    public ProxyConnectionFactory() {
-        connection = new ProxyConnection(this);
-    }
+    private List<ProxyConnection> connections = new ArrayList<ProxyConnection>();
+    private MessageHandler messageHandler = new MemoryMessageHandler();
 
     public Connection createConnection() throws JMSException {
         return createConnection(null, null);
@@ -29,115 +27,68 @@ public class ProxyConnectionFactory implements ConnectionFactory {
 
     public Connection createConnection(String userName, String password)
             throws JMSException {
-        return connection;
+        ProxyConnection proxyConnection = new ProxyConnection(this);
+        this.connections.add(proxyConnection);
+
+        return proxyConnection;
     }
 
     // ~ ==================================================
-    public void sendMessage(Destination destination, String text) {
+    public void removeConnection(ProxyConnection proxyConnection) {
+        this.connections.remove(proxyConnection);
+    }
+
+    public void sendMessage(MessageContext messageContext,
+            Destination destination, Message message) throws JMSException {
         String destinationName = destination.toString();
 
         if (destination instanceof Topic) {
-            // sendTopic(destinationName, text);
-            ProxyTopic proxyTopic = (ProxyTopic) destinationMap
-                    .get(destinationName);
-
-            if (proxyTopic != null) {
-                proxyTopic.sendMessage(text);
-            }
+            messageHandler.sendMessageToTopic(messageContext, destinationName,
+                    message);
         } else {
-            // sendQueue(destinationName, text);
-            ProxyQueue proxyQueue = (ProxyQueue) destinationMap
-                    .get(destinationName);
-
-            if (proxyQueue == null) {
-                proxyQueue = new ProxyQueue(destinationName);
-                destinationMap.put(destinationName, proxyQueue);
-            }
-
-            proxyQueue.sendMessage(text);
+            messageHandler.sendMessageToQueue(messageContext, destinationName,
+                    message);
         }
     }
 
-    public Message getMessage(ProxyMessageConsumer proxyMessageConsumer) {
+    public Message getMessage(MessageContext messageContext,
+            ProxyMessageConsumer proxyMessageConsumer) throws JMSException {
         String destinationName = proxyMessageConsumer.getDestination()
                 .toString();
         Destination destination = destinationMap.get(destinationName);
 
         if (destination instanceof Topic) {
-            ProxyTopic proxyTopic = (ProxyTopic) destinationMap
-                    .get(destinationName);
-
-            String text = proxyTopic.getMessage(proxyMessageConsumer);
-
-            if (text == null) {
-                return null;
-            }
-
-            ProxyTextMessage message = new ProxyTextMessage();
-            message.setText(text);
-
-            return message;
+            return messageHandler.consumeMessageFromTopic(messageContext,
+                    destinationName, proxyMessageConsumer.getId());
         } else {
-            ProxyQueue proxyQueue = (ProxyQueue) destinationMap
-                    .get(destinationName);
-
-            if (proxyQueue == null) {
-                return null;
-            }
-
-            String text = proxyQueue.getMessage();
-
-            if (text == null) {
-                return null;
-            }
-
-            ProxyTextMessage message = new ProxyTextMessage();
-            message.setText(text);
-
-            return message;
+            return messageHandler.consumeMessageFromQueue(messageContext,
+                    destinationName);
         }
     }
 
     public MessageConsumer createConsumer(Destination destination,
-            ProxySession session) {
+            ProxySession session) throws JMSException {
         String destinationName = destination.toString();
         ProxyMessageConsumer messageConsumer = new ProxyMessageConsumer(session);
         messageConsumer.setDestination(destination);
 
         if (destination instanceof Topic) {
-            ProxyTopic proxyTopic = (ProxyTopic) destinationMap
-                    .get(destinationName);
-
-            if (proxyTopic == null) {
-                proxyTopic = new ProxyTopic(destinationName);
-                destinationMap.put(destinationName, proxyTopic);
-            }
-
-            proxyTopic.addConsumer(messageConsumer);
-        } else {
-            ProxyQueue proxyQueue = (ProxyQueue) destinationMap
-                    .get(destinationName);
-
-            if (proxyQueue == null) {
-                proxyQueue = new ProxyQueue(destinationName);
-                destinationMap.put(destinationName, proxyQueue);
-            }
+            this.messageHandler.registerToTopic(destinationName,
+                    messageConsumer.getId());
         }
 
         return messageConsumer;
     }
 
-    public void removeMessageConsumer(ProxyMessageConsumer messageConsumer) {
+    public void removeMessageConsumer(ProxyMessageConsumer messageConsumer)
+            throws JMSException {
         Destination destination = messageConsumer.getDestination();
-        String destinationName = destination.toString();
-        ProxyTopic proxyTopic = (ProxyTopic) destinationMap
-                .get(destinationName);
 
-        if (proxyTopic == null) {
-            return;
+        if (destination instanceof Topic) {
+            String destinationName = destination.toString();
+            this.messageHandler.unregisterFromTopic(destinationName,
+                    messageConsumer.getId());
         }
-
-        proxyTopic.removeConsumer(messageConsumer);
     }
 
     public MessageProducer createProducer(Destination destination,
@@ -147,5 +98,21 @@ public class ProxyConnectionFactory implements ConnectionFactory {
         proxyMessageProducer.setDestination(destination);
 
         return proxyMessageProducer;
+    }
+
+    public void onProducerConnect(MessageContext messageContext) {
+        messageHandler.onProducerConnect(messageContext);
+    }
+
+    public void onConsumerConnect(MessageContext messageContext) {
+        messageHandler.onConsumerConnect(messageContext);
+    }
+
+    public void onProducerDisconnect(MessageContext messageContext) {
+        messageHandler.onProducerDisconnect(messageContext);
+    }
+
+    public void onConsumerDisconnect(MessageContext messageContext) {
+        messageHandler.onConsumerDisconnect(messageContext);
     }
 }

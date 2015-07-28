@@ -7,11 +7,12 @@ import javax.jms.MessageProducer;
 import javax.jms.TextMessage;
 
 public class ProxyMessageProducer implements MessageProducer {
-    private ProxySession session;
+    private ProxySession proxySession;
     private Destination defaultDestination;
 
-    public ProxyMessageProducer(ProxySession session) {
-        this.session = session;
+    public ProxyMessageProducer(ProxySession proxySession) {
+        this.proxySession = proxySession;
+        this.proxySession.onProducerConnect();
     }
 
     public void setDisableMessageID(boolean value) throws JMSException {
@@ -54,35 +55,31 @@ public class ProxyMessageProducer implements MessageProducer {
     }
 
     public void close() throws JMSException {
+        proxySession.onProducerDisconnect();
     }
 
     public void send(Message message) throws JMSException {
-        send(defaultDestination, message);
+        this.send(defaultDestination, message);
     }
 
     public void send(Message message, int deliveryMode, int priority,
             long timeToLive) throws JMSException {
-        send(defaultDestination, message, 0, 0, 0L);
+        this.send(defaultDestination, message, 0, 0, 0L);
     }
 
     public void send(Destination destination, Message message)
             throws JMSException {
-        send(destination, message, 0, 0, 0L);
+        this.send(destination, message, 0, 0, 0L);
     }
 
     public void send(Destination destination, Message message,
             int deliveryMode, int priority, long timeToLive)
             throws JMSException {
-        TextMessage textMessage = (TextMessage) message;
-        this.sendMessage(destination, textMessage.getText());
+        this.proxySession.sendMessage(destination, message);
     }
 
     // ~ ==================================================
     public void setDestination(Destination destination) {
         this.defaultDestination = destination;
-    }
-
-    public void sendMessage(Destination destination, String text) {
-        this.session.sendMessage(destination, text);
     }
 }

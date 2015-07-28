@@ -2,6 +2,8 @@ package com.mossle.core.util;
 
 import java.io.UnsupportedEncodingException;
 
+import java.net.URLEncoder;
+
 import java.util.Enumeration;
 import java.util.Map;
 import java.util.StringTokenizer;
@@ -189,18 +191,30 @@ public class ServletUtils {
     /**
      * 设置让浏览器弹出下载对话框的Header.
      * 
-     * @param response
-     *            HttpServletResponse
      * @param fileName
      *            下载后的文件名.
      */
-    public static void setFileDownloadHeader(HttpServletResponse response,
-            String fileName) throws UnsupportedEncodingException {
+    public static void setFileDownloadHeader(HttpServletRequest request,
+            HttpServletResponse response, String fileName)
+            throws UnsupportedEncodingException {
         // 中文文件名支持
-        String encodedfileName = new String(fileName.getBytes("UTF-8"),
-                "ISO8859-1");
+        String encodedFileName = null;
+        // 替换空格，否则firefox下有空格文件名会被截断,其他浏览器会将空格替换成+号
+        encodedFileName = fileName.trim().replaceAll(" ", "_");
+
+        String agent = request.getHeader("User-Agent");
+        boolean isMSIE = ((agent != null) && (agent.toUpperCase().indexOf(
+                "MSIE") != -1));
+
+        if (isMSIE) {
+            encodedFileName = URLEncoder.encode(encodedFileName, "UTF-8");
+        } else {
+            encodedFileName = new String(fileName.getBytes("UTF-8"),
+                    "ISO8859-1");
+        }
+
         response.setHeader("Content-Disposition", "attachment; filename=\""
-                + encodedfileName + "\"");
+                + encodedFileName + "\"");
     }
 
     /**

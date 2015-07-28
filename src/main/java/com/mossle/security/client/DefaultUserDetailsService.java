@@ -10,6 +10,8 @@ import com.mossle.core.mapper.BeanMapper;
 
 import com.mossle.security.impl.SpringSecurityUserAuth;
 
+import com.mossle.spi.user.AccountCredentialConnector;
+
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
 
@@ -21,6 +23,7 @@ public class DefaultUserDetailsService implements UserDetailsService {
     private static Logger logger = LoggerFactory
             .getLogger(DefaultUserDetailsService.class);
     private UserAuthConnector userAuthConnector;
+    private AccountCredentialConnector accountCredentialConnector;
     private String defaultPassword;
     private BeanMapper beanMapper = new BeanMapper();
     private boolean debug;
@@ -47,9 +50,11 @@ public class DefaultUserDetailsService implements UserDetailsService {
         try {
             UserAuthDTO userAuthDto = userAuthConnector.findByUsername(
                     username, ScopeHolder.getScopeId());
+            String password = accountCredentialConnector.findPassword(username);
 
             SpringSecurityUserAuth userAuthResult = new SpringSecurityUserAuth();
             beanMapper.copy(userAuthDto, userAuthResult);
+            userAuthResult.setPassword(password);
 
             if (defaultPassword != null) {
                 userAuthResult.setPassword(defaultPassword);
@@ -64,6 +69,11 @@ public class DefaultUserDetailsService implements UserDetailsService {
 
     public void setUserAuthConnector(UserAuthConnector userAuthConnector) {
         this.userAuthConnector = userAuthConnector;
+    }
+
+    public void setAccountCredentialConnector(
+            AccountCredentialConnector accountCredentialConnector) {
+        this.accountCredentialConnector = accountCredentialConnector;
     }
 
     public void setDefaultPassword(String defaultPassword) {

@@ -18,8 +18,8 @@ import javax.ws.rs.Produces;
 import javax.ws.rs.QueryParam;
 import javax.ws.rs.core.MediaType;
 
-import com.mossle.api.internal.StoreConnector;
-import com.mossle.api.internal.StoreDTO;
+import com.mossle.api.store.StoreConnector;
+import com.mossle.api.store.StoreDTO;
 
 import com.mossle.core.util.BaseDTO;
 import com.mossle.core.util.IoUtils;

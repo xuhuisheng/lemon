@@ -2,12 +2,13 @@ package com.mossle.ext.export;
 
 import java.io.IOException;
 
+import javax.servlet.http.HttpServletRequest;
 import javax.servlet.http.HttpServletResponse;
 
 import com.mossle.core.util.ServletUtils;
 
 public class CsvExportor implements Exportor {
-    public void export(HttpServletResponse response, TableModel tableModel)
+    public void export(HttpServletRequest request, HttpServletResponse response, TableModel tableModel)
             throws IOException {
         StringBuilder buff = new StringBuilder();
 
@@ -34,7 +35,7 @@ public class CsvExportor implements Exportor {
         }
 
         response.setContentType(ServletUtils.STREAM_TYPE);
-        ServletUtils.setFileDownloadHeader(response, tableModel.getName()
+        ServletUtils.setFileDownloadHeader(request, response, tableModel.getName()
                 + ".csv");
         response.getOutputStream().write(buff.toString().getBytes("UTF-8"));
         response.getOutputStream().flush();

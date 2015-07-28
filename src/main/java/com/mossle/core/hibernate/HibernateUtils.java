@@ -193,6 +193,11 @@ public class HibernateUtils {
 
             break;
 
+        case NOT:
+            criterion = Restrictions.ne(propertyName, propertyValue);
+
+            break;
+
         case LIKE:
             criterion = Restrictions.like(propertyName, (String) propertyValue,
                     MatchMode.ANYWHERE);
@@ -225,8 +230,13 @@ public class HibernateUtils {
 
             break;
 
-        case NOT:
-            criterion = Restrictions.ne(propertyName, propertyValue);
+        case INL:
+            criterion = Restrictions.isNull(propertyName);
+
+            break;
+
+        case NNL:
+            criterion = Restrictions.isNotNull(propertyName);
 
             break;
 
@@ -284,42 +294,57 @@ public class HibernateUtils {
 
         switch (propertyFilter.getMatchType()) {
         case EQ:
-            buff.append(" =:");
+            buff.append("=:");
+
+            break;
+
+        case NOT:
+            buff.append("<>:");
 
             break;
 
         case LIKE:
-            buff.append(" like:");
+            buff.append(" LIKE:");
 
             break;
 
         case LE:
-            buff.append(" <=:");
+            buff.append("<=:");
 
             break;
 
         case LT:
-            buff.append(" <:");
+            buff.append("<:");
 
             break;
 
         case GE:
-            buff.append(" >=:");
+            buff.append(">=:");
 
             break;
 
         case GT:
-            buff.append(" >:");
+            buff.append(">:");
 
             break;
 
         case IN:
-            buff.append(" in :");
+            buff.append("IN :");
+
+            break;
+
+        case INL:
+            buff.append(" IS NULL");
+
+            break;
+
+        case NNL:
+            buff.append(" IS NOT NULL");
 
             break;
 
         default:
-            buff.append(" =:");
+            buff.append("=:");
 
             break;
         }

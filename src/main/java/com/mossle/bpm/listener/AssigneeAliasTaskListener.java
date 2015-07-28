@@ -40,6 +40,10 @@ public class AssigneeAliasTaskListener extends DefaultTaskListener {
         String assignee = delegateTask.getAssignee();
         logger.debug("assignee : {}", assignee);
 
+        if (assignee == null) {
+            return;
+        }
+
         for (Map.Entry<RuleMatcher, AssigneeRule> entry : assigneeRuleMap
                 .entrySet()) {
             RuleMatcher ruleMatcher = entry.getKey();

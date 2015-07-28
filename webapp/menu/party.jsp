@@ -112,17 +112,17 @@
 
         <div class="accordion-group">
           <div class="accordion-heading">
-            <a class="accordion-toggle" data-toggle="collapse" data-parent="#m-sidebar" href="#collapse-mail">
+            <a class="accordion-toggle" data-toggle="collapse" data-parent="#m-sidebar" href="#collapse-sendmail">
               <i class="icon-user"></i>
-              <span class="title">邮件</span>
+              <span class="title">发送邮件</span>
             </a>
           </div>
-          <div id="collapse-mail" class="accordion-body collapse ${currentMenu == 'mail' ? 'in' : ''}">
+          <div id="collapse-sendmail" class="accordion-body collapse ${currentMenu == 'sendmail' ? 'in' : ''}">
             <ul class="accordion-inner nav nav-list">
-              <li><a href="${scopePrefix}/mail/mail-config-list.do">邮件配置</a></li>
-              <li><a href="${scopePrefix}/mail/mail-template-list.do">邮件模板</a></li>
-              <li><a href="${scopePrefix}/mail/mail-queue-list.do">邮件队列</a></li>
-              <li><a href="${scopePrefix}/mail/mail-history-list.do">邮件历史</a></li>
+              <li><a href="${scopePrefix}/sendmail/sendmail-config-list.do">邮件配置</a></li>
+              <li><a href="${scopePrefix}/sendmail/sendmail-template-list.do">邮件模板</a></li>
+              <li><a href="${scopePrefix}/sendmail/sendmail-queue-list.do">邮件队列</a></li>
+              <li><a href="${scopePrefix}/sendmail/sendmail-history-list.do">邮件历史</a></li>
             </ul>
           </div>
         </div>
@@ -193,10 +193,11 @@
           <div id="collapse-online" class="accordion-body collapse ${currentMenu == 'online' ? 'in' : ''}">
             <ul class="accordion-inner nav nav-list">
               <li><a href="${scopePrefix}/user/account-online-list.do">在线用户</a></li>
+              <li><a href="${scopePrefix}/user/account-lock-info-list.do">锁定用户</a></li>
             </ul>
           </div>
         </div>
-
+<!--
         <div class="accordion-group">
           <div class="accordion-heading">
             <a class="accordion-toggle" data-toggle="collapse" data-parent="#m-sidebar" href="#collapse-ticket">
@@ -211,7 +212,7 @@
             </ul>
           </div>
         </div>
-
+-->
 		<footer id="m-footer" class="text-center">
 		  <hr>
 		  &copy;Mossle

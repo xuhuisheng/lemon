@@ -1,6 +1,6 @@
 package com.mossle.party;
 
-import com.mossle.ext.dbmigrate.ModuleSpecification;
+import com.mossle.core.dbmigrate.ModuleSpecification;
 
 import org.springframework.beans.factory.annotation.Value;
 

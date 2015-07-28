@@ -35,12 +35,12 @@
 			"readOnly":true
 		},{
 			"type":"label",
-			"row":2,
+			"row":1,
 			"col":0,
 			"text":"内容"
 		},{
 			"type":"textarea",
-			"row":2,
+			"row":1,
 			"col":1,
 			"name":"content",
 			"required":false,

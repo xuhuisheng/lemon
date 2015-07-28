@@ -2,6 +2,7 @@ package com.mossle.ext.message;
 
 import java.util.ArrayList;
 import java.util.List;
+import java.util.UUID;
 
 import javax.jms.Destination;
 import javax.jms.JMSException;
@@ -16,11 +17,14 @@ import org.slf4j.LoggerFactory;
 public class ProxyMessageConsumer implements MessageConsumer {
     private static Logger logger = LoggerFactory
             .getLogger(ProxyMessageConsumer.class);
-    private ProxySession session;
+    private ProxySession proxySession;
     private Destination destination;
+    private String id;
 
-    public ProxyMessageConsumer(ProxySession session) {
-        this.session = session;
+    public ProxyMessageConsumer(ProxySession proxySession) {
+        this.proxySession = proxySession;
+        this.id = UUID.randomUUID().toString();
+        this.proxySession.onConsumerConnect();
     }
 
     public String getMessageSelector() throws JMSException {
@@ -60,10 +64,15 @@ public class ProxyMessageConsumer implements MessageConsumer {
     }
 
     public void close() throws JMSException {
-        session.removeMessageConsumer(this);
+        proxySession.removeMessageConsumer(this);
+        proxySession.onConsumerDisconnect();
     }
 
     // ~ ==================================================
+    public String getId() {
+        return id;
+    }
+
     public Destination getDestination() {
         return destination;
     }
@@ -72,7 +81,7 @@ public class ProxyMessageConsumer implements MessageConsumer {
         this.destination = destination;
     }
 
-    public Message getMessage() {
-        return this.session.getMessage(this);
+    public Message getMessage() throws JMSException {
+        return this.proxySession.getMessage(this);
     }
 }

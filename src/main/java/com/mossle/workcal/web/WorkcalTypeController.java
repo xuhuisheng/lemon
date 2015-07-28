@@ -6,6 +6,7 @@ import java.util.Map;
 
 import javax.annotation.Resource;
 
+import javax.servlet.http.HttpServletRequest;
 import javax.servlet.http.HttpServletResponse;
 
 import com.mossle.core.hibernate.PropertyFilter;
@@ -94,7 +95,8 @@ public class WorkcalTypeController {
     @RequestMapping("workcal-type-export")
     public void export(@ModelAttribute Page page,
             @RequestParam Map<String, Object> parameterMap,
-            HttpServletResponse response) throws Exception {
+            HttpServletRequest request, HttpServletResponse response)
+            throws Exception {
         List<PropertyFilter> propertyFilters = PropertyFilter
                 .buildFromMap(parameterMap);
         page = workcalTypeManager.pagedQuery(page, propertyFilters);
@@ -105,7 +107,7 @@ public class WorkcalTypeController {
         tableModel.setName("workcalType");
         tableModel.addHeaders("id", "name");
         tableModel.setData(workcalTypes);
-        exportor.export(response, tableModel);
+        exportor.export(request, response, tableModel);
     }
 
     @RequestMapping("workcal-type-checkName")

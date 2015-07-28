@@ -2,6 +2,8 @@ package com.mossle.ext.message;
 
 import java.io.Serializable;
 
+import java.util.UUID;
+
 import javax.jms.BytesMessage;
 import javax.jms.Destination;
 import javax.jms.JMSException;
@@ -23,10 +25,13 @@ import javax.jms.Topic;
 import javax.jms.TopicSubscriber;
 
 public class ProxySession implements Session {
-    private ProxyConnection connection;
+    private ProxyConnection proxyConnection;
+    private boolean closed;
+    private String id;
 
-    public ProxySession(ProxyConnection connection) {
-        this.connection = connection;
+    public ProxySession(ProxyConnection proxyConnection) {
+        this.proxyConnection = proxyConnection;
+        this.id = UUID.randomUUID().toString();
     }
 
     public BytesMessage createBytesMessage() throws JMSException {
@@ -74,15 +79,20 @@ public class ProxySession implements Session {
     }
 
     public void commit() throws JMSException {
+        this.checkStatus();
     }
 
     public void rollback() throws JMSException {
+        this.checkStatus();
     }
 
     public void close() throws JMSException {
+        this.closed = true;
+        this.proxyConnection.removeSession(this);
     }
 
     public void recover() throws JMSException {
+        this.checkStatus();
     }
 
     public MessageListener getMessageListener() throws JMSException {
@@ -98,22 +108,30 @@ public class ProxySession implements Session {
 
     public MessageProducer createProducer(Destination destination)
             throws JMSException {
-        return this.connection.createProducer(destination, this);
+        this.checkStatus();
+
+        return this.proxyConnection.createProducer(destination, this);
     }
 
     public MessageConsumer createConsumer(Destination destination)
             throws JMSException {
+        this.checkStatus();
+
         return createConsumer(destination, null, true);
     }
 
     public MessageConsumer createConsumer(Destination destination,
             String messageSelector) throws JMSException {
+        this.checkStatus();
+
         return createConsumer(destination, messageSelector, true);
     }
 
     public MessageConsumer createConsumer(Destination destination,
             String messageSelector, boolean NoLocal) throws JMSException {
-        return connection.createConsumer(destination, this);
+        this.checkStatus();
+
+        return this.proxyConnection.createConsumer(destination, this);
     }
 
     public Queue createQueue(String queueName) throws JMSException {
@@ -155,15 +173,40 @@ public class ProxySession implements Session {
     }
 
     // ~ ==================================================
-    public void sendMessage(Destination destination, String text) {
-        this.connection.sendMessage(destination, text);
+    public void checkStatus() throws JMSException {
+        if (this.closed) {
+            throw new JMSException("connection " + this.id + " closed");
+        }
     }
 
-    public Message getMessage(ProxyMessageConsumer proxyMessageConsumer) {
-        return connection.getMessage(proxyMessageConsumer);
+    public void sendMessage(Destination destination, Message message)
+            throws JMSException {
+        this.proxyConnection.sendMessage(destination, message);
     }
 
-    public void removeMessageConsumer(ProxyMessageConsumer messageConsumer) {
-        connection.removeMessageConsumer(messageConsumer);
+    public Message getMessage(ProxyMessageConsumer proxyMessageConsumer)
+            throws JMSException {
+        return this.proxyConnection.getMessage(proxyMessageConsumer);
+    }
+
+    public void removeMessageConsumer(ProxyMessageConsumer messageConsumer)
+            throws JMSException {
+        this.proxyConnection.removeMessageConsumer(messageConsumer);
+    }
+
+    public void onConsumerConnect() {
+        this.proxyConnection.onConsumerConnect();
+    }
+
+    public void onProducerConnect() {
+        this.proxyConnection.onProducerConnect();
+    }
+
+    public void onConsumerDisconnect() {
+        this.proxyConnection.onConsumerDisconnect();
+    }
+
+    public void onProducerDisconnect() {
+        this.proxyConnection.onProducerDisconnect();
     }
 }

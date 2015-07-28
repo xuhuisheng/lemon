@@ -22,6 +22,10 @@ public enum MatchType {
     IN,
     /** NOT. */
     NOT,
+    /** IS NULL. */
+    INL,
+    /** NOT NULL. */
+    NNL,
     /** unknown. */
     UNKNOWN;
 }

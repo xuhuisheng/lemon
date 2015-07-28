@@ -19,7 +19,7 @@ import com.mossle.api.form.FormDTO;
 import com.mossle.api.humantask.HumanTaskConnector;
 import com.mossle.api.humantask.HumanTaskDTO;
 import com.mossle.api.humantask.HumanTaskDefinition;
-import com.mossle.api.internal.StoreConnector;
+import com.mossle.api.store.StoreConnector;
 import com.mossle.api.process.ProcessConnector;
 import com.mossle.api.process.ProcessDTO;
 

@@ -16,6 +16,8 @@ import com.mossle.user.persistence.domain.UserBase;
 import com.mossle.user.persistence.manager.AccountCredentialManager;
 import com.mossle.user.persistence.manager.AccountInfoManager;
 import com.mossle.user.persistence.manager.UserBaseManager;
+import com.mossle.user.service.ChangePasswordService;
+import com.mossle.user.support.ChangePasswordResult;
 
 import org.springframework.stereotype.Controller;
 
@@ -30,11 +32,9 @@ import org.springframework.web.servlet.mvc.support.RedirectAttributes;
 @Controller
 @RequestMapping("/user")
 public class ChangePasswordController {
-    private AccountInfoManager accountInfoManager;
-    private AccountCredentialManager accountCredentialManager;
     private MessageHelper messageHelper;
-    private CustomPasswordEncoder customPasswordEncoder;
     private CurrentUserHolder currentUserHolder;
+    private ChangePasswordService changePasswordService;
 
     @RequestMapping("change-password-input")
     public String input() {
@@ -46,82 +46,40 @@ public class ChangePasswordController {
             @RequestParam("newPassword") String newPassword,
             @RequestParam("confirmPassword") String confirmPassword,
             RedirectAttributes redirectAttributes) {
-        if (!newPassword.equals(confirmPassword)) {
-            messageHelper.addFlashMessage(redirectAttributes,
-                    "user.user.input.passwordnotequals", "两次输入密码不符");
-
-            return "redirect:/user/change-password-input.do";
-        }
-
         Long accountId = Long.parseLong(currentUserHolder.getUserId());
-        AccountInfo accountInfo = accountInfoManager.get(accountId);
-        String hql = "from AccountCredential where accountInfo=? and catalog='default'";
-        AccountCredential accountCredential = accountCredentialManager
-                .findUnique(hql, accountInfo);
+        ChangePasswordResult changePasswordResult = changePasswordService
+                .changePassword(accountId, oldPassword, newPassword,
+                        confirmPassword);
 
-        if (accountCredential == null) {
+        if (changePasswordResult.isSuccess()) {
             messageHelper.addFlashMessage(redirectAttributes,
-                    "user.user.input.credentialnotexists", "未设置过密码");
+                    changePasswordResult.getCode(),
+                    changePasswordResult.getMessage());
 
             return "redirect:/user/change-password-input.do";
-        }
-
-        if (!isPasswordValid(oldPassword, accountCredential.getPassword())) {
+        } else {
             messageHelper.addFlashMessage(redirectAttributes,
-                    "user.user.input.passwordnotcorrect", "密码错误");
+                    changePasswordResult.getCode(),
+                    changePasswordResult.getMessage());
 
             return "redirect:/user/change-password-input.do";
-        }
-
-        accountCredential.setPassword(encodePassword(newPassword));
-        accountCredentialManager.save(accountCredential);
-        messageHelper.addFlashMessage(redirectAttributes, "core.success.save",
-                "保存成功");
-
-        return "redirect:/user/change-password-input.do";
-    }
-
-    public boolean isPasswordValid(String rawPassword, String encodedPassword) {
-        if (customPasswordEncoder != null) {
-            return customPasswordEncoder.matches(rawPassword, encodedPassword);
-        } else {
-            return rawPassword.equals(encodedPassword);
-        }
-    }
-
-    public String encodePassword(String password) {
-        if (customPasswordEncoder != null) {
-            return customPasswordEncoder.encode(password);
-        } else {
-            return password;
         }
     }
 
     // ~ ======================================================================
-    @Resource
-    public void setAccountInfoManager(AccountInfoManager accountInfoManager) {
-        this.accountInfoManager = accountInfoManager;
-    }
-
-    @Resource
-    public void setAccountCredentialManager(
-            AccountCredentialManager accountCredentialManager) {
-        this.accountCredentialManager = accountCredentialManager;
-    }
-
     @Resource
     public void setMessageHelper(MessageHelper messageHelper) {
         this.messageHelper = messageHelper;
     }
 
     @Resource
-    public void setCustomPasswordEncoder(
-            CustomPasswordEncoder customPasswordEncoder) {
-        this.customPasswordEncoder = customPasswordEncoder;
+    public void setCurrentUserHolder(CurrentUserHolder currentUserHolder) {
+        this.currentUserHolder = currentUserHolder;
     }
 
     @Resource
-    public void setCurrentUserHolder(CurrentUserHolder currentUserHolder) {
-        this.currentUserHolder = currentUserHolder;
+    public void setChangePasswordService(
+            ChangePasswordService changePasswordService) {
+        this.changePasswordService = changePasswordService;
     }
 }

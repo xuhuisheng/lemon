@@ -1,0 +1,93 @@
+<?xml version="1.0" encoding="UTF-8"?>
+<beans xmlns="http://www.springframework.org/schema/beans"
+	    xmlns:xsi="http://www.w3.org/2001/XMLSchema-instance"
+	    xsi:schemaLocation="http://www.springframework.org/schema/beans http://www.springframework.org/schema/beans/spring-beans.xsd">
+
+	<bean id="accessDecisionManager" class="org.springframework.security.access.vote.AffirmativeBased">
+		<constructor-arg>
+			<list>
+				<bean class="com.mossle.security.client.AuthenticatedVoter"/>
+				<bean class="com.mossle.security.perm.PermissionVoter">
+					<property name="permissionChecker" ref="permissionChecker"/>
+				</bean>
+			</list>
+		</constructor-arg>
+	</bean>
+
+	<bean id="authenticationProvider" class="org.springframework.security.authentication.dao.DaoAuthenticationProvider">
+		<property name="userDetailsService" ref="userDetailsService"/>
+		<property name="passwordEncoder" ref="passwordEncoder"/>
+	</bean>
+
+	<bean id="userDetailsService" class="com.mossle.security.client.DefaultUserDetailsService">
+		<property name="userAuthConnector" ref="userAuthConnector"/>
+		<property name="accountCredentialConnector" ref="accountCredentialConnector"/>
+		<property name="debug" value="${security.autologin.enabled}"/>
+	</bean>
+
+	<bean id="passwordEncoder" class="com.mossle.security.util.PasswordEncoderFactoryBean">
+		<property name="type" value="${security.passwordencoder.type}"/>
+		<property name="salt" value="${security.passwordencoder.salt}"/>
+	</bean>
+
+	<bean id="currentUserHolder" class="com.mossle.security.client.SpringSecurityCurrentUserHolder"/>
+
+	<bean id="customPasswordEncoder" factory-bean="&amp;passwordEncoder" factory-method="getCustomPasswordEncoder"/>
+
+    <bean id="autoLoginFilter" class="com.mossle.security.client.AutoLoginFilter">
+		<property name="enabled" value="${security.autologin.enabled}" />
+		<property name="defaultUserName" value="${security.autologin.username}" />
+		<property name="userDetailsService" ref="userDetailsService" />
+    </bean>
+
+	<bean id="switchUserFilter" class="org.springframework.security.web.authentication.switchuser.SwitchUserFilter">
+		<property name="userDetailsService" ref="userDetailsService" />
+		<property name="targetUrl" value="/common/util/switchUser.jsp" />
+	</bean>
+
+	<bean id="permissionChecker" class="com.mossle.security.perm.PermissionChecker"/>
+
+    <bean id="resourceDetailsMonitor" class="com.mossle.security.client.ResourceDetailsMonitor">
+		<property name="debug" value="${security.resource.debug}"/>
+		<property name="filterSecurityInterceptor"
+			ref="org.springframework.security.web.access.intercept.FilterSecurityInterceptor#0"/>
+		<property name="urlSourceFetcher" ref="${security.url.fetcher.type}UrlSourceFetcher"/>
+		<property name="delegatingMethodSecurityMetadataSource"
+			ref="org.springframework.security.access.method.DelegatingMethodSecurityMetadataSource#0"/>
+		<property name="methodSourceFetcher" ref="${security.method.fetcher}MethodSourceFetcher"/>
+    </bean>
+
+	<bean id="resourcePublisher" class="com.mossle.security.client.ResourcePublisher"/>
+
+	<bean class="org.springframework.security.authentication.event.LoggerListener"/>
+
+	<bean class="org.springframework.security.access.event.LoggerListener"/>
+
+	<!-- url fetcher -->
+	<bean id="databaseUrlSourceFetcher" class="com.mossle.security.impl.DatabaseUrlSourceFetcher">
+		<property name="jdbcTemplate" ref="jdbcTemplate"/>
+	</bean>
+
+	<bean id="httpUrlSourceFetcher" class="com.mossle.security.impl.HttpUrlSourceFetcher">
+		<property name="url" value="${security.url.fetcher.url}"/>
+		<property name="appId" value="${security.defaultAppId}"/>
+	</bean>
+
+	<!-- method fetcher -->
+	<bean id="databaseMethodSourceFetcher" class="com.mossle.security.impl.DatabaseMethodSourceFetcher">
+		<property name="jdbcTemplate" ref="jdbcTemplate"/>
+	</bean>
+
+	<bean id="securityContextRepository" class="com.mossle.security.client.CachedSecurityContextRepository">
+		<property name="userAuthConnector" ref="userAuthConnector"/>
+		<property name="debug" value="${security.autologin.enabled}"/>
+	</bean>
+
+	<bean id="authenticationFailureHandler" class="com.mossle.security.util.RememberLastUsernameAuthenticationFailureHandler">
+		<property name="defaultFailureUrl" value="/common/login.jsp?error=true"/>
+	</bean>
+
+	<!-- TODO: 以后要记得把它从auth迁移到security里 -->
+	<bean id="logoutSuccessHandler" class="com.mossle.auth.LogoutSuccessHandlerImpl"/>
+
+</beans>

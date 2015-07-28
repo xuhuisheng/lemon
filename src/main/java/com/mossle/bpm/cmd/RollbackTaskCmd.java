@@ -23,6 +23,7 @@ import org.activiti.engine.ActivitiException;
 import org.activiti.engine.delegate.DelegateTask;
 import org.activiti.engine.history.HistoricActivityInstance;
 import org.activiti.engine.impl.HistoricActivityInstanceQueryImpl;
+import org.activiti.engine.impl.HistoricTaskInstanceQueryImpl;
 import org.activiti.engine.impl.Page;
 import org.activiti.engine.impl.cmd.GetDeploymentProcessDefinitionCmd;
 import org.activiti.engine.impl.context.Context;
@@ -36,6 +37,7 @@ import org.activiti.engine.impl.persistence.entity.TaskEntity;
 import org.activiti.engine.impl.pvm.PvmTransition;
 import org.activiti.engine.impl.pvm.process.ActivityImpl;
 import org.activiti.engine.impl.pvm.process.TransitionImpl;
+import org.activiti.engine.impl.task.TaskDefinition;
 
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
@@ -45,16 +47,27 @@ import org.springframework.jdbc.core.JdbcTemplate;
 /**
  * 退回任务.
  */
-public class RollbackTaskCmd implements Command<Integer> {
+public class RollbackTaskCmd implements Command<Object> {
     private static Logger logger = LoggerFactory
             .getLogger(RollbackTaskCmd.class);
     private String taskId;
+    private String activityId;
+    private String userId;
+    private boolean useLastAssignee = false;
 
     /**
      * 这个taskId是运行阶段task的id.
      */
-    public RollbackTaskCmd(String taskId) {
+    public RollbackTaskCmd(String taskId, String activityId) {
         this.taskId = taskId;
+        this.activityId = activityId;
+        this.useLastAssignee = true;
+    }
+
+    public RollbackTaskCmd(String taskId, String activityId, String userId) {
+        this.taskId = taskId;
+        this.activityId = activityId;
+        this.userId = userId;
     }
 
     /**
@@ -63,23 +76,23 @@ public class RollbackTaskCmd implements Command<Integer> {
      * @return 0-退回成功 1-流程结束 2-下一结点已经通过,不能退回
      */
     public Integer execute(CommandContext commandContext) {
-        // 尝试查找最近的上游userTask
-        String historyTaskId = this.findNearestUserTask();
-        logger.info("nearest history user task is : {}", historyTaskId);
+        // 获得任务
+        TaskEntity taskEntity = this.findTask(commandContext);
 
-        if (historyTaskId == null) {
-            logger.info("cannot rollback {}", taskId);
+        // 找到想要回退到的节点
+        ActivityImpl targetActivity = this.findTargetActivity(commandContext,
+                taskEntity);
+        logger.info("rollback to {}", this.activityId);
 
-            return 2;
-        }
+        // 找到想要回退对应的节点历史
+        HistoricActivityInstanceEntity historicActivityInstanceEntity = this
+                .findTargetHistoricActivity(commandContext, taskEntity,
+                        targetActivity);
 
-        // 先找到历史任务
-        HistoricTaskInstanceEntity historicTaskInstanceEntity = Context
-                .getCommandContext().getHistoricTaskInstanceEntityManager()
-                .findHistoricTaskInstanceById(historyTaskId);
-
-        // 再反向查找历史任务对应的历史节点
-        HistoricActivityInstanceEntity historicActivityInstanceEntity = getHistoricActivityInstanceEntity(historyTaskId);
+        // 找到想要回退对应的任务历史
+        HistoricTaskInstanceEntity historicTaskInstanceEntity = this
+                .findTargetHistoricTask(commandContext, taskEntity,
+                        targetActivity);
 
         logger.info("historic activity instance is : {}",
                 historicActivityInstanceEntity.getId());
@@ -112,8 +125,8 @@ public class RollbackTaskCmd implements Command<Integer> {
         }
 
         // 恢复期望退回的任务和历史
-        this.processHistoryTask(historicTaskInstanceEntity,
-                historicActivityInstanceEntity);
+        this.processHistoryTask(commandContext, taskEntity,
+                historicTaskInstanceEntity, historicActivityInstanceEntity);
 
         logger.info("activiti is rollback {}",
                 historicTaskInstanceEntity.getName());
@@ -121,6 +134,83 @@ public class RollbackTaskCmd implements Command<Integer> {
         return 0;
     }
 
+    /**
+     * 查询当前任务.
+     */
+    public TaskEntity findTask(CommandContext commandContext) {
+        TaskEntity taskEntity = commandContext.getTaskEntityManager()
+                .findTaskById(taskId);
+
+        return taskEntity;
+    }
+
+    /**
+     * 查找回退的目的节点.
+     */
+    public ActivityImpl findTargetActivity(CommandContext commandContext,
+            TaskEntity taskEntity) {
+        if (activityId == null) {
+            String historyTaskId = this.findNearestUserTask(commandContext);
+            HistoricTaskInstanceEntity historicTaskInstanceEntity = commandContext
+                    .getHistoricTaskInstanceEntityManager()
+                    .findHistoricTaskInstanceById(historyTaskId);
+            this.activityId = historicTaskInstanceEntity.getTaskDefinitionKey();
+        }
+
+        String processDefinitionId = taskEntity.getProcessDefinitionId();
+        ProcessDefinitionEntity processDefinitionEntity = new GetDeploymentProcessDefinitionCmd(
+                processDefinitionId).execute(commandContext);
+
+        return processDefinitionEntity.findActivity(activityId);
+    }
+
+    /**
+     * 找到想要回退对应的节点历史.
+     */
+    public HistoricActivityInstanceEntity findTargetHistoricActivity(
+            CommandContext commandContext, TaskEntity taskEntity,
+            ActivityImpl activityImpl) {
+        HistoricActivityInstanceQueryImpl historicActivityInstanceQueryImpl = new HistoricActivityInstanceQueryImpl();
+        historicActivityInstanceQueryImpl.activityId(activityImpl.getId());
+        historicActivityInstanceQueryImpl.processInstanceId(taskEntity
+                .getProcessInstanceId());
+        historicActivityInstanceQueryImpl
+                .orderByHistoricActivityInstanceEndTime().desc();
+
+        HistoricActivityInstanceEntity historicActivityInstanceEntity = (HistoricActivityInstanceEntity) commandContext
+                .getHistoricActivityInstanceEntityManager()
+                .findHistoricActivityInstancesByQueryCriteria(
+                        historicActivityInstanceQueryImpl, new Page(0, 1))
+                .get(0);
+
+        return historicActivityInstanceEntity;
+    }
+
+    /**
+     * 找到想要回退对应的任务历史.
+     */
+    public HistoricTaskInstanceEntity findTargetHistoricTask(
+            CommandContext commandContext, TaskEntity taskEntity,
+            ActivityImpl activityImpl) {
+        HistoricTaskInstanceQueryImpl historicTaskInstanceQueryImpl = new HistoricTaskInstanceQueryImpl();
+        historicTaskInstanceQueryImpl.taskDefinitionKey(activityImpl.getId());
+        historicTaskInstanceQueryImpl.processInstanceId(taskEntity
+                .getProcessInstanceId());
+        historicTaskInstanceQueryImpl.setFirstResult(0);
+        historicTaskInstanceQueryImpl.setMaxResults(1);
+        historicTaskInstanceQueryImpl.orderByTaskCreateTime().desc();
+
+        HistoricTaskInstanceEntity historicTaskInstanceEntity = (HistoricTaskInstanceEntity) commandContext
+                .getHistoricTaskInstanceEntityManager()
+                .findHistoricTaskInstancesByQueryCriteria(
+                        historicTaskInstanceQueryImpl).get(0);
+
+        return historicTaskInstanceEntity;
+    }
+
+    /**
+     * 判断想要回退的目标节点和当前节点是否在一个分支上.
+     */
     public boolean isSameBranch(
             HistoricTaskInstanceEntity historicTaskInstanceEntity) {
         TaskEntity taskEntity = Context.getCommandContext()
@@ -130,9 +220,12 @@ public class RollbackTaskCmd implements Command<Integer> {
                 historicTaskInstanceEntity.getExecutionId());
     }
 
-    public String findNearestUserTask() {
-        TaskEntity taskEntity = Context.getCommandContext()
-                .getTaskEntityManager().findTaskById(taskId);
+    /**
+     * 查找离当前节点最近的上一个userTask.
+     */
+    public String findNearestUserTask(CommandContext commandContext) {
+        TaskEntity taskEntity = commandContext.getTaskEntityManager()
+                .findTaskById(taskId);
 
         if (taskEntity == null) {
             logger.debug("cannot find task : {}", taskId);
@@ -304,9 +397,28 @@ public class RollbackTaskCmd implements Command<Integer> {
     /**
      * 根据任务历史，创建待办任务.
      */
-    public void processHistoryTask(
+    public void processHistoryTask(CommandContext commandContext,
+            TaskEntity taskEntity,
             HistoricTaskInstanceEntity historicTaskInstanceEntity,
             HistoricActivityInstanceEntity historicActivityInstanceEntity) {
+        if (this.userId == null) {
+            if (this.useLastAssignee) {
+                this.userId = historicTaskInstanceEntity.getAssignee();
+            } else {
+                String processDefinitionId = taskEntity
+                        .getProcessDefinitionId();
+                ProcessDefinitionEntity processDefinitionEntity = new GetDeploymentProcessDefinitionCmd(
+                        processDefinitionId).execute(commandContext);
+                TaskDefinition taskDefinition = processDefinitionEntity
+                        .getTaskDefinitions().get(
+                                historicTaskInstanceEntity
+                                        .getTaskDefinitionKey());
+
+                this.userId = (String) taskDefinition.getAssigneeExpression()
+                        .getValue(taskEntity);
+            }
+        }
+
         /*
          * historicTaskInstanceEntity.setEndTime(null); historicTaskInstanceEntity.setDurationInMillis(null);
          * historicActivityInstanceEntity.setEndTime(null); historicActivityInstanceEntity.setDurationInMillis(null);
@@ -317,7 +429,7 @@ public class RollbackTaskCmd implements Command<Integer> {
         task.setProcessDefinitionId(historicTaskInstanceEntity
                 .getProcessDefinitionId());
         // task.setId(historicTaskInstanceEntity.getId());
-        task.setAssigneeWithoutCascade(historicTaskInstanceEntity.getAssignee());
+        task.setAssigneeWithoutCascade(userId);
         task.setParentTaskIdWithoutCascade(historicTaskInstanceEntity
                 .getParentTaskId());
         task.setNameWithoutCascade(historicTaskInstanceEntity.getName());

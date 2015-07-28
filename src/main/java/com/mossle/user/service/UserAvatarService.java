@@ -11,9 +11,9 @@ import javax.activation.DataSource;
 
 import javax.annotation.Resource;
 
-import com.mossle.api.internal.StoreConnector;
-import com.mossle.api.internal.StoreDTO;
 import com.mossle.api.scope.ScopeHolder;
+import com.mossle.api.store.StoreConnector;
+import com.mossle.api.store.StoreDTO;
 import com.mossle.api.user.UserDTO;
 
 import com.mossle.ext.store.ByteArrayDataSource;

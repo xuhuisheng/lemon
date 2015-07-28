@@ -36,6 +36,10 @@ public class ArrivalNotice {
     public static final int TYPE_TIMEOUT = 2;
 
     public void process(DelegateTask delegateTask) {
+        if (delegateTask.getAssignee() == null) {
+            return;
+        }
+
         String taskDefinitionKey = delegateTask.getTaskDefinitionKey();
         String processDefinitionId = delegateTask.getProcessDefinitionId();
 

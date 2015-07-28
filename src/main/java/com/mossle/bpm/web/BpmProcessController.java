@@ -6,6 +6,7 @@ import java.util.Map;
 
 import javax.annotation.Resource;
 
+import javax.servlet.http.HttpServletRequest;
 import javax.servlet.http.HttpServletResponse;
 
 import com.mossle.bpm.persistence.domain.BpmCategory;
@@ -117,7 +118,8 @@ public class BpmProcessController {
     @RequestMapping("bpm-process-export")
     public void export(@ModelAttribute Page page,
             @RequestParam Map<String, Object> parameterMap,
-            HttpServletResponse response) throws Exception {
+            HttpServletRequest request, HttpServletResponse response)
+            throws Exception {
         List<PropertyFilter> propertyFilters = PropertyFilter
                 .buildFromMap(parameterMap);
         page = bpmProcessManager.pagedQuery(page, propertyFilters);
@@ -127,7 +129,7 @@ public class BpmProcessController {
         tableModel.setName("bpm-process");
         tableModel.addHeaders("id", "name");
         tableModel.setData(bpmCategories);
-        exportor.export(response, tableModel);
+        exportor.export(request, response, tableModel);
     }
 
     // ~ ======================================================================

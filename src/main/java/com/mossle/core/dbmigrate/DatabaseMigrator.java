@@ -1,7 +1,6 @@
 package com.mossle.core.dbmigrate;
 
-import java.util.Collection;
-import java.util.Properties;
+import java.util.Map;
 
 import javax.annotation.PostConstruct;
 
@@ -12,22 +11,26 @@ import org.flywaydb.core.Flyway;
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
 
-public class DatabaseMigrator {
+import org.springframework.context.ApplicationContext;
+import org.springframework.context.ApplicationContextAware;
+
+public class DatabaseMigrator implements ApplicationContextAware {
     private static Logger logger = LoggerFactory
             .getLogger(DatabaseMigrator.class);
+    private ApplicationContext applicationContext;
+    private boolean enabled;
+    private boolean clean;
     private DataSource dataSource;
-    private Properties applicationProperties;
 
     @PostConstruct
-    public void execute() {
-        if (!"true".equals(applicationProperties
-                .getProperty("dbmigrate.enable"))) {
+    public void init() {
+        if (!enabled) {
             logger.info("skip dbmigrate");
 
             return;
         }
 
-        if ("true".equals(applicationProperties.getProperty("dbmigrate.clean"))) {
+        if (clean) {
             logger.info("clean database");
 
             Flyway flyway = new Flyway();
@@ -35,37 +38,51 @@ public class DatabaseMigrator {
             flyway.clean();
         }
 
-        Collection<DatabaseMigrateInfo> databaseMigrateInfos = new DatabaseMigrateInfoBuilder(
-                applicationProperties).build();
+        Map<String, ModuleSpecification> map = applicationContext
+                .getBeansOfType(ModuleSpecification.class);
 
-        for (DatabaseMigrateInfo databaseMigrateInfo : databaseMigrateInfos) {
-            if (!databaseMigrateInfo.isEnabled()) {
-                logger.info("skip migrate : {}, {}, {}",
-                        databaseMigrateInfo.getName(),
-                        databaseMigrateInfo.getTable(),
-                        databaseMigrateInfo.getLocation());
+        for (ModuleSpecification moduleSpecification : map.values()) {
+            if (!moduleSpecification.isEnabled()) {
+                logger.info("skip migrate : {}, {}",
+                        moduleSpecification.getSchemaTable(),
+                        moduleSpecification.getSchemaLocation());
 
                 continue;
             }
 
-            logger.info("migrate : {}, {}, {}", databaseMigrateInfo.getName(),
-                    databaseMigrateInfo.getTable(),
-                    databaseMigrateInfo.getLocation());
+            this.doMigrate(moduleSpecification.getSchemaTable(),
+                    moduleSpecification.getSchemaLocation());
 
-            Flyway flyway = new Flyway();
-            flyway.setPlaceholderPrefix("$${");
-            flyway.setInitOnMigrate(true);
-            flyway.setInitVersion("0");
-            flyway.setDataSource(dataSource);
-            flyway.setTable(databaseMigrateInfo.getTable());
-            flyway.setLocations(new String[] { databaseMigrateInfo
-                    .getLocation() });
-            flyway.migrate();
+            if (moduleSpecification.isInitData()) {
+                this.doMigrate(moduleSpecification.getDataTable(),
+                        moduleSpecification.getDataLocation());
+            }
         }
     }
 
-    public void setApplicationProperties(Properties applicationProperties) {
-        this.applicationProperties = applicationProperties;
+    public void doMigrate(String table, String location) {
+        logger.info("migrate : {}, {}", table, location);
+
+        Flyway flyway = new Flyway();
+        flyway.setPlaceholderPrefix("$${");
+        flyway.setInitOnMigrate(true);
+        flyway.setInitVersion("0");
+        flyway.setDataSource(dataSource);
+        flyway.setTable(table);
+        flyway.setLocations(new String[] { location });
+        flyway.migrate();
+    }
+
+    public void setApplicationContext(ApplicationContext applicationContext) {
+        this.applicationContext = applicationContext;
+    }
+
+    public void setEnabled(boolean enabled) {
+        this.enabled = enabled;
+    }
+
+    public void setClean(boolean clean) {
+        this.clean = clean;
     }
 
     public void setDataSource(DataSource dataSource) {

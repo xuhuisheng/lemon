@@ -91,7 +91,7 @@ $(function() {
 	    <td>${item.name}</td>
 	    <td><fmt:formatDate value="${item.createTime}" pattern="yyyy-MM-dd HH:mm:ss" /></td>
 	    <td><tags:user userId="${item.assignee}"/></td>
-	    <td>${item.suspended ? '挂起' : '激活'}</td>
+	    <td>${item.status}</td>
         <td>
           <a href="workspace-claimTask.do?taskId=${item.id}">认领</a>
           <a href="workspace-viewHistory.do?processInstanceId=${item.processInstanceId}">历史</a>

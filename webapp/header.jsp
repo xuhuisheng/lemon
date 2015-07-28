@@ -50,7 +50,7 @@ setInterval(unreadCount, 10000);
                   <li class="divider"></li>
 				  <li><a href="${scopePrefix}/bpm/bpm-process-list.do"><i class="icon-user"></i>流程管理</a></li>
 				  <li><a href="${scopePrefix}/form/form-template-list.do"><i class="icon-user"></i>表单管理</a></li>
-				  <li><a href="${scopePrefix}/humantask/humantask-list.do"><i class="icon-user"></i>任务管理</a></li>
+				  <li><a href="${scopePrefix}/humantask/task-info-list.do"><i class="icon-user"></i>任务管理</a></li>
                   <li class="divider"></li>
                   <li><a href="${scopePrefix}/cms/cms-article-list.do"><i class="icon-user"></i>公告管理</a></li>
                   <li><a href="${scopePrefix}/car/car-info-list.do"><i class="icon-user"></i>车辆管理</a></li>
@@ -61,6 +61,11 @@ setInterval(unreadCount, 10000);
             </ul>
 
             <ul class="nav pull-right">
+			  <li>
+			    <form class="navbar-search" action="${ctx}/pim/address-list-list.do">
+                  <input type="text" class="search-query" placeholder="搜索" name="username">
+                </form>
+			  </li>
               <li class="dropdown">
                 <a data-toggle="dropdown" class="dropdown-toggle" href="#">
 			      <img src="${scopePrefix}/rs/avatar?id=<tags:currentUserId/>&width=16" style="width:16px;height:16px;" class="img-circle">

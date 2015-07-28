@@ -8,15 +8,88 @@ import com.mossle.api.form.FormDTO;
 import com.mossle.core.page.Page;
 
 public interface HumanTaskConnector {
+    /**
+     * 创建任务.
+     */
     HumanTaskDTO createHumanTask();
 
+    /**
+     * 删除任务.
+     */
     void removeHumanTask(String humanTaskId);
 
     void removeHumanTaskByTaskId(String taskId);
 
     void removeHumanTaskByProcessInstanceId(String processInstanceId);
 
+    /**
+     * 更新任务.
+     */
     HumanTaskDTO saveHumanTask(HumanTaskDTO humanTaskDto);
+
+    /**
+     * 完成任务.
+     */
+    void completeTask(String humanTaskId, String userId,
+            Map<String, Object> taskParameters);
+
+    /**
+     * 领取任务.
+     */
+    void claimTask(String humanTaskId, String userId);
+
+    /**
+     * 释放任务。
+     */
+    void releaseTask(String humanTaskId);
+
+    /**
+     * 转发任务.
+     */
+    void transfer(String humanTaskId, String userId);
+
+    /**
+     * 回退，指定节点，重新分配.
+     */
+    void rollbackActivity(String humanTaskId, String activityId);
+
+    /**
+     * 回退，指定节点，上个执行人.
+     */
+    void rollbackActivityLast(String humanTaskId, String activityId);
+
+    /**
+     * 回退，指定节点，指定执行人.
+     */
+    void rollbackActivityAssignee(String humanTaskId, String activityId,
+            String userId);
+
+    /**
+     * 回退，上个节点，重新分配.
+     */
+    void rollbackPrevious(String humanTaskId);
+
+    /**
+     * 回退，上个节点，上个执行人.
+     */
+    void rollbackPreviousLast(String humanTaskId);
+
+    /**
+     * 回退，上个节点，指定执行人.
+     */
+    void rollbackPreviousAssignee(String humanTaskId, String userId);
+
+    /**
+     * 撤销.
+     */
+    void withdraw(String humanTaskId);
+
+    /**
+     * 协办任务.
+     */
+    void delegateTask(String humanTaskId, String userId);
+
+    void saveParticipant(ParticipantDTO participantDto);
 
     HumanTaskDTO findHumanTaskByTaskId(String taskId);
 
@@ -30,18 +103,7 @@ public interface HumanTaskConnector {
     void configTaskDefinitions(String businessKey,
             List<String> taskDefinitionKeys, List<String> taskAssigness);
 
-    void completeTask(String humanTaskId, String userId,
-            Map<String, Object> taskParameters);
-
     Page findPersonalTasks(String userId, int pageNo, int pageSize);
 
     Page findFinishedTasks(String userId, int pageNo, int pageSize);
-
-    void rollbackPrevious(String humanTaskId);
-
-    void withdraw(String humanTaskId);
-
-    void transfer(String humanTaskId, String userId);
-
-    void delegateTask(String humanTaskId, String userId);
 }

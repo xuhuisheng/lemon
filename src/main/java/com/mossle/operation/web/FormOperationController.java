@@ -12,10 +12,9 @@ import javax.servlet.http.HttpServletResponse;
 
 import com.mossle.api.form.FormConnector;
 import com.mossle.api.form.FormDTO;
-import com.mossle.api.internal.StoreConnector;
-import com.mossle.api.internal.StoreDTO;
+import com.mossle.api.store.StoreConnector;
+import com.mossle.api.store.StoreDTO;
 
-import com.mossle.core.hibernate.PropertyFilter;
 import com.mossle.core.mapper.BeanMapper;
 import com.mossle.core.mapper.JsonMapper;
 import com.mossle.core.page.Page;

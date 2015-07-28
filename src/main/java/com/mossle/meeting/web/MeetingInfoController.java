@@ -8,6 +8,7 @@ import java.util.Map;
 
 import javax.annotation.Resource;
 
+import javax.servlet.http.HttpServletRequest;
 import javax.servlet.http.HttpServletResponse;
 
 import com.mossle.api.scope.ScopeConnector;
@@ -116,7 +117,8 @@ public class MeetingInfoController {
     @RequestMapping("meeting-info-export")
     public void export(@ModelAttribute Page page,
             @RequestParam Map<String, Object> parameterMap,
-            HttpServletResponse response) throws Exception {
+            HttpServletRequest request, HttpServletResponse response)
+            throws Exception {
         List<PropertyFilter> propertyFilters = PropertyFilter
                 .buildFromMap(parameterMap);
         page = meetingInfoManager.pagedQuery(page, propertyFilters);
@@ -127,7 +129,7 @@ public class MeetingInfoController {
         tableModel.setName("doc info");
         tableModel.addHeaders("id", "name");
         tableModel.setData(meetingInfos);
-        exportor.export(response, tableModel);
+        exportor.export(request, response, tableModel);
     }
 
     // ~ ======================================================================

@@ -67,10 +67,11 @@ public class StringUtils {
         if (text == null) {
             return text;
         }
-		// Unicode Character 'NO-BREAK SPACE' (U+00A0)
+
+        // Unicode Character 'NO-BREAK SPACE' (U+00A0)
         text = text.replace("" + ((char) 160), " ");
-		// Unicode Character 'ZERO WIDTH SPACE' (U+200B).
-		text = text.replace("" + ((char) 8203), " ");
+        // Unicode Character 'ZERO WIDTH SPACE' (U+200B).
+        text = text.replace("" + ((char) 8203), " ");
 
         text = org.apache.commons.lang3.StringUtils.trim(text);
         text = org.apache.commons.lang3.StringUtils.strip(text, "　");

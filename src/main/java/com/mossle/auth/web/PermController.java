@@ -6,6 +6,7 @@ import java.util.Map;
 
 import javax.annotation.Resource;
 
+import javax.servlet.http.HttpServletRequest;
 import javax.servlet.http.HttpServletResponse;
 
 import com.mossle.api.scope.ScopeHolder;
@@ -113,7 +114,8 @@ public class PermController {
     @RequestMapping("perm-export")
     public void export(@ModelAttribute Page page,
             @RequestParam Map<String, Object> parameterMap,
-            HttpServletResponse response) throws Exception {
+            HttpServletRequest request, HttpServletResponse response)
+            throws Exception {
         List<PropertyFilter> propertyFilters = PropertyFilter
                 .buildFromMap(parameterMap);
         page = permManager.pagedQuery(page, propertyFilters);
@@ -123,7 +125,7 @@ public class PermController {
         tableModel.setName("perm");
         tableModel.addHeaders("id", "name");
         tableModel.setData(perms);
-        exportor.export(response, tableModel);
+        exportor.export(request, response, tableModel);
     }
 
     // ~ ======================================================================

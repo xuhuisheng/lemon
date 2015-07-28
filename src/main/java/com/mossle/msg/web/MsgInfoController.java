@@ -7,6 +7,7 @@ import java.util.Map;
 
 import javax.annotation.Resource;
 
+import javax.servlet.http.HttpServletRequest;
 import javax.servlet.http.HttpServletResponse;
 
 import com.mossle.api.scope.ScopeHolder;
@@ -154,7 +155,8 @@ public class MsgInfoController {
     @RequestMapping("msg-info-export")
     public void export(@ModelAttribute Page page,
             @RequestParam Map<String, Object> parameterMap,
-            HttpServletResponse response) throws Exception {
+            HttpServletRequest request, HttpServletResponse response)
+            throws Exception {
         List<PropertyFilter> propertyFilters = PropertyFilter
                 .buildFromMap(parameterMap);
         page = msgInfoManager.pagedQuery(page, propertyFilters);
@@ -165,7 +167,7 @@ public class MsgInfoController {
         tableModel.setName("msg info");
         tableModel.addHeaders("id", "name");
         tableModel.setData(msgInfos);
-        exportor.export(response, tableModel);
+        exportor.export(request, response, tableModel);
     }
 
     @RequestMapping("msg-info-view")

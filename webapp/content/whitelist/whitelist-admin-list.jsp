@@ -103,6 +103,7 @@ $(function() {
         <th class="sorting" name="name">域名</th>
         <th class="sorting" name="name">IP</th>
         <th class="sorting" name="name">接口人</th>
+        <th class="sorting" name="name">级别</th>
         <th width="80">&nbsp;</th>
       </tr>
     </thead>
@@ -124,6 +125,9 @@ $(function() {
 		</td>
         <td>
 		  ${item.userId}
+		</td>
+        <td>
+		  ${item.level}
 		</td>
         <td>
           <a href="whitelist-admin-input.do?id=${item.id}" class="a-update"><spring:message code="core.list.edit" text="编辑"/></a>

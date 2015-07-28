@@ -2,12 +2,12 @@
   <modelVersion>4.0.0</modelVersion>
   <groupId>com.mossle</groupId>
   <artifactId>lemon</artifactId>
-  <version>1.5.0-SNAPSHOT</version>
+  <version>1.5.0</version>
   <name>lemon</name>
   <packaging>war</packaging>
   <description>Lemon is an OA.</description>
   
-  <inceptionYear>2015</inceptionYear>
+  <inceptionYear>2014</inceptionYear>
   
   <licenses>
     <license>
@@ -69,34 +69,10 @@
     </dependency>
   <dependency>
       <groupId>org.springframework</groupId>
-      <artifactId>spring-orm</artifactId>
-    </dependency><dependency>
-      <groupId>org.springframework</groupId>
       <artifactId>spring-webmvc</artifactId>
     </dependency><dependency>
       <groupId>org.springframework</groupId>
       <artifactId>spring-context-support</artifactId>
-    </dependency><dependency>
-      <groupId>org.springframework.security</groupId>
-      <artifactId>spring-security-taglibs</artifactId>
-    </dependency><dependency>
-      <groupId>org.springframework.security</groupId>
-      <artifactId>spring-security-config</artifactId>
-    </dependency><dependency>
-      <groupId>org.hibernate</groupId>
-      <artifactId>hibernate-core</artifactId>
-    </dependency><dependency>
-      <groupId>org.hibernate</groupId>
-      <artifactId>hibernate-validator</artifactId>
-    </dependency><dependency>
-      <groupId>commons-dbcp</groupId>
-      <artifactId>commons-dbcp</artifactId>
-    </dependency><dependency>
-      <groupId>org.hsqldb</groupId>
-      <artifactId>hsqldb</artifactId>
-    </dependency><dependency>
-      <groupId>org.lazyluke</groupId>
-      <artifactId>log4jdbc-remix</artifactId>
     </dependency><dependency>
       <groupId>commons-io</groupId>
       <artifactId>commons-io</artifactId>
@@ -122,6 +98,9 @@
       <groupId>commons-codec</groupId>
       <artifactId>commons-codec</artifactId>
     </dependency><dependency>
+      <groupId>org.apache.commons</groupId>
+      <artifactId>commons-lang3</artifactId>
+    </dependency><dependency>
       <groupId>javax.ws.rs</groupId>
       <artifactId>javax.ws.rs-api</artifactId>
     </dependency><dependency>
@@ -137,15 +116,6 @@
   	  <groupId>org.jolokia</groupId>
 	  <artifactId>jolokia-core</artifactId>
 	</dependency><dependency>
-	  <groupId>mysql</groupId>
-	  <artifactId>mysql-connector-java</artifactId>
-	</dependency><dependency>
-	  <groupId>org.activiti</groupId>
-	  <artifactId>activiti-spring</artifactId>
-	</dependency><dependency>
-      <groupId>org.flywaydb</groupId>
-      <artifactId>flyway-core</artifactId>
-    </dependency><dependency>
       <groupId>org.javasimon</groupId>
       <artifactId>javasimon-spring</artifactId>
     </dependency><dependency>
@@ -175,6 +145,47 @@
 	</dependency><dependency>
 	  <groupId>com.belerweb</groupId>
 	  <artifactId>pinyin4j</artifactId>
+	</dependency><dependency>
+      <groupId>org.springframework</groupId>
+      <artifactId>spring-orm</artifactId>
+    </dependency><dependency>
+      <groupId>org.hibernate</groupId>
+      <artifactId>hibernate-core</artifactId>
+    </dependency><dependency>
+      <groupId>org.hibernate</groupId>
+      <artifactId>hibernate-validator</artifactId>
+    </dependency><dependency>
+      <groupId>commons-dbcp</groupId>
+      <artifactId>commons-dbcp</artifactId>
+    </dependency><dependency>
+      <groupId>org.hsqldb</groupId>
+      <artifactId>hsqldb</artifactId>
+    </dependency><dependency>
+      <groupId>org.lazyluke</groupId>
+      <artifactId>log4jdbc-remix</artifactId>
+    </dependency><dependency>
+	  <groupId>mysql</groupId>
+	  <artifactId>mysql-connector-java</artifactId>
+	</dependency><dependency>
+      <groupId>org.flywaydb</groupId>
+      <artifactId>flyway-core</artifactId>
+    </dependency><dependency>
+      <groupId>org.springframework.security</groupId>
+      <artifactId>spring-security-taglibs</artifactId>
+    </dependency><dependency>
+      <groupId>org.springframework.security</groupId>
+      <artifactId>spring-security-config</artifactId>
+    </dependency><dependency>
+	  <groupId>org.activiti</groupId>
+	  <artifactId>activiti-spring</artifactId>
+	</dependency><dependency>
+      <groupId>org.activiti</groupId>
+      <artifactId>activiti-json-converter</artifactId>
+	  <version>${activiti.version}</version>
+    </dependency><dependency>
+	  <groupId>javax.validation</groupId>
+	  <artifactId>validation-api</artifactId>
+	  <version>1.1.0.Final</version>
 	</dependency><dependency>
       <groupId>org.activiti</groupId>
       <artifactId>activiti-json-converter</artifactId>
@@ -1472,16 +1483,4 @@
     </profile>
   </profiles>
 
-<repositories>
-    <repository>
-      <id>oschina</id>
-      <name>oschina</name>
-      <url>http://maven.oschina.net/content/groups/public/</url>
-    </repository>
-  </repositories><pluginRepositories>
-    <pluginRepository>
-      <id>oschina</id>
-      <name>oschina</name>
-      <url>http://maven.oschina.net/content/groups/public/</url>
-    </pluginRepository>
-  </pluginRepositories></project>
+</project>

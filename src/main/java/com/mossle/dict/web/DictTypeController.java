@@ -6,6 +6,7 @@ import java.util.Map;
 
 import javax.annotation.Resource;
 
+import javax.servlet.http.HttpServletRequest;
 import javax.servlet.http.HttpServletResponse;
 
 import com.mossle.core.hibernate.PropertyFilter;
@@ -100,7 +101,7 @@ public class DictTypeController {
 
     @RequestMapping("dict-type-export")
     public void export(@ModelAttribute Page page,
-            @RequestParam Map<String, Object> parameterMap,
+            @RequestParam Map<String, Object> parameterMap,   HttpServletRequest request, 
             HttpServletResponse response) throws Exception {
         List<PropertyFilter> propertyFilters = PropertyFilter
                 .buildFromMap(parameterMap);
@@ -112,7 +113,7 @@ public class DictTypeController {
         tableModel.setName("dict info");
         tableModel.addHeaders("id", "name", "stringValue", "description");
         tableModel.setData(dictTypes);
-        exportor.export(response, tableModel);
+        exportor.export(request, response, tableModel);
     }
 
     // ~ ======================================================================

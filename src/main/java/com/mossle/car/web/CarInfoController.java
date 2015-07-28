@@ -6,6 +6,7 @@ import java.util.Map;
 
 import javax.annotation.Resource;
 
+import javax.servlet.http.HttpServletRequest;
 import javax.servlet.http.HttpServletResponse;
 
 import com.mossle.api.user.UserConnector;
@@ -102,7 +103,8 @@ public class CarInfoController {
     @RequestMapping("car-info-export")
     public void export(@ModelAttribute Page page,
             @RequestParam Map<String, Object> parameterMap,
-            HttpServletResponse response) throws Exception {
+            HttpServletRequest request, HttpServletResponse response)
+            throws Exception {
         List<PropertyFilter> propertyFilters = PropertyFilter
                 .buildFromMap(parameterMap);
         page = carInfoManager.pagedQuery(page, propertyFilters);
@@ -113,7 +115,7 @@ public class CarInfoController {
         tableModel.setName("car info");
         tableModel.addHeaders("id", "name");
         tableModel.setData(carInfos);
-        exportor.export(response, tableModel);
+        exportor.export(request, response, tableModel);
     }
 
     // ~ ======================================================================

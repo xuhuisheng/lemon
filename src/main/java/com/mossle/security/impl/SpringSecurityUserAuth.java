@@ -15,7 +15,16 @@ import org.springframework.security.core.authority.SimpleGrantedAuthority;
 import org.springframework.security.core.userdetails.UserDetails;
 
 public class SpringSecurityUserAuth extends UserAuthDTO implements UserDetails {
+    private String password;
     private Collection<? extends GrantedAuthority> authorities;
+
+    public String getPassword() {
+        return password;
+    }
+
+    public void setPassword(String password) {
+        this.password = password;
+    }
 
     public Collection<? extends GrantedAuthority> getAuthorities() {
         return authorities;
@@ -26,20 +35,16 @@ public class SpringSecurityUserAuth extends UserAuthDTO implements UserDetails {
         this.authorities = authorities;
     }
 
-    public boolean isEnabled() {
-        return "1".equals(this.getStatus());
-    }
-
     public boolean isCredentialsNonExpired() {
-        return true;
+        return !this.isCredentialsExpired();
     }
 
     public boolean isAccountNonLocked() {
-        return true;
+        return !this.isAccountLocked();
     }
 
     public boolean isAccountNonExpired() {
-        return true;
+        return !this.isAccountExpired();
     }
 
     // ~ ==================================================

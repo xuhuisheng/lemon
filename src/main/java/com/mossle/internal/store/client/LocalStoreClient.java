@@ -10,8 +10,8 @@ import java.util.*;
 
 import javax.annotation.Resource;
 
-import com.mossle.api.internal.StoreConnector;
-import com.mossle.api.internal.StoreDTO;
+import com.mossle.api.store.StoreConnector;
+import com.mossle.api.store.StoreDTO;
 
 import com.mossle.core.mapper.JsonMapper;
 import com.mossle.core.util.IoUtils;
