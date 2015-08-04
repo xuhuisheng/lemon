@@ -28,47 +28,47 @@
 		<div class="content content-inner">
 
 <form id="mailTemplateForm" method="post" action="sendmail-template-send.do" class="form-horizontal">
-  <input id="mailTemplate_id" type="hidden" name="id" value="${mailTemplate.id}">
+  <input id="mailTemplate_id" type="hidden" name="id" value="${sendmailTemplate.id}">
   <div class="control-group">
     <label class="control-label" for="mailTemplate_name">名称</label>
 	<div class="controls">
-	  ${mailTemplate.name}
+	  ${sendmailTemplate.name}
     </div>
   </div>
   <div class="control-group">
     <label class="control-label" for="mailTemplate_sender">发件人</label>
 	<div class="controls">
-	  <c:out value="${mailTemplate.sender}"/>
+	  <c:out value="${sendmailTemplate.sender}"/>
     </div>
   </div>
   <div class="control-group">
     <label class="control-label" for="mailTemplate_receiver">收件人</label>
 	<div class="controls">
-	  <c:out value="${mailTemplate.receiver}"/>
+	  <c:out value="${sendmailTemplate.receiver}"/>
     </div>
   </div>
   <div class="control-group">
     <label class="control-label" for="mailTemplate_cc">抄送</label>
 	<div class="controls">
-	  <c:out value="${mailTemplate.cc}"/>
+	  <c:out value="${sendmailTemplate.cc}"/>
     </div>
   </div>
   <div class="control-group">
     <label class="control-label" for="mailTemplate_bcc">暗送</label>
 	<div class="controls">
-	  <c:out value="${mailTemplate.bcc}"/>
+	  <c:out value="${sendmailTemplate.bcc}"/>
     </div>
   </div>
   <div class="control-group">
     <label class="control-label" for="mailTemplate_subject">标题</label>
 	<div class="controls">
-	  ${mailTemplate.subject}
+	  ${sendmailTemplate.subject}
     </div>
   </div>
   <div class="control-group">
     <label class="control-label" for="mailTemplate_content">内容</label>
 	<div class="controls">
-	  ${mailTemplate.content}
+	  ${sendmailTemplate.content}
     </div>
   </div>
   <div class="control-group">
@@ -82,8 +82,8 @@
   <div class="control-group">
     <label class="control-label" for="mailTemplate_mailConfigId">SMTP服务器</label>
 	<div class="controls">
-	  <select id="mailTemplate_mailConfigId" name="mailConfigId">
-	    <c:forEach items="${mailConfigs}" var="item">
+	  <select id="mailTemplate_mailConfigId" name="sendmailConfigId">
+	    <c:forEach items="${sendmailConfigs}" var="item">
 		<option value="${item.id}">${item.name}</option>
 		</c:forEach>
 	  </select>
