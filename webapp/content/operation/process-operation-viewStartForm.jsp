@@ -41,7 +41,7 @@ $(function() {
 		xform.setValue(${xform.jsonData});
 	}
 
-	$("#demoForm").validate({
+	$("#xform").validate({
         submitHandler: function(form) {
 			bootbox.animate(false);
 			var box = bootbox.dialog('<div class="progress progress-striped active" style="margin:0px;"><div class="bar" style="width: 100%;"></div></div>');

@@ -990,7 +990,12 @@ xf.field.TextField.prototype.updateName = function(value) {
 	var parentNode = xf.$(this.parentId);
 	parentNode.innerHTML = 
 		'<div class="xf-handler">'
-		+ '<input type="text" name="' + this.name + '" ' + (this.readOnly ? 'readOnly' : '') + ' value="' + (this.value ? this.value : '') + '" style="margin-bottom:0px;" maxlength="200">'
+		
+		+ '<input type="text" name="' + this.name + '" ' + (this.readOnly ? 'readOnly' : '')
+			+ ' value="' + (this.value ? this.value : '') + '"'
+			+ (this.required ? ' required="true" class="required"' : '')
+			+ ' style="margin-bottom:0px;" maxlength="200">'
+		
 		+ '</div>';
 }
 
