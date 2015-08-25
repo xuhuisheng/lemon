@@ -650,6 +650,16 @@ xf.GridSection.prototype.removeRow = function() {
 	var tr = td.parentNode;
 	var tbody = tr.parentNode;
 
+	var rowIndex = 0;
+	
+	for (var i = 0; i < tbody.children.length; i++) {
+		var child = tbody.children[i];
+		if (child == tr) {
+			rowIndex = i;
+			break;
+		}
+	}
+
 	try {
 		if (tbody.children[0] == tr) {
 			for (var i = 0; i < tbody.children[1].children.length; i++) {
@@ -672,7 +682,32 @@ xf.GridSection.prototype.removeRow = function() {
 
 	tr.parentNode.removeChild(tr);
 
+	for (var i = rowIndex; i < this.row - 1; i++) {
+		var targetRowElement = tbody.children[i];
+		var array = targetRowElement.getAttribute("id").split("-");
+		var prefix = array[0] + '-' + array[1] + '-';
+		targetRowElement.setAttribute("id", prefix + rowIndex);
+		for (var j = 0; j < this.col; j++) {
+			var targetColElement = targetRowElement.children[j];
+			targetColElement.setAttribute("id", prefix + rowIndex + "-" + j);
+		}
+	}
+
+	for (var key in this.fieldMap) {
+		var field = this.fieldMap[key];
+		if (field.row == rowIndex) {
+			delete this.fieldMap[key];
+			continue;
+		}
+		if (field.row > rowIndex) {
+			field.row -= 1;
+		}
+	}
+
+	this.row--;
+
 	this.selectedItems = [];
+
 };
 
 xf.GridSection.prototype.findTbody = function() {
