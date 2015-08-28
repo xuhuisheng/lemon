@@ -40,60 +40,67 @@ $(function() {
 
 <form id="cmsCatalogForm" method="post" action="cms-catalog-save.do" class="form-horizontal">
   <c:if test="${model != null}">
-  <input id="cms-catalog_id" type="hidden" name="id" value="${model.id}">
+  <input id="cmsCatalog_id" type="hidden" name="id" value="${model.id}">
   </c:if>
   <div class="control-group">
-    <label class="control-label" for="cms-catalog_cmsCatalogname">名称</label>
+    <label class="control-label" for="cmsCatalog_name">名称</label>
 	<div class="controls">
-	  <input id="cms-catalog_cmsCatalogname" type="text" name="name" value="${model.name}" size="40" class="text required" minlength="2" maxlength="50">
+	  <input id="cmsCatalog_name" type="text" name="name" value="${model.name}" size="40" class="text required" minlength="2" maxlength="50">
     </div>
   </div>
   <div class="control-group">
-    <label class="control-label" for="cms-catalog_cmsCatalogname">别名</label>
+    <label class="control-label" for="cmsCatalog_code">别名</label>
 	<div class="controls">
-	  <input id="cms-catalog_cmsCatalogname" type="text" name="code" value="${model.code}" size="40" class="text required" minlength="2" maxlength="50">
+	  <input id="cmsCatalog_code" type="text" name="code" value="${model.code}" size="40" class="text required" minlength="2" maxlength="50">
     </div>
   </div>
   <div class="control-group">
-    <label class="control-label" for="cms-catalog_cmsCatalogname">图标</label>
+    <label class="control-label" for="cmsCatalog_logo">图标</label>
 	<div class="controls">
-	  <input id="cms-catalog_cmsCatalogname" type="text" name="logo" value="${model.logo}" size="40" class="text required" minlength="2" maxlength="50">
+	  <input id="cmsCatalog_logo" type="text" name="logo" value="${model.logo}" size="40" class="text required" minlength="2" maxlength="50">
     </div>
   </div>
   <div class="control-group">
-    <label class="control-label" for="cms-catalog_cmsCatalogname">类型</label>
+    <label class="control-label" for="cmsCatalog_type">类型</label>
 	<div class="controls">
-	  <input id="cms-catalog_cmsCatalogname" type="text" name="type" value="${model.type}" size="40" class="text required" minlength="2" maxlength="50">
+	  <select id="cmsCatalog_type" name="type">
+	    <option value="0" ${model.type == 0 ? 'selected' : ''}>文字</option>
+	    <option value="1" ${model.type == 1 ? 'selected' : ''}>图片</option>
+	    <option value="2" ${model.type == 2 ? 'selected' : ''}>音乐</option>
+	    <option value="3" ${model.type == 3 ? 'selected' : ''}>视频</option>
+	    <option value="4" ${model.type == 4 ? 'selected' : ''}>文档</option>
+	    <option value="5" ${model.type == 5 ? 'selected' : ''}>文档</option>
+	  </select>
     </div>
   </div>
   <div class="control-group">
-    <label class="control-label" for="cms-catalog_cmsCatalogname">首页模板</label>
+    <label class="control-label" for="cmsCatalog_templateIndex">首页模板</label>
 	<div class="controls">
-	  <input id="cms-catalog_cmsCatalogname" type="text" name="templateIndex" value="${model.templateIndex}" size="40" class="text required" minlength="2" maxlength="50">
+	  <input id="cmsCatalog_templateIndex" type="text" name="templateIndex" value="${model.templateIndex}" size="40" class="text required" minlength="2" maxlength="50">
     </div>
   </div>
   <div class="control-group">
-    <label class="control-label" for="cms-catalog_cmsCatalogname">列表页模板</label>
+    <label class="control-label" for="cmsCatalog_templateList">列表页模板</label>
 	<div class="controls">
-	  <input id="cms-catalog_cmsCatalogname" type="text" name="templateList" value="${model.templateList}" size="40" class="text required" minlength="2" maxlength="50">
+	  <input id="cmsCatalog_templateList" type="text" name="templateList" value="${model.templateList}" size="40" class="text required" minlength="2" maxlength="50">
     </div>
   </div>
   <div class="control-group">
-    <label class="control-label" for="cms-catalog_cmsCatalogname">详情页模板</label>
+    <label class="control-label" for="cmsCatalog_temlateDetail">详情页模板</label>
 	<div class="controls">
-	  <input id="cms-catalog_cmsCatalogname" type="text" name="templateDetail" value="${model.templateDetail}" size="40" class="text required" minlength="2" maxlength="50">
+	  <input id="cmsCatalog_temlateDetail" type="text" name="templateDetail" value="${model.templateDetail}" size="40" class="text required" minlength="2" maxlength="50">
     </div>
   </div>
   <div class="control-group">
-    <label class="control-label" for="cms-catalog_cmsCatalogname">关键字</label>
+    <label class="control-label" for="cmsCatalog_keyword">关键字</label>
 	<div class="controls">
-	  <input id="cms-catalog_cmsCatalogname" type="text" name="keyword" value="${model.keyword}" size="40" class="text required" minlength="2" maxlength="50">
+	  <input id="cmsCatalog_keyword" type="text" name="keyword" value="${model.keyword}" size="40" class="text required" minlength="2" maxlength="50">
     </div>
   </div>
   <div class="control-group">
-    <label class="control-label" for="cms-catalog_cmsCatalogname">描述</label>
+    <label class="control-label" for="cmsCatalog_description">描述</label>
 	<div class="controls">
-	  <input id="cms-catalog_cmsCatalogname" type="text" name="description" value="${model.description}" size="40" class="text required" minlength="2" maxlength="50">
+	  <input id="cmsCatalog_description" type="text" name="description" value="${model.description}" size="40" class="text required" minlength="2" maxlength="50">
     </div>
   </div>
   <div class="control-group">

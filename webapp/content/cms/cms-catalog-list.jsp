@@ -120,7 +120,14 @@ $(function() {
         <td><input type="checkbox" class="selectedItem a-check" name="selectedItem" value="${item.id}"></td>
         <td>${item.id}</td>
         <td>${item.name}</td>
-        <td>${item.type}</td>
+        <td>
+		  <c:if test="${item.type == 0}">文字</c:if>
+		  <c:if test="${item.type == 1}">图片</c:if>
+		  <c:if test="${item.type == 2}">音乐</c:if>
+		  <c:if test="${item.type == 3}">视频</c:if>
+		  <c:if test="${item.type == 4}">文档</c:if>
+		  <c:if test="${item.type == 5}">文字</c:if>
+		</td>
         <td>
           <a href="cms-catalog-input.do?id=${item.id}" class="a-update"><spring:message code="core.list.edit" text="编辑"/></a>
         </td>
