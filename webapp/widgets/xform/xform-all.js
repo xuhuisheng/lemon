@@ -650,6 +650,16 @@ xf.GridSection.prototype.removeRow = function() {
 	var tr = td.parentNode;
 	var tbody = tr.parentNode;
 
+	var rowIndex = 0;
+	
+	for (var i = 0; i < tbody.children.length; i++) {
+		var child = tbody.children[i];
+		if (child == tr) {
+			rowIndex = i;
+			break;
+		}
+	}
+
 	try {
 		if (tbody.children[0] == tr) {
 			for (var i = 0; i < tbody.children[1].children.length; i++) {
@@ -672,7 +682,32 @@ xf.GridSection.prototype.removeRow = function() {
 
 	tr.parentNode.removeChild(tr);
 
+	for (var i = rowIndex; i < this.row - 1; i++) {
+		var targetRowElement = tbody.children[i];
+		var array = targetRowElement.getAttribute("id").split("-");
+		var prefix = array[0] + '-' + array[1] + '-';
+		targetRowElement.setAttribute("id", prefix + rowIndex);
+		for (var j = 0; j < this.col; j++) {
+			var targetColElement = targetRowElement.children[j];
+			targetColElement.setAttribute("id", prefix + rowIndex + "-" + j);
+		}
+	}
+
+	for (var key in this.fieldMap) {
+		var field = this.fieldMap[key];
+		if (field.row == rowIndex) {
+			delete this.fieldMap[key];
+			continue;
+		}
+		if (field.row > rowIndex) {
+			field.row -= 1;
+		}
+	}
+
+	this.row--;
+
 	this.selectedItems = [];
+
 };
 
 xf.GridSection.prototype.findTbody = function() {
@@ -729,8 +764,8 @@ xf.GridSection.prototype.getPosition = function(el) {
 	}
 	var array = el.id.split('-');
 	var p = {};
-	p.row = parseInt(array[3]);
-	p.col = parseInt(array[4]);
+	p.row = parseInt(array[2]);
+	p.col = parseInt(array[3]);
 	p.width = parseInt(el.colSpan);
 	if (p.width == 0) {
 		p.width = 1;
@@ -917,8 +952,8 @@ xf.field.Label = function(parentNode) {
 	var array = parentId.split('-');
 
 	this.parentId = parentId;
-	this.row = array[3];
-	this.col = array[4];
+	this.row = array[2];
+	this.col = array[3];
 	this.name = 'label-' + this.row + '-' + this.col; 
 	this.text = "text";
 }
@@ -958,8 +993,8 @@ xf.field.TextField = function(parentNode) {
 	var array = parentId.split('-');
 
 	this.parentId = parentId;
-	this.row = array[3];
-	this.col = array[4];
+	this.row = array[2];
+	this.col = array[3];
 	this.name = 'textfield-' + this.row + '-' + this.col;
 	this.required = false;
 	this.readOnly = false;
@@ -990,7 +1025,12 @@ xf.field.TextField.prototype.updateName = function(value) {
 	var parentNode = xf.$(this.parentId);
 	parentNode.innerHTML = 
 		'<div class="xf-handler">'
-		+ '<input type="text" name="' + this.name + '" ' + (this.readOnly ? 'readOnly' : '') + ' value="' + (this.value ? this.value : '') + '" style="margin-bottom:0px;" maxlength="200">'
+		
+		+ '<input type="text" name="' + this.name + '" ' + (this.readOnly ? 'readOnly' : '')
+			+ ' value="' + (this.value ? this.value : '') + '"'
+			+ (this.required ? ' required="true" class="required"' : '')
+			+ ' style="margin-bottom:0px;" maxlength="200">'
+		
 		+ '</div>';
 }
 
@@ -1021,8 +1061,8 @@ xf.field.Password = function(parentNode) {
 	var array = parentId.split('-');
 
 	this.parentId = parentId;
-	this.row = array[3];
-	this.col = array[4];
+	this.row = array[2];
+	this.col = array[3];
 	this.name = 'password-' + this.row + '-' + this.col;
 	this.required = false;
 	this.readOnly = false;
@@ -1080,8 +1120,8 @@ xf.field.TextArea = function(parentNode) {
 	var array = parentId.split('-');
 
 	this.parentId = parentId;
-	this.row = array[3];
-	this.col = array[4];
+	this.row = array[2];
+	this.col = array[3];
 	this.name = 'textarea-' + this.row + '-' + this.col;
 	this.required = false;
 	this.readOnly = false;
@@ -1145,8 +1185,8 @@ xf.field.Select = function(parentNode) {
 	var array = parentId.split('-');
 
 	this.parentId = parentId;
-	this.row = array[3];
-	this.col = array[4];
+	this.row = array[2];
+	this.col = array[3];
 	this.name = 'select-' + this.row + '-' + this.col;
 	this.items = '';
 	this.required = false;
@@ -1226,8 +1266,8 @@ xf.field.Radio = function(parentNode) {
 	var array = parentId.split('-');
 
 	this.parentId = parentId;
-	this.row = array[3];
-	this.col = array[4];
+	this.row = array[2];
+	this.col = array[3];
 	this.name = 'radio-' + this.row + '-' + this.col;
 	this.items = '';
 	this.required = false;
@@ -1306,8 +1346,8 @@ xf.field.Checkbox = function(parentNode) {
 	var array = parentId.split('-');
 
 	this.parentId = parentId;
-	this.row = array[3];
-	this.col = array[4];
+	this.row = array[2];
+	this.col = array[3];
 	this.name = 'checkbox-' + this.row + '-' + this.col;
 	this.items = '';
 	this.required = false;
@@ -1392,8 +1432,8 @@ xf.field.FileUpload = function(parentNode) {
 	var array = parentId.split('-');
 
 	this.parentId = parentId;
-	this.row = array[3];
-	this.col = array[4];
+	this.row = array[2];
+	this.col = array[3];
 	this.name = 'fileupload-' + this.row + '-' + this.col;
 	this.required = false;
 	this.readOnly = false;
@@ -1465,8 +1505,8 @@ xf.field.DatePicker = function(parentNode) {
 	var array = parentId.split('-');
 
 	this.parentId = parentId;
-	this.row = array[3];
-	this.col = array[4];
+	this.row = array[2];
+	this.col = array[3];
 	this.name = 'datepicker-' + this.row + '-' + this.col;
 	this.required = false;
 	this.readOnly = false;
@@ -1533,8 +1573,8 @@ xf.field.UserPicker = function(parentNode) {
 	var array = parentId.split('-');
 
 	this.parentId = parentId;
-	this.row = array[3];
-	this.col = array[4];
+	this.row = array[2];
+	this.col = array[3];
 	this.name = 'userpicker-' + this.row + '-' + this.col;
 	this.required = false;
 	this.readOnly = false;

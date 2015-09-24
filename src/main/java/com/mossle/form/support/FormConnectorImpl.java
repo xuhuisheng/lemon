@@ -47,7 +47,7 @@ public class FormConnectorImpl implements FormConnector {
         FormDTO formDto = new FormDTO();
         formDto.setId(formTemplate.getId().toString());
         formDto.setCode(formTemplate.getCode());
-        formDto.setCode(formTemplate.getName());
+        formDto.setName(formTemplate.getName());
 
         if (Integer.valueOf(1).equals(formTemplate.getType())) {
             formDto.setRedirect(true);
