@@ -76,4 +76,18 @@ public class SpringSecurityUserAuth extends UserAuthDTO implements UserDetails {
         setId((String) in.readObject());
         setScopeId((String) in.readObject());
     }
+
+    @Override
+    public boolean equals(Object rhs) {
+        if (rhs instanceof UserAuthDTO) {
+            return this.getUsername().equals(((UserAuthDTO) rhs).getUsername());
+        }
+
+        return false;
+    }
+
+    @Override
+    public int hashCode() {
+        return this.getUsername().hashCode();
+    }
 }
