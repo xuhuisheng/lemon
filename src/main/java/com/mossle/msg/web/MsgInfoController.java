@@ -10,21 +10,23 @@ import javax.annotation.Resource;
 import javax.servlet.http.HttpServletRequest;
 import javax.servlet.http.HttpServletResponse;
 
-import com.mossle.api.scope.ScopeHolder;
+import com.mossle.api.tenant.TenantHolder;
 import com.mossle.api.user.UserConnector;
 import com.mossle.api.user.UserDTO;
 
+import com.mossle.core.auth.CurrentUserHolder;
+import com.mossle.core.export.Exportor;
+import com.mossle.core.export.TableModel;
 import com.mossle.core.hibernate.PropertyFilter;
 import com.mossle.core.mapper.BeanMapper;
 import com.mossle.core.page.Page;
 import com.mossle.core.spring.MessageHelper;
 
-import com.mossle.ext.auth.CurrentUserHolder;
-import com.mossle.ext.export.Exportor;
-import com.mossle.ext.export.TableModel;
+import com.mossle.msg.persistence.domain.MsgInfo;
+import com.mossle.msg.persistence.manager.MsgInfoManager;
 
-import com.mossle.msg.domain.MsgInfo;
-import com.mossle.msg.manager.MsgInfoManager;
+import org.slf4j.Logger;
+import org.slf4j.LoggerFactory;
 
 import org.springframework.stereotype.Controller;
 
@@ -39,6 +41,8 @@ import org.springframework.web.servlet.mvc.support.RedirectAttributes;
 @Controller
 @RequestMapping("msg")
 public class MsgInfoController {
+    private static Logger logger = LoggerFactory
+            .getLogger(MsgInfoController.class);
     private MsgInfoManager msgInfoManager;
     private Exportor exportor;
     private BeanMapper beanMapper = new BeanMapper();
@@ -115,24 +119,33 @@ public class MsgInfoController {
         if (id != null) {
             dest = msgInfoManager.get(id);
             beanMapper.copy(msgInfo, dest);
+            msgInfoManager.save(dest);
         } else {
             dest = msgInfo;
 
             String userId = currentUserHolder.getUserId();
             dest.setSenderId(userId);
 
-            UserDTO userDto = userConnector.findByUsername(username, "1");
+            for (String theUsername : username.split(",")) {
+                MsgInfo theMsgInfo = new MsgInfo();
+                beanMapper.copy(msgInfo, theMsgInfo);
+                theMsgInfo.setSenderId(userId);
 
-            if (userDto == null) {
-                throw new IllegalStateException("user not exists : " + username);
+                UserDTO userDto = userConnector
+                        .findByUsername(theUsername, "1");
+
+                if (userDto == null) {
+                    logger.warn("user not exists : {}", theUsername);
+
+                    continue;
+                }
+
+                theMsgInfo.setReceiverId(userDto.getId());
+                theMsgInfo.setCreateTime(new Date());
+                theMsgInfo.setStatus(0);
+                msgInfoManager.save(theMsgInfo);
             }
-
-            dest.setReceiverId(userDto.getId());
-            dest.setCreateTime(new Date());
-            dest.setStatus(0);
         }
-
-        msgInfoManager.save(dest);
 
         messageHelper.addFlashMessage(redirectAttributes, "core.success.save",
                 "保存成功");

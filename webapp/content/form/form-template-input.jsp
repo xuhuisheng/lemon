@@ -9,9 +9,9 @@
     <%@include file="/common/meta.jsp"%>
     <title>designer</title>
     <%@include file="/common/s.jsp"%>
-	<link href="${scopePrefix}/widgets/xform/styles/xform.css" rel="stylesheet">
-    <script type="text/javascript" src="${scopePrefix}/widgets/xform/xform-all.js"></script>
-    <script type="text/javascript" src="${scopePrefix}/widgets/xform/adaptor.js"></script>
+	<link href="${tenantPrefix}/widgets/xform/styles/xform.css" rel="stylesheet">
+    <script type="text/javascript" src="${tenantPrefix}/widgets/xform/xform-all.js"></script>
+    <script type="text/javascript" src="${tenantPrefix}/widgets/xform/adaptor.js"></script>
   </head>
 
   <body>
@@ -33,43 +33,43 @@
 			<div class="tab-pane active" id="operation">
 			  <div>
 				<div class="xf-pallete" title="label">
-				  <img src="${scopePrefix}/widgets/xform/images/xform/new_label.png">
+				  <img src="${tenantPrefix}/widgets/xform/images/xform/new_label.png">
 				  label
 				</div>
 				<div class="xf-pallete" title="textfield">
-				  <img src="${scopePrefix}/widgets/xform/images/xform/new_input.png">
+				  <img src="${tenantPrefix}/widgets/xform/images/xform/new_input.png">
 				  textfield
 				</div>
 				<div class="xf-pallete" title="password">
-				  <img src="${scopePrefix}/widgets/xform/images/xform/new_secret.png">
+				  <img src="${tenantPrefix}/widgets/xform/images/xform/new_secret.png">
 				  password
 				</div>
 				<div class="xf-pallete" title="textarea">
-				  <img src="${scopePrefix}/widgets/xform/images/xform/new_textarea.png">
+				  <img src="${tenantPrefix}/widgets/xform/images/xform/new_textarea.png">
 				  textarea
 				</div>
 				<div class="xf-pallete" title="select">
-				  <img src="${scopePrefix}/widgets/xform/images/xform/new_select.png">
+				  <img src="${tenantPrefix}/widgets/xform/images/xform/new_select.png">
 				  select
 				</div>
 				<div class="xf-pallete" title="radio">
-				  <img src="${scopePrefix}/widgets/xform/images/xform/new_item.png">
+				  <img src="${tenantPrefix}/widgets/xform/images/xform/new_item.png">
 				  radio
 				</div>
 				<div class="xf-pallete" title="checkbox">
-				  <img src="${scopePrefix}/widgets/xform/images/xform/new_itemset.png">
+				  <img src="${tenantPrefix}/widgets/xform/images/xform/new_itemset.png">
 				  checkbox
 				</div>
 				<div class="xf-pallete" title="fileupload">
-				  <img src="${scopePrefix}/widgets/xform/images/xform/new_upload.png">
+				  <img src="${tenantPrefix}/widgets/xform/images/xform/new_upload.png">
 				  fileupload
 				</div>
 				<div class="xf-pallete" title="datepicker">
-				  <img src="${scopePrefix}/widgets/xform/images/xform/new_range.png">
+				  <img src="${tenantPrefix}/widgets/xform/images/xform/new_range.png">
 				  datepicker
 				</div>
 				<div class="xf-pallete" title="userpicker">
-				  <img src="${scopePrefix}/widgets/xform/images/xform/userpicker.png">
+				  <img src="${tenantPrefix}/widgets/xform/images/xform/userpicker.png">
 				  userpicker
 				</div>
 			  </div>

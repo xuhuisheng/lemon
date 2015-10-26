@@ -48,12 +48,15 @@ public class AccountLog implements java.io.Serializable {
     /** null. */
     private String description;
 
+    /** null. */
+    private String tenantId;
+
     public AccountLog() {
     }
 
     public AccountLog(String username, String result, String reason,
             String application, Date logTime, String client, String server,
-            String description) {
+            String description, String tenantId) {
         this.username = username;
         this.result = result;
         this.reason = reason;
@@ -62,6 +65,7 @@ public class AccountLog implements java.io.Serializable {
         this.client = client;
         this.server = server;
         this.description = description;
+        this.tenantId = tenantId;
     }
 
     /** @return null. */
@@ -191,5 +195,19 @@ public class AccountLog implements java.io.Serializable {
      */
     public void setDescription(String description) {
         this.description = description;
+    }
+
+    /** @return null. */
+    @Column(name = "TENANT_ID", length = 64)
+    public String getTenantId() {
+        return this.tenantId;
+    }
+
+    /**
+     * @param tenantId
+     *            null.
+     */
+    public void setTenantId(String tenantId) {
+        this.tenantId = tenantId;
     }
 }

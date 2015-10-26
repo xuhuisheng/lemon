@@ -31,11 +31,11 @@
 		var setting = {
 			async: {
 				enable: true,
-				url: "${scopePrefix}/rs/party/tree?partyStructTypeId=${partyStructType.id}"
+				url: "${tenantPrefix}/rs/party/tree?partyStructTypeId=${partyStructType.id}"
 			},
 			callback: {
 				onClick: function(event, treeId, treeNode) {
-					location.href = '${scopePrefix}/group/org-users.do?partyStructTypeId=${partyStructTypeId}&partyEntityId=' + treeNode.id;
+					location.href = '${tenantPrefix}/group/org-users.do?partyStructTypeId=${partyStructTypeId}&partyEntityId=' + treeNode.id;
 				}
 			}
 		};

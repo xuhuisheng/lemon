@@ -10,17 +10,16 @@ import javax.annotation.Resource;
 import javax.servlet.http.HttpServletRequest;
 import javax.servlet.http.HttpServletResponse;
 
+import com.mossle.core.MultipartHandler;
+import com.mossle.core.auth.CurrentUserHolder;
+import com.mossle.core.export.Exportor;
+import com.mossle.core.export.TableModel;
 import com.mossle.core.hibernate.PropertyFilter;
 import com.mossle.core.mapper.BeanMapper;
 import com.mossle.core.mapper.JsonMapper;
 import com.mossle.core.page.Page;
 import com.mossle.core.spring.MessageHelper;
-
-import com.mossle.ext.MultipartHandler;
-import com.mossle.ext.auth.CurrentUserHolder;
-import com.mossle.ext.export.Exportor;
-import com.mossle.ext.export.TableModel;
-import com.mossle.ext.store.MultipartFileDataSource;
+import com.mossle.core.store.MultipartFileDataSource;
 
 import com.mossle.humantask.persistence.domain.TaskInfo;
 import com.mossle.humantask.persistence.manager.TaskInfoManager;
@@ -30,6 +29,8 @@ import org.slf4j.LoggerFactory;
 
 import org.springframework.context.MessageSource;
 import org.springframework.context.support.MessageSourceAccessor;
+
+import org.springframework.jdbc.core.JdbcTemplate;
 
 import org.springframework.stereotype.Controller;
 
@@ -57,6 +58,7 @@ public class TaskWorkspaceController {
     private JsonMapper jsonMapper = new JsonMapper();
     private MessageHelper messageHelper;
     private CurrentUserHolder currentUserHolder;
+    private JdbcTemplate jdbcTemplate;
 
     @RequestMapping("workspace-personalTasks")
     public String personalTasks(@ModelAttribute Page page,
@@ -76,11 +78,25 @@ public class TaskWorkspaceController {
     public String groupTasks(@ModelAttribute Page page,
             @RequestParam Map<String, Object> parameterMap, Model model) {
         String userId = currentUserHolder.getUserId();
-        List<PropertyFilter> propertyFilters = PropertyFilter
-                .buildFromMap(parameterMap);
-        propertyFilters.add(new PropertyFilter("EQS_status", "active"));
-        propertyFilters.add(new PropertyFilter("INLS_assignee", null));
-        page = taskInfoManager.pagedQuery(page, propertyFilters);
+        String sql = "select ps.PARENT_ENTITY_ID as ID from PARTY_STRUCT ps,PARTY_ENTITY child,PARTY_TYPE type"
+                + " where ps.CHILD_ENTITY_ID=child.ID and child.TYPE_ID=type.ID and type.TYPE='1' and child.REF=?";
+        List<Map<String, Object>> list = jdbcTemplate.queryForList(sql, userId);
+        List<String> partyIds = new ArrayList<String>();
+
+        for (Map<String, Object> map : list) {
+            partyIds.add(map.get("ID").toString());
+        }
+		Map<String, Object> map = new HashMap<String, Object>();
+		map.put("partyIds", partyIds);
+
+        String hql = "from TaskInfo t join t.taskParticipants p with p.ref in (:partyIds)";
+        page = taskInfoManager.pagedQuery(hql, page.getPageNo(),
+                page.getPageSize(), map);
+        // List<PropertyFilter> propertyFilters = PropertyFilter
+        // .buildFromMap(parameterMap);
+        // propertyFilters.add(new PropertyFilter("EQS_status", "active"));
+        // propertyFilters.add(new PropertyFilter("INLS_assignee", null));
+        // page = taskInfoManager.pagedQuery(page, propertyFilters);
         model.addAttribute("page", page);
 
         return "humantask/workspace-groupTasks";
@@ -114,6 +130,16 @@ public class TaskWorkspaceController {
         return "humantask/workspace-delegatedTasks";
     }
 
+    @RequestMapping("workspace-claimTask")
+    public String claimTask(@RequestParam("taskId") Long taskId) {
+        String userId = currentUserHolder.getUserId();
+        TaskInfo taskInfo = taskInfoManager.get(taskId);
+        taskInfo.setAssignee(userId);
+        taskInfoManager.save(taskInfo);
+
+        return "redirect:/humantask/workspace-personalTasks.do";
+    }
+
     // ~ ======================================================================
     @Resource
     public void setTaskInfoManager(TaskInfoManager taskInfoManager) {
@@ -133,5 +159,10 @@ public class TaskWorkspaceController {
     @Resource
     public void setCurrentUserHolder(CurrentUserHolder currentUserHolder) {
         this.currentUserHolder = currentUserHolder;
+    }
+
+    @Resource
+    public void setJdbcTemplate(JdbcTemplate jdbcTemplate) {
+        this.jdbcTemplate = jdbcTemplate;
     }
 }

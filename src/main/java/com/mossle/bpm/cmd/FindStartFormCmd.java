@@ -95,6 +95,9 @@ public class FindStartFormCmd implements Command<FormDTO> {
                             String formKey = formHandler.getFormKey()
                                     .getExpressionText();
                             formDto.setCode(formKey);
+                        } else {
+                            logger.info("cannot formKey : {}, {}",
+                                    processDefinitionId, taskDefinitionKey);
                         }
 
                         formDto.setActivityId(taskDefinitionKey);

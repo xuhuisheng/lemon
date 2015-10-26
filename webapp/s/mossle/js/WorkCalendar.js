@@ -1,7 +1,8 @@
 
 var WorkCalendar = function(year) {
+	this.now = new Date();
 	if (!year) {
-		this.year = new Date().getFullYear();
+		this.year = this.now.getFullYear();
 	} else {
 		this.year = year;
 	}
@@ -21,7 +22,7 @@ WorkCalendar.prototype = {
 	},
 
 	generateMonth: function(month) {
-		var html = '<div class="datepicker dropdown-menu span3" style="display: block; position: relative;">'
+		var html = '<div class="datepicker dropdown-menu span3" style="display: block; position: relative; z-index: 500;">'
 +'  <div class="datepicker-days" style="display: block;">'
 +'    <table class="table-condensed">'
 +'	  <thead>'
@@ -151,5 +152,16 @@ WorkCalendar.prototype = {
 			});
 			$('.date' + item.date).attr('title', item.name);
 		}
+	},
+	
+	markNow: function() {
+		var now = new Date();
+		var dateText = now.getFullYear() + "" + this.completion(now.getMonth() + 1) + "" + now.getDate();
+
+		$('.date' + dateText).css({
+			backgroundColor: '#000000',
+			color: '#FFFFFF'
+		});
+		$('.date' + dateText).attr('title', '今天');
 	}
 };

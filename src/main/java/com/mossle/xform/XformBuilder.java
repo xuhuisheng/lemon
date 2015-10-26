@@ -6,13 +6,12 @@ import java.util.HashMap;
 import java.util.List;
 import java.util.Map;
 
+import com.mossle.api.keyvalue.Prop;
+import com.mossle.api.keyvalue.Record;
 import com.mossle.api.store.StoreConnector;
 import com.mossle.api.store.StoreDTO;
 
 import com.mossle.core.mapper.JsonMapper;
-
-import com.mossle.keyvalue.Prop;
-import com.mossle.keyvalue.Record;
 
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
@@ -55,7 +54,8 @@ public class XformBuilder {
             String type = xformField.getType();
 
             if ("fileupload".equals(type)) {
-                StoreDTO storeDto = storeConnector.getStore("form", value);
+                StoreDTO storeDto = storeConnector.getStore("form", value,
+                        record.getTenantId());
                 xformField.setValue(storeDto.getKey());
                 xformField.setContentType(storeDto.getDataSource()
                         .getContentType());

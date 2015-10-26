@@ -120,6 +120,9 @@ public class PersonInfo implements java.io.Serializable {
     /** null. */
     private String clothSize;
 
+    /** null. */
+    private String tenantId;
+
     public PersonInfo() {
     }
 
@@ -132,7 +135,7 @@ public class PersonInfo implements java.io.Serializable {
             String departmentName, String positionCode, String positionName,
             String gender, Date birthday, String idCardType,
             String idCardValue, String nationality, String star, String blood,
-            String clothSize) {
+            String clothSize, String tenantId) {
         this.code = code;
         this.username = username;
         this.familyName = familyName;
@@ -165,6 +168,7 @@ public class PersonInfo implements java.io.Serializable {
         this.star = star;
         this.blood = blood;
         this.clothSize = clothSize;
+        this.tenantId = tenantId;
     }
 
     /** @return null. */
@@ -630,5 +634,19 @@ public class PersonInfo implements java.io.Serializable {
      */
     public void setClothSize(String clothSize) {
         this.clothSize = clothSize;
+    }
+
+    /** @return null. */
+    @Column(name = "TENANT_ID", length = 64)
+    public String getTenantId() {
+        return this.tenantId;
+    }
+
+    /**
+     * @param tenantId
+     *            null.
+     */
+    public void setTenantId(String tenantId) {
+        this.tenantId = tenantId;
     }
 }

@@ -9,16 +9,17 @@ import javax.annotation.Resource;
 import javax.servlet.http.HttpServletRequest;
 import javax.servlet.http.HttpServletResponse;
 
-import com.mossle.cms.domain.CmsCatalog;
-import com.mossle.cms.manager.CmsCatalogManager;
+import com.mossle.api.tenant.TenantHolder;
 
+import com.mossle.cms.persistence.domain.CmsCatalog;
+import com.mossle.cms.persistence.manager.CmsCatalogManager;
+
+import com.mossle.core.export.Exportor;
+import com.mossle.core.export.TableModel;
 import com.mossle.core.hibernate.PropertyFilter;
 import com.mossle.core.mapper.BeanMapper;
 import com.mossle.core.page.Page;
 import com.mossle.core.spring.MessageHelper;
-
-import com.mossle.ext.export.Exportor;
-import com.mossle.ext.export.TableModel;
 
 import org.springframework.stereotype.Controller;
 
@@ -37,12 +38,15 @@ public class CmsCatalogController {
     private Exportor exportor;
     private BeanMapper beanMapper = new BeanMapper();
     private MessageHelper messageHelper;
+    private TenantHolder tenantHolder;
 
     @RequestMapping("cms-catalog-list")
     public String list(@ModelAttribute Page page,
             @RequestParam Map<String, Object> parameterMap, Model model) {
+        String tenantId = tenantHolder.getTenantId();
         List<PropertyFilter> propertyFilters = PropertyFilter
                 .buildFromMap(parameterMap);
+        propertyFilters.add(new PropertyFilter("EQS_tenantId", tenantId));
         page = cmsCatalogManager.pagedQuery(page, propertyFilters);
         model.addAttribute("page", page);
 
@@ -63,6 +67,7 @@ public class CmsCatalogController {
     @RequestMapping("cms-catalog-save")
     public String save(@ModelAttribute CmsCatalog cmsCatalog,
             RedirectAttributes redirectAttributes) {
+        String tenantId = tenantHolder.getTenantId();
         Long id = cmsCatalog.getId();
         CmsCatalog dest = null;
 
@@ -71,6 +76,7 @@ public class CmsCatalogController {
             beanMapper.copy(cmsCatalog, dest);
         } else {
             dest = cmsCatalog;
+            dest.setTenantId(tenantId);
         }
 
         cmsCatalogManager.save(dest);
@@ -97,8 +103,10 @@ public class CmsCatalogController {
             @RequestParam Map<String, Object> parameterMap,
             HttpServletRequest request, HttpServletResponse response)
             throws Exception {
+        String tenantId = tenantHolder.getTenantId();
         List<PropertyFilter> propertyFilters = PropertyFilter
                 .buildFromMap(parameterMap);
+        propertyFilters.add(new PropertyFilter("EQS_tenantId", tenantId));
         page = cmsCatalogManager.pagedQuery(page, propertyFilters);
 
         List<CmsCatalog> cmsCatalogs = (List<CmsCatalog>) page.getResult();
@@ -115,12 +123,13 @@ public class CmsCatalogController {
     public boolean checkName(@RequestParam("name") String name,
             @RequestParam(value = "id", required = false) Long id)
             throws Exception {
-        String hql = "from CmsCatalog where name=?";
-        Object[] params = { name };
+        String tenantId = tenantHolder.getTenantId();
+        String hql = "from CmsCatalog where name=? and tenantId=?";
+        Object[] params = { name, tenantId };
 
         if (id != null) {
-            hql = "from CmsCatalog where name=? and id<>?";
-            params = new Object[] { name, id };
+            hql = "from CmsCatalog where name=? and tenantId=? and id<>?";
+            params = new Object[] { name, tenantId, id };
         }
 
         CmsCatalog cmsCatalog = cmsCatalogManager.findUnique(hql, params);
@@ -144,5 +153,10 @@ public class CmsCatalogController {
     @Resource
     public void setMessageHelper(MessageHelper messageHelper) {
         this.messageHelper = messageHelper;
+    }
+
+    @Resource
+    public void setTenantHolder(TenantHolder tenantHolder) {
+        this.tenantHolder = tenantHolder;
     }
 }

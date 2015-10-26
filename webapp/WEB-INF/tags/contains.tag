@@ -4,6 +4,9 @@
 <%@attribute name="item" type="java.lang.Object" required="true"%>
 <%
   Collection items = (Collection) jspContext.getAttribute("items");
+  if (items == null) {
+    return;
+  }
   Object item = jspContext.getAttribute("item");
 
   if (items.contains(item)) {

@@ -21,6 +21,7 @@ import javax.ws.rs.core.MediaType;
 
 import com.mossle.api.store.StoreConnector;
 import com.mossle.api.store.StoreDTO;
+import com.mossle.api.tenant.TenantHolder;
 
 import com.mossle.core.mapper.JsonMapper;
 import com.mossle.core.util.BaseDTO;
@@ -44,12 +45,15 @@ public class AvatarResource {
     private static Logger logger = LoggerFactory
             .getLogger(AvatarResource.class);
     private UserAvatarService userAvatarService;
+    private TenantHolder tenantHolder;
 
     @GET
     @Produces(MediaType.APPLICATION_OCTET_STREAM)
     public InputStream view(@QueryParam("id") String id,
             @QueryParam("width") @DefaultValue("0") int width) throws Exception {
         logger.debug("width : {}", width);
+
+        String tenantId = tenantHolder.getTenantId();
 
         Long longId = null;
 
@@ -59,12 +63,18 @@ public class AvatarResource {
             logger.error(ex.getMessage(), ex);
         }
 
-        return userAvatarService.viewAvatar(longId, width).getInputStream();
+        return userAvatarService.viewAvatar(longId, width, tenantId)
+                .getInputStream();
     }
 
     // ~ ======================================================================
     @Resource
     public void setUserAvatarService(UserAvatarService userAvatarService) {
         this.userAvatarService = userAvatarService;
+    }
+
+    @Resource
+    public void setTenantHolder(TenantHolder tenantHolder) {
+        this.tenantHolder = tenantHolder;
     }
 }

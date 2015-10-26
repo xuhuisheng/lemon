@@ -35,33 +35,34 @@ public class DatabaseUserConnector implements UserConnector {
     // private String sqlFindById = "select id as id,username as username,status as status,"
     // + "nick_name as nick_name,email as email,mobile as mobile,user_repo_id as user_repo_ref"
     // + " from USER_BASE where id=?";
-    private String sqlFindById = "select ai.id as id,ai.username as username,ai.status as status,"
-            + "ai.nick_name as nick_name,ai.display_name as display_name,pi.email as email,"
-            + "pi.cellphone as mobile,1 as user_repo_ref"
-            + " from ACCOUNT_INFO ai left join PERSON_INFO pi on ai.code=pi.code"
-            + " where ai.id=?";
+    private String sqlFindById = "SELECT AI.ID AS ID,AI.USERNAME AS USERNAME,AI.STATUS AS STATUS,"
+            + "AI.NICK_NAME AS NICK_NAME,AI.DISPLAY_NAME AS DISPLAY_NAME,PI.EMAIL AS EMAIL,"
+            + "PI.CELLPHONE AS MOBILE,1 AS USER_REPO_REF"
+            + " FROM ACCOUNT_INFO AI LEFT JOIN PERSON_INFO PI ON AI.CODE=PI.CODE"
+            + " WHERE AI.ID=?";
 
     // private String sqlFindByUsername = "select ub.id as id,ub.username as username,ub.status as status,"
     // + "nick_name as nick_name,email as email,mobile as mobile,user_repo_id as user_repo_ref"
     // + " from USER_BASE ub where ub.username=? and ub.user_repo_id=?";
-    private String sqlFindByUsername = "select ai.id as id,ai.username as username,ai.status as status,"
-            + "ai.nick_name as nick_name,ai.display_name as display_name,pi.email as email,"
-            + "pi.cellphone as mobile,1 as user_repo_ref"
-            + " from ACCOUNT_INFO ai left join PERSON_INFO pi on ai.code=pi.code"
-            + " where ai.username=? and 1=?";
-    private String sqlFindByRef = "select ub.id as id,ub.username as username,ub.status as status,"
-            + "nick_name as nick_name,email as email,mobile as mobile,user_repo_id as user_repo_ref"
-            + " from USER_BASE ub where ub.ref=? and ub.user_repo_id=?";
-    private String sqlPagedQueryCount = "select count(*) from USER_BASE";
-    private String sqlPagedQuerySelect = "select id as id,username as username,status as status,"
-            + "nick_name as nick_name,email as email,mobile as mobile,user_repo_id as user_repo_ref"
-            + " from USER_BASE";
-    private String sqlFindByNickName = "select id as id,username as username,status as status,"
-            + "nick_name as nick_name,email as email,mobile as mobile,user_repo_id as user_repo_ref"
-            + " from USER_BASE where nick_name=?";
+    private String sqlFindByUsername = "SELECT AI.ID AS ID,AI.USERNAME AS USERNAME,AI.STATUS AS STATUS,"
+            + "AI.NICK_NAME AS NICK_NAME,AI.DISPLAY_NAME AS DISPLAY_NAME,PI.EMAIL AS EMAIL,"
+            + "PI.CELLPHONE AS MOBILE,AI.TENANT_ID AS USER_REPO_REF"
+            + " FROM ACCOUNT_INFO AI LEFT JOIN PERSON_INFO PI ON AI.CODE=PI.CODE"
+            + " WHERE AI.USERNAME=? AND AI.TENANT_ID=?";
+    private String sqlFindByRef = "SELECT UB.ID AS ID,UB.USERNAME AS USERNAME,UB.STATUS AS STATUS,"
+            + "NICK_NAME AS NICK_NAME,EMAIL AS EMAIL,MOBILE AS MOBILE,USER_REPO_ID AS USER_REPO_REF"
+            + " FROM ACCOUNT_INFO UB WHERE UB.REF=? AND UB.USER_REPO_ID=?";
+    private String sqlPagedQueryCount = "SELECT COUNT(*) FROM ACCOUNT_INFO";
+    private String sqlPagedQuerySelect = "SELECT AI.ID AS ID,AI.USERNAME AS USERNAME,AI.STATUS AS STATUS,"
+            + "AI.NICK_NAME AS NICK_NAME,AI.DISPLAY_NAME AS DISPLAY_NAME,PI.EMAIL AS EMAIL,"
+            + "PI.CELLPHONE AS MOBILE,1 AS USER_REPO_REF"
+            + " FROM ACCOUNT_INFO AI LEFT JOIN PERSON_INFO PI ON AI.CODE=PI.CODE";
+    private String sqlFindByNickName = "SELECT ID AS ID,USERNAME AS USERNAME,STATUS AS STATUS,"
+            + "NICK_NAME AS NICK_NAME,EMAIL AS EMAIL,MOBILE AS MOBILE,USER_REPO_ID AS USER_REPO_REF"
+            + " FROM ACCOUNT_INFO WHERE NICK_NAME=?";
 
     public UserDTO findById(String id) {
-        Assert.notNull(id, "user id should not be null");
+        Assert.hasText(id, "user id should not be null");
 
         try {
             Map<String, Object> map = jdbcTemplate.queryForMap(sqlFindById, id);
@@ -76,6 +77,14 @@ public class DatabaseUserConnector implements UserConnector {
     }
 
     public UserDTO findByUsername(String username, String userRepoRef) {
+        if (username == null) {
+            logger.info("username is null");
+
+            return null;
+        }
+
+        username = username.toLowerCase();
+
         try {
             Map<String, Object> map = jdbcTemplate.queryForMap(
                     sqlFindByUsername, username, userRepoRef);
@@ -114,7 +123,8 @@ public class DatabaseUserConnector implements UserConnector {
         }
     }
 
-    public Page pagedQuery(Page page, Map<String, Object> parameters) {
+    public Page pagedQuery(String userRepoRef, Page page,
+            Map<String, Object> parameters) {
         Map<String, Object> parameterMap = this.convertAlias(parameters);
 
         List<PropertyFilter> propertyFilters = PropertyFilter
@@ -153,7 +163,7 @@ public class DatabaseUserConnector implements UserConnector {
         return page;
     }
 
-    public UserDTO findByNickName(String nickName) {
+    public UserDTO findByNickName(String nickName, String userRepoRef) {
         try {
             Map<String, Object> map = jdbcTemplate.queryForMap(
                     sqlFindByNickName, nickName);

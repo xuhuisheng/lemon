@@ -15,12 +15,14 @@ import java.util.Set;
 
 import javax.annotation.Resource;
 
+import com.mossle.api.tenant.TenantHolder;
+
 import com.mossle.core.mapper.JsonMapper;
 
-import com.mossle.workcal.domain.WorkcalPart;
-import com.mossle.workcal.domain.WorkcalRule;
-import com.mossle.workcal.manager.WorkcalPartManager;
-import com.mossle.workcal.manager.WorkcalRuleManager;
+import com.mossle.workcal.persistence.domain.WorkcalPart;
+import com.mossle.workcal.persistence.domain.WorkcalRule;
+import com.mossle.workcal.persistence.manager.WorkcalPartManager;
+import com.mossle.workcal.persistence.manager.WorkcalRuleManager;
 
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
@@ -36,7 +38,7 @@ import org.springframework.web.bind.annotation.ResponseBody;
 import org.springframework.web.servlet.mvc.support.RedirectAttributes;
 
 @Controller
-@RequestMapping("/workcal")
+@RequestMapping("workcal")
 public class WorkcalController {
     private static Logger logger = LoggerFactory
             .getLogger(WorkcalController.class);
@@ -47,19 +49,22 @@ public class WorkcalController {
     private WorkcalPartManager workcalPartManager;
     private WorkcalRuleManager workcalRuleManager;
     private JsonMapper jsonMapper = new JsonMapper();
+    private TenantHolder tenantHolder;
 
     @RequestMapping("workcal-view")
     public String list(
             @RequestParam(value = "year", required = false) Integer year,
             Model model) {
+        String tenantId = tenantHolder.getTenantId();
+
         if (year == null) {
             year = Calendar.getInstance().get(Calendar.YEAR);
         }
 
         // 每周的工作规则
-        List<WorkcalRule> workcalRules = workcalRuleManager
-                .find("from WorkcalRule where year=? and status=?", year,
-                        STATUS_WEEK);
+        List<WorkcalRule> workcalRules = workcalRuleManager.find(
+                "from WorkcalRule where year=? and status=? and tenantId=?",
+                year, STATUS_WEEK, tenantId);
         Set<Integer> weeks = new HashSet<Integer>();
 
         for (WorkcalRule workcalRule : workcalRules) {
@@ -127,5 +132,10 @@ public class WorkcalController {
     @Resource
     public void setWorkcalRuleManager(WorkcalRuleManager workcalRuleManager) {
         this.workcalRuleManager = workcalRuleManager;
+    }
+
+    @Resource
+    public void setTenantHolder(TenantHolder tenantHolder) {
+        this.tenantHolder = tenantHolder;
     }
 }

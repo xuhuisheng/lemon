@@ -10,17 +10,17 @@ public class UserAuthConnectorWrapper implements UserAuthConnector {
     private UserAuthConnector userAuthConnector;
     private UserAuthCache userAuthCache;
 
-    public UserAuthDTO findByUsername(String username, String scopeId) {
+    public UserAuthDTO findByUsername(String username, String tenantId) {
         UserAuthDTO userAuthDto = userAuthCache.findByUsername(username,
-                scopeId);
+                tenantId);
 
         if (userAuthDto == null) {
             synchronized (userAuthCache) {
-                userAuthDto = userAuthCache.findByUsername(username, scopeId);
+                userAuthDto = userAuthCache.findByUsername(username, tenantId);
 
                 if (userAuthDto == null) {
                     userAuthDto = userAuthConnector.findByUsername(username,
-                            scopeId);
+                            tenantId);
 
                     if (userAuthDto != null) {
                         userAuthCache.updateUserAuth(userAuthDto);
@@ -32,15 +32,15 @@ public class UserAuthConnectorWrapper implements UserAuthConnector {
         return userAuthDto;
     }
 
-    public UserAuthDTO findByRef(String ref, String scopeId) {
-        UserAuthDTO userAuthDto = userAuthCache.findByRef(ref, scopeId);
+    public UserAuthDTO findByRef(String ref, String tenantId) {
+        UserAuthDTO userAuthDto = userAuthCache.findByRef(ref, tenantId);
 
         if (userAuthDto == null) {
             synchronized (userAuthCache) {
-                userAuthDto = userAuthCache.findByRef(ref, scopeId);
+                userAuthDto = userAuthCache.findByRef(ref, tenantId);
 
                 if (userAuthDto == null) {
-                    userAuthDto = userAuthConnector.findByRef(ref, scopeId);
+                    userAuthDto = userAuthConnector.findByRef(ref, tenantId);
 
                     if (userAuthDto != null) {
                         userAuthCache.updateUserAuth(userAuthDto);
@@ -52,15 +52,15 @@ public class UserAuthConnectorWrapper implements UserAuthConnector {
         return userAuthDto;
     }
 
-    public UserAuthDTO findById(String id, String scopeId) {
-        UserAuthDTO userAuthDto = userAuthCache.findById(id, scopeId);
+    public UserAuthDTO findById(String id, String tenantId) {
+        UserAuthDTO userAuthDto = userAuthCache.findById(id, tenantId);
 
         if (userAuthDto == null) {
             synchronized (userAuthCache) {
-                userAuthDto = userAuthCache.findById(id, scopeId);
+                userAuthDto = userAuthCache.findById(id, tenantId);
 
                 if (userAuthDto == null) {
-                    userAuthDto = userAuthConnector.findById(id, scopeId);
+                    userAuthDto = userAuthConnector.findById(id, tenantId);
 
                     if (userAuthDto != null) {
                         userAuthCache.updateUserAuth(userAuthDto);

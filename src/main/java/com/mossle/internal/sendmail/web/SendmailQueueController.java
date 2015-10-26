@@ -13,17 +13,18 @@ import javax.annotation.Resource;
 import javax.servlet.http.HttpServletRequest;
 import javax.servlet.http.HttpServletResponse;
 
+import com.mossle.api.tenant.TenantHolder;
+
+import com.mossle.core.export.Exportor;
+import com.mossle.core.export.TableModel;
 import com.mossle.core.hibernate.PropertyFilter;
+import com.mossle.core.mail.MailDTO;
+import com.mossle.core.mail.MailHelper;
+import com.mossle.core.mail.MailServerInfo;
 import com.mossle.core.mapper.BeanMapper;
 import com.mossle.core.page.Page;
 import com.mossle.core.spring.MessageHelper;
 import com.mossle.core.util.StringUtils;
-
-import com.mossle.ext.export.Exportor;
-import com.mossle.ext.export.TableModel;
-import com.mossle.ext.mail.MailDTO;
-import com.mossle.ext.mail.MailHelper;
-import com.mossle.ext.mail.MailServerInfo;
 
 import com.mossle.internal.sendmail.persistence.domain.SendmailConfig;
 import com.mossle.internal.sendmail.persistence.domain.SendmailQueue;
@@ -43,7 +44,7 @@ import org.springframework.web.multipart.MultipartFile;
 import org.springframework.web.servlet.mvc.support.RedirectAttributes;
 
 @Controller
-@RequestMapping("/sendmail")
+@RequestMapping("sendmail")
 public class SendmailQueueController {
     private SendmailQueueManager sendmailQueueManager;
     private SendmailConfigManager sendmailConfigManager;
@@ -51,14 +52,17 @@ public class SendmailQueueController {
     private MessageHelper messageHelper;
     private Exportor exportor;
     private BeanMapper beanMapper = new BeanMapper();
+    private TenantHolder tenantHolder;
 
     @RequestMapping("sendmail-queue-list")
     public String list(@ModelAttribute Page page,
             @RequestParam Map<String, Object> parameterMap, Model model) {
+        String tenantId = tenantHolder.getTenantId();
         page.setDefaultOrder("createTime", Page.DESC);
 
         List<PropertyFilter> propertyFilters = PropertyFilter
                 .buildFromMap(parameterMap);
+        propertyFilters.add(new PropertyFilter("EQS_tenantId", tenantId));
         page = sendmailQueueManager.pagedQuery(page, propertyFilters);
         model.addAttribute("page", page);
 
@@ -68,14 +72,17 @@ public class SendmailQueueController {
     @RequestMapping("sendmail-queue-input")
     public String input(@RequestParam(value = "id", required = false) Long id,
             Model model) {
+        String tenantId = tenantHolder.getTenantId();
+
         if (id != null) {
             SendmailQueue sendmailQueue = sendmailQueueManager.get(id);
             model.addAttribute("model", sendmailQueue);
         }
 
-        model.addAttribute("sendmailConfigs", sendmailConfigManager.getAll());
+        model.addAttribute("sendmailConfigs",
+                sendmailConfigManager.findBy("tenantId", tenantId));
         model.addAttribute("sendmailTemplates",
-                sendmailTemplateManager.getAll());
+                sendmailTemplateManager.findBy("tenantId", tenantId));
 
         return "sendmail/sendmail-queue-input";
     }
@@ -85,6 +92,7 @@ public class SendmailQueueController {
             @RequestParam("sendmailConfigId") Long sendmailConfigId,
             @RequestParam("sendmailTemplateId") Long sendmailTemplateId,
             RedirectAttributes redirectAttributes) {
+        String tenantId = tenantHolder.getTenantId();
         Long id = sendmailQueue.getId();
         SendmailQueue dest = null;
 
@@ -94,6 +102,7 @@ public class SendmailQueueController {
         } else {
             dest = sendmailQueue;
             dest.setCreateTime(new Date());
+            dest.setTenantId(tenantId);
         }
 
         SendmailTemplate sendmailTemplate = sendmailTemplateManager
@@ -125,8 +134,10 @@ public class SendmailQueueController {
             @RequestParam Map<String, Object> parameterMap,
             HttpServletRequest request, HttpServletResponse response)
             throws Exception {
+        String tenantId = tenantHolder.getTenantId();
         List<PropertyFilter> propertyFilters = PropertyFilter
                 .buildFromMap(parameterMap);
+        propertyFilters.add(new PropertyFilter("EQS_tenantId", tenantId));
         page = sendmailQueueManager.pagedQuery(page, propertyFilters);
 
         List<SendmailQueue> sendmailQueues = (List<SendmailQueue>) page
@@ -166,5 +177,10 @@ public class SendmailQueueController {
     @Resource
     public void setExportor(Exportor exportor) {
         this.exportor = exportor;
+    }
+
+    @Resource
+    public void setTenantHolder(TenantHolder tenantHolder) {
+        this.tenantHolder = tenantHolder;
     }
 }

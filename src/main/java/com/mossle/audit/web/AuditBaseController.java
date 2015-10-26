@@ -9,16 +9,17 @@ import javax.annotation.Resource;
 import javax.servlet.http.HttpServletRequest;
 import javax.servlet.http.HttpServletResponse;
 
-import com.mossle.audit.domain.AuditBase;
-import com.mossle.audit.manager.AuditBaseManager;
+import com.mossle.api.tenant.TenantHolder;
 
+import com.mossle.audit.persistence.domain.AuditBase;
+import com.mossle.audit.persistence.manager.AuditBaseManager;
+
+import com.mossle.core.export.Exportor;
+import com.mossle.core.export.TableModel;
 import com.mossle.core.hibernate.PropertyFilter;
 import com.mossle.core.mapper.BeanMapper;
 import com.mossle.core.page.Page;
 import com.mossle.core.spring.MessageHelper;
-
-import com.mossle.ext.export.Exportor;
-import com.mossle.ext.export.TableModel;
 
 import org.springframework.context.support.MessageSourceAccessor;
 
@@ -39,12 +40,15 @@ public class AuditBaseController {
     private Exportor exportor;
     private BeanMapper beanMapper = new BeanMapper();
     private MessageHelper messageHelper;
+    private TenantHolder tenantHolder;
 
     @RequestMapping("audit-base-list")
     public String list(@ModelAttribute Page page,
             @RequestParam Map<String, Object> parameterMap, Model model) {
+        String tenantId = tenantHolder.getTenantId();
         List<PropertyFilter> propertyFilters = PropertyFilter
                 .buildFromMap(parameterMap);
+        propertyFilters.add(new PropertyFilter("EQS_tenantId", tenantId));
         page = auditBaseManager.pagedQuery(page, propertyFilters);
 
         model.addAttribute("page", page);
@@ -67,6 +71,7 @@ public class AuditBaseController {
     public String save(@ModelAttribute AuditBase auditBase,
             @RequestParam Map<String, Object> parameterMap,
             RedirectAttributes redirectAttributes) {
+        String tenantId = tenantHolder.getTenantId();
         AuditBase dest = null;
 
         Long id = auditBase.getId();
@@ -76,6 +81,7 @@ public class AuditBaseController {
             beanMapper.copy(auditBase, dest);
         } else {
             dest = auditBase;
+            dest.setTenantId(tenantId);
         }
 
         auditBaseManager.save(dest);
@@ -104,8 +110,10 @@ public class AuditBaseController {
             @RequestParam Map<String, Object> parameterMap,
             HttpServletRequest request, HttpServletResponse response)
             throws Exception {
+        String tenantId = tenantHolder.getTenantId();
         List<PropertyFilter> propertyFilters = PropertyFilter
                 .buildFromMap(parameterMap);
+        propertyFilters.add(new PropertyFilter("EQS_tenantId", tenantId));
         page = auditBaseManager.pagedQuery(page, propertyFilters);
 
         List<AuditBase> auditBases = (List<AuditBase>) page.getResult();
@@ -131,5 +139,10 @@ public class AuditBaseController {
     @Resource
     public void setMessageHelper(MessageHelper messageHelper) {
         this.messageHelper = messageHelper;
+    }
+
+    @Resource
+    public void setTenantHolder(TenantHolder tenantHolder) {
+        this.tenantHolder = tenantHolder;
     }
 }

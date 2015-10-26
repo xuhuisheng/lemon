@@ -45,8 +45,11 @@ $(function() {
 
 	<!-- start of main -->
     <section id="m-main" class="span10">
-
-      完成任务
+	 
+	  <div class="alert m-alert-info">
+		<button type="button" class="close" data-dismiss="alert" style="margin-right:30px;">×</button>
+		<strong>任务已完成</strong>
+	  </div>
 
     </section>
 	<!-- end of main -->

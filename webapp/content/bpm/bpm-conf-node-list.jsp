@@ -32,6 +32,12 @@ $(function() {
 	<!-- start of main -->
     <section id="m-main" class="span10">
 
+	  <ul class="breadcrumb">
+	    <li><a href="bpm-process-list.do">流程配置</a>
+		<span class="divider">/</span></li>
+	    <li class="active">${bpmConfBase.processDefinitionKey}</li>
+	  </ul>
+
       <article class="m-widget">
         <header class="header">
 		  <h4 class="title">流程配置</h4>

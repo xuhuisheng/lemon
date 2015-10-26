@@ -38,7 +38,8 @@ public class SendmailResource {
     public BaseDTO send(@FormParam("to") String to,
             @FormParam("subject") String subject,
             @FormParam("content") String content,
-            @FormParam("configCode") String configCode) {
+            @FormParam("configCode") String configCode,
+            @FormParam("tenantId") String tenantId) {
         BaseDTO baseDto = new BaseDTO();
 
         if (StringUtils.isBlank(to)) {
@@ -74,7 +75,8 @@ public class SendmailResource {
         }
 
         try {
-            sendmailDataService.send(to, subject, content, configCode);
+            sendmailDataService
+                    .send(to, subject, content, configCode, tenantId);
             baseDto.setCode(200);
             logger.debug("success");
         } catch (Exception ex) {
@@ -92,7 +94,8 @@ public class SendmailResource {
     public BaseDTO sendTemplate(@FormParam("to") String to,
             @FormParam("data") String data,
             @FormParam("templateCode") String templateCode,
-            @FormParam("configCode") String configCode) {
+            @FormParam("configCode") String configCode,
+            @FormParam("tenantId") String tenantId) {
         logger.debug("to : {}", to);
         logger.debug("data : {}", data);
         logger.debug("templateCode : {}", templateCode);
@@ -128,8 +131,8 @@ public class SendmailResource {
             }
         }
 
-        boolean templateExists = sendmailDataService
-                .checkTemplateCodeExists(templateCode);
+        boolean templateExists = sendmailDataService.checkTemplateCodeExists(
+                templateCode, tenantId);
 
         if (!templateExists) {
             logger.debug("templateCode doesnot exists : {}", templateCode);
@@ -139,8 +142,8 @@ public class SendmailResource {
             return baseDto;
         }
 
-        boolean configExists = sendmailDataService
-                .checkConfigCodeExists(configCode);
+        boolean configExists = sendmailDataService.checkConfigCodeExists(
+                configCode, tenantId);
 
         if (!configExists) {
             logger.debug("configCode doesnot exists : {}", configCode);
@@ -151,8 +154,8 @@ public class SendmailResource {
         }
 
         try {
-            sendmailDataService
-                    .sendTemplate(to, data, templateCode, configCode);
+            sendmailDataService.sendTemplate(to, data, templateCode,
+                    configCode, tenantId);
             baseDto.setCode(200);
             logger.debug("success");
         } catch (Exception ex) {

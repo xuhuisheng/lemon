@@ -18,24 +18,23 @@ import com.mossle.api.form.FormDTO;
 import com.mossle.api.humantask.HumanTaskConnector;
 import com.mossle.api.humantask.HumanTaskDTO;
 import com.mossle.api.humantask.HumanTaskDefinition;
-import com.mossle.api.store.StoreConnector;
+import com.mossle.api.keyvalue.FormParameter;
+import com.mossle.api.keyvalue.KeyValueConnector;
+import com.mossle.api.keyvalue.Prop;
+import com.mossle.api.keyvalue.Record;
+import com.mossle.api.keyvalue.RecordBuilder;
 import com.mossle.api.process.ProcessConnector;
 import com.mossle.api.process.ProcessDTO;
+import com.mossle.api.store.StoreConnector;
+import com.mossle.api.tenant.TenantHolder;
 
 import com.mossle.button.ButtonDTO;
 import com.mossle.button.ButtonHelper;
 
+import com.mossle.core.MultipartHandler;
+import com.mossle.core.auth.CurrentUserHolder;
 import com.mossle.core.mapper.JsonMapper;
 import com.mossle.core.spring.MessageHelper;
-
-import com.mossle.ext.MultipartHandler;
-import com.mossle.ext.auth.CurrentUserHolder;
-
-import com.mossle.keyvalue.FormParameter;
-import com.mossle.keyvalue.KeyValue;
-import com.mossle.keyvalue.Prop;
-import com.mossle.keyvalue.Record;
-import com.mossle.keyvalue.RecordBuilder;
 
 import com.mossle.operation.service.OperationService;
 
@@ -75,7 +74,7 @@ public class TaskOperationController {
     public static final int STATUS_DRAFT_TASK = 1;
     public static final int STATUS_RUNNING = 2;
     private OperationService operationService;
-    private KeyValue keyValue;
+    private KeyValueConnector keyValueConnector;
     private MessageHelper messageHelper;
     private CurrentUserHolder currentUserHolder;
     private ProcessConnector processConnector;
@@ -84,6 +83,7 @@ public class TaskOperationController {
     private StoreConnector storeConnector;
     private ButtonHelper buttonHelper = new ButtonHelper();
     private JsonMapper jsonMapper = new JsonMapper();
+    private TenantHolder tenantHolder;
 
     /**
      * 保存草稿.
@@ -133,7 +133,7 @@ public class TaskOperationController {
                 model.addAttribute("json", json);
             }
 
-            Record record = keyValue.findByRef(processInstanceId);
+            Record record = keyValueConnector.findByRef(processInstanceId);
 
             Xform xform = new XformBuilder().setStoreConnector(storeConnector)
                     .setContent(formDto.getContent()).setRecord(record).build();
@@ -162,6 +162,8 @@ public class TaskOperationController {
     @RequestMapping("task-operation-completeTask")
     public String completeTask(HttpServletRequest request,
             RedirectAttributes redirectAttributes) throws Exception {
+        String userId = currentUserHolder.getUserId();
+        String tenantId = tenantHolder.getTenantId();
         MultipartHandler multipartHandler = new MultipartHandler(
                 multipartResolver);
         Record record = null;
@@ -178,20 +180,19 @@ public class TaskOperationController {
             formParameter = this.buildFormParameter(multipartHandler);
 
             humanTaskId = formParameter.getHumanTaskId();
-            operationService.saveDraft(currentUserHolder.getUserId(),
-                    formParameter);
+            operationService.saveDraft(userId, tenantId, formParameter);
 
             formDto = humanTaskConnector.findTaskForm(humanTaskId);
 
             humanTaskDto = humanTaskConnector.findHumanTask(humanTaskId);
 
             String processInstanceId = humanTaskDto.getProcessInstanceId();
-            record = keyValue.findByRef(processInstanceId);
+            record = keyValueConnector.findByRef(processInstanceId);
 
             record = new RecordBuilder().build(record, multipartHandler,
-                    storeConnector);
+                    storeConnector, tenantId);
 
-            keyValue.save(record);
+            keyValueConnector.save(record);
         } finally {
             multipartHandler.clear();
         }
@@ -217,7 +218,7 @@ public class TaskOperationController {
 
         record = new RecordBuilder().build(record, STATUS_RUNNING,
                 humanTaskDto.getProcessInstanceId());
-        keyValue.save(record);
+        keyValueConnector.save(record);
 
         return "operation/task-operation-completeTask";
     }
@@ -244,9 +245,7 @@ public class TaskOperationController {
     }
 
     /**
-     * 回退任务
-     * 
-     * @return
+     * 回退任务，前一个任务.
      */
     @RequestMapping("task-operation-rollbackPrevious")
     public String rollbackPrevious(
@@ -257,9 +256,17 @@ public class TaskOperationController {
     }
 
     /**
+     * 回退任务，开始事件.
+     */
+    @RequestMapping("task-operation-rollbackStart")
+    public String rollbackStart(@RequestParam("humanTaskId") String humanTaskId) {
+        humanTaskConnector.rollbackStart(humanTaskId);
+
+        return "redirect:/humantask/workspace-personalTasks.do";
+    }
+
+    /**
      * 撤销任务.
-     * 
-     * @return String
      */
     @RequestMapping("task-operation-withdraw")
     public String withdraw(@RequestParam("humanTaskId") String humanTaskId) {
@@ -290,6 +297,18 @@ public class TaskOperationController {
         return "redirect:/humantask/workspace-delegatedTasks.do";
     }
 
+    /**
+     * 链状协办.
+     */
+    @RequestMapping("task-operation-delegateTaskCreate")
+    public String delegateTaskCreate(
+            @RequestParam("humanTaskId") String humanTaskId,
+            @RequestParam("userId") String userId) {
+        humanTaskConnector.delegateTaskCreate(humanTaskId, userId);
+
+        return "redirect:/humantask/workspace-delegatedTasks.do";
+    }
+
     // ~ ======================================================================
     /**
      * 通过multipart请求构建formParameter.
@@ -313,6 +332,8 @@ public class TaskOperationController {
      */
     public FormParameter doSaveRecord(HttpServletRequest request)
             throws Exception {
+        String userId = currentUserHolder.getUserId();
+        String tenantId = tenantHolder.getTenantId();
         MultipartHandler multipartHandler = new MultipartHandler(
                 multipartResolver);
         FormParameter formParameter = null;
@@ -324,20 +345,20 @@ public class TaskOperationController {
 
             formParameter = this.buildFormParameter(multipartHandler);
 
-            String businessKey = operationService.saveDraft(
-                    currentUserHolder.getUserId(), formParameter);
+            String businessKey = operationService.saveDraft(userId, tenantId,
+                    formParameter);
 
             if ((formParameter.getBusinessKey() == null)
                     || "".equals(formParameter.getBusinessKey().trim())) {
                 formParameter.setBusinessKey(businessKey);
             }
 
-            Record record = keyValue.findByCode(businessKey);
+            Record record = keyValueConnector.findByCode(businessKey);
 
             record = new RecordBuilder().build(record, multipartHandler,
-                    storeConnector);
+                    storeConnector, tenantId);
 
-            keyValue.save(record);
+            keyValueConnector.save(record);
         } finally {
             multipartHandler.clear();
         }
@@ -349,7 +370,7 @@ public class TaskOperationController {
      * 读取任务对应的表单数据，转换成json.
      */
     public String findTaskFormData(String processInstanceId) throws Exception {
-        Record record = keyValue.findByRef(processInstanceId);
+        Record record = keyValueConnector.findByRef(processInstanceId);
 
         if (record == null) {
             return null;
@@ -377,8 +398,8 @@ public class TaskOperationController {
 
     // ~ ======================================================================
     @Resource
-    public void setKeyValue(KeyValue keyValue) {
-        this.keyValue = keyValue;
+    public void setKeyValueConnector(KeyValueConnector keyValueConnector) {
+        this.keyValueConnector = keyValueConnector;
     }
 
     @Resource
@@ -414,5 +435,10 @@ public class TaskOperationController {
     @Resource
     public void setStoreConnector(StoreConnector storeConnector) {
         this.storeConnector = storeConnector;
+    }
+
+    @Resource
+    public void setTenantHolder(TenantHolder tenantHolder) {
+        this.tenantHolder = tenantHolder;
     }
 }

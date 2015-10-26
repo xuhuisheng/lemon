@@ -10,7 +10,7 @@ import com.mossle.api.user.AuthenticationClient;
 import com.mossle.api.user.AuthenticationHandler;
 import com.mossle.api.user.AuthenticationType;
 
-import com.mossle.ext.auth.CustomPasswordEncoder;
+import com.mossle.core.auth.CustomPasswordEncoder;
 
 import com.mossle.user.persistence.domain.AccountCredential;
 import com.mossle.user.persistence.domain.AccountInfo;
@@ -21,6 +21,8 @@ import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
 
 public class SpecialAuthenticationHandler implements AuthenticationHandler {
+    private static Logger logger = LoggerFactory
+            .getLogger(SpecialAuthenticationHandler.class);
     private AccountInfoManager accountInfoManager;
     private AccountCredentialManager accountCredentialManager;
     private CustomPasswordEncoder customPasswordEncoder;
@@ -31,6 +33,14 @@ public class SpecialAuthenticationHandler implements AuthenticationHandler {
 
     public String doAuthenticate(String username, String password,
             String application) {
+        if (username == null) {
+            logger.info("username cannot be null");
+
+            return AccountStatus.ACCOUNT_NOT_EXISTS;
+        }
+
+        username = username.toLowerCase();
+
         AccountInfo accountInfo = accountInfoManager.findUniqueBy("username",
                 username);
 

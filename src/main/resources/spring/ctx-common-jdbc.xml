@@ -30,7 +30,7 @@
 	</bean>
 
 	<!-- 测试用的hsqldb数据库 -->
-	<bean id="hsqldbServer" class="com.mossle.core.hsqldb.HsqldbServer">
+	<bean id="hsqldbServer" class="com.mossle.simulator.hsqldb.HsqldbServer">
 		<property name="enabled" value="${hsqldb.enabled}"/>
 		<property name="username" value="${hsqldb.username}"/>
 		<property name="password" value="${hsqldb.password}"/>

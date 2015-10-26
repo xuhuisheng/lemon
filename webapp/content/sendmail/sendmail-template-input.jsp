@@ -35,7 +35,7 @@ $(function() {
 $(function () {
     'use strict';
     // Change this to the location of your server-side upload handler:
-    var url = '${scopePrefix}/mail/sendmail-attachment-upload.do';
+    var url = '${tenantPrefix}/mail/sendmail-attachment-upload.do';
     $('#fileupload').fileupload({
         url: url,
         dataType: 'json',

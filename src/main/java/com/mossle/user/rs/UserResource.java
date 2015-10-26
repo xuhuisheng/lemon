@@ -106,7 +106,7 @@ public class UserResource {
             Map<String, Object> map = new HashMap<String, Object>();
             map.put("id", accountInfo.getId());
             map.put("username", accountInfo.getUsername());
-            map.put("displayName", accountInfo.getNickName());
+            map.put("displayName", accountInfo.getDisplayName());
             list.add(map);
         }
 

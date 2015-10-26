@@ -67,7 +67,7 @@ public class SendmailHistory implements java.io.Serializable {
     private String info;
 
     /** null. */
-    private String scopeId;
+    private String tenantId;
 
     public SendmailHistory() {
     }
@@ -76,7 +76,7 @@ public class SendmailHistory implements java.io.Serializable {
             SendmailConfig sendmailConfig, String subject, String sender,
             String receiver, String cc, String bcc, String content,
             String attachment, String data, Date createTime, String status,
-            String info, String scopeId) {
+            String info, String tenantId) {
         this.sendmailTemplate = sendmailTemplate;
         this.sendmailConfig = sendmailConfig;
         this.subject = subject;
@@ -90,7 +90,7 @@ public class SendmailHistory implements java.io.Serializable {
         this.createTime = createTime;
         this.status = status;
         this.info = info;
-        this.scopeId = scopeId;
+        this.tenantId = tenantId;
     }
 
     /** @return null. */
@@ -295,16 +295,16 @@ public class SendmailHistory implements java.io.Serializable {
     }
 
     /** @return null. */
-    @Column(name = "SCOPE_ID", length = 50)
-    public String getScopeId() {
-        return this.scopeId;
+    @Column(name = "TENANT_ID", length = 50)
+    public String getTenantId() {
+        return this.tenantId;
     }
 
     /**
-     * @param scopeId
+     * @param tenantId
      *            null.
      */
-    public void setScopeId(String scopeId) {
-        this.scopeId = scopeId;
+    public void setTenantId(String tenantId) {
+        this.tenantId = tenantId;
     }
 }

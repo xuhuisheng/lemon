@@ -10,16 +10,16 @@ import javax.annotation.Resource;
 
 import javax.servlet.http.HttpServletResponse;
 
-import com.mossle.api.scope.ScopeHolder;
+import com.mossle.api.tenant.TenantHolder;
 
-import com.mossle.auth.domain.Access;
-import com.mossle.auth.manager.AccessManager;
+import com.mossle.auth.persistence.domain.Access;
+import com.mossle.auth.persistence.manager.AccessManager;
 import com.mossle.auth.service.AuthService;
 import com.mossle.auth.support.AccessDTO;
 
 import com.mossle.core.spring.MessageHelper;
 
-import com.mossle.security.client.ResourcePublisher;
+import com.mossle.spi.auth.ResourcePublisher;
 
 import org.springframework.stereotype.Controller;
 
@@ -38,6 +38,7 @@ public class AccessBatchController {
     private AuthService authService;
     private MessageHelper messageHelper;
     private ResourcePublisher resourcePublisher;
+    private TenantHolder tenantHolder;
 
     // ~ ======================================================================
     @RequestMapping("access-batch-list")
@@ -47,9 +48,9 @@ public class AccessBatchController {
 
     @RequestMapping("access-batch-input")
     public String input(@RequestParam("type") String type, Model model) {
-        String hql = "from Access where type=? and scopeId=? order by priority";
+        String hql = "from Access where type=? and tenantId=? order by priority";
         List<Access> accesses = accessManager.find(hql, type,
-                ScopeHolder.getScopeId());
+                tenantHolder.getTenantId());
         StringBuilder buff = new StringBuilder();
 
         for (Access access : accesses) {
@@ -74,7 +75,7 @@ public class AccessBatchController {
     public String save(@RequestParam("text") String text,
             @RequestParam("type") String type,
             RedirectAttributes redirectAttributes) {
-        authService.batchSaveAccess(text, type, ScopeHolder.getScopeId());
+        authService.batchSaveAccess(text, type, tenantHolder.getTenantId());
         messageHelper.addFlashMessage(redirectAttributes, "core.success.save",
                 "保存成功");
 
@@ -102,5 +103,10 @@ public class AccessBatchController {
     @Resource
     public void setResourcePublisher(ResourcePublisher resourcePublisher) {
         this.resourcePublisher = resourcePublisher;
+    }
+
+    @Resource
+    public void setTenantHolder(TenantHolder tenantHolder) {
+        this.tenantHolder = tenantHolder;
     }
 }

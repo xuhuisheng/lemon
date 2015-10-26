@@ -9,13 +9,14 @@ import javax.annotation.Resource;
 import javax.servlet.http.HttpServletRequest;
 import javax.servlet.http.HttpServletResponse;
 
+import com.mossle.api.tenant.TenantHolder;
+
+import com.mossle.core.export.Exportor;
+import com.mossle.core.export.TableModel;
 import com.mossle.core.hibernate.PropertyFilter;
 import com.mossle.core.mapper.BeanMapper;
 import com.mossle.core.page.Page;
 import com.mossle.core.spring.MessageHelper;
-
-import com.mossle.ext.export.Exportor;
-import com.mossle.ext.export.TableModel;
 
 import com.mossle.internal.whitelist.persistence.domain.WhitelistApp;
 import com.mossle.internal.whitelist.persistence.domain.WhitelistType;
@@ -33,7 +34,7 @@ import org.springframework.web.bind.annotation.RequestParam;
 import org.springframework.web.servlet.mvc.support.RedirectAttributes;
 
 @Controller
-@RequestMapping("/whitelist")
+@RequestMapping("whitelist")
 public class WhitelistAdminController {
     private WhitelistAppManager whitelistAppManager;
     private WhitelistTypeManager whitelistTypeManager;
@@ -41,12 +42,15 @@ public class WhitelistAdminController {
     private MessageHelper messageHelper;
     private Exportor exportor;
     private BeanMapper beanMapper = new BeanMapper();
+    private TenantHolder tenantHolder;
 
     @RequestMapping("whitelist-admin-list")
     public String list(@ModelAttribute Page page,
             @RequestParam Map<String, Object> parameterMap, Model model) {
+        String tenantId = tenantHolder.getTenantId();
         List<PropertyFilter> propertyFilters = PropertyFilter
                 .buildFromMap(parameterMap);
+        propertyFilters.add(new PropertyFilter("EQS_tenantId", tenantId));
         page = whitelistAppManager.pagedQuery(page, propertyFilters);
         model.addAttribute("page", page);
 
@@ -58,6 +62,7 @@ public class WhitelistAdminController {
             @RequestParam(value = "id", required = false) Long id,
             @RequestParam(value = "type", required = false) String whitelistTypeCode,
             Model model) {
+        String tenantId = tenantHolder.getTenantId();
         WhitelistApp whitelistApp = null;
 
         if (id != null) {
@@ -69,9 +74,12 @@ public class WhitelistAdminController {
             model.addAttribute("whitelistType", whitelistApp.getWhitelistType());
         } else if (whitelistTypeCode != null) {
             model.addAttribute("whitelistType", whitelistTypeManager
-                    .findUniqueBy("code", whitelistTypeCode));
+                    .findUnique(
+                            "from WhitelistType where code=? and tenantId=?",
+                            whitelistTypeCode, tenantId));
         } else {
-            model.addAttribute("whitelistTypes", whitelistTypeManager.getAll());
+            model.addAttribute("whitelistTypes",
+                    whitelistTypeManager.findBy("tenantId", tenantId));
         }
 
         return "whitelist/whitelist-admin-input";
@@ -83,8 +91,9 @@ public class WhitelistAdminController {
             @RequestParam("host") String hostContent,
             @RequestParam("ip") String ipContent,
             RedirectAttributes redirectAttributes) {
+        String tenantId = tenantHolder.getTenantId();
         whitelistService.saveWhitelistApp(whitelistApp, whitelistTypeId,
-                hostContent, ipContent, whitelistApp.getUserId());
+                hostContent, ipContent, whitelistApp.getUserId(), tenantId);
         messageHelper.addFlashMessage(redirectAttributes, "core.success.save",
                 "保存成功");
 
@@ -134,5 +143,10 @@ public class WhitelistAdminController {
     @Resource
     public void setExportor(Exportor exportor) {
         this.exportor = exportor;
+    }
+
+    @Resource
+    public void setTenantHolder(TenantHolder tenantHolder) {
+        this.tenantHolder = tenantHolder;
     }
 }

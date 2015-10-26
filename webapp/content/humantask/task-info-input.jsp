@@ -1,7 +1,7 @@
 <%@page contentType="text/html;charset=UTF-8"%>
 <%@include file="/taglibs.jsp"%>
-<%pageContext.setAttribute("currentHeader", "bpm-task");%>
-<%pageContext.setAttribute("currentMenu", "bpm-task");%>
+<%pageContext.setAttribute("currentHeader", "humantask");%>
+<%pageContext.setAttribute("currentMenu", "humantask");%>
 <!doctype html>
 <html lang="en">
 

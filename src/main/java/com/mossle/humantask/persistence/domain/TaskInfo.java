@@ -49,7 +49,7 @@ public class TaskInfo implements java.io.Serializable {
     private Integer priority;
 
     /** null. */
-    private String catalog;
+    private String category;
 
     /** null. */
     private String form;
@@ -138,6 +138,27 @@ public class TaskInfo implements java.io.Serializable {
     /** null. */
     private String processDefinitionId;
 
+    /** null. */
+    private String attr1;
+
+    /** null. */
+    private String attr2;
+
+    /** null. */
+    private String attr3;
+
+    /** null. */
+    private String attr4;
+
+    /** null. */
+    private String attr5;
+
+    /** null. */
+    private String processBusinessKey;
+
+    /** . */
+    private Set<TaskDeadline> taskDeadlines = new HashSet<TaskDeadline>(0);
+
     /** . */
     private Set<TaskInfo> taskInfos = new HashSet<TaskInfo>(0);
 
@@ -145,11 +166,14 @@ public class TaskInfo implements java.io.Serializable {
     private Set<TaskParticipant> taskParticipants = new HashSet<TaskParticipant>(
             0);
 
+    /** . */
+    private Set<TaskLog> taskLogs = new HashSet<TaskLog>(0);
+
     public TaskInfo() {
     }
 
     public TaskInfo(TaskInfo taskInfo, String businessKey, String code,
-            String name, String description, Integer priority, String catalog,
+            String name, String description, Integer priority, String category,
             String form, String tenantId, String status, String suspendStatus,
             String delegateStatus, String completeStatus, String skipStatus,
             String escalateStatus, String copyStatus, String copyTaskId,
@@ -159,15 +183,18 @@ public class TaskInfo implements java.io.Serializable {
             String duration, String creator, String initiator, String assignee,
             String owner, String lastModifier, String swimlane, String taskId,
             String executionId, String processInstanceId,
-            String processDefinitionId, Set<TaskInfo> taskInfos,
-            Set<TaskParticipant> taskParticipants) {
+            String processDefinitionId, String attr1, String attr2,
+            String attr3, String attr4, String attr5,
+            String processBusinessKey, Set<TaskDeadline> taskDeadlines,
+            Set<TaskInfo> taskInfos, Set<TaskParticipant> taskParticipants,
+            Set<TaskLog> taskLogs) {
         this.taskInfo = taskInfo;
         this.businessKey = businessKey;
         this.code = code;
         this.name = name;
         this.description = description;
         this.priority = priority;
-        this.catalog = catalog;
+        this.category = category;
         this.form = form;
         this.tenantId = tenantId;
         this.status = status;
@@ -197,8 +224,16 @@ public class TaskInfo implements java.io.Serializable {
         this.executionId = executionId;
         this.processInstanceId = processInstanceId;
         this.processDefinitionId = processDefinitionId;
+        this.attr1 = attr1;
+        this.attr2 = attr2;
+        this.attr3 = attr3;
+        this.attr4 = attr4;
+        this.attr5 = attr5;
+        this.processBusinessKey = processBusinessKey;
+        this.taskDeadlines = taskDeadlines;
         this.taskInfos = taskInfos;
         this.taskParticipants = taskParticipants;
+        this.taskLogs = taskLogs;
     }
 
     /** @return null. */
@@ -303,17 +338,17 @@ public class TaskInfo implements java.io.Serializable {
     }
 
     /** @return null. */
-    @Column(name = "CATALOG", length = 100)
-    public String getCatalog() {
-        return this.catalog;
+    @Column(name = "CATEGORY", length = 100)
+    public String getCategory() {
+        return this.category;
     }
 
     /**
-     * @param catalog
+     * @param category
      *            null.
      */
-    public void setCatalog(String catalog) {
-        this.catalog = catalog;
+    public void setCategory(String category) {
+        this.category = category;
     }
 
     /** @return null. */
@@ -728,6 +763,104 @@ public class TaskInfo implements java.io.Serializable {
         this.processDefinitionId = processDefinitionId;
     }
 
+    /** @return null. */
+    @Column(name = "ATTR1", length = 100)
+    public String getAttr1() {
+        return this.attr1;
+    }
+
+    /**
+     * @param attr1
+     *            null.
+     */
+    public void setAttr1(String attr1) {
+        this.attr1 = attr1;
+    }
+
+    /** @return null. */
+    @Column(name = "ATTR2", length = 100)
+    public String getAttr2() {
+        return this.attr2;
+    }
+
+    /**
+     * @param attr2
+     *            null.
+     */
+    public void setAttr2(String attr2) {
+        this.attr2 = attr2;
+    }
+
+    /** @return null. */
+    @Column(name = "ATTR3", length = 100)
+    public String getAttr3() {
+        return this.attr3;
+    }
+
+    /**
+     * @param attr3
+     *            null.
+     */
+    public void setAttr3(String attr3) {
+        this.attr3 = attr3;
+    }
+
+    /** @return null. */
+    @Column(name = "ATTR4", length = 100)
+    public String getAttr4() {
+        return this.attr4;
+    }
+
+    /**
+     * @param attr4
+     *            null.
+     */
+    public void setAttr4(String attr4) {
+        this.attr4 = attr4;
+    }
+
+    /** @return null. */
+    @Column(name = "ATTR5", length = 100)
+    public String getAttr5() {
+        return this.attr5;
+    }
+
+    /**
+     * @param attr5
+     *            null.
+     */
+    public void setAttr5(String attr5) {
+        this.attr5 = attr5;
+    }
+
+    /** @return null. */
+    @Column(name = "PROCESS_BUSINESS_KEY", length = 200)
+    public String getProcessBusinessKey() {
+        return this.processBusinessKey;
+    }
+
+    /**
+     * @param processBusinessKey
+     *            null.
+     */
+    public void setProcessBusinessKey(String processBusinessKey) {
+        this.processBusinessKey = processBusinessKey;
+    }
+
+    /** @return . */
+    @OneToMany(fetch = FetchType.LAZY, mappedBy = "taskInfo")
+    public Set<TaskDeadline> getTaskDeadlines() {
+        return this.taskDeadlines;
+    }
+
+    /**
+     * @param taskDeadlines
+     *            .
+     */
+    public void setTaskDeadlines(Set<TaskDeadline> taskDeadlines) {
+        this.taskDeadlines = taskDeadlines;
+    }
+
     /** @return . */
     @OneToMany(fetch = FetchType.LAZY, mappedBy = "taskInfo")
     public Set<TaskInfo> getTaskInfos() {
@@ -754,5 +887,19 @@ public class TaskInfo implements java.io.Serializable {
      */
     public void setTaskParticipants(Set<TaskParticipant> taskParticipants) {
         this.taskParticipants = taskParticipants;
+    }
+
+    /** @return . */
+    @OneToMany(fetch = FetchType.LAZY, mappedBy = "taskInfo")
+    public Set<TaskLog> getTaskLogs() {
+        return this.taskLogs;
+    }
+
+    /**
+     * @param taskLogs
+     *            .
+     */
+    public void setTaskLogs(Set<TaskLog> taskLogs) {
+        this.taskLogs = taskLogs;
     }
 }

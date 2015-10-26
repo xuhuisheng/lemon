@@ -1,2 +1,3 @@
 <%@ page language="java" pageEncoding="UTF-8" %>
-<%@include file="/header.jsp"%>
+<%pageContext.setAttribute("currentHeader", "scope");%>
+<%@include file="_bpm.jsp"%>

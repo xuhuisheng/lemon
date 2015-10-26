@@ -9,13 +9,14 @@ import javax.annotation.Resource;
 import javax.servlet.http.HttpServletRequest;
 import javax.servlet.http.HttpServletResponse;
 
+import com.mossle.api.tenant.TenantHolder;
+
+import com.mossle.core.export.Exportor;
+import com.mossle.core.export.TableModel;
 import com.mossle.core.hibernate.PropertyFilter;
 import com.mossle.core.mapper.BeanMapper;
 import com.mossle.core.page.Page;
 import com.mossle.core.spring.MessageHelper;
-
-import com.mossle.ext.export.Exportor;
-import com.mossle.ext.export.TableModel;
 
 import com.mossle.user.persistence.domain.AccountOnline;
 import com.mossle.user.persistence.manager.AccountOnlineManager;
@@ -39,12 +40,15 @@ public class AccountOnlineController {
     private Exportor exportor;
     private BeanMapper beanMapper = new BeanMapper();
     private MessageHelper messageHelper;
+    private TenantHolder tenantHolder;
 
     @RequestMapping("account-online-list")
     public String list(@ModelAttribute Page page,
             @RequestParam Map<String, Object> parameterMap, Model model) {
+        String tenantId = tenantHolder.getTenantId();
         List<PropertyFilter> propertyFilters = PropertyFilter
                 .buildFromMap(parameterMap);
+        propertyFilters.add(new PropertyFilter("EQS_tenantId", tenantId));
         page = accountOnlineManager.pagedQuery(page, propertyFilters);
 
         model.addAttribute("page", page);
@@ -67,6 +71,7 @@ public class AccountOnlineController {
     public String save(@ModelAttribute AccountOnline accountOnline,
             @RequestParam Map<String, Object> parameterMap,
             RedirectAttributes redirectAttributes) {
+        String tenantId = tenantHolder.getTenantId();
         AccountOnline dest = null;
 
         Long id = accountOnline.getId();
@@ -76,6 +81,7 @@ public class AccountOnlineController {
             beanMapper.copy(accountOnline, dest);
         } else {
             dest = accountOnline;
+            dest.setTenantId(tenantId);
         }
 
         accountOnlineManager.save(dest);
@@ -105,8 +111,10 @@ public class AccountOnlineController {
             @RequestParam Map<String, Object> parameterMap,
             HttpServletRequest request, HttpServletResponse response)
             throws Exception {
+        String tenantId = tenantHolder.getTenantId();
         List<PropertyFilter> propertyFilters = PropertyFilter
                 .buildFromMap(parameterMap);
+        propertyFilters.add(new PropertyFilter("EQS_tenantId", tenantId));
         page = accountOnlineManager.pagedQuery(page, propertyFilters);
 
         List<AccountOnline> accountOnlines = (List<AccountOnline>) page
@@ -134,5 +142,10 @@ public class AccountOnlineController {
     @Resource
     public void setMessageHelper(MessageHelper messageHelper) {
         this.messageHelper = messageHelper;
+    }
+
+    @Resource
+    public void setTenantHolder(TenantHolder tenantHolder) {
+        this.tenantHolder = tenantHolder;
     }
 }

@@ -14,12 +14,12 @@ import javax.ws.rs.Produces;
 import javax.ws.rs.QueryParam;
 import javax.ws.rs.core.MediaType;
 
-import com.mossle.party.domain.PartyEntity;
-import com.mossle.party.domain.PartyStruct;
-import com.mossle.party.domain.PartyType;
-import com.mossle.party.manager.PartyEntityManager;
-import com.mossle.party.manager.PartyStructManager;
-import com.mossle.party.manager.PartyTypeManager;
+import com.mossle.party.persistence.domain.PartyEntity;
+import com.mossle.party.persistence.domain.PartyStruct;
+import com.mossle.party.persistence.domain.PartyType;
+import com.mossle.party.persistence.manager.PartyEntityManager;
+import com.mossle.party.persistence.manager.PartyStructManager;
+import com.mossle.party.persistence.manager.PartyTypeManager;
 import com.mossle.party.service.PartyService;
 
 import org.slf4j.Logger;
@@ -65,6 +65,18 @@ public class PartyResource {
         List<PartyEntityDTO> partyEntityDtos = new ArrayList<PartyEntityDTO>();
 
         for (PartyEntity partyEntity : partyEntities) {
+            if (partyEntity.getParentStructs().size() == 1) {
+                PartyStruct partyStruct = partyEntity.getParentStructs()
+                        .iterator().next();
+
+                if (partyStruct.getParentEntity() == null) {
+                    logger.info("skip top entity : {}, {}",
+                            partyEntity.getId(), partyEntity.getName());
+
+                    continue;
+                }
+            }
+
             PartyEntityDTO partyEntityDto = new PartyEntityDTO();
             partyEntityDto.setId(partyEntity.getId());
             partyEntityDto.setName(partyEntity.getName());

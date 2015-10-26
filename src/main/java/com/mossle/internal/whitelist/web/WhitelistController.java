@@ -8,14 +8,15 @@ import javax.annotation.Resource;
 
 import javax.servlet.http.HttpServletResponse;
 
+import com.mossle.api.tenant.TenantHolder;
+
+import com.mossle.core.auth.CurrentUserHolder;
+import com.mossle.core.export.Exportor;
+import com.mossle.core.export.TableModel;
 import com.mossle.core.hibernate.PropertyFilter;
 import com.mossle.core.mapper.BeanMapper;
 import com.mossle.core.page.Page;
 import com.mossle.core.spring.MessageHelper;
-
-import com.mossle.ext.auth.CurrentUserHolder;
-import com.mossle.ext.export.Exportor;
-import com.mossle.ext.export.TableModel;
 
 import com.mossle.internal.whitelist.persistence.domain.WhitelistApp;
 import com.mossle.internal.whitelist.persistence.domain.WhitelistType;
@@ -33,7 +34,7 @@ import org.springframework.web.bind.annotation.RequestParam;
 import org.springframework.web.servlet.mvc.support.RedirectAttributes;
 
 @Controller
-@RequestMapping("/whitelist")
+@RequestMapping("whitelist")
 public class WhitelistController {
     private WhitelistAppManager whitelistAppManager;
     private WhitelistTypeManager whitelistTypeManager;
@@ -42,14 +43,14 @@ public class WhitelistController {
     private Exportor exportor;
     private BeanMapper beanMapper = new BeanMapper();
     private CurrentUserHolder currentUserHolder;
+    private TenantHolder tenantHolder;
 
     @RequestMapping("whitelist-list")
     public String list(@ModelAttribute Page page,
             @RequestParam Map<String, Object> parameterMap, Model model) {
-        parameterMap.put("filter_EQS_userId", currentUserHolder.getUsername());
-
         List<PropertyFilter> propertyFilters = PropertyFilter
                 .buildFromMap(parameterMap);
+        parameterMap.put("filter_EQS_userId", currentUserHolder.getUsername());
         page = whitelistAppManager.pagedQuery(page, propertyFilters);
         model.addAttribute("page", page);
 
@@ -86,8 +87,10 @@ public class WhitelistController {
             @RequestParam("host") String hostContent,
             @RequestParam("ip") String ipContent,
             RedirectAttributes redirectAttributes) {
+        String tenantId = tenantHolder.getTenantId();
         whitelistService.saveWhitelistApp(whitelistApp, whitelistTypeId,
-                hostContent, ipContent, currentUserHolder.getUsername());
+                hostContent, ipContent, currentUserHolder.getUsername(),
+                tenantId);
         messageHelper.addFlashMessage(redirectAttributes, "core.success.save",
                 "保存成功");
 
@@ -124,5 +127,10 @@ public class WhitelistController {
     @Resource
     public void setCurrentUserHolder(CurrentUserHolder currentUserHolder) {
         this.currentUserHolder = currentUserHolder;
+    }
+
+    @Resource
+    public void setTenantHolder(TenantHolder tenantHolder) {
+        this.tenantHolder = tenantHolder;
     }
 }

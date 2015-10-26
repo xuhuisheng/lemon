@@ -96,7 +96,7 @@ $(function() {
 		  </c:if>
 		</td>
         <td>
-          <a href="${scopePrefix}/bpm/workspace-viewHistory.do?processInstanceId=${item.processInstanceId}">历史</a>
+          <a href="${tenantPrefix}/bpm/workspace-viewHistory.do?processInstanceId=${item.processInstanceId}">历史</a>
         </td>
       </tr>
       </c:forEach>

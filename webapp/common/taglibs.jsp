@@ -7,3 +7,4 @@
 <%@ taglib prefix="tags" tagdir="/WEB-INF/tags" %>
 <%pageContext.setAttribute("ctx", request.getContextPath());%>
 <%pageContext.setAttribute("locale", request.getLocale());%>
+<%pageContext.setAttribute("tenantPrefix", request.getContextPath());%>

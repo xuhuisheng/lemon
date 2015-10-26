@@ -39,7 +39,7 @@ $(function() {
 
 		<div class="content content-inner">
 
-<form id="userRepoForm" method="post" action="${scopePrefix}/mail/sendmail-send.do" class="form-horizontal">
+<form id="userRepoForm" method="post" action="${tenantPrefix}/mail/sendmail-send.do" class="form-horizontal">
   <div class="control-group">
 	<label class="control-label" for="from">发信人</label>
     <div class="controls">

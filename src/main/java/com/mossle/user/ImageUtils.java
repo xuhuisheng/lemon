@@ -18,13 +18,15 @@ public class ImageUtils {
         int height = bufferedImage.getHeight();
         int width = bufferedImage.getWidth();
 
+        int defaultSize = Math.min(512, Math.min(height, width));
+
         if (height > width) {
-            int h2 = 512;
-            int w2 = (512 * width) / height;
+            int h2 = defaultSize;
+            int w2 = (defaultSize * width) / height;
             bufferedImage = zoomImage(bufferedImage, w2, h2);
         } else {
-            int w2 = 512;
-            int h2 = (512 * height) / width;
+            int w2 = defaultSize;
+            int h2 = (defaultSize * height) / width;
             bufferedImage = zoomImage(bufferedImage, w2, h2);
         }
 

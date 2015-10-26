@@ -28,7 +28,7 @@ public class AvatarInitiator implements ApplicationContextAware {
 
     @PostConstruct
     public void init() throws Exception {
-        File dir = new File(baseDir + "/avatar");
+        File dir = new File(baseDir + "/1/avatar");
 
         if (dir.exists()) {
             return;

@@ -19,24 +19,23 @@ import com.mossle.api.form.FormDTO;
 import com.mossle.api.humantask.HumanTaskConnector;
 import com.mossle.api.humantask.HumanTaskDTO;
 import com.mossle.api.humantask.HumanTaskDefinition;
-import com.mossle.api.store.StoreConnector;
+import com.mossle.api.keyvalue.FormParameter;
+import com.mossle.api.keyvalue.KeyValueConnector;
+import com.mossle.api.keyvalue.Prop;
+import com.mossle.api.keyvalue.Record;
+import com.mossle.api.keyvalue.RecordBuilder;
 import com.mossle.api.process.ProcessConnector;
 import com.mossle.api.process.ProcessDTO;
+import com.mossle.api.store.StoreConnector;
+import com.mossle.api.tenant.TenantHolder;
 
 import com.mossle.button.ButtonDTO;
 import com.mossle.button.ButtonHelper;
 
+import com.mossle.core.MultipartHandler;
+import com.mossle.core.auth.CurrentUserHolder;
 import com.mossle.core.mapper.JsonMapper;
 import com.mossle.core.spring.MessageHelper;
-
-import com.mossle.ext.MultipartHandler;
-import com.mossle.ext.auth.CurrentUserHolder;
-
-import com.mossle.keyvalue.FormParameter;
-import com.mossle.keyvalue.KeyValue;
-import com.mossle.keyvalue.Prop;
-import com.mossle.keyvalue.Record;
-import com.mossle.keyvalue.RecordBuilder;
 
 import com.mossle.operation.service.OperationService;
 
@@ -76,7 +75,7 @@ public class ProcessOperationController {
     public static final int STATUS_DRAFT_TASK = 1;
     public static final int STATUS_RUNNING = 2;
     private OperationService operationService;
-    private KeyValue keyValue;
+    private KeyValueConnector keyValueConnector;
     private MessageHelper messageHelper;
     private CurrentUserHolder currentUserHolder;
     private ProcessConnector processConnector;
@@ -86,6 +85,7 @@ public class ProcessOperationController {
     private ButtonHelper buttonHelper = new ButtonHelper();
     private FormConnector formConnector;
     private JsonMapper jsonMapper = new JsonMapper();
+    private TenantHolder tenantHolder;
 
     /**
      * 保存草稿.
@@ -103,8 +103,9 @@ public class ProcessOperationController {
     @RequestMapping("process-operation-listDrafts")
     public String listDrafts(Model model) throws Exception {
         String userId = currentUserHolder.getUserId();
-        List<Record> records = keyValue.findByStatus(STATUS_DRAFT_PROCESS,
-                userId);
+        String tenantId = tenantHolder.getTenantId();
+        List<Record> records = keyValueConnector.findByStatus(
+                STATUS_DRAFT_PROCESS, userId, tenantId);
         model.addAttribute("records", records);
 
         return "operation/process-operation-listDrafts";
@@ -119,6 +120,7 @@ public class ProcessOperationController {
             @RequestParam("bpmProcessId") String bpmProcessId,
             @RequestParam(value = "businessKey", required = false) String businessKey,
             Model model) throws Exception {
+        String tenantId = tenantHolder.getTenantId();
         FormParameter formParameter = new FormParameter();
         formParameter.setBpmProcessId(bpmProcessId);
         formParameter.setBusinessKey(businessKey);
@@ -147,7 +149,7 @@ public class ProcessOperationController {
                 formParameter.setNextStep("confirmStartProcess");
             }
 
-            return this.doViewStartForm(formParameter, model);
+            return this.doViewStartForm(formParameter, model, tenantId);
         } else if (processDto.isConfigTask()) {
             formParameter.setProcessDefinitionId(processDefinitionId);
 
@@ -207,7 +209,8 @@ public class ProcessOperationController {
         FormParameter formParameter = this.doSaveRecord(request);
         doConfirmStartProcess(formParameter, model);
 
-        Record record = keyValue.findByCode(formParameter.getBusinessKey());
+        Record record = keyValueConnector.findByCode(formParameter
+                .getBusinessKey());
         ProcessDTO processDto = processConnector.findProcess(formParameter
                 .getBpmProcessId());
         String processDefinitionId = processDto.getProcessDefinitionId();
@@ -226,7 +229,7 @@ public class ProcessOperationController {
 
         record = new RecordBuilder().build(record, STATUS_RUNNING,
                 processInstanceId);
-        keyValue.save(record);
+        keyValueConnector.save(record);
 
         return "operation/process-operation-startProcessInstance";
     }
@@ -254,6 +257,9 @@ public class ProcessOperationController {
      */
     public FormParameter doSaveRecord(HttpServletRequest request)
             throws Exception {
+        String userId = currentUserHolder.getUserId();
+        String tenantId = tenantHolder.getTenantId();
+
         MultipartHandler multipartHandler = new MultipartHandler(
                 multipartResolver);
         FormParameter formParameter = null;
@@ -265,20 +271,20 @@ public class ProcessOperationController {
 
             formParameter = this.buildFormParameter(multipartHandler);
 
-            String businessKey = operationService.saveDraft(
-                    currentUserHolder.getUserId(), formParameter);
+            String businessKey = operationService.saveDraft(userId, tenantId,
+                    formParameter);
 
             if ((formParameter.getBusinessKey() == null)
                     || "".equals(formParameter.getBusinessKey().trim())) {
                 formParameter.setBusinessKey(businessKey);
             }
 
-            Record record = keyValue.findByCode(businessKey);
+            Record record = keyValueConnector.findByCode(businessKey);
 
             record = new RecordBuilder().build(record, multipartHandler,
-                    storeConnector);
+                    storeConnector, tenantId);
 
-            keyValue.save(record);
+            keyValueConnector.save(record);
         } finally {
             multipartHandler.clear();
         }
@@ -305,8 +311,8 @@ public class ProcessOperationController {
     /**
      * 实际显示开始表单.
      */
-    public String doViewStartForm(FormParameter formParameter, Model model)
-            throws Exception {
+    public String doViewStartForm(FormParameter formParameter, Model model,
+            String tenantId) throws Exception {
         model.addAttribute("formDto", formParameter.getFormDto());
         model.addAttribute("bpmProcessId", formParameter.getBpmProcessId());
         model.addAttribute("businessKey", formParameter.getBusinessKey());
@@ -325,9 +331,10 @@ public class ProcessOperationController {
             model.addAttribute("json", json);
         }
 
-        Record record = keyValue.findByCode(formParameter.getBusinessKey());
+        Record record = keyValueConnector.findByCode(formParameter
+                .getBusinessKey());
         FormDTO formDto = formConnector.findForm(formParameter.getFormDto()
-                .getCode());
+                .getCode(), tenantId);
 
         if (record != null) {
             Xform xform = new XformBuilder().setStoreConnector(storeConnector)
@@ -372,7 +379,7 @@ public class ProcessOperationController {
      * 读取草稿箱中的表单数据，转换成json.
      */
     public String findStartFormData(String businessKey) throws Exception {
-        Record record = keyValue.findByCode(businessKey);
+        Record record = keyValueConnector.findByCode(businessKey);
 
         if (record == null) {
             return null;
@@ -391,8 +398,8 @@ public class ProcessOperationController {
 
     // ~ ======================================================================
     @Resource
-    public void setKeyValue(KeyValue keyValue) {
-        this.keyValue = keyValue;
+    public void setKeyValueConnector(KeyValueConnector keyValueConnector) {
+        this.keyValueConnector = keyValueConnector;
     }
 
     @Resource
@@ -433,5 +440,10 @@ public class ProcessOperationController {
     @Resource
     public void setFormConnector(FormConnector formConnector) {
         this.formConnector = formConnector;
+    }
+
+    @Resource
+    public void setTenantHolder(TenantHolder tenantHolder) {
+        this.tenantHolder = tenantHolder;
     }
 }

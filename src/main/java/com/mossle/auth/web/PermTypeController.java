@@ -9,20 +9,19 @@ import javax.annotation.Resource;
 import javax.servlet.http.HttpServletRequest;
 import javax.servlet.http.HttpServletResponse;
 
-import com.mossle.api.scope.ScopeHolder;
+import com.mossle.api.tenant.TenantHolder;
 
-import com.mossle.auth.domain.Perm;
-import com.mossle.auth.domain.PermType;
-import com.mossle.auth.manager.PermManager;
-import com.mossle.auth.manager.PermTypeManager;
+import com.mossle.auth.persistence.domain.Perm;
+import com.mossle.auth.persistence.domain.PermType;
+import com.mossle.auth.persistence.manager.PermManager;
+import com.mossle.auth.persistence.manager.PermTypeManager;
 
+import com.mossle.core.export.Exportor;
+import com.mossle.core.export.TableModel;
 import com.mossle.core.hibernate.PropertyFilter;
 import com.mossle.core.mapper.BeanMapper;
 import com.mossle.core.page.Page;
 import com.mossle.core.spring.MessageHelper;
-
-import com.mossle.ext.export.Exportor;
-import com.mossle.ext.export.TableModel;
 
 import org.springframework.stereotype.Controller;
 
@@ -42,14 +41,15 @@ public class PermTypeController {
     private Exportor exportor;
     private BeanMapper beanMapper = new BeanMapper();
     private PermManager permManager;
+    private TenantHolder tenantHolder;
 
     @RequestMapping("perm-type-list")
     public String list(@ModelAttribute Page page,
             @RequestParam Map<String, Object> parameterMap, Model model) {
         List<PropertyFilter> propertyFilters = PropertyFilter
                 .buildFromMap(parameterMap);
-        propertyFilters.add(new PropertyFilter("EQS_scopeId", ScopeHolder
-                .getScopeId()));
+        propertyFilters.add(new PropertyFilter("EQS_tenantId", tenantHolder
+                .getTenantId()));
         page = permTypeManager.pagedQuery(page, propertyFilters);
         model.addAttribute("page", page);
 
@@ -82,7 +82,7 @@ public class PermTypeController {
         }
 
         if (id == null) {
-            dest.setScopeId(ScopeHolder.getScopeId());
+            dest.setTenantId(tenantHolder.getTenantId());
         }
 
         // save
@@ -142,5 +142,10 @@ public class PermTypeController {
     @Resource
     public void setExportor(Exportor exportor) {
         this.exportor = exportor;
+    }
+
+    @Resource
+    public void setTenantHolder(TenantHolder tenantHolder) {
+        this.tenantHolder = tenantHolder;
     }
 }

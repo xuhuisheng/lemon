@@ -20,6 +20,9 @@ import com.mossle.core.mapper.BeanMapper;
 import com.mossle.core.page.Page;
 import com.mossle.core.spring.MessageHelper;
 
+import com.mossle.spi.humantask.FormDTO;
+import com.mossle.spi.humantask.TaskDefinitionConnector;
+
 import org.activiti.engine.ProcessEngine;
 import org.activiti.engine.repository.ProcessDefinition;
 
@@ -41,6 +44,7 @@ public class BpmConfFormController {
     private BeanMapper beanMapper = new BeanMapper();
     private ProcessEngine processEngine;
     private BpmProcessManager bpmProcessManager;
+    private TaskDefinitionConnector taskDefinitionConnector;
 
     @RequestMapping("bpm-conf-form-list")
     public String list(@RequestParam("bpmConfNodeId") Long bpmConfNodeId,
@@ -73,6 +77,15 @@ public class BpmConfFormController {
             bpmConfFormManager.save(dest);
         }
 
+        String taskDefinitionKey = dest.getBpmConfNode().getCode();
+        String processDefinitionId = dest.getBpmConfNode().getBpmConfBase()
+                .getProcessDefinitionId();
+        FormDTO form = new FormDTO();
+        form.setType((bpmConfForm.getType() == 0) ? "internal" : "external");
+        form.setKey(bpmConfForm.getValue());
+        taskDefinitionConnector.saveForm(taskDefinitionKey,
+                processDefinitionId, form);
+
         return "redirect:/bpm/bpm-conf-form-list.do?bpmConfNodeId="
                 + bpmConfNodeId;
     }
@@ -99,6 +112,16 @@ public class BpmConfFormController {
             }
         }
 
+        BpmConfForm dest = bpmConfForm;
+        String taskDefinitionKey = dest.getBpmConfNode().getCode();
+        String processDefinitionId = dest.getBpmConfNode().getBpmConfBase()
+                .getProcessDefinitionId();
+        FormDTO form = new FormDTO();
+        form.setType((bpmConfForm.getType() == 0) ? "internal" : "external");
+        form.setKey(bpmConfForm.getValue());
+        taskDefinitionConnector.saveForm(taskDefinitionKey,
+                processDefinitionId, form);
+
         return "redirect:/bpm/bpm-conf-form-list.do?bpmConfNodeId="
                 + bpmConfNodeId;
     }
@@ -122,5 +145,11 @@ public class BpmConfFormController {
     @Resource
     public void setProcessEngine(ProcessEngine processEngine) {
         this.processEngine = processEngine;
+    }
+
+    @Resource
+    public void setTaskDefinitionConnector(
+            TaskDefinitionConnector taskDefinitionConnector) {
+        this.taskDefinitionConnector = taskDefinitionConnector;
     }
 }

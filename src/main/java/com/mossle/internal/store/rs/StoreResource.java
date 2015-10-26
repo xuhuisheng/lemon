@@ -7,6 +7,8 @@ import java.util.ArrayList;
 import java.util.Collections;
 import java.util.List;
 
+import javax.activation.DataSource;
+
 import javax.annotation.Resource;
 
 import javax.ws.rs.Consumes;
@@ -21,10 +23,10 @@ import javax.ws.rs.core.MediaType;
 import com.mossle.api.store.StoreConnector;
 import com.mossle.api.store.StoreDTO;
 
+import com.mossle.core.store.ByteArrayDataSource;
+import com.mossle.core.store.StoreResult;
 import com.mossle.core.util.BaseDTO;
 import com.mossle.core.util.IoUtils;
-
-import com.mossle.ext.store.StoreResult;
 
 import com.mossle.internal.store.service.StoreService;
 
@@ -50,11 +52,12 @@ public class StoreResource {
     @Path("getStore")
     @Produces(MediaType.APPLICATION_JSON)
     public BaseDTO getStore(@QueryParam("model") String model,
-            @QueryParam("key") String key) {
+            @QueryParam("key") String key,
+            @QueryParam("tenantId") String tenantId) {
         try {
             BaseDTO result = new BaseDTO();
 
-            StoreDTO storeDto = storeConnector.getStore(model, key);
+            StoreDTO storeDto = storeConnector.getStore(model, key, tenantId);
             ByteArrayOutputStream baos = new ByteArrayOutputStream();
             IoUtils.copyStream(storeDto.getDataSource().getInputStream(), baos);
 
@@ -82,15 +85,17 @@ public class StoreResource {
     public BaseDTO saveStore(@FormParam("model") String model,
             @FormParam("content") String content,
             @FormParam("fileName") String fileName,
-            @FormParam("contentType") String contentType) {
+            @FormParam("contentType") String contentType,
+            @QueryParam("tenantId") String tenantId) {
         try {
             byte[] bytes = new Base64().decodeBase64(content.getBytes("utf-8"));
 
             BaseDTO result = new BaseDTO();
-            StoreResult storeResult = storeService.saveStore(model, fileName,
-                    contentType, bytes);
+            DataSource dataSource = new ByteArrayDataSource(fileName, bytes);
+            StoreDTO storeDto = storeService.saveStore(model, dataSource,
+                    tenantId);
             result.setCode(200);
-            result.setData(storeResult.getKey());
+            result.setData(storeDto.getKey());
 
             return result;
         } catch (Exception ex) {
@@ -107,8 +112,9 @@ public class StoreResource {
     @GET
     @Path("view")
     public InputStream view(@QueryParam("model") String model,
-            @QueryParam("key") String key) throws Exception {
-        StoreDTO storeDto = storeConnector.getStore(model, key);
+            @QueryParam("key") String key,
+            @QueryParam("tenantId") String tenantId) throws Exception {
+        StoreDTO storeDto = storeConnector.getStore(model, key, tenantId);
 
         return storeDto.getDataSource().getInputStream();
     }

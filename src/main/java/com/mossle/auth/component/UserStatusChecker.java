@@ -1,6 +1,6 @@
 package com.mossle.auth.component;
 
-import com.mossle.auth.domain.UserStatus;
+import com.mossle.auth.persistence.domain.UserStatus;
 import com.mossle.auth.support.CheckUserStatusException;
 
 import org.springframework.context.MessageSource;

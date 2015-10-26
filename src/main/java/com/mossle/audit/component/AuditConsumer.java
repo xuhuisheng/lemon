@@ -10,7 +10,7 @@ import javax.annotation.Resource;
 
 import com.mossle.api.audit.AuditDTO;
 
-import com.mossle.audit.domain.AuditBase;
+import com.mossle.audit.persistence.domain.AuditBase;
 import com.mossle.audit.service.AuditService;
 
 import org.slf4j.Logger;

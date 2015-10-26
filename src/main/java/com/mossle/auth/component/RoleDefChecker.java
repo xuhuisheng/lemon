@@ -1,6 +1,6 @@
 package com.mossle.auth.component;
 
-import com.mossle.auth.domain.RoleDef;
+import com.mossle.auth.persistence.domain.RoleDef;
 import com.mossle.auth.support.CheckRoleException;
 
 import org.springframework.context.MessageSource;

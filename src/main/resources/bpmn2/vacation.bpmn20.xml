@@ -122,7 +122,7 @@
       <omgdi:waypoint x='485' y='225'/>
       <omgdi:waypoint x='531' y='225'/>
 	  <bpmndi:BPMNLabel>
-        <omgdc:Bounds height="11" width="100" x="10" y="0"></omgdc:Bounds>
+        <omgdc:Bounds height="11" width="100" x="505" y="225"></omgdc:Bounds>
       </bpmndi:BPMNLabel>
     </bpmndi:BPMNEdge>
     <bpmndi:BPMNEdge bpmnElement='transition-9' id='BPMNShape_transition-9'>
@@ -130,7 +130,7 @@
       <omgdi:waypoint x='464' y='120'/>
       <omgdi:waypoint x='531' y='120'/>
 	  <bpmndi:BPMNLabel>
-        <omgdc:Bounds height="11" width="100" x="10" y="0"></omgdc:Bounds>
+        <omgdc:Bounds height="11" width="100" x="464" y="120"></omgdc:Bounds>
       </bpmndi:BPMNLabel>
     </bpmndi:BPMNEdge>
     <bpmndi:BPMNEdge bpmnElement='transition-8' id='BPMNShape_transition-8'>
@@ -142,14 +142,14 @@
       <omgdi:waypoint x='700' y='120'/>
       <omgdi:waypoint x='651' y='120'/>
 	  <bpmndi:BPMNLabel>
-        <omgdc:Bounds height="11" width="100" x="10" y="0"></omgdc:Bounds>
+        <omgdc:Bounds height="11" width="100" x="700" y="120"></omgdc:Bounds>
       </bpmndi:BPMNLabel>
     </bpmndi:BPMNEdge>
     <bpmndi:BPMNEdge bpmnElement='transition-13' id='BPMNShape_transition-13'>
       <omgdi:waypoint x='721' y='225'/>
       <omgdi:waypoint x='764' y='225'/>
 	  <bpmndi:BPMNLabel>
-        <omgdc:Bounds height="11" width="100" x="10" y="0"></omgdc:Bounds>
+        <omgdc:Bounds height="11" width="100" x="740" y="225"></omgdc:Bounds>
       </bpmndi:BPMNLabel>
     </bpmndi:BPMNEdge>
     <bpmndi:BPMNEdge bpmnElement='transition-11' id='BPMNShape_transition-11'>
@@ -161,7 +161,7 @@
       <omgdi:waypoint x='338' y='32'/>
       <omgdi:waypoint x='338' y='185'/>
 	  <bpmndi:BPMNLabel>
-        <omgdc:Bounds height="11" width="100" x="10" y="0"></omgdc:Bounds>
+        <omgdc:Bounds height="11" width="100" x="338" y="32"></omgdc:Bounds>
       </bpmndi:BPMNLabel>
     </bpmndi:BPMNEdge>
     <bpmndi:BPMNEdge bpmnElement='transition-15' id='BPMNShape_transition-15'>
@@ -169,7 +169,7 @@
       <omgdi:waypoint x='945' y='32'/>
       <omgdi:waypoint x='945' y='205'/>
 	  <bpmndi:BPMNLabel>
-        <omgdc:Bounds height="11" width="100" x="10" y="0"></omgdc:Bounds>
+        <omgdc:Bounds height="11" width="100" x="945" y="32"></omgdc:Bounds>
       </bpmndi:BPMNLabel>
     </bpmndi:BPMNEdge>
     <bpmndi:BPMNEdge bpmnElement='transition-14' id='BPMNShape_transition-14'>

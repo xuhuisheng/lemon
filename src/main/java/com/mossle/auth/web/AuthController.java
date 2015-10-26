@@ -9,16 +9,16 @@ import javax.annotation.Resource;
 
 import javax.servlet.http.HttpServletResponse;
 
-import com.mossle.api.scope.ScopeConnector;
-import com.mossle.api.scope.ScopeHolder;
+import com.mossle.api.tenant.TenantConnector;
+import com.mossle.api.tenant.TenantHolder;
 
 import com.mossle.auth.component.UserStatusChecker;
-import com.mossle.auth.domain.Role;
-import com.mossle.auth.manager.RoleManager;
+import com.mossle.auth.persistence.domain.Role;
+import com.mossle.auth.persistence.manager.RoleManager;
 import com.mossle.auth.service.AuthService;
 import com.mossle.auth.support.CheckUserStatusException;
 
-import com.mossle.security.client.ResourcePublisher;
+import com.mossle.spi.auth.ResourcePublisher;
 
 import org.springframework.jdbc.core.JdbcTemplate;
 

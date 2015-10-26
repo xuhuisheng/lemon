@@ -42,6 +42,9 @@ public class DictSchema implements java.io.Serializable {
     /** 描述. */
     private String descn;
 
+    /** null. */
+    private String tenantId;
+
     /** . */
     private Set<DictData> dictDatas = new HashSet<DictData>(0);
 
@@ -49,12 +52,14 @@ public class DictSchema implements java.io.Serializable {
     }
 
     public DictSchema(DictType dictType, String name, String type,
-            Integer priority, String descn, Set<DictData> dictDatas) {
+            Integer priority, String descn, String tenantId,
+            Set<DictData> dictDatas) {
         this.dictType = dictType;
         this.name = name;
         this.type = type;
         this.priority = priority;
         this.descn = descn;
+        this.tenantId = tenantId;
         this.dictDatas = dictDatas;
     }
 
@@ -143,6 +148,20 @@ public class DictSchema implements java.io.Serializable {
      */
     public void setDescn(String descn) {
         this.descn = descn;
+    }
+
+    /** @return null. */
+    @Column(name = "TENANT_ID", length = 64)
+    public String getTenantId() {
+        return this.tenantId;
+    }
+
+    /**
+     * @param tenantId
+     *            null.
+     */
+    public void setTenantId(String tenantId) {
+        this.tenantId = tenantId;
     }
 
     /** @return . */

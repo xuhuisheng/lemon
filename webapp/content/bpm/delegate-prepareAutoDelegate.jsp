@@ -10,13 +10,13 @@
     <title>编辑</title>
     <%@include file="/common/s.jsp"%>
 
-    <link type="text/css" rel="stylesheet" href="${scopePrefix}/widgets/userpicker/userpicker.css">
-    <script type="text/javascript" src="${scopePrefix}/widgets/userpicker/userpicker.js"></script>
+    <link type="text/css" rel="stylesheet" href="${tenantPrefix}/widgets/userpicker/userpicker.css">
+    <script type="text/javascript" src="${tenantPrefix}/widgets/userpicker/userpicker.js"></script>
 	<script type="text/javascript">
 $(function() {
 	createUserPicker({
 		modalId: 'userPicker',
-		url: '${scopePrefix}/rs/user/search'
+		url: '${tenantPrefix}/rs/user/search'
 	});
 })
     </script>

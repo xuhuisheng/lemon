@@ -8,8 +8,7 @@ import com.mossle.api.userrepo.UserRepoCache;
 import com.mossle.api.userrepo.UserRepoDTO;
 
 import com.mossle.core.mapper.JsonMapper;
-
-import com.mossle.ext.message.Subscribable;
+import com.mossle.core.subscribe.Subscribable;
 
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;

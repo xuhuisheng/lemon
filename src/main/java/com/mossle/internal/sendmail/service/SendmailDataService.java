@@ -15,20 +15,19 @@ import javax.servlet.http.HttpServletResponse;
 import com.mossle.api.store.StoreConnector;
 import com.mossle.api.store.StoreDTO;
 
+import com.mossle.core.export.Exportor;
+import com.mossle.core.export.TableModel;
 import com.mossle.core.hibernate.PropertyFilter;
+import com.mossle.core.mail.MailDTO;
+import com.mossle.core.mail.MailHelper;
+import com.mossle.core.mail.MailServerInfo;
 import com.mossle.core.mapper.BeanMapper;
 import com.mossle.core.mapper.JsonMapper;
 import com.mossle.core.page.Page;
 import com.mossle.core.spring.MessageHelper;
+import com.mossle.core.store.DataSourceInputStreamSource;
+import com.mossle.core.template.TemplateService;
 import com.mossle.core.util.StringUtils;
-
-import com.mossle.ext.export.Exportor;
-import com.mossle.ext.export.TableModel;
-import com.mossle.ext.mail.MailDTO;
-import com.mossle.ext.mail.MailHelper;
-import com.mossle.ext.mail.MailServerInfo;
-import com.mossle.ext.store.DataSourceInputStreamSource;
-import com.mossle.ext.template.TemplateService;
 
 import com.mossle.internal.sendmail.persistence.domain.SendmailAttachment;
 import com.mossle.internal.sendmail.persistence.domain.SendmailConfig;
@@ -70,26 +69,34 @@ public class SendmailDataService {
     private JsonMapper jsonMapper = new JsonMapper();
 
     public void send(String to, String subject, String content,
-            String configCode) {
+            String configCode, String tenantId) {
+        SendmailConfig sendmailConfig = sendmailConfigManager.findUnique(
+                "from SendmailConfig where name=? and tenantId=?", configCode,
+                tenantId);
         SendmailQueue sendmailQueue = new SendmailQueue();
 
         sendmailQueue.setReceiver(to);
         sendmailQueue.setSubject(subject);
         sendmailQueue.setContent(content);
-        sendmailQueue.setSendmailConfig(sendmailConfigManager.findUniqueBy(
-                "name", configCode));
+        sendmailQueue.setSendmailConfig(sendmailConfig);
+        sendmailQueue.setTenantId(tenantId);
         sendmailQueueManager.save(sendmailQueue);
     }
 
     public void sendTemplate(String to, String data, String templateCode,
-            String configCode) {
+            String configCode, String tenantId) {
+        SendmailConfig sendmailConfig = sendmailConfigManager.findUnique(
+                "from SendmailConfig where name=? and tenantId=?", configCode,
+                tenantId);
+        SendmailTemplate sendmailTemplate = sendmailTemplateManager.findUnique(
+                "from SendmailTemplate where name=? and tenantId=?",
+                templateCode, tenantId);
         SendmailQueue sendmailQueue = new SendmailQueue();
         sendmailQueue.setReceiver(to);
         sendmailQueue.setData(data);
-        sendmailQueue.setSendmailTemplate(sendmailTemplateManager.findUniqueBy(
-                "name", templateCode));
-        sendmailQueue.setSendmailConfig(sendmailConfigManager.findUniqueBy(
-                "name", configCode));
+        sendmailQueue.setSendmailTemplate(sendmailTemplate);
+        sendmailQueue.setSendmailConfig(sendmailConfig);
+        sendmailQueue.setTenantId(tenantId);
         sendmailQueueManager.save(sendmailQueue);
     }
 
@@ -103,22 +110,25 @@ public class SendmailDataService {
         sendmailQueue.setSubject(subject);
         sendmailQueue.setContent(content);
         sendmailQueue.setSendmailConfig(sendmailConfig);
+        sendmailQueue.setTenantId(sendmailConfig.getTenantId());
         sendmailQueueManager.save(sendmailQueue);
     }
 
     public void saveSendmailQueue(String from, String to, String subject,
-            String content) {
+            String content, String tenantId) {
         SendmailQueue sendmailQueue = new SendmailQueue();
         sendmailQueue.setSender(from);
         sendmailQueue.setReceiver(to);
         sendmailQueue.setSubject(subject);
         sendmailQueue.setContent(content);
+        sendmailQueue.setTenantId(tenantId);
         sendmailQueueManager.save(sendmailQueue);
     }
 
-    public List<SendmailQueue> findTopSendmailQueues(int size) {
+    public List<SendmailQueue> findTopSendmailQueues(int size, String tenantId) {
         return (List<SendmailQueue>) sendmailQueueManager.pagedQuery(
-                "from SendmailQueue", 1, size).getResult();
+                "from SendmailQueue where tenantId=?", 1, size, tenantId)
+                .getResult();
     }
 
     public void processSendmailQueue(SendmailQueue sendmailQueue)
@@ -186,7 +196,8 @@ public class SendmailDataService {
                 for (SendmailAttachment sendmailAttachment : sendmailTemplate
                         .getSendmailAttachments()) {
                     StoreDTO storeDto = storeConnector.getStore(
-                            "sendmailattachment", sendmailAttachment.getPath());
+                            "sendmailattachment", sendmailAttachment.getPath(),
+                            sendmailQueue.getTenantId());
                     mailDto.addAttachment(
                             sendmailAttachment.getName(),
                             new DataSourceInputStreamSource(storeDto
@@ -269,6 +280,7 @@ public class SendmailDataService {
         sendmailHistory.setSender(mailDto.getFrom());
         sendmailHistory.setReceiver(mailDto.getTo());
         sendmailHistory.setStatus(mailDto.isSuccess() ? "success" : "error");
+        sendmailHistory.setTenantId(sendmailQueue.getTenantId());
 
         if (mailDto.getException() != null) {
             sendmailHistory.setInfo(mailDto.getException().getMessage());
@@ -284,16 +296,18 @@ public class SendmailDataService {
         sendmailQueueManager.remove(sendmailQueue);
     }
 
-    public boolean checkConfigCodeExists(String configCode) {
-        SendmailConfig sendmailConfig = sendmailConfigManager.findUniqueBy(
-                "name", configCode);
+    public boolean checkConfigCodeExists(String configCode, String tenantId) {
+        SendmailConfig sendmailConfig = sendmailConfigManager.findUnique(
+                "from SendmailConfig where name=? and tenantId=?", configCode,
+                tenantId);
 
         return sendmailConfig != null;
     }
 
-    public boolean checkTemplateCodeExists(String templateCode) {
-        SendmailTemplate sendmailTemplate = sendmailTemplateManager
-                .findUniqueBy("name", templateCode);
+    public boolean checkTemplateCodeExists(String templateCode, String tenantId) {
+        SendmailTemplate sendmailTemplate = sendmailTemplateManager.findUnique(
+                "from SendmailTemplate where name=? and tenantId=?",
+                templateCode, tenantId);
 
         return sendmailTemplate != null;
     }

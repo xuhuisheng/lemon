@@ -13,6 +13,7 @@ public class AuditDTO {
     private String client;
     private String server;
     private String description;
+    private String tenantId;
 
     public String getUser() {
         return user;
@@ -92,5 +93,13 @@ public class AuditDTO {
 
     public void setDescription(String description) {
         this.description = description;
+    }
+
+    public String getTenantId() {
+        return tenantId;
+    }
+
+    public void setTenantId(String tenantId) {
+        this.tenantId = tenantId;
     }
 }

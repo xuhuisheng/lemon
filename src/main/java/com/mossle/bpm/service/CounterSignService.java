@@ -2,8 +2,8 @@ package com.mossle.bpm.service;
 
 import javax.annotation.Resource;
 
-import com.mossle.bpm.persistence.domain.BpmConfCountersign;
-import com.mossle.bpm.persistence.manager.BpmConfCountersignManager;
+import com.mossle.spi.humantask.CounterSignDTO;
+import com.mossle.spi.humantask.TaskDefinitionConnector;
 
 import org.activiti.engine.ProcessEngine;
 import org.activiti.engine.RuntimeService;
@@ -28,7 +28,7 @@ import org.springframework.stereotype.Service;
 public class CounterSignService {
     private Logger logger = LoggerFactory.getLogger(CounterSignService.class);
     private ProcessEngine processEngine;
-    private BpmConfCountersignManager bpmConfCountersignManager;
+    private TaskDefinitionConnector taskDefinitionConnector;
 
     public Boolean canComplete(Execution execution, Integer nrOfInstances,
             Integer nrOfActiveInstances, Integer nrOfCompletedInstances,
@@ -48,13 +48,12 @@ public class CounterSignService {
                 .getProcessInstance().getProcessDefinitionId();
 
         RuntimeService runtimeService = processEngine.getRuntimeService();
-        BpmConfCountersign bpmConfCountersign = bpmConfCountersignManager
-                .findUnique(
-                        "from BpmConfCountersign where bpmConfNode.bpmConfBase.processDefinitionId=? and bpmConfNode.code=?",
-                        processDefinitionId, activityId);
 
-        if (bpmConfCountersign != null) {
-            rate = bpmConfCountersign.getRate();
+        CounterSignDTO counterSign = taskDefinitionConnector.findCounterSign(
+                activityId, processDefinitionId);
+
+        if (counterSign != null) {
+            rate = counterSign.getRate();
         }
 
         String agreeCounterName = "agreeCounter";
@@ -95,8 +94,8 @@ public class CounterSignService {
     }
 
     @Resource
-    public void setBpmConfCountersignManager(
-            BpmConfCountersignManager bpmConfCountersignManager) {
-        this.bpmConfCountersignManager = bpmConfCountersignManager;
+    public void setTaskDefinitionConnector(
+            TaskDefinitionConnector taskDefinitionConnector) {
+        this.taskDefinitionConnector = taskDefinitionConnector;
     }
 }

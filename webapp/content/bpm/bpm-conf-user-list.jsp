@@ -7,7 +7,7 @@
 
   <head>
     <%@include file="/common/meta.jsp"%>
-    <title><spring:message code="auth.bpmCategory.list.title" text="用户库列表"/></title>
+    <title>配置</title>
     <%@include file="/common/s.jsp"%>
     <script type="text/javascript">
 var config = {
@@ -37,13 +37,14 @@ $(function() {
 });
     </script>
 
-    <link type="text/css" rel="stylesheet" href="${scopePrefix}/widgets/userpicker/userpicker.css">
-    <script type="text/javascript" src="${scopePrefix}/widgets/userpicker/userpicker.js"></script>
+    <link type="text/css" rel="stylesheet" href="${tenantPrefix}/widgets/userpicker/userpicker.css">
+    <script type="text/javascript" src="${tenantPrefix}/widgets/userpicker/userpicker.js"></script>
 	<script type="text/javascript">
 $(function() {
 	createUserPicker({
 		modalId: 'userPicker',
-		url: '${scopePrefix}/rs/user/search'
+		showExpression: true,
+		url: '${tenantPrefix}/rs/user/search'
 	});
 })
     </script>
@@ -58,19 +59,24 @@ $(function() {
 	<!-- start of main -->
     <section id="m-main" class="span10">
 
-	  <article class="m-widget">
-        <header class="header">
-		  <h4 class="title">返回</h4>
-		  <div class="ctrl">
-		    <a class="btn"><i id="bpmCategorySearchIcon" class="icon-chevron-up"></i></a>
-		  </div>
-		</header>
-        <div id="bpmCategorySearch" class="content" style="padding:10px;">
+	  <ul class="breadcrumb">
+	    <li><a href="bpm-process-list.do">流程配置</a>
+		<span class="divider">/</span></li>
+	    <li><a href="bpm-conf-node-list.do?bpmConfBaseId=${bpmConfBaseId}">${bpmConfBase.processDefinitionKey}</a>
+		<span class="divider">/</span></li>
+	    <li class="active">${bpmConfNode.name}</li>
+	  </ul>
+	  
+	  <ul class="nav nav-tabs">
+        <li class="active"><a href="#tab-user" data-toggle="tab">参与者</a></li>
+        <li><a href="#tab-assign" data-toggle="tab">分配策略</a></li>
+<c:if test="${not empty bpmConfCountersign}">
+        <li><a href="#tab-countersign" data-toggle="tab">会签</a></li>
+</c:if>
+      </ul>
 
-			<a class="btn btn-small" href="bpm-conf-node-list.do?bpmConfBaseId=${bpmConfBaseId}">返回</a>
-
-		</div>
-	  </article>
+      <div class="tab-content">
+        <div class="tab-pane active" id="tab-user">
 
 	  <article class="m-widget">
         <header class="header">
@@ -101,33 +107,6 @@ $(function() {
 
 		</div>
 	  </article>
-
-<c:if test="${not empty bpmConfCountersign}">
-	  <article class="m-widget">
-        <header class="header">
-		  <h4 class="title">会签</h4>
-		  <div class="ctrl">
-		    <a class="btn"><i id="bpmConfCountersignSearchIcon" class="icon-chevron-up"></i></a>
-		  </div>
-		</header>
-        <div id="bpmConfCountersignSearchIcon" class="content content-inner">
-
-		  <form name="bpmConfCountersignForm" method="post" action="bpm-conf-countersign-save.do" class="form-inline">
-		    <input type="hidden" name="id" value="${bpmConfCountersign.id}">
-			<input type="hidden" name="bpmConfNodeId" value="${param.bpmConfNodeId}">
-		    <label for="type">会签类型:</label>
-			<select name="type">
-			  <option value="0" ${bpmConfCountersign.type==0 ? 'selected' : ''}>全票通过</option>
-			  <option value="1" ${bpmConfCountersign.type==1 ? 'selected' : ''}>比例通过</option>
-			</select>
-		    <label for="bpmConfCountersign_rate">通过率:</label>
-		    <input id="bpmConfCountersign_rate" type="text" name="rate" class="input-medium number" value="${bpmConfCountersign.rate}">
-			<button class="btn btn-small" onclick="document.bpmConfCountersignForm.submit()">提交</button>
-		  </form>
-
-		</div>
-	  </article>
-</c:if>
 
       <article class="m-widget">
         <header class="header">
@@ -202,6 +181,68 @@ $(function() {
   </form>
         </div>
       </article>
+		</div>
+        <div class="tab-pane" id="tab-assign">
+
+	  <article class="m-widget">
+        <header class="header">
+		  <h4 class="title">分配策略</h4>
+		  <div class="ctrl">
+		    <a class="btn"><i id="bpmConfAssignSearchIcon" class="icon-chevron-up"></i></a>
+		  </div>
+		</header>
+        <div id="bpmConfAssignSearchIcon" class="content content-inner">
+
+		  <form name="bpmConfAssignForm" method="post" action="bpm-conf-assign-save.do" class="form-inline">
+		    <input type="hidden" name="id" value="${bpmConfAssign.id}">
+			<input type="hidden" name="bpmConfNodeId" value="${param.bpmConfNodeId}">
+		    <label for="bpmConfAssignName">分配策略:</label>
+			<select id="bpmConfAssignName" name="name">
+			  <option value="无" ${bpmConfAssign.name=='无' ? 'selected' : ''}>无</option>
+			  <option value="当只有一人时采用独占策略" ${bpmConfAssign.name=='当只有一人时采用独占策略' ? 'selected' : ''}>当只有一人时采用独占策略</option>
+			  <option value="资源中任务最少者" ${bpmConfAssign.name=='资源中任务最少者' ? 'selected' : ''}>资源中任务最少者 </option>
+			  <option value="资源中随机分配" ${bpmConfAssign.name=='资源中随机分配' ? 'selected' : ''}>资源中随机分配</option>
+			</select>
+		    
+			<button class="btn btn-small" onclick="document.bpmConfAssignForm.submit()">提交</button>
+		  </form>
+
+		</div>
+	  </article>
+		</div>
+<c:if test="${not empty bpmConfCountersign}">
+        <div class="tab-pane" id="tab-countersign">
+	  <article class="m-widget">
+        <header class="header">
+		  <h4 class="title">会签</h4>
+		  <div class="ctrl">
+		    <a class="btn"><i id="bpmConfCountersignSearchIcon" class="icon-chevron-up"></i></a>
+		  </div>
+		</header>
+        <div id="bpmConfCountersignSearchIcon" class="content content-inner">
+
+		  <form name="bpmConfCountersignForm" method="post" action="bpm-conf-countersign-save.do" class="form-inline">
+		    <input type="hidden" name="id" value="${bpmConfCountersign.id}">
+			<input type="hidden" name="bpmConfNodeId" value="${param.bpmConfNodeId}">
+		    <label for="type">会签类型:</label>
+			<select name="type">
+			  <option value="0" ${bpmConfCountersign.type==0 ? 'selected' : ''}>全票通过</option>
+			  <option value="1" ${bpmConfCountersign.type==1 ? 'selected' : ''}>比例通过</option>
+			</select>
+		    <label for="bpmConfCountersign_rate">通过率:</label>
+            <div class="input-append">
+              <input id="bpmConfCountersign_rate" type="text" name="rate" class="input-medium number" value="${bpmConfCountersign.rate}">
+              <span class="add-on" style="padding:2px;">%</span>
+            </div>
+		    
+			<button class="btn btn-small" onclick="document.bpmConfCountersignForm.submit()">提交</button>
+		  </form>
+
+		</div>
+	  </article>
+		</div>
+</c:if>
+      </div>
 
     </section>
 	<!-- end of main -->

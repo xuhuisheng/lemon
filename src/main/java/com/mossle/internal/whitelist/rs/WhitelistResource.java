@@ -31,10 +31,12 @@ public class WhitelistResource {
     @Path("get")
     @GET
     @Produces(MediaType.APPLICATION_JSON)
-    public BaseDTO getWhitelist(@QueryParam("code") String code) {
+    public BaseDTO getWhitelist(@QueryParam("code") String code,
+            @QueryParam("tenantId") String tenantId) {
         BaseDTO baseDto = new BaseDTO();
-        WhitelistType whitelistType = whitelistTypeManager.findUniqueBy("code",
-                code);
+        WhitelistType whitelistType = whitelistTypeManager.findUnique(
+                "from WhitelistType where code=? and tenantId=?", code,
+                tenantId);
 
         if (whitelistType == null) {
             baseDto.setCode(404);

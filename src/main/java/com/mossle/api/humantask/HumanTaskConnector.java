@@ -28,6 +28,11 @@ public interface HumanTaskConnector {
     HumanTaskDTO saveHumanTask(HumanTaskDTO humanTaskDto);
 
     /**
+     * 保存任务，同时处理参与者.
+     */
+    HumanTaskDTO saveHumanTaskAndProcess(HumanTaskDTO humanTaskDto);
+
+    /**
      * 完成任务.
      */
     void completeTask(String humanTaskId, String userId,
@@ -80,14 +85,24 @@ public interface HumanTaskConnector {
     void rollbackPreviousAssignee(String humanTaskId, String userId);
 
     /**
+     * 回退，开始事件，流程发起人.
+     */
+    void rollbackStart(String humanTaskId);
+
+    /**
      * 撤销.
      */
     void withdraw(String humanTaskId);
 
     /**
-     * 协办任务.
+     * 协办.
      */
     void delegateTask(String humanTaskId, String userId);
+
+    /**
+     * 协办，链状.
+     */
+    void delegateTaskCreate(String humanTaskId, String userId);
 
     void saveParticipant(ParticipantDTO participantDto);
 

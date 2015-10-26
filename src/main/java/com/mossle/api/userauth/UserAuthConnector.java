@@ -1,9 +1,9 @@
 package com.mossle.api.userauth;
 
 public interface UserAuthConnector {
-    UserAuthDTO findByUsername(String username, String scopeId);
+    UserAuthDTO findByUsername(String username, String tenantId);
 
-    UserAuthDTO findByRef(String ref, String scopeId);
+    UserAuthDTO findByRef(String ref, String tenantId);
 
-    UserAuthDTO findById(String id, String scopeId);
+    UserAuthDTO findById(String id, String tenantId);
 }

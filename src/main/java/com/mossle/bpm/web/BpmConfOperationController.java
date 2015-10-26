@@ -20,6 +20,8 @@ import com.mossle.core.hibernate.PropertyFilter;
 import com.mossle.core.mapper.BeanMapper;
 import com.mossle.core.page.Page;
 
+import com.mossle.spi.humantask.TaskDefinitionConnector;
+
 import org.activiti.engine.ProcessEngine;
 import org.activiti.engine.repository.ProcessDefinition;
 
@@ -41,6 +43,7 @@ public class BpmConfOperationController {
     private BeanMapper beanMapper = new BeanMapper();
     private ProcessEngine processEngine;
     private BpmProcessManager bpmProcessManager;
+    private TaskDefinitionConnector taskDefinitionConnector;
 
     @RequestMapping("bpm-conf-operation-list")
     public String list(@RequestParam("bpmConfNodeId") Long bpmConfNodeId,
@@ -49,8 +52,10 @@ public class BpmConfOperationController {
         operations.add("saveDraft");
         operations.add("completeTask");
         operations.add("rollbackPrevious");
+        operations.add("rollbackStart");
         operations.add("transfer");
         operations.add("delegateTask");
+        operations.add("delegateTaskCreate");
 
         BpmConfNode bpmConfNode = bpmConfNodeManager.get(bpmConfNodeId);
         Long bpmConfBaseId = bpmConfNode.getBpmConfBase().getId();
@@ -89,6 +94,14 @@ public class BpmConfOperationController {
         bpmConfOperation.setBpmConfNode(bpmConfNodeManager.get(bpmConfNodeId));
         bpmConfOperationManager.save(bpmConfOperation);
 
+        BpmConfOperation dest = bpmConfOperation;
+        String taskDefinitionKey = dest.getBpmConfNode().getCode();
+        String processDefinitionId = dest.getBpmConfNode().getBpmConfBase()
+                .getProcessDefinitionId();
+        String operation = dest.getValue();
+        taskDefinitionConnector.addOperation(taskDefinitionKey,
+                processDefinitionId, operation);
+
         return "redirect:/bpm/bpm-conf-operation-list.do?bpmConfNodeId="
                 + bpmConfNodeId;
     }
@@ -98,6 +111,14 @@ public class BpmConfOperationController {
         BpmConfOperation bpmConfOperation = bpmConfOperationManager.get(id);
         Long bpmConfNodeId = bpmConfOperation.getBpmConfNode().getId();
         bpmConfOperationManager.remove(bpmConfOperation);
+
+        BpmConfOperation dest = bpmConfOperation;
+        String taskDefinitionKey = dest.getBpmConfNode().getCode();
+        String processDefinitionId = dest.getBpmConfNode().getBpmConfBase()
+                .getProcessDefinitionId();
+        String operation = dest.getValue();
+        taskDefinitionConnector.removeOperation(taskDefinitionKey,
+                processDefinitionId, operation);
 
         return "redirect:/bpm/bpm-conf-operation-list.do?bpmConfNodeId="
                 + bpmConfNodeId;
@@ -123,5 +144,11 @@ public class BpmConfOperationController {
     @Resource
     public void setProcessEngine(ProcessEngine processEngine) {
         this.processEngine = processEngine;
+    }
+
+    @Resource
+    public void setTaskDefinitionConnector(
+            TaskDefinitionConnector taskDefinitionConnector) {
+        this.taskDefinitionConnector = taskDefinitionConnector;
     }
 }

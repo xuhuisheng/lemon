@@ -19,6 +19,7 @@ import javax.ws.rs.core.MediaType;
 
 import com.mossle.api.store.StoreConnector;
 import com.mossle.api.store.StoreDTO;
+import com.mossle.api.tenant.TenantHolder;
 
 import com.mossle.core.mapper.JsonMapper;
 import com.mossle.core.util.BaseDTO;
@@ -34,12 +35,15 @@ import org.springframework.stereotype.Component;
 public class CmsResource {
     private static Logger logger = LoggerFactory.getLogger(CmsResource.class);
     private StoreConnector storeConnector;
+    private TenantHolder tenantHolder;
 
     @GET
     @Path("image")
     @Produces(MediaType.APPLICATION_OCTET_STREAM)
     public InputStream image(@QueryParam("key") String key) throws Exception {
-        StoreDTO storeDto = storeConnector.getStore("cms/html/r/image", key);
+        String tenantId = tenantHolder.getTenantId();
+        StoreDTO storeDto = storeConnector.getStore("cms/html/r/image", key,
+                tenantId);
 
         return storeDto.getDataSource().getInputStream();
     }
@@ -48,7 +52,9 @@ public class CmsResource {
     @Path("video")
     @Produces(MediaType.APPLICATION_OCTET_STREAM)
     public InputStream video(@QueryParam("key") String key) throws Exception {
-        StoreDTO storeDto = storeConnector.getStore("cms/html/r/video", key);
+        String tenantId = tenantHolder.getTenantId();
+        StoreDTO storeDto = storeConnector.getStore("cms/html/r/video", key,
+                tenantId);
 
         return storeDto.getDataSource().getInputStream();
     }
@@ -57,7 +63,9 @@ public class CmsResource {
     @Path("audio")
     @Produces(MediaType.APPLICATION_OCTET_STREAM)
     public InputStream audio(@QueryParam("key") String key) throws Exception {
-        StoreDTO storeDto = storeConnector.getStore("cms/html/r/audio", key);
+        String tenantId = tenantHolder.getTenantId();
+        StoreDTO storeDto = storeConnector.getStore("cms/html/r/audio", key,
+                tenantId);
 
         return storeDto.getDataSource().getInputStream();
     }
@@ -66,7 +74,9 @@ public class CmsResource {
     @Path("pdf")
     @Produces(MediaType.APPLICATION_OCTET_STREAM)
     public InputStream pdf(@QueryParam("key") String key) throws Exception {
-        StoreDTO storeDto = storeConnector.getStore("cms/html/r/pdf", key);
+        String tenantId = tenantHolder.getTenantId();
+        StoreDTO storeDto = storeConnector.getStore("cms/html/r/pdf", key,
+                tenantId);
 
         return storeDto.getDataSource().getInputStream();
     }
@@ -75,8 +85,9 @@ public class CmsResource {
     @Path("attachment")
     @Produces(MediaType.APPLICATION_OCTET_STREAM)
     public InputStream zip(@QueryParam("key") String key) throws Exception {
+        String tenantId = tenantHolder.getTenantId();
         StoreDTO storeDto = storeConnector.getStore("cms/html/r/attachment",
-                key);
+                key, tenantId);
 
         return storeDto.getDataSource().getInputStream();
     }
@@ -84,5 +95,10 @@ public class CmsResource {
     @Resource
     public void setStoreConnector(StoreConnector storeConnector) {
         this.storeConnector = storeConnector;
+    }
+
+    @Resource
+    public void setTenantHolder(TenantHolder tenantHolder) {
+        this.tenantHolder = tenantHolder;
     }
 }

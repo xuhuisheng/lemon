@@ -12,16 +12,17 @@ import javax.annotation.Resource;
 import javax.servlet.http.HttpServletRequest;
 import javax.servlet.http.HttpServletResponse;
 
+import com.mossle.api.tenant.TenantHolder;
+
+import com.mossle.core.export.Exportor;
+import com.mossle.core.export.TableModel;
 import com.mossle.core.hibernate.PropertyFilter;
+import com.mossle.core.mail.MailDTO;
+import com.mossle.core.mail.MailHelper;
+import com.mossle.core.mail.MailServerInfo;
 import com.mossle.core.mapper.BeanMapper;
 import com.mossle.core.page.Page;
 import com.mossle.core.spring.MessageHelper;
-
-import com.mossle.ext.export.Exportor;
-import com.mossle.ext.export.TableModel;
-import com.mossle.ext.mail.MailDTO;
-import com.mossle.ext.mail.MailHelper;
-import com.mossle.ext.mail.MailServerInfo;
 
 import com.mossle.internal.sendmail.persistence.domain.SendmailHistory;
 import com.mossle.internal.sendmail.persistence.domain.SendmailQueue;
@@ -39,21 +40,24 @@ import org.springframework.web.multipart.MultipartFile;
 import org.springframework.web.servlet.mvc.support.RedirectAttributes;
 
 @Controller
-@RequestMapping("/sendmail")
+@RequestMapping("sendmail")
 public class SendmailHistoryController {
     private SendmailHistoryManager sendmailHistoryManager;
     private SendmailQueueManager sendmailQueueManager;
     private MessageHelper messageHelper;
     private Exportor exportor;
     private BeanMapper beanMapper = new BeanMapper();
+    private TenantHolder tenantHolder;
 
     @RequestMapping("sendmail-history-list")
     public String list(@ModelAttribute Page page,
             @RequestParam Map<String, Object> parameterMap, Model model) {
+        String tenantId = tenantHolder.getTenantId();
         page.setDefaultOrder("createTime", Page.DESC);
 
         List<PropertyFilter> propertyFilters = PropertyFilter
                 .buildFromMap(parameterMap);
+        propertyFilters.add(new PropertyFilter("EQS_tenantId", tenantId));
         page = sendmailHistoryManager.pagedQuery(page, propertyFilters);
         model.addAttribute("page", page);
 
@@ -74,6 +78,7 @@ public class SendmailHistoryController {
     @RequestMapping("sendmail-history-save")
     public String save(@ModelAttribute SendmailHistory sendmailHistory,
             RedirectAttributes redirectAttributes) {
+        String tenantId = tenantHolder.getTenantId();
         Long id = sendmailHistory.getId();
         SendmailHistory dest = null;
 
@@ -82,6 +87,7 @@ public class SendmailHistoryController {
             beanMapper.copy(sendmailHistory, dest);
         } else {
             dest = sendmailHistory;
+            dest.setTenantId(tenantId);
         }
 
         sendmailHistoryManager.save(dest);
@@ -108,8 +114,10 @@ public class SendmailHistoryController {
             @RequestParam Map<String, Object> parameterMap,
             HttpServletRequest request, HttpServletResponse response)
             throws Exception {
+        String tenantId = tenantHolder.getTenantId();
         List<PropertyFilter> propertyFilters = PropertyFilter
                 .buildFromMap(parameterMap);
+        propertyFilters.add(new PropertyFilter("EQS_tenantId", tenantId));
         page = sendmailHistoryManager.pagedQuery(page, propertyFilters);
 
         List<SendmailHistory> sendmailHistorys = (List<SendmailHistory>) page
@@ -161,5 +169,10 @@ public class SendmailHistoryController {
     @Resource
     public void setExportor(Exportor exportor) {
         this.exportor = exportor;
+    }
+
+    @Resource
+    public void setTenantHolder(TenantHolder tenantHolder) {
+        this.tenantHolder = tenantHolder;
     }
 }

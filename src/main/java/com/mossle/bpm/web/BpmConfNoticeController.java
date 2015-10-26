@@ -9,9 +9,10 @@ import javax.annotation.Resource;
 
 import javax.servlet.http.HttpServletResponse;
 
-import com.mossle.api.internal.TemplateConnector;
-import com.mossle.api.internal.TemplateDTO;
 import com.mossle.api.notification.NotificationConnector;
+import com.mossle.api.template.TemplateConnector;
+import com.mossle.api.template.TemplateDTO;
+import com.mossle.api.tenant.TenantHolder;
 
 import com.mossle.bpm.persistence.domain.BpmConfNode;
 import com.mossle.bpm.persistence.domain.BpmConfNotice;
@@ -25,6 +26,10 @@ import com.mossle.bpm.persistence.manager.BpmProcessManager;
 import com.mossle.core.hibernate.PropertyFilter;
 import com.mossle.core.mapper.BeanMapper;
 import com.mossle.core.page.Page;
+
+import com.mossle.spi.humantask.DeadlineDTO;
+import com.mossle.spi.humantask.TaskDefinitionConnector;
+import com.mossle.spi.humantask.TaskNotificationDTO;
 
 import org.activiti.engine.ProcessEngine;
 import org.activiti.engine.repository.ProcessDefinition;
@@ -50,6 +55,8 @@ public class BpmConfNoticeController {
     private BpmProcessManager bpmProcessManager;
     private TemplateConnector templateConnector;
     private NotificationConnector notificationConnector;
+    private TaskDefinitionConnector taskDefinitionConnector;
+    private TenantHolder tenantHolder;
 
     @RequestMapping("bpm-conf-notice-list")
     public String list(@RequestParam("bpmConfNodeId") Long bpmConfNodeId,
@@ -70,10 +77,11 @@ public class BpmConfNoticeController {
 
     @RequestMapping("bpm-conf-notice-input")
     public String input(Model model) {
-        List<TemplateDTO> templateDtos = templateConnector.findAll();
+        String tenantId = tenantHolder.getTenantId();
+        List<TemplateDTO> templateDtos = templateConnector.findAll(tenantId);
         model.addAttribute("templateDtos", templateDtos);
 
-        Collection<String> types = notificationConnector.getTypes();
+        Collection<String> types = notificationConnector.getTypes(tenantId);
         model.addAttribute("types", types);
 
         return "bpm/bpm-conf-notice-input";
@@ -88,6 +96,41 @@ public class BpmConfNoticeController {
         bpmConfNotice.setTemplateCode(templateCode);
         bpmConfNotice.setNotificationType(join(notificationTypes));
         bpmConfNoticeManager.save(bpmConfNotice);
+
+        BpmConfNotice dest = bpmConfNotice;
+        String taskDefinitionKey = dest.getBpmConfNode().getCode();
+        String processDefinitionId = dest.getBpmConfNode().getBpmConfBase()
+                .getProcessDefinitionId();
+        String receiver = bpmConfNotice.getReceiver();
+        String notificationType = bpmConfNotice.getNotificationType();
+        String duration = bpmConfNotice.getDueDate();
+
+        if (bpmConfNotice.getType() == 0) {
+            TaskNotificationDTO taskNotification = new TaskNotificationDTO();
+            taskNotification.setEventName("create");
+            taskNotification.setTemplateCode(templateCode);
+            taskNotification.setReceiver(receiver);
+            taskNotification.setType(notificationType);
+            taskDefinitionConnector.addTaskNotification(taskDefinitionKey,
+                    processDefinitionId, taskNotification);
+        } else if (bpmConfNotice.getType() == 1) {
+            TaskNotificationDTO taskNotification = new TaskNotificationDTO();
+            taskNotification.setEventName("complete");
+            taskNotification.setTemplateCode(templateCode);
+            taskNotification.setReceiver(receiver);
+            taskNotification.setType(notificationType);
+            taskDefinitionConnector.addTaskNotification(taskDefinitionKey,
+                    processDefinitionId, taskNotification);
+        } else if (bpmConfNotice.getType() == 2) {
+            DeadlineDTO deadline = new DeadlineDTO();
+            deadline.setType("completion");
+            deadline.setDuration(duration);
+            deadline.setNotificationTemplateCode(templateCode);
+            deadline.setNotificationReceiver(receiver);
+            deadline.setNotificationType(notificationType);
+            taskDefinitionConnector.addDeadline(taskDefinitionKey,
+                    processDefinitionId, deadline);
+        }
 
         return "redirect:/bpm/bpm-conf-notice-list.do?bpmConfNodeId="
                 + bpmConfNodeId;
@@ -114,6 +157,39 @@ public class BpmConfNoticeController {
         BpmConfNotice bpmConfNotice = bpmConfNoticeManager.get(id);
         Long bpmConfNodeId = bpmConfNotice.getBpmConfNode().getId();
         bpmConfNoticeManager.remove(bpmConfNotice);
+
+        BpmConfNotice dest = bpmConfNotice;
+        String taskDefinitionKey = dest.getBpmConfNode().getCode();
+        String processDefinitionId = dest.getBpmConfNode().getBpmConfBase()
+                .getProcessDefinitionId();
+
+        String templateCode = dest.getTemplateCode();
+        String receiver = dest.getReceiver();
+        String notificationType = dest.getNotificationType();
+        String duration = bpmConfNotice.getDueDate();
+
+        if (bpmConfNotice.getType() == 0) {
+            TaskNotificationDTO taskNotification = new TaskNotificationDTO();
+            taskNotification.setEventName("create");
+            taskNotification.setTemplateCode(templateCode);
+            taskDefinitionConnector.removeTaskNotification(taskDefinitionKey,
+                    processDefinitionId, taskNotification);
+        } else if (bpmConfNotice.getType() == 1) {
+            TaskNotificationDTO taskNotification = new TaskNotificationDTO();
+            taskNotification.setEventName("complete");
+            taskNotification.setTemplateCode(templateCode);
+            taskDefinitionConnector.removeTaskNotification(taskDefinitionKey,
+                    processDefinitionId, taskNotification);
+        } else if (bpmConfNotice.getType() == 2) {
+            DeadlineDTO deadline = new DeadlineDTO();
+            deadline.setType("completion");
+            deadline.setDuration(duration);
+            deadline.setNotificationTemplateCode(templateCode);
+            deadline.setNotificationReceiver(receiver);
+            deadline.setNotificationType(notificationType);
+            taskDefinitionConnector.removeDeadline(taskDefinitionKey,
+                    processDefinitionId, deadline);
+        }
 
         return "redirect:/bpm/bpm-conf-notice-list.do?bpmConfNodeId="
                 + bpmConfNodeId;
@@ -156,5 +232,16 @@ public class BpmConfNoticeController {
     public void setNotificationConnector(
             NotificationConnector notificationConnector) {
         this.notificationConnector = notificationConnector;
+    }
+
+    @Resource
+    public void setTaskDefinitionConnector(
+            TaskDefinitionConnector taskDefinitionConnector) {
+        this.taskDefinitionConnector = taskDefinitionConnector;
+    }
+
+    @Resource
+    public void setTenantHolder(TenantHolder tenantHolder) {
+        this.tenantHolder = tenantHolder;
     }
 }

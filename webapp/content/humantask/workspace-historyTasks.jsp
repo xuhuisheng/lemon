@@ -98,8 +98,8 @@ $(function() {
 		</td>
 	    <td>${item.status}</td>
         <td>
-          <a href="${scopePrefix}/operation/task-operation-withdraw.do?humanTaskId=${item.id}">撤销</a>
-          <a href="${scopePrefix}/bpm/workspace-viewHistory.do?processInstanceId=${item.processInstanceId}">历史</a>
+          <a href="${tenantPrefix}/operation/task-operation-withdraw.do?humanTaskId=${item.id}">撤销</a>
+          <a href="${tenantPrefix}/bpm/workspace-viewHistory.do?processInstanceId=${item.processInstanceId}">历史</a>
         </td>
       </tr>
       </c:forEach>

@@ -3,6 +3,7 @@ package com.mossle.bpm.web;
 import java.io.InputStream;
 
 import java.util.ArrayList;
+import java.util.Collections;
 import java.util.HashMap;
 import java.util.List;
 import java.util.Map;
@@ -13,22 +14,25 @@ import javax.servlet.http.HttpServletRequest;
 import javax.servlet.http.HttpServletResponse;
 
 import com.mossle.api.process.ProcessConnector;
+import com.mossle.api.tenant.TenantHolder;
 import com.mossle.api.user.UserConnector;
 
 import com.mossle.bpm.cmd.CounterSignCmd;
-import com.mossle.bpm.cmd.DelegateTaskCmd;
+import com.mossle.bpm.cmd.FindHistoryGraphCmd;
 import com.mossle.bpm.cmd.HistoryProcessInstanceDiagramCmd;
 import com.mossle.bpm.cmd.ProcessDefinitionDiagramCmd;
 import com.mossle.bpm.cmd.RollbackTaskCmd;
 import com.mossle.bpm.cmd.WithdrawTaskCmd;
+import com.mossle.bpm.graph.ActivitiHistoryGraphBuilder;
+import com.mossle.bpm.graph.Graph;
 import com.mossle.bpm.persistence.domain.BpmCategory;
 import com.mossle.bpm.persistence.domain.BpmProcess;
 import com.mossle.bpm.persistence.manager.BpmCategoryManager;
 import com.mossle.bpm.persistence.manager.BpmProcessManager;
+import com.mossle.bpm.service.TraceService;
 
+import com.mossle.core.auth.CurrentUserHolder;
 import com.mossle.core.page.Page;
-
-import com.mossle.ext.auth.CurrentUserHolder;
 
 import org.activiti.engine.FormService;
 import org.activiti.engine.HistoryService;
@@ -43,7 +47,6 @@ import org.activiti.engine.history.HistoricProcessInstance;
 import org.activiti.engine.history.HistoricTaskInstance;
 import org.activiti.engine.history.HistoricVariableInstance;
 import org.activiti.engine.impl.ServiceImpl;
-import org.activiti.engine.impl.cmd.GetDeploymentProcessDefinitionCmd;
 import org.activiti.engine.impl.cmd.GetDeploymentProcessDefinitionCmd;
 import org.activiti.engine.impl.interceptor.Command;
 import org.activiti.engine.impl.persistence.entity.ProcessDefinitionEntity;
@@ -75,11 +78,15 @@ public class WorkspaceController {
     private UserConnector userConnector;
     private ProcessConnector processConnector;
     private CurrentUserHolder currentUserHolder;
+    private TraceService traceService;
+    private TenantHolder tenantHolder;
 
     @RequestMapping("workspace-home")
     public String home(Model model) {
-        List<BpmCategory> bpmCategories = bpmCategoryManager.getAll("priority",
-                true);
+        String tenantId = tenantHolder.getTenantId();
+        String hql = "from BpmCategory where tenantId=? order by priority";
+        List<BpmCategory> bpmCategories = bpmCategoryManager
+                .find(hql, tenantId);
         model.addAttribute("bpmCategories", bpmCategories);
 
         return "bpm/workspace-home";
@@ -120,10 +127,12 @@ public class WorkspaceController {
      */
     @RequestMapping("workspace-listProcessDefinitions")
     public String listProcessDefinitions(Model model) {
+        String tenantId = tenantHolder.getTenantId();
         RepositoryService repositoryService = processEngine
                 .getRepositoryService();
         List<ProcessDefinition> processDefinitions = repositoryService
-                .createProcessDefinitionQuery().active().list();
+                .createProcessDefinitionQuery()
+                .processDefinitionTenantId(tenantId).active().list();
         model.addAttribute("processDefinitions", processDefinitions);
 
         return "bpm/workspace-listProcessDefinitions";
@@ -133,8 +142,10 @@ public class WorkspaceController {
     public String listRunningProcessInstances(@ModelAttribute Page page,
             Model model) {
         String userId = currentUserHolder.getUserId();
+        String tenantId = tenantHolder.getTenantId();
 
-        page = processConnector.findRunningProcessInstances(userId, page);
+        page = processConnector.findRunningProcessInstances(userId, tenantId,
+                page);
         model.addAttribute("page", page);
 
         return "bpm/workspace-listRunningProcessInstances";
@@ -149,8 +160,10 @@ public class WorkspaceController {
     public String listCompletedProcessInstances(@ModelAttribute Page page,
             Model model) {
         String userId = currentUserHolder.getUserId();
+        String tenantId = tenantHolder.getTenantId();
 
-        page = processConnector.findCompletedProcessInstances(userId, page);
+        page = processConnector.findCompletedProcessInstances(userId, tenantId,
+                page);
         model.addAttribute("page", page);
 
         return "bpm/workspace-listCompletedProcessInstances";
@@ -166,7 +179,9 @@ public class WorkspaceController {
             Model model) {
         // TODO: finished(), unfinished()
         String userId = currentUserHolder.getUserId();
-        page = processConnector.findInvolvedProcessInstances(userId, page);
+        String tenantId = tenantHolder.getTenantId();
+        page = processConnector.findInvolvedProcessInstances(userId, tenantId,
+                page);
         model.addAttribute("page", page);
 
         return "bpm/workspace-listInvolvedProcessInstances";
@@ -204,7 +219,8 @@ public class WorkspaceController {
     @RequestMapping("workspace-listPersonalTasks")
     public String listPersonalTasks(@ModelAttribute Page page, Model model) {
         String userId = currentUserHolder.getUserId();
-        page = processConnector.findPersonalTasks(userId, page);
+        String tenantId = tenantHolder.getTenantId();
+        page = processConnector.findPersonalTasks(userId, tenantId, page);
         model.addAttribute("page", page);
 
         return "bpm/workspace-listPersonalTasks";
@@ -218,8 +234,9 @@ public class WorkspaceController {
     @RequestMapping("workspace-listGroupTasks")
     public String listGroupTasks(@ModelAttribute Page page, Model model) {
         String userId = currentUserHolder.getUserId();
+        String tenantId = tenantHolder.getTenantId();
 
-        page = processConnector.findGroupTasks(userId, page);
+        page = processConnector.findGroupTasks(userId, tenantId, page);
         model.addAttribute("page", page);
 
         return "bpm/workspace-listGroupTasks";
@@ -233,8 +250,9 @@ public class WorkspaceController {
     @RequestMapping("workspace-listHistoryTasks")
     public String listHistoryTasks(@ModelAttribute Page page, Model model) {
         String userId = currentUserHolder.getUserId();
+        String tenantId = tenantHolder.getTenantId();
 
-        page = processConnector.findHistoryTasks(userId, page);
+        page = processConnector.findHistoryTasks(userId, tenantId, page);
         model.addAttribute("page", page);
 
         return "bpm/workspace-listHistoryTasks";
@@ -248,7 +266,8 @@ public class WorkspaceController {
     @RequestMapping("workspace-listDelegatedTasks")
     public String listDelegatedTasks(@ModelAttribute Page page, Model model) {
         String userId = currentUserHolder.getUserId();
-        page = processConnector.findGroupTasks(userId, page);
+        String tenantId = tenantHolder.getTenantId();
+        page = processConnector.findGroupTasks(userId, tenantId, page);
         model.addAttribute("page", page);
 
         return "bpm/workspace-listDelegatedTasks";
@@ -343,24 +362,49 @@ public class WorkspaceController {
     }
 
     /**
-     * 查看历史【包含流程跟踪、任务列表（完成和未完成）、流程变量】
-     * 
-     * @return
+     * 查看历史【包含流程跟踪、任务列表（完成和未完成）、流程变量】.
      */
     @RequestMapping("workspace-viewHistory")
     public String viewHistory(
             @RequestParam("processInstanceId") String processInstanceId,
             Model model) {
+        String userId = currentUserHolder.getUserId();
         HistoryService historyService = processEngine.getHistoryService();
+        HistoricProcessInstance historicProcessInstance = historyService
+                .createHistoricProcessInstanceQuery()
+                .processInstanceId(processInstanceId).singleResult();
+
+        if (userId.equals(historicProcessInstance.getStartUserId())) {
+            // startForm
+        }
+
         List<HistoricTaskInstance> historicTasks = historyService
                 .createHistoricTaskInstanceQuery()
                 .processInstanceId(processInstanceId).list();
-        List<HistoricVariableInstance> historicVariableInstances = historyService
-                .createHistoricVariableInstanceQuery()
-                .processInstanceId(processInstanceId).list();
+        // List<HistoricVariableInstance> historicVariableInstances = historyService
+        // .createHistoricVariableInstanceQuery()
+        // .processInstanceId(processInstanceId).list();
         model.addAttribute("historicTasks", historicTasks);
-        model.addAttribute("historicVariableInstances",
-                historicVariableInstances);
+        // model.addAttribute("historicVariableInstances",
+        // historicVariableInstances);
+        model.addAttribute("nodeDtos",
+                traceService.traceProcessInstance(processInstanceId));
+        model.addAttribute("historyActivities", processEngine
+                .getHistoryService().createHistoricActivityInstanceQuery()
+                .processInstanceId(processInstanceId).list());
+
+        if (historicProcessInstance.getEndTime() == null) {
+            model.addAttribute("currentActivities", processEngine
+                    .getRuntimeService()
+                    .getActiveActivityIds(processInstanceId));
+        } else {
+            model.addAttribute("currentActivities", Collections
+                    .singletonList(historicProcessInstance.getEndActivityId()));
+        }
+
+        Graph graph = processEngine.getManagementService().executeCommand(
+                new FindHistoryGraphCmd(processInstanceId));
+        model.addAttribute("graph", graph);
 
         return "bpm/workspace-viewHistory";
     }
@@ -417,30 +461,6 @@ public class WorkspaceController {
         return "redirect:/bpm/workspace-listPersonalTasks.do";
     }
 
-    /**
-     * 转办.
-     */
-    @RequestMapping("workspace-doDelegate")
-    public String doDelegate(@RequestParam("taskId") String taskId,
-            @RequestParam("attorney") String attorney) {
-        DelegateTaskCmd cmd = new DelegateTaskCmd(taskId, attorney);
-        processEngine.getManagementService().executeCommand(cmd);
-
-        return "redirect:/bpm/workspace-listPersonalTasks.do";
-    }
-
-    /**
-     * 协办.
-     */
-    @RequestMapping("workspace-doDelegateHelp")
-    public String doDelegateHelp(@RequestParam("taskId") String taskId,
-            @RequestParam("attorney") String attorney) {
-        TaskService taskService = processEngine.getTaskService();
-        taskService.delegateTask(taskId, attorney);
-
-        return "redirect:/bpm/workspace-listPersonalTasks.do";
-    }
-
     // ~ ======================================================================
     @Resource
     public void setBpmCategoryManager(BpmCategoryManager bpmCategoryManager) {
@@ -470,5 +490,15 @@ public class WorkspaceController {
     @Resource
     public void setCurrentUserHolder(CurrentUserHolder currentUserHolder) {
         this.currentUserHolder = currentUserHolder;
+    }
+
+    @Resource
+    public void setTraceService(TraceService traceService) {
+        this.traceService = traceService;
+    }
+
+    @Resource
+    public void setTenantHolder(TenantHolder tenantHolder) {
+        this.tenantHolder = tenantHolder;
     }
 }

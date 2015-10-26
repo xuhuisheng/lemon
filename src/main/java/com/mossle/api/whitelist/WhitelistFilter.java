@@ -3,6 +3,8 @@ package com.mossle.api.whitelist;
 import java.io.File;
 import java.io.IOException;
 
+import javax.annotation.Resource;
+
 import javax.servlet.Filter;
 import javax.servlet.FilterChain;
 import javax.servlet.FilterConfig;
@@ -12,6 +14,8 @@ import javax.servlet.ServletResponse;
 import javax.servlet.http.HttpServletRequest;
 import javax.servlet.http.HttpServletResponse;
 
+import com.mossle.api.tenant.TenantConnector;
+import com.mossle.api.tenant.TenantDTO;
 import com.mossle.api.whitelist.WhitelistConnector;
 import com.mossle.api.whitelist.WhitelistDTO;
 
@@ -27,6 +31,8 @@ public class WhitelistFilter implements Filter {
     private String code;
     private WhitelistDTO whitelistDto;
     private long timestamp;
+    private String defaultTenantCode = "default";
+    private TenantConnector tenantConnector;
 
     public void init(FilterConfig filterConfig) {
     }
@@ -52,7 +58,8 @@ public class WhitelistFilter implements Filter {
             return;
         }
 
-        whitelistDto = whitelistConnector.getWhitelist(code);
+        TenantDTO tenantDto = tenantConnector.findByCode(defaultTenantCode);
+        whitelistDto = whitelistConnector.getWhitelist(code, tenantDto.getId());
         timestamp = System.currentTimeMillis() + (1000 * 60 * 2);
     }
 
@@ -65,5 +72,14 @@ public class WhitelistFilter implements Filter {
 
     public void setCode(String code) {
         this.code = code;
+    }
+
+    public void setDefaultTenantCode(String defaultTenantCode) {
+        this.defaultTenantCode = defaultTenantCode;
+    }
+
+    @Resource
+    public void setTenantConnector(TenantConnector tenantConnector) {
+        this.tenantConnector = tenantConnector;
     }
 }

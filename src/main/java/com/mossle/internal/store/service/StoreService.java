@@ -2,16 +2,22 @@ package com.mossle.internal.store.service;
 
 import java.util.Date;
 
+import javax.activation.DataSource;
+
 import javax.annotation.PostConstruct;
 import javax.annotation.Resource;
 
-import com.mossle.ext.store.ByteArrayDataSource;
-import com.mossle.ext.store.FileStoreHelper;
-import com.mossle.ext.store.StoreHelper;
-import com.mossle.ext.store.StoreResult;
+import com.mossle.api.store.StoreDTO;
 
-import com.mossle.internal.store.domain.StoreInfo;
-import com.mossle.internal.store.manager.StoreInfoManager;
+import com.mossle.core.store.ByteArrayDataSource;
+import com.mossle.core.store.FileStoreHelper;
+import com.mossle.core.store.StoreHelper;
+import com.mossle.core.store.StoreResult;
+
+import com.mossle.internal.store.persistence.domain.StoreInfo;
+import com.mossle.internal.store.persistence.manager.StoreInfoManager;
+
+import com.mossle.spi.store.InternalStoreConnector;
 
 import org.springframework.beans.factory.annotation.Value;
 
@@ -23,47 +29,42 @@ import org.springframework.transaction.annotation.Transactional;
 @Transactional
 public class StoreService {
     private StoreInfoManager storeInfoManager;
-    private StoreHelper storeHelper;
-    private String baseDir;
+    private InternalStoreConnector internalStoreConnector;
 
-    @PostConstruct
-    public void afterPropertiesSet() {
-        FileStoreHelper fileStoreHelper = new FileStoreHelper();
-        fileStoreHelper.setBaseDir(baseDir);
-        this.storeHelper = fileStoreHelper;
-    }
+    public StoreDTO saveStore(String model, String key, DataSource dataSource,
+            String tenantId) throws Exception {
+        StoreDTO storeDto = this.internalStoreConnector.saveStore(model, key,
+                dataSource, tenantId);
 
-    public StoreResult saveStore(String model, String key, String fileName,
-            String contentType, byte[] bytes) throws Exception {
-        StoreResult storeResult = storeHelper.saveStore(model, key,
-                new ByteArrayDataSource(fileName, bytes));
         StoreInfo storeInfo = new StoreInfo();
-        storeInfo.setName(fileName);
+        storeInfo.setName(dataSource.getName());
         storeInfo.setModel(model);
-        storeInfo.setPath(storeResult.getKey());
+        storeInfo.setPath(storeDto.getKey());
         storeInfo.setCreateTime(new Date());
         storeInfoManager.save(storeInfo);
 
-        return storeResult;
+        return storeDto;
     }
 
-    public StoreResult saveStore(String model, String fileName,
-            String contentType, byte[] bytes) throws Exception {
-        StoreResult storeResult = storeHelper.saveStore(model,
-                new ByteArrayDataSource(fileName, bytes));
+    public StoreDTO saveStore(String model, DataSource dataSource,
+            String tenantId) throws Exception {
+        StoreDTO storeDto = this.internalStoreConnector.saveStore(model,
+                dataSource, tenantId);
+
         StoreInfo storeInfo = new StoreInfo();
-        storeInfo.setName(fileName);
+        storeInfo.setName(dataSource.getName());
         storeInfo.setModel(model);
-        storeInfo.setPath(storeResult.getKey());
+        storeInfo.setPath(storeDto.getKey());
         storeInfo.setCreateTime(new Date());
         storeInfoManager.save(storeInfo);
 
-        return storeResult;
+        return storeDto;
     }
 
-    @Value("${store.baseDir}")
-    public void setBaseDir(String baseDir) {
-        this.baseDir = baseDir;
+    @Resource
+    public void setInternalStoreConnector(
+            InternalStoreConnector internalStoreConnector) {
+        this.internalStoreConnector = internalStoreConnector;
     }
 
     @Resource

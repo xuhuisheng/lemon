@@ -18,6 +18,7 @@ import com.mossle.bpm.expr.ExprProcessor;
 import com.mossle.bpm.persistence.domain.BpmConfUser;
 import com.mossle.bpm.persistence.manager.BpmConfUserManager;
 import com.mossle.bpm.support.DefaultTaskListener;
+import com.mossle.bpm.support.DelegateTaskHolder;
 
 import com.mossle.core.mapper.BeanMapper;
 
@@ -42,11 +43,24 @@ public class HumanTaskTaskListener extends DefaultTaskListener {
 
     @Override
     public void onCreate(DelegateTask delegateTask) throws Exception {
-        // 根据delegateTask创建HumanTaskDTO
-        HumanTaskDTO humanTaskDto = this.createHumanTask(delegateTask);
+        HumanTaskDTO humanTaskDto = null;
 
-        // 任务抄送
-        this.checkCopyHumanTask(delegateTask, humanTaskDto);
+        // 根据delegateTask创建HumanTaskDTO
+        try {
+            DelegateTaskHolder.setDelegateTask(delegateTask);
+
+            humanTaskDto = this.createHumanTask(delegateTask);
+
+            // 任务抄送
+            this.checkCopyHumanTask(delegateTask, humanTaskDto);
+        } finally {
+            DelegateTaskHolder.clear();
+        }
+
+        if (humanTaskDto != null) {
+            delegateTask.setAssignee(humanTaskDto.getAssignee());
+            delegateTask.setOwner(humanTaskDto.getOwner());
+        }
     }
 
     @Override
@@ -61,16 +75,15 @@ public class HumanTaskTaskListener extends DefaultTaskListener {
     public HumanTaskDTO createHumanTask(DelegateTask delegateTask)
             throws Exception {
         HumanTaskDTO humanTaskDto = humanTaskConnector.createHumanTask();
+        humanTaskDto.setBusinessKey(delegateTask.getExecution()
+                .getProcessBusinessKey());
         humanTaskDto.setName(delegateTask.getName());
         humanTaskDto.setDescription(delegateTask.getDescription());
         humanTaskDto.setCode(delegateTask.getTaskDefinitionKey());
         humanTaskDto.setAssignee(delegateTask.getAssignee());
         humanTaskDto.setOwner(delegateTask.getOwner());
-        humanTaskDto.setDelegateStatus("none");
         humanTaskDto.setPriority(delegateTask.getPriority());
-        humanTaskDto.setCreateTime(new Date());
         humanTaskDto.setDuration(delegateTask.getDueDate() + "");
-        humanTaskDto.setSuspendStatus("none");
         humanTaskDto.setCategory(delegateTask.getCategory());
         humanTaskDto.setForm(delegateTask.getFormKey());
         humanTaskDto.setTaskId(delegateTask.getId());
@@ -79,16 +92,16 @@ public class HumanTaskTaskListener extends DefaultTaskListener {
         humanTaskDto.setProcessDefinitionId(delegateTask
                 .getProcessDefinitionId());
         humanTaskDto.setTenantId(delegateTask.getTenantId());
-        humanTaskDto.setStatus("active");
         humanTaskDto = humanTaskConnector.saveHumanTask(humanTaskDto);
-        logger.info("candidates : {}", delegateTask.getCandidates());
+        logger.debug("candidates : {}", delegateTask.getCandidates());
 
         for (IdentityLink identityLink : delegateTask.getCandidates()) {
+            String type = identityLink.getType();
             ParticipantDTO participantDto = new ParticipantDTO();
-            participantDto.setType(identityLink.getType());
+            participantDto.setType(type);
             participantDto.setHumanTaskId(humanTaskDto.getId());
 
-            if ("user".equals(participantDto.getType())) {
+            if ("user".equals(type)) {
                 participantDto.setCode(identityLink.getUserId());
             } else {
                 participantDto.setCode(identityLink.getGroupId());

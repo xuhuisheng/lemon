@@ -1,6 +1,6 @@
 package com.mossle.security.client;
 
-import com.mossle.ext.auth.CurrentUserHolder;
+import com.mossle.core.auth.CurrentUserHolder;
 
 import com.mossle.security.util.SpringSecurityUtils;
 

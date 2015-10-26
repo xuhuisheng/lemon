@@ -21,6 +21,17 @@ $(function() {
     });
 })
     </script>
+
+    <link type="text/css" rel="stylesheet" href="${tenantPrefix}/widgets/userpicker/userpicker.css">
+    <script type="text/javascript" src="${tenantPrefix}/widgets/userpicker/userpicker.js"></script>
+	<script type="text/javascript">
+$(function() {
+	createUserPicker({
+		modalId: 'meetingInfo_organizer',
+		url: '${tenantPrefix}/rs/user/search'
+	});
+})
+    </script>
   </head>
 
   <body>
@@ -44,16 +55,16 @@ $(function() {
   <input id="car-info_id" type="hidden" name="id" value="${model.id}">
   </c:if>
   <div class="control-group">
-    <label class="control-label" for="car-info_name"><spring:message code="car-info.car-info.input.name" text="名称"/></label>
+    <label class="control-label" for="meetingInfo_subject">主题</label>
 	<div class="controls">
-	  <input id="car-info_name" type="text" name="name" value="${model.name}" size="40" class="text required" minlength="2" maxlength="10">
+	  <input id="meetingInfo_subject" type="text" name="subject" value="${model.subject}" size="40" class="text required" minlength="2" maxlength="10">
     </div>
   </div>
   <div class="control-group">
     <label class="control-label" for="cal-info_startTIme">开始时间</label>
 	<div class="controls">
-      <div class="input-append datepicker date" style="padding-left: 0px;">
-	    <input id="cal-info_startTIme" type="text" name="startTime" value="<fmt:formatDate value='${model.startTime}' pattern='yyyy-MM-dd'/>" size="40" class="text required" minlength="2" maxlength="10" readonly style="background-color:white;cursor:default; width: 175px;">
+      <div class="input-append datetimepicker date" style="padding-left: 0px;">
+	    <input id="cal-info_startTIme" type="text" name="startTime" value="<fmt:formatDate value='${model.startTime}' pattern='yyyy-MM-dd HH:mm'/>" size="40" class="text required" readonly style="background-color:white;cursor:default; width: 175px;">
 	    <span class="add-on" style="padding-top: 2px; padding-bottom: 2px;"><i class="icon-calendar"></i></span>
 	  </div>
     </div>
@@ -61,8 +72,8 @@ $(function() {
   <div class="control-group">
     <label class="control-label" for="cal-info_endTime">结束时间</label>
 	<div class="controls">
-      <div class="input-append datepicker date" style="padding-left: 0px;">
-	    <input id="cal-info_endTime" type="text" name="endTime" value="<fmt:formatDate value='${model.endTime}' pattern='yyyy-MM-dd'/>" size="40" class="text required" minlength="2" maxlength="10" readonly style="background-color:white;cursor:default; width: 175px;">
+      <div class="input-append datetimepicker date" style="padding-left: 0px;">
+	    <input id="cal-info_endTime" type="text" name="endTime" value="<fmt:formatDate value='${model.endTime}' pattern='yyyy-MM-dd HH:mm'/>" size="40" class="text required" readonly style="background-color:white;cursor:default; width: 175px;">
 	    <span class="add-on" style="padding-top: 2px; padding-bottom: 2px;"><i class="icon-calendar"></i></span>
 	  </div>
     </div>
@@ -75,6 +86,41 @@ $(function() {
 	    <option value="${item.id}" ${model.meetingRoom.id==item.id ? 'selected' : ''}>${item.name}</option>
 		</c:forEach>
 	  </select>
+    </div>
+  </div>
+  <div class="control-group">
+    <label class="control-label" for="meetingInfo_organizer">发起人</label>
+	<div class="controls">
+	  <div class="input-append userPicker">
+	    <input id="_task_name_key" type="hidden" name="organizer" class="input-medium" value="${model.organizer}">
+	    <input type="text" name="organizerName" style="width: 175px;" value="${organizerName}">
+	    <span class="add-on"><i class="icon-user"></i></span>
+	  </div>
+    </div>
+  </div>
+  <div class="control-group">
+    <label class="control-label" for="meetingInfo_attendees">与会人</label>
+	<div class="controls">
+	  <input id="meetingInfo_attendees" type="text" name="attendees" value="${attendeeNames}" size="40" class="text required" minlength="2" maxlength="100">
+    </div>
+  </div>
+  <div class="control-group">
+    <label class="control-label" for="meetingInfo_items">配套资源</label>
+	<div class="controls">
+	  <label>
+	    <input id="meetingInfo_items0" type="checkbox" name="items" value="polycom" <tags:contains items="${items}" item="polycom">checked</tags:contains>>
+		八爪鱼
+	  </label>
+	  <label>
+	    <input id="meetingInfo_items1" type="checkbox" name="items" value="ipphone" <tags:contains items="${items}" item="ipphone">checked</tags:contains>>
+		IP电话
+	  </label>
+    </div>
+  </div>
+  <div class="control-group">
+    <label class="control-label" for="meetingInfo_content">内容</label>
+	<div class="controls">
+	  <textarea id="meetingInfo_content" name="content" class="text required" minlength="2" maxlength="10">${model.content}</textarea>
     </div>
   </div>
   <div class="control-group">

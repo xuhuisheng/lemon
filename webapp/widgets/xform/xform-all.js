@@ -1047,7 +1047,7 @@ xf.field.TextField.prototype.setValue = function(value) {
 	this.updateName(this.name);
 	if (this.readOnly) {
 		var parentNode = xf.$(this.parentId);
-		parentNode.innerHTML = value;
+		parentNode.innerHTML = '<div class="xf-handler">' + value + '</div>';
 	}
 }
 
@@ -1171,7 +1171,7 @@ xf.field.TextArea.prototype.setValue = function(value) {
 	this.updateName(this.name);
 	if (this.readOnly) {
 		var parentNode = xf.$(this.parentId);
-		parentNode.innerHTML = value;
+		parentNode.innerHTML = '<div class="xf-handler">' + value + '</div>';
 	}
 }
 
@@ -1252,7 +1252,7 @@ xf.field.Select.prototype.setValue = function(value) {
 	this.updateName(this.name);
 	if (this.readOnly) {
 		var parentNode = xf.$(this.parentId);
-		parentNode.innerHTML = value;
+		parentNode.innerHTML = '<div class="xf-handler">' + value + '</div>';
 	}
 }
 
@@ -1312,7 +1312,7 @@ xf.field.Radio.prototype.updateItems = function(value) {
 	for (var i = 0; i < array.length; i++) {
 		var item = array[i];
 		html += '<label class="radio inline">';
-		html += '<input type="radio" name="' + this.name + '" value="' + item + '" ' + (this.readOnly ? 'readOnly' : '') + ' ' + (this.value == item ? 'checked' : '') + ' style="margin:0px;">';
+		html += '<input type="radio" name="' + this.name + '" value="' + item + '" ' + (this.readOnly ? 'readOnly' : '') + ' ' + (this.value == item ? 'checked' : '') + ' style="margin:1px;">';
 		html += item;
 		html += '</label>';
 	}
@@ -1332,7 +1332,7 @@ xf.field.Radio.prototype.setValue = function(value) {
 	this.updateItems(this.items);
 	if (this.readOnly) {
 		var parentNode = xf.$(this.parentId);
-		parentNode.innerHTML = value;
+		parentNode.innerHTML = '<div class="xf-handler">' + value + '</div>';
 	}
 }
 
@@ -1398,7 +1398,7 @@ xf.field.Checkbox.prototype.updateItems = function(value) {
 	for (var i = 0; i < array.length; i++) {
 		var item = array[i];
 		html += '<label class="checkbox inline">';
-		html += '<input type="checkbox" name="' + this.name + '" value="' + item + '" ' + (this.readOnly ? 'disabled' : '') + ' ' + (valueArray.indexOf(item) != -1 ? 'checked' : '') + ' style="margin:0px;">';
+		html += '<input type="checkbox" name="' + this.name + '" value="' + item + '" ' + (this.readOnly ? 'disabled' : '') + ' ' + (valueArray.indexOf(item) != -1 ? 'checked' : '') + ' style="margin:1px;">';
 		html += item;
 		html += '</label>';
 	}
@@ -1418,7 +1418,7 @@ xf.field.Checkbox.prototype.setValue = function(value) {
 	this.updateName(this.name);
 	if (this.readOnly) {
 		var parentNode = xf.$(this.parentId);
-		parentNode.innerHTML = value;
+		parentNode.innerHTML = '<div class="xf-handler">' + value + '</div>';
 	}
 }
 
@@ -1481,16 +1481,16 @@ xf.field.FileUpload.prototype.updateReadOnly = function(value) {
 xf.field.FileUpload.prototype.setValue = function(value) {
 	if (this.readOnly) {
 		var parentNode = xf.$(this.parentId);
-		parentNode.innerHTML = value;
+		parentNode.innerHTML = '<div class="xf-handler"><a href="../rs/store/view?model=form&key=' + value.key + '">' + value.label + '</a></div>';
 	} else {
 		var parentNode = xf.$(this.parentId);
 		if (parentNode.children.length == 1) {
 			var span = document.createElement('span');
-			span.innerHTML = '<a href="../rs/store/view?model=form&key=' + value.key + '">' + value.label + '</a>';
+			span.innerHTML = '<div class="xf-handler"><a href="../rs/store/view?model=form&key=' + value.key + '">' + value.label + '</a></div>';
 			parentNode.appendChild(span);
 		} else {
 			var span = parentNode.children[1];
-			span.innerHTML = '<a href="../rs/store/view?model=form&key=' + value.key + '">' + value.label + '</a>';
+			span.innerHTML = '<div class="xf-handler"><a href="../rs/store/view?model=form&key=' + value.key + '">' + value.label + '</a></div>';
 		}
 	}
 }
@@ -1559,7 +1559,7 @@ xf.field.DatePicker.prototype.setValue = function(value) {
 	this.updateName(this.name);
 	if (this.readOnly) {
 		var parentNode = xf.$(this.parentId);
-		parentNode.innerHTML = value;
+		parentNode.innerHTML = '<div class="xf-handler">' + value + '</div>';
 	}
 }
 
@@ -1607,10 +1607,10 @@ xf.field.UserPicker.prototype.updateName = function(value) {
 	var parentNode = xf.$(this.parentId);
 	parentNode.innerHTML = 
 		'<div class="xf-handler">'
-		+'	<div class="input-append userPicker" style="padding-left: 0px;">'
+		+'	<div class="input-append userPicker" style="padding:0px;margin:0px;">'
 		+'      <input type="hidden" name="' + this.name + '" class="input-medium" value="">'
-		+'      <input type="text" name="' + this.name + '_name" class="input-medium" value="">'
-		+'      <span class="add-on"><i class="icon-user"></i></span>'
+		+'      <input type="text" name="' + this.name + '_name" class="input-medium" value="" style="width:175px;">'
+		+'      <span class="add-on" style="height:20px;padding:2px 5px;"><i class="icon-user"></i></span>'
 		+'	</div>'
 		+ '</div>';
 }
@@ -1628,6 +1628,6 @@ xf.field.UserPicker.prototype.setValue = function(value) {
 	this.updateName(this.name);
 	if (this.readOnly) {
 		var parentNode = xf.$(this.parentId);
-		parentNode.innerHTML = value;
+		parentNode.innerHTML = '<div class="xf-handler">' + value + '</div>';
 	}
 }

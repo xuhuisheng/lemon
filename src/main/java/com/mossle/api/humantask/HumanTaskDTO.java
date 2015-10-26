@@ -4,6 +4,7 @@ import java.util.Date;
 
 public class HumanTaskDTO {
     private String id;
+    private String businessKey;
     private String name;
     private String description;
     private String assignee;
@@ -24,6 +25,7 @@ public class HumanTaskDTO {
     private String form;
     private String status;
     private Date completeTime;
+    private String parentId;
 
     public String getId() {
         return id;
@@ -31,6 +33,14 @@ public class HumanTaskDTO {
 
     public void setId(String id) {
         this.id = id;
+    }
+
+    public String getBusinessKey() {
+        return businessKey;
+    }
+
+    public void setBusinessKey(String businessKey) {
+        this.businessKey = businessKey;
     }
 
     public String getName() {
@@ -191,5 +201,13 @@ public class HumanTaskDTO {
 
     public void setCompleteTime(Date completeTime) {
         this.completeTime = completeTime;
+    }
+
+    public String getParentId() {
+        return parentId;
+    }
+
+    public void setParentId(String parentId) {
+        this.parentId = parentId;
     }
 }

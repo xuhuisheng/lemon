@@ -71,6 +71,9 @@ public class BpmConfNode implements java.io.Serializable {
     private Set<BpmConfUser> bpmConfUsers = new HashSet<BpmConfUser>(0);
 
     /** . */
+    private Set<BpmConfAssign> bpmConfAssigns = new HashSet<BpmConfAssign>(0);
+
+    /** . */
     private Set<BpmConfCountersign> bpmConfCountersigns = new HashSet<BpmConfCountersign>(
             0);
 
@@ -93,6 +96,7 @@ public class BpmConfNode implements java.io.Serializable {
             Integer confNotice, Integer priority,
             Set<BpmConfListener> bpmConfListeners,
             Set<BpmConfNotice> bpmConfNotices, Set<BpmConfUser> bpmConfUsers,
+            Set<BpmConfAssign> bpmConfAssigns,
             Set<BpmConfCountersign> bpmConfCountersigns,
             Set<BpmConfForm> bpmConfForms, Set<BpmConfRule> bpmConfRules,
             Set<BpmConfOperation> bpmConfOperations) {
@@ -110,6 +114,7 @@ public class BpmConfNode implements java.io.Serializable {
         this.bpmConfListeners = bpmConfListeners;
         this.bpmConfNotices = bpmConfNotices;
         this.bpmConfUsers = bpmConfUsers;
+        this.bpmConfAssigns = bpmConfAssigns;
         this.bpmConfCountersigns = bpmConfCountersigns;
         this.bpmConfForms = bpmConfForms;
         this.bpmConfRules = bpmConfRules;
@@ -327,6 +332,20 @@ public class BpmConfNode implements java.io.Serializable {
      */
     public void setBpmConfUsers(Set<BpmConfUser> bpmConfUsers) {
         this.bpmConfUsers = bpmConfUsers;
+    }
+
+    /** @return . */
+    @OneToMany(fetch = FetchType.LAZY, mappedBy = "bpmConfNode")
+    public Set<BpmConfAssign> getBpmConfAssigns() {
+        return this.bpmConfAssigns;
+    }
+
+    /**
+     * @param bpmConfAssigns
+     *            .
+     */
+    public void setBpmConfAssigns(Set<BpmConfAssign> bpmConfAssigns) {
+        this.bpmConfAssigns = bpmConfAssigns;
     }
 
     /** @return . */

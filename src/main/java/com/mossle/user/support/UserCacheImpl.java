@@ -3,8 +3,8 @@ package com.mossle.user.support;
 import com.mossle.api.user.UserCache;
 import com.mossle.api.user.UserDTO;
 
-import com.mossle.ext.cache.Cache;
-import com.mossle.ext.cache.CacheStrategy;
+import com.mossle.core.cache.Cache;
+import com.mossle.core.cache.CacheStrategy;
 
 public class UserCacheImpl implements UserCache {
     private CacheStrategy cacheStrategy;
@@ -35,14 +35,16 @@ public class UserCacheImpl implements UserCache {
     }
 
     public void updateUser(UserDTO userDto) {
-        cache.set("userId:" + userDto.getId(), userDto);
-        cache.set(
-                "userUsername:" + userDto.getUsername() + ":"
-                        + userDto.getUserRepoRef(), userDto);
-        cache.set(
-                "userRef:" + userDto.getRef() + ":" + userDto.getUserRepoRef(),
-                userDto);
-        cache.set("nickName:" + userDto.getDisplayName(), userDto);
+        this.removeUser(userDto);
+
+        // cache.set("userId:" + userDto.getId(), userDto);
+        // cache.set(
+        // "userUsername:" + userDto.getUsername() + ":"
+        // + userDto.getUserRepoRef(), userDto);
+        // cache.set(
+        // "userRef:" + userDto.getRef() + ":" + userDto.getUserRepoRef(),
+        // userDto);
+        // cache.set("nickName:" + userDto.getDisplayName(), userDto);
     }
 
     public void removeUser(UserDTO userDto) {

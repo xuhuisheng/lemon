@@ -105,6 +105,7 @@ $(function() {
           <th class="sorting" name="id"><spring:message code="org.org.list.id" text="编号"/></th>
           <th class="sorting" name="type"><spring:message code="org.org.list.type" text="类型"/></th>
           <th class="sorting" name="name"><spring:message code="org.org.list.name" text="名称"/></th>
+          <th class="sorting" name="level">级别</th>
           <th class="sorting" name="ref">引用</th>
           <th width="50">&nbsp;</th>
         </tr>
@@ -116,6 +117,7 @@ $(function() {
           <td>${item.id}</td>
           <td>${item.partyType.name}</td>
           <td>${item.name}</td>
+          <td>${item.level}</td>
           <td>${item.ref}</td>
           <td>
             <a href="party-entity-input.do?id=${item.id}"><spring:message code="core.list.edit" text="编辑"/></a>

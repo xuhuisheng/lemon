@@ -10,13 +10,13 @@
 	</bean>
 
 	<bean id="userRepoConnector" class="com.mossle.user.support.UserRepoConnectorFactoryBean">
-		<property name="type" value="${bridge.userrepo.type}"/>
+		<property name="type" value="${userrepo.connector.type}"/>
 		<property name="userRepoCache" ref="userRepoCache"/>
 		<property name="jdbcTemplate" ref="jdbcTemplate"/>
 	</bean>
 
 	<bean class="com.mossle.user.support.UserRepoPopulator">
-		<property name="debug" value="${bridge.userrepo.debug}"/>
+		<property name="debug" value="${userrepo.connector.debug}"/>
 	</bean>
 
 	<!-- ================================================== -->
@@ -26,7 +26,7 @@
 	</bean>
 
 	<bean id="userConnector" class="com.mossle.user.support.UserConnectorFactoryBean">
-		<property name="type" value="${bridge.user.type}"/>
+		<property name="type" value="${user.connector.type}"/>
 		<property name="userCache" ref="userCache"/>
 		<property name="jdbcTemplate" ref="jdbcTemplate"/>
 	</bean>
@@ -38,11 +38,11 @@
 	</bean>
 
 	<bean id="userAuthConnector" class="com.mossle.auth.support.UserAuthConnectorFactoryBean">
-		<property name="type" value="${bridge.userauth.type}"/>
+		<property name="type" value="${userauth.connector.type}"/>
 		<property name="userAuthCache" ref="userAuthCache"/>
 		<property name="jdbcTemplate" ref="jdbcTemplate"/>
 		<property name="userConnector" ref="userConnector"/>
-		<property name="scopeConnector" ref="scopeConnector"/>
+		<property name="tenantConnector" ref="tenantConnector"/>
 	</bean>
 
 	<!-- ================================================== -->
@@ -56,4 +56,9 @@
 	<!-- 获取账号状态的工具（应该是spi吗？还没想明白） -->
 	<bean id="accountStatusHelper" class="com.mossle.user.support.LocalAccountStatusHelper"/>
 
+	<!-- 菜单 -->
+	<bean id="menuConnector" class="${menu.connector}"/>
+
+	<!-- 认证 -->
+	<bean id="authenticationHandler" class="com.mossle.user.authenticate.NormalAuthenticationHandler"/>
 </beans>

@@ -15,8 +15,8 @@ import com.fasterxml.jackson.databind.util.JSONPObject;
 
 import com.mossle.core.page.Page;
 
-import com.mossle.party.domain.PartyEntity;
-import com.mossle.party.manager.PartyEntityManager;
+import com.mossle.party.persistence.domain.PartyEntity;
+import com.mossle.party.persistence.manager.PartyEntityManager;
 
 import org.springframework.stereotype.Component;
 

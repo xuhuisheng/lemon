@@ -17,8 +17,13 @@ import com.mossle.api.humantask.ParticipantDTO;
 import com.mossle.core.mapper.BeanMapper;
 import com.mossle.core.page.Page;
 
+import com.mossle.humantask.listener.HumanTaskListener;
+import com.mossle.humantask.persistence.domain.TaskConfUser;
+import com.mossle.humantask.persistence.domain.TaskDeadline;
 import com.mossle.humantask.persistence.domain.TaskInfo;
 import com.mossle.humantask.persistence.domain.TaskParticipant;
+import com.mossle.humantask.persistence.manager.TaskConfUserManager;
+import com.mossle.humantask.persistence.manager.TaskDeadlineManager;
 import com.mossle.humantask.persistence.manager.TaskInfoManager;
 import com.mossle.humantask.persistence.manager.TaskParticipantManager;
 
@@ -36,16 +41,19 @@ public class HumanTaskConnectorImpl implements HumanTaskConnector {
     private JdbcTemplate jdbcTemplate;
     private TaskInfoManager taskInfoManager;
     private TaskParticipantManager taskParticipantManager;
+    private TaskConfUserManager taskConfUserManager;
+    private TaskDeadlineManager taskDeadlineManager;
     private InternalProcessConnector internalProcessConnector;
     private FormConnector formConnector;
     private BeanMapper beanMapper = new BeanMapper();
+    private List<HumanTaskListener> humanTaskListeners;
 
     // ~
     /**
      * 创建一个任务.
      */
     public HumanTaskDTO createHumanTask() {
-        return new HumanTaskDTO();
+        return new HumanTaskBuilder().create();
     }
 
     // ~
@@ -81,6 +89,12 @@ public class HumanTaskConnectorImpl implements HumanTaskConnector {
      * 保存任务.
      */
     public HumanTaskDTO saveHumanTask(HumanTaskDTO humanTaskDto) {
+        return this.saveHumanTask(humanTaskDto, true);
+    }
+
+    public HumanTaskDTO saveHumanTask(HumanTaskDTO humanTaskDto,
+            boolean triggerListener) {
+        // process first
         Long id = null;
 
         if (humanTaskDto.getId() != null) {
@@ -97,11 +111,42 @@ public class HumanTaskConnectorImpl implements HumanTaskConnector {
             taskInfo = taskInfoManager.get(id);
         }
 
-        beanMapper.copy(humanTaskDto, taskInfo);
+        beanMapper.copy(humanTaskDto, taskInfo, HumanTaskDTO.class,
+                TaskInfo.class);
+
+        if (humanTaskDto.getParentId() != null) {
+            taskInfo.setTaskInfo(taskInfoManager.get(Long
+                    .parseLong(humanTaskDto.getParentId())));
+        }
+
         taskInfoManager.save(taskInfo);
+
+        if (triggerListener) {
+            // create
+            if ((id == null) && (humanTaskListeners != null)) {
+                for (HumanTaskListener humanTaskListener : humanTaskListeners) {
+                    try {
+                        humanTaskListener.onCreate(taskInfo);
+                    } catch (Exception ex) {
+                        logger.error(ex.getMessage(), ex);
+                    }
+                }
+            }
+
+            humanTaskDto.setAssignee(taskInfo.getAssignee());
+            humanTaskDto.setOwner(taskInfo.getOwner());
+        }
+
         humanTaskDto.setId(Long.toString(taskInfo.getId()));
 
         return humanTaskDto;
+    }
+
+    /**
+     * 保存任务，并处理参与者.
+     */
+    public HumanTaskDTO saveHumanTaskAndProcess(HumanTaskDTO humanTaskDto) {
+        return this.saveHumanTask(humanTaskDto, true);
     }
 
     public HumanTaskDTO findHumanTaskByTaskId(String taskId) {
@@ -115,7 +160,7 @@ public class HumanTaskConnectorImpl implements HumanTaskConnector {
     public HumanTaskDTO findHumanTask(String humanTaskId) {
         TaskInfo taskInfo = taskInfoManager.get(Long.parseLong(humanTaskId));
 
-        return convertHumanTaskDto(taskInfo);
+        return this.convertHumanTaskDto(taskInfo);
     }
 
     /**
@@ -124,11 +169,20 @@ public class HumanTaskConnectorImpl implements HumanTaskConnector {
     public FormDTO findTaskForm(String humanTaskId) {
         HumanTaskDTO humanTaskDto = this.findHumanTask(humanTaskId);
 
-        FormDTO formDto = internalProcessConnector.findTaskForm(humanTaskDto
-                .getTaskId());
+        FormDTO formDto = null;
+
+        if (humanTaskDto.getTaskId() != null) {
+            formDto = internalProcessConnector.findTaskForm(humanTaskDto
+                    .getTaskId());
+        } else {
+            formDto = new FormDTO();
+            formDto.setCode(humanTaskDto.getForm());
+        }
+
         formDto.setTaskId(humanTaskId);
 
-        FormDTO contentFormDto = formConnector.findForm(formDto.getCode());
+        FormDTO contentFormDto = formConnector.findForm(formDto.getCode(),
+                humanTaskDto.getTenantId());
 
         if (contentFormDto == null) {
             logger.error("cannot find form : {}", formDto.getCode());
@@ -162,10 +216,32 @@ public class HumanTaskConnectorImpl implements HumanTaskConnector {
         return humanTaskDefinitions;
     }
 
+    /**
+     * 流程发起之前，配置每个任务的负责人.
+     */
     public void configTaskDefinitions(String businessKey,
             List<String> taskDefinitionKeys, List<String> taskAssignees) {
-        internalProcessConnector.configTaskDefinitions(businessKey,
-                taskDefinitionKeys, taskAssignees);
+        if (taskDefinitionKeys == null) {
+            return;
+        }
+
+        int index = 0;
+
+        for (String taskDefinitionKey : taskDefinitionKeys) {
+            String taskAssignee = taskAssignees.get(index++);
+            String hql = "from TaskConfUser where businessKey=? and code=?";
+            TaskConfUser taskConfUser = taskConfUserManager.findUnique(hql,
+                    businessKey, taskDefinitionKey);
+
+            if (taskConfUser == null) {
+                taskConfUser = new TaskConfUser();
+            }
+
+            taskConfUser.setBusinessKey(businessKey);
+            taskConfUser.setCode(taskDefinitionKey);
+            taskConfUser.setValue(taskAssignee);
+            taskConfUserManager.save(taskConfUser);
+        }
     }
 
     /**
@@ -179,6 +255,14 @@ public class HumanTaskConnectorImpl implements HumanTaskConnector {
             throw new IllegalStateException("任务不存在");
         }
 
+        Long longTaskId = Long.parseLong(humanTaskDto.getId());
+        List<TaskDeadline> taskDeadlines = taskDeadlineManager.find(
+                "from TaskDeadline where taskInfo.id=?", longTaskId);
+
+        for (TaskDeadline taskDeadline : taskDeadlines) {
+            taskDeadlineManager.remove(taskDeadline);
+        }
+
         // 处理抄送任务
         if ("copy".equals(humanTaskDto.getCategory())) {
             humanTaskDto.setStatus("complete");
@@ -188,20 +272,77 @@ public class HumanTaskConnectorImpl implements HumanTaskConnector {
             return;
         }
 
+        // 处理startEvent任务
+        if ("startEvent".equals(humanTaskDto.getCategory())) {
+            humanTaskDto.setStatus("complete");
+            humanTaskDto.setCompleteTime(new Date());
+            this.saveHumanTask(humanTaskDto);
+            internalProcessConnector.signalExecution(humanTaskDto
+                    .getExecutionId());
+
+            return;
+        }
+
         logger.debug("{}", humanTaskDto.getDelegateStatus());
 
         // 处理协办任务
         if ("pending".equals(humanTaskDto.getDelegateStatus())) {
-            humanTaskDto.setAssignee(humanTaskDto.getOwner());
             humanTaskDto.setDelegateStatus("resolved");
+            humanTaskDto.setAssignee(humanTaskDto.getOwner());
             this.saveHumanTask(humanTaskDto);
             internalProcessConnector.resolveTask(humanTaskDto.getTaskId());
 
             return;
         }
 
+        // 处理协办链式任务
+        if ("pendingCreate".equals(humanTaskDto.getDelegateStatus())) {
+            humanTaskDto.setCompleteTime(new Date());
+            humanTaskDto.setDelegateStatus("resolved");
+            humanTaskDto.setStatus("complete");
+            this.saveHumanTask(humanTaskDto);
+
+            if (humanTaskDto.getParentId() != null) {
+                HumanTaskDTO targetHumanTaskDto = this
+                        .findHumanTask(humanTaskDto.getParentId());
+                targetHumanTaskDto.setStatus("active");
+
+                if (targetHumanTaskDto.getParentId() == null) {
+                    targetHumanTaskDto.setDelegateStatus("resolved");
+                }
+
+                this.saveHumanTask(targetHumanTaskDto);
+            }
+
+            return;
+        }
+
         internalProcessConnector.completeTask(humanTaskDto.getTaskId(), userId,
                 taskParameters);
+
+        if (humanTaskListeners != null) {
+            Long id = null;
+
+            try {
+                id = Long.parseLong(humanTaskDto.getId());
+            } catch (Exception ex) {
+                logger.error(ex.getMessage(), ex);
+            }
+
+            if (id == null) {
+                return;
+            }
+
+            TaskInfo taskInfo = taskInfoManager.get(id);
+
+            for (HumanTaskListener humanTaskListener : humanTaskListeners) {
+                try {
+                    humanTaskListener.onComplete(taskInfo);
+                } catch (Exception ex) {
+                    logger.error(ex.getMessage(), ex);
+                }
+            }
+        }
     }
 
     /**
@@ -356,6 +497,26 @@ public class HumanTaskConnectorImpl implements HumanTaskConnector {
     }
 
     /**
+     * 回退，开始事件，流程发起人.
+     */
+    public void rollbackStart(String humanTaskId) {
+        HumanTaskDTO humanTaskDto = findHumanTask(humanTaskId);
+
+        if (humanTaskDto == null) {
+            throw new IllegalStateException("任务不存在");
+        }
+
+        String taskId = humanTaskDto.getTaskId();
+        String processDefinitionId = humanTaskDto.getProcessDefinitionId();
+        String processInstanceId = humanTaskDto.getProcessInstanceId();
+        String activityId = this.internalProcessConnector
+                .findInitialActivityId(processDefinitionId);
+        String initiator = this.internalProcessConnector
+                .findInitiator(processInstanceId);
+        internalProcessConnector.rollback(taskId, activityId, initiator);
+    }
+
+    /**
      * 撤销.
      */
     public void withdraw(String humanTaskId) {
@@ -380,6 +541,37 @@ public class HumanTaskConnectorImpl implements HumanTaskConnector {
         internalProcessConnector.delegateTask(humanTaskDto.getTaskId(), userId);
     }
 
+    /**
+     * 协办，链状.
+     */
+    public void delegateTaskCreate(String humanTaskId, String userId) {
+        HumanTaskDTO humanTaskDto = this.findHumanTask(humanTaskId);
+        humanTaskDto.setDelegateStatus("pendingCreate");
+        humanTaskDto.setStatus("pending");
+        this.saveHumanTask(humanTaskDto);
+
+        HumanTaskDTO targetHumanTaskDto = this.createHumanTask();
+        beanMapper.copy(humanTaskDto, targetHumanTaskDto);
+        targetHumanTaskDto.setStatus("active");
+        targetHumanTaskDto.setParentId(humanTaskDto.getId());
+        targetHumanTaskDto.setId(null);
+        targetHumanTaskDto.setOwner(humanTaskDto.getAssignee());
+        targetHumanTaskDto.setAssignee(userId);
+
+        this.saveHumanTask(targetHumanTaskDto, false);
+
+        if (humanTaskDto.getParentId() == null) {
+            humanTaskDto.setOwner(humanTaskDto.getAssignee());
+            humanTaskDto.setAssignee(userId);
+            // 只有第一次协办才更新bpm的历史
+            internalProcessConnector.delegateTask(humanTaskDto.getTaskId(),
+                    userId);
+            humanTaskDto.setAssignee(humanTaskDto.getOwner());
+            humanTaskDto.setOwner(null);
+            this.saveHumanTask(humanTaskDto);
+        }
+    }
+
     // ~ ==================================================
     public List<HumanTaskDTO> convertHumanTaskDtos(List<TaskInfo> taskInfos) {
         List<HumanTaskDTO> humanTaskDtos = new ArrayList<HumanTaskDTO>();
@@ -394,6 +586,11 @@ public class HumanTaskConnectorImpl implements HumanTaskConnector {
     public HumanTaskDTO convertHumanTaskDto(TaskInfo taskInfo) {
         HumanTaskDTO humanTaskDto = new HumanTaskDTO();
         beanMapper.copy(taskInfo, humanTaskDto);
+
+        if (taskInfo.getTaskInfo() != null) {
+            humanTaskDto.setParentId(Long.toString(taskInfo.getTaskInfo()
+                    .getId()));
+        }
 
         return humanTaskDto;
     }
@@ -425,6 +622,16 @@ public class HumanTaskConnectorImpl implements HumanTaskConnector {
     }
 
     @Resource
+    public void setTaskConfUserManager(TaskConfUserManager taskConfUserManager) {
+        this.taskConfUserManager = taskConfUserManager;
+    }
+
+    @Resource
+    public void setTaskDeadlineManager(TaskDeadlineManager taskDeadlineManager) {
+        this.taskDeadlineManager = taskDeadlineManager;
+    }
+
+    @Resource
     public void setInternalProcessConnector(
             InternalProcessConnector internalProcessConnector) {
         this.internalProcessConnector = internalProcessConnector;
@@ -433,5 +640,9 @@ public class HumanTaskConnectorImpl implements HumanTaskConnector {
     @Resource
     public void setFormConnector(FormConnector formConnector) {
         this.formConnector = formConnector;
+    }
+
+    public void setHumanTaskListeners(List<HumanTaskListener> humanTaskListeners) {
+        this.humanTaskListeners = humanTaskListeners;
     }
 }

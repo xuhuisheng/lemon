@@ -36,9 +36,10 @@ public class BpmConfNodeController {
     public String list(@RequestParam("bpmConfBaseId") Long bpmConfBaseId,
             Model model) {
         BpmConfBase bpmConfBase = bpmConfBaseManager.get(bpmConfBaseId);
-        List<BpmConfNode> bpmConfNodes = bpmConfNodeManager.findBy(
-                "bpmConfBase", bpmConfBase);
-
+        String hql = "from BpmConfNode where bpmConfBase=? order by priority";
+        List<BpmConfNode> bpmConfNodes = bpmConfNodeManager.find(hql,
+                bpmConfBase);
+        model.addAttribute("bpmConfBase", bpmConfBase);
         model.addAttribute("bpmConfNodes", bpmConfNodes);
 
         return "bpm/bpm-conf-node-list";

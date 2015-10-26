@@ -12,12 +12,15 @@ import com.mossle.bpm.cmd.CompleteTaskWithCommentCmd;
 import com.mossle.bpm.cmd.DeleteTaskWithCommentCmd;
 import com.mossle.bpm.cmd.FindTaskDefinitionsCmd;
 import com.mossle.bpm.cmd.RollbackTaskCmd;
+import com.mossle.bpm.cmd.SignalStartEventCmd;
 import com.mossle.bpm.cmd.WithdrawTaskCmd;
 import com.mossle.bpm.persistence.domain.BpmConfForm;
 import com.mossle.bpm.persistence.domain.BpmConfOperation;
+import com.mossle.bpm.persistence.domain.BpmConfUser;
 import com.mossle.bpm.persistence.domain.BpmTaskConf;
 import com.mossle.bpm.persistence.manager.BpmConfFormManager;
 import com.mossle.bpm.persistence.manager.BpmConfOperationManager;
+import com.mossle.bpm.persistence.manager.BpmConfUserManager;
 import com.mossle.bpm.persistence.manager.BpmTaskConfManager;
 
 import com.mossle.spi.process.InternalProcessConnector;
@@ -26,7 +29,12 @@ import com.mossle.spi.process.ProcessTaskDefinition;
 import org.activiti.engine.IdentityService;
 import org.activiti.engine.ProcessEngine;
 import org.activiti.engine.TaskService;
+import org.activiti.engine.impl.cmd.GetDeploymentProcessDefinitionCmd;
+import org.activiti.engine.impl.context.Context;
+import org.activiti.engine.impl.el.ExpressionManager;
 import org.activiti.engine.impl.interceptor.Command;
+import org.activiti.engine.impl.persistence.entity.ProcessDefinitionEntity;
+import org.activiti.engine.impl.persistence.entity.TaskEntity;
 import org.activiti.engine.impl.task.TaskDefinition;
 import org.activiti.engine.task.Task;
 
@@ -35,14 +43,19 @@ import org.slf4j.LoggerFactory;
 
 import org.springframework.jdbc.core.JdbcTemplate;
 
+/**
+ * 这是一个spi接口，因为HumanTask的配置还没有完全从bpm里抽象出去，所以还有不少配置需要从bpm里读取.
+ */
 public class ActivitiInternalProcessConnector implements
         InternalProcessConnector {
+    /** logger. */
     private static Logger logger = LoggerFactory
             .getLogger(ActivitiInternalProcessConnector.class);
     private ProcessEngine processEngine;
     private BpmConfOperationManager bpmConfOperationManager;
     private BpmConfFormManager bpmConfFormManager;
     private BpmTaskConfManager bpmTaskConfManager;
+    private BpmConfUserManager bpmConfUserManager;
     private JdbcTemplate jdbcTemplate;
 
     /**
@@ -120,28 +133,6 @@ public class ActivitiInternalProcessConnector implements
     }
 
     /**
-     * 配置任务定义.
-     */
-    public void configTaskDefinitions(String businessKey,
-            List<String> taskDefinitionKeys, List<String> taskAssignees) {
-        if (taskDefinitionKeys == null) {
-            return;
-        }
-
-        // 如果是从配置任务负责人的页面过来，就保存TaskConf，再从草稿中得到数据启动流程
-        int index = 0;
-
-        for (String taskDefinitionKey : taskDefinitionKeys) {
-            String taskAssignee = taskAssignees.get(index++);
-            BpmTaskConf bpmTaskConf = new BpmTaskConf();
-            bpmTaskConf.setBusinessKey(businessKey);
-            bpmTaskConf.setTaskDefinitionKey(taskDefinitionKey);
-            bpmTaskConf.setAssignee(taskAssignee);
-            bpmTaskConfManager.save(bpmTaskConf);
-        }
-    }
-
-    /**
      * 完成任务.
      */
     public void completeTask(String taskId, String userId,
@@ -211,12 +202,154 @@ public class ActivitiInternalProcessConnector implements
         processEngine.getManagementService().executeCommand(cmd);
     }
 
+    /**
+     * 协办任务.
+     */
     public void delegateTask(String taskId, String userId) {
         processEngine.getTaskService().delegateTask(taskId, userId);
     }
 
+    /**
+     * 完成协办.
+     */
     public void resolveTask(String taskId) {
         processEngine.getTaskService().resolveTask(taskId);
+    }
+
+    /**
+     * 根据activityId找到任务定义.
+     * 
+     * TODO: 支持ExpressionManager，支持Expr
+     */
+    public ProcessTaskDefinition findTaskDefinition(String processDefinitionId,
+            String taskDefinitionKey, String businessKey) {
+        // 先从流程定义里读取设计配置的负责人
+        List<BpmConfUser> bpmConfUsers = bpmConfUserManager
+                .find("from BpmConfUser where bpmConfNode.bpmConfBase.processDefinitionId=? and bpmConfNode.code=?",
+                        processDefinitionId, taskDefinitionKey);
+        logger.debug("{}", bpmConfUsers);
+
+        ProcessTaskDefinition processTaskDefinition = new ProcessTaskDefinition();
+
+        try {
+            for (BpmConfUser bpmConfUser : bpmConfUsers) {
+                logger.debug("status : {}, type: {}", bpmConfUser.getStatus(),
+                        bpmConfUser.getType());
+                logger.debug("value : {}", bpmConfUser.getValue());
+
+                String value = bpmConfUser.getValue();
+
+                if (bpmConfUser.getStatus() == 1) {
+                    if (bpmConfUser.getType() == 0) {
+                        logger.debug("add assignee : {}", value);
+                        processTaskDefinition.setAssignee(value);
+                    } else if (bpmConfUser.getType() == 1) {
+                        logger.debug("add candidate user : {}", value);
+                        processTaskDefinition.addParticipantDefinition("user",
+                                value, "add");
+                    } else if (bpmConfUser.getType() == 2) {
+                        logger.debug("add candidate group : {}", value);
+                        processTaskDefinition.addParticipantDefinition("group",
+                                value, "add");
+                    }
+                } else if (bpmConfUser.getStatus() == 2) {
+                    if (bpmConfUser.getType() == 0) {
+                        logger.debug("delete assignee : {}", value);
+                        processTaskDefinition.setAssignee(null);
+                    } else if (bpmConfUser.getType() == 1) {
+                        logger.debug("delete candidate user : {}", value);
+                        processTaskDefinition.addParticipantDefinition("user",
+                                value, "delete");
+                    } else if (bpmConfUser.getType() == 2) {
+                        logger.debug("delete candidate group : {}", value);
+                        processTaskDefinition.addParticipantDefinition("group",
+                                value, "delete");
+                    }
+                }
+            }
+        } catch (Exception ex) {
+            logger.info(ex.getMessage(), ex);
+        }
+
+        try {
+            String hql = "from BpmTaskConf where businessKey=? and taskDefinitionKey=?";
+            BpmTaskConf bpmTaskConf = bpmTaskConfManager.findUnique(hql,
+                    businessKey, taskDefinitionKey);
+            String assignee = bpmTaskConf.getAssignee();
+
+            if ((assignee != null) && (!"".equals(assignee))) {
+                logger.debug("add assignee : {}", assignee);
+                processTaskDefinition.setAssignee(assignee);
+            }
+        } catch (Exception ex) {
+            logger.info(ex.getMessage(), ex);
+        }
+
+        return processTaskDefinition;
+    }
+
+    /**
+     * 获得流程发起人.
+     */
+    public String findInitiator(String processInstanceId) {
+        String initiator = null;
+
+        if (Context.getCommandContext() == null) {
+            initiator = processEngine.getHistoryService()
+                    .createHistoricProcessInstanceQuery()
+                    .processInstanceId(processInstanceId).singleResult()
+                    .getStartUserId();
+        } else {
+            initiator = Context.getCommandContext()
+                    .getHistoricProcessInstanceEntityManager()
+                    .findHistoricProcessInstance(processInstanceId)
+                    .getStartUserId();
+        }
+
+        return initiator;
+    }
+
+    /**
+     * 获得某个节点的历史负责人.
+     */
+    public String findAssigneeByActivityId(String processInstanceId,
+            String activityId) {
+        return null;
+    }
+
+    /**
+     * 解析表达式.
+     */
+    public Object executeExpression(String taskId, String expressionText) {
+        TaskEntity taskEntity = Context.getCommandContext()
+                .getTaskEntityManager().findTaskById(taskId);
+        ExpressionManager expressionManager = Context
+                .getProcessEngineConfiguration().getExpressionManager();
+
+        return expressionManager.createExpression(expressionText).getValue(
+                taskEntity);
+    }
+
+    /**
+     * 获得开始事件id.
+     */
+    public String findInitialActivityId(String processDefinitionId) {
+        GetDeploymentProcessDefinitionCmd getDeploymentProcessDefinitionCmd = new GetDeploymentProcessDefinitionCmd(
+                processDefinitionId);
+        ProcessDefinitionEntity processDefinition = processEngine
+                .getManagementService().executeCommand(
+                        getDeploymentProcessDefinitionCmd);
+
+        return processDefinition.getInitial().getId();
+    }
+
+    /**
+     * 触发execution继续执行.
+     */
+    public void signalExecution(String executionId) {
+        // processEngine.getRuntimeService().signal(executionId);
+        processEngine.getManagementService().executeCommand(
+                new SignalStartEventCmd(executionId));
     }
 
     // ~ ==================================================
@@ -239,6 +372,11 @@ public class ActivitiInternalProcessConnector implements
     @Resource
     public void setBpmTaskConfManager(BpmTaskConfManager bpmTaskConfManager) {
         this.bpmTaskConfManager = bpmTaskConfManager;
+    }
+
+    @Resource
+    public void setBpmConfUserManager(BpmConfUserManager bpmConfUserManager) {
+        this.bpmConfUserManager = bpmConfUserManager;
     }
 
     @Resource

@@ -11,9 +11,9 @@
           </div>
           <div id="collapse-cms" class="accordion-body collapse ${currentMenu == 'cms' ? 'in' : ''}">
             <ul class="accordion-inner nav nav-list">
-			  <li><a href="${scopePrefix}/cms/cms-catalog-list.do">栏目管理</a></li>
-			  <li><a href="${scopePrefix}/cms/cms-article-list.do">文章管理</a></li>
-			  <li><a href="${scopePrefix}/cms/cms-comment-list.do">评论管理</a></li>
+			  <li><a href="${tenantPrefix}/cms/cms-catalog-list.do">栏目管理</a></li>
+			  <li><a href="${tenantPrefix}/cms/cms-article-list.do">文章管理</a></li>
+			  <li><a href="${tenantPrefix}/cms/cms-comment-list.do">评论管理</a></li>
             </ul>
           </div>
         </div>

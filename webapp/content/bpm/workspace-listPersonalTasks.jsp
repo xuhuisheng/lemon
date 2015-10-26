@@ -98,7 +98,7 @@ $(function() {
 		</td>
 	    <td>${item.suspended ? '挂起' : '激活'}</td>
         <td>
-          <a href="${scopePrefix}/form/form-viewTaskForm.do?taskId=${item.id}">完成</a>
+          <a href="${tenantPrefix}/form/form-viewTaskForm.do?taskId=${item.id}">完成</a>
 		  <%--
 		  <c:if test="${delegationState != 'PENDING'}">
           <a href="workspace-prepareDelegateTask.do?taskId=${item.id}">代理</a>

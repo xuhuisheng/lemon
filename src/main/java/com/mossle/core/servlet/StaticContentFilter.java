@@ -90,12 +90,12 @@ public class StaticContentFilter implements Filter {
         OutputStream output;
 
         // if (checkAccetptGzip(request) && contentInfo.isNeedGzip()) {
-            // 使用压缩传输的outputstream, 使用http1.1 chunked编码不设置content-length.
-            // output = buildGzipOutputStream(response);
+        // 使用压缩传输的outputstream, 使用http1.1 chunked编码不设置content-length.
+        // output = buildGzipOutputStream(response);
         // } else {
-            // 使用普通outputstream, 设置content-length.
-            response.setContentLength(contentInfo.length);
-            output = response.getOutputStream();
+        // 使用普通outputstream, 设置content-length.
+        response.setContentLength(contentInfo.length);
+        output = response.getOutputStream();
         // }
 
         // 高效读取文件内容并输出,然后关闭input file

@@ -9,17 +9,17 @@ import javax.annotation.Resource;
 
 import javax.servlet.http.HttpServletResponse;
 
-import com.mossle.api.scope.ScopeHolder;
+import com.mossle.api.tenant.TenantHolder;
 
 import com.mossle.auth.component.RoleDefChecker;
-import com.mossle.auth.domain.Perm;
-import com.mossle.auth.domain.PermType;
-import com.mossle.auth.domain.Role;
-import com.mossle.auth.domain.RoleDef;
-import com.mossle.auth.manager.PermManager;
-import com.mossle.auth.manager.PermTypeManager;
-import com.mossle.auth.manager.RoleDefManager;
-import com.mossle.auth.manager.RoleManager;
+import com.mossle.auth.persistence.domain.Perm;
+import com.mossle.auth.persistence.domain.PermType;
+import com.mossle.auth.persistence.domain.Role;
+import com.mossle.auth.persistence.domain.RoleDef;
+import com.mossle.auth.persistence.manager.PermManager;
+import com.mossle.auth.persistence.manager.PermTypeManager;
+import com.mossle.auth.persistence.manager.RoleDefManager;
+import com.mossle.auth.persistence.manager.RoleManager;
 import com.mossle.auth.support.CheckRoleException;
 
 import com.mossle.core.spring.MessageHelper;
@@ -48,6 +48,7 @@ public class RolePermController {
     private MessageHelper messageHelper;
     private RoleDefChecker roleDefChecker;
     private RoleManager roleManager;
+    private TenantHolder tenantHolder;
 
     @RequestMapping("role-perm-save")
     public String save(
@@ -93,9 +94,9 @@ public class RolePermController {
             selectedItem.add(perm.getId());
         }
 
-        String hql = "from PermType where type=0 and scopeId=?";
+        String hql = "from PermType where type=0 and tenantId=?";
         List<PermType> permTypes = permTypeManager.find(hql,
-                ScopeHolder.getScopeId());
+                tenantHolder.getTenantId());
         model.addAttribute("permTypes", permTypes);
         model.addAttribute("selectedItem", selectedItem);
         model.addAttribute("id", id);
@@ -132,5 +133,10 @@ public class RolePermController {
     @Resource
     public void setRoleManager(RoleManager roleManager) {
         this.roleManager = roleManager;
+    }
+
+    @Resource
+    public void setTenantHolder(TenantHolder tenantHolder) {
+        this.tenantHolder = tenantHolder;
     }
 }

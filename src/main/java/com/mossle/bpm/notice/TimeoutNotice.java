@@ -20,9 +20,8 @@ import com.mossle.bpm.persistence.domain.BpmConfNotice;
 import com.mossle.bpm.persistence.domain.BpmMailTemplate;
 import com.mossle.bpm.persistence.manager.BpmConfNoticeManager;
 
+import com.mossle.core.mail.MailFacade;
 import com.mossle.core.spring.ApplicationContextHelper;
-
-import com.mossle.ext.mail.MailFacade;
 
 import org.activiti.engine.delegate.DelegateTask;
 import org.activiti.engine.impl.context.Context;
@@ -132,7 +131,9 @@ public class TimeoutNotice {
                         .getNotificationType().split(",")));
                 notificationDto.setData(data);
                 notificationDto.setTemplate(bpmConfNotice.getTemplateCode());
-                notificationConnector.send(notificationDto);
+
+                notificationConnector.send(notificationDto,
+                        delegateTask.getTenantId());
             }
         } catch (Exception ex) {
             logger.error(ex.getMessage(), ex);

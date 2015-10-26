@@ -10,16 +10,17 @@ import javax.annotation.Resource;
 import javax.servlet.http.HttpServletRequest;
 import javax.servlet.http.HttpServletResponse;
 
+import com.mossle.api.tenant.TenantHolder;
+
+import com.mossle.core.MultipartHandler;
+import com.mossle.core.export.Exportor;
+import com.mossle.core.export.TableModel;
 import com.mossle.core.hibernate.PropertyFilter;
 import com.mossle.core.mapper.BeanMapper;
 import com.mossle.core.mapper.JsonMapper;
 import com.mossle.core.page.Page;
 import com.mossle.core.spring.MessageHelper;
-
-import com.mossle.ext.MultipartHandler;
-import com.mossle.ext.export.Exportor;
-import com.mossle.ext.export.TableModel;
-import com.mossle.ext.store.MultipartFileDataSource;
+import com.mossle.core.store.MultipartFileDataSource;
 
 import com.mossle.humantask.persistence.domain.TaskInfo;
 import com.mossle.humantask.persistence.manager.TaskInfoManager;
@@ -55,12 +56,15 @@ public class TaskInfoController {
     private BeanMapper beanMapper = new BeanMapper();
     private JsonMapper jsonMapper = new JsonMapper();
     private MessageHelper messageHelper;
+    private TenantHolder tenantHolder;
 
     @RequestMapping("task-info-list")
     public String list(@ModelAttribute Page page,
             @RequestParam Map<String, Object> parameterMap, Model model) {
+        String tenantId = tenantHolder.getTenantId();
         List<PropertyFilter> propertyFilters = PropertyFilter
                 .buildFromMap(parameterMap);
+        propertyFilters.add(new PropertyFilter("EQS_tenantId", tenantId));
         page = taskInfoManager.pagedQuery(page, propertyFilters);
         model.addAttribute("page", page);
 
@@ -82,6 +86,7 @@ public class TaskInfoController {
     public String save(@ModelAttribute TaskInfo taskInfo,
             @RequestParam Map<String, Object> parameterMap,
             RedirectAttributes redirectAttributes) {
+        String tenantId = tenantHolder.getTenantId();
         TaskInfo dest = null;
         Long id = taskInfo.getId();
 
@@ -90,6 +95,7 @@ public class TaskInfoController {
             beanMapper.copy(taskInfo, dest);
         } else {
             dest = taskInfo;
+            dest.setTenantId(tenantId);
         }
 
         taskInfoManager.save(dest);
@@ -144,5 +150,10 @@ public class TaskInfoController {
     @Resource
     public void setMessageHelper(MessageHelper messageHelper) {
         this.messageHelper = messageHelper;
+    }
+
+    @Resource
+    public void setTenantHolder(TenantHolder tenantHolder) {
+        this.tenantHolder = tenantHolder;
     }
 }

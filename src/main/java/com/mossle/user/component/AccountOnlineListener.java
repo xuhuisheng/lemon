@@ -6,11 +6,8 @@ import java.util.Date;
 
 import javax.annotation.Resource;
 
-import com.mossle.api.audit.AuditConnector;
-import com.mossle.api.audit.AuditDTO;
-
-import com.mossle.ext.auth.LoginEvent;
-import com.mossle.ext.auth.LogoutEvent;
+import com.mossle.core.auth.LoginEvent;
+import com.mossle.core.auth.LogoutEvent;
 
 import com.mossle.user.persistence.domain.AccountOnline;
 import com.mossle.user.persistence.manager.AccountOnlineManager;
@@ -22,17 +19,6 @@ import org.springframework.context.ApplicationContext;
 import org.springframework.context.ApplicationContextAware;
 import org.springframework.context.ApplicationEvent;
 import org.springframework.context.ApplicationListener;
-
-import org.springframework.security.access.event.AuthenticationCredentialsNotFoundEvent;
-import org.springframework.security.access.event.AuthorizationFailureEvent;
-import org.springframework.security.access.event.AuthorizedEvent;
-import org.springframework.security.access.event.PublicInvocationEvent;
-import org.springframework.security.authentication.event.AbstractAuthenticationEvent;
-import org.springframework.security.authentication.event.AbstractAuthenticationFailureEvent;
-import org.springframework.security.authentication.event.AuthenticationFailureBadCredentialsEvent;
-import org.springframework.security.authentication.event.AuthenticationSuccessEvent;
-import org.springframework.security.core.Authentication;
-import org.springframework.security.web.authentication.WebAuthenticationDetails;
 
 import org.springframework.stereotype.Component;
 
@@ -52,6 +38,7 @@ public class AccountOnlineListener implements ApplicationListener {
                 accountOnline.setAccount(loginEvent.getUserId());
                 accountOnline.setSessionId(loginEvent.getSessionId());
                 accountOnline.setLoginTime(new Date());
+                accountOnline.setTenantId(loginEvent.getTenantId());
                 accountOnlineManager.save(accountOnline);
             }
 
@@ -61,6 +48,14 @@ public class AccountOnlineListener implements ApplicationListener {
 
                 AccountOnline accountOnline = accountOnlineManager
                         .findUniqueBy("sessionId", logoutEvent.getSessionId());
+
+                if (accountOnline == null) {
+                    accountOnline = accountOnlineManager.findUniqueBy(
+                            "account", logoutEvent.getUserId());
+                }
+
+                logger.debug("sessionId : {}", logoutEvent.getSessionId());
+                logger.debug("accountOnline : {}", accountOnline);
 
                 if (accountOnline != null) {
                     accountOnlineManager.remove(accountOnline);

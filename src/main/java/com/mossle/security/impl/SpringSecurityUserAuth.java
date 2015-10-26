@@ -67,14 +67,14 @@ public class SpringSecurityUserAuth extends UserAuthDTO implements UserDetails {
     private void writeObject(ObjectOutputStream out) throws IOException {
         out.defaultWriteObject();
         out.writeObject(getId());
-        out.writeObject(getScopeId());
+        out.writeObject(getTenantId());
     }
 
     private void readObject(ObjectInputStream in) throws IOException,
             ClassNotFoundException {
         in.defaultReadObject();
         setId((String) in.readObject());
-        setScopeId((String) in.readObject());
+        setTenantId((String) in.readObject());
     }
 
     @Override

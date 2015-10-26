@@ -33,13 +33,18 @@ public class AccountOnline implements java.io.Serializable {
     /** null. */
     private Date loginTime;
 
+    /** null. */
+    private String tenantId;
+
     public AccountOnline() {
     }
 
-    public AccountOnline(String account, String sessionId, Date loginTime) {
+    public AccountOnline(String account, String sessionId, Date loginTime,
+            String tenantId) {
         this.account = account;
         this.sessionId = sessionId;
         this.loginTime = loginTime;
+        this.tenantId = tenantId;
     }
 
     /** @return null. */
@@ -99,5 +104,19 @@ public class AccountOnline implements java.io.Serializable {
      */
     public void setLoginTime(Date loginTime) {
         this.loginTime = loginTime;
+    }
+
+    /** @return null. */
+    @Column(name = "TENANT_ID", length = 64)
+    public String getTenantId() {
+        return this.tenantId;
+    }
+
+    /**
+     * @param tenantId
+     *            null.
+     */
+    public void setTenantId(String tenantId) {
+        this.tenantId = tenantId;
     }
 }

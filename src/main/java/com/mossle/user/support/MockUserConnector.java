@@ -52,11 +52,12 @@ public class MockUserConnector implements UserConnector {
         return userDto;
     }
 
-    public UserDTO findByNickName(String nickName) {
+    public UserDTO findByNickName(String nickName, String userRepoRef) {
         return userDto;
     }
 
-    public Page pagedQuery(Page page, Map<String, Object> parameters) {
+    public Page pagedQuery(String userRepoRef, Page page,
+            Map<String, Object> parameters) {
         page.setTotalCount(1);
         page.setResult(Collections.singletonList(userDto));
 

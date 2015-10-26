@@ -74,11 +74,12 @@ public class UserConnectorWrapper implements UserConnector {
         return userDto;
     }
 
-    public Page pagedQuery(Page page, Map<String, Object> parameters) {
-        return userConnector.pagedQuery(page, parameters);
+    public Page pagedQuery(String userRepoRef, Page page,
+            Map<String, Object> parameters) {
+        return userConnector.pagedQuery(userRepoRef, page, parameters);
     }
 
-    public UserDTO findByNickName(String nickName) {
+    public UserDTO findByNickName(String nickName, String userRepoRef) {
         UserDTO userDto = userCache.findByNickName(nickName);
 
         if (userDto == null) {
@@ -86,7 +87,8 @@ public class UserConnectorWrapper implements UserConnector {
                 userDto = userCache.findByNickName(nickName);
 
                 if (userDto == null) {
-                    userDto = userConnector.findByNickName(nickName);
+                    userDto = userConnector.findByNickName(nickName,
+                            userRepoRef);
 
                     if (userDto != null) {
                         userCache.updateUser(userDto);

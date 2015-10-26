@@ -9,11 +9,11 @@
     <%@include file="/common/meta.jsp"%>
     <title>designer</title>
     <%@include file="/common/s.jsp"%>
-    <script type="text/javascript" src="${scopePrefix}/widgets/gef/designer-bpmn2-packed.js"></script>
-    <script type='text/javascript' src='${scopePrefix}/widgets/gef/container-layout.js'></script>
-    <script type='text/javascript' src='${scopePrefix}/widgets/gef/adaptor.js'></script>
+    <script type="text/javascript" src="${tenantPrefix}/widgets/gef/designer-bpmn2-packed.js"></script>
+    <script type='text/javascript' src='${tenantPrefix}/widgets/gef/container-layout.js'></script>
+    <script type='text/javascript' src='${tenantPrefix}/widgets/gef/adaptor.js'></script>
     <script type="text/javascript">
-Gef.IMAGE_ROOT = '${scopePrefix}/widgets/gef/images/activities/48/';
+Gef.IMAGE_ROOT = '${tenantPrefix}/widgets/gef/images/activities/48/';
     </script>
   </head>
 
@@ -29,51 +29,51 @@ Gef.IMAGE_ROOT = '${scopePrefix}/widgets/gef/images/activities/48/';
 	    <div id="__gef_toolbar__">
 		  <div id="__gef_toolbar_blank__" style="float:left;">&nbsp;</div>
 		  <div class="btn-group">
-		    <button class="btn btn-small" onclick="Gef.activeEditor.reset()"><img src="${scopePrefix}/widgets/gef/images/visualpharm/New-16x16.png">新建</button>
-		    <button class="btn btn-small" onclick="doImport()"><img src="${scopePrefix}/widgets/gef/images/visualpharm/Properties_16x16.png">导入</button>
-		    <button class="btn btn-small" onclick="doExport()"><img src="${scopePrefix}/widgets/gef/images/visualpharm/Copy_16x16.png">导出</button>
-		    <button class="btn btn-small" onclick=""><img src="${scopePrefix}/widgets/gef/images/visualpharm/Save-16x16.png">保存</button>
-		    <button class="btn btn-small" onclick="doDeploy()"><img src="${scopePrefix}/widgets/gef/images/visualpharm/Stock-Index-Up-16x16.png">发布</button>
-		    <button class="btn btn-small" onclick="Gef.activeEditor.clear()"><img src="${scopePrefix}/widgets/gef/images/visualpharm/Cancel_16x16.png">清空</button>
-		    <button class="btn btn-small" onclick="doUndo()"><img src="${scopePrefix}/widgets/gef/images/visualpharm/Undo_16x16.png">撤销</button>
-		    <button class="btn btn-small" onclick="doRedo()"><img src="${scopePrefix}/widgets/gef/images/visualpharm/Redo_16x16.png">重做</button>
-		    <button class="btn btn-small" onclick="doLayout()"><img src="${scopePrefix}/widgets/gef/images/visualpharm/Settings_16x16.png">布局</button>
-		    <button class="btn btn-small" onclick=""><img src="${scopePrefix}/widgets/gef/images/visualpharm/Delete_16x16.png">删除</button>
-		    <button class="btn btn-small" onclick="alignVertical()"><img src="${scopePrefix}/widgets/gef/images/visualpharm/New-16x16.png">竖直对齐</button>
-		    <button class="btn btn-small" onclick="alignHorizontal()"><img src="${scopePrefix}/widgets/gef/images/visualpharm/New-16x16.png">水平对齐</button>
+		    <button class="btn btn-small" onclick="Gef.activeEditor.reset()"><img src="${tenantPrefix}/widgets/gef/images/visualpharm/New-16x16.png">新建</button>
+		    <button class="btn btn-small" onclick="doImport()"><img src="${tenantPrefix}/widgets/gef/images/visualpharm/Properties_16x16.png">导入</button>
+		    <button class="btn btn-small" onclick="doExport()"><img src="${tenantPrefix}/widgets/gef/images/visualpharm/Copy_16x16.png">导出</button>
+		    <button class="btn btn-small" onclick=""><img src="${tenantPrefix}/widgets/gef/images/visualpharm/Save-16x16.png">保存</button>
+		    <button class="btn btn-small" onclick="doDeploy()"><img src="${tenantPrefix}/widgets/gef/images/visualpharm/Stock-Index-Up-16x16.png">发布</button>
+		    <button class="btn btn-small" onclick="Gef.activeEditor.clear()"><img src="${tenantPrefix}/widgets/gef/images/visualpharm/Cancel_16x16.png">清空</button>
+		    <button class="btn btn-small" onclick="doUndo()"><img src="${tenantPrefix}/widgets/gef/images/visualpharm/Undo_16x16.png">撤销</button>
+		    <button class="btn btn-small" onclick="doRedo()"><img src="${tenantPrefix}/widgets/gef/images/visualpharm/Redo_16x16.png">重做</button>
+		    <button class="btn btn-small" onclick="doLayout()"><img src="${tenantPrefix}/widgets/gef/images/visualpharm/Settings_16x16.png">布局</button>
+		    <button class="btn btn-small" onclick=""><img src="${tenantPrefix}/widgets/gef/images/visualpharm/Delete_16x16.png">删除</button>
+		    <button class="btn btn-small" onclick="alignVertical()"><img src="${tenantPrefix}/widgets/gef/images/visualpharm/New-16x16.png">竖直对齐</button>
+		    <button class="btn btn-small" onclick="alignHorizontal()"><img src="${tenantPrefix}/widgets/gef/images/visualpharm/New-16x16.png">水平对齐</button>
 		  </div>
 		</div>
 	    <div id="__gef_palette__" style="float:left;">
 		  <div style="border: 1px solid #CCCCCC; border-radius: 4px;padding: 2px;">
 		    <div id="startnone" class="paletteItem-startnone" style="text-align:center;font-size:12px;cursor:pointer;" unselectable="on">
-		      <img id="startnone-img" class="paletteItem-startnone" src="${scopePrefix}/widgets/gef/images/activities/32/start-event.png" unselectable="on">
+		      <img id="startnone-img" class="paletteItem-startnone" src="${tenantPrefix}/widgets/gef/images/activities/32/start-event.png" unselectable="on">
 		    </div>
 		    <div id="endnone" class="paletteItem-endnone" style="text-align:center;font-size:12px;cursor:pointer;" unselectable="on">
-		      <img id="endnone-img" class="paletteItem-endnone" src="${scopePrefix}/widgets/gef/images/activities/32/end-event.png" unselectable="on">
+		      <img id="endnone-img" class="paletteItem-endnone" src="${tenantPrefix}/widgets/gef/images/activities/32/end-event.png" unselectable="on">
 		    </div>
 		    <div id="exclusive" class="paletteItem-exclusive" style="text-align:center;font-size:12px;cursor:pointer;" unselectable="on">
-		      <img id="exclusive-img" class="paletteItem-exclusive" src="${scopePrefix}/widgets/gef/images/activities/32/gateway.png" unselectable="on">
+		      <img id="exclusive-img" class="paletteItem-exclusive" src="${tenantPrefix}/widgets/gef/images/activities/32/gateway.png" unselectable="on">
 		    </div>
 		    <div id="taskuser" class="paletteItem-taskuser" style="text-align:center;font-size:12px;cursor:pointer;" unselectable="on">
-		      <img id="taskuser-img" class="paletteItem-taskuser" src="${scopePrefix}/widgets/gef/images/activities/32/task.png" unselectable="on">
+		      <img id="taskuser-img" class="paletteItem-taskuser" src="${tenantPrefix}/widgets/gef/images/activities/32/task.png" unselectable="on">
 		    </div>
 		    <div id="subprocess" class="paletteItem-subprocess" style="text-align:center;font-size:12px;cursor:pointer;" unselectable="on">
-		      <img id="subprocess-img" class="paletteItem-subprocess" src="${scopePrefix}/widgets/gef/images/activities/32/sub-process.png" unselectable="on">
+		      <img id="subprocess-img" class="paletteItem-subprocess" src="${tenantPrefix}/widgets/gef/images/activities/32/sub-process.png" unselectable="on">
 		    </div>
 		    <div id="pool" class="paletteItem-pool" style="text-align:center;font-size:12px;cursor:pointer;" unselectable="on">
-		      <img id="pool-img" class="paletteItem-pool" src="${scopePrefix}/widgets/gef/images/activities/32/pool.png" unselectable="on">
+		      <img id="pool-img" class="paletteItem-pool" src="${tenantPrefix}/widgets/gef/images/activities/32/pool.png" unselectable="on">
 		    </div>
 		    <div id="lane" class="paletteItem-lane" style="text-align:center;font-size:12px;cursor:pointer;" unselectable="on">
-		      <img id="lane-img" class="paletteItem-lane" src="${scopePrefix}/widgets/gef/images/activities/32/lane.png" unselectable="on">
+		      <img id="lane-img" class="paletteItem-lane" src="${tenantPrefix}/widgets/gef/images/activities/32/lane.png" unselectable="on">
 		    </div>
 		    <div id="catchtimer" class="paletteItem-catchtimer" style="text-align:center;font-size:12px;cursor:pointer;" unselectable="on">
-		      <img id="catchtimer-img" class="paletteItem-catchtimer" src="${scopePrefix}/widgets/gef/images/activities/32/catching-event.png" unselectable="on">
+		      <img id="catchtimer-img" class="paletteItem-catchtimer" src="${tenantPrefix}/widgets/gef/images/activities/32/catching-event.png" unselectable="on">
 		    </div>
 		    <div id="throwsignal" class="paletteItem-throwsignal" style="text-align:center;font-size:12px;cursor:pointer;" unselectable="on">
-		      <img id="throwsignal-img" class="paletteItem-throwsignal" src="${scopePrefix}/widgets/gef/images/activities/32/throwing-event.png" unselectable="on">
+		      <img id="throwsignal-img" class="paletteItem-throwsignal" src="${tenantPrefix}/widgets/gef/images/activities/32/throwing-event.png" unselectable="on">
 		    </div>
 		    <div id="boundarycancel" class="paletteItem-boundarycancel" style="text-align:center;font-size:12px;cursor:pointer;" unselectable="on">
-		      <img id="boundarycancel-img" class="paletteItem-boundarycancel" src="${scopePrefix}/widgets/gef/images/activities/32/boundary-event.png" unselectable="on">
+		      <img id="boundarycancel-img" class="paletteItem-boundarycancel" src="${tenantPrefix}/widgets/gef/images/activities/32/boundary-event.png" unselectable="on">
 		    </div>
 		  </div>
 	    </div>
@@ -97,23 +97,23 @@ Gef.IMAGE_ROOT = '${scopePrefix}/widgets/gef/images/activities/48/';
 		</div>
 	    <div unselectable="on" id="__gef_bpmn2_palette_content__">
 		  <div id="startnone" class="paletteItem-startnone" style="text-align:center;font-size:12px;cursor:pointer;" unselectable="on">
-		    <img id="startnone-img" class="paletteItem-startnone" src="${scopePrefix}/widgets/gef/images/bpmn2/large/start_empty.png" unselectable="on">
+		    <img id="startnone-img" class="paletteItem-startnone" src="${tenantPrefix}/widgets/gef/images/bpmn2/large/start_empty.png" unselectable="on">
 			<br>start
 		  </div>
 		  <div id="endnone" class="paletteItem-endnone" style="text-align:center;font-size:12px;cursor:pointer;" unselectable="on">
-		    <img id="endnone-img" class="paletteItem-endnone" src="${scopePrefix}/widgets/gef/images/bpmn2/large/end_empty.png" unselectable="on">
+		    <img id="endnone-img" class="paletteItem-endnone" src="${tenantPrefix}/widgets/gef/images/bpmn2/large/end_empty.png" unselectable="on">
 			<br>end
 		  </div>
 		  <div id="exclusive" class="paletteItem-exclusive" style="text-align:center;font-size:12px;cursor:pointer;" unselectable="on">
-		    <img id="exclusive-img" class="paletteItem-exclusive" src="${scopePrefix}/widgets/gef/images/bpmn2/large/gateway_exclusive.png" unselectable="on">
+		    <img id="exclusive-img" class="paletteItem-exclusive" src="${tenantPrefix}/widgets/gef/images/bpmn2/large/gateway_exclusive.png" unselectable="on">
 			<br>exclusive
 		  </div>
 		  <div id="parallel" class="paletteItem-parallel" style="text-align:center;font-size:12px;cursor:pointer;" unselectable="on">
-		    <img id="parallel-img" class="paletteItem-parallel" src="${scopePrefix}/widgets/gef/images/bpmn2/large/gateway_parallel.png" unselectable="on">
+		    <img id="parallel-img" class="paletteItem-parallel" src="${tenantPrefix}/widgets/gef/images/bpmn2/large/gateway_parallel.png" unselectable="on">
 			<br>parallel
 		  </div>
 		  <div id="taskuser" class="paletteItem-taskuser" style="text-align:center;font-size:12px;cursor:pointer;" unselectable="on">
-		    <img id="taskuser-img" class="paletteItem-taskuser" src="${scopePrefix}/widgets/gef/images/bpmn2/large/task_empty.png" unselectable="on">
+		    <img id="taskuser-img" class="paletteItem-taskuser" src="${tenantPrefix}/widgets/gef/images/bpmn2/large/task_empty.png" unselectable="on">
 			<br>user task
 		  </div>
 		</div>

@@ -8,13 +8,13 @@ import javax.annotation.Resource;
 
 import javax.servlet.http.HttpServletResponse;
 
-import com.mossle.api.scope.ScopeConnector;
-import com.mossle.api.scope.ScopeHolder;
+import com.mossle.api.tenant.TenantConnector;
+import com.mossle.api.tenant.TenantHolder;
 
-import com.mossle.auth.domain.Perm;
-import com.mossle.auth.domain.PermType;
-import com.mossle.auth.manager.PermManager;
-import com.mossle.auth.manager.PermTypeManager;
+import com.mossle.auth.persistence.domain.Perm;
+import com.mossle.auth.persistence.domain.PermType;
+import com.mossle.auth.persistence.manager.PermManager;
+import com.mossle.auth.persistence.manager.PermTypeManager;
 
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
@@ -36,12 +36,13 @@ public class PermBatchController {
             .getLogger(PermBatchController.class);
     private PermManager permManager;
     private PermTypeManager permTypeManager;
-    private ScopeConnector scopeConnector;
+    private TenantConnector tenantConnector;
+    private TenantHolder tenantHolder;
 
     @RequestMapping("perm-batch-list")
     public String list(Model model) {
-        List<Perm> perms = permManager.findBy("scopeId",
-                ScopeHolder.getScopeId());
+        List<Perm> perms = permManager.findBy("tenantId",
+                tenantHolder.getTenantId());
         StringBuilder buff = new StringBuilder();
 
         for (Perm perm : perms) {
@@ -77,15 +78,15 @@ public class PermBatchController {
                 String type = array[2];
 
                 Perm perm = permManager.findUnique(
-                        "from Perm where code=? and scopeId=?", code,
-                        ScopeHolder.getScopeId());
+                        "from Perm where code=? and tenantId=?", code,
+                        tenantHolder.getTenantId());
                 PermType permType = permTypeManager.findUniqueBy("name", type);
 
                 if (permType == null) {
                     permType = new PermType();
                     permType.setName(type);
                     permType.setType(0);
-                    permType.setScopeId(ScopeHolder.getScopeId());
+                    permType.setTenantId(tenantHolder.getTenantId());
                     permTypeManager.save(permType);
                 }
 
@@ -94,7 +95,7 @@ public class PermBatchController {
                     perm.setCode(code);
                     perm.setName(name);
                     perm.setPermType(permType);
-                    perm.setScopeId(ScopeHolder.getScopeId());
+                    perm.setTenantId(tenantHolder.getTenantId());
                     permManager.save(perm);
                 }
             }
@@ -115,7 +116,12 @@ public class PermBatchController {
     }
 
     @Resource
-    public void setScopeConnector(ScopeConnector scopeConnector) {
-        this.scopeConnector = scopeConnector;
+    public void setTenantConnector(TenantConnector tenantConnector) {
+        this.tenantConnector = tenantConnector;
+    }
+
+    @Resource
+    public void setTenantHolder(TenantHolder tenantHolder) {
+        this.tenantHolder = tenantHolder;
     }
 }

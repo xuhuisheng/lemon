@@ -15,14 +15,13 @@ import javax.ws.rs.Produces;
 import javax.ws.rs.QueryParam;
 import javax.ws.rs.core.MediaType;
 
+import com.mossle.core.auth.CurrentUserHolder;
 import com.mossle.core.mapper.JsonMapper;
 import com.mossle.core.util.BaseDTO;
 import com.mossle.core.util.StringUtils;
 
-import com.mossle.ext.auth.CurrentUserHolder;
-
-import com.mossle.msg.domain.MsgInfo;
-import com.mossle.msg.manager.MsgInfoManager;
+import com.mossle.msg.persistence.domain.MsgInfo;
+import com.mossle.msg.persistence.manager.MsgInfoManager;
 
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;

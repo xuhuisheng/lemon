@@ -5,18 +5,18 @@ import java.util.List;
 
 import javax.annotation.Resource;
 
-import com.mossle.api.scope.ScopeHolder;
+import com.mossle.api.tenant.TenantHolder;
 import com.mossle.api.user.UserConnector;
 import com.mossle.api.user.UserDTO;
 
 import com.mossle.core.page.Page;
 import com.mossle.core.spring.MessageHelper;
 
-import com.mossle.party.domain.PartyEntity;
-import com.mossle.party.domain.PartyStruct;
-import com.mossle.party.manager.PartyEntityManager;
-import com.mossle.party.manager.PartyStructManager;
-import com.mossle.party.manager.PartyStructTypeManager;
+import com.mossle.party.persistence.domain.PartyEntity;
+import com.mossle.party.persistence.domain.PartyStruct;
+import com.mossle.party.persistence.manager.PartyEntityManager;
+import com.mossle.party.persistence.manager.PartyStructManager;
+import com.mossle.party.persistence.manager.PartyStructTypeManager;
 
 import org.springframework.stereotype.Controller;
 
@@ -36,6 +36,7 @@ public class AdminBatchController {
     private PartyEntityManager partyEntityManager;
     private PartyStructManager partyStructManager;
     private PartyStructTypeManager partyStructTypeManager;
+    private TenantHolder tenantHolder;
 
     @RequestMapping("user-repo-list")
     public String list(@RequestParam("id") Long id, Model model) {
@@ -63,7 +64,7 @@ public class AdminBatchController {
                 }
 
                 UserDTO userDto = userConnector.findByUsername(str,
-                        ScopeHolder.getUserRepoRef());
+                        tenantHolder.getUserRepoRef());
 
                 if (userDto.getStatus() != 1) {
                     continue;
@@ -165,5 +166,10 @@ public class AdminBatchController {
     public void setPartyStructTypeManager(
             PartyStructTypeManager partyStructTypeManager) {
         this.partyStructTypeManager = partyStructTypeManager;
+    }
+
+    @Resource
+    public void setTenantHolder(TenantHolder tenantHolder) {
+        this.tenantHolder = tenantHolder;
     }
 }

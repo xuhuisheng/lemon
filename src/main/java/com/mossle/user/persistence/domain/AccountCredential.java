@@ -63,6 +63,9 @@ public class AccountCredential implements java.io.Serializable {
     /** null. */
     private String status;
 
+    /** null. */
+    private String tenantId;
+
     /** . */
     private Set<AccountHistoryCredential> accountHistoryCredentials = new HashSet<AccountHistoryCredential>(
             0);
@@ -73,7 +76,7 @@ public class AccountCredential implements java.io.Serializable {
     public AccountCredential(AccountInfo accountInfo, String password,
             Date modifyTime, Date expireTime, String expireStatus,
             String required, String couldModify, String type, String catalog,
-            String data, String status,
+            String data, String status, String tenantId,
             Set<AccountHistoryCredential> accountHistoryCredentials) {
         this.accountInfo = accountInfo;
         this.password = password;
@@ -86,6 +89,7 @@ public class AccountCredential implements java.io.Serializable {
         this.catalog = catalog;
         this.data = data;
         this.status = status;
+        this.tenantId = tenantId;
         this.accountHistoryCredentials = accountHistoryCredentials;
     }
 
@@ -260,6 +264,20 @@ public class AccountCredential implements java.io.Serializable {
      */
     public void setStatus(String status) {
         this.status = status;
+    }
+
+    /** @return null. */
+    @Column(name = "TENANT_ID", length = 64)
+    public String getTenantId() {
+        return this.tenantId;
+    }
+
+    /**
+     * @param tenantId
+     *            null.
+     */
+    public void setTenantId(String tenantId) {
+        this.tenantId = tenantId;
     }
 
     /** @return . */

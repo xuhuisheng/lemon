@@ -54,6 +54,9 @@ public class WhitelistApp implements java.io.Serializable {
     /** null. */
     private Integer level;
 
+    /** null. */
+    private String tenantId;
+
     /** . */
     private Set<WhitelistHost> whitelistHosts = new HashSet<WhitelistHost>(0);
 
@@ -66,7 +69,8 @@ public class WhitelistApp implements java.io.Serializable {
     public WhitelistApp(WhitelistType whitelistType, String name,
             String userId, String description, Integer forceRelogin,
             String code, String username, String password, Integer level,
-            Set<WhitelistHost> whitelistHosts, Set<WhitelistIp> whitelistIps) {
+            String tenantId, Set<WhitelistHost> whitelistHosts,
+            Set<WhitelistIp> whitelistIps) {
         this.whitelistType = whitelistType;
         this.name = name;
         this.userId = userId;
@@ -76,6 +80,7 @@ public class WhitelistApp implements java.io.Serializable {
         this.username = username;
         this.password = password;
         this.level = level;
+        this.tenantId = tenantId;
         this.whitelistHosts = whitelistHosts;
         this.whitelistIps = whitelistIps;
     }
@@ -221,6 +226,20 @@ public class WhitelistApp implements java.io.Serializable {
      */
     public void setLevel(Integer level) {
         this.level = level;
+    }
+
+    /** @return null. */
+    @Column(name = "TENANT_ID", length = 64)
+    public String getTenantId() {
+        return this.tenantId;
+    }
+
+    /**
+     * @param tenantId
+     *            null.
+     */
+    public void setTenantId(String tenantId) {
+        this.tenantId = tenantId;
     }
 
     /** @return . */

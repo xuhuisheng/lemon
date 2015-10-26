@@ -10,8 +10,10 @@ import javax.ws.rs.Path;
 import javax.ws.rs.Produces;
 import javax.ws.rs.core.MediaType;
 
-import com.mossle.form.domain.FormTemplate;
-import com.mossle.form.manager.FormTemplateManager;
+import com.mossle.api.tenant.TenantHolder;
+
+import com.mossle.form.persistence.domain.FormTemplate;
+import com.mossle.form.persistence.manager.FormTemplateManager;
 
 import org.springframework.stereotype.Component;
 
@@ -20,13 +22,16 @@ import org.springframework.stereotype.Component;
 public class ModelResource {
     private static final String CHARSET = ";charset=UTF-8";
     private FormTemplateManager formTemplateManager;
+    private TenantHolder tenantHolder;
 
     @GET
     @Path("forms")
     @Produces({ MediaType.APPLICATION_JSON, MediaType.APPLICATION_XML + CHARSET })
     public List<String> getForms() {
+        String tenantId = tenantHolder.getTenantId();
         List<String> forms = new ArrayList<String>();
-        List<FormTemplate> formTemplates = formTemplateManager.getAll();
+        List<FormTemplate> formTemplates = formTemplateManager.findBy(
+                "tenantId", tenantId);
 
         for (FormTemplate formTemplate : formTemplates) {
             forms.add(formTemplate.getName());
@@ -38,5 +43,10 @@ public class ModelResource {
     @Resource
     public void setFormTemplateManager(FormTemplateManager formTemplateManager) {
         this.formTemplateManager = formTemplateManager;
+    }
+
+    @Resource
+    public void setTenantHolder(TenantHolder tenantHolder) {
+        this.tenantHolder = tenantHolder;
     }
 }

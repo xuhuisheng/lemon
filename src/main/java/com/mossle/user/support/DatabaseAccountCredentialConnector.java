@@ -19,13 +19,28 @@ public class DatabaseAccountCredentialConnector implements
     private static Logger logger = LoggerFactory
             .getLogger(DatabaseAccountCredentialConnector.class);
     private JdbcTemplate jdbcTemplate;
-    private String sqlFindPassword = "select ac.password as password"
-            + " from ACCOUNT_CREDENTIAL ac,ACCOUNT_INFO ai"
-            + " where ac.account_id=ai.id and catalog='default' and ai.username=?";
+    private String sqlFindPassword = "SELECT AC.PASSWORD AS PASSWORD"
+            + " FROM ACCOUNT_CREDENTIAL AC,ACCOUNT_INFO AI"
+            + " WHERE AC.ACCOUNT_ID=AI.ID AND CATALOG='default' AND AI.USERNAME=? and AI.TENANT_ID=?";
 
-    public String findPassword(String username) {
-        String password = jdbcTemplate.queryForObject(sqlFindPassword,
-                String.class, username);
+    public String findPassword(String username, String tenantId) {
+        if (username == null) {
+            logger.info("username is null");
+
+            return null;
+        }
+
+        username = username.toLowerCase();
+
+        String password = null;
+
+        try {
+            password = jdbcTemplate.queryForObject(sqlFindPassword,
+                    String.class, username, tenantId);
+        } catch (Exception ex) {
+            logger.info(ex.getMessage());
+            logger.info("cannot find password : {}, {}", username, tenantId);
+        }
 
         return password;
     }

@@ -25,7 +25,9 @@ public class ButtonHelper {
         this.addButton("rollbackAssignee", "退回（指定负责人）");
         this.addButton("rollbackActivity", "退回（指定步骤）");
         this.addButton("rollbackActivityAssignee", "退回（指定步骤，指定负责人）");
+        this.addButton("rollbackStart", "回退（开始节点）");
         this.addButton("delegateTask", "协办");
+        this.addButton("delegateTaskCreate", "协办（链式）");
         this.addButton("resolveTask", "还回");
         this.addButton("endProcess", "终止流程");
         this.addButton("suspendProcess", "暂停流程");

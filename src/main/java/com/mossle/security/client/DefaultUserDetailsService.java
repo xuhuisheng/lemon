@@ -2,7 +2,7 @@ package com.mossle.security.client;
 
 import java.util.Collections;
 
-import com.mossle.api.scope.ScopeHolder;
+import com.mossle.api.tenant.TenantHolder;
 import com.mossle.api.userauth.UserAuthConnector;
 import com.mossle.api.userauth.UserAuthDTO;
 
@@ -27,6 +27,7 @@ public class DefaultUserDetailsService implements UserDetailsService {
     private String defaultPassword;
     private BeanMapper beanMapper = new BeanMapper();
     private boolean debug;
+    private TenantHolder tenantHolder;
 
     /**
      * 遇到的问题.
@@ -37,20 +38,39 @@ public class DefaultUserDetailsService implements UserDetailsService {
             throws UsernameNotFoundException {
         logger.debug("username : {}", username);
 
+        String tenantId = tenantHolder.getTenantId();
+
         if (debug) {
             SpringSecurityUserAuth userAuth = new SpringSecurityUserAuth();
             userAuth.setId("1");
             userAuth.setUsername(username);
             userAuth.setDisplayName(username);
             userAuth.setPermissions(Collections.singletonList("*"));
+            userAuth.setTenantId(tenantId);
 
             return userAuth;
         }
 
+        if (username == null) {
+            logger.info("username is null");
+
+            return null;
+        }
+
+        username = username.toLowerCase();
+
         try {
             UserAuthDTO userAuthDto = userAuthConnector.findByUsername(
-                    username, ScopeHolder.getScopeId());
-            String password = accountCredentialConnector.findPassword(username);
+                    username, tenantId);
+
+            if (userAuthDto == null) {
+                logger.info("cannot find user : {}, {}", username, tenantId);
+
+                throw new UsernameNotFoundException(username + "," + tenantId);
+            }
+
+            String password = accountCredentialConnector.findPassword(username,
+                    tenantId);
 
             SpringSecurityUserAuth userAuthResult = new SpringSecurityUserAuth();
             beanMapper.copy(userAuthDto, userAuthResult);
@@ -61,6 +81,8 @@ public class DefaultUserDetailsService implements UserDetailsService {
             }
 
             return userAuthResult;
+        } catch (UsernameNotFoundException ex) {
+            throw ex;
         } catch (Exception ex) {
             logger.error(ex.getMessage(), ex);
             throw new UsernameNotFoundException(username, ex);
@@ -82,5 +104,9 @@ public class DefaultUserDetailsService implements UserDetailsService {
 
     public void setDebug(boolean debug) {
         this.debug = debug;
+    }
+
+    public void setTenantHolder(TenantHolder tenantHolder) {
+        this.tenantHolder = tenantHolder;
     }
 }

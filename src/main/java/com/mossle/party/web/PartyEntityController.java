@@ -9,18 +9,19 @@ import javax.annotation.Resource;
 import javax.servlet.http.HttpServletRequest;
 import javax.servlet.http.HttpServletResponse;
 
+import com.mossle.api.tenant.TenantHolder;
+
+import com.mossle.core.export.Exportor;
+import com.mossle.core.export.TableModel;
 import com.mossle.core.hibernate.PropertyFilter;
 import com.mossle.core.mapper.BeanMapper;
 import com.mossle.core.page.Page;
 import com.mossle.core.spring.MessageHelper;
 
-import com.mossle.ext.export.Exportor;
-import com.mossle.ext.export.TableModel;
-
-import com.mossle.party.domain.PartyEntity;
-import com.mossle.party.domain.PartyType;
-import com.mossle.party.manager.PartyEntityManager;
-import com.mossle.party.manager.PartyTypeManager;
+import com.mossle.party.persistence.domain.PartyEntity;
+import com.mossle.party.persistence.domain.PartyType;
+import com.mossle.party.persistence.manager.PartyEntityManager;
+import com.mossle.party.persistence.manager.PartyTypeManager;
 import com.mossle.party.support.PartyEntityConverter;
 import com.mossle.party.support.PartyEntityDTO;
 
@@ -43,12 +44,15 @@ public class PartyEntityController {
     private PartyEntityConverter partyEntityConverter = new PartyEntityConverter();
     private Exportor exportor;
     private BeanMapper beanMapper = new BeanMapper();
+    private TenantHolder tenantHolder;
 
     @RequestMapping("party-entity-list")
     public String list(@ModelAttribute Page page,
             @RequestParam Map<String, Object> parameterMap, Model model) {
+        String tenantId = tenantHolder.getTenantId();
         List<PropertyFilter> propertyFilters = PropertyFilter
                 .buildFromMap(parameterMap);
+        propertyFilters.add(new PropertyFilter("EQS_tenantId", tenantId));
         page = partyEntityManager.pagedQuery(page, propertyFilters);
         model.addAttribute("page", page);
 
@@ -58,12 +62,15 @@ public class PartyEntityController {
     @RequestMapping("party-entity-input")
     public String input(@RequestParam(value = "id", required = false) Long id,
             Model model) {
+        String tenantId = tenantHolder.getTenantId();
+
         if (id != null) {
             PartyEntity partyEntity = partyEntityManager.get(id);
             model.addAttribute("model", partyEntity);
         }
 
-        List<PartyType> partyTypes = partyTypeManager.getAll();
+        List<PartyType> partyTypes = partyTypeManager.findBy("tenantId",
+                tenantId);
         model.addAttribute("partyTypes", partyTypes);
 
         return "party/party-entity-input";
@@ -73,6 +80,7 @@ public class PartyEntityController {
     public String save(@ModelAttribute PartyEntity partyEntity,
             @RequestParam("partyTypeId") Long partyTypeId,
             RedirectAttributes redirectAttributes) {
+        String tenantId = tenantHolder.getTenantId();
         PartyEntity dest = null;
         Long id = partyEntity.getId();
 
@@ -81,6 +89,7 @@ public class PartyEntityController {
             beanMapper.copy(partyEntity, dest);
         } else {
             dest = partyEntity;
+            dest.setTenantId(tenantId);
         }
 
         dest.setPartyType(partyTypeManager.get(partyTypeId));
@@ -141,5 +150,10 @@ public class PartyEntityController {
     @Resource
     public void setExportor(Exportor exportor) {
         this.exportor = exportor;
+    }
+
+    @Resource
+    public void setTenantHolder(TenantHolder tenantHolder) {
+        this.tenantHolder = tenantHolder;
     }
 }

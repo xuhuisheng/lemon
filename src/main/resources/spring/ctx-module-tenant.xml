@@ -1,0 +1,13 @@
+<?xml version="1.0" encoding="UTF-8"?>
+<beans xmlns="http://www.springframework.org/schema/beans"
+	    xmlns:xsi="http://www.w3.org/2001/XMLSchema-instance"
+	    xsi:schemaLocation="http://www.springframework.org/schema/beans http://www.springframework.org/schema/beans/spring-beans.xsd">
+
+	<!-- ================================================== -->
+	<!-- 多租户 -->
+
+	<bean id="tenantConnector" class="com.mossle.api.tenant.MockTenantConnector"/>
+
+	<bean id="tenantHolder" class="com.mossle.api.tenant.MockTenantHolder"/>
+
+</beans>

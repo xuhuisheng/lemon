@@ -8,9 +8,11 @@ import javax.annotation.Resource;
 
 import javax.mail.internet.MimeMessage;
 
-import com.mossle.core.mapper.BeanMapper;
+import com.mossle.api.tenant.TenantConnector;
+import com.mossle.api.tenant.TenantDTO;
 
-import com.mossle.ext.mail.MailHelper;
+import com.mossle.core.mail.MailHelper;
+import com.mossle.core.mapper.BeanMapper;
 
 import com.mossle.internal.sendmail.persistence.domain.SendmailConfig;
 import com.mossle.internal.sendmail.persistence.domain.SendmailHistory;
@@ -41,6 +43,7 @@ public class SendMailJob {
     private MailHelper mailHelper;
     private boolean running;
     private boolean enabled = true;
+    private TenantConnector tenantConnector;
 
     // every 10 seconds
     @Scheduled(cron = "0/10 * * * * ?")
@@ -50,13 +53,15 @@ public class SendMailJob {
         }
 
         try {
-            this.doExecute();
+            for (TenantDTO tenantDto : tenantConnector.findAll()) {
+                this.doExecute(tenantDto.getId());
+            }
         } catch (Exception ex) {
             logger.error(ex.getMessage(), ex);
         }
     }
 
-    public synchronized void doExecute() throws Exception {
+    public synchronized void doExecute(String tenantId) throws Exception {
         if (running) {
             return;
         }
@@ -65,7 +70,7 @@ public class SendMailJob {
         logger.debug("send mail job start");
 
         List<SendmailQueue> sendmailQueues = sendmailDataService
-                .findTopSendmailQueues(threshold);
+                .findTopSendmailQueues(threshold, tenantId);
         logger.debug("sendmailQueues : {}", sendmailQueues.size());
 
         for (SendmailQueue sendmailQueue : sendmailQueues) {
@@ -93,5 +98,10 @@ public class SendMailJob {
     @Value("${mail.enabled}")
     public void setEnabled(boolean enabled) {
         this.enabled = enabled;
+    }
+
+    @Resource
+    public void setTenantConnector(TenantConnector tenantConnector) {
+        this.tenantConnector = tenantConnector;
     }
 }

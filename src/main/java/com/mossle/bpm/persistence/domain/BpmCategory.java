@@ -32,16 +32,20 @@ public class BpmCategory implements java.io.Serializable {
     /** null. */
     private Integer priority;
 
+    /** null. */
+    private String tenantId;
+
     /** . */
     private Set<BpmProcess> bpmProcesses = new HashSet<BpmProcess>(0);
 
     public BpmCategory() {
     }
 
-    public BpmCategory(String name, Integer priority,
+    public BpmCategory(String name, Integer priority, String tenantId,
             Set<BpmProcess> bpmProcesses) {
         this.name = name;
         this.priority = priority;
+        this.tenantId = tenantId;
         this.bpmProcesses = bpmProcesses;
     }
 
@@ -87,6 +91,20 @@ public class BpmCategory implements java.io.Serializable {
      */
     public void setPriority(Integer priority) {
         this.priority = priority;
+    }
+
+    /** @return null. */
+    @Column(name = "TENANT_ID", length = 64)
+    public String getTenantId() {
+        return this.tenantId;
+    }
+
+    /**
+     * @param tenantId
+     *            null.
+     */
+    public void setTenantId(String tenantId) {
+        this.tenantId = tenantId;
     }
 
     /** @return . */

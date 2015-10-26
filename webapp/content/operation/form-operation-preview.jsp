@@ -9,11 +9,11 @@
     <%@include file="/common/meta.jsp"%>
     <title><spring:message code="demo.demo.input.title" text="编辑"/></title>
     <%@include file="/common/s.jsp"%>
-	<link href="${scopePrefix}/widgets/xform/styles/xform.css" rel="stylesheet">
-    <script type="text/javascript" src="${scopePrefix}/widgets/xform/xform-packed.js"></script>
+	<link href="${tenantPrefix}/widgets/xform/styles/xform.css" rel="stylesheet">
+    <script type="text/javascript" src="${tenantPrefix}/widgets/xform/xform-packed.js"></script>
 
-    <link type="text/css" rel="stylesheet" href="${scopePrefix}/widgets/userpicker/userpicker.css">
-    <script type="text/javascript" src="${scopePrefix}/widgets/userpicker/userpicker.js"></script>
+    <link type="text/css" rel="stylesheet" href="${tenantPrefix}/widgets/userpicker/userpicker.css">
+    <script type="text/javascript" src="${tenantPrefix}/widgets/userpicker/userpicker.js"></script>
 
 	<script type="text/javascript">
 document.onmousedown = function(e) {};
@@ -46,7 +46,7 @@ $(function() {
 
 	createUserPicker({
 		multiple: true,
-		url: '${scopePrefix}/rs/user/search'
+		url: '${tenantPrefix}/rs/user/search'
 	});
 
 	setTimeout(function() {
@@ -69,7 +69,7 @@ $(function() {
 	<!-- start of main -->
     <section id="m-main" class="span10" style="float:right">
 
-      <form id="xf-form" method="post" action="${scopePrefix}/operation/form-operation-test.do" class="xf-form" enctype="multipart/form-data">
+      <form id="xf-form" method="post" action="${tenantPrefix}/operation/form-operation-test.do" class="xf-form" enctype="multipart/form-data">
         <input id="ref" type="hidden" name="ref" value="${record.ref}">
 		<div id="xf-form-table"></div>
 		<br>

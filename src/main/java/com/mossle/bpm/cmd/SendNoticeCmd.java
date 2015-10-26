@@ -4,9 +4,8 @@ import com.mossle.api.user.UserConnector;
 
 import com.mossle.bpm.notice.TimeoutNotice;
 
+import com.mossle.core.mail.MailFacade;
 import com.mossle.core.spring.ApplicationContextHelper;
-
-import com.mossle.ext.mail.MailFacade;
 
 import org.activiti.engine.impl.context.Context;
 import org.activiti.engine.impl.el.ExpressionManager;

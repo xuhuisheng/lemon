@@ -77,4 +77,10 @@ td.xf-cell-right.active {
 .xf-handler {
 	cursor: move;
 	height: auto;
+	margin: 5px;
+}
+
+.xf-handler .radio,
+.xf-handler .checkbox {
+	padding-left: 5px;
 }

@@ -15,9 +15,6 @@ import com.mossle.core.mapper.BeanMapper;
 import com.mossle.core.page.Page;
 import com.mossle.core.spring.MessageHelper;
 
-import com.mossle.ext.export.Exportor;
-import com.mossle.ext.export.TableModel;
-
 import com.mossle.internal.whitelist.persistence.domain.WhitelistApp;
 import com.mossle.internal.whitelist.persistence.domain.WhitelistHost;
 import com.mossle.internal.whitelist.persistence.domain.WhitelistIp;
@@ -47,7 +44,7 @@ public class WhitelistService {
 
     public void saveWhitelistApp(WhitelistApp whitelistApp,
             Long whitelistTypeId, String hostContent, String ipContent,
-            String username) {
+            String username, String tenantId) {
         Long id = whitelistApp.getId();
         WhitelistApp dest = null;
 
@@ -59,6 +56,7 @@ public class WhitelistService {
         } else {
             dest = whitelistApp;
             dest.setUserId(username);
+            dest.setTenantId(tenantId);
         }
 
         // type
@@ -138,6 +136,7 @@ public class WhitelistService {
                 whitelistHost.setValue(host);
                 whitelistHost.setPriority(index);
                 whitelistHost.setWhitelistApp(whitelistApp);
+                whitelistHost.setTenantId(whitelistApp.getTenantId());
                 whitelistHostManager.save(whitelistHost);
             }
         }
@@ -182,6 +181,7 @@ public class WhitelistService {
                 whitelistIp.setValue(ip);
                 whitelistIp.setPriority(index);
                 whitelistIp.setWhitelistApp(whitelistApp);
+                whitelistIp.setTenantId(whitelistApp.getTenantId());
                 whitelistIpManager.save(whitelistIp);
             }
         }

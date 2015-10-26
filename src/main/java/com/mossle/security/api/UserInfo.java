@@ -12,7 +12,7 @@ public interface UserInfo {
 
     String getPassword();
 
-    String getScopeId();
+    String getTenantId();
 
     List<String> getAuthorities();
 

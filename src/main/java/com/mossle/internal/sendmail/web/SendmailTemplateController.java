@@ -14,18 +14,18 @@ import javax.servlet.http.HttpServletResponse;
 
 import com.mossle.api.store.StoreConnector;
 import com.mossle.api.store.StoreDTO;
+import com.mossle.api.tenant.TenantHolder;
 
+import com.mossle.core.export.Exportor;
+import com.mossle.core.export.TableModel;
 import com.mossle.core.hibernate.PropertyFilter;
+import com.mossle.core.mail.MailDTO;
+import com.mossle.core.mail.MailHelper;
+import com.mossle.core.mail.MailServerInfo;
 import com.mossle.core.mapper.BeanMapper;
 import com.mossle.core.page.Page;
 import com.mossle.core.spring.MessageHelper;
-
-import com.mossle.ext.export.Exportor;
-import com.mossle.ext.export.TableModel;
-import com.mossle.ext.mail.MailDTO;
-import com.mossle.ext.mail.MailHelper;
-import com.mossle.ext.mail.MailServerInfo;
-import com.mossle.ext.store.DataSourceInputStreamSource;
+import com.mossle.core.store.DataSourceInputStreamSource;
 
 import com.mossle.internal.sendmail.persistence.domain.SendmailAttachment;
 import com.mossle.internal.sendmail.persistence.domain.SendmailConfig;
@@ -47,7 +47,7 @@ import org.springframework.web.multipart.MultipartFile;
 import org.springframework.web.servlet.mvc.support.RedirectAttributes;
 
 @Controller
-@RequestMapping("/sendmail")
+@RequestMapping("sendmail")
 public class SendmailTemplateController {
     private SendmailTemplateManager sendmailTemplateManager;
     private SendmailConfigManager sendmailConfigManager;
@@ -56,12 +56,15 @@ public class SendmailTemplateController {
     private MessageHelper messageHelper;
     private Exportor exportor;
     private BeanMapper beanMapper = new BeanMapper();
+    private TenantHolder tenantHolder;
 
     @RequestMapping("sendmail-template-list")
     public String list(@ModelAttribute Page page,
             @RequestParam Map<String, Object> parameterMap, Model model) {
+        String tenantId = tenantHolder.getTenantId();
         List<PropertyFilter> propertyFilters = PropertyFilter
                 .buildFromMap(parameterMap);
+        propertyFilters.add(new PropertyFilter("EQS_tenantId", tenantId));
         page = sendmailTemplateManager.pagedQuery(page, propertyFilters);
         model.addAttribute("page", page);
 
@@ -84,6 +87,7 @@ public class SendmailTemplateController {
             @ModelAttribute SendmailTemplate sendmailTemplate,
             @RequestParam(value = "attachmentIds", required = false) List<Long> attachmentIds,
             RedirectAttributes redirectAttributes) {
+        String tenantId = tenantHolder.getTenantId();
         Long id = sendmailTemplate.getId();
         SendmailTemplate dest = null;
 
@@ -92,6 +96,7 @@ public class SendmailTemplateController {
             beanMapper.copy(sendmailTemplate, dest);
         } else {
             dest = sendmailTemplate;
+            dest.setTenantId(tenantId);
         }
 
         sendmailTemplateManager.save(dest);
@@ -128,8 +133,10 @@ public class SendmailTemplateController {
             @RequestParam Map<String, Object> parameterMap,
             HttpServletRequest request, HttpServletResponse response)
             throws Exception {
+        String tenantId = tenantHolder.getTenantId();
         List<PropertyFilter> propertyFilters = PropertyFilter
                 .buildFromMap(parameterMap);
+        propertyFilters.add(new PropertyFilter("EQS_tenantId", tenantId));
         page = sendmailTemplateManager.pagedQuery(page, propertyFilters);
 
         List<SendmailTemplate> sendmailTemplates = (List<SendmailTemplate>) page
@@ -144,7 +151,9 @@ public class SendmailTemplateController {
 
     @RequestMapping("sendmail-template-test")
     public String test(@RequestParam("id") Long id, Model model) {
-        model.addAttribute("sendmailConfigs", sendmailConfigManager.getAll());
+        String tenantId = tenantHolder.getTenantId();
+        model.addAttribute("sendmailConfigs",
+                sendmailConfigManager.findBy("tenantId", tenantId));
         model.addAttribute("sendmailTemplate", sendmailTemplateManager.get(id));
 
         return "sendmail/sendmail-template-test";
@@ -153,6 +162,7 @@ public class SendmailTemplateController {
     @RequestMapping("sendmail-template-send")
     public String test(@RequestParam("id") Long id, Long sendmailConfigId,
             Model model) throws Exception {
+        String tenantId = tenantHolder.getTenantId();
         SendmailTemplate sendmailTemplate = sendmailTemplateManager.get(id);
         SendmailConfig sendmailConfig = sendmailConfigManager
                 .get(sendmailConfigId);
@@ -177,7 +187,8 @@ public class SendmailTemplateController {
                 .getSendmailAttachments()) {
             DataSourceInputStreamSource resource = new DataSourceInputStreamSource(
                     storeConnector.getStore("sendmailattachment",
-                            sendmailAttachment.getPath()).getDataSource());
+                            sendmailAttachment.getPath(), tenantId)
+                            .getDataSource());
             mailDto.addAttachment(sendmailAttachment.getName(), resource);
         }
 
@@ -226,5 +237,10 @@ public class SendmailTemplateController {
     @Resource
     public void setExportor(Exportor exportor) {
         this.exportor = exportor;
+    }
+
+    @Resource
+    public void setTenantHolder(TenantHolder tenantHolder) {
+        this.tenantHolder = tenantHolder;
     }
 }

@@ -11,7 +11,7 @@
 				<ref bean="characterEncodingFilter"/>
 				<ref bean="acceptLanguageHeaderFilter"/>
 				<ref bean="javasimonFilter"/>
-				<ref bean="scopeFilter"/>
+			    <ref bean="springSessionFilter"/>
 				<ref bean="cmsFilter"/>
 				<ref bean="springSecurityFilterChainProxy"/>
 				<ref bean="openSessionInViewFilter"/>
@@ -33,10 +33,21 @@
 	<bean id="whitelistFilter" class="com.mossle.core.servlet.ProxyFilter">
 		<property name="name" value="whitelist"/>
 		<property name="filter">
-			<bean class="com.mossle.ext.whitelist.WhitelistFilter">
+			<bean class="com.mossle.core.whitelist.WhitelistFilter">
 				<property name="value">
 					<value>/ws/*=127.0.0.1</value>
 				</property>
+			</bean>
+		</property>
+	</bean>
+
+	<bean id="springSessionFilter" class="com.mossle.core.servlet.ProxyFilter">
+		<property name="name" value="springSession"/>
+		<property name="filter">
+			<bean class="org.springframework.session.web.http.SessionRepositoryFilter">
+				<constructor-arg>
+					<bean class="org.springframework.session.MapSessionRepository"/>
+				</constructor-arg>
 			</bean>
 		</property>
 	</bean>
@@ -70,17 +81,6 @@
 				</entry>
 			</map>
 		</property>
-	</bean>
-
-	<bean id="scopeFilter" class="com.mossle.core.servlet.ProxyFilter">
-		<property name="name" value="scope"/>
-		<property name="filter">
-			<bean class="com.mossle.scope.support.ScopeFilterFactoryBean">
-				<property name="scopeConnector" ref="scopeConnector"/>
-				<property name="type" value="${application.scope.type}"/>
-			</bean>
-		</property>
-		<property name="enable" value="${filter.scope.enable}"/>
 	</bean>
 
 	<bean id="cmsFilter" class="com.mossle.core.servlet.ProxyFilter">
@@ -117,7 +117,7 @@
 	<bean id="restFilter" class="com.mossle.core.servlet.ProxyFilter">
 		<property name="name" value="rest"/>
 		<property name="filter">
-			<bean class="com.mossle.ext.rest.RestFilter"/>
+			<bean class="com.mossle.simulator.restful.RestFilter"/>
 		</property>
 		<property name="urlPattern" value="/rs/*"/>
 	</bean>
@@ -171,7 +171,6 @@
 	</bean>
 
 	<!-- listener -->
-
-	<bean id="logoutHttpSessionListener" class="com.mossle.ext.spring.LogoutHttpSessionListener"/>
+	<bean id="logoutHttpSessionListener" class="com.mossle.security.util.LogoutHttpSessionListener"/>
 
 </beans>

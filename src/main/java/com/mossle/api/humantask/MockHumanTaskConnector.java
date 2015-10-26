@@ -25,6 +25,10 @@ public class MockHumanTaskConnector implements HumanTaskConnector {
         return null;
     }
 
+    public HumanTaskDTO saveHumanTaskAndProcess(HumanTaskDTO humanTaskDto) {
+        return null;
+    }
+
     public HumanTaskDTO findHumanTaskByTaskId(String taskId) {
         return null;
     }
@@ -104,10 +108,19 @@ public class MockHumanTaskConnector implements HumanTaskConnector {
     public void rollbackPreviousAssignee(String humanTaskId, String userId) {
     }
 
+    /**
+     * 回退，开始事件，流程发起人.
+     */
+    public void rollbackStart(String humanTaskId) {
+    }
+
     public void withdraw(String humanTaskId) {
     }
 
     public void delegateTask(String humanTaskId, String userId) {
+    }
+
+    public void delegateTaskCreate(String humanTaskId, String userId) {
     }
 
     public void saveParticipant(ParticipantDTO participantDto) {

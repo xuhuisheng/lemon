@@ -1,6 +1,7 @@
 package com.mossle.form.web;
 
 import java.util.ArrayList;
+import java.util.Date;
 import java.util.HashMap;
 import java.util.List;
 import java.util.Map;
@@ -10,19 +11,21 @@ import javax.annotation.Resource;
 import javax.servlet.http.HttpServletRequest;
 import javax.servlet.http.HttpServletResponse;
 
+import com.mossle.api.tenant.TenantHolder;
+
+import com.mossle.core.MultipartHandler;
+import com.mossle.core.auth.CurrentUserHolder;
+import com.mossle.core.export.Exportor;
+import com.mossle.core.export.TableModel;
 import com.mossle.core.hibernate.PropertyFilter;
 import com.mossle.core.mapper.BeanMapper;
 import com.mossle.core.mapper.JsonMapper;
 import com.mossle.core.page.Page;
 import com.mossle.core.spring.MessageHelper;
+import com.mossle.core.store.MultipartFileDataSource;
 
-import com.mossle.ext.MultipartHandler;
-import com.mossle.ext.export.Exportor;
-import com.mossle.ext.export.TableModel;
-import com.mossle.ext.store.MultipartFileDataSource;
-
-import com.mossle.form.domain.FormTemplate;
-import com.mossle.form.manager.FormTemplateManager;
+import com.mossle.form.persistence.domain.FormTemplate;
+import com.mossle.form.persistence.manager.FormTemplateManager;
 
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
@@ -56,12 +59,16 @@ public class FormTemplateController {
     private JsonMapper jsonMapper = new JsonMapper();
     private MessageHelper messageHelper;
     private MultipartResolver multipartResolver;
+    private TenantHolder tenantHolder;
+    private CurrentUserHolder currentUserHolder;
 
     @RequestMapping("form-template-list")
     public String list(@ModelAttribute Page page,
             @RequestParam Map<String, Object> parameterMap, Model model) {
+        String tenantId = tenantHolder.getTenantId();
         List<PropertyFilter> propertyFilters = PropertyFilter
                 .buildFromMap(parameterMap);
+        propertyFilters.add(new PropertyFilter("EQS_tenantId", tenantId));
         page = formTemplateManager.pagedQuery(page, propertyFilters);
         model.addAttribute("page", page);
 
@@ -83,6 +90,8 @@ public class FormTemplateController {
     public String save(@ModelAttribute FormTemplate formTemplate,
             @RequestParam Map<String, Object> parameterMap,
             RedirectAttributes redirectAttributes) {
+        String userId = currentUserHolder.getUserId();
+        String tenantId = tenantHolder.getTenantId();
         FormTemplate dest = null;
         Long id = formTemplate.getId();
 
@@ -92,6 +101,9 @@ public class FormTemplateController {
         } else {
             dest = formTemplate;
             dest.setType(0);
+            dest.setCreateTime(new Date());
+            dest.setUserId(userId);
+            dest.setTenantId(tenantId);
         }
 
         formTemplateManager.save(dest);
@@ -120,8 +132,10 @@ public class FormTemplateController {
             @RequestParam Map<String, Object> parameterMap,
             HttpServletRequest request, HttpServletResponse response)
             throws Exception {
+        String tenantId = tenantHolder.getTenantId();
         List<PropertyFilter> propertyFilters = PropertyFilter
                 .buildFromMap(parameterMap);
+        propertyFilters.add(new PropertyFilter("EQS_tenantId", tenantId));
         page = formTemplateManager.pagedQuery(page, propertyFilters);
 
         List<FormTemplate> dynamicModels = (List<FormTemplate>) page
@@ -137,6 +151,7 @@ public class FormTemplateController {
     @RequestMapping("form-template-copy")
     public String copy(@RequestParam("id") Long id,
             RedirectAttributes redirectAttributes) {
+        String userId = currentUserHolder.getUserId();
         FormTemplate formTemplate = formTemplateManager.get(id);
 
         if (formTemplate == null) {
@@ -166,6 +181,7 @@ public class FormTemplateController {
         targetFormTemplate.setId(null);
         targetFormTemplate.setCode(code);
         targetFormTemplate.setName(name);
+        targetFormTemplate.setUserId(userId);
         formTemplateManager.save(targetFormTemplate);
 
         return "redirect:/form/form-template-list.do";
@@ -190,5 +206,15 @@ public class FormTemplateController {
     @Resource
     public void setMultipartResolver(MultipartResolver multipartResolver) {
         this.multipartResolver = multipartResolver;
+    }
+
+    @Resource
+    public void setTenantHolder(TenantHolder tenantHolder) {
+        this.tenantHolder = tenantHolder;
+    }
+
+    @Resource
+    public void setCurrentUserHolder(CurrentUserHolder currentUserHolder) {
+        this.currentUserHolder = currentUserHolder;
     }
 }

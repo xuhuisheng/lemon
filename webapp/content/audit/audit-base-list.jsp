@@ -115,7 +115,7 @@ $(function() {
       <c:forEach items="${page.result}" var="item">
       <tr>
         <td><input type="checkbox" class="selectedItem a-check" name="selectedItem" value="${item.id}"></td>
-        <td>${item.user}</td>
+        <td><tags:user userId="${item.user}"/></td>
         <td>${item.action}</td>
         <td>${item.resourceType}#${item.resourceId}</td>
         <td>${item.application}</td>

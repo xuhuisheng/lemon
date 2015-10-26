@@ -42,11 +42,12 @@ public class MockUserConnector implements UserConnector {
     /**
      * 分页查询用户.
      */
-    public Page pagedQuery(Page page, Map<String, Object> parameters) {
+    public Page pagedQuery(String userRepoRef, Page page,
+            Map<String, Object> parameters) {
         return null;
     }
 
-    public UserDTO findByNickName(String nickName) {
+    public UserDTO findByNickName(String nickName, String userRepoRef) {
         return null;
     }
 }

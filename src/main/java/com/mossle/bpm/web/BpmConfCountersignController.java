@@ -21,6 +21,9 @@ import com.mossle.core.hibernate.PropertyFilter;
 import com.mossle.core.mapper.BeanMapper;
 import com.mossle.core.page.Page;
 
+import com.mossle.spi.humantask.CounterSignDTO;
+import com.mossle.spi.humantask.TaskDefinitionConnector;
+
 import org.activiti.engine.ProcessEngine;
 import org.activiti.engine.repository.ProcessDefinition;
 
@@ -43,6 +46,7 @@ public class BpmConfCountersignController {
     private ProcessEngine processEngine;
     private BpmProcessManager bpmProcessManager;
     private BpmConfCountersignManager bpmConfCountersignManager;
+    private TaskDefinitionConnector taskDefinitionConnector;
 
     @RequestMapping("bpm-conf-countersign-save")
     public String save(@ModelAttribute BpmConfCountersign bpmConfCountersign,
@@ -51,6 +55,15 @@ public class BpmConfCountersignController {
                 .get(bpmConfCountersign.getId());
         beanMapper.copy(bpmConfCountersign, dest);
         bpmConfCountersignManager.save(dest);
+
+        String taskDefinitionKey = dest.getBpmConfNode().getCode();
+        String processDefinitionId = dest.getBpmConfNode().getBpmConfBase()
+                .getProcessDefinitionId();
+        CounterSignDTO counterSign = new CounterSignDTO();
+        counterSign.setStrategy((dest.getType() == 0) ? "all" : "percent");
+        counterSign.setRate(dest.getRate());
+        taskDefinitionConnector.saveCounterSign(taskDefinitionKey,
+                processDefinitionId, counterSign);
 
         return "redirect:/bpm/bpm-conf-user-list.do?bpmConfNodeId="
                 + bpmConfNodeId;
@@ -81,5 +94,11 @@ public class BpmConfCountersignController {
     public void setBpmConfCountersignManager(
             BpmConfCountersignManager bpmConfCountersignManager) {
         this.bpmConfCountersignManager = bpmConfCountersignManager;
+    }
+
+    @Resource
+    public void setTaskDefinitionConnector(
+            TaskDefinitionConnector taskDefinitionConnector) {
+        this.taskDefinitionConnector = taskDefinitionConnector;
     }
 }

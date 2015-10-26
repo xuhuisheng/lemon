@@ -19,23 +19,22 @@ import javax.servlet.http.HttpServletRequest;
 import javax.servlet.http.HttpServletResponse;
 import javax.servlet.http.HttpSession;
 
-import com.mossle.api.scope.ScopeHolder;
 import com.mossle.api.store.StoreConnector;
 import com.mossle.api.store.StoreDTO;
+import com.mossle.api.tenant.TenantHolder;
 import com.mossle.api.user.UserCache;
 import com.mossle.api.user.UserDTO;
 
+import com.mossle.core.export.Exportor;
+import com.mossle.core.export.TableModel;
 import com.mossle.core.hibernate.PropertyFilter;
 import com.mossle.core.mapper.BeanMapper;
 import com.mossle.core.page.Page;
 import com.mossle.core.spring.MessageHelper;
+import com.mossle.core.store.InputStreamDataSource;
+import com.mossle.core.store.MultipartFileDataSource;
 import com.mossle.core.util.IoUtils;
 import com.mossle.core.util.ServletUtils;
-
-import com.mossle.ext.export.Exportor;
-import com.mossle.ext.export.TableModel;
-import com.mossle.ext.store.InputStreamDataSource;
-import com.mossle.ext.store.MultipartFileDataSource;
 
 import com.mossle.user.ImageUtils;
 import com.mossle.user.persistence.domain.AccountAvatar;
@@ -65,6 +64,7 @@ public class AccountAvatarController {
     private Exportor exportor;
     private BeanMapper beanMapper = new BeanMapper();
     private StoreConnector storeConnector;
+    private TenantHolder tenantHolder;
 
     @RequestMapping("account-avatar-input")
     public String input(@RequestParam("id") Long id, Model model) {
@@ -85,8 +85,9 @@ public class AccountAvatarController {
     @ResponseBody
     public String upload(@RequestParam("id") Long id,
             @RequestParam("avatar") MultipartFile avatar) throws Exception {
+        String tenantId = tenantHolder.getTenantId();
         StoreDTO storeDto = storeConnector.saveStore("avatar",
-                new MultipartFileDataSource(avatar));
+                new MultipartFileDataSource(avatar), tenantId);
 
         AccountInfo accountInfo = accountInfoManager.get(id);
         String hql = "from AccountAvatar where accountInfo=? and type='default'";
@@ -112,6 +113,7 @@ public class AccountAvatarController {
     @ResponseBody
     public void avatar(@RequestParam("id") Long id, OutputStream os)
             throws Exception {
+        String tenantId = tenantHolder.getTenantId();
         AccountInfo accountInfo = accountInfoManager.get(id);
         String hql = "from AccountAvatar where accountInfo=? and type='default'";
         AccountAvatar accountAvatar = accountAvatarManager.findUnique(hql,
@@ -122,7 +124,7 @@ public class AccountAvatarController {
         }
 
         StoreDTO storeDto = storeConnector.getStore("avatar",
-                accountAvatar.getCode());
+                accountAvatar.getCode(), tenantId);
 
         IoUtils.copyStream(storeDto.getDataSource().getInputStream(), os);
     }
@@ -130,6 +132,7 @@ public class AccountAvatarController {
     @RequestMapping("account-avatar-crop")
     public String crop(@RequestParam("id") Long id, Model model)
             throws Exception {
+        String tenantId = tenantHolder.getTenantId();
         AccountInfo accountInfo = accountInfoManager.get(id);
         String hql = "from AccountAvatar where accountInfo=? and type='default'";
         AccountAvatar accountAvatar = accountAvatarManager.findUnique(hql,
@@ -142,7 +145,7 @@ public class AccountAvatarController {
         }
 
         StoreDTO storeDto = storeConnector.getStore("avatar",
-                accountAvatar.getCode());
+                accountAvatar.getCode(), tenantId);
         BufferedImage bufferedImage = ImageIO.read(storeDto.getDataSource()
                 .getInputStream());
         int height = bufferedImage.getHeight();
@@ -172,6 +175,7 @@ public class AccountAvatarController {
             @RequestParam("x2") int x2, @RequestParam("y1") int y1,
             @RequestParam("y2") int y2, @RequestParam("w") int w, Model model)
             throws Exception {
+        String tenantId = tenantHolder.getTenantId();
         AccountInfo accountInfo = accountInfoManager.get(id);
         String hql = "from AccountAvatar where accountInfo=? and type='default'";
         AccountAvatar accountAvatar = accountAvatarManager.findUnique(hql,
@@ -181,14 +185,15 @@ public class AccountAvatarController {
 
         if (accountAvatar != null) {
             StoreDTO storeDto = storeConnector.getStore("avatar",
-                    accountAvatar.getCode());
+                    accountAvatar.getCode(), tenantId);
             ByteArrayOutputStream baos = new ByteArrayOutputStream();
             ImageUtils.zoomImage(storeDto.getDataSource().getInputStream(),
                     baos, x1, y1, x2, y2);
 
             storeDto = storeConnector.saveStore("avatar",
                     new InputStreamDataSource(w + ".png",
-                            new ByteArrayInputStream(baos.toByteArray())));
+                            new ByteArrayInputStream(baos.toByteArray())),
+                    tenantId);
             accountAvatar.setCode(storeDto.getKey());
             accountAvatarManager.save(accountAvatar);
         }
@@ -221,5 +226,10 @@ public class AccountAvatarController {
     @Resource
     public void setStoreConnector(StoreConnector storeConnector) {
         this.storeConnector = storeConnector;
+    }
+
+    @Resource
+    public void setTenantHolder(TenantHolder tenantHolder) {
+        this.tenantHolder = tenantHolder;
     }
 }

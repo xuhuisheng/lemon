@@ -50,7 +50,7 @@ public class SendmailTemplate implements java.io.Serializable {
     private Integer manual;
 
     /** null. */
-    private String scopeId;
+    private String tenantId;
 
     /** . */
     private Set<SendmailAttachment> sendmailAttachments = new HashSet<SendmailAttachment>(
@@ -68,7 +68,7 @@ public class SendmailTemplate implements java.io.Serializable {
 
     public SendmailTemplate(String name, String receiver, String sender,
             String cc, String bcc, String subject, String content,
-            Integer manual, String scopeId,
+            Integer manual, String tenantId,
             Set<SendmailAttachment> sendmailAttachments,
             Set<SendmailHistory> sendmailHistories,
             Set<SendmailQueue> sendmailQueues) {
@@ -80,7 +80,7 @@ public class SendmailTemplate implements java.io.Serializable {
         this.subject = subject;
         this.content = content;
         this.manual = manual;
-        this.scopeId = scopeId;
+        this.tenantId = tenantId;
         this.sendmailAttachments = sendmailAttachments;
         this.sendmailHistories = sendmailHistories;
         this.sendmailQueues = sendmailQueues;
@@ -215,17 +215,17 @@ public class SendmailTemplate implements java.io.Serializable {
     }
 
     /** @return null. */
-    @Column(name = "SCOPE_ID", length = 50)
-    public String getScopeId() {
-        return this.scopeId;
+    @Column(name = "TENANT_ID", length = 50)
+    public String getTenantId() {
+        return this.tenantId;
     }
 
     /**
-     * @param scopeId
+     * @param tenantId
      *            null.
      */
-    public void setScopeId(String scopeId) {
-        this.scopeId = scopeId;
+    public void setTenantId(String tenantId) {
+        this.tenantId = tenantId;
     }
 
     /** @return . */

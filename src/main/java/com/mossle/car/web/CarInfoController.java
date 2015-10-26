@@ -9,18 +9,18 @@ import javax.annotation.Resource;
 import javax.servlet.http.HttpServletRequest;
 import javax.servlet.http.HttpServletResponse;
 
+import com.mossle.api.tenant.TenantHolder;
 import com.mossle.api.user.UserConnector;
 
-import com.mossle.car.domain.CarInfo;
-import com.mossle.car.manager.CarInfoManager;
+import com.mossle.car.persistence.domain.CarInfo;
+import com.mossle.car.persistence.manager.CarInfoManager;
 
+import com.mossle.core.export.Exportor;
+import com.mossle.core.export.TableModel;
 import com.mossle.core.hibernate.PropertyFilter;
 import com.mossle.core.mapper.BeanMapper;
 import com.mossle.core.page.Page;
 import com.mossle.core.spring.MessageHelper;
-
-import com.mossle.ext.export.Exportor;
-import com.mossle.ext.export.TableModel;
 
 import org.springframework.stereotype.Controller;
 
@@ -40,12 +40,15 @@ public class CarInfoController {
     private BeanMapper beanMapper = new BeanMapper();
     private UserConnector userConnector;
     private MessageHelper messageHelper;
+    private TenantHolder tenantHolder;
 
     @RequestMapping("car-info-list")
     public String list(@ModelAttribute Page page,
             @RequestParam Map<String, Object> parameterMap, Model model) {
+        String tenantId = tenantHolder.getTenantId();
         List<PropertyFilter> propertyFilters = PropertyFilter
                 .buildFromMap(parameterMap);
+        propertyFilters.add(new PropertyFilter("EQS_tenantId", tenantId));
         page = carInfoManager.pagedQuery(page, propertyFilters);
 
         model.addAttribute("page", page);
@@ -68,6 +71,7 @@ public class CarInfoController {
     public String save(@ModelAttribute CarInfo carInfo,
             @RequestParam Map<String, Object> parameterMap,
             RedirectAttributes redirectAttributes) {
+        String tenantId = tenantHolder.getTenantId();
         CarInfo dest = null;
 
         Long id = carInfo.getId();
@@ -77,6 +81,7 @@ public class CarInfoController {
             beanMapper.copy(carInfo, dest);
         } else {
             dest = carInfo;
+            dest.setTenantId(tenantId);
         }
 
         carInfoManager.save(dest);
@@ -105,8 +110,10 @@ public class CarInfoController {
             @RequestParam Map<String, Object> parameterMap,
             HttpServletRequest request, HttpServletResponse response)
             throws Exception {
+        String tenantId = tenantHolder.getTenantId();
         List<PropertyFilter> propertyFilters = PropertyFilter
                 .buildFromMap(parameterMap);
+        propertyFilters.add(new PropertyFilter("EQS_tenantId", tenantId));
         page = carInfoManager.pagedQuery(page, propertyFilters);
 
         List<CarInfo> carInfos = (List<CarInfo>) page.getResult();
@@ -137,5 +144,10 @@ public class CarInfoController {
     @Resource
     public void setMessageHelper(MessageHelper messageHelper) {
         this.messageHelper = messageHelper;
+    }
+
+    @Resource
+    public void setTenantHolder(TenantHolder tenantHolder) {
+        this.tenantHolder = tenantHolder;
     }
 }

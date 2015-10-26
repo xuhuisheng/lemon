@@ -1,7 +1,7 @@
 <%@page contentType="text/html;charset=UTF-8"%>
 <%@include file="/taglibs.jsp"%>
 <%pageContext.setAttribute("currentHeader", "pim");%>
-<%pageContext.setAttribute("currentMenu", "pim");%>
+<%pageContext.setAttribute("currentMenu", "address-list");%>
 <!doctype html>
 <html>
 
@@ -78,7 +78,7 @@ $(function() {
 
 	    <table style="padding-bottom:20px;">
 		  <tr>
-		    <td rowspan="2"><img src="${scopePrefix}/rs/avatar?id=${item.id}&width=80" style="width:80px;height:80px;margin-left:10px;"/></td>
+		    <td rowspan="2"><img src="${tenantPrefix}/rs/avatar?id=${item.id}&width=80" style="width:80px;height:80px;margin-left:10px;"/></td>
 			<td width="20">&nbsp;</td>
 			<td align="right">账号: </td>
 			<td>${item.username}</td>
@@ -89,10 +89,10 @@ $(function() {
 		  <tr>
 			<td width="20">&nbsp;</td>
 			<td align="right">邮箱: </td>
-			<td>${item.email}</td>
+			<td><a href="mailto:${item.email}">${item.email}</a></td>
 			<td width="20">&nbsp;</td>
 			<td align="right">电话: </td>
-			<td>${item.mobile}</td>
+			<td><a href="tel:${item.mobile}">${item.mobile}</a></td>
 		  </tr>
 		</table>
 

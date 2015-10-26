@@ -11,8 +11,8 @@
           </div>
           <div id="collapse-bpm-category" class="accordion-body collapse ${currentMenu == 'bpm-category' ? 'in' : ''}">
             <ul class="accordion-inner nav nav-list">
-			  <li><a href="${scopePrefix}/bpm/bpm-category-list.do"><i class="icon-user"></i>流程分类</a></li>
-			  <li><a href="${scopePrefix}/bpm/bpm-process-list.do"><i class="icon-user"></i>流程配置</a></li>
+			  <li><a href="${tenantPrefix}/bpm/bpm-category-list.do"><i class="icon-user"></i>流程分类</a></li>
+			  <li><a href="${tenantPrefix}/bpm/bpm-process-list.do"><i class="icon-user"></i>流程配置</a></li>
             </ul>
           </div>
 		</div>
@@ -26,11 +26,11 @@
           </div>
           <div id="collapse-bpm-process" class="accordion-body collapse ${currentMenu == 'bpm-process' ? 'in' : ''}">
             <ul class="accordion-inner nav nav-list">
-			  <li><a href="${scopePrefix}/modeler/modeler-list.do"><i class="icon-user"></i>发布流程</a></li>
-			  <li><a href="${scopePrefix}/bpm/console-listProcessDefinitions.do"><i class="icon-user"></i>流程定义</a></li>
-			  <li><a href="${scopePrefix}/bpm/console-listProcessInstances.do"><i class="icon-user"></i>流程实例</a></li>
-			  <li><a href="${scopePrefix}/bpm/console-listTasks.do"><i class="icon-user"></i>任务</a></li>
-			  <li><a href="${scopePrefix}/bpm/console-listDeployments.do"><i class="icon-user"></i>部署</a></li>
+			  <li><a href="${tenantPrefix}/modeler/modeler-list.do"><i class="icon-user"></i>发布流程</a></li>
+			  <li><a href="${tenantPrefix}/bpm/console-listProcessDefinitions.do"><i class="icon-user"></i>流程定义</a></li>
+			  <li><a href="${tenantPrefix}/bpm/console-listProcessInstances.do"><i class="icon-user"></i>流程实例</a></li>
+			  <li><a href="${tenantPrefix}/bpm/console-listTasks.do"><i class="icon-user"></i>任务</a></li>
+			  <li><a href="${tenantPrefix}/bpm/console-listDeployments.do"><i class="icon-user"></i>部署</a></li>
             </ul>
           </div>
 		</div>
@@ -44,9 +44,9 @@
           </div>
           <div id="collapse-history" class="accordion-body collapse ${currentMenu == 'history' ? 'in' : ''}">
             <ul class="accordion-inner nav nav-list">
-			  <li><a href="${scopePrefix}/bpm/console-listHistoricProcessInstances.do"><i class="icon-user"></i>流程实例</a></li>
-			  <li><a href="${scopePrefix}/bpm/console-listHistoricActivityInstances.do"><i class="icon-user"></i>流程节点</a></li>
-			  <li><a href="${scopePrefix}/bpm/console-listHistoricTasks.do"><i class="icon-user"></i>流程任务</a></li>
+			  <li><a href="${tenantPrefix}/bpm/console-listHistoricProcessInstances.do"><i class="icon-user"></i>流程实例</a></li>
+			  <li><a href="${tenantPrefix}/bpm/console-listHistoricActivityInstances.do"><i class="icon-user"></i>流程节点</a></li>
+			  <li><a href="${tenantPrefix}/bpm/console-listHistoricTasks.do"><i class="icon-user"></i>流程任务</a></li>
             </ul>
           </div>
         </div>
@@ -60,8 +60,8 @@
           </div>
           <div id="collapse-delegate" class="accordion-body collapse ${currentMenu == 'delegate' ? 'in' : ''}">
             <ul class="accordion-inner nav nav-list">
-			  <li><a href="${scopePrefix}/bpm/delegate-listDelegateInfos.do"><i class="icon-user"></i>自动委托</a></li>
-			  <li><a href="${scopePrefix}/bpm/delegate-listDelegateHistories.do"><i class="icon-user"></i>自动委托记录</a></li>
+			  <li><a href="${tenantPrefix}/delegate/delegate-listDelegateInfos.do"><i class="icon-user"></i>自动委托</a></li>
+			  <li><a href="${tenantPrefix}/delegate/delegate-listDelegateHistories.do"><i class="icon-user"></i>自动委托记录</a></li>
             </ul>
           </div>
         </div>
@@ -75,7 +75,7 @@
           </div>
           <div id="collapse-job" class="accordion-body collapse ${currentMenu == 'job' ? 'in' : ''}">
             <ul class="accordion-inner nav nav-list">
-			  <li><a href="${scopePrefix}/bpm/job-list.do"><i class="icon-user"></i>异步消息管理</a></li>
+			  <li><a href="${tenantPrefix}/bpm/job-list.do"><i class="icon-user"></i>异步消息管理</a></li>
             </ul>
           </div>
         </div>

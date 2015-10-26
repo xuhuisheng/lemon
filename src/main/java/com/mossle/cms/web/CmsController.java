@@ -9,19 +9,20 @@ import javax.annotation.Resource;
 
 import javax.servlet.http.HttpServletResponse;
 
-import com.mossle.cms.domain.CmsArticle;
-import com.mossle.cms.domain.CmsCatalog;
-import com.mossle.cms.manager.CmsArticleManager;
-import com.mossle.cms.manager.CmsCatalogManager;
+import com.mossle.api.tenant.TenantHolder;
+
+import com.mossle.cms.persistence.domain.CmsArticle;
+import com.mossle.cms.persistence.domain.CmsCatalog;
+import com.mossle.cms.persistence.manager.CmsArticleManager;
+import com.mossle.cms.persistence.manager.CmsCatalogManager;
 import com.mossle.cms.service.RenderService;
 
+import com.mossle.core.export.Exportor;
+import com.mossle.core.export.TableModel;
 import com.mossle.core.hibernate.PropertyFilter;
 import com.mossle.core.mapper.BeanMapper;
 import com.mossle.core.page.Page;
 import com.mossle.core.spring.MessageHelper;
-
-import com.mossle.ext.export.Exportor;
-import com.mossle.ext.export.TableModel;
 
 import org.springframework.stereotype.Controller;
 
@@ -35,7 +36,7 @@ import org.springframework.web.multipart.MultipartFile;
 import org.springframework.web.servlet.mvc.support.RedirectAttributes;
 
 @Controller
-@RequestMapping("/cms")
+@RequestMapping("cms")
 public class CmsController {
     private CmsArticleManager cmsArticleManager;
     private CmsCatalogManager cmsCatalogManager;
@@ -43,10 +44,13 @@ public class CmsController {
     private BeanMapper beanMapper = new BeanMapper();
     private MessageHelper messageHelper;
     private RenderService renderService;
+    private TenantHolder tenantHolder;
 
     @RequestMapping("index")
     public String index(Model model) {
-        List<CmsCatalog> cmsCatalogs = cmsCatalogManager.getAll();
+        String tenantId = tenantHolder.getTenantId();
+        List<CmsCatalog> cmsCatalogs = cmsCatalogManager.findBy("tenantId",
+                tenantId);
         String html = renderService.viewIndex(cmsCatalogs);
 
         model.addAttribute("html", html);
@@ -102,5 +106,10 @@ public class CmsController {
     @Resource
     public void setRenderService(RenderService renderService) {
         this.renderService = renderService;
+    }
+
+    @Resource
+    public void setTenantHolder(TenantHolder tenantHolder) {
+        this.tenantHolder = tenantHolder;
     }
 }

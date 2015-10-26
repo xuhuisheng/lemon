@@ -12,16 +12,17 @@ import javax.annotation.Resource;
 import javax.servlet.http.HttpServletRequest;
 import javax.servlet.http.HttpServletResponse;
 
+import com.mossle.api.tenant.TenantHolder;
+
+import com.mossle.core.export.Exportor;
+import com.mossle.core.export.TableModel;
 import com.mossle.core.hibernate.PropertyFilter;
 import com.mossle.core.mapper.BeanMapper;
 import com.mossle.core.page.Page;
 import com.mossle.core.spring.MessageHelper;
 
-import com.mossle.ext.export.Exportor;
-import com.mossle.ext.export.TableModel;
-
-import com.mossle.internal.store.domain.StoreInfo;
-import com.mossle.internal.store.manager.StoreInfoManager;
+import com.mossle.internal.store.persistence.domain.StoreInfo;
+import com.mossle.internal.store.persistence.manager.StoreInfoManager;
 
 import org.springframework.stereotype.Controller;
 
@@ -34,18 +35,21 @@ import org.springframework.web.multipart.MultipartFile;
 import org.springframework.web.servlet.mvc.support.RedirectAttributes;
 
 @Controller
-@RequestMapping("/store")
+@RequestMapping("store")
 public class StoreInfoController {
     private StoreInfoManager storeInfoManager;
     private MessageHelper messageHelper;
     private Exportor exportor;
     private BeanMapper beanMapper = new BeanMapper();
+    private TenantHolder tenantHolder;
 
     @RequestMapping("store-info-list")
     public String list(@ModelAttribute Page page,
             @RequestParam Map<String, Object> parameterMap, Model model) {
+        String tenantId = tenantHolder.getTenantId();
         List<PropertyFilter> propertyFilters = PropertyFilter
                 .buildFromMap(parameterMap);
+        propertyFilters.add(new PropertyFilter("EQS_tenantId", tenantId));
         page = storeInfoManager.pagedQuery(page, propertyFilters);
         model.addAttribute("page", page);
 
@@ -66,6 +70,7 @@ public class StoreInfoController {
     @RequestMapping("store-info-save")
     public String save(@ModelAttribute StoreInfo storeInfo,
             RedirectAttributes redirectAttributes) {
+        String tenantId = tenantHolder.getTenantId();
         Long id = storeInfo.getId();
         StoreInfo dest = null;
 
@@ -74,6 +79,7 @@ public class StoreInfoController {
             beanMapper.copy(storeInfo, dest);
         } else {
             dest = storeInfo;
+            dest.setTenantId(tenantId);
         }
 
         storeInfoManager.save(dest);
@@ -99,8 +105,10 @@ public class StoreInfoController {
             @RequestParam Map<String, Object> parameterMap,
             HttpServletRequest request, HttpServletResponse response)
             throws Exception {
+        String tenantId = tenantHolder.getTenantId();
         List<PropertyFilter> propertyFilters = PropertyFilter
                 .buildFromMap(parameterMap);
+        propertyFilters.add(new PropertyFilter("EQS_tenantId", tenantId));
         page = storeInfoManager.pagedQuery(page, propertyFilters);
 
         List<StoreInfo> storeInfos = (List<StoreInfo>) page.getResult();
@@ -126,5 +134,10 @@ public class StoreInfoController {
     @Resource
     public void setExportor(Exportor exportor) {
         this.exportor = exportor;
+    }
+
+    @Resource
+    public void setTenantHolder(TenantHolder tenantHolder) {
+        this.tenantHolder = tenantHolder;
     }
 }

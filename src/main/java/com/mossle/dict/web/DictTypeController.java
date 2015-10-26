@@ -9,6 +9,10 @@ import javax.annotation.Resource;
 import javax.servlet.http.HttpServletRequest;
 import javax.servlet.http.HttpServletResponse;
 
+import com.mossle.api.tenant.TenantHolder;
+
+import com.mossle.core.export.Exportor;
+import com.mossle.core.export.TableModel;
 import com.mossle.core.hibernate.PropertyFilter;
 import com.mossle.core.mapper.BeanMapper;
 import com.mossle.core.page.Page;
@@ -16,9 +20,6 @@ import com.mossle.core.spring.MessageHelper;
 
 import com.mossle.dict.persistence.domain.DictType;
 import com.mossle.dict.persistence.manager.DictTypeManager;
-
-import com.mossle.ext.export.Exportor;
-import com.mossle.ext.export.TableModel;
 
 import org.springframework.context.support.MessageSourceAccessor;
 
@@ -39,12 +40,15 @@ public class DictTypeController {
     private BeanMapper beanMapper = new BeanMapper();
     private MessageHelper messageHelper;
     private Exportor exportor;
+    private TenantHolder tenantHolder;
 
     @RequestMapping("dict-type-list")
     public String list(@ModelAttribute Page page,
             @RequestParam Map<String, Object> parameterMap, Model model) {
+        String tenantId = tenantHolder.getTenantId();
         List<PropertyFilter> propertyFilters = PropertyFilter
                 .buildFromMap(parameterMap);
+        propertyFilters.add(new PropertyFilter("EQS_tenantId", tenantId));
         page = dictTypeManager.pagedQuery(page, propertyFilters);
 
         model.addAttribute("page", page);
@@ -67,6 +71,7 @@ public class DictTypeController {
     public String save(@ModelAttribute DictType dictType,
             @RequestParam Map<String, Object> parameterMap,
             RedirectAttributes redirectAttributes) {
+        String tenantId = tenantHolder.getTenantId();
         DictType dest = null;
 
         Long id = dictType.getId();
@@ -76,6 +81,7 @@ public class DictTypeController {
             beanMapper.copy(dictType, dest);
         } else {
             dest = dictType;
+            dest.setTenantId(tenantId);
         }
 
         dictTypeManager.save(dest);
@@ -101,10 +107,13 @@ public class DictTypeController {
 
     @RequestMapping("dict-type-export")
     public void export(@ModelAttribute Page page,
-            @RequestParam Map<String, Object> parameterMap,   HttpServletRequest request, 
-            HttpServletResponse response) throws Exception {
+            @RequestParam Map<String, Object> parameterMap,
+            HttpServletRequest request, HttpServletResponse response)
+            throws Exception {
+        String tenantId = tenantHolder.getTenantId();
         List<PropertyFilter> propertyFilters = PropertyFilter
                 .buildFromMap(parameterMap);
+        propertyFilters.add(new PropertyFilter("EQS_tenantId", tenantId));
         page = dictTypeManager.pagedQuery(page, propertyFilters);
 
         List<DictType> dictTypes = (List<DictType>) page.getResult();
@@ -130,5 +139,10 @@ public class DictTypeController {
     @Resource
     public void setMessageHelper(MessageHelper messageHelper) {
         this.messageHelper = messageHelper;
+    }
+
+    @Resource
+    public void setTenantHolder(TenantHolder tenantHolder) {
+        this.tenantHolder = tenantHolder;
     }
 }

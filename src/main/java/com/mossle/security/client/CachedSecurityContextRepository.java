@@ -43,7 +43,7 @@ public class CachedSecurityContextRepository extends
         }
 
         UserAuthDTO userAuthInCache = userAuthConnector.findById(
-                userAuthInSession.getId(), userAuthInSession.getScopeId());
+                userAuthInSession.getId(), userAuthInSession.getTenantId());
 
         SpringSecurityUserAuth userAuthResult = new SpringSecurityUserAuth();
         beanMapper.copy(userAuthInCache, userAuthResult);

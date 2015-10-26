@@ -33,13 +33,18 @@ public class AccountLockLog implements java.io.Serializable {
     /** null. */
     private Date lockTime;
 
+    /** null. */
+    private String tenantId;
+
     public AccountLockLog() {
     }
 
-    public AccountLockLog(String type, String username, Date lockTime) {
+    public AccountLockLog(String type, String username, Date lockTime,
+            String tenantId) {
         this.type = type;
         this.username = username;
         this.lockTime = lockTime;
+        this.tenantId = tenantId;
     }
 
     /** @return null. */
@@ -99,5 +104,19 @@ public class AccountLockLog implements java.io.Serializable {
      */
     public void setLockTime(Date lockTime) {
         this.lockTime = lockTime;
+    }
+
+    /** @return null. */
+    @Column(name = "TENANT_ID", length = 64)
+    public String getTenantId() {
+        return this.tenantId;
+    }
+
+    /**
+     * @param tenantId
+     *            null.
+     */
+    public void setTenantId(String tenantId) {
+        this.tenantId = tenantId;
     }
 }

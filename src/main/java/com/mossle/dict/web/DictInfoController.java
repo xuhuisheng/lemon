@@ -9,9 +9,12 @@ import javax.annotation.Resource;
 import javax.servlet.http.HttpServletRequest;
 import javax.servlet.http.HttpServletResponse;
 
-import com.mossle.api.internal.DictConnector;
-import com.mossle.api.internal.DictDTO;
+import com.mossle.api.dict.DictConnector;
+import com.mossle.api.dict.DictDTO;
+import com.mossle.api.tenant.TenantHolder;
 
+import com.mossle.core.export.Exportor;
+import com.mossle.core.export.TableModel;
 import com.mossle.core.hibernate.PropertyFilter;
 import com.mossle.core.mapper.BeanMapper;
 import com.mossle.core.page.Page;
@@ -25,9 +28,6 @@ import com.mossle.dict.persistence.manager.DictDataManager;
 import com.mossle.dict.persistence.manager.DictInfoManager;
 import com.mossle.dict.persistence.manager.DictSchemaManager;
 import com.mossle.dict.persistence.manager.DictTypeManager;
-
-import com.mossle.ext.export.Exportor;
-import com.mossle.ext.export.TableModel;
 
 import org.springframework.context.support.MessageSourceAccessor;
 
@@ -52,6 +52,7 @@ public class DictInfoController {
     private MessageHelper messageHelper;
     private Exportor exportor;
     private DictConnector dictConnector;
+    private TenantHolder tenantHolder;
 
     @RequestMapping("dict-info-list")
     public String list(@RequestParam("typeId") Long typeId, Model model) {
@@ -66,16 +67,19 @@ public class DictInfoController {
     @RequestMapping("dict-info-input")
     public String input(@RequestParam(value = "id", required = false) Long id,
             @RequestParam("typeId") Long typeId, Model model) {
+        String tenantId = tenantHolder.getTenantId();
+
         if (id != null) {
             DictInfo dictInfo = dictInfoManager.get(id);
             model.addAttribute("model", dictInfo);
 
             DictDTO dictDto = dictConnector.findDictByName(dictInfo.getName(),
-                    dictInfo.getDictType().getName());
+                    dictInfo.getDictType().getName(), tenantId);
             model.addAttribute("dictDto", dictDto);
         } else {
             DictType dictType = dictTypeManager.get(typeId);
-            DictDTO dictDto = dictConnector.findDictByType(dictType.getName());
+            DictDTO dictDto = dictConnector.findDictByType(dictType.getName(),
+                    tenantId);
             model.addAttribute("dictDto", dictDto);
         }
 
@@ -90,6 +94,7 @@ public class DictInfoController {
             @RequestParam("typeId") Long typeId,
             @RequestParam Map<String, String> parameterMap,
             RedirectAttributes redirectAttributes) {
+        String tenantId = tenantHolder.getTenantId();
         DictInfo dest = null;
 
         Long id = dictInfo.getId();
@@ -99,6 +104,7 @@ public class DictInfoController {
             beanMapper.copy(dictInfo, dest);
         } else {
             dest = dictInfo;
+            dest.setTenantId(tenantId);
         }
 
         DictType dictType = dictTypeManager.get(typeId);
@@ -114,6 +120,7 @@ public class DictInfoController {
                 dictData = new DictData();
                 dictData.setDictInfo(dictInfo);
                 dictData.setDictSchema(dictSchema);
+                dictData.setTenantId(tenantId);
             }
 
             dictData.setName(dictSchema.getName());
@@ -145,10 +152,13 @@ public class DictInfoController {
 
     @RequestMapping("dict-info-export")
     public void export(@ModelAttribute Page page,
-            @RequestParam Map<String, Object> parameterMap,   HttpServletRequest request, 
-            HttpServletResponse response) throws Exception {
+            @RequestParam Map<String, Object> parameterMap,
+            HttpServletRequest request, HttpServletResponse response)
+            throws Exception {
+        String tenantId = tenantHolder.getTenantId();
         List<PropertyFilter> propertyFilters = PropertyFilter
                 .buildFromMap(parameterMap);
+        propertyFilters.add(new PropertyFilter("EQS_tenantId", tenantId));
         page = dictInfoManager.pagedQuery(page, propertyFilters);
 
         List<DictInfo> dictInfos = (List<DictInfo>) page.getResult();
@@ -194,5 +204,10 @@ public class DictInfoController {
     @Resource
     public void setDictConnector(DictConnector dictConnector) {
         this.dictConnector = dictConnector;
+    }
+
+    @Resource
+    public void setTenantHolder(TenantHolder tenantHolder) {
+        this.tenantHolder = tenantHolder;
     }
 }

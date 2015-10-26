@@ -39,6 +39,9 @@ public class DictInfo implements java.io.Serializable {
     /** 排序. */
     private Integer priority;
 
+    /** null. */
+    private String tenantId;
+
     /** . */
     private Set<DictData> dictDatas = new HashSet<DictData>(0);
 
@@ -46,11 +49,12 @@ public class DictInfo implements java.io.Serializable {
     }
 
     public DictInfo(DictType dictType, String name, String value,
-            Integer priority, Set<DictData> dictDatas) {
+            Integer priority, String tenantId, Set<DictData> dictDatas) {
         this.dictType = dictType;
         this.name = name;
         this.value = value;
         this.priority = priority;
+        this.tenantId = tenantId;
         this.dictDatas = dictDatas;
     }
 
@@ -125,6 +129,20 @@ public class DictInfo implements java.io.Serializable {
      */
     public void setPriority(Integer priority) {
         this.priority = priority;
+    }
+
+    /** @return null. */
+    @Column(name = "TENANT_ID", length = 64)
+    public String getTenantId() {
+        return this.tenantId;
+    }
+
+    /**
+     * @param tenantId
+     *            null.
+     */
+    public void setTenantId(String tenantId) {
+        this.tenantId = tenantId;
     }
 
     /** @return . */

@@ -15,20 +15,20 @@ import javax.servlet.http.HttpServletResponse;
 
 import com.mossle.api.store.StoreConnector;
 import com.mossle.api.store.StoreDTO;
+import com.mossle.api.tenant.TenantHolder;
 
+import com.mossle.core.export.Exportor;
+import com.mossle.core.export.TableModel;
 import com.mossle.core.hibernate.PropertyFilter;
+import com.mossle.core.mail.MailDTO;
+import com.mossle.core.mail.MailHelper;
+import com.mossle.core.mail.MailServerInfo;
 import com.mossle.core.mapper.BeanMapper;
 import com.mossle.core.page.Page;
 import com.mossle.core.spring.MessageHelper;
+import com.mossle.core.store.MultipartFileDataSource;
 import com.mossle.core.util.IoUtils;
 import com.mossle.core.util.ServletUtils;
-
-import com.mossle.ext.export.Exportor;
-import com.mossle.ext.export.TableModel;
-import com.mossle.ext.mail.MailDTO;
-import com.mossle.ext.mail.MailHelper;
-import com.mossle.ext.mail.MailServerInfo;
-import com.mossle.ext.store.MultipartFileDataSource;
 
 import com.mossle.internal.sendmail.persistence.domain.SendmailAttachment;
 import com.mossle.internal.sendmail.persistence.manager.SendmailAttachmentManager;
@@ -47,19 +47,22 @@ import org.springframework.web.multipart.MultipartFile;
 import org.springframework.web.servlet.mvc.support.RedirectAttributes;
 
 @Controller
-@RequestMapping("/sendmail")
+@RequestMapping("sendmail")
 public class SendmailAttachmentController {
     private SendmailAttachmentManager sendmailAttachmentManager;
     private MessageHelper messageHelper;
     private Exportor exportor;
     private StoreConnector storeConnector;
     private BeanMapper beanMapper = new BeanMapper();
+    private TenantHolder tenantHolder;
 
     @RequestMapping("sendmail-attachment-list")
     public String list(@ModelAttribute Page page,
             @RequestParam Map<String, Object> parameterMap, Model model) {
+        String tenantId = tenantHolder.getTenantId();
         List<PropertyFilter> propertyFilters = PropertyFilter
                 .buildFromMap(parameterMap);
+        propertyFilters.add(new PropertyFilter("EQS_tenantId", tenantId));
         page = sendmailAttachmentManager.pagedQuery(page, propertyFilters);
         model.addAttribute("page", page);
 
@@ -81,6 +84,7 @@ public class SendmailAttachmentController {
     @RequestMapping("sendmail-attachment-save")
     public String save(@ModelAttribute SendmailAttachment sendmailAttachment,
             RedirectAttributes redirectAttributes) {
+        String tenantId = tenantHolder.getTenantId();
         Long id = sendmailAttachment.getId();
         SendmailAttachment dest = null;
 
@@ -89,6 +93,7 @@ public class SendmailAttachmentController {
             beanMapper.copy(sendmailAttachment, dest);
         } else {
             dest = sendmailAttachment;
+            dest.setTenantId(tenantId);
         }
 
         sendmailAttachmentManager.save(dest);
@@ -115,8 +120,10 @@ public class SendmailAttachmentController {
             @RequestParam Map<String, Object> parameterMap,
             HttpServletRequest request, HttpServletResponse response)
             throws Exception {
+        String tenantId = tenantHolder.getTenantId();
         List<PropertyFilter> propertyFilters = PropertyFilter
                 .buildFromMap(parameterMap);
+        propertyFilters.add(new PropertyFilter("EQS_tenantId", tenantId));
         page = sendmailAttachmentManager.pagedQuery(page, propertyFilters);
 
         List<SendmailAttachment> sendmailAttachments = (List<SendmailAttachment>) page
@@ -133,11 +140,13 @@ public class SendmailAttachmentController {
     @ResponseBody
     public String upload(@RequestParam("file") MultipartFile multipartFile)
             throws Exception {
+        String tenantId = tenantHolder.getTenantId();
         StoreDTO storeDto = storeConnector.saveStore("mailattachment",
-                new MultipartFileDataSource(multipartFile));
+                new MultipartFileDataSource(multipartFile), tenantId);
         SendmailAttachment sendmailAttachment = new SendmailAttachment();
         sendmailAttachment.setName(multipartFile.getOriginalFilename());
         sendmailAttachment.setPath(storeDto.getKey());
+        sendmailAttachment.setTenantId(tenantId);
 
         sendmailAttachmentManager.save(sendmailAttachment);
 
@@ -157,10 +166,11 @@ public class SendmailAttachmentController {
     public void download(@RequestParam("id") Long id,
             HttpServletRequest request, HttpServletResponse response)
             throws Exception {
+        String tenantId = tenantHolder.getTenantId();
         SendmailAttachment sendmailAttachment = sendmailAttachmentManager
                 .get(id);
         StoreDTO storeDto = storeConnector.getStore("sendmailattachment",
-                sendmailAttachment.getPath());
+                sendmailAttachment.getPath(), tenantId);
 
         ServletUtils.setFileDownloadHeader(request, response,
                 sendmailAttachment.getName());
@@ -188,5 +198,10 @@ public class SendmailAttachmentController {
     @Resource
     public void setStoreConnector(StoreConnector storeConnector) {
         this.storeConnector = storeConnector;
+    }
+
+    @Resource
+    public void setTenantHolder(TenantHolder tenantHolder) {
+        this.tenantHolder = tenantHolder;
     }
 }

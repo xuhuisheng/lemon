@@ -8,10 +8,12 @@ import javax.annotation.Resource;
 
 import javax.servlet.http.HttpServletResponse;
 
+import com.mossle.bpm.persistence.domain.BpmConfAssign;
 import com.mossle.bpm.persistence.domain.BpmConfCountersign;
 import com.mossle.bpm.persistence.domain.BpmConfNode;
 import com.mossle.bpm.persistence.domain.BpmConfUser;
 import com.mossle.bpm.persistence.domain.BpmProcess;
+import com.mossle.bpm.persistence.manager.BpmConfAssignManager;
 import com.mossle.bpm.persistence.manager.BpmConfCountersignManager;
 import com.mossle.bpm.persistence.manager.BpmConfNodeManager;
 import com.mossle.bpm.persistence.manager.BpmConfUserManager;
@@ -20,6 +22,9 @@ import com.mossle.bpm.persistence.manager.BpmProcessManager;
 import com.mossle.core.hibernate.PropertyFilter;
 import com.mossle.core.mapper.BeanMapper;
 import com.mossle.core.page.Page;
+
+import com.mossle.spi.humantask.TaskDefinitionConnector;
+import com.mossle.spi.humantask.TaskUserDTO;
 
 import org.activiti.engine.ProcessEngine;
 import org.activiti.engine.repository.ProcessDefinition;
@@ -43,6 +48,8 @@ public class BpmConfUserController {
     private ProcessEngine processEngine;
     private BpmProcessManager bpmProcessManager;
     private BpmConfCountersignManager bpmConfCountersignManager;
+    private BpmConfAssignManager bpmConfAssignManager;
+    private TaskDefinitionConnector taskDefinitionConnector;
 
     @RequestMapping("bpm-conf-user-list")
     public String list(@RequestParam("bpmConfNodeId") Long bpmConfNodeId,
@@ -51,11 +58,16 @@ public class BpmConfUserController {
         Long bpmConfBaseId = bpmConfNode.getBpmConfBase().getId();
         List<BpmConfUser> bpmConfUsers = bpmConfUserManager.findBy(
                 "bpmConfNode", bpmConfNode);
-
+        BpmConfCountersign bpmConfCountersign = bpmConfCountersignManager
+                .findUniqueBy("bpmConfNode", bpmConfNode);
+        BpmConfAssign bpmConfAssign = bpmConfAssignManager.findUniqueBy(
+                "bpmConfNode", bpmConfNode);
+        model.addAttribute("bpmConfBase", bpmConfNode.getBpmConfBase());
+        model.addAttribute("bpmConfNode", bpmConfNode);
         model.addAttribute("bpmConfBaseId", bpmConfBaseId);
         model.addAttribute("bpmConfUsers", bpmConfUsers);
-        model.addAttribute("bpmConfCountersign", bpmConfCountersignManager
-                .findUniqueBy("bpmConfNode", bpmConfNode));
+        model.addAttribute("bpmConfCountersign", bpmConfCountersign);
+        model.addAttribute("bpmConfAssign", bpmConfAssign);
 
         return "bpm/bpm-conf-user-list";
     }
@@ -67,6 +79,32 @@ public class BpmConfUserController {
         bpmConfUser.setStatus(1);
         bpmConfUser.setBpmConfNode(bpmConfNodeManager.get(bpmConfNodeId));
         bpmConfUserManager.save(bpmConfUser);
+
+        BpmConfUser dest = bpmConfUser;
+        String taskDefinitionKey = dest.getBpmConfNode().getCode();
+        String processDefinitionId = dest.getBpmConfNode().getBpmConfBase()
+                .getProcessDefinitionId();
+        Integer type = dest.getType();
+        String value = dest.getValue();
+        TaskUserDTO taskUser = new TaskUserDTO();
+
+        if (type == 0) {
+            taskUser.setCatalog("assignee");
+        } else if ((type == 1) || (type == 2)) {
+            taskUser.setCatalog("candidate");
+        } else if (type == 3) {
+            taskUser.setCatalog("notification");
+        }
+
+        if (type == 1) {
+            taskUser.setType("user");
+        } else if (type == 2) {
+            taskUser.setType("group");
+        }
+
+        taskUser.setValue(value);
+        taskDefinitionConnector.addTaskUser(taskDefinitionKey,
+                processDefinitionId, taskUser);
 
         return "redirect:/bpm/bpm-conf-user-list.do?bpmConfNodeId="
                 + bpmConfNodeId;
@@ -86,6 +124,33 @@ public class BpmConfUserController {
             bpmConfUser.setStatus(0);
             bpmConfUserManager.save(bpmConfUser);
         }
+
+        BpmConfUser dest = bpmConfUser;
+        String taskDefinitionKey = dest.getBpmConfNode().getCode();
+        String processDefinitionId = dest.getBpmConfNode().getBpmConfBase()
+                .getProcessDefinitionId();
+
+        Integer type = dest.getType();
+        String value = dest.getValue();
+        TaskUserDTO taskUser = new TaskUserDTO();
+
+        if (type == 0) {
+            taskUser.setCatalog("assignee");
+        } else if ((type == 1) || (type == 2)) {
+            taskUser.setCatalog("candidate");
+        } else if (type == 3) {
+            taskUser.setCatalog("notification");
+        }
+
+        if (type == 1) {
+            taskUser.setType("user");
+        } else if (type == 2) {
+            taskUser.setType("group");
+        }
+
+        taskUser.setValue(value);
+        taskDefinitionConnector.removeTaskUser(taskDefinitionKey,
+                processDefinitionId, taskUser);
 
         return "redirect:/bpm/bpm-conf-user-list.do?bpmConfNodeId="
                 + bpmConfNodeId;
@@ -116,5 +181,17 @@ public class BpmConfUserController {
     public void setBpmConfCountersignManager(
             BpmConfCountersignManager bpmConfCountersignManager) {
         this.bpmConfCountersignManager = bpmConfCountersignManager;
+    }
+
+    @Resource
+    public void setBpmConfAssignManager(
+            BpmConfAssignManager bpmConfAssignManager) {
+        this.bpmConfAssignManager = bpmConfAssignManager;
+    }
+
+    @Resource
+    public void setTaskDefinitionConnector(
+            TaskDefinitionConnector taskDefinitionConnector) {
+        this.taskDefinitionConnector = taskDefinitionConnector;
     }
 }

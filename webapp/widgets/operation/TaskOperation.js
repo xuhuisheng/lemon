@@ -41,6 +41,11 @@ TaskOperation.prototype.rollbackPrevious = function() {
 	$('#' + this.formId).submit();
 };
 
+TaskOperation.prototype.rollbackStart = function() {
+	$('#' + this.formId).attr('action', ROOT_URL + '/operation/task-operation-rollbackStart.do');
+	$('#' + this.formId).submit();
+};
+
 TaskOperation.prototype.transfer = function() {
 	$('#modal form').attr('action', ROOT_URL + '/operation/task-operation-transfer.do');
 	$('#modal').modal();
@@ -48,5 +53,10 @@ TaskOperation.prototype.transfer = function() {
 
 TaskOperation.prototype.delegateTask = function() {
 	$('#modal form').attr('action', ROOT_URL + '/operation/task-operation-delegateTask.do');
+	$('#modal').modal();
+};
+
+TaskOperation.prototype.delegateTaskCreate = function() {
+	$('#modal form').attr('action', ROOT_URL + '/operation/task-operation-delegateTaskCreate.do');
 	$('#modal').modal();
 };

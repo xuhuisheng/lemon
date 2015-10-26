@@ -9,8 +9,8 @@
     <%@include file="/common/meta.jsp"%>
     <title><spring:message code="demo.demo.input.title" text="编辑"/></title>
     <%@include file="/common/s.jsp"%>
-	<link href="${scopePrefix}/widgets/xform/styles/xform.css" rel="stylesheet">
-    <script type="text/javascript" src="${scopePrefix}/widgets/xform/xform-packed.js"></script>
+	<link href="${tenantPrefix}/widgets/xform/styles/xform.css" rel="stylesheet">
+    <script type="text/javascript" src="${tenantPrefix}/widgets/xform/xform-packed.js"></script>
 
     <link type="text/css" rel="stylesheet" href="../widgets/userpicker/userpicker.css">
     <script type="text/javascript" src="../widgets/userpicker/userpicker.js"></script>
@@ -52,7 +52,7 @@ $(function() {
 
 	createUserPicker({
 		multiple: true,
-		url: '${scopePrefix}/rs/user/search'
+		url: '${tenantPrefix}/rs/user/search'
 	});
 
 	setTimeout(function() {
@@ -65,9 +65,9 @@ $(function() {
 })
     </script>
 
-	<script type="text/javascript" src="${scopePrefix}/widgets/operation/TaskOperation.js"></script>
+	<script type="text/javascript" src="${tenantPrefix}/widgets/operation/TaskOperation.js"></script>
 	<script type="text/javascript">
-ROOT_URL = '${scopePrefix}';
+ROOT_URL = '${tenantPrefix}';
 var taskOperation = new TaskOperation();
 	</script>
 
@@ -88,7 +88,7 @@ var taskOperation = new TaskOperation();
 		</c:forEach>
       </div>
 
-      <form id="xform" method="post" action="${scopePrefix}/operation/process-operation-startProcessInstance.do" class="xf-form" enctype="multipart/form-data">
+      <form id="xform" method="post" action="${tenantPrefix}/operation/process-operation-startProcessInstance.do" class="xf-form" enctype="multipart/form-data">
 <input id="processDefinitionId" type="hidden" name="processDefinitionId" value="${formDto.processDefinitionId}">
 <input id="bpmProcessId" type="hidden" name="bpmProcessId" value="${bpmProcessId}">
 <input id="autoCompleteFirstTask" type="hidden" name="autoCompleteFirstTask" value="${formDto.autoCompleteFirstTask}">
@@ -101,7 +101,7 @@ var taskOperation = new TaskOperation();
 		<div id="nextStep">
 		</div>
 		  <script>
-		  $.getJSON('${scopePrefix}/rs/bpm/next', {
+		  $.getJSON('${tenantPrefix}/rs/bpm/next', {
 			  processDefinitionId: '${formDto.processDefinitionId}',
 			  activityId: '${formDto.activityId}'
 		  }, function(data) {

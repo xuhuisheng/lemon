@@ -82,6 +82,7 @@ $(function() {
         <th class="sorting" name="id"><spring:message code="org.org.list.id" text="编号"/></th>
         <th class="sorting" name="name">名称</th>
         <th class="sorting" name="partyType">类型</th>
+        <th class="sorting" name="admin">管理</th>
         <th>操作</th>
       </tr>
     </thead>
@@ -93,6 +94,7 @@ $(function() {
         <td>${item.childEntity.id}</td>
         <td>${item.childEntity.name}</td>
         <td>${item.childEntity.partyType.name}</td>
+        <td>${item.admin == 1}</td>
         <td>
 		  <a href="org-remove.do?selectedItem=${item.id}&partyStructTypeId=${partyStructTypeId}&partyEntityId=${partyEntityId}" class="a-remove">删除</a>
 		</td>

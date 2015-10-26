@@ -39,7 +39,7 @@ $(function() {
   </head>
 
   <body>
-    <%@include file="/header/scope.jsp"%>
+    <%@include file="/header/workcal.jsp"%>
 
     <div class="row-fluid">
 	  <%@include file="/menu/workcal.jsp"%>

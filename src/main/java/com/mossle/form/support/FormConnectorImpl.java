@@ -8,8 +8,8 @@ import javax.annotation.Resource;
 import com.mossle.api.form.FormConnector;
 import com.mossle.api.form.FormDTO;
 
-import com.mossle.form.domain.FormTemplate;
-import com.mossle.form.manager.FormTemplateManager;
+import com.mossle.form.persistence.domain.FormTemplate;
+import com.mossle.form.persistence.manager.FormTemplateManager;
 
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
@@ -19,8 +19,10 @@ public class FormConnectorImpl implements FormConnector {
             .getLogger(FormConnectorImpl.class);
     private FormTemplateManager formTemplateManager;
 
-    public List<FormDTO> getAll(String scopeId) {
-        List<FormTemplate> formTemplates = formTemplateManager.getAll();
+    public List<FormDTO> getAll(String tenantId) {
+        String hql = "from FormTemplate where tenantId=?";
+        List<FormTemplate> formTemplates = formTemplateManager.find(hql,
+                tenantId);
         List<FormDTO> formDtos = new ArrayList<FormDTO>();
 
         for (FormTemplate formTemplate : formTemplates) {
@@ -34,9 +36,10 @@ public class FormConnectorImpl implements FormConnector {
         return formDtos;
     }
 
-    public FormDTO findForm(String code) {
-        FormTemplate formTemplate = formTemplateManager.findUniqueBy("code",
-                code);
+    public FormDTO findForm(String code, String tenantId) {
+        String hql = "from FormTemplate where code=? and tenantId=?";
+        FormTemplate formTemplate = formTemplateManager.findUnique(hql, code,
+                tenantId);
 
         if (formTemplate == null) {
             logger.error("cannot find form : {}", code);

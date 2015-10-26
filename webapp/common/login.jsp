@@ -7,15 +7,36 @@
     <%@include file="/common/meta.jsp"%>
     <title><spring:message code="core.login.title" text="登录"/></title>
 	<%@include file="/common/s.jsp"%>
+	<script type="text/javascript">
+$(function() {
+	focusTenant();
+});
+
+function focusTenant() {
+	if (document.f.tenant.value == '') {
+		document.f.tenant.focus();
+	} else {
+		focusUsername();
+	}
+}
+
+function focusUsername() {
+	if (document.f.j_username.value == '') {
+		document.f.j_username.focus();
+	} else {
+		document.f.j_password.focus();
+	}
+}
+	</script>
   </head>
 
-  <body onload='document.f.j_username.focus();'>
+  <body>
 
     <!-- start of header bar -->
     <div class="navbar navbar-inverse">
       <div class="navbar-inner">
         <div class="container">
-          <a href="${scopePrefix}/" class="brand">Mossle</a>
+          <a href="${tenantPrefix}/" class="brand">Mossle</a>
         </div>
       </div><!-- /navbar-inner -->
     </div>
@@ -40,11 +61,17 @@
 
 		<div class="content content-inner">
 
-<form id="userForm" name="f" method="post" action="${scopePrefix}/j_spring_security_check" class="form-horizontal">
+<form id="userForm" name="f" method="post" action="${tenantPrefix}/j_spring_security_check" class="form-horizontal">
+  <div class="control-group" style="display:none;">
+    <label class="control-label" for="tenant">租户</label>
+	<div class="controls">
+      <input type='text' id="tenant" name='tenant' class="text" value="default">
+    </div>
+  </div>
   <div class="control-group">
     <label class="control-label" for="username"><spring:message code="core.login.username" text="账号"/></label>
 	<div class="controls">
-      <input type='text' id="username" name='j_username' class="text" value="${sessionScope['SPRING_SECURITY_LAST_USERNAME']}">
+      <input type='text' id="username" name='j_username' class="text" value="${empty sessionScope['SECURITY_LAST_USERNAME'] ? cookie['SECURITY_LAST_USERNAME'].value : sessionScope['SECURITY_LAST_USERNAME']}">
     </div>
   </div>
   <div class="control-group">

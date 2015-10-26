@@ -32,13 +32,18 @@ public class WhitelistIp implements java.io.Serializable {
     /** null. */
     private Integer priority;
 
+    /** null. */
+    private String tenantId;
+
     public WhitelistIp() {
     }
 
-    public WhitelistIp(WhitelistApp whitelistApp, String value, Integer priority) {
+    public WhitelistIp(WhitelistApp whitelistApp, String value,
+            Integer priority, String tenantId) {
         this.whitelistApp = whitelistApp;
         this.value = value;
         this.priority = priority;
+        this.tenantId = tenantId;
     }
 
     /** @return null. */
@@ -98,5 +103,19 @@ public class WhitelistIp implements java.io.Serializable {
      */
     public void setPriority(Integer priority) {
         this.priority = priority;
+    }
+
+    /** @return null. */
+    @Column(name = "TENANT_ID", length = 64)
+    public String getTenantId() {
+        return this.tenantId;
+    }
+
+    /**
+     * @param tenantId
+     *            null.
+     */
+    public void setTenantId(String tenantId) {
+        this.tenantId = tenantId;
     }
 }

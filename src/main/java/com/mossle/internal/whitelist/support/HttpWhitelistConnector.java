@@ -17,7 +17,7 @@ import com.mossle.core.mapper.JsonMapper;
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
 
-// http://10.237.32.107:8050/rs/whitelist/get?code=CAS
+// http://localhost/rs/whitelist/get?code=CAS
 public class HttpWhitelistConnector implements WhitelistConnector {
     private static Logger logger = LoggerFactory
             .getLogger(HttpWhitelistConnector.class);
@@ -25,9 +25,9 @@ public class HttpWhitelistConnector implements WhitelistConnector {
     private HttpHandler httpHandler = new HttpHandlerImpl();
     private String baseUrl;
 
-    public WhitelistDTO getWhitelist(String code) {
+    public WhitelistDTO getWhitelist(String code, String tenantId) {
         WhitelistDTO result = new WhitelistDTO();
-        List<WhitelistDTO> whitelistDtos = this.getWhitelists(code);
+        List<WhitelistDTO> whitelistDtos = this.getWhitelists(code, tenantId);
 
         for (WhitelistDTO whitelistDto : whitelistDtos) {
             result.getHosts().addAll(whitelistDto.getHosts());
@@ -37,9 +37,10 @@ public class HttpWhitelistConnector implements WhitelistConnector {
         return result;
     }
 
-    public List<WhitelistDTO> getWhitelists(String code) {
+    public List<WhitelistDTO> getWhitelists(String code, String tenantId) {
         try {
-            String text = httpHandler.readText(baseUrl + "?code=" + code);
+            String text = httpHandler.readText(baseUrl + "?code=" + code
+                    + "&tenantId=" + tenantId);
             Map<String, Object> result = jsonMapper.fromJson(text, Map.class);
             logger.debug("result : {}", result);
 

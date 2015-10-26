@@ -3,8 +3,8 @@ package com.mossle.user.support;
 import com.mossle.api.userrepo.UserRepoCache;
 import com.mossle.api.userrepo.UserRepoDTO;
 
-import com.mossle.ext.cache.Cache;
-import com.mossle.ext.cache.CacheStrategy;
+import com.mossle.core.cache.Cache;
+import com.mossle.core.cache.CacheStrategy;
 
 public class UserRepoCacheImpl implements UserRepoCache {
     private CacheStrategy cacheStrategy;

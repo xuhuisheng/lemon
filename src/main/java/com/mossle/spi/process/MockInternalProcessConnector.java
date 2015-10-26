@@ -16,10 +16,6 @@ public class MockInternalProcessConnector implements InternalProcessConnector {
         return Collections.emptyList();
     }
 
-    public void configTaskDefinitions(String businessKey,
-            List<String> taskDefinitionKeys, List<String> taskAssignees) {
-    }
-
     public void completeTask(String taskId, String userId,
             Map<String, Object> variables) {
     }
@@ -40,5 +36,30 @@ public class MockInternalProcessConnector implements InternalProcessConnector {
     }
 
     public void resolveTask(String taskId) {
+    }
+
+    public ProcessTaskDefinition findTaskDefinition(String processDefinitionId,
+            String taskDefintionKey, String businessKey) {
+        return null;
+    }
+
+    public String findInitiator(String processInstanceId) {
+        return null;
+    }
+
+    public String findAssigneeByActivityId(String processInstanceId,
+            String activityId) {
+        return null;
+    }
+
+    public Object executeExpression(String taskId, String expressionText) {
+        return null;
+    }
+
+    public String findInitialActivityId(String processDefinitionId) {
+        return null;
+    }
+
+    public void signalExecution(String executionId) {
     }
 }

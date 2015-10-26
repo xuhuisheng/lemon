@@ -6,8 +6,8 @@ import javax.annotation.Resource;
 
 import com.mossle.api.audit.AuditDTO;
 
-import com.mossle.audit.domain.AuditBase;
-import com.mossle.audit.manager.AuditBaseManager;
+import com.mossle.audit.persistence.domain.AuditBase;
+import com.mossle.audit.persistence.manager.AuditBaseManager;
 
 import com.mossle.core.mapper.BeanMapper;
 

@@ -3,13 +3,13 @@
 	xmlns:xsi="http://www.w3.org/2001/XMLSchema-instance"
 	xsi:schemaLocation="http://www.springframework.org/schema/beans http://www.springframework.org/schema/beans/spring-beans.xsd">
 
-	<bean id="mailFacade" class="com.mossle.ext.mail.MailFacade">
+	<bean id="mailFacade" class="com.mossle.core.mail.MailFacade">
 		<property name="mailHelper" ref="mailHelper"/>
 	</bean>
 
-	<bean id="mailHelper" class="com.mossle.ext.mail.MailHelper">
+	<bean id="mailHelper" class="com.mossle.core.mail.MailHelper">
 		<property name="defaultMailServerInfo">
-			<bean class="com.mossle.ext.mail.MailServerInfo">
+			<bean class="com.mossle.core.mail.MailServerInfo">
 				<property name="host" value="${mail.host}" />
 				<property name="username" value="${mail.username}" />
 				<property name="password" value="${mail.password}" />

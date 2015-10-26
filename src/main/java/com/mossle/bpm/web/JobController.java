@@ -5,6 +5,7 @@ import java.util.List;
 import javax.annotation.Resource;
 
 import com.mossle.api.process.ProcessConnector;
+import com.mossle.api.tenant.TenantHolder;
 
 import com.mossle.core.page.Page;
 
@@ -32,11 +33,13 @@ import org.springframework.web.servlet.mvc.support.RedirectAttributes;
 public class JobController {
     private ProcessEngine processEngine;
     private ProcessConnector processConnector;
+    private TenantHolder tenantHolder;
 
     /** 作业列表 */
     @RequestMapping("job-list")
     public String list(@ModelAttribute Page page, Model model) {
-        page = processConnector.findJobs(page);
+        String tenantId = tenantHolder.getTenantId();
+        page = processConnector.findJobs(tenantId, page);
         model.addAttribute("page", page);
 
         return "bpm/job-list";
@@ -67,5 +70,10 @@ public class JobController {
     @Resource
     public void setProcessConnector(ProcessConnector processConnector) {
         this.processConnector = processConnector;
+    }
+
+    @Resource
+    public void setTenantHolder(TenantHolder tenantHolder) {
+        this.tenantHolder = tenantHolder;
     }
 }

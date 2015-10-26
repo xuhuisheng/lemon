@@ -2,7 +2,7 @@ package com.mossle.auth.support;
 
 import javax.annotation.PostConstruct;
 
-import com.mossle.api.scope.ScopeConnector;
+import com.mossle.api.tenant.TenantConnector;
 import com.mossle.api.user.UserConnector;
 import com.mossle.api.userauth.UserAuthCache;
 import com.mossle.api.userauth.UserAuthConnector;
@@ -21,7 +21,7 @@ public class UserAuthConnectorFactoryBean implements FactoryBean {
     private static Logger logger = LoggerFactory
             .getLogger(UserAuthConnectorFactoryBean.class);
     private UserAuthConnector userAuthConnector;
-    private ScopeConnector scopeConnector;
+    private TenantConnector tenantConnector;
     private UserConnector userConnector;
     private String type = "database";
     private JdbcTemplate jdbcTemplate;
@@ -33,7 +33,7 @@ public class UserAuthConnectorFactoryBean implements FactoryBean {
     public void afterPropertiesSet() {
         Assert.notNull(type, "type cannot be null");
         Assert.notNull(userConnector, "userConnector cannot be null");
-        Assert.notNull(scopeConnector, "scopeConnector cannot be null");
+        Assert.notNull(tenantConnector, "tenantConnector cannot be null");
 
         if ("mock".equals(type)) {
             this.processMock();
@@ -55,7 +55,7 @@ public class UserAuthConnectorFactoryBean implements FactoryBean {
         DatabaseUserAuthConnector databaseUserAuthConnector = new DatabaseUserAuthConnector();
         databaseUserAuthConnector.setJdbcTemplate(jdbcTemplate);
         databaseUserAuthConnector.setUserConnector(userConnector);
-        databaseUserAuthConnector.setScopeConnector(scopeConnector);
+        databaseUserAuthConnector.setTenantConnector(tenantConnector);
 
         if (sqlFindPermissions != null) {
             databaseUserAuthConnector.setSqlFindPermission(sqlFindPermissions);
@@ -99,8 +99,8 @@ public class UserAuthConnectorFactoryBean implements FactoryBean {
         this.jdbcTemplate = jdbcTemplate;
     }
 
-    public void setScopeConnector(ScopeConnector scopeConnector) {
-        this.scopeConnector = scopeConnector;
+    public void setTenantConnector(TenantConnector tenantConnector) {
+        this.tenantConnector = tenantConnector;
     }
 
     public void setUserConnector(UserConnector userConnector) {

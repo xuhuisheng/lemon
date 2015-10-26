@@ -5,7 +5,7 @@ import java.util.Collection;
 public interface UserStatusDetails {
     String getId();
 
-    String getScopeId();
+    String getTenantId();
 
     Collection<String> getAttributes();
 

@@ -36,15 +36,19 @@ public class AccountLockInfo implements java.io.Serializable {
     /** null. */
     private Date releaseTime;
 
+    /** null. */
+    private String tenantId;
+
     public AccountLockInfo() {
     }
 
     public AccountLockInfo(String type, String username, Date lockTime,
-            Date releaseTime) {
+            Date releaseTime, String tenantId) {
         this.type = type;
         this.username = username;
         this.lockTime = lockTime;
         this.releaseTime = releaseTime;
+        this.tenantId = tenantId;
     }
 
     /** @return null. */
@@ -119,5 +123,19 @@ public class AccountLockInfo implements java.io.Serializable {
      */
     public void setReleaseTime(Date releaseTime) {
         this.releaseTime = releaseTime;
+    }
+
+    /** @return null. */
+    @Column(name = "TENANT_ID", length = 64)
+    public String getTenantId() {
+        return this.tenantId;
+    }
+
+    /**
+     * @param tenantId
+     *            null.
+     */
+    public void setTenantId(String tenantId) {
+        this.tenantId = tenantId;
     }
 }

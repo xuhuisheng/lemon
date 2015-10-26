@@ -5,13 +5,17 @@
 
 	<!-- 流程引擎配置 -->
 	<bean id="processEngineConfiguration" class="org.activiti.spring.SpringProcessEngineConfiguration" depends-on="databaseMigrator">
+		<!-- 数据库连接池 -->
 		<property name="dataSource" ref="dataSource" />
-		<!-- Database configurations -->
+		<!-- 事务 -->
+		<property name="transactionManager" ref="transactionManager"/>
+		<!-- 数据库自动升级 -->
 		<property name="databaseSchemaUpdate" value="true" />
+		<!-- 不创建identity表 -->
 		<property name="dbIdentityUsed" value="false"/>
-		<!-- job executor configurations -->
+		<!-- 作业执行器 -->
 		<property name="jobExecutorActivate" value="false" />
-
+		<!-- 历史级别 -->
 		<property name="history" value="audit" />
 
 		<!-- 添加的自定义监听器 -->
@@ -35,7 +39,6 @@
 			<bean class="com.mossle.bpm.parser.CustomBpmnParser" />
 		</property>
 
-		<property name="transactionManager" ref="transactionManager"/>
 		<!-- (databaseType 不用修改,即使连接其他类型数据库)  act引擎会自动替换成相应的type,这里加上是因为act不识别hsqldb类型,故直接映射成H2-->
 		<property name="databaseType" value="${application.database.type}"/>
 
@@ -54,6 +57,7 @@
            </list>
 		</property>
 
+		<!-- 工作日历 -->
 		<property name="businessCalendarManager" ref="businessCalendarManager"/>
 
 		<!-- //更换id生成策略
@@ -73,6 +77,8 @@
 	<bean id="autoDeployer" class="com.mossle.bpm.support.AutoDeployer" depends-on="applicationContextHelper">
 		<property name="enable" value="${bpm.auto.deploy}"/>
 		<property name="processEngine" ref="processEngine"/>
+		<property name="defaultTenantCode" value="${tenant.default.code}"/>
+		<property name="tenantConnector" ref="tenantConnector"/>
         <property name="deploymentResources">
             <list>
                 <value>classpath*:/bpmn2/*</value>
@@ -84,10 +90,6 @@
 	<bean id="customTaskListener" class="com.mossle.bpm.listener.ProxyTaskListener">
 		<property name="taskListeners">
 			<list>
-				<bean class="com.mossle.bpm.listener.ConfUserTaskListener"/>
-				<bean class="com.mossle.bpm.listener.TaskConfTaskListener"/>
-				<bean class="com.mossle.bpm.listener.AssigneeAliasTaskListener"/>
-				<bean class="com.mossle.bpm.listener.DelegateTaskListener"/>
 				<bean class="com.mossle.bpm.listener.HumanTaskTaskListener"/>
 			</list>
 		</property>
@@ -99,8 +101,6 @@
 			<list>
 				<bean class="com.mossle.bpm.listener.AutoCompleteFirstTaskListener"/>
 				<bean class="com.mossle.bpm.listener.SkipTaskListener"/>
-				<bean class="com.mossle.bpm.listener.NoticeTaskListener"/>
-				<bean class="com.mossle.bpm.listener.HumanTaskSyncTaskListener"/>
 			</list>
 		</property>
 	</bean>

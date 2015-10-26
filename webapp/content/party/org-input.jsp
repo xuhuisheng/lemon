@@ -22,13 +22,13 @@ $(function() {
 })
     </script>
 
-    <link type="text/css" rel="stylesheet" href="${scopePrefix}/widgets/userpicker/userpicker.css">
-    <script type="text/javascript" src="${scopePrefix}/widgets/userpicker/userpicker.js"></script>
+    <link type="text/css" rel="stylesheet" href="${tenantPrefix}/widgets/userpicker/userpicker.css">
+    <script type="text/javascript" src="${tenantPrefix}/widgets/userpicker/userpicker.js"></script>
 	<script type="text/javascript">
 $(function() {
 	createUserPicker({
 		modalId: 'userPicker',
-		url: '${scopePrefix}/rs/user/search'
+		url: '${tenantPrefix}/rs/user/search'
 	});
 })
     </script>
@@ -38,7 +38,7 @@ var createOrgPicker = function(conf) {
 		conf = {
 			modalId: 'orgPickerModel',
 			multiple: false,
-			url: '${scopePrefix}/rs/party/entities?typeId=${partyType.id}'
+			url: '${tenantPrefix}/rs/party/entities?typeId=${partyType.id}'
 		};
 	}
 
@@ -201,7 +201,7 @@ $(function() {
     </div>
   </div>
 </c:if>
-<c:if test="${partyType.type != 1}">
+<c:if test="${partyType.type == 2}">
   <div class="control-group">
     <label class="control-label" for="orgInputUser_status">组织类型</label>
 	<div class="controls">
@@ -215,6 +215,49 @@ $(function() {
       <input id="org_name" type="text" name="childEntityName" value="" size="40" class="text required" minlength="1" maxlength="50" autocomplete="off">
 	  <button id="btnClean" type="button" class="btn" style="display:none;">清空</button>
 	  <button id="btnOpen" type="button" class="btn">选择已有组织</button>
+    </div>
+  </div>
+  <div class="control-group">
+    <label class="control-label" for="orgInputUser_priority">排序</label>
+	<div class="controls">
+	  <input id="orgInputUser_priority" type="text" name="priority" value="" size="40" class="text required number" minlength="1" maxlength="50" autocomplete="off">
+    </div>
+  </div>
+  <div class="control-group">
+    <label class="control-label" for="orgInputUser_admin0">管理</label>
+	<div class="controls">
+	  <label for="orgInputUser_admin0" class="radio inline">
+	    <input id="orgInputUser_admin0" type="radio" name="admin" value="0" class="required" checked>
+		普通
+	  </label>
+	  <label for="orgInputUser_admin1" class="radio inline">
+	    <input id="orgInputUser_admin1" type="radio" name="admin" value="1" class="required">
+		管理
+	  </label>
+	  <label for="orgInputUser_status2" class="validate-error" generated="true" style="display:none;"></label>
+    </div>
+  </div>
+</c:if>
+<c:if test="${partyType.type == 0}">
+  <div class="control-group">
+    <label class="control-label" for="orgInputUser_status">组织类型</label>
+	<div class="controls">
+	  ${partyType.name}
+    </div>
+  </div>
+  <div class="control-group">
+    <label class="control-label" for="org_name"><spring:message code="org.org.input.orgname" text="名称"/></label>
+	<div class="controls">
+	  <input id="org_id" type="hidden" name="childEntityId" value="">
+      <input id="org_name" type="text" name="childEntityName" value="" size="40" class="text required" minlength="1" maxlength="50" autocomplete="off">
+	  <button id="btnClean" type="button" class="btn" style="display:none;">清空</button>
+	  <button id="btnOpen" type="button" class="btn">选择已有组织</button>
+    </div>
+  </div>
+  <div class="control-group">
+    <label class="control-label" for="orgInputUser_priority">排序</label>
+	<div class="controls">
+	  <input id="orgInputUser_priority" type="text" name="priority" value="" size="40" class="text required number" minlength="1" maxlength="50" autocomplete="off">
     </div>
   </div>
 </c:if>

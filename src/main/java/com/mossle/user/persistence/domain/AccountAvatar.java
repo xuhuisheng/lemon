@@ -32,13 +32,18 @@ public class AccountAvatar implements java.io.Serializable {
     /** null. */
     private String code;
 
+    /** null. */
+    private String tenantId;
+
     public AccountAvatar() {
     }
 
-    public AccountAvatar(AccountInfo accountInfo, String type, String code) {
+    public AccountAvatar(AccountInfo accountInfo, String type, String code,
+            String tenantId) {
         this.accountInfo = accountInfo;
         this.type = type;
         this.code = code;
+        this.tenantId = tenantId;
     }
 
     /** @return null. */
@@ -98,5 +103,19 @@ public class AccountAvatar implements java.io.Serializable {
      */
     public void setCode(String code) {
         this.code = code;
+    }
+
+    /** @return null. */
+    @Column(name = "TENANT_ID", length = 64)
+    public String getTenantId() {
+        return this.tenantId;
+    }
+
+    /**
+     * @param tenantId
+     *            null.
+     */
+    public void setTenantId(String tenantId) {
+        this.tenantId = tenantId;
     }
 }

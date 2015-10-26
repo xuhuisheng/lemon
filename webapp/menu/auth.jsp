@@ -11,11 +11,12 @@
           </div>
           <div id="collapse-auth" class="accordion-body collapse ${currentMenu == 'auth' ? 'in' : ''}">
             <ul class="accordion-inner nav nav-list">
-			  <li><a href="${scopePrefix}/auth/user-connector-list.do"><i class="icon-user"></i><spring:message code="layout.leftmenu.usermanage" text="用户管理"/></a></li>
-			  <li><a href="${scopePrefix}/auth/role-viewList.do"><i class="icon-user"></i><spring:message code="layout.leftmenu.rolemanage" text="角色管理"/></a></li>
-			  <li><a href="${scopePrefix}/auth/perm-type-list.do"><i class="icon-user"></i>授权分类</a></li>
-			  <li><a href="${scopePrefix}/auth/perm-list.do"><i class="icon-user"></i><spring:message code="layout.leftmenu.permmanage" text="授权管理"/></a></li>
-			  <li><a href="${scopePrefix}/auth/access-list.do"><i class="icon-user"></i><spring:message code="layout.leftmenu.accessmanage" text="访问权限"/></a></li>
+			  <li><a href="${tenantPrefix}/auth/user-connector-list.do"><i class="icon-user"></i><spring:message code="layout.leftmenu.usermanage" text="用户管理"/></a></li>
+			  <li><a href="${tenantPrefix}/auth/role-viewList.do"><i class="icon-user"></i><spring:message code="layout.leftmenu.rolemanage" text="角色管理"/></a></li>
+			  <li><a href="${tenantPrefix}/auth/perm-type-list.do"><i class="icon-user"></i>授权分类</a></li>
+			  <li><a href="${tenantPrefix}/auth/perm-list.do"><i class="icon-user"></i><spring:message code="layout.leftmenu.permmanage" text="授权管理"/></a></li>
+			  <li><a href="${tenantPrefix}/auth/access-list.do"><i class="icon-user"></i><spring:message code="layout.leftmenu.accessmanage" text="访问权限"/></a></li>
+			  <li><a href="${tenantPrefix}/auth/menu-list.do"><i class="icon-user"></i>菜单管理</a></li>
 		    </ul>
           </div>
         </div>

@@ -17,9 +17,10 @@ import com.fasterxml.jackson.databind.node.ArrayNode;
 import com.fasterxml.jackson.databind.node.ObjectNode;
 import com.fasterxml.jackson.databind.util.JSONPObject;
 
-import com.mossle.bpm.ActivityDTO;
 import com.mossle.bpm.cmd.FindNextActivitiesCmd;
 import com.mossle.bpm.cmd.FindPreviousActivitiesCmd;
+import com.mossle.bpm.cmd.FindTaskDefinitionsCmd;
+import com.mossle.bpm.support.ActivityDTO;
 
 import org.activiti.engine.ActivitiException;
 import org.activiti.engine.HistoryService;
@@ -43,6 +44,7 @@ import org.activiti.engine.impl.pvm.process.Lane;
 import org.activiti.engine.impl.pvm.process.LaneSet;
 import org.activiti.engine.impl.pvm.process.ParticipantProcess;
 import org.activiti.engine.impl.pvm.process.TransitionImpl;
+import org.activiti.engine.impl.task.TaskDefinition;
 import org.activiti.engine.repository.ProcessDefinition;
 import org.activiti.engine.runtime.Execution;
 import org.activiti.engine.runtime.ProcessInstance;
@@ -785,6 +787,17 @@ public class BpmResource {
                 .executeCommand(cmd));
     }
 
+    @Path("taskDefinitionKeys")
+    @GET
+    public List<ActivityDTO> findTaskDefinitionKeys(
+            @QueryParam("processDefinitionId") String processDefinitionId) {
+        FindTaskDefinitionsCmd cmd = new FindTaskDefinitionsCmd(
+                processDefinitionId);
+
+        return this.convertActivityDtoFromTaskDefinitions(processEngine
+                .getManagementService().executeCommand(cmd));
+    }
+
     public List<ActivityDTO> convertActivityDtos(List<PvmActivity> pvmActivities) {
         List<ActivityDTO> activityDtos = new ArrayList<ActivityDTO>();
 
@@ -792,6 +805,21 @@ public class BpmResource {
             ActivityDTO activityDto = new ActivityDTO();
             activityDto.setId(pvmActivity.getId());
             activityDto.setName((String) pvmActivity.getProperty("name"));
+            activityDtos.add(activityDto);
+        }
+
+        return activityDtos;
+    }
+
+    public List<ActivityDTO> convertActivityDtoFromTaskDefinitions(
+            List<TaskDefinition> taskDefinitions) {
+        List<ActivityDTO> activityDtos = new ArrayList<ActivityDTO>();
+
+        for (TaskDefinition taskDefinition : taskDefinitions) {
+            ActivityDTO activityDto = new ActivityDTO();
+            activityDto.setId(taskDefinition.getKey());
+            activityDto.setName(taskDefinition.getNameExpression()
+                    .getExpressionText());
             activityDtos.add(activityDto);
         }
 

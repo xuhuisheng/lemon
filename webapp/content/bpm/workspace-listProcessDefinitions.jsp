@@ -53,7 +53,7 @@
 	    <td>${item.description}</td>
 	    <td>${item.suspended ? '挂起' : '激活'}</td>
         <td>
-          <a href="${scopePrefix}/form/form-viewStartForm.do?processDefinitionId=${item.id}">发起流程</a>
+          <a href="${tenantPrefix}/form/form-viewStartForm.do?processDefinitionId=${item.id}">发起流程</a>
           <a href="workspace-graphProcessDefinition.do?processDefinitionId=${item.id}" target="_blank">流程图</a>
         </td>
       </tr>

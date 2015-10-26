@@ -8,8 +8,8 @@ import java.util.Map;
 
 import javax.annotation.Resource;
 
-import com.mossle.api.scope.ScopeConnector;
-import com.mossle.api.scope.ScopeDTO;
+import com.mossle.api.tenant.TenantConnector;
+import com.mossle.api.tenant.TenantDTO;
 import com.mossle.api.user.UserConnector;
 import com.mossle.api.user.UserDTO;
 import com.mossle.api.userauth.UserAuthConnector;
@@ -28,51 +28,56 @@ public class DatabaseUserAuthConnector implements UserAuthConnector {
     private static Logger logger = LoggerFactory
             .getLogger(DatabaseUserAuthConnector.class);
     private JdbcTemplate jdbcTemplate;
-    private ScopeConnector scopeConnector;
+    private TenantConnector tenantConnector;
     private UserConnector userConnector;
 
     // ~
-    private String sqlFindPermissions = "select p.code as permission"
-            + " from AUTH_USER_STATUS us,AUTH_USER_ROLE ur,AUTH_ROLE r,AUTH_PERM_ROLE_DEF pr,AUTH_PERM p"
-            + " where us.id=ur.user_status_id and ur.role_id=r.id and r.role_def_id=pr.role_def_id and pr.perm_id=p.id"
-            + " and us.ref=? and us.scope_id=?";
-    private String sqlFindRoles = "select r.name as role"
-            + " from AUTH_USER_STATUS us,AUTH_USER_ROLE ur,AUTH_ROLE r"
-            + " where us.id=ur.user_status_id and ur.role_id=r.id"
-            + " and us.ref=? and us.scope_id=?";
-    private String sqlFindAccountLockInfo = "select count(*) from ACCOUNT_LOCK_INFO where username=? and type='default'";
-    private String sqlFindAccountExpire = "select CLOSE_TIME from ACCOUNT_INFO where id=?";
-    private String sqlFindPasswordExpire = "select EXPIRE_TIME from ACCOUNT_CREDENTIAL where account_id=? and catalog='default'";
+    private String sqlFindPermissions = "SELECT P.CODE AS PERMISSION"
+            + " FROM AUTH_USER_STATUS US,AUTH_USER_ROLE UR,AUTH_ROLE R,AUTH_PERM_ROLE_DEF PR,AUTH_PERM P"
+            + " WHERE US.ID=UR.USER_STATUS_ID AND UR.ROLE_ID=R.ID AND R.ROLE_DEF_ID=PR.ROLE_DEF_ID AND PR.PERM_ID=P.ID"
+            + " AND US.REF=? AND US.TENANT_ID=?";
+    private String sqlFindRoles = "SELECT R.NAME AS ROLE"
+            + " FROM AUTH_USER_STATUS US,AUTH_USER_ROLE UR,AUTH_ROLE R"
+            + " WHERE US.ID=UR.USER_STATUS_ID AND UR.ROLE_ID=R.ID"
+            + " AND US.REF=? AND US.TENANT_ID=?";
+    private String sqlFindAccountLockInfo = "SELECT COUNT(*) FROM ACCOUNT_LOCK_INFO WHERE USERNAME=? AND TYPE='default'";
+    private String sqlFindAccountExpire = "SELECT CLOSE_TIME FROM ACCOUNT_INFO WHERE ID=?";
+    private String sqlFindPasswordExpire = "SELECT EXPIRE_TIME FROM ACCOUNT_CREDENTIAL WHERE ACCOUNT_ID=? AND CATALOG='default'";
 
-    public UserAuthDTO findByUsername(String username, String scopeId) {
-        ScopeDTO scopeDto = scopeConnector.findById(scopeId);
+    public UserAuthDTO findByUsername(String username, String tenantId) {
+        TenantDTO tenantDto = tenantConnector.findById(tenantId);
         UserDTO userDto = userConnector.findByUsername(username,
-                scopeDto.getUserRepoRef());
-        Assert.notNull(userDto, "cannot find user by (" + username + ","
-                + scopeId + ")");
+                tenantDto.getUserRepoRef());
 
-        return process(userDto, scopeDto);
+        if (userDto == null) {
+            logger.info("cannot find user by (" + username + ","
+                    + tenantDto.getUserRepoRef() + ")");
+
+            return null;
+        }
+
+        return this.process(userDto, tenantDto);
     }
 
-    public UserAuthDTO findByRef(String ref, String scopeId) {
-        ScopeDTO scopeDto = scopeConnector.findById(scopeId);
+    public UserAuthDTO findByRef(String ref, String tenantId) {
+        TenantDTO tenantDto = tenantConnector.findById(tenantId);
         UserDTO userDto = userConnector.findByRef(ref,
-                scopeDto.getUserRepoRef());
+                tenantDto.getUserRepoRef());
 
-        return process(userDto, scopeDto);
+        return process(userDto, tenantDto);
     }
 
-    public UserAuthDTO findById(String id, String scopeId) {
-        ScopeDTO scopeDto = scopeConnector.findById(scopeId);
+    public UserAuthDTO findById(String id, String tenantId) {
+        TenantDTO tenantDto = tenantConnector.findById(tenantId);
         UserDTO userDto = userConnector.findById(id);
 
-        return process(userDto, scopeDto);
+        return process(userDto, tenantDto);
     }
 
-    public UserAuthDTO process(UserDTO userDto, ScopeDTO scopeDto) {
+    public UserAuthDTO process(UserDTO userDto, TenantDTO tenantDto) {
         UserAuthDTO userAuthDto = new UserAuthDTO();
         userAuthDto.setId(userDto.getId());
-        userAuthDto.setScopeId(scopeDto.getId());
+        userAuthDto.setTenantId(tenantDto.getId());
         userAuthDto.setUsername(userDto.getUsername());
         userAuthDto.setRef(userDto.getRef());
         userAuthDto.setDisplayName(userDto.getDisplayName());
@@ -115,13 +120,17 @@ public class DatabaseUserAuthConnector implements UserAuthConnector {
 
         // permissions
         List<Map<String, Object>> permissions = jdbcTemplate.queryForList(
-                sqlFindPermissions, userDto.getId(), scopeDto.getId());
+                sqlFindPermissions, userDto.getId(), tenantDto.getId());
+        logger.debug("sqlFindPermissions : {}", sqlFindPermissions);
+        logger.debug("userDto.getId() : {}", userDto.getId());
+        logger.debug("tenantDto.getId() : {}", tenantDto.getId());
+        logger.debug("permissions : {}", permissions);
         userAuthDto.setPermissions(this.convertMapListToStringList(permissions,
                 "permission"));
 
         // roles
         List<Map<String, Object>> roles = jdbcTemplate.queryForList(
-                sqlFindRoles, userDto.getId(), scopeDto.getId());
+                sqlFindRoles, userDto.getId(), tenantDto.getId());
         userAuthDto.setRoles(this.convertMapListToStringList(roles, "role"));
 
         return userAuthDto;
@@ -142,8 +151,8 @@ public class DatabaseUserAuthConnector implements UserAuthConnector {
         return stringList;
     }
 
-    public void setScopeConnector(ScopeConnector scopeConnector) {
-        this.scopeConnector = scopeConnector;
+    public void setTenantConnector(TenantConnector tenantConnector) {
+        this.tenantConnector = tenantConnector;
     }
 
     public void setUserConnector(UserConnector userConnector) {

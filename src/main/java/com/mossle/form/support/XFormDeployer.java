@@ -7,10 +7,13 @@ import java.util.Map;
 
 import javax.annotation.PostConstruct;
 
+import com.mossle.api.tenant.TenantConnector;
+import com.mossle.api.tenant.TenantDTO;
+
 import com.mossle.core.mapper.JsonMapper;
 
-import com.mossle.form.domain.FormTemplate;
-import com.mossle.form.manager.FormTemplateManager;
+import com.mossle.form.persistence.domain.FormTemplate;
+import com.mossle.form.persistence.manager.FormTemplateManager;
 
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
@@ -27,12 +30,17 @@ public class XFormDeployer implements ApplicationContextAware {
     private ApplicationContext applicationContext;
     private JsonMapper jsonMapper = new JsonMapper();
     private FormTemplateManager formTemplateManager;
+    private TenantConnector tenantConnector;
+    private String defaultTenantCode = "default";
 
     @PostConstruct
     public void init() {
         if (!autoDeploy) {
             return;
         }
+
+        TenantDTO tenantDto = tenantConnector.findByCode(defaultTenantCode);
+        String tenantId = tenantDto.getId();
 
         try {
             for (Resource resource : applicationContext
@@ -43,8 +51,9 @@ public class XFormDeployer implements ApplicationContextAware {
 
                 String code = (String) map.get("code");
                 String name = (String) map.get("name");
-                FormTemplate formTemplate = formTemplateManager.findUniqueBy(
-                        "code", code);
+                String hql = "from FormTemplate where code=? and tenantId=?";
+                FormTemplate formTemplate = formTemplateManager.findUnique(hql,
+                        code, tenantId);
 
                 if (formTemplate != null) {
                     continue;
@@ -55,6 +64,7 @@ public class XFormDeployer implements ApplicationContextAware {
                 formTemplate.setName(name);
                 formTemplate.setContent(text);
                 formTemplate.setType(0);
+                formTemplate.setTenantId(tenantId);
                 formTemplateManager.save(formTemplate);
             }
         } catch (Exception ex) {
@@ -92,5 +102,14 @@ public class XFormDeployer implements ApplicationContextAware {
     @javax.annotation.Resource
     public void setFormTemplateManager(FormTemplateManager formTemplateManager) {
         this.formTemplateManager = formTemplateManager;
+    }
+
+    public void setDefaultTenantCode(String defaultTenantCode) {
+        this.defaultTenantCode = defaultTenantCode;
+    }
+
+    @javax.annotation.Resource
+    public void setTenantConnector(TenantConnector tenantConnector) {
+        this.tenantConnector = tenantConnector;
     }
 }

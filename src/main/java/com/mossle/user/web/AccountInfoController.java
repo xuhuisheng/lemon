@@ -14,37 +14,32 @@ import javax.servlet.http.HttpServletRequest;
 import javax.servlet.http.HttpServletResponse;
 import javax.servlet.http.HttpSession;
 
-import com.mossle.api.scope.ScopeHolder;
 import com.mossle.api.store.StoreConnector;
 import com.mossle.api.store.StoreDTO;
+import com.mossle.api.tenant.TenantHolder;
 import com.mossle.api.user.UserCache;
 import com.mossle.api.user.UserDTO;
 
+import com.mossle.core.auth.CustomPasswordEncoder;
+import com.mossle.core.export.Exportor;
+import com.mossle.core.export.TableModel;
 import com.mossle.core.hibernate.PropertyFilter;
 import com.mossle.core.mapper.BeanMapper;
 import com.mossle.core.page.Page;
 import com.mossle.core.spring.MessageHelper;
+import com.mossle.core.store.MultipartFileDataSource;
 import com.mossle.core.util.IoUtils;
 import com.mossle.core.util.ServletUtils;
 
-import com.mossle.ext.auth.CustomPasswordEncoder;
-import com.mossle.ext.export.Exportor;
-import com.mossle.ext.export.TableModel;
-import com.mossle.ext.store.MultipartFileDataSource;
-
-import com.mossle.user.component.UserPublisher;
+import com.mossle.user.persistence.domain.AccountAvatar;
 import com.mossle.user.persistence.domain.AccountCredential;
 import com.mossle.user.persistence.domain.AccountInfo;
 import com.mossle.user.persistence.domain.PersonInfo;
-import com.mossle.user.persistence.domain.UserBase;
-import com.mossle.user.persistence.domain.UserRepo;
+import com.mossle.user.persistence.manager.AccountAvatarManager;
 import com.mossle.user.persistence.manager.AccountCredentialManager;
 import com.mossle.user.persistence.manager.AccountInfoManager;
 import com.mossle.user.persistence.manager.PersonInfoManager;
-import com.mossle.user.persistence.manager.UserBaseManager;
-import com.mossle.user.persistence.manager.UserRepoManager;
-import com.mossle.user.service.UserService;
-import com.mossle.user.support.UserBaseWrapper;
+import com.mossle.user.publish.UserPublisher;
 
 import org.springframework.stereotype.Controller;
 
@@ -62,21 +57,24 @@ import org.springframework.web.servlet.mvc.support.RedirectAttributes;
 public class AccountInfoController {
     private AccountInfoManager accountInfoManager;
     private AccountCredentialManager accountCredentialManager;
+    private AccountAvatarManager accountAvatarManager;
     private PersonInfoManager personInfoManager;
     private UserCache userCache;
     private MessageHelper messageHelper;
     private Exportor exportor;
     private BeanMapper beanMapper = new BeanMapper();
     private CustomPasswordEncoder customPasswordEncoder;
-    private UserService userService;
     private StoreConnector storeConnector;
     private UserPublisher userPublisher;
+    private TenantHolder tenantHolder;
 
     @RequestMapping("account-info-list")
     public String list(@ModelAttribute Page page,
             @RequestParam Map<String, Object> parameterMap, Model model) {
+        String tenantId = tenantHolder.getTenantId();
         List<PropertyFilter> propertyFilters = PropertyFilter
                 .buildFromMap(parameterMap);
+        propertyFilters.add(new PropertyFilter("EQS_tenantId", tenantId));
         page = accountInfoManager.pagedQuery(page, propertyFilters);
 
         model.addAttribute("page", page);
@@ -106,6 +104,8 @@ public class AccountInfoController {
             @RequestParam(value = "password", required = false) String password,
             @RequestParam(value = "confirmPassword", required = false) String confirmPassword,
             RedirectAttributes redirectAttributes) throws Exception {
+        String tenantId = tenantHolder.getTenantId();
+
         // 先进行校验
         if (password != null) {
             if (!password.equals(confirmPassword)) {
@@ -128,6 +128,7 @@ public class AccountInfoController {
         } else {
             dest = accountInfo;
             dest.setCreateTime(new Date());
+            dest.setTenantId(tenantId);
         }
 
         accountInfoManager.save(dest);
@@ -166,7 +167,7 @@ public class AccountInfoController {
         userDto.setId(Long.toString(dest.getId()));
         userDto.setUsername(dest.getUsername());
         userDto.setRef(dest.getCode());
-        userDto.setUserRepoRef("1");
+        userDto.setUserRepoRef(tenantId);
         userCache.removeUser(userDto);
 
         if (id != null) {
@@ -181,6 +182,7 @@ public class AccountInfoController {
     @RequestMapping("account-info-remove")
     public String remove(@RequestParam("selectedItem") List<Long> selectedItem,
             RedirectAttributes redirectAttributes) {
+        String tenantId = tenantHolder.getTenantId();
         List<AccountInfo> accountInfos = accountInfoManager
                 .findByIds(selectedItem);
 
@@ -190,13 +192,17 @@ public class AccountInfoController {
                 accountCredentialManager.remove(accountCredential);
             }
 
+            for (AccountAvatar accountAvatar : accountInfo.getAccountAvatars()) {
+                accountAvatarManager.remove(accountAvatar);
+            }
+
             accountInfoManager.remove(accountInfo);
 
             UserDTO userDto = new UserDTO();
             userDto.setId(Long.toString(accountInfo.getId()));
             userDto.setUsername(accountInfo.getUsername());
             userDto.setRef(accountInfo.getCode());
-            userDto.setUserRepoRef("1");
+            userDto.setUserRepoRef(tenantId);
             userCache.removeUser(userDto);
             userPublisher.notifyUserRemoved(this.convertUserDto(accountInfo));
         }
@@ -216,7 +222,7 @@ public class AccountInfoController {
         messageHelper.addFlashMessage(redirectAttributes,
                 "core.success.update", "操作成功");
 
-        userPublisher.notifyUserCreated(this.convertUserDto(accountInfo));
+        userPublisher.notifyUserUpdated(this.convertUserDto(accountInfo));
 
         return "redirect:/user/account-info-list.do";
     }
@@ -230,7 +236,7 @@ public class AccountInfoController {
         messageHelper.addFlashMessage(redirectAttributes,
                 "core.success.update", "操作成功");
 
-        userPublisher.notifyUserRemoved(this.convertUserDto(accountInfo));
+        userPublisher.notifyUserUpdated(this.convertUserDto(accountInfo));
 
         return "redirect:/user/account-info-list.do";
     }
@@ -240,12 +246,13 @@ public class AccountInfoController {
     public boolean checkUsername(@RequestParam("username") String username,
             @RequestParam(value = "id", required = false) Long id)
             throws Exception {
-        String hql = "from AccountInfo where username=?";
-        Object[] params = { username };
+        String tenantId = tenantHolder.getTenantId();
+        String hql = "from AccountInfo where username=? and tenantId=?";
+        Object[] params = { username, tenantId };
 
         if (id != null) {
-            hql = "from AccountInfo where username=? and id<>?";
-            params = new Object[] { username, id };
+            hql = "from AccountInfo where username=? and tenantId=? and id<>?";
+            params = new Object[] { username, tenantId, id };
         }
 
         boolean result = accountInfoManager.findUnique(hql, params) == null;
@@ -254,15 +261,16 @@ public class AccountInfoController {
     }
 
     public UserDTO convertUserDto(AccountInfo accountInfo) {
-        String hql = "from PersonInfo where code=?";
+        String hql = "from PersonInfo where code=? and tenantId=?";
         PersonInfo personInfo = personInfoManager.findUnique(hql,
-                accountInfo.getCode());
+                accountInfo.getCode(), accountInfo.getTenantId());
 
         UserDTO userDto = new UserDTO();
         userDto.setId(Long.toString(accountInfo.getId()));
         userDto.setUsername(accountInfo.getUsername());
         userDto.setDisplayName(accountInfo.getDisplayName());
         userDto.setNickName(accountInfo.getNickName());
+        userDto.setUserRepoRef(accountInfo.getTenantId());
 
         if (personInfo != null) {
             userDto.setEmail(personInfo.getEmail());
@@ -282,6 +290,12 @@ public class AccountInfoController {
     public void setAccountCredentialManager(
             AccountCredentialManager accountCredentialManager) {
         this.accountCredentialManager = accountCredentialManager;
+    }
+
+    @Resource
+    public void setAccountAvatarManager(
+            AccountAvatarManager accountAvatarManager) {
+        this.accountAvatarManager = accountAvatarManager;
     }
 
     @Resource
@@ -311,11 +325,6 @@ public class AccountInfoController {
     }
 
     @Resource
-    public void setUserService(UserService userService) {
-        this.userService = userService;
-    }
-
-    @Resource
     public void setStoreConnector(StoreConnector storeConnector) {
         this.storeConnector = storeConnector;
     }
@@ -323,5 +332,10 @@ public class AccountInfoController {
     @Resource
     public void setUserPublisher(UserPublisher userPublisher) {
         this.userPublisher = userPublisher;
+    }
+
+    @Resource
+    public void setTenantHolder(TenantHolder tenantHolder) {
+        this.tenantHolder = tenantHolder;
     }
 }

@@ -8,16 +8,18 @@ import java.text.SimpleDateFormat;
 
 import java.util.*;
 
+import javax.activation.DataSource;
+
 import javax.annotation.Resource;
 
 import com.mossle.api.store.StoreConnector;
 import com.mossle.api.store.StoreDTO;
 
 import com.mossle.core.mapper.JsonMapper;
+import com.mossle.core.store.ByteArrayDataSource;
+import com.mossle.core.store.StoreHelper;
+import com.mossle.core.store.StoreResult;
 import com.mossle.core.util.IoUtils;
-
-import com.mossle.ext.store.StoreHelper;
-import com.mossle.ext.store.StoreResult;
 
 import com.mossle.internal.store.service.StoreService;
 
@@ -42,7 +44,7 @@ public class LocalStoreClient implements StoreClient {
     private StoreService storeService;
 
     public StoreDTO saveStore(InputStream inputStream, String fileName,
-            String contentType) throws Exception {
+            String contentType, String tenantId) throws Exception {
         int len = -1;
         byte[] b = new byte[1024];
         ByteArrayOutputStream baos2 = new ByteArrayOutputStream();
@@ -54,18 +56,14 @@ public class LocalStoreClient implements StoreClient {
         inputStream.close();
 
         byte[] bytes = baos2.toByteArray();
-        StoreResult storeResult = storeService.saveStore(model, fileName,
-                contentType, bytes);
-        StoreDTO storeDto = new StoreDTO();
-        storeDto.setModel(storeResult.getModel());
-        storeDto.setKey(storeResult.getKey());
-        storeDto.setDataSource(storeResult.getDataSource());
+        DataSource dataSource = new ByteArrayDataSource(fileName, bytes);
+        StoreDTO storeDto = storeService.saveStore(model, dataSource, tenantId);
 
         return storeDto;
     }
 
-    public StoreDTO getStore(String key) throws Exception {
-        return storeConnector.getStore(model, key);
+    public StoreDTO getStore(String key, String tenantId) throws Exception {
+        return storeConnector.getStore(model, key, tenantId);
     }
 
     @Value("${store.baseUrl}")

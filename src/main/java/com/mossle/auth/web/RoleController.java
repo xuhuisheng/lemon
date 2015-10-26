@@ -9,24 +9,23 @@ import javax.annotation.Resource;
 import javax.servlet.http.HttpServletRequest;
 import javax.servlet.http.HttpServletResponse;
 
-import com.mossle.api.scope.ScopeConnector;
-import com.mossle.api.scope.ScopeDTO;
-import com.mossle.api.scope.ScopeHolder;
+import com.mossle.api.tenant.TenantConnector;
+import com.mossle.api.tenant.TenantDTO;
+import com.mossle.api.tenant.TenantHolder;
 
 import com.mossle.auth.component.RoleChecker;
-import com.mossle.auth.domain.Role;
-import com.mossle.auth.domain.RoleDef;
-import com.mossle.auth.manager.RoleDefManager;
-import com.mossle.auth.manager.RoleManager;
+import com.mossle.auth.persistence.domain.Role;
+import com.mossle.auth.persistence.domain.RoleDef;
+import com.mossle.auth.persistence.manager.RoleDefManager;
+import com.mossle.auth.persistence.manager.RoleManager;
 import com.mossle.auth.support.CheckRoleException;
 
+import com.mossle.core.export.Exportor;
+import com.mossle.core.export.TableModel;
 import com.mossle.core.hibernate.PropertyFilter;
 import com.mossle.core.mapper.BeanMapper;
 import com.mossle.core.page.Page;
 import com.mossle.core.spring.MessageHelper;
-
-import com.mossle.ext.export.Exportor;
-import com.mossle.ext.export.TableModel;
 
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
@@ -52,15 +51,16 @@ public class RoleController {
     private RoleChecker roleChecker;
     private Exportor exportor;
     private BeanMapper beanMapper = new BeanMapper();
-    private ScopeConnector scopeConnector;
+    private TenantConnector tenantConnector;
+    private TenantHolder tenantHolder;
 
     @RequestMapping("role-list")
     public String list(@ModelAttribute Page page,
             @RequestParam Map<String, Object> parameterMap, Model model) {
         List<PropertyFilter> propertyFilters = PropertyFilter
                 .buildFromMap(parameterMap);
-        propertyFilters.add(new PropertyFilter("EQS_scopeId", ScopeHolder
-                .getScopeId()));
+        propertyFilters.add(new PropertyFilter("EQS_tenantId", tenantHolder
+                .getTenantId()));
         page = roleManager.pagedQuery(page, propertyFilters);
         model.addAttribute("page", page);
 
@@ -76,17 +76,17 @@ public class RoleController {
         }
 
         List<RoleDef> roleDefs = roleDefManager.find(
-                "from RoleDef where scopeId=?", ScopeHolder.getScopeId());
+                "from RoleDef where tenantId=?", tenantHolder.getTenantId());
 
-        List<ScopeDTO> scopeDtos = scopeConnector.findSharedScopes();
+        List<TenantDTO> tenantDtos = tenantConnector.findSharedTenants();
 
-        for (ScopeDTO scopeDto : scopeDtos) {
+        for (TenantDTO tenantDto : tenantDtos) {
             roleDefs.addAll(roleDefManager.find(
-                    "from RoleDef where scopeInfo=?", scopeDto.getId()));
+                    "from RoleDef where tenantInfo=?", tenantDto.getId()));
         }
 
-        List<Role> roles = roleManager.findBy("scopeId",
-                ScopeHolder.getScopeId());
+        List<Role> roles = roleManager.findBy("tenantId",
+                tenantHolder.getTenantId());
         List<RoleDef> removedRoleDefs = new ArrayList<RoleDef>();
 
         for (Role role : roles) {
@@ -125,7 +125,7 @@ public class RoleController {
             }
 
             if (id == null) {
-                dest.setScopeId(ScopeHolder.getScopeId());
+                dest.setTenantId(tenantHolder.getTenantId());
             }
 
             dest.setName(roleDefManager.get(roleDefId).getName());
@@ -187,12 +187,12 @@ public class RoleController {
     public boolean checkName(@RequestParam("name") String name,
             @RequestParam(value = "id", required = false) Long id)
             throws Exception {
-        String hql = "from Role where scopeId=" + ScopeHolder.getScopeId()
+        String hql = "from Role where tenantId=" + tenantHolder.getTenantId()
                 + " and name=?";
         Object[] params = { name };
 
         if (id != 0L) {
-            hql = "from Role where scopeId=" + ScopeHolder.getScopeId()
+            hql = "from Role where tenantId=" + tenantHolder.getTenantId()
                     + " and name=? and id<>?";
             params = new Object[] { name, id };
         }
@@ -208,8 +208,8 @@ public class RoleController {
             @RequestParam Map<String, Object> parameterMap, Model model) {
         List<PropertyFilter> propertyFilters = PropertyFilter
                 .buildFromMap(parameterMap);
-        propertyFilters.add(new PropertyFilter("EQS_scopeId", ScopeHolder
-                .getScopeId()));
+        propertyFilters.add(new PropertyFilter("EQS_tenantId", tenantHolder
+                .getTenantId()));
         page = roleManager.pagedQuery(page, propertyFilters);
         model.addAttribute("page", page);
 
@@ -246,12 +246,12 @@ public class RoleController {
             }
 
             if (id == null) {
-                dest.setScopeId(ScopeHolder.getScopeId());
+                dest.setTenantId(tenantHolder.getTenantId());
 
                 RoleDef roleDef = new RoleDef();
                 roleDef.setName(role.getName());
                 roleDef.setDescn(role.getDescn());
-                roleDef.setScopeId(ScopeHolder.getScopeId());
+                roleDef.setTenantId(tenantHolder.getTenantId());
                 roleDefManager.save(roleDef);
                 dest.setRoleDef(roleDef);
             }
@@ -319,7 +319,12 @@ public class RoleController {
     }
 
     @Resource
-    public void setScopeConnector(ScopeConnector scopeConnector) {
-        this.scopeConnector = scopeConnector;
+    public void setTenantConnector(TenantConnector tenantConnector) {
+        this.tenantConnector = tenantConnector;
+    }
+
+    @Resource
+    public void setTenantHolder(TenantHolder tenantHolder) {
+        this.tenantHolder = tenantHolder;
     }
 }

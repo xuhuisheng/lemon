@@ -53,7 +53,7 @@ public class SendmailConfig implements java.io.Serializable {
     private String testMail;
 
     /** null. */
-    private String scopeId;
+    private String tenantId;
 
     /** . */
     private Set<SendmailQueue> sendmailQueues = new HashSet<SendmailQueue>(0);
@@ -67,8 +67,8 @@ public class SendmailConfig implements java.io.Serializable {
 
     public SendmailConfig(String name, String host, String username,
             String password, Integer smtpAuth, Integer smtpStarttls,
-            String status, String defaultFrom, String testMail, String scopeId,
-            Set<SendmailQueue> sendmailQueues,
+            String status, String defaultFrom, String testMail,
+            String tenantId, Set<SendmailQueue> sendmailQueues,
             Set<SendmailHistory> sendmailHistories) {
         this.name = name;
         this.host = host;
@@ -79,7 +79,7 @@ public class SendmailConfig implements java.io.Serializable {
         this.status = status;
         this.defaultFrom = defaultFrom;
         this.testMail = testMail;
-        this.scopeId = scopeId;
+        this.tenantId = tenantId;
         this.sendmailQueues = sendmailQueues;
         this.sendmailHistories = sendmailHistories;
     }
@@ -227,17 +227,17 @@ public class SendmailConfig implements java.io.Serializable {
     }
 
     /** @return null. */
-    @Column(name = "SCOPE_ID", length = 50)
-    public String getScopeId() {
-        return this.scopeId;
+    @Column(name = "TENANT_ID", length = 50)
+    public String getTenantId() {
+        return this.tenantId;
     }
 
     /**
-     * @param scopeId
+     * @param tenantId
      *            null.
      */
-    public void setScopeId(String scopeId) {
-        this.scopeId = scopeId;
+    public void setTenantId(String tenantId) {
+        this.tenantId = tenantId;
     }
 
     /** @return . */

@@ -4,28 +4,30 @@ import java.util.ArrayList;
 import java.util.List;
 import java.util.Map;
 
-import com.mossle.api.internal.TemplateConnector;
-import com.mossle.api.internal.TemplateDTO;
+import javax.annotation.Resource;
+
+import com.mossle.api.template.TemplateConnector;
+import com.mossle.api.template.TemplateDTO;
 
 import org.springframework.jdbc.core.JdbcTemplate;
 
 public class TemplateConnectorImpl implements TemplateConnector {
     private JdbcTemplate jdbcTemplate;
 
-    public TemplateDTO findByCode(String code) {
-        String templateInfoSql = "select id,name,code from TEMPLATE_INFO where code=?";
+    public TemplateDTO findByCode(String code, String tenantId) {
+        String templateInfoSql = "select id,name,code from TEMPLATE_INFO where code=? and TENANT_ID=?";
         Map<String, Object> templateInfoMap = jdbcTemplate.queryForMap(
-                templateInfoSql, code);
+                templateInfoSql, code, tenantId);
 
         return this.processTemplateInfo(templateInfoMap);
     }
 
-    public List<TemplateDTO> findAll() {
-        String templateInfoSql = "select id,name,code from TEMPLATE_INFO";
+    public List<TemplateDTO> findAll(String tenantId) {
+        String templateInfoSql = "select id,name,code from TEMPLATE_INFO where TENANT_ID=?";
         List<TemplateDTO> list = new ArrayList<TemplateDTO>();
 
-        for (Map<String, Object> templateInfoMap : jdbcTemplate
-                .queryForList(templateInfoSql)) {
+        for (Map<String, Object> templateInfoMap : jdbcTemplate.queryForList(
+                templateInfoSql, tenantId)) {
             list.add(this.processTemplateInfo(templateInfoMap));
         }
 
@@ -49,6 +51,7 @@ public class TemplateConnectorImpl implements TemplateConnector {
         return templateDto;
     }
 
+    @Resource
     public void setJdbcTemplate(JdbcTemplate jdbcTemplate) {
         this.jdbcTemplate = jdbcTemplate;
     }

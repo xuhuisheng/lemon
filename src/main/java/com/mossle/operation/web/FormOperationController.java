@@ -12,25 +12,25 @@ import javax.servlet.http.HttpServletResponse;
 
 import com.mossle.api.form.FormConnector;
 import com.mossle.api.form.FormDTO;
+import com.mossle.api.keyvalue.KeyValueConnector;
+import com.mossle.api.keyvalue.Prop;
+import com.mossle.api.keyvalue.Record;
+import com.mossle.api.keyvalue.RecordBuilder;
 import com.mossle.api.store.StoreConnector;
 import com.mossle.api.store.StoreDTO;
+import com.mossle.api.tenant.TenantHolder;
 
+import com.mossle.core.MultipartHandler;
+import com.mossle.core.export.Exportor;
+import com.mossle.core.export.TableModel;
 import com.mossle.core.mapper.BeanMapper;
 import com.mossle.core.mapper.JsonMapper;
 import com.mossle.core.page.Page;
 import com.mossle.core.spring.MessageHelper;
+import com.mossle.core.store.MultipartFileDataSource;
 
-import com.mossle.ext.MultipartHandler;
-import com.mossle.ext.export.Exportor;
-import com.mossle.ext.export.TableModel;
-import com.mossle.ext.store.MultipartFileDataSource;
-
-import com.mossle.keyvalue.KeyValue;
-import com.mossle.keyvalue.Prop;
-import com.mossle.keyvalue.Record;
-import com.mossle.keyvalue.RecordBuilder;
-
-import com.mossle.xform.*;
+import com.mossle.xform.Xform;
+import com.mossle.xform.XformBuilder;
 
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
@@ -62,22 +62,24 @@ public class FormOperationController {
     private BeanMapper beanMapper = new BeanMapper();
     private JsonMapper jsonMapper = new JsonMapper();
     private MessageHelper messageHelper;
-    private KeyValue keyValue;
+    private KeyValueConnector keyValueConnector;
     private MultipartResolver multipartResolver;
     private StoreConnector storeConnector;
     private FormConnector formConnector;
+    private TenantHolder tenantHolder;
 
     @RequestMapping("form-operation-preview")
     public String preview(@RequestParam("code") String code, Model model)
             throws Exception {
-        FormDTO formDto = formConnector.findForm(code);
-        Record record = keyValue.findByRef(code);
+        String tenantId = tenantHolder.getTenantId();
+        FormDTO formDto = formConnector.findForm(code, tenantId);
+        Record record = keyValueConnector.findByRef(code);
 
         if (record == null) {
             record = new Record();
             record.setName(formDto.getName());
             record.setRef(formDto.getCode());
-            keyValue.save(record);
+            keyValueConnector.save(record);
         }
 
         model.addAttribute("record", record);
@@ -91,6 +93,7 @@ public class FormOperationController {
 
     @RequestMapping("form-operation-test")
     public String test(HttpServletRequest request) throws Exception {
+        String tenantId = tenantHolder.getTenantId();
         MultipartHandler multipartHandler = new MultipartHandler(
                 multipartResolver);
         FormDTO formDto = null;
@@ -102,14 +105,14 @@ public class FormOperationController {
 
             String ref = multipartHandler.getMultiValueMap().getFirst("ref");
 
-            formDto = formConnector.findForm(ref);
+            formDto = formConnector.findForm(ref, tenantId);
 
-            Record record = keyValue.findByRef(ref);
+            Record record = keyValueConnector.findByRef(ref);
 
             record = new RecordBuilder().build(record, multipartHandler,
-                    storeConnector);
+                    storeConnector, tenantId);
 
-            keyValue.save(record);
+            keyValueConnector.save(record);
         } finally {
             multipartHandler.clear();
         }
@@ -134,8 +137,8 @@ public class FormOperationController {
     }
 
     @Resource
-    public void setKeyValue(KeyValue keyValue) {
-        this.keyValue = keyValue;
+    public void setKeyValueConnector(KeyValueConnector keyValueConnector) {
+        this.keyValueConnector = keyValueConnector;
     }
 
     @Resource
@@ -151,5 +154,10 @@ public class FormOperationController {
     @Resource
     public void setFormConnector(FormConnector formConnector) {
         this.formConnector = formConnector;
+    }
+
+    @Resource
+    public void setTenantHolder(TenantHolder tenantHolder) {
+        this.tenantHolder = tenantHolder;
     }
 }

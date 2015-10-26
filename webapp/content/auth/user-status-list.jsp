@@ -134,7 +134,7 @@ $(function() {
 			</tags:hasPerm>
 			<tags:hasPerm value="user:auth">
             <a href="user-status-password.do?id=${item.id}"><spring:message code="user.user.list.password" text="设置密码"/></a>
-            <a href="javascript:void(0);location.href='user-role-list.do?id=${item.id}'"><spring:message code="user.user.list.role" text="设置权限"/></a>
+            <a href="javascript:void(0);location.href='user-role-input.do?id=${item.id}'"><spring:message code="user.user.list.role" text="设置权限"/></a>
 			</tags:hasPerm>
         </td>
       </tr>

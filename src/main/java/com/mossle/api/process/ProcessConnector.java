@@ -26,75 +26,75 @@ public interface ProcessConnector {
     /**
      * 未结流程.
      */
-    Page findRunningProcessInstances(String userId, Page page);
+    Page findRunningProcessInstances(String userId, String tenantId, Page page);
 
     /**
      * 已结流程.
      */
-    Page findCompletedProcessInstances(String userId, Page page);
+    Page findCompletedProcessInstances(String userId, String tenantId, Page page);
 
     /**
      * 参与流程.
      */
-    Page findInvolvedProcessInstances(String userId, Page page);
+    Page findInvolvedProcessInstances(String userId, String tenantId, Page page);
 
     /**
      * 待办任务（个人任务）.
      */
-    Page findPersonalTasks(String userId, Page page);
+    Page findPersonalTasks(String userId, String tenantId, Page page);
 
     /**
      * 代领任务（组任务）.
      */
-    Page findGroupTasks(String userId, Page page);
+    Page findGroupTasks(String userId, String tenantId, Page page);
 
     /**
      * 已办任务（历史任务）.
      */
-    Page findHistoryTasks(String userId, Page page);
+    Page findHistoryTasks(String userId, String tenantId, Page page);
 
     /**
      * 代理中的任务（代理人还未完成该任务）.
      */
-    Page findDelegatedTasks(String userId, Page page);
+    Page findDelegatedTasks(String userId, String tenantId, Page page);
 
     /**
      * 流程定义.
      */
-    Page findProcessDefinitions(Page page);
+    Page findProcessDefinitions(String tenantId, Page page);
 
     /**
      * 流程实例.
      */
-    Page findProcessInstances(Page page);
+    Page findProcessInstances(String tenantId, Page page);
 
     /**
      * 任务.
      */
-    Page findTasks(Page page);
+    Page findTasks(String tenantId, Page page);
 
     /**
      * 部署.
      */
-    Page findDeployments(Page page);
+    Page findDeployments(String tenantId, Page page);
 
     /**
      * 历史流程实例.
      */
-    Page findHistoricProcessInstances(Page page);
+    Page findHistoricProcessInstances(String tenantId, Page page);
 
     /**
      * 历史节点.
      */
-    Page findHistoricActivityInstances(Page page);
+    Page findHistoricActivityInstances(String tenantId, Page page);
 
     /**
      * 历史任务.
      */
-    Page findHistoricTaskInstances(Page page);
+    Page findHistoricTaskInstances(String tenantId, Page page);
 
     /**
      * 作业.
      */
-    Page findJobs(Page page);
+    Page findJobs(String tenantId, Page page);
 }

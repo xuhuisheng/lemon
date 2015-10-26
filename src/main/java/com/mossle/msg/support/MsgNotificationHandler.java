@@ -7,13 +7,13 @@ import javax.annotation.Resource;
 import com.mossle.api.notification.NotificationDTO;
 import com.mossle.api.notification.NotificationHandler;
 
-import com.mossle.msg.domain.MsgInfo;
-import com.mossle.msg.manager.MsgInfoManager;
+import com.mossle.msg.persistence.domain.MsgInfo;
+import com.mossle.msg.persistence.manager.MsgInfoManager;
 
 public class MsgNotificationHandler implements NotificationHandler {
     private MsgInfoManager msgInfoManager;
 
-    public void handle(NotificationDTO notificationDto) {
+    public void handle(NotificationDTO notificationDto, String tenantId) {
         if (!"userid".equals(notificationDto.getReceiverType())) {
             return;
         }
@@ -25,6 +25,7 @@ public class MsgNotificationHandler implements NotificationHandler {
         msgInfo.setSenderId("");
         msgInfo.setCreateTime(new Date());
         msgInfo.setStatus(0);
+        msgInfo.setTenantId(tenantId);
         msgInfoManager.save(msgInfo);
     }
 

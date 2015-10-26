@@ -31,16 +31,20 @@ public class WhitelistType implements java.io.Serializable {
     /** null. */
     private String code;
 
+    /** null. */
+    private String tenantId;
+
     /** . */
     private Set<WhitelistApp> whitelistApps = new HashSet<WhitelistApp>(0);
 
     public WhitelistType() {
     }
 
-    public WhitelistType(String name, String code,
+    public WhitelistType(String name, String code, String tenantId,
             Set<WhitelistApp> whitelistApps) {
         this.name = name;
         this.code = code;
+        this.tenantId = tenantId;
         this.whitelistApps = whitelistApps;
     }
 
@@ -86,6 +90,20 @@ public class WhitelistType implements java.io.Serializable {
      */
     public void setCode(String code) {
         this.code = code;
+    }
+
+    /** @return null. */
+    @Column(name = "TENANT_ID", length = 64)
+    public String getTenantId() {
+        return this.tenantId;
+    }
+
+    /**
+     * @param tenantId
+     *            null.
+     */
+    public void setTenantId(String tenantId) {
+        this.tenantId = tenantId;
     }
 
     /** @return . */

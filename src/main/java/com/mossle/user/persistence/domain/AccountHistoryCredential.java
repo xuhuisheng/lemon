@@ -36,14 +36,18 @@ public class AccountHistoryCredential implements java.io.Serializable {
     /** null. */
     private String password;
 
+    /** null. */
+    private String tenantId;
+
     public AccountHistoryCredential() {
     }
 
     public AccountHistoryCredential(AccountCredential accountCredential,
-            Date modifyTime, String password) {
+            Date modifyTime, String password, String tenantId) {
         this.accountCredential = accountCredential;
         this.modifyTime = modifyTime;
         this.password = password;
+        this.tenantId = tenantId;
     }
 
     /** @return null. */
@@ -104,5 +108,19 @@ public class AccountHistoryCredential implements java.io.Serializable {
      */
     public void setPassword(String password) {
         this.password = password;
+    }
+
+    /** @return null. */
+    @Column(name = "TENANT_ID", length = 64)
+    public String getTenantId() {
+        return this.tenantId;
+    }
+
+    /**
+     * @param tenantId
+     *            null.
+     */
+    public void setTenantId(String tenantId) {
+        this.tenantId = tenantId;
     }
 }

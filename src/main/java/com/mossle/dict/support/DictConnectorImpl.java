@@ -4,9 +4,9 @@ import java.util.List;
 
 import javax.annotation.Resource;
 
-import com.mossle.api.internal.DictConnector;
-import com.mossle.api.internal.DictDTO;
-import com.mossle.api.internal.DictDataDTO;
+import com.mossle.api.dict.DictConnector;
+import com.mossle.api.dict.DictDTO;
+import com.mossle.api.dict.DictDataDTO;
 
 import com.mossle.dict.persistence.domain.DictData;
 import com.mossle.dict.persistence.domain.DictInfo;
@@ -23,10 +23,10 @@ public class DictConnectorImpl implements DictConnector {
     private DictSchemaManager dictSchemaManager;
     private DictTypeManager dictTypeManager;
 
-    public DictDTO findDictByName(String name, String typeName) {
-        String dictInfoHql = "from DictInfo where name=? and dictType.name=?";
+    public DictDTO findDictByName(String name, String typeName, String tenantId) {
+        String dictInfoHql = "from DictInfo where name=? and dictType.name=? and tenantId=?";
         DictInfo dictInfo = dictInfoManager.findUnique(dictInfoHql, name,
-                typeName);
+                typeName, tenantId);
         DictType dictType = dictInfo.getDictType();
         DictDTO dictDto = new DictDTO();
         dictDto.setName(dictInfo.getName());
@@ -47,8 +47,10 @@ public class DictConnectorImpl implements DictConnector {
         return dictDto;
     }
 
-    public DictDTO findDictByType(String typeName) {
-        DictType dictType = dictTypeManager.findUniqueBy("name", typeName);
+    public DictDTO findDictByType(String typeName, String tenantId) {
+        DictType dictType = dictTypeManager
+                .findUnique("from DictType where name=? and tenantId=?",
+                        typeName, tenantId);
         DictDTO dictDto = new DictDTO();
         dictDto.setType(dictType.getName());
 

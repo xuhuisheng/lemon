@@ -1,0 +1,1 @@
+<%response.sendRedirect("../../modeler/modeler-list.do");%>

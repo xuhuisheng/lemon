@@ -5,7 +5,7 @@ import java.util.Date;
 import org.activiti.engine.ActivitiException;
 
 public class DurationBusinessCalendar extends AdvancedBusinessCalendar {
-    public Date resolveDuedate(String duedate) {
+    public Date resolveDuedate(String duedate, int maxIterations) {
         try {
             DurationUtil durationUtil = new DurationUtil(duedate, this);
 

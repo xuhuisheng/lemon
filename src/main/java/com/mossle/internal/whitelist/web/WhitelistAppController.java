@@ -9,13 +9,14 @@ import javax.annotation.Resource;
 import javax.servlet.http.HttpServletRequest;
 import javax.servlet.http.HttpServletResponse;
 
+import com.mossle.api.tenant.TenantHolder;
+
+import com.mossle.core.export.Exportor;
+import com.mossle.core.export.TableModel;
 import com.mossle.core.hibernate.PropertyFilter;
 import com.mossle.core.mapper.BeanMapper;
 import com.mossle.core.page.Page;
 import com.mossle.core.spring.MessageHelper;
-
-import com.mossle.ext.export.Exportor;
-import com.mossle.ext.export.TableModel;
 
 import com.mossle.internal.whitelist.persistence.domain.WhitelistApp;
 import com.mossle.internal.whitelist.persistence.manager.WhitelistAppManager;
@@ -30,18 +31,21 @@ import org.springframework.web.bind.annotation.RequestParam;
 import org.springframework.web.servlet.mvc.support.RedirectAttributes;
 
 @Controller
-@RequestMapping("/whitelist")
+@RequestMapping("whitelist")
 public class WhitelistAppController {
     private WhitelistAppManager whitelistAppManager;
     private MessageHelper messageHelper;
     private Exportor exportor;
     private BeanMapper beanMapper = new BeanMapper();
+    private TenantHolder tenantHolder;
 
     @RequestMapping("whitelist-app-list")
     public String list(@ModelAttribute Page page,
             @RequestParam Map<String, Object> parameterMap, Model model) {
+        String tenantId = tenantHolder.getTenantId();
         List<PropertyFilter> propertyFilters = PropertyFilter
                 .buildFromMap(parameterMap);
+        propertyFilters.add(new PropertyFilter("EQS_tenantId", tenantId));
         page = whitelistAppManager.pagedQuery(page, propertyFilters);
         model.addAttribute("page", page);
 
@@ -62,6 +66,7 @@ public class WhitelistAppController {
     @RequestMapping("whitelist-app-save")
     public String save(@ModelAttribute WhitelistApp whitelistApp,
             RedirectAttributes redirectAttributes) {
+        String tenantId = tenantHolder.getTenantId();
         Long id = whitelistApp.getId();
         WhitelistApp dest = null;
 
@@ -70,6 +75,7 @@ public class WhitelistAppController {
             beanMapper.copy(whitelistApp, dest);
         } else {
             dest = whitelistApp;
+            dest.setTenantId(tenantId);
         }
 
         whitelistAppManager.save(dest);
@@ -96,8 +102,10 @@ public class WhitelistAppController {
             @RequestParam Map<String, Object> parameterMap,
             HttpServletRequest request, HttpServletResponse response)
             throws Exception {
+        String tenantId = tenantHolder.getTenantId();
         List<PropertyFilter> propertyFilters = PropertyFilter
                 .buildFromMap(parameterMap);
+        propertyFilters.add(new PropertyFilter("EQS_tenantId", tenantId));
         page = whitelistAppManager.pagedQuery(page, propertyFilters);
 
         List<WhitelistApp> whitelistApps = (List<WhitelistApp>) page
@@ -124,5 +132,10 @@ public class WhitelistAppController {
     @Resource
     public void setExportor(Exportor exportor) {
         this.exportor = exportor;
+    }
+
+    @Resource
+    public void setTenantHolder(TenantHolder tenantHolder) {
+        this.tenantHolder = tenantHolder;
     }
 }

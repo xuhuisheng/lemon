@@ -3,7 +3,7 @@
 <%pageContext.setAttribute("currentHeader", "party");%>
 <%pageContext.setAttribute("currentMenu", "party");%>
 <%@page import="java.util.*"%>
-<%@page import="com.mossle.party.domain.*"%>
+<%@page import="com.mossle.party.persistence.domain.*"%>
 <%!
 	public String generatePartyEntities(List<PartyEntity> partyEntities, long partyStructTypeId) {
 		if (partyEntities == null) {

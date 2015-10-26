@@ -19,9 +19,9 @@ import org.springframework.transaction.annotation.Transactional;
 public class DatabaseCmsConnector implements CmsConnector {
     private JdbcTemplate jdbcTemplate;
 
-    public CatalogDTO findCatalogByCode(String code) {
-        String sql = "select id,code,name,description from CMS_CATALOG where code=?";
-        Map<String, Object> map = jdbcTemplate.queryForMap(sql, code);
+    public CatalogDTO findCatalogByCode(String code, String tenantId) {
+        String sql = "select id,code,name,description from CMS_CATALOG where code=? and tenant_id=?";
+        Map<String, Object> map = jdbcTemplate.queryForMap(sql, code, tenantId);
         CatalogDTO catalogDto = new CatalogDTO();
         catalogDto.setId(map.get("id").toString());
         catalogDto.setCode((String) map.get("code"));
@@ -31,8 +31,9 @@ public class DatabaseCmsConnector implements CmsConnector {
         return catalogDto;
     }
 
-    public Page findArticles(String code, int pageNo, int pageSize) {
-        Page page = this.findArticlePageInfo(code, pageNo, pageSize);
+    public Page findArticles(String code, String tenantId, int pageNo,
+            int pageSize) {
+        Page page = this.findArticlePageInfo(code, tenantId, pageNo, pageSize);
 
         int start = (pageNo - 1) * pageSize;
 
@@ -40,10 +41,10 @@ public class DatabaseCmsConnector implements CmsConnector {
                 + "a.create_time as createTime,a.user_id as userId,a.hit_count as hitCount,"
                 + "a.comment_count as commentCount,c.id as catalogId,c.code as catalogCode "
                 + "from CMS_ARTICLE a,CMS_CATALOG c "
-                + "where a.catalog_id=c.ID and c.code=? order by a.create_time desc limit "
+                + "where a.catalog_id=c.ID and c.code=? and c.tenant_id=? order by a.create_time desc limit "
                 + start + "," + pageSize;
         List<Map<String, Object>> list = jdbcTemplate.queryForList(selectSql,
-                code);
+                code, tenantId);
         List<ArticleDTO> articleDtos = new ArrayList<ArticleDTO>();
 
         for (Map<String, Object> map : list) {
@@ -56,13 +57,14 @@ public class DatabaseCmsConnector implements CmsConnector {
         return page;
     }
 
-    public Page findArticlePageInfo(String code, int pageNo, int pageSize) {
+    public Page findArticlePageInfo(String code, String tenantId, int pageNo,
+            int pageSize) {
         int start = (pageNo - 1) * pageSize;
 
         String countSql = "select count(*) from CMS_ARTICLE a,CMS_CATALOG c "
-                + "where a.catalog_id=c.ID and c.code=?";
+                + "where a.catalog_id=c.ID and c.code=? and c.tenant_id=?";
         int totalCount = jdbcTemplate.queryForObject(countSql, Integer.class,
-                code);
+                code, tenantId);
 
         Page page = new Page(null, totalCount);
         page.setPageNo(pageNo);

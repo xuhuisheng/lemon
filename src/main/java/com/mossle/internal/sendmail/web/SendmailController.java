@@ -2,6 +2,8 @@ package com.mossle.internal.sendmail.web;
 
 import javax.annotation.Resource;
 
+import com.mossle.api.tenant.TenantHolder;
+
 import com.mossle.internal.sendmail.service.SendmailDataService;
 
 import org.springframework.stereotype.Controller;
@@ -17,6 +19,7 @@ public class SendmailController {
     private String to;
     private String subject;
     private String content;
+    private TenantHolder tenantHolder;
 
     @RequestMapping("mail-input")
     public String input() {
@@ -28,8 +31,11 @@ public class SendmailController {
             @RequestParam("to") String to,
             @RequestParam("subject") String subject,
             @RequestParam("content") String content) {
+        String tenantId = tenantHolder.getTenantId();
+
         for (String line : to.split("\n")) {
-            sendmailDataService.saveSendmailQueue(from, line, subject, content);
+            sendmailDataService.saveSendmailQueue(from, line, subject, content,
+                    tenantId);
         }
 
         return "redirect:/sendmail/sendmail-input.do";
@@ -38,5 +44,10 @@ public class SendmailController {
     @Resource
     public void setSendmailDataService(SendmailDataService sendmailDataService) {
         this.sendmailDataService = sendmailDataService;
+    }
+
+    @Resource
+    public void setTenantHolder(TenantHolder tenantHolder) {
+        this.tenantHolder = tenantHolder;
     }
 }

@@ -140,7 +140,6 @@ $(function() {
         <td>${item.createTime}</td>
         <td>
           <a href="account-info-input.do?id=${item.id}" class="a-update"><spring:message code="core.list.edit" text="编辑"/></a>
-          <a href="account-avatar-input.do?id=${item.id}">头像</a>
           <a href="person-info-account-input.do?code=${item.id}">详细信息</a>
         </td>
       </tr>

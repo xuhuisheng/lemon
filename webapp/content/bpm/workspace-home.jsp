@@ -26,17 +26,25 @@
         <h3>${bpmCategory.name}</h3>
       </div>
 
+      <ul class="thumbnails">
       <c:forEach items="${bpmCategory.bpmProcesses}" var="bpmProcess">
-        <div class="well span2">
-          <h4>${bpmProcess.name}&nbsp;</h4>
-          <p>${bpmProcess.descn}&nbsp;</p>
-          <div class="btn-group">
-            <a class="btn btn-small" href="${scopePrefix}/operation/process-operation-viewStartForm.do?bpmProcessId=${bpmProcess.id}"><li class="icon-play"></li>发起</a>
-            <a class="btn btn-small" href="workspace-graphProcessDefinition.do?bpmProcessId=${bpmProcess.id}" target="_blank"><li class="icon-picture"></li>图形</a>
-          </div>
-        </div>
+        <li class="span2">
+		  <div class="caption">
+		    <h3>${bpmProcess.name}&nbsp;</h3>
+            <p>${bpmProcess.descn}&nbsp;</p>
+            <div class="btn-group" style="margin-bottom:10px;">
+              <a class="btn btn-small" href="${tenantPrefix}/operation/process-operation-viewStartForm.do?bpmProcessId=${bpmProcess.id}"><i class="icon-play"></i>发起</a>
+              <a class="btn btn-small" href="workspace-graphProcessDefinition.do?bpmProcessId=${bpmProcess.id}" target="_blank"><i class="icon-picture"></i>图形</a>
+            </div>
+		    <div style="width:100%;height:100px;">
+              <a href="#" class="thumbnail">
+                <img src="workspace-graphProcessDefinition.do?bpmProcessId=${bpmProcess.id}">
+              </a>
+		    </div>
+		  </div>
+        </li>
       </c:forEach>
-	  </div>
+      </ul>
 
 </c:forEach>
 

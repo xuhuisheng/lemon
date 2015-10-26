@@ -48,6 +48,9 @@ public class BpmProcess implements java.io.Serializable {
     /** null. */
     private String code;
 
+    /** null. */
+    private String tenantId;
+
     /** . */
     private Set<BpmTaskDef> bpmTaskDefs = new HashSet<BpmTaskDef>(0);
 
@@ -55,13 +58,17 @@ public class BpmProcess implements java.io.Serializable {
     private Set<BpmTaskDefNotice> bpmTaskDefNotices = new HashSet<BpmTaskDefNotice>(
             0);
 
+    /** . */
+    private Set<BpmInstance> bpmInstances = new HashSet<BpmInstance>(0);
+
     public BpmProcess() {
     }
 
     public BpmProcess(BpmConfBase bpmConfBase, BpmCategory bpmCategory,
             String name, Integer priority, String descn, Integer useTaskConf,
-            String code, Set<BpmTaskDef> bpmTaskDefs,
-            Set<BpmTaskDefNotice> bpmTaskDefNotices) {
+            String code, String tenantId, Set<BpmTaskDef> bpmTaskDefs,
+            Set<BpmTaskDefNotice> bpmTaskDefNotices,
+            Set<BpmInstance> bpmInstances) {
         this.bpmConfBase = bpmConfBase;
         this.bpmCategory = bpmCategory;
         this.name = name;
@@ -69,8 +76,10 @@ public class BpmProcess implements java.io.Serializable {
         this.descn = descn;
         this.useTaskConf = useTaskConf;
         this.code = code;
+        this.tenantId = tenantId;
         this.bpmTaskDefs = bpmTaskDefs;
         this.bpmTaskDefNotices = bpmTaskDefNotices;
+        this.bpmInstances = bpmInstances;
     }
 
     /** @return null. */
@@ -189,6 +198,20 @@ public class BpmProcess implements java.io.Serializable {
         this.code = code;
     }
 
+    /** @return null. */
+    @Column(name = "TENANT_ID", length = 64)
+    public String getTenantId() {
+        return this.tenantId;
+    }
+
+    /**
+     * @param tenantId
+     *            null.
+     */
+    public void setTenantId(String tenantId) {
+        this.tenantId = tenantId;
+    }
+
     /** @return . */
     @OneToMany(fetch = FetchType.LAZY, mappedBy = "bpmProcess")
     public Set<BpmTaskDef> getBpmTaskDefs() {
@@ -215,5 +238,19 @@ public class BpmProcess implements java.io.Serializable {
      */
     public void setBpmTaskDefNotices(Set<BpmTaskDefNotice> bpmTaskDefNotices) {
         this.bpmTaskDefNotices = bpmTaskDefNotices;
+    }
+
+    /** @return . */
+    @OneToMany(fetch = FetchType.LAZY, mappedBy = "bpmProcess")
+    public Set<BpmInstance> getBpmInstances() {
+        return this.bpmInstances;
+    }
+
+    /**
+     * @param bpmInstances
+     *            .
+     */
+    public void setBpmInstances(Set<BpmInstance> bpmInstances) {
+        this.bpmInstances = bpmInstances;
     }
 }

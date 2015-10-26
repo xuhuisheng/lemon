@@ -14,7 +14,7 @@ import org.springframework.security.core.userdetails.User;
 public class UserStatusDetailsImpl extends User implements UserStatusDetails {
     private String id;
     private String displayName;
-    private String scopeId;
+    private String tenantId;
     private List<String> attributes = new ArrayList<String>();
     private Map<String, Collection<String>> attributeMap = new HashMap<String, Collection<String>>();
 
@@ -65,11 +65,11 @@ public class UserStatusDetailsImpl extends User implements UserStatusDetails {
         this.displayName = displayName;
     }
 
-    public String getScopeId() {
-        return scopeId;
+    public String getTenantId() {
+        return tenantId;
     }
 
-    public void setScopeId(String scopeId) {
-        this.scopeId = scopeId;
+    public void setTenantId(String tenantId) {
+        this.tenantId = tenantId;
     }
 }

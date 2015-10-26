@@ -22,7 +22,7 @@ public class SendmailNotificationHandler implements NotificationHandler {
     private SendmailDataService sendmailDataService;
     private UserConnector userConnector;
 
-    public void handle(NotificationDTO notificationDto) {
+    public void handle(NotificationDTO notificationDto, String tenantId) {
         String email = null;
 
         if ("userid".equals(notificationDto.getReceiverType())) {
@@ -36,7 +36,7 @@ public class SendmailNotificationHandler implements NotificationHandler {
 
         try {
             sendmailDataService.send(email, notificationDto.getSubject(),
-                    notificationDto.getContent(), "1");
+                    notificationDto.getContent(), "1", tenantId);
         } catch (Exception ex) {
             logger.error(ex.getMessage(), ex);
         }

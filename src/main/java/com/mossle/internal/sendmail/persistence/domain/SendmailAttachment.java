@@ -33,17 +33,17 @@ public class SendmailAttachment implements java.io.Serializable {
     private String path;
 
     /** null. */
-    private String scopeId;
+    private String tenantId;
 
     public SendmailAttachment() {
     }
 
     public SendmailAttachment(SendmailTemplate sendmailTemplate, String name,
-            String path, String scopeId) {
+            String path, String tenantId) {
         this.sendmailTemplate = sendmailTemplate;
         this.name = name;
         this.path = path;
-        this.scopeId = scopeId;
+        this.tenantId = tenantId;
     }
 
     /** @return null. */
@@ -106,16 +106,16 @@ public class SendmailAttachment implements java.io.Serializable {
     }
 
     /** @return null. */
-    @Column(name = "SCOPE_ID", length = 50)
-    public String getScopeId() {
-        return this.scopeId;
+    @Column(name = "TENANT_ID", length = 50)
+    public String getTenantId() {
+        return this.tenantId;
     }
 
     /**
-     * @param scopeId
+     * @param tenantId
      *            null.
      */
-    public void setScopeId(String scopeId) {
-        this.scopeId = scopeId;
+    public void setTenantId(String tenantId) {
+        this.tenantId = tenantId;
     }
 }

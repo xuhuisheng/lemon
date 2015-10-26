@@ -19,12 +19,13 @@ $(function() {
 	workCalendar.markHolidays(${holidays});
 	workCalendar.markWorkdays(${workdays});
 	workCalendar.markExtrdays(${extrdays});
+	workCalendar.markNow();
 });
     </script>
   </head>
 
   <body>
-    <%@include file="/header/scope.jsp"%>
+    <%@include file="/header/workcal.jsp"%>
 
     <div class="row-fluid">
 	  <%@include file="/menu/workcal.jsp"%>

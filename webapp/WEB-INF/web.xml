@@ -27,7 +27,7 @@
     </listener>
 
     <listener>
-        <listener-class>com.mossle.ext.spring.ProxyServletListener</listener-class>
+        <listener-class>com.mossle.core.spring.ProxyServletListener</listener-class>
     </listener>
 
     <error-page>

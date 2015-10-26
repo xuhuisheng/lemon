@@ -12,10 +12,9 @@ import com.mossle.api.store.StoreConnector;
 import com.mossle.api.store.StoreDTO;
 
 import com.mossle.core.mapper.JsonMapper;
+import com.mossle.core.store.InputStreamDataSource;
+import com.mossle.core.store.StoreResult;
 import com.mossle.core.util.IoUtils;
-
-import com.mossle.ext.store.InputStreamDataSource;
-import com.mossle.ext.store.StoreResult;
 
 import org.apache.commons.codec.binary.Base64;
 
@@ -36,7 +35,7 @@ public class HttpStoreClient implements StoreClient {
     private String model;
 
     public StoreDTO saveStore(InputStream inputStream, String fileName,
-            String contentType) throws Exception {
+            String contentType, String tenantId) throws Exception {
         URL url = new URL(baseUrl + "/saveStore");
         HttpURLConnection conn = (HttpURLConnection) url.openConnection();
         conn.setDoOutput(true);
@@ -50,7 +49,8 @@ public class HttpStoreClient implements StoreClient {
 
         String queryString = "model=" + model + "&fileName=" + fileName
                 + "&contentType=" + URLEncoder.encode(contentType, "utf-8")
-                + "&content=" + URLEncoder.encode(content, "utf-8");
+                + "&content=" + URLEncoder.encode(content, "utf-8")
+                + "&tenantId=" + URLEncoder.encode(tenantId, "utf-8");
         logger.debug("queryString : {}", queryString);
         conn.getOutputStream().write(queryString.getBytes("utf-8"));
         conn.getOutputStream().flush();
@@ -78,8 +78,9 @@ public class HttpStoreClient implements StoreClient {
         return storeDto;
     }
 
-    public StoreDTO getStore(String key) throws Exception {
-        String queryString = "model=" + model + "&key=" + key;
+    public StoreDTO getStore(String key, String tenantId) throws Exception {
+        String queryString = "model=" + model + "&key=" + key + "&tenantId="
+                + tenantId;
         URL url = new URL(baseUrl + "/getStore?" + queryString);
         HttpURLConnection conn = (HttpURLConnection) url.openConnection();
 

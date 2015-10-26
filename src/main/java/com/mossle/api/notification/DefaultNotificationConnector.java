@@ -6,14 +6,14 @@ import java.util.HashMap;
 import java.util.List;
 import java.util.Map;
 
-import com.mossle.api.internal.TemplateConnector;
-import com.mossle.api.internal.TemplateDTO;
 import com.mossle.api.notification.NotificationConnector;
 import com.mossle.api.notification.NotificationDTO;
 import com.mossle.api.notification.NotificationHandler;
 import com.mossle.api.notification.NotificationRegistry;
+import com.mossle.api.template.TemplateConnector;
+import com.mossle.api.template.TemplateDTO;
 
-import com.mossle.ext.template.TemplateService;
+import com.mossle.core.template.TemplateService;
 
 public class DefaultNotificationConnector implements NotificationConnector,
         NotificationRegistry {
@@ -21,10 +21,10 @@ public class DefaultNotificationConnector implements NotificationConnector,
     private TemplateConnector templateConnector;
     private TemplateService templateService;
 
-    public void send(NotificationDTO notificationDto) {
+    public void send(NotificationDTO notificationDto, String tenantId) {
         if (notificationDto.getTemplate() != null) {
-            TemplateDTO templateDto = templateConnector
-                    .findByCode(notificationDto.getTemplate());
+            TemplateDTO templateDto = templateConnector.findByCode(
+                    notificationDto.getTemplate(), tenantId);
             String subject = this.processTemplate(
                     templateDto.getField("subject"), notificationDto.getData());
             String content = this.processTemplate(
@@ -42,18 +42,19 @@ public class DefaultNotificationConnector implements NotificationConnector,
         List<String> types = notificationDto.getTypes();
 
         for (String type : types) {
-            sendByType(type, notificationDto);
+            sendByType(type, notificationDto, tenantId);
         }
     }
 
-    public void sendByType(String type, NotificationDTO notificationDto) {
+    public void sendByType(String type, NotificationDTO notificationDto,
+            String tenantId) {
         NotificationHandler notificationHandler = map.get(type);
 
         if (notificationHandler == null) {
             return;
         }
 
-        notificationHandler.handle(notificationDto);
+        notificationHandler.handle(notificationDto, tenantId);
     }
 
     public String processTemplate(String template, Map<String, Object> data) {
@@ -68,7 +69,7 @@ public class DefaultNotificationConnector implements NotificationConnector,
         map.remove(notificationHandler.getType());
     }
 
-    public Collection<String> getTypes() {
+    public Collection<String> getTypes(String tenantId) {
         return map.keySet();
     }
 

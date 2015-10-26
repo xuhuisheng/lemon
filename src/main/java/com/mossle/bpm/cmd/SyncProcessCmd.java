@@ -18,8 +18,12 @@ import com.mossle.bpm.persistence.manager.BpmConfFormManager;
 import com.mossle.bpm.persistence.manager.BpmConfListenerManager;
 import com.mossle.bpm.persistence.manager.BpmConfNodeManager;
 import com.mossle.bpm.persistence.manager.BpmConfUserManager;
+import com.mossle.bpm.support.TaskDefinitionBuilder;
 
 import com.mossle.core.spring.ApplicationContextHelper;
+
+import com.mossle.spi.humantask.TaskDefinitionConnector;
+import com.mossle.spi.humantask.TaskDefinitionDTO;
 
 import org.activiti.bpmn.model.ActivitiListener;
 import org.activiti.bpmn.model.BpmnModel;
@@ -184,6 +188,15 @@ public class SyncProcessCmd implements Command<Void> {
                     .isSequential() ? 1 : 0);
             getBpmConfCountersignManager().save(bpmConfCountersign);
         }
+
+        // 更新TaskDefinition
+        TaskDefinitionConnector taskDefinitionConnector = this
+                .getTaskDefinitionConnector();
+        TaskDefinitionDTO taskDefinitionDto = new TaskDefinitionBuilder()
+                .setUserTask(userTask)
+                .setProcessDefinitionId(bpmConfBase.getProcessDefinitionId())
+                .build();
+        taskDefinitionConnector.create(taskDefinitionDto);
     }
 
     /**
@@ -385,5 +398,9 @@ public class SyncProcessCmd implements Command<Void> {
     public BpmConfCountersignManager getBpmConfCountersignManager() {
         return ApplicationContextHelper
                 .getBean(BpmConfCountersignManager.class);
+    }
+
+    public TaskDefinitionConnector getTaskDefinitionConnector() {
+        return ApplicationContextHelper.getBean(TaskDefinitionConnector.class);
     }
 }

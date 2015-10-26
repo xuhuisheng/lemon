@@ -57,7 +57,7 @@ import org.apache.commons.io.FilenameUtils;
  */
 public class CustomProcessDiagramGenerator {
     public static final int OFFSET_SUBPROCESS = 5;
-    public static final int OFFSET_TASK = 20;
+    public static final int OFFSET_TASK = 10;
     private static List<String> taskType = new ArrayList<String>();
     private static List<String> eventType = new ArrayList<String>();
     private static List<String> gatewayType = new ArrayList<String>();
@@ -66,8 +66,8 @@ public class CustomProcessDiagramGenerator {
     private static Color HISTORY_COLOR = Color.GREEN;
     private static Color SKIP_COLOR = Color.GRAY;
     private static Stroke THICK_BORDER_STROKE = new BasicStroke(3.0f);
-    private int minX;
-    private int minY;
+    private int minX = 0;
+    private int minY = 0;
 
     public CustomProcessDiagramGenerator() {
         init();
@@ -112,14 +112,14 @@ public class CustomProcessDiagramGenerator {
                 processDefinitionId);
         BpmnModel bpmnModel = getBpmnModelCmd.execute(Context
                 .getCommandContext());
-        Point point = getMinXAndMinY(bpmnModel);
-        this.minX = point.x;
-        this.minY = point.y;
-        this.minX = (this.minX <= 5) ? 5 : this.minX;
-        this.minY = (this.minY <= 5) ? 5 : this.minY;
-        this.minX -= 5;
-        this.minY -= 5;
 
+        // Point point = getMinXAndMinY(bpmnModel);
+        // this.minX = point.x;
+        // this.minY = point.y;
+        // this.minX = (this.minX <= 5) ? 5 : this.minX;
+        // this.minY = (this.minY <= 5) ? 5 : this.minY;
+        // this.minX -= 5;
+        // this.minY -= 5;
         ProcessDefinitionEntity definition = new GetDeploymentProcessDefinitionCmd(
                 processDefinitionId).execute(Context.getCommandContext());
         String diagramResourceName = definition.getDiagramResourceName();

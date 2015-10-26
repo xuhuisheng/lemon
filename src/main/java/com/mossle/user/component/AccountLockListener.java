@@ -7,7 +7,7 @@ import java.util.List;
 
 import javax.annotation.Resource;
 
-import com.mossle.ext.auth.LoginEvent;
+import com.mossle.core.auth.LoginEvent;
 
 import com.mossle.user.persistence.domain.AccountInfo;
 import com.mossle.user.persistence.domain.AccountLockInfo;

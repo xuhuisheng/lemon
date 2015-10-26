@@ -98,17 +98,17 @@ $(function() {
 		</td>
 	    <td>${item.status}</td>
         <td>
-          <a href="${scopePrefix}/operation/task-operation-viewTaskForm.do?humanTaskId=${item.id}">处理</a>
+          <a href="${tenantPrefix}/operation/task-operation-viewTaskForm.do?humanTaskId=${item.id}">处理</a>
 		  <%--
 		  <c:if test="${delegationState != 'PENDING'}">
-          <a href="${scopePrefix}/bpm/workspace-prepareDelegateTask.do?taskId=${item.taskId}">代理</a>
+          <a href="${tenantPrefix}/bpm/workspace-prepareDelegateTask.do?taskId=${item.taskId}">代理</a>
 		  </c:if>
 		  <c:if test="${delegationState == 'PENDING'}">
-          <a href="${scopePrefix}/bpm/workspace-resolveTask.do?taskId=${item.taskId}">还回</a>
+          <a href="${tenantPrefix}/bpm/workspace-resolveTask.do?taskId=${item.taskId}">还回</a>
 		  </c:if>
-          <a href="${scopePrefix}/bpm/workspace-rollback.do?taskId=${item.taskId}">回退</a>
+          <a href="${tenantPrefix}/bpm/workspace-rollback.do?taskId=${item.taskId}">回退</a>
 		  --%>
-          <a href="${scopePrefix}/bpm/workspace-viewHistory.do?processInstanceId=${item.processInstanceId}">历史</a>
+          <a href="${tenantPrefix}/bpm/workspace-viewHistory.do?processInstanceId=${item.processInstanceId}">历史</a>
 		  <%--
           <a href="${scpoePrefix}/bpm/workspace-changeCounterSign.do?taskId=${item.id}">加减签</a>
 		  --%>

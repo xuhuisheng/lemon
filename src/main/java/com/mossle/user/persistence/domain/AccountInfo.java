@@ -70,6 +70,9 @@ public class AccountInfo implements java.io.Serializable {
     /** null. */
     private String timezone;
 
+    /** null. */
+    private String tenantId;
+
     /** . */
     private Set<AccountCredential> accountCredentials = new HashSet<AccountCredential>(
             0);
@@ -84,7 +87,8 @@ public class AccountInfo implements java.io.Serializable {
             String displayName, String status, String passwordRequired,
             String locked, Date createTime, Date closeTime, Date loginTime,
             String nickName, String description, String language,
-            String timezone, Set<AccountCredential> accountCredentials,
+            String timezone, String tenantId,
+            Set<AccountCredential> accountCredentials,
             Set<AccountAvatar> accountAvatars) {
         this.code = code;
         this.username = username;
@@ -100,6 +104,7 @@ public class AccountInfo implements java.io.Serializable {
         this.description = description;
         this.language = language;
         this.timezone = timezone;
+        this.tenantId = tenantId;
         this.accountCredentials = accountCredentials;
         this.accountAvatars = accountAvatars;
     }
@@ -317,6 +322,20 @@ public class AccountInfo implements java.io.Serializable {
      */
     public void setTimezone(String timezone) {
         this.timezone = timezone;
+    }
+
+    /** @return null. */
+    @Column(name = "TENANT_ID", length = 64)
+    public String getTenantId() {
+        return this.tenantId;
+    }
+
+    /**
+     * @param tenantId
+     *            null.
+     */
+    public void setTenantId(String tenantId) {
+        this.tenantId = tenantId;
     }
 
     /** @return . */

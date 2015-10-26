@@ -101,7 +101,11 @@ $(function() {
         <th width="10" class="m-table-check"><input type="checkbox" name="checkAll" onchange="toggleSelectedItems(this.checked)"></th>
         <th class="sorting" name="id"><spring:message code="meeting-room.meeting-room.list.id" text="编号"/></th>
         <th class="sorting" name="name"><spring:message code="meeting-room.meeting-room.list.name" text="名称"/></th>
-        <th class="sorting" name="name">人数</th>
+        <th class="sorting" name="num">人数</th>
+        <th class="sorting" name="projector">投影仪</th>
+        <th class="sorting" name="type">专用会议室</th>
+        <th class="sorting" name="building">办公地点</th>
+        <th class="sorting" name="floor">楼层</th>
         <th width="80">&nbsp;</th>
       </tr>
     </thead>
@@ -112,7 +116,11 @@ $(function() {
         <td><input type="checkbox" class="selectedItem a-check" name="selectedItem" value="${item.id}"></td>
         <td>${item.id}</td>
         <td>${item.name}</td>
-        <td>${item.people}</td>
+        <td>${item.num}</td>
+        <td>${item.projector}</td>
+        <td>${item.type}</td>
+        <td>${item.building}</td>
+        <td>${item.floor}</td>
         <td>
           <a href="meeting-room-input.do?id=${item.id}" class="a-update"><spring:message code="core.list.edit" text="编辑"/></a>
         </td>

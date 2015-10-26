@@ -35,15 +35,19 @@ public class TemplateField implements java.io.Serializable {
     /** null. */
     private String content;
 
+    /** null. */
+    private String tenantId;
+
     public TemplateField() {
     }
 
     public TemplateField(TemplateInfo templateInfo, String name, String type,
-            String content) {
+            String content, String tenantId) {
         this.templateInfo = templateInfo;
         this.name = name;
         this.type = type;
         this.content = content;
+        this.tenantId = tenantId;
     }
 
     /** @return null. */
@@ -117,5 +121,19 @@ public class TemplateField implements java.io.Serializable {
      */
     public void setContent(String content) {
         this.content = content;
+    }
+
+    /** @return null. */
+    @Column(name = "TENANT_ID", length = 64)
+    public String getTenantId() {
+        return this.tenantId;
+    }
+
+    /**
+     * @param tenantId
+     *            null.
+     */
+    public void setTenantId(String tenantId) {
+        this.tenantId = tenantId;
     }
 }

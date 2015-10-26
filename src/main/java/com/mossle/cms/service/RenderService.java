@@ -1,6 +1,8 @@
 package com.mossle.cms.service;
 
-import java.io.*;
+import java.io.FileOutputStream;
+import java.io.OutputStreamWriter;
+import java.io.PrintWriter;
 
 import java.util.HashMap;
 import java.util.List;
@@ -8,13 +10,13 @@ import java.util.Map;
 
 import javax.annotation.Resource;
 
-import com.mossle.api.scope.ScopeHolder;
+import com.mossle.api.tenant.TenantHolder;
 import com.mossle.api.user.UserConnector;
 
-import com.mossle.cms.domain.CmsArticle;
-import com.mossle.cms.domain.CmsCatalog;
+import com.mossle.cms.persistence.domain.CmsArticle;
+import com.mossle.cms.persistence.domain.CmsCatalog;
 
-import com.mossle.ext.template.TemplateService;
+import com.mossle.core.template.TemplateService;
 
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;

@@ -17,7 +17,7 @@ import com.mossle.bpm.persistence.domain.*;
 import com.mossle.bpm.persistence.manager.*;
 import com.mossle.bpm.support.DefaultTaskListener;
 
-import com.mossle.ext.mail.MailFacade;
+import com.mossle.core.mail.MailFacade;
 
 import org.activiti.engine.delegate.DelegateTask;
 import org.activiti.engine.impl.context.Context;

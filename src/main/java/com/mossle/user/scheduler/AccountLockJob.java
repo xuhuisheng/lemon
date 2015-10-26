@@ -7,9 +7,8 @@ import java.util.Properties;
 
 import javax.annotation.Resource;
 
+import com.mossle.core.mail.MailHelper;
 import com.mossle.core.mapper.BeanMapper;
-
-import com.mossle.ext.mail.MailHelper;
 
 import com.mossle.user.persistence.domain.AccountLockInfo;
 import com.mossle.user.persistence.domain.AccountLockLog;

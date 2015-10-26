@@ -11,15 +11,14 @@ import javax.activation.DataSource;
 
 import javax.annotation.Resource;
 
-import com.mossle.api.scope.ScopeHolder;
 import com.mossle.api.store.StoreConnector;
 import com.mossle.api.store.StoreDTO;
+import com.mossle.api.tenant.TenantHolder;
 import com.mossle.api.user.UserDTO;
 
-import com.mossle.ext.store.ByteArrayDataSource;
+import com.mossle.core.store.ByteArrayDataSource;
 
 import com.mossle.user.ImageUtils;
-import com.mossle.user.component.UserPublisher;
 import com.mossle.user.notification.DefaultUserNotification;
 import com.mossle.user.notification.UserNotification;
 import com.mossle.user.persistence.domain.AccountAvatar;
@@ -45,7 +44,8 @@ public class UserAvatarService {
     private AccountAvatarManager accountAvatarManager;
     private StoreConnector storeConnector;
 
-    public DataSource viewAvatar(Long accountId, int width) throws Exception {
+    public DataSource viewAvatar(Long accountId, int width, String tenantId)
+            throws Exception {
         AccountInfo accountInfo = accountInfoManager.get(accountId);
 
         String key = null;
@@ -66,10 +66,11 @@ public class UserAvatarService {
 
         StoreDTO storeDto = null;
 
-        storeDto = storeConnector.getStore("avatar", key);
+        storeDto = storeConnector.getStore("avatar", key, tenantId);
 
         if (storeDto == null) {
-            storeDto = storeConnector.getStore("avatar", "default.jpg");
+            storeDto = storeConnector.getStore("avatar", "default.jpg",
+                    tenantId);
 
             return storeDto.getDataSource();
         }
@@ -84,7 +85,8 @@ public class UserAvatarService {
         String suffix = key.substring(index);
         String resizeKey = prefix + "-" + width + suffix;
 
-        StoreDTO resizeStoreDto = storeConnector.getStore("avatar", resizeKey);
+        StoreDTO resizeStoreDto = storeConnector.getStore("avatar", resizeKey,
+                tenantId);
 
         if (resizeStoreDto == null) {
             ByteArrayOutputStream baos = new ByteArrayOutputStream();
@@ -93,7 +95,7 @@ public class UserAvatarService {
             logger.info("resizeKey : {}", resizeKey);
             resizeStoreDto = storeConnector.saveStore("avatar", resizeKey,
                     new ByteArrayDataSource(storeDto.getDataSource().getName(),
-                            baos.toByteArray()));
+                            baos.toByteArray()), tenantId);
         }
 
         return resizeStoreDto.getDataSource();

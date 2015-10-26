@@ -115,7 +115,7 @@ $(function() {
         <td>
           <a href="form-template-input.do?id=${item.id}"><spring:message code="core.list.edit" text="编辑"/></a>
 		  <a href="form-template-copy.do?id=${item.id}">复制</a>
-		  <a href="${scopePrefix}/operation/form-operation-preview.do?code=${item.code}">预览</a>
+		  <a href="${tenantPrefix}/operation/form-operation-preview.do?code=${item.code}">预览</a>
         </td>
       </tr>
       </c:forEach>

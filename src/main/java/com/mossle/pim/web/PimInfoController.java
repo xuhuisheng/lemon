@@ -12,17 +12,19 @@ import javax.annotation.Resource;
 import javax.servlet.http.HttpServletRequest;
 import javax.servlet.http.HttpServletResponse;
 
+import com.mossle.api.tenant.TenantHolder;
+
+import com.mossle.core.auth.CurrentUserHolder;
+import com.mossle.core.export.Exportor;
+import com.mossle.core.export.TableModel;
 import com.mossle.core.hibernate.PropertyFilter;
 import com.mossle.core.mapper.BeanMapper;
 import com.mossle.core.page.Page;
 import com.mossle.core.spring.MessageHelper;
 import com.mossle.core.util.ServletUtils;
 
-import com.mossle.ext.export.Exportor;
-import com.mossle.ext.export.TableModel;
-
-import com.mossle.pim.domain.PimInfo;
-import com.mossle.pim.manager.PimInfoManager;
+import com.mossle.pim.persistence.domain.PimInfo;
+import com.mossle.pim.persistence.manager.PimInfoManager;
 
 import org.springframework.stereotype.Controller;
 
@@ -35,18 +37,22 @@ import org.springframework.web.multipart.MultipartFile;
 import org.springframework.web.servlet.mvc.support.RedirectAttributes;
 
 @Controller
-@RequestMapping("/pim")
+@RequestMapping("pim")
 public class PimInfoController {
     private PimInfoManager pimInfoManager;
     private MessageHelper messageHelper;
     private Exportor exportor;
     private BeanMapper beanMapper = new BeanMapper();
+    private CurrentUserHolder currentUserHolder;
+    private TenantHolder tenantHolder;
 
     @RequestMapping("pim-info-list")
     public String list(@ModelAttribute Page page,
             @RequestParam Map<String, Object> parameterMap, Model model) {
+        String userId = currentUserHolder.getUserId();
         List<PropertyFilter> propertyFilters = PropertyFilter
                 .buildFromMap(parameterMap);
+        propertyFilters.add(new PropertyFilter("EQS_userId", userId));
         page = pimInfoManager.pagedQuery(page, propertyFilters);
         model.addAttribute("page", page);
 
@@ -67,6 +73,8 @@ public class PimInfoController {
     @RequestMapping("pim-info-save")
     public String save(@ModelAttribute PimInfo pimInfo,
             RedirectAttributes redirectAttributes) {
+        String userId = currentUserHolder.getUserId();
+        String tenantId = tenantHolder.getTenantId();
         Long id = pimInfo.getId();
         PimInfo dest = null;
 
@@ -75,6 +83,8 @@ public class PimInfoController {
             beanMapper.copy(pimInfo, dest);
         } else {
             dest = pimInfo;
+            dest.setUserId(userId);
+            dest.setTenantId(tenantId);
         }
 
         pimInfoManager.save(dest);
@@ -100,8 +110,10 @@ public class PimInfoController {
             @RequestParam Map<String, Object> parameterMap,
             HttpServletRequest request, HttpServletResponse response)
             throws Exception {
+        String userId = currentUserHolder.getUserId();
         List<PropertyFilter> propertyFilters = PropertyFilter
                 .buildFromMap(parameterMap);
+        propertyFilters.add(new PropertyFilter("EQS_userId", userId));
         page = pimInfoManager.pagedQuery(page, propertyFilters);
 
         List<PimInfo> pimInfos = (List<PimInfo>) page.getResult();
@@ -141,5 +153,15 @@ public class PimInfoController {
     @Resource
     public void setExportor(Exportor exportor) {
         this.exportor = exportor;
+    }
+
+    @Resource
+    public void setCurrentUserHolder(CurrentUserHolder currentUserHolder) {
+        this.currentUserHolder = currentUserHolder;
+    }
+
+    @Resource
+    public void setTenantHolder(TenantHolder tenantHolder) {
+        this.tenantHolder = tenantHolder;
     }
 }

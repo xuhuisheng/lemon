@@ -22,7 +22,7 @@ $(function() {
     });
 	var editor = CKEDITOR.replace('cmsArticle_content');
 	// editorObj.config.filebrowserImageUploadUrl = dir + "core/connector/" + ckfinder.ConnectorLanguage + "/connector." + ckfinder.ConnectorLanguage + "?command=QuickUpload&type=" + ( imageType || 'Images' ) ;
-	editor.config.filebrowserImageUploadUrl = "${scopePrefix}/cms/cms-article-uploadImage.do";
+	editor.config.filebrowserImageUploadUrl = "${tenantPrefix}/cms/cms-article-uploadImage.do";
 })
     </script>
   </head>

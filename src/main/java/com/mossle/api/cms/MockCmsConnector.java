@@ -3,15 +3,17 @@ package com.mossle.api.cms;
 import com.mossle.core.page.Page;
 
 public class MockCmsConnector implements CmsConnector {
-    public CatalogDTO findCatalogByCode(String code) {
+    public CatalogDTO findCatalogByCode(String code, String tenantId) {
         return null;
     }
 
-    public Page findArticles(String code, int pageNo, int pageSize) {
+    public Page findArticles(String code, String tenantId, int pageNo,
+            int pageSize) {
         return null;
     }
 
-    public Page findArticlePageInfo(String code, int pageNo, int pageSize) {
+    public Page findArticlePageInfo(String code, String tenantId, int pageNo,
+            int pageSize) {
         return null;
     }
 

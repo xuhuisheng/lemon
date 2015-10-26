@@ -35,15 +35,19 @@ public class DictData implements java.io.Serializable {
     /** 数据. */
     private String value;
 
+    /** null. */
+    private String tenantId;
+
     public DictData() {
     }
 
     public DictData(DictSchema dictSchema, DictInfo dictInfo, String name,
-            String value) {
+            String value, String tenantId) {
         this.dictSchema = dictSchema;
         this.dictInfo = dictInfo;
         this.name = name;
         this.value = value;
+        this.tenantId = tenantId;
     }
 
     /** @return 唯一主键. */
@@ -118,5 +122,19 @@ public class DictData implements java.io.Serializable {
      */
     public void setValue(String value) {
         this.value = value;
+    }
+
+    /** @return null. */
+    @Column(name = "TENANT_ID", length = 64)
+    public String getTenantId() {
+        return this.tenantId;
+    }
+
+    /**
+     * @param tenantId
+     *            null.
+     */
+    public void setTenantId(String tenantId) {
+        this.tenantId = tenantId;
     }
 }

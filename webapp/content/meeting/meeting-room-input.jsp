@@ -44,15 +44,45 @@ $(function() {
   <input id="car-info_id" type="hidden" name="id" value="${model.id}">
   </c:if>
   <div class="control-group">
-    <label class="control-label" for="car-info_name"><spring:message code="car-info.car-info.input.name" text="名称"/></label>
+    <label class="control-label" for="meetingRoom_name"><spring:message code="car-info.car-info.input.name" text="名称"/></label>
 	<div class="controls">
-	  <input id="car-info_name" type="text" name="name" value="${model.name}" size="40" class="text required" minlength="2" maxlength="10">
+	  <input id="meetingRoom_name" type="text" name="name" value="${model.name}" size="40" class="text required" minlength="2" maxlength="10">
     </div>
   </div>
   <div class="control-group">
-    <label class="control-label" for="car-info_address">人数</label>
+    <label class="control-label" for="meetingRoom_num">人数</label>
 	<div class="controls">
-	  <input id="car-info_address" type="text" name="people" value="${model.people}" size="40" class="text number">
+	  <input id="meetingRoom_num" type="text" name="num" value="${model.num}" size="40" class="text number">
+    </div>
+  </div>
+  <div class="control-group">
+    <label class="control-label" for="meetingRoom_projector">投影仪</label>
+	<div class="controls">
+	  <select id="meetingRoom_projector" name="projector">
+	    <option value="true" ${model.projector == 'true' ? 'selected' : ''}>有</option>
+	    <option value="false" ${model.projector == 'false' ? 'selected' : ''}>无</option>
+	  </select>
+    </div>
+  </div>
+  <div class="control-group">
+    <label class="control-label" for="meetingRoom_type">专用会议室</label>
+	<div class="controls">
+	  <select id="meetingRoom_type" name="type">
+	    <option value="false" ${model.type == 'false' ? 'selected' : ''}>否</option>
+	    <option value="true" ${model.type == 'true' ? 'selected' : ''}>是</option>
+	  </select>
+    </div>
+  </div>
+  <div class="control-group">
+    <label class="control-label" for="meetingRoom_building">办公楼</label>
+	<div class="controls">
+	  <input id="meetingRoom_building" type="text" name="building" value="${model.building}" size="40" class="text required" minlength="1" maxlength="50">
+    </div>
+  </div>
+  <div class="control-group">
+    <label class="control-label" for="meetingRoom_floor">楼层</label>
+	<div class="controls">
+	  <input id="meetingRoom_floor" type="text" name="floor" value="${model.floor}" size="40" class="text required" minlength="1" maxlength="50">
     </div>
   </div>
   <div class="control-group">

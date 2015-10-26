@@ -1,6 +1,6 @@
 package com.mossle.security.util;
 
-import com.mossle.ext.auth.CustomPasswordEncoder;
+import com.mossle.core.auth.CustomPasswordEncoder;
 
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;

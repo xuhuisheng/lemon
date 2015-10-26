@@ -6,7 +6,7 @@ import org.activiti.engine.ActivitiException;
 import org.activiti.engine.impl.calendar.CronExpression;
 
 public class CycleBusinessCalendar extends AdvancedBusinessCalendar {
-    public Date resolveDuedate(String duedate) {
+    public Date resolveDuedate(String duedate, int maxIterations) {
         String textWithoutBusiness = duedate;
         boolean isBusinessTime = textWithoutBusiness.startsWith("business");
 

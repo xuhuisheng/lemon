@@ -9,21 +9,21 @@ import javax.annotation.Resource;
 
 import javax.servlet.http.HttpServletResponse;
 
-import com.mossle.api.scope.ScopeHolder;
+import com.mossle.api.tenant.TenantHolder;
 import com.mossle.api.user.UserConnector;
 import com.mossle.api.user.UserDTO;
 
 import com.mossle.core.mapper.BeanMapper;
 import com.mossle.core.page.Page;
 
-import com.mossle.party.domain.PartyEntity;
-import com.mossle.party.domain.PartyStruct;
-import com.mossle.party.domain.PartyStructType;
-import com.mossle.party.domain.PartyType;
-import com.mossle.party.manager.PartyEntityManager;
-import com.mossle.party.manager.PartyStructManager;
-import com.mossle.party.manager.PartyStructTypeManager;
-import com.mossle.party.manager.PartyTypeManager;
+import com.mossle.party.persistence.domain.PartyEntity;
+import com.mossle.party.persistence.domain.PartyStruct;
+import com.mossle.party.persistence.domain.PartyStructType;
+import com.mossle.party.persistence.domain.PartyType;
+import com.mossle.party.persistence.manager.PartyEntityManager;
+import com.mossle.party.persistence.manager.PartyStructManager;
+import com.mossle.party.persistence.manager.PartyStructTypeManager;
+import com.mossle.party.persistence.manager.PartyTypeManager;
 import com.mossle.party.service.PartyService;
 
 import org.slf4j.Logger;
@@ -52,32 +52,46 @@ public class OrgController {
     private UserConnector userConnector;
     private PartyService partyService;
     private BeanMapper beanMapper = new BeanMapper();
+    private TenantHolder tenantHolder;
 
     public PartyEntity init(Model model, Long partyStructTypeId,
             Long partyEntityId) {
+        String tenantId = tenantHolder.getTenantId();
+
         // 维度，比如行政组织
-        List<PartyStructType> partyStructTypes = partyStructTypeManager.getAll(
-                "priority", true);
+        String hqlPartyStructType = "from PartyStructType where tenantId=? order by priority";
+        List<PartyStructType> partyStructTypes = partyStructTypeManager.find(
+                hqlPartyStructType, tenantId);
         PartyStructType partyStructType = null;
 
-        if (partyStructTypeId == null) {
-            // 如果没有指定维度，就使用第一个维度当做默认维度
-            partyStructType = partyStructTypes.get(0);
-            partyStructTypeId = partyStructType.getId();
-        } else {
+        if (partyStructTypeId != null) {
             partyStructType = partyStructTypeManager.get(partyStructTypeId);
+        } else {
+            if (!partyStructTypes.isEmpty()) {
+                // 如果没有指定维度，就使用第一个维度当做默认维度
+                partyStructType = partyStructTypes.get(0);
+                partyStructTypeId = partyStructType.getId();
+            }
         }
 
         if (partyEntityId == null) {
             // 如果没有指定组织，就返回顶级组织
-            partyEntityId = partyService.getTopPartyEntities(partyStructTypeId)
-                    .get(0).getId();
+            List<PartyEntity> partyEntities = partyService
+                    .getTopPartyEntities(partyStructTypeId);
+
+            if (!partyEntities.isEmpty()) {
+                partyEntityId = partyEntities.get(0).getId();
+            }
         }
 
         model.addAttribute("partyStructTypes", partyStructTypes);
         model.addAttribute("partyStructType", partyStructType);
         model.addAttribute("partyStructTypeId", partyStructTypeId);
         model.addAttribute("partyEntityId", partyEntityId);
+
+        if (partyEntityId == null) {
+            return null;
+        }
 
         return partyEntityManager.get(partyEntityId);
     }
@@ -91,19 +105,21 @@ public class OrgController {
         PartyEntity partyEntity = this.init(model, partyStructTypeId,
                 partyEntityId);
 
-        // 返回所有下级，包含组织，岗位，人员
-        String hql = "from PartyStruct where parentEntity=?";
-        // 如果没有选中partyEntityId，就啥也不显示
-        page = partyStructTypeManager.pagedQuery(hql, page.getPageNo(),
-                page.getPageSize(), partyEntity);
-        model.addAttribute("page", page);
+        if (partyEntity != null) {
+            // 返回所有下级，包含组织，岗位，人员
+            String hql = "from PartyStruct where parentEntity=?";
+            // 如果没有选中partyEntityId，就啥也不显示
+            page = partyStructTypeManager.pagedQuery(hql, page.getPageNo(),
+                    page.getPageSize(), partyEntity);
+            model.addAttribute("page", page);
 
-        // 判断这个组织下可以创建哪些下级
-        // TODO: 应该判断维度
-        List<PartyType> childTypes = partyTypeManager
-                .find("select childType from PartyType childType join childType.parentStructRules parentStructRule where parentStructRule.parentType=?",
-                        partyEntity.getPartyType());
-        model.addAttribute("childTypes", childTypes);
+            // 判断这个组织下可以创建哪些下级
+            // TODO: 应该判断维度
+            List<PartyType> childTypes = partyTypeManager
+                    .find("select childType from PartyType childType join childType.parentStructRules parentStructRule where parentStructRule.parentType=?",
+                            partyEntity.getPartyType());
+            model.addAttribute("childTypes", childTypes);
+        }
 
         return "party/org-list";
     }
@@ -227,5 +243,10 @@ public class OrgController {
     @Resource
     public void setPartyService(PartyService partyService) {
         this.partyService = partyService;
+    }
+
+    @Resource
+    public void setTenantHolder(TenantHolder tenantHolder) {
+        this.tenantHolder = tenantHolder;
     }
 }

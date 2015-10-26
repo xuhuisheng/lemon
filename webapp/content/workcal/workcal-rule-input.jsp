@@ -24,7 +24,7 @@ $(function() {
   </head>
 
   <body>
-    <%@include file="/header/scope.jsp"%>
+    <%@include file="/header/workcal.jsp"%>
 
     <div class="row-fluid">
 	  <%@include file="/menu/workcal.jsp"%>
@@ -80,9 +80,9 @@ $(function() {
 	<div class="controls">
 	  <select name="status">
 	    <option value="0">规则</option>
-	    <option value="0">节假日</option>
-	    <option value="0">调休</option>
-	    <option value="0">补休</option>
+	    <option value="1">节假日</option>
+	    <option value="2">调休</option>
+	    <option value="3">补休</option>
 	  </select>
     </div>
   </div>

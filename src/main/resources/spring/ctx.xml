@@ -32,10 +32,10 @@
 	<bean id="applicationContextHelper" class="com.mossle.core.spring.ApplicationContextHelper"/>
 
 	<!-- 简易的csv导出工具 -->
-	<bean id="exportor" class="com.mossle.ext.export.CsvExportor"/>
+	<bean id="exportor" class="com.mossle.core.export.CsvExportor"/>
 
 	<!-- 模板 -->
-	<bean id="templateService" class="com.mossle.ext.template.FreemarkerTemplateService">
+	<bean id="templateService" class="com.mossle.core.template.FreemarkerTemplateService">
 		<property name="baseDir" value="${store.baseDir}/cms/template"/>
 	</bean>
 

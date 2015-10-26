@@ -9,23 +9,22 @@ import javax.annotation.Resource;
 import javax.servlet.http.HttpServletRequest;
 import javax.servlet.http.HttpServletResponse;
 
-import com.mossle.api.scope.ScopeHolder;
+import com.mossle.api.tenant.TenantHolder;
 
 import com.mossle.auth.component.UserStatusChecker;
 import com.mossle.auth.component.UserStatusConverter;
-import com.mossle.auth.domain.UserStatus;
-import com.mossle.auth.manager.UserStatusManager;
+import com.mossle.auth.persistence.domain.UserStatus;
+import com.mossle.auth.persistence.manager.UserStatusManager;
 import com.mossle.auth.support.CheckUserStatusException;
 import com.mossle.auth.support.UserStatusDTO;
 
+import com.mossle.core.auth.CustomPasswordEncoder;
+import com.mossle.core.export.Exportor;
+import com.mossle.core.export.TableModel;
 import com.mossle.core.hibernate.PropertyFilter;
 import com.mossle.core.mapper.BeanMapper;
 import com.mossle.core.page.Page;
 import com.mossle.core.spring.MessageHelper;
-
-import com.mossle.ext.auth.CustomPasswordEncoder;
-import com.mossle.ext.export.Exportor;
-import com.mossle.ext.export.TableModel;
 
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
@@ -52,20 +51,22 @@ public class UserStatusController {
     private UserStatusConverter userStatusConverter;
     private UserStatusChecker userStatusChecker;
     private CustomPasswordEncoder customPasswordEncoder;
+    private TenantHolder tenantHolder;
 
     @RequestMapping("user-status-list")
     public String list(@ModelAttribute Page page,
             @RequestParam Map<String, Object> parameterMap, Model model) {
         List<PropertyFilter> propertyFilters = PropertyFilter
                 .buildFromMap(parameterMap);
-        propertyFilters.add(new PropertyFilter("EQS_scopeId", ScopeHolder
-                .getScopeId()));
+        propertyFilters.add(new PropertyFilter("EQS_tenantId", tenantHolder
+                .getTenantId()));
         page = userStatusManager.pagedQuery(page, propertyFilters);
 
         List<UserStatus> userStatuses = (List<UserStatus>) page.getResult();
         List<UserStatusDTO> userStatusDtos = userStatusConverter
                 .createUserStatusDtos(userStatuses,
-                        ScopeHolder.getUserRepoRef(), ScopeHolder.getScopeId());
+                        tenantHolder.getUserRepoRef(),
+                        tenantHolder.getTenantId());
         page.setResult(userStatusDtos);
         model.addAttribute("page", page);
 
@@ -115,8 +116,8 @@ public class UserStatusController {
             }
 
             if (id == null) {
-                dest.setUserRepoRef(ScopeHolder.getUserRepoRef());
-                dest.setScopeId(ScopeHolder.getScopeId());
+                dest.setUserRepoRef(tenantHolder.getUserRepoRef());
+                dest.setTenantId(tenantHolder.getTenantId());
             }
 
             userStatusManager.save(dest);
@@ -167,7 +168,8 @@ public class UserStatusController {
         List<UserStatus> userStatuses = (List<UserStatus>) page.getResult();
         List<UserStatusDTO> userStatusDtos = userStatusConverter
                 .createUserStatusDtos(userStatuses,
-                        ScopeHolder.getUserRepoRef(), ScopeHolder.getScopeId());
+                        tenantHolder.getUserRepoRef(),
+                        tenantHolder.getTenantId());
         TableModel tableModel = new TableModel();
         tableModel.setName("user status");
         tableModel.addHeaders("id", "username", "enabled", "authorities");
@@ -246,5 +248,10 @@ public class UserStatusController {
     @Resource
     public void setExportor(Exportor exportor) {
         this.exportor = exportor;
+    }
+
+    @Resource
+    public void setTenantHolder(TenantHolder tenantHolder) {
+        this.tenantHolder = tenantHolder;
     }
 }

@@ -66,6 +66,12 @@ $(function() {
     </div>
   </div>
   <div class="control-group">
+    <label class="control-label" for="orgentity_level">级别:</label>
+    <div class="controls">
+	  <input id="orgentity_level" type="text" name="level" value="${model.level}" class="text" maxlength="50">
+    </div>
+  </div>
+  <div class="control-group">
     <div class="controls">
       <button id="submitButton" class="btn"><spring:message code='core.input.save' text='保存'/></button>
       <button type="button" onclick="history.back();" class="btn"><spring:message code='core.input.back' text='返回'/></button>
