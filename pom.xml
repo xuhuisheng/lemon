@@ -362,11 +362,6 @@
         <artifactId>jstl</artifactId>
         <version>${jstl.version}</version>
       </dependency>
-      <dependency>
-        <groupId>org.springframework.session</groupId>
-        <artifactId>spring-session</artifactId>
-        <version>${spring-session.version}</version>
-      </dependency>
 
       <dependency>
         <groupId>org.springframework.security</groupId>
@@ -1369,7 +1364,6 @@
     <jedis.version>2.7.3</jedis.version>
     <jms.version>1.1.1</jms.version>
     <jstl.version>1.2</jstl.version>
-    <spring-session.version>1.0.2.20150803</spring-session.version>
     <freemarker.version>2.3.23</freemarker.version>
     <jasperreports.version>6.1.1</jasperreports.version>
     <drools.version>6.3.0.Final</drools.version>
