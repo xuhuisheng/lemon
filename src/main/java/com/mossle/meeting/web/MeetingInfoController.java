@@ -13,7 +13,6 @@ import javax.servlet.http.HttpServletResponse;
 
 import com.mossle.api.tenant.TenantConnector;
 import com.mossle.api.tenant.TenantHolder;
-import com.mossle.api.tenant.TenantHolder;
 import com.mossle.api.user.UserConnector;
 import com.mossle.api.user.UserDTO;
 
@@ -250,5 +249,10 @@ public class MeetingInfoController {
     @Resource
     public void setUserConnector(UserConnector userConnector) {
         this.userConnector = userConnector;
+    }
+
+    @Resource
+    public void setTenantHolder(TenantHolder tenantHolder) {
+        this.tenantHolder = tenantHolder;
     }
 }

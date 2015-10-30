@@ -130,14 +130,16 @@ public class SendmailConfigController {
         SendmailConfig sendmailConfig = sendmailConfigManager.get(id);
         MailServerInfo mailServerInfo = new MailServerInfo();
         mailServerInfo.setHost(sendmailConfig.getHost());
+        mailServerInfo.setPort(sendmailConfig.getPort());
         mailServerInfo.setSmtpAuth(sendmailConfig.getSmtpAuth() == 1);
         mailServerInfo.setSmtpStarttls(sendmailConfig.getSmtpStarttls() == 1);
+        mailServerInfo.setSmtpSsl(sendmailConfig.getSmtpSsl() == 1);
         mailServerInfo.setUsername(sendmailConfig.getUsername());
         mailServerInfo.setPassword(sendmailConfig.getPassword());
         mailServerInfo.setDefaultFrom(sendmailConfig.getDefaultFrom());
 
         MailDTO mailDto = new MailDTO();
-        mailDto.setTo("demo.mossle@gmail.com");
+        mailDto.setTo("lingo@mossle.com");
         mailDto.setSubject("test");
         mailDto.setContent("test");
 

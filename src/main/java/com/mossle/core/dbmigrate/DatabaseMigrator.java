@@ -36,6 +36,12 @@ public class DatabaseMigrator implements ApplicationContextAware {
             Flyway flyway = new Flyway();
             flyway.setDataSource(dataSource);
             flyway.clean();
+        } else {
+            logger.info("repair database");
+
+            Flyway flyway = new Flyway();
+            flyway.setDataSource(dataSource);
+            flyway.repair();
         }
 
         Map<String, ModuleSpecification> map = applicationContext

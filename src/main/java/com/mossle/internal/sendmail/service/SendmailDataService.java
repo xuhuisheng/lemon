@@ -143,9 +143,11 @@ public class SendmailDataService {
 
             MailServerInfo mailServerInfo = new MailServerInfo();
             mailServerInfo.setHost(sendmailConfig.getHost());
+            mailServerInfo.setPort(sendmailConfig.getPort());
             mailServerInfo.setSmtpAuth(sendmailConfig.getSmtpAuth() == 1);
             mailServerInfo
                     .setSmtpStarttls(sendmailConfig.getSmtpStarttls() == 1);
+            mailServerInfo.setSmtpSsl(sendmailConfig.getSmtpSsl() == 1);
             mailServerInfo.setUsername(sendmailConfig.getUsername());
             mailServerInfo.setPassword(sendmailConfig.getPassword());
             mailServerInfo.setDefaultFrom(sendmailConfig.getDefaultFrom());

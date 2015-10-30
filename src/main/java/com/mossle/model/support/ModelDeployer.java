@@ -80,10 +80,16 @@ public class ModelDeployer {
         Map<String, FormField> formFieldMap = new HashMap<String, FormField>();
 
         for (HumanTaskDefinition humanTaskDefinition : humanTaskDefinitions) {
-            String formKey = taskDefinitionConnector.findForm(
-                    humanTaskDefinition.getKey(), processDefinitionId).getKey();
-
             try {
+                com.mossle.spi.humantask.FormDTO formDto = taskDefinitionConnector
+                        .findForm(humanTaskDefinition.getKey(),
+                                processDefinitionId);
+
+                if (formDto == null) {
+                    continue;
+                }
+
+                String formKey = formDto.getKey();
                 this.processForm(processDefinitionId, formKey,
                         modelInfo.getTenantId(), formFieldMap);
             } catch (IOException ex) {

@@ -1,4 +1,5 @@
 <%@page language="java" pageEncoding="UTF-8" %>
+    <link rel="shortcut icon" type="image/x-icon" href="${tenantPrefix}/favicon.ico" />
     <!-- bootstrap -->
     <link type="text/css" rel="stylesheet" href="${ctx}/s/bootstrap/css/bootstrap.min.css">
     <link type="text/css" rel="stylesheet" href="${ctx}/s/bootstrap/css/bootstrap-responsive.min.css">

@@ -9,6 +9,8 @@ import javax.annotation.Resource;
 import javax.servlet.http.HttpServletRequest;
 import javax.servlet.http.HttpServletResponse;
 
+import com.mossle.api.tenant.TenantHolder;
+
 import com.mossle.bpm.persistence.domain.BpmCategory;
 import com.mossle.bpm.persistence.manager.BpmCategoryManager;
 
@@ -35,13 +37,16 @@ public class BpmCategoryController {
     private BpmCategoryManager bpmCategoryManager;
     private MessageHelper messageHelper;
     private Exportor exportor;
+    private TenantHolder tenantHolder;
     private BeanMapper beanMapper = new BeanMapper();
 
     @RequestMapping("bpm-category-list")
     public String list(@ModelAttribute Page page,
             @RequestParam Map<String, Object> parameterMap, Model model) {
+        String tenantId = tenantHolder.getTenantId();
         List<PropertyFilter> propertyFilters = PropertyFilter
                 .buildFromMap(parameterMap);
+        propertyFilters.add(new PropertyFilter("EQS_tenantId", tenantId));
         page = bpmCategoryManager.pagedQuery(page, propertyFilters);
         model.addAttribute("page", page);
 
@@ -70,6 +75,9 @@ public class BpmCategoryController {
             beanMapper.copy(bpmCategory, dest);
         } else {
             dest = bpmCategory;
+
+            String tenantId = tenantHolder.getTenantId();
+            dest.setTenantId(tenantId);
         }
 
         bpmCategoryManager.save(dest);
@@ -124,5 +132,10 @@ public class BpmCategoryController {
     @Resource
     public void setExportor(Exportor exportor) {
         this.exportor = exportor;
+    }
+
+    @Resource
+    public void setTenantHolder(TenantHolder tenantHolder) {
+        this.tenantHolder = tenantHolder;
     }
 }

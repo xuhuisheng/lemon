@@ -56,6 +56,12 @@ $(function() {
     </div>
   </div>
   <div class="control-group">
+    <label class="control-label" for="mailConfig_port">SMTP端口</label>
+	<div class="controls">
+	  <input id="mailConfig_port" type="text" name="port" value="${empty model.port ? '25' : model.port}" class="required number" minlength="2" maxlength="50">
+    </div>
+  </div>
+  <div class="control-group">
     <label class="control-label" for="mailConfig_smtpAuth0">需要认证</label>
 	<div class="controls">
 	  <label class="pull-left"><input id="mailConfig_smtpAuth0" type="radio" name="smtpAuth" value="1" ${empty model || model.smtpAuth == 1 ? 'checked' : ''}>是</label>
@@ -67,6 +73,13 @@ $(function() {
 	<div class="controls">
 	  <label class="pull-left"><input id="mailConfig_smtpStarttls0" type="radio" name="smtpStarttls" value="1" ${empty model || model.smtpStarttls == 1 ? 'checked' : ''}>是</label>
 	  <label><input id="mailConfig_smtpStarttls1" type="radio" name="smtpStarttls" value="0" ${model.smtpStarttls == 0 ? 'checked' : ''}>否</label>
+    </div>
+  </div>
+  <div class="control-group">
+    <label class="control-label" for="mailConfig_smtpSsl0">使用SSL</label>
+	<div class="controls">
+	  <label class="pull-left"><input id="mailConfig_smtpSsl0" type="radio" name="smtpSsl" value="1" ${model.smtpSsl == 1 ? 'checked' : ''}>是</label>
+	  <label><input id="mailConfig_smtpSsl1" type="radio" name="smtpSsl" value="0" ${empty model || model.smtpSsl == 0 ? 'checked' : ''}>否</label>
     </div>
   </div>
   <div class="control-group">

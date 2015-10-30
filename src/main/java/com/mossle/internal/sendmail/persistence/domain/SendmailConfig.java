@@ -55,6 +55,12 @@ public class SendmailConfig implements java.io.Serializable {
     /** null. */
     private String tenantId;
 
+    /** null. */
+    private Integer port;
+
+    /** null. */
+    private Integer smtpSsl;
+
     /** . */
     private Set<SendmailQueue> sendmailQueues = new HashSet<SendmailQueue>(0);
 
@@ -68,7 +74,8 @@ public class SendmailConfig implements java.io.Serializable {
     public SendmailConfig(String name, String host, String username,
             String password, Integer smtpAuth, Integer smtpStarttls,
             String status, String defaultFrom, String testMail,
-            String tenantId, Set<SendmailQueue> sendmailQueues,
+            String tenantId, Integer port, Integer smtpSsl,
+            Set<SendmailQueue> sendmailQueues,
             Set<SendmailHistory> sendmailHistories) {
         this.name = name;
         this.host = host;
@@ -80,6 +87,8 @@ public class SendmailConfig implements java.io.Serializable {
         this.defaultFrom = defaultFrom;
         this.testMail = testMail;
         this.tenantId = tenantId;
+        this.port = port;
+        this.smtpSsl = smtpSsl;
         this.sendmailQueues = sendmailQueues;
         this.sendmailHistories = sendmailHistories;
     }
@@ -238,6 +247,34 @@ public class SendmailConfig implements java.io.Serializable {
      */
     public void setTenantId(String tenantId) {
         this.tenantId = tenantId;
+    }
+
+    /** @return null. */
+    @Column(name = "PORT")
+    public Integer getPort() {
+        return this.port;
+    }
+
+    /**
+     * @param port
+     *            null.
+     */
+    public void setPort(Integer port) {
+        this.port = port;
+    }
+
+    /** @return null. */
+    @Column(name = "SMTP_SSL")
+    public Integer getSmtpSsl() {
+        return this.smtpSsl;
+    }
+
+    /**
+     * @param smtpSsl
+     *            null.
+     */
+    public void setSmtpSsl(Integer smtpSsl) {
+        this.smtpSsl = smtpSsl;
     }
 
     /** @return . */

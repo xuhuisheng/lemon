@@ -3,7 +3,6 @@ package com.mossle.disk.web;
 import java.io.InputStream;
 
 import java.util.ArrayList;
-import java.util.Date;
 import java.util.HashMap;
 import java.util.List;
 import java.util.Map;
@@ -14,19 +13,11 @@ import javax.servlet.http.HttpServletRequest;
 import javax.servlet.http.HttpServletResponse;
 
 import com.mossle.api.store.StoreConnector;
-import com.mossle.api.store.StoreDTO;
 import com.mossle.api.tenant.TenantHolder;
 import com.mossle.api.user.UserConnector;
 import com.mossle.api.user.UserDTO;
 
-import com.mossle.core.auth.CurrentUserHolder;
-import com.mossle.core.export.Exportor;
-import com.mossle.core.export.TableModel;
-import com.mossle.core.hibernate.PropertyFilter;
-import com.mossle.core.mapper.BeanMapper;
 import com.mossle.core.page.Page;
-import com.mossle.core.spring.MessageHelper;
-import com.mossle.core.store.MultipartFileDataSource;
 import com.mossle.core.util.IoUtils;
 import com.mossle.core.util.ServletUtils;
 
@@ -34,8 +25,6 @@ import com.mossle.disk.persistence.domain.DiskInfo;
 import com.mossle.disk.persistence.domain.DiskShare;
 import com.mossle.disk.persistence.manager.DiskInfoManager;
 import com.mossle.disk.persistence.manager.DiskShareManager;
-import com.mossle.disk.service.DiskService;
-import com.mossle.disk.util.FileUtils;
 
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
@@ -44,12 +33,8 @@ import org.springframework.stereotype.Controller;
 
 import org.springframework.ui.Model;
 
-import org.springframework.web.bind.annotation.ModelAttribute;
 import org.springframework.web.bind.annotation.RequestMapping;
 import org.springframework.web.bind.annotation.RequestParam;
-import org.springframework.web.bind.annotation.ResponseBody;
-import org.springframework.web.multipart.MultipartFile;
-import org.springframework.web.servlet.mvc.support.RedirectAttributes;
 
 @Controller
 @RequestMapping("disk")
@@ -58,9 +43,7 @@ public class DiskController {
             .getLogger(DiskController.class);
     private DiskShareManager diskShareManager;
     private DiskInfoManager diskInfoManager;
-    private CurrentUserHolder currentUserHolder;
     private StoreConnector storeConnector;
-    private DiskService diskService;
     private TenantHolder tenantHolder;
     private UserConnector userConnector;
 
@@ -114,7 +97,6 @@ public class DiskController {
 
         String userId = u;
 
-        // List<DiskShare> diskShares = diskService.listFiles(userId, path);
         List<DiskShare> diskShares = diskShareManager.findBy("creator", userId);
         model.addAttribute("diskShares", diskShares);
         model.addAttribute("path", path);
@@ -140,7 +122,6 @@ public class DiskController {
     public void download(@RequestParam("id") Long id,
             HttpServletRequest request, HttpServletResponse response)
             throws Exception {
-        String userId = currentUserHolder.getUserId();
         String tenantId = tenantHolder.getTenantId();
         DiskShare diskShare = diskShareManager.get(id);
         DiskInfo diskInfo = diskShare.getDiskInfo();
@@ -173,18 +154,8 @@ public class DiskController {
     }
 
     @Resource
-    public void setCurrentUserHolder(CurrentUserHolder currentUserHolder) {
-        this.currentUserHolder = currentUserHolder;
-    }
-
-    @Resource
     public void setStoreConnector(StoreConnector storeConnector) {
         this.storeConnector = storeConnector;
-    }
-
-    @Resource
-    public void setDiskService(DiskService diskService) {
-        this.diskService = diskService;
     }
 
     @Resource

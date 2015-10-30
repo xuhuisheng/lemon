@@ -11,13 +11,15 @@
 		<property name="defaultMailServerInfo">
 			<bean class="com.mossle.core.mail.MailServerInfo">
 				<property name="host" value="${mail.host}" />
+				<property name="port" value="${mail.port}" />
 				<property name="username" value="${mail.username}" />
 				<property name="password" value="${mail.password}" />
-				<property name="smtpAuth" value="${mail.smtp.auth}"/>
-				<property name="smtpStarttls" value="${mail.smtp.starttls.enable}"/>
-				<property name="mode" value="${mail.mode}"/>
-				<property name="testMail" value="${mail.test.mail}"/>
-				<property name="defaultFrom" value="${mail.default.from}"/>
+				<property name="smtpAuth" value="${mail.smtp.auth}" />
+				<property name="smtpStarttls" value="${mail.smtp.starttls.enable}" />
+				<property name="smtpSsl" value="${mail.smtp.ssl.enable}" />
+				<property name="mode" value="${mail.mode}" />
+				<property name="testMail" value="${mail.test.mail}" />
+				<property name="defaultFrom" value="${mail.default.from}" />
 			</bean>
 		</property>
 	</bean>

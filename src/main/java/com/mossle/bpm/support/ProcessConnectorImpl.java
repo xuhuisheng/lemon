@@ -164,7 +164,7 @@ public class ProcessConnectorImpl implements ProcessConnector {
                         firstTaskForm.getProcessDefinitionId(),
                         firstTaskForm.getActivityId());
 
-        if (firstTaskForm == null) {
+        if (taskFormDto == null) {
             logger.info("cannot find bpmConfForm : {}, {}",
                     processDefinitionId, firstTaskForm.getActivityId());
 
