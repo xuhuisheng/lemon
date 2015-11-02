@@ -1,6 +1,5 @@
 package com.mossle.internal.whitelist.web;
 
-import java.util.ArrayList;
 import java.util.List;
 import java.util.Map;
 

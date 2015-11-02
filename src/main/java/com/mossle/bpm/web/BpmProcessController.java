@@ -1,6 +1,5 @@
 package com.mossle.bpm.web;
 
-import java.util.ArrayList;
 import java.util.List;
 import java.util.Map;
 
@@ -16,10 +15,8 @@ import com.mossle.bpm.persistence.domain.BpmConfBase;
 import com.mossle.bpm.persistence.domain.BpmProcess;
 import com.mossle.bpm.persistence.manager.BpmCategoryManager;
 import com.mossle.bpm.persistence.manager.BpmConfBaseManager;
-import com.mossle.bpm.persistence.manager.BpmMailTemplateManager;
 import com.mossle.bpm.persistence.manager.BpmProcessManager;
 import com.mossle.bpm.persistence.manager.BpmTaskDefManager;
-import com.mossle.bpm.persistence.manager.BpmTaskDefNoticeManager;
 
 import com.mossle.core.export.Exportor;
 import com.mossle.core.export.TableModel;
@@ -37,7 +34,6 @@ import org.springframework.ui.Model;
 import org.springframework.web.bind.annotation.ModelAttribute;
 import org.springframework.web.bind.annotation.RequestMapping;
 import org.springframework.web.bind.annotation.RequestParam;
-import org.springframework.web.bind.annotation.ResponseBody;
 import org.springframework.web.servlet.mvc.support.RedirectAttributes;
 
 @Controller

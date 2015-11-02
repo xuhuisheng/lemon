@@ -10,23 +10,19 @@ import java.util.Map;
 import javax.xml.datatype.DatatypeFactory;
 import javax.xml.datatype.Duration;
 
-import com.mossle.api.msg.MsgConnector;
 import com.mossle.api.notification.NotificationConnector;
 import com.mossle.api.notification.NotificationDTO;
 import com.mossle.api.user.UserConnector;
 import com.mossle.api.user.UserDTO;
 
 import com.mossle.bpm.persistence.domain.BpmConfNotice;
-import com.mossle.bpm.persistence.domain.BpmMailTemplate;
 import com.mossle.bpm.persistence.manager.BpmConfNoticeManager;
 
-import com.mossle.core.mail.MailFacade;
 import com.mossle.core.spring.ApplicationContextHelper;
 
 import org.activiti.engine.delegate.DelegateTask;
 import org.activiti.engine.impl.context.Context;
-import org.activiti.engine.impl.el.ExpressionManager;
-import org.activiti.engine.impl.persistence.entity.*;
+import org.activiti.engine.impl.persistence.entity.HistoricProcessInstanceEntity;
 import org.activiti.engine.impl.persistence.entity.TaskEntity;
 
 import org.slf4j.Logger;

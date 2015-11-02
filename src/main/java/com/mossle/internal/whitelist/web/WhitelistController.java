@@ -1,25 +1,20 @@
 package com.mossle.internal.whitelist.web;
 
-import java.util.ArrayList;
 import java.util.List;
 import java.util.Map;
 
 import javax.annotation.Resource;
 
-import javax.servlet.http.HttpServletResponse;
-
 import com.mossle.api.tenant.TenantHolder;
 
 import com.mossle.core.auth.CurrentUserHolder;
 import com.mossle.core.export.Exportor;
-import com.mossle.core.export.TableModel;
 import com.mossle.core.hibernate.PropertyFilter;
 import com.mossle.core.mapper.BeanMapper;
 import com.mossle.core.page.Page;
 import com.mossle.core.spring.MessageHelper;
 
 import com.mossle.internal.whitelist.persistence.domain.WhitelistApp;
-import com.mossle.internal.whitelist.persistence.domain.WhitelistType;
 import com.mossle.internal.whitelist.persistence.manager.WhitelistAppManager;
 import com.mossle.internal.whitelist.persistence.manager.WhitelistTypeManager;
 import com.mossle.internal.whitelist.service.WhitelistService;

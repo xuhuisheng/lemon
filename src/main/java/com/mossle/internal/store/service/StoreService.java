@@ -4,22 +4,14 @@ import java.util.Date;
 
 import javax.activation.DataSource;
 
-import javax.annotation.PostConstruct;
 import javax.annotation.Resource;
 
 import com.mossle.api.store.StoreDTO;
-
-import com.mossle.core.store.ByteArrayDataSource;
-import com.mossle.core.store.FileStoreHelper;
-import com.mossle.core.store.StoreHelper;
-import com.mossle.core.store.StoreResult;
 
 import com.mossle.internal.store.persistence.domain.StoreInfo;
 import com.mossle.internal.store.persistence.manager.StoreInfoManager;
 
 import com.mossle.spi.store.InternalStoreConnector;
-
-import org.springframework.beans.factory.annotation.Value;
 
 import org.springframework.stereotype.Service;
 

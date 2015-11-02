@@ -2,8 +2,6 @@ package com.mossle.bpm.cmd;
 
 import java.lang.reflect.Method;
 
-import java.util.Map;
-
 import org.activiti.engine.impl.bpmn.behavior.FlowNodeActivityBehavior;
 import org.activiti.engine.impl.cmd.NeedsActiveExecutionCmd;
 import org.activiti.engine.impl.interceptor.CommandContext;

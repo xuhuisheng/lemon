@@ -2,15 +2,11 @@ package com.mossle.bpm.web;
 
 import java.io.InputStream;
 
-import java.util.ArrayList;
 import java.util.Collections;
-import java.util.HashMap;
 import java.util.List;
-import java.util.Map;
 
 import javax.annotation.Resource;
 
-import javax.servlet.http.HttpServletRequest;
 import javax.servlet.http.HttpServletResponse;
 
 import com.mossle.api.process.ProcessConnector;
@@ -23,7 +19,6 @@ import com.mossle.bpm.cmd.HistoryProcessInstanceDiagramCmd;
 import com.mossle.bpm.cmd.ProcessDefinitionDiagramCmd;
 import com.mossle.bpm.cmd.RollbackTaskCmd;
 import com.mossle.bpm.cmd.WithdrawTaskCmd;
-import com.mossle.bpm.graph.ActivitiHistoryGraphBuilder;
 import com.mossle.bpm.graph.Graph;
 import com.mossle.bpm.persistence.domain.BpmCategory;
 import com.mossle.bpm.persistence.domain.BpmProcess;
@@ -36,23 +31,15 @@ import com.mossle.core.page.Page;
 
 import org.activiti.engine.FormService;
 import org.activiti.engine.HistoryService;
-import org.activiti.engine.IdentityService;
 import org.activiti.engine.ProcessEngine;
 import org.activiti.engine.RepositoryService;
 import org.activiti.engine.TaskService;
-import org.activiti.engine.form.FormProperty;
 import org.activiti.engine.form.StartFormData;
 import org.activiti.engine.form.TaskFormData;
 import org.activiti.engine.history.HistoricProcessInstance;
 import org.activiti.engine.history.HistoricTaskInstance;
-import org.activiti.engine.history.HistoricVariableInstance;
-import org.activiti.engine.impl.ServiceImpl;
-import org.activiti.engine.impl.cmd.GetDeploymentProcessDefinitionCmd;
 import org.activiti.engine.impl.interceptor.Command;
-import org.activiti.engine.impl.persistence.entity.ProcessDefinitionEntity;
 import org.activiti.engine.repository.ProcessDefinition;
-import org.activiti.engine.task.DelegationState;
-import org.activiti.engine.task.Task;
 
 import org.apache.commons.io.IOUtils;
 
@@ -63,8 +50,6 @@ import org.springframework.ui.Model;
 import org.springframework.web.bind.annotation.ModelAttribute;
 import org.springframework.web.bind.annotation.RequestMapping;
 import org.springframework.web.bind.annotation.RequestParam;
-import org.springframework.web.bind.annotation.ResponseBody;
-import org.springframework.web.servlet.mvc.support.RedirectAttributes;
 
 /**
  * 我的流程 待办流程 已办未结

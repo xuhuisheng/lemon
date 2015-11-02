@@ -1,6 +1,5 @@
 package com.mossle.auth.web;
 
-import java.util.ArrayList;
 import java.util.List;
 import java.util.Map;
 
@@ -11,7 +10,6 @@ import javax.servlet.http.HttpServletResponse;
 
 import com.mossle.api.tenant.TenantHolder;
 
-import com.mossle.auth.persistence.domain.Perm;
 import com.mossle.auth.persistence.domain.PermType;
 import com.mossle.auth.persistence.manager.PermManager;
 import com.mossle.auth.persistence.manager.PermTypeManager;
@@ -30,7 +28,6 @@ import org.springframework.ui.Model;
 import org.springframework.web.bind.annotation.ModelAttribute;
 import org.springframework.web.bind.annotation.RequestMapping;
 import org.springframework.web.bind.annotation.RequestParam;
-import org.springframework.web.bind.annotation.ResponseBody;
 import org.springframework.web.servlet.mvc.support.RedirectAttributes;
 
 @Controller

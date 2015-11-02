@@ -1,16 +1,11 @@
 package com.mossle.internal.store.support;
 
-import java.text.SimpleDateFormat;
-
 import javax.activation.DataSource;
 
 import javax.annotation.Resource;
 
 import com.mossle.api.store.StoreConnector;
 import com.mossle.api.store.StoreDTO;
-
-import com.mossle.core.mapper.JsonMapper;
-import com.mossle.core.util.IoUtils;
 
 import com.mossle.internal.store.persistence.domain.StoreInfo;
 import com.mossle.internal.store.persistence.manager.StoreInfoManager;
@@ -20,14 +15,6 @@ import com.mossle.spi.store.InternalStoreConnector;
 
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
-
-import org.springframework.beans.factory.annotation.Value;
-
-import org.springframework.core.io.InputStreamResource;
-
-import org.springframework.stereotype.Component;
-
-import org.springframework.util.FileCopyUtils;
 
 public class StoreConnectorImpl implements StoreConnector {
     private Logger logger = LoggerFactory.getLogger(StoreConnectorImpl.class);

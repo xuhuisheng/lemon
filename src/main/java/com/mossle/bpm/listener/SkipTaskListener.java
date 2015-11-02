@@ -17,14 +17,10 @@ import com.mossle.core.spring.ApplicationContextHelper;
 import org.activiti.engine.delegate.DelegateTask;
 import org.activiti.engine.impl.context.Context;
 import org.activiti.engine.impl.el.ExpressionManager;
-import org.activiti.engine.impl.identity.Authentication;
 import org.activiti.engine.impl.persistence.entity.HistoricProcessInstanceEntity;
-import org.activiti.engine.impl.persistence.entity.TaskEntity;
 
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
-
-import org.springframework.stereotype.Component;
 
 public class SkipTaskListener extends DefaultTaskListener {
     private static Logger logger = LoggerFactory

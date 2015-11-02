@@ -1,6 +1,5 @@
 package com.mossle.user.support;
 
-import java.util.Date;
 import java.util.List;
 
 import javax.annotation.Resource;
@@ -9,12 +8,9 @@ import com.mossle.api.user.AccountStatus;
 import com.mossle.api.user.AccountStatusHelper;
 import com.mossle.api.user.AuthenticationClient;
 import com.mossle.api.user.AuthenticationHandler;
-import com.mossle.api.user.AuthenticationType;
 
 import com.mossle.core.auth.CustomPasswordEncoder;
 
-import com.mossle.user.persistence.domain.AccountCredential;
-import com.mossle.user.persistence.domain.AccountInfo;
 import com.mossle.user.persistence.manager.AccountCredentialManager;
 import com.mossle.user.persistence.manager.AccountInfoManager;
 

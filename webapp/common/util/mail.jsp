@@ -1,8 +1,8 @@
 <%@page contentType="text/html;charset=UTF-8"%>
 <%@page import="org.springframework.context.ApplicationContext"%>
 <%@page import="org.springframework.web.context.support.WebApplicationContextUtils"%>
-<%@page import="com.mossle.ext.mail.MailFacade"%>
-<%@page import="com.mossle.ext.mail.MailHelper"%>
+<%@page import="com.mossle.core.mail.MailFacade"%>
+<%@page import="com.mossle.core.mail.MailHelper"%>
 <%
 	String action = request.getParameter("action");
 

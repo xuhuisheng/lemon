@@ -2,14 +2,11 @@ package com.mossle.core.mail;
 
 import java.net.UnknownHostException;
 
-import java.util.HashMap;
 import java.util.Map;
 
 import javax.mail.internet.InternetAddress;
 import javax.mail.internet.MimeMessage;
 
-import com.mossle.core.mail.HostGenerator;
-import com.mossle.core.mail.HostGeneratorImpl;
 import com.mossle.core.util.StringUtils;
 
 import org.slf4j.Logger;
@@ -18,7 +15,6 @@ import org.slf4j.LoggerFactory;
 import org.springframework.core.io.InputStreamSource;
 
 import org.springframework.mail.javamail.JavaMailSender;
-import org.springframework.mail.javamail.JavaMailSenderImpl;
 import org.springframework.mail.javamail.MimeMessageHelper;
 
 import org.springframework.util.Assert;

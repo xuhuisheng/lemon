@@ -2,17 +2,12 @@ package com.mossle.user.support;
 
 import javax.annotation.Resource;
 
-import com.mossle.api.userauth.UserAuthConnector;
-import com.mossle.api.userauth.UserAuthDTO;
-
 import com.mossle.spi.user.AccountCredentialConnector;
 
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
 
 import org.springframework.jdbc.core.JdbcTemplate;
-
-import org.springframework.util.Assert;
 
 public class DatabaseAccountCredentialConnector implements
         AccountCredentialConnector {

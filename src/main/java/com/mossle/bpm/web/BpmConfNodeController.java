@@ -1,6 +1,5 @@
 package com.mossle.bpm.web;
 
-import java.util.ArrayList;
 import java.util.List;
 
 import javax.annotation.Resource;
@@ -11,8 +10,6 @@ import com.mossle.bpm.persistence.manager.BpmConfBaseManager;
 import com.mossle.bpm.persistence.manager.BpmConfNodeManager;
 import com.mossle.bpm.persistence.manager.BpmConfUserManager;
 import com.mossle.bpm.persistence.manager.BpmProcessManager;
-
-import com.mossle.core.mapper.BeanMapper;
 
 import org.activiti.engine.ProcessEngine;
 

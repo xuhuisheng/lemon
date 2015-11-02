@@ -1,12 +1,8 @@
 package com.mossle.internal.sendmail.scheduler;
 
-import java.util.Date;
 import java.util.List;
-import java.util.Properties;
 
 import javax.annotation.Resource;
-
-import javax.mail.internet.MimeMessage;
 
 import com.mossle.api.tenant.TenantConnector;
 import com.mossle.api.tenant.TenantDTO;
@@ -14,8 +10,6 @@ import com.mossle.api.tenant.TenantDTO;
 import com.mossle.core.mail.MailHelper;
 import com.mossle.core.mapper.BeanMapper;
 
-import com.mossle.internal.sendmail.persistence.domain.SendmailConfig;
-import com.mossle.internal.sendmail.persistence.domain.SendmailHistory;
 import com.mossle.internal.sendmail.persistence.domain.SendmailQueue;
 import com.mossle.internal.sendmail.service.SendmailDataService;
 
@@ -23,9 +17,6 @@ import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
 
 import org.springframework.beans.factory.annotation.Value;
-
-import org.springframework.mail.javamail.JavaMailSenderImpl;
-import org.springframework.mail.javamail.MimeMessageHelper;
 
 import org.springframework.scheduling.annotation.Scheduled;
 

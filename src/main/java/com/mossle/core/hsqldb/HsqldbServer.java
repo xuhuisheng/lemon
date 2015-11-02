@@ -1,10 +1,5 @@
 package com.mossle.core.hsqldb;
 
-import java.io.File;
-import java.io.FileInputStream;
-import java.io.IOException;
-import java.io.InputStream;
-
 import java.sql.Connection;
 import java.sql.DriverManager;
 import java.sql.SQLException;
@@ -12,9 +7,6 @@ import java.sql.Statement;
 
 import javax.annotation.PostConstruct;
 import javax.annotation.PreDestroy;
-
-import javax.servlet.ServletContextEvent;
-import javax.servlet.ServletContextListener;
 
 import org.hsqldb.Server;
 

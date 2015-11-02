@@ -1,24 +1,15 @@
 package com.mossle.android.rs;
 
-import java.text.DateFormat;
-import java.text.SimpleDateFormat;
-
-import java.util.ArrayList;
 import java.util.Date;
-import java.util.HashMap;
-import java.util.List;
-import java.util.Map;
 import java.util.UUID;
 
 import javax.annotation.Resource;
 
 import javax.ws.rs.FormParam;
-import javax.ws.rs.GET;
 import javax.ws.rs.HeaderParam;
 import javax.ws.rs.POST;
 import javax.ws.rs.Path;
 import javax.ws.rs.Produces;
-import javax.ws.rs.QueryParam;
 import javax.ws.rs.core.MediaType;
 
 import com.mossle.api.user.AccountStatus;
@@ -26,10 +17,8 @@ import com.mossle.api.user.AuthenticationHandler;
 import com.mossle.api.user.UserConnector;
 import com.mossle.api.user.UserDTO;
 
-import com.mossle.core.auth.CurrentUserHolder;
 import com.mossle.core.mapper.JsonMapper;
 import com.mossle.core.util.BaseDTO;
-import com.mossle.core.util.StringUtils;
 
 import com.mossle.pim.persistence.domain.PimDevice;
 import com.mossle.pim.persistence.manager.PimDeviceManager;

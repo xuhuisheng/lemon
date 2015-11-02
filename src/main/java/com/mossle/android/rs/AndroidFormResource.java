@@ -1,20 +1,15 @@
 package com.mossle.android.rs;
 
-import java.text.DateFormat;
-import java.text.SimpleDateFormat;
-
-import java.util.*;
+import java.util.ArrayList;
 import java.util.List;
+import java.util.Map;
 
 import javax.annotation.Resource;
 
 import javax.ws.rs.FormParam;
-import javax.ws.rs.GET;
-import javax.ws.rs.HeaderParam;
 import javax.ws.rs.POST;
 import javax.ws.rs.Path;
 import javax.ws.rs.Produces;
-import javax.ws.rs.QueryParam;
 import javax.ws.rs.core.MediaType;
 
 import com.mossle.api.form.FormDTO;
@@ -26,24 +21,19 @@ import com.mossle.api.process.ProcessConnector;
 import com.mossle.api.store.StoreConnector;
 import com.mossle.api.tenant.TenantHolder;
 
-import com.mossle.bpm.persistence.domain.BpmProcess;
 import com.mossle.bpm.persistence.manager.BpmProcessManager;
 
 import com.mossle.core.auth.CurrentUserHolder;
 import com.mossle.core.mapper.JsonMapper;
-import com.mossle.core.page.Page;
-import com.mossle.core.util.BaseDTO;
 
 import com.mossle.model.support.FormField;
 
-import com.mossle.pim.persistence.domain.PimDevice;
 import com.mossle.pim.persistence.manager.PimDeviceManager;
 
 import com.mossle.xform.Xform;
 import com.mossle.xform.XformBuilder;
 
 import org.activiti.engine.ProcessEngine;
-import org.activiti.engine.history.HistoricProcessInstance;
 
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;

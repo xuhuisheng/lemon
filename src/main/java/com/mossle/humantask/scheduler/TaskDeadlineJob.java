@@ -1,7 +1,6 @@
 package com.mossle.humantask.scheduler;
 
 import java.util.Arrays;
-import java.util.Calendar;
 import java.util.Date;
 import java.util.HashMap;
 import java.util.List;
@@ -18,8 +17,6 @@ import com.mossle.humantask.persistence.domain.TaskDeadline;
 import com.mossle.humantask.persistence.domain.TaskInfo;
 import com.mossle.humantask.persistence.manager.TaskDeadlineManager;
 
-import com.mossle.spi.humantask.TaskDefinitionConnector;
-import com.mossle.spi.humantask.TaskNotificationDTO;
 import com.mossle.spi.process.InternalProcessConnector;
 
 import org.slf4j.Logger;

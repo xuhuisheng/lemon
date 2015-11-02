@@ -2,25 +2,16 @@ package com.mossle.user.service;
 
 import java.io.ByteArrayOutputStream;
 
-import java.text.ParseException;
-import java.text.SimpleDateFormat;
-
-import java.util.Map;
-
 import javax.activation.DataSource;
 
 import javax.annotation.Resource;
 
 import com.mossle.api.store.StoreConnector;
 import com.mossle.api.store.StoreDTO;
-import com.mossle.api.tenant.TenantHolder;
-import com.mossle.api.user.UserDTO;
 
 import com.mossle.core.store.ByteArrayDataSource;
 
 import com.mossle.user.ImageUtils;
-import com.mossle.user.notification.DefaultUserNotification;
-import com.mossle.user.notification.UserNotification;
 import com.mossle.user.persistence.domain.AccountAvatar;
 import com.mossle.user.persistence.domain.AccountInfo;
 import com.mossle.user.persistence.manager.AccountAvatarManager;
@@ -28,8 +19,6 @@ import com.mossle.user.persistence.manager.AccountInfoManager;
 
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
-
-import org.springframework.beans.factory.annotation.Autowired;
 
 import org.springframework.stereotype.Service;
 

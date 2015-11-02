@@ -20,7 +20,6 @@ import java.util.List;
 import java.util.Properties;
 
 import javax.mail.Message;
-import javax.mail.MessagingException;
 import javax.mail.Multipart;
 import javax.mail.Session;
 import javax.mail.Transport;
@@ -45,8 +44,6 @@ import ch.qos.logback.core.sift.Discriminator;
 import ch.qos.logback.core.spi.CyclicBufferTracker;
 import ch.qos.logback.core.util.ContentTypeUtil;
 import ch.qos.logback.core.util.OptionHelper;
-
-import com.sun.mail.util.MailSSLSocketFactory;
 
 // Contributors:
 // Andrey Rybin charset encoding support http://jira.qos.ch/browse/LBCORE-69

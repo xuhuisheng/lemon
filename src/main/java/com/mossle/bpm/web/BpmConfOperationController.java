@@ -3,27 +3,20 @@ package com.mossle.bpm.web;
 import java.util.ArrayList;
 import java.util.Iterator;
 import java.util.List;
-import java.util.Map;
 
 import javax.annotation.Resource;
 
-import javax.servlet.http.HttpServletResponse;
-
 import com.mossle.bpm.persistence.domain.BpmConfNode;
 import com.mossle.bpm.persistence.domain.BpmConfOperation;
-import com.mossle.bpm.persistence.domain.BpmProcess;
 import com.mossle.bpm.persistence.manager.BpmConfNodeManager;
 import com.mossle.bpm.persistence.manager.BpmConfOperationManager;
 import com.mossle.bpm.persistence.manager.BpmProcessManager;
 
-import com.mossle.core.hibernate.PropertyFilter;
 import com.mossle.core.mapper.BeanMapper;
-import com.mossle.core.page.Page;
 
 import com.mossle.spi.humantask.TaskDefinitionConnector;
 
 import org.activiti.engine.ProcessEngine;
-import org.activiti.engine.repository.ProcessDefinition;
 
 import org.springframework.stereotype.Controller;
 
@@ -32,8 +25,6 @@ import org.springframework.ui.Model;
 import org.springframework.web.bind.annotation.ModelAttribute;
 import org.springframework.web.bind.annotation.RequestMapping;
 import org.springframework.web.bind.annotation.RequestParam;
-import org.springframework.web.bind.annotation.ResponseBody;
-import org.springframework.web.servlet.mvc.support.RedirectAttributes;
 
 @Controller
 @RequestMapping("bpm")

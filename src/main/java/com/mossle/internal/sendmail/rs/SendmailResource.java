@@ -1,18 +1,12 @@
 package com.mossle.internal.sendmail.rs;
 
-import java.util.ArrayList;
-import java.util.HashMap;
-import java.util.List;
 import java.util.Map;
 
 import javax.annotation.Resource;
 
 import javax.ws.rs.FormParam;
-import javax.ws.rs.GET;
 import javax.ws.rs.POST;
 import javax.ws.rs.Path;
-import javax.ws.rs.Produces;
-import javax.ws.rs.core.MediaType;
 
 import com.mossle.core.mapper.JsonMapper;
 import com.mossle.core.util.BaseDTO;

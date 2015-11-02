@@ -6,7 +6,6 @@ import javax.annotation.Resource;
 
 import javax.servlet.ServletException;
 import javax.servlet.http.Cookie;
-import javax.servlet.http.Cookie;
 import javax.servlet.http.HttpServletRequest;
 import javax.servlet.http.HttpServletResponse;
 
@@ -17,7 +16,6 @@ import com.mossle.security.impl.SpringSecurityUserAuth;
 
 import org.springframework.security.core.Authentication;
 import org.springframework.security.web.authentication.SavedRequestAwareAuthenticationSuccessHandler;
-import org.springframework.security.web.authentication.UsernamePasswordAuthenticationFilter;
 
 public class RememberLastUsernameAuthenticationSuccessHandler extends
         SavedRequestAwareAuthenticationSuccessHandler {

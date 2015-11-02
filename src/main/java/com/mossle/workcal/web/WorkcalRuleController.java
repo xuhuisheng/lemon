@@ -1,6 +1,5 @@
 package com.mossle.workcal.web;
 
-import java.util.ArrayList;
 import java.util.List;
 import java.util.Map;
 
@@ -19,7 +18,6 @@ import com.mossle.core.page.Page;
 import com.mossle.core.spring.MessageHelper;
 
 import com.mossle.workcal.persistence.domain.WorkcalRule;
-import com.mossle.workcal.persistence.domain.WorkcalType;
 import com.mossle.workcal.persistence.manager.WorkcalRuleManager;
 import com.mossle.workcal.persistence.manager.WorkcalTypeManager;
 

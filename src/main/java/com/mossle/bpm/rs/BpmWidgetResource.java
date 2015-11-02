@@ -12,14 +12,12 @@ import javax.ws.rs.Path;
 import javax.ws.rs.Produces;
 import javax.ws.rs.core.MediaType;
 
-import com.mossle.api.process.ProcessConnector;
 import com.mossle.api.tenant.TenantHolder;
 
 import com.mossle.bpm.persistence.domain.BpmProcess;
 import com.mossle.bpm.persistence.manager.BpmProcessManager;
 
 import com.mossle.core.auth.CurrentUserHolder;
-import com.mossle.core.page.Page;
 
 import org.activiti.engine.ProcessEngine;
 import org.activiti.engine.history.HistoricProcessInstance;

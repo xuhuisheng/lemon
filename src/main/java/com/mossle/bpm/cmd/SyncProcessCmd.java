@@ -34,12 +34,9 @@ import org.activiti.bpmn.model.UserTask;
 
 import org.activiti.engine.impl.cmd.GetBpmnModelCmd;
 import org.activiti.engine.impl.cmd.GetDeploymentProcessDefinitionCmd;
-import org.activiti.engine.impl.context.Context;
 import org.activiti.engine.impl.interceptor.Command;
 import org.activiti.engine.impl.interceptor.CommandContext;
 import org.activiti.engine.impl.persistence.entity.ProcessDefinitionEntity;
-
-import org.springframework.jdbc.core.JdbcTemplate;
 
 /**
  * 把xml解析的内存模型保存到数据库里.

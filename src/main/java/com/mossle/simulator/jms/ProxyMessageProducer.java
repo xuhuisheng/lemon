@@ -4,7 +4,6 @@ import javax.jms.Destination;
 import javax.jms.JMSException;
 import javax.jms.Message;
 import javax.jms.MessageProducer;
-import javax.jms.TextMessage;
 
 public class ProxyMessageProducer implements MessageProducer {
     private ProxySession proxySession;

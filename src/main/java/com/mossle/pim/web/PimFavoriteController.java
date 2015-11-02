@@ -1,9 +1,5 @@
 package com.mossle.pim.web;
 
-import java.io.PrintWriter;
-import java.io.StringWriter;
-
-import java.util.ArrayList;
 import java.util.Date;
 import java.util.List;
 import java.util.Map;
@@ -22,7 +18,6 @@ import com.mossle.core.hibernate.PropertyFilter;
 import com.mossle.core.mapper.BeanMapper;
 import com.mossle.core.page.Page;
 import com.mossle.core.spring.MessageHelper;
-import com.mossle.core.util.ServletUtils;
 
 import com.mossle.pim.persistence.domain.PimFavorite;
 import com.mossle.pim.persistence.manager.PimFavoriteManager;
@@ -34,7 +29,6 @@ import org.springframework.ui.Model;
 import org.springframework.web.bind.annotation.ModelAttribute;
 import org.springframework.web.bind.annotation.RequestMapping;
 import org.springframework.web.bind.annotation.RequestParam;
-import org.springframework.web.multipart.MultipartFile;
 import org.springframework.web.servlet.mvc.support.RedirectAttributes;
 
 @Controller

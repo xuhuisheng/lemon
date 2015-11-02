@@ -2,7 +2,6 @@ package com.mossle.audit.component;
 
 import java.util.ArrayList;
 import java.util.List;
-import java.util.concurrent.TimeoutException;
 
 import javax.annotation.PostConstruct;
 import javax.annotation.PreDestroy;
@@ -10,7 +9,6 @@ import javax.annotation.Resource;
 
 import com.mossle.api.audit.AuditDTO;
 
-import com.mossle.audit.persistence.domain.AuditBase;
 import com.mossle.audit.service.AuditService;
 
 import org.slf4j.Logger;

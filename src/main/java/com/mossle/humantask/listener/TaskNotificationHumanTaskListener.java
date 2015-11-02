@@ -13,8 +13,6 @@ import com.mossle.api.user.UserConnector;
 import com.mossle.api.user.UserDTO;
 
 import com.mossle.humantask.persistence.domain.TaskInfo;
-import com.mossle.humantask.persistence.domain.TaskParticipant;
-import com.mossle.humantask.persistence.manager.TaskParticipantManager;
 
 import com.mossle.spi.humantask.TaskDefinitionConnector;
 import com.mossle.spi.humantask.TaskNotificationDTO;

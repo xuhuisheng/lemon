@@ -9,24 +9,18 @@ import java.util.Properties;
 import javax.annotation.Resource;
 
 import javax.mail.Address;
-import javax.mail.Authenticator;
 import javax.mail.BodyPart;
-import javax.mail.Flags;
-import javax.mail.Flags.Flag;
 import javax.mail.Folder;
 import javax.mail.Message;
 import javax.mail.Message.RecipientType;
 import javax.mail.MessagingException;
 import javax.mail.Multipart;
 import javax.mail.Part;
-import javax.mail.PasswordAuthentication;
 import javax.mail.Session;
 import javax.mail.Store;
 import javax.mail.Transport;
 import javax.mail.internet.InternetAddress;
-import javax.mail.internet.MimeBodyPart;
 import javax.mail.internet.MimeMessage;
-import javax.mail.internet.MimeMultipart;
 import javax.mail.internet.MimeUtility;
 
 import com.mossle.javamail.persistence.domain.JavamailConfig;
@@ -34,8 +28,6 @@ import com.mossle.javamail.persistence.domain.JavamailMessage;
 import com.mossle.javamail.persistence.manager.JavamailConfigManager;
 import com.mossle.javamail.persistence.manager.JavamailMessageManager;
 import com.mossle.javamail.support.SmtpAuthenticator;
-
-import com.sun.mail.imap.IMAPMessage;
 
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;

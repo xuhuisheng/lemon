@@ -1,6 +1,5 @@
 package com.mossle.user.support;
 
-import java.util.List;
 import java.util.Map;
 
 import com.mossle.api.user.UserCache;

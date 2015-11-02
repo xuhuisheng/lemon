@@ -15,7 +15,6 @@ import com.mossle.api.process.ProcessDTO;
 import com.mossle.api.user.UserConnector;
 
 import com.mossle.bpm.cmd.FindFirstTaskFormCmd;
-import com.mossle.bpm.cmd.FindStartFormCmd;
 import com.mossle.bpm.persistence.domain.BpmConfForm;
 import com.mossle.bpm.persistence.domain.BpmProcess;
 import com.mossle.bpm.persistence.manager.BpmConfFormManager;
@@ -47,8 +46,6 @@ import org.activiti.engine.task.Task;
 
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
-
-import org.springframework.util.MultiValueMap;
 
 public class ProcessConnectorImpl implements ProcessConnector {
     private Logger logger = LoggerFactory.getLogger(ProcessConnectorImpl.class);

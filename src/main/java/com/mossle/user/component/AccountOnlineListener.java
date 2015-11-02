@@ -1,7 +1,5 @@
 package com.mossle.user.component;
 
-import java.net.InetAddress;
-
 import java.util.Date;
 
 import javax.annotation.Resource;
@@ -15,8 +13,6 @@ import com.mossle.user.persistence.manager.AccountOnlineManager;
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
 
-import org.springframework.context.ApplicationContext;
-import org.springframework.context.ApplicationContextAware;
 import org.springframework.context.ApplicationEvent;
 import org.springframework.context.ApplicationListener;
 

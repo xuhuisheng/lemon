@@ -1,9 +1,5 @@
 package com.mossle.bpm.cmd;
 
-import java.sql.Connection;
-import java.sql.SQLException;
-import java.sql.Statement;
-
 import java.util.ArrayList;
 import java.util.Date;
 import java.util.List;
@@ -21,9 +17,7 @@ import com.mossle.bpm.support.JumpInfo;
 
 import com.mossle.core.spring.ApplicationContextHelper;
 
-import org.activiti.engine.ActivitiException;
 import org.activiti.engine.delegate.DelegateTask;
-import org.activiti.engine.history.HistoricActivityInstance;
 import org.activiti.engine.impl.HistoricActivityInstanceQueryImpl;
 import org.activiti.engine.impl.Page;
 import org.activiti.engine.impl.cmd.GetDeploymentProcessDefinitionCmd;
@@ -35,9 +29,7 @@ import org.activiti.engine.impl.persistence.entity.HistoricActivityInstanceEntit
 import org.activiti.engine.impl.persistence.entity.HistoricTaskInstanceEntity;
 import org.activiti.engine.impl.persistence.entity.ProcessDefinitionEntity;
 import org.activiti.engine.impl.persistence.entity.TaskEntity;
-import org.activiti.engine.impl.pvm.PvmTransition;
 import org.activiti.engine.impl.pvm.process.ActivityImpl;
-import org.activiti.engine.impl.pvm.process.TransitionImpl;
 
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;

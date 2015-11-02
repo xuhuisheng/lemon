@@ -7,9 +7,7 @@ import java.util.Map;
 
 import javax.annotation.Resource;
 
-import javax.ws.rs.FormParam;
 import javax.ws.rs.GET;
-import javax.ws.rs.POST;
 import javax.ws.rs.Path;
 import javax.ws.rs.Produces;
 import javax.ws.rs.QueryParam;
@@ -20,11 +18,7 @@ import com.mossle.core.util.BaseDTO;
 import com.mossle.core.util.StringUtils;
 
 import com.mossle.user.persistence.domain.AccountInfo;
-import com.mossle.user.persistence.domain.UserBase;
 import com.mossle.user.persistence.manager.AccountInfoManager;
-import com.mossle.user.persistence.manager.UserBaseManager;
-import com.mossle.user.service.UserService;
-import com.mossle.user.support.UserBaseWrapper;
 
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;

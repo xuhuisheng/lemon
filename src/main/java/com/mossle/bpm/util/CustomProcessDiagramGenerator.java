@@ -47,7 +47,6 @@ import org.activiti.engine.impl.cmd.GetBpmnModelCmd;
 import org.activiti.engine.impl.cmd.GetDeploymentProcessDefinitionCmd;
 import org.activiti.engine.impl.context.Context;
 import org.activiti.engine.impl.persistence.entity.ProcessDefinitionEntity;
-import org.activiti.engine.impl.pvm.PvmTransition;
 import org.activiti.engine.impl.pvm.process.ActivityImpl;
 
 import org.apache.commons.io.FilenameUtils;

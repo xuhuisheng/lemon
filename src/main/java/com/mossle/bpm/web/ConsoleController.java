@@ -5,7 +5,6 @@ import java.io.InputStream;
 
 import java.util.List;
 import java.util.Map;
-import java.util.Map;
 
 import javax.annotation.Resource;
 
@@ -22,27 +21,26 @@ import com.mossle.bpm.cmd.ProcessDefinitionDiagramCmd;
 import com.mossle.bpm.cmd.ReOpenProcessCmd;
 import com.mossle.bpm.cmd.SyncProcessCmd;
 import com.mossle.bpm.cmd.UpdateProcessCmd;
-import com.mossle.bpm.persistence.domain.*;
 import com.mossle.bpm.persistence.domain.BpmConfBase;
+import com.mossle.bpm.persistence.domain.BpmConfCountersign;
+import com.mossle.bpm.persistence.domain.BpmConfForm;
+import com.mossle.bpm.persistence.domain.BpmConfListener;
+import com.mossle.bpm.persistence.domain.BpmConfNode;
+import com.mossle.bpm.persistence.domain.BpmConfNotice;
+import com.mossle.bpm.persistence.domain.BpmConfOperation;
+import com.mossle.bpm.persistence.domain.BpmConfRule;
+import com.mossle.bpm.persistence.domain.BpmConfUser;
 import com.mossle.bpm.persistence.manager.BpmConfBaseManager;
 
 import com.mossle.core.page.Page;
 import com.mossle.core.util.IoUtils;
 
-import org.activiti.engine.HistoryService;
 import org.activiti.engine.ProcessEngine;
 import org.activiti.engine.RepositoryService;
 import org.activiti.engine.RuntimeService;
-import org.activiti.engine.TaskService;
-import org.activiti.engine.history.HistoricActivityInstance;
-import org.activiti.engine.history.HistoricProcessInstance;
-import org.activiti.engine.history.HistoricTaskInstance;
-import org.activiti.engine.impl.ServiceImpl;
 import org.activiti.engine.impl.interceptor.Command;
 import org.activiti.engine.repository.Deployment;
 import org.activiti.engine.repository.ProcessDefinition;
-import org.activiti.engine.runtime.ProcessInstance;
-import org.activiti.engine.task.Task;
 
 import org.apache.commons.io.IOUtils;
 
@@ -53,8 +51,6 @@ import org.springframework.ui.Model;
 import org.springframework.web.bind.annotation.ModelAttribute;
 import org.springframework.web.bind.annotation.RequestMapping;
 import org.springframework.web.bind.annotation.RequestParam;
-import org.springframework.web.bind.annotation.ResponseBody;
-import org.springframework.web.servlet.mvc.support.RedirectAttributes;
 
 /**
  * 管理控制台.

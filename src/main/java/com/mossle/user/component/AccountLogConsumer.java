@@ -2,7 +2,6 @@ package com.mossle.user.component;
 
 import java.util.ArrayList;
 import java.util.List;
-import java.util.concurrent.TimeoutException;
 
 import javax.annotation.PostConstruct;
 import javax.annotation.PreDestroy;
@@ -10,7 +9,6 @@ import javax.annotation.Resource;
 
 import com.mossle.api.user.AccountLogDTO;
 
-import com.mossle.user.persistence.domain.AccountLog;
 import com.mossle.user.service.AccountLogService;
 
 import org.slf4j.Logger;

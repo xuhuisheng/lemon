@@ -5,7 +5,6 @@ import java.util.List;
 import javax.annotation.Resource;
 
 import com.mossle.party.persistence.domain.PartyEntity;
-import com.mossle.party.persistence.domain.PartyStruct;
 import com.mossle.party.persistence.domain.PartyStructType;
 import com.mossle.party.persistence.domain.PartyType;
 import com.mossle.party.persistence.manager.PartyEntityManager;

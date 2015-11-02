@@ -1,7 +1,5 @@
 package com.mossle.simulator.jms;
 
-import java.util.ArrayList;
-import java.util.List;
 import java.util.UUID;
 
 import javax.jms.Destination;
@@ -9,7 +7,6 @@ import javax.jms.JMSException;
 import javax.jms.Message;
 import javax.jms.MessageConsumer;
 import javax.jms.MessageListener;
-import javax.jms.TextMessage;
 
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;

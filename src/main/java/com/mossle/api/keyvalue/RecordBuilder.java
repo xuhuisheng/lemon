@@ -1,12 +1,9 @@
 package com.mossle.api.keyvalue;
 
-import java.util.Collections;
 import java.util.Date;
 import java.util.List;
 import java.util.Map;
 
-import com.mossle.api.keyvalue.Prop;
-import com.mossle.api.keyvalue.Record;
 import com.mossle.api.store.StoreConnector;
 
 import com.mossle.core.MultipartHandler;

@@ -1,10 +1,6 @@
 package com.mossle.bpm.listener;
 
-import java.util.ArrayList;
-import java.util.HashSet;
 import java.util.List;
-import java.util.Map;
-import java.util.Set;
 
 import javax.annotation.Resource;
 
@@ -15,7 +11,6 @@ import com.mossle.bpm.support.DefaultTaskListener;
 import org.activiti.engine.delegate.DelegateTask;
 import org.activiti.engine.impl.context.Context;
 import org.activiti.engine.impl.el.ExpressionManager;
-import org.activiti.engine.impl.persistence.entity.TaskEntity;
 
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;

@@ -21,7 +21,6 @@ import com.mossle.humantask.persistence.manager.TaskDefUserManager;
 
 import com.mossle.spi.humantask.CounterSignDTO;
 import com.mossle.spi.humantask.DeadlineDTO;
-import com.mossle.spi.humantask.EscalationDTO;
 import com.mossle.spi.humantask.FormDTO;
 import com.mossle.spi.humantask.TaskDefinitionConnector;
 import com.mossle.spi.humantask.TaskDefinitionDTO;

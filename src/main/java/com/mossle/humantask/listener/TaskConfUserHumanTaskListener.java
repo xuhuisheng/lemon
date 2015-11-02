@@ -1,17 +1,11 @@
 package com.mossle.humantask.listener;
 
-import java.util.HashMap;
-import java.util.List;
-import java.util.Map;
-
 import javax.annotation.Resource;
 
 import com.mossle.humantask.persistence.domain.TaskInfo;
-import com.mossle.humantask.persistence.domain.TaskParticipant;
 import com.mossle.humantask.persistence.manager.TaskParticipantManager;
 
 import com.mossle.spi.humantask.TaskDefinitionConnector;
-import com.mossle.spi.humantask.TaskUserDTO;
 
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;

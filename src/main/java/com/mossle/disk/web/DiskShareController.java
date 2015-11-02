@@ -5,16 +5,12 @@ import java.util.List;
 
 import javax.annotation.Resource;
 
-import com.mossle.api.store.StoreConnector;
-import com.mossle.api.tenant.TenantHolder;
-
 import com.mossle.core.auth.CurrentUserHolder;
 
 import com.mossle.disk.persistence.domain.DiskInfo;
 import com.mossle.disk.persistence.domain.DiskShare;
 import com.mossle.disk.persistence.manager.DiskInfoManager;
 import com.mossle.disk.persistence.manager.DiskShareManager;
-import com.mossle.disk.service.DiskService;
 
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;

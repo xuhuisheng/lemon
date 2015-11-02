@@ -18,8 +18,6 @@ import com.mossle.api.tenant.TenantHolder;
 import com.mossle.cms.CmsConstants;
 import com.mossle.cms.persistence.domain.CmsArticle;
 import com.mossle.cms.persistence.domain.CmsAttachment;
-import com.mossle.cms.persistence.domain.CmsCatalog;
-import com.mossle.cms.persistence.domain.CmsComment;
 import com.mossle.cms.persistence.manager.CmsArticleManager;
 import com.mossle.cms.persistence.manager.CmsAttachmentManager;
 import com.mossle.cms.persistence.manager.CmsCatalogManager;

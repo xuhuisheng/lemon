@@ -1,7 +1,5 @@
 package com.mossle.workcal.support;
 
-import java.util.Map;
-
 import javax.annotation.PostConstruct;
 
 import com.mossle.api.workcal.MockWorkCalendarConnector;
@@ -11,7 +9,6 @@ import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
 
 import org.springframework.beans.factory.FactoryBean;
-import org.springframework.beans.factory.InitializingBean;
 
 import org.springframework.util.Assert;
 

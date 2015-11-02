@@ -3,15 +3,10 @@ package com.mossle.internal.store.rs;
 import java.io.ByteArrayOutputStream;
 import java.io.InputStream;
 
-import java.util.ArrayList;
-import java.util.Collections;
-import java.util.List;
-
 import javax.activation.DataSource;
 
 import javax.annotation.Resource;
 
-import javax.ws.rs.Consumes;
 import javax.ws.rs.FormParam;
 import javax.ws.rs.GET;
 import javax.ws.rs.POST;
@@ -24,7 +19,6 @@ import com.mossle.api.store.StoreConnector;
 import com.mossle.api.store.StoreDTO;
 
 import com.mossle.core.store.ByteArrayDataSource;
-import com.mossle.core.store.StoreResult;
 import com.mossle.core.util.BaseDTO;
 import com.mossle.core.util.IoUtils;
 
@@ -34,10 +28,6 @@ import org.apache.commons.codec.binary.Base64;
 
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
-
-import org.springframework.core.io.InputStreamResource;
-
-import org.springframework.jdbc.core.JdbcTemplate;
 
 import org.springframework.stereotype.Component;
 
