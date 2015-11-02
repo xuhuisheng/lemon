@@ -1,4 +1,4 @@
-package com.mossle.org;
+package com.mossle.group;
 
 import com.mossle.core.dbmigrate.ModuleSpecification;
 
