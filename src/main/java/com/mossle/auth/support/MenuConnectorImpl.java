@@ -16,6 +16,9 @@ import com.mossle.auth.persistence.manager.MenuManager;
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
 
+/**
+ * 用来通过用户权限来动态生成菜单.
+ */
 public class MenuConnectorImpl implements MenuConnector {
     private static Logger logger = LoggerFactory
             .getLogger(MenuConnectorImpl.class);
@@ -23,6 +26,9 @@ public class MenuConnectorImpl implements MenuConnector {
     private UserAuthConnector userAuthConnector;
     private TenantHolder tenantHolder;
 
+    /**
+     * systemCode算子系统的标识，比如个人事务子系统，账号子系统.
+     */
     public List<MenuDTO> findMenus(String systemCode, String userId) {
         String tenantId = tenantHolder.getTenantId();
         String hql = "from Menu where menu.type='system' and menu.code=? order by priority";
@@ -33,6 +39,9 @@ public class MenuConnectorImpl implements MenuConnector {
         return this.convertMenuDtos(menus, permissions, false);
     }
 
+    /**
+     * 获得所有子系统的入口，比如账号子系统.
+     */
     public List<MenuDTO> findSystemMenus(String userId) {
         String tenantId = tenantHolder.getTenantId();
         List<Menu> menus = menuManager.find("from Menu where type='entry'");
@@ -43,6 +52,9 @@ public class MenuConnectorImpl implements MenuConnector {
         return this.convertMenuDtos(menus, permissions, true);
     }
 
+    /**
+     * 按个人权限过滤菜单.
+     */
     public List<MenuDTO> convertMenuDtos(List<Menu> menus,
             List<String> permissions, boolean excludeModule) {
         List<MenuDTO> menuDtos = new ArrayList<MenuDTO>();
@@ -68,12 +80,16 @@ public class MenuConnectorImpl implements MenuConnector {
         return menuDtos;
     }
 
+    /**
+     * 把menu数据复制给dto.
+     */
     public MenuDTO convertMenuDto(Menu menu, List<String> permissions,
             boolean excludeModule) {
         MenuDTO menuDto = new MenuDTO();
         menuDto.setCode(menu.getCode());
         menuDto.setTitle(menu.getTitle());
-        menuDto.setUrl(menu.getUrl());
+        // 为了jsp里使用方便，要去掉url前面的/
+        menuDto.setUrl(this.processUrl(menu.getUrl()));
 
         List<Menu> menus = menuManager.find(
                 "from Menu where menu=? order by priority", menu);
@@ -82,6 +98,27 @@ public class MenuConnectorImpl implements MenuConnector {
         menuDto.setChildren(menuDtos);
 
         return menuDto;
+    }
+
+    /**
+     * 如果url以/开头，要去掉/，这样前端jsp渲染的时候就方便多了.
+     */
+    public String processUrl(String url) {
+        if (url == null) {
+            return "";
+        }
+
+        if (url.charAt(0) != '/') {
+            return url;
+        }
+
+        for (int i = 0; i < url.length(); i++) {
+            if (url.charAt(i) != '/') {
+                return url.substring(i);
+            }
+        }
+
+        return "";
     }
 
     @Resource

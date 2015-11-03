@@ -36,7 +36,7 @@
           </a>
           <ul class="dropdown-menu">
     <c:forEach items="${menu.children}" var="child">
-            <li><a href="${tenantPrefix}${child.url}"><i class="icon-user"></i>${child.title}</a></li>
+            <li><a href="${tenantPrefix}/${child.url}"><i class="icon-user"></i>${child.title}</a></li>
     </c:forEach>
           </ul>
         </li>
