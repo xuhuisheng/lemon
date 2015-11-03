@@ -3,7 +3,7 @@
 -------------------------------------------------------------------------------
 --  form schema
 -------------------------------------------------------------------------------
-CREATE TABLE Form_SCHEMA(
+CREATE TABLE FORM_SCHEMA(
         ID BIGINT AUTO_INCREMENT,
 	CODE VARCHAR(50),
         NAME VARCHAR(50),
