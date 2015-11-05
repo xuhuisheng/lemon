@@ -4,7 +4,7 @@ import java.util.HashSet;
 import java.util.LinkedHashMap;
 import java.util.List;
 import java.util.Map;
-
+import java.util.Collections;
 import javax.annotation.Resource;
 
 import com.mossle.api.tenant.TenantHolder;
@@ -61,6 +61,17 @@ public class PortalController {
                 .find("select distinct columnIndex from PortalItem where portalInfo=? order by columnIndex",
                         portalInfo);
         logger.debug("columnIndexes : {}", columnIndexes);
+		if (!columnIndexes.contains(Integer.valueOf(1))) {
+			columnIndexes.add(Integer.valueOf(1));
+		}
+		if (!columnIndexes.contains(Integer.valueOf(2))) {
+			columnIndexes.add(Integer.valueOf(2));
+		}
+		if (!columnIndexes.contains(Integer.valueOf(3))) {
+			columnIndexes.add(Integer.valueOf(3));
+		}
+
+		Collections.sort(columnIndexes);
 
         Map<Integer, List<PortalItem>> map = new LinkedHashMap<Integer, List<PortalItem>>();
 
