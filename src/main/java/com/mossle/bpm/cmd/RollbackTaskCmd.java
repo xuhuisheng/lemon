@@ -14,6 +14,7 @@ import com.mossle.bpm.graph.ActivitiHistoryGraphBuilder;
 import com.mossle.bpm.graph.Edge;
 import com.mossle.bpm.graph.Graph;
 import com.mossle.bpm.graph.Node;
+import com.mossle.bpm.support.HumanTaskBuilder;
 
 import com.mossle.core.spring.ApplicationContextHelper;
 
@@ -568,6 +569,7 @@ public class RollbackTaskCmd implements Command<Object> {
         task.setExecutionId(historicTaskInstanceEntity.getExecutionId());
         task.setDescriptionWithoutCascade(historicTaskInstanceEntity
                 .getDescription());
+        task.setTenantId(historicTaskInstanceEntity.getTenantId());
 
         Context.getCommandContext().getTaskEntityManager().insert(task);
 
@@ -686,26 +688,8 @@ public class RollbackTaskCmd implements Command<Object> {
             throws Exception {
         HumanTaskConnector humanTaskConnector = ApplicationContextHelper
                 .getBean(HumanTaskConnector.class);
-        HumanTaskDTO humanTaskDto = humanTaskConnector.createHumanTask();
-        humanTaskDto.setName(delegateTask.getName());
-        humanTaskDto.setDescription(delegateTask.getDescription());
-        humanTaskDto.setCode(delegateTask.getTaskDefinitionKey());
-        humanTaskDto.setAssignee(delegateTask.getAssignee());
-        humanTaskDto.setOwner(delegateTask.getOwner());
-        humanTaskDto.setDelegateStatus("none");
-        humanTaskDto.setPriority(delegateTask.getPriority());
-        humanTaskDto.setCreateTime(new Date());
-        humanTaskDto.setDuration(delegateTask.getDueDate() + "");
-        humanTaskDto.setSuspendStatus("none");
-        humanTaskDto.setCategory(delegateTask.getCategory());
-        humanTaskDto.setForm(delegateTask.getFormKey());
-        humanTaskDto.setTaskId(delegateTask.getId());
-        humanTaskDto.setExecutionId(delegateTask.getExecutionId());
-        humanTaskDto.setProcessInstanceId(delegateTask.getProcessInstanceId());
-        humanTaskDto.setProcessDefinitionId(delegateTask
-                .getProcessDefinitionId());
-        humanTaskDto.setTenantId(delegateTask.getTenantId());
-        humanTaskDto.setStatus("active");
+        HumanTaskDTO humanTaskDto = new HumanTaskBuilder().setDelegateTask(
+                delegateTask).build();
         humanTaskDto = humanTaskConnector.saveHumanTask(humanTaskDto);
 
         return humanTaskDto;

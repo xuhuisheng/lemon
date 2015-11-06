@@ -421,6 +421,7 @@ public class RollbackCmd implements Command<Boolean> {
         task.setExecutionId(historicTaskInstanceEntity.getExecutionId());
         task.setDescriptionWithoutCascade(historicTaskInstanceEntity
                 .getDescription());
+        task.setTenantId(historicTaskInstanceEntity.getTenantId());
 
         Context.getCommandContext().getTaskEntityManager().insert(task);
 
