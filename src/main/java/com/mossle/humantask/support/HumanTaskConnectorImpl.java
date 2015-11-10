@@ -81,6 +81,8 @@ public class HumanTaskConnectorImpl implements HumanTaskConnector {
     }
 
     public void removeHumanTask(TaskInfo taskInfo) {
+		taskInfoManager.removeAll(taskInfo.getTaskDeadlines());
+		taskInfoManager.removeAll(taskInfo.getTaskLogs());
         taskInfoManager.remove(taskInfo);
     }
 
