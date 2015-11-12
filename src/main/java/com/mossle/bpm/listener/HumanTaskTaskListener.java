@@ -63,6 +63,18 @@ public class HumanTaskTaskListener extends DefaultTaskListener {
         humanTaskConnector.saveHumanTask(humanTaskDto);
     }
 
+    @Override
+    public void onDelete(DelegateTask delegateTask) throws Exception {
+        HumanTaskDTO humanTaskDto = humanTaskConnector
+                .findHumanTaskByTaskId(delegateTask.getId());
+
+        if (!"complete".equals(humanTaskDto.getStatus())) {
+            humanTaskDto.setStatus("delete");
+            humanTaskDto.setCompleteTime(new Date());
+            humanTaskConnector.saveHumanTask(humanTaskDto);
+        }
+    }
+
     public HumanTaskDTO createHumanTask(DelegateTask delegateTask)
             throws Exception {
         HumanTaskDTO humanTaskDto = humanTaskConnector.createHumanTask();
