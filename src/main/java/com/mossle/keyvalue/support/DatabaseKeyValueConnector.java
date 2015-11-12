@@ -88,7 +88,8 @@ public class DatabaseKeyValueConnector implements KeyValueConnector {
      * 根据code删除记录.
      */
     public void removeByCode(String code) {
-        jdbcTemplate.update("DELETE FROM KV_RECORD WHERE ID=", code);
+        jdbcTemplate.update("DELETE FROM KV_PROP WHERE RECORD_ID=?", code);
+        jdbcTemplate.update("DELETE FROM KV_RECORD WHERE ID=?", code);
     }
 
     /**

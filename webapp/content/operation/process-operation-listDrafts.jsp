@@ -12,13 +12,13 @@
     <script type="text/javascript">
 var config = {
     id: 'dynamicModelGrid',
-    pageNo: ${page.pageNo},
-    pageSize: ${page.pageSize},
-    totalCount: ${page.totalCount},
-    resultSize: ${page.resultSize},
-    pageCount: ${page.pageCount},
+    pageNo: ${empty page.pageNo ? 1 : page.pageNo},
+    pageSize: ${empty page.pageSize ? 10 : page.pageSize},
+    totalCount: ${empty page.totalCount ? 10 : page.totalCount},
+    resultSize: ${empty page.resultSize ? 10 : page.resultSize},
+    pageCount: ${empty page.pageCount ? 1 : page.pageCount},
     orderBy: '${page.orderBy == null ? "" : page.orderBy}',
-    asc: ${page.asc},
+    asc: ${empty page.asc ? 'true' : page.asc},
     params: {
     },
 	selectedItemClass: 'selectedItem',
@@ -55,7 +55,7 @@ $(function() {
 		</header>
         <div id="userSearch" class="content content-inner">
 
-		  <form name="userForm" method="post" action="form-template-list.do" class="form-inline">
+		  <form name="userForm" method="post" action="" class="form-inline">
 		  </form>
 
 		</div>
@@ -63,13 +63,19 @@ $(function() {
 
 	  <article class="m-blank">
 	    <div class="pull-left">
+		  <!--
 		  <region:region-permission permission="user:create">
 		  <button class="btn btn-small" onclick="location.href='form-template-input.do'">新建</button>
 		  </region:region-permission>
+		  -->
+		  <!--
 		  <region:region-permission permission="user:delete">
 		  <button class="btn btn-small" onclick="table.removeAll()">删除</button>
 		  </region:region-permission>
+		  -->
+		  <!--
 		  <button class="btn btn-small" onclick="table.exportExcel()">导出</button>
+		  -->
 		</div>
 
 		<div class="pull-right">
@@ -114,6 +120,8 @@ $(function() {
         <td>${item.status == 0 ? '流程草稿' : '任务草稿'}</td>
         <td>
           <a href="process-operation-viewStartForm.do?businessKey=${item.code}&bpmProcessId=${item.category}">发起流程</a>
+		  &nbsp;
+          <a href="process-operation-removeDraft.do?code=${item.code}">删除</a>
         </td>
       </tr>
       </c:forEach>

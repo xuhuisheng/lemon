@@ -98,6 +98,16 @@ public class ProcessOperationController {
     }
 
     /**
+     * 删除草稿.
+     */
+    @RequestMapping("process-operation-removeDraft")
+    public String removeDraft(@RequestParam("code") String code) {
+        keyValueConnector.removeByCode(code);
+
+        return "redirect:/operation/process-operation-listDrafts.do";
+    }
+
+    /**
      * 显示启动流程的表单.
      */
     @RequestMapping("process-operation-viewStartForm")
