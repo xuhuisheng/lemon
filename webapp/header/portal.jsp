@@ -3,7 +3,7 @@
   <div class="container-fluid">
     <div class="navbar-header">
       <a class="navbar-brand" href="${tenantPrefix}">
-	    Lemon <sub><small>1.6.0-SNAPSHOT</small></sub>
+	    Lemon <sub><small>1.6.1-SNAPSHOT</small></sub>
       </a>
     </div>
 

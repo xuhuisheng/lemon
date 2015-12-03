@@ -11,7 +11,7 @@
             <span class="icon-bar"></span>
             <span class="icon-bar"></span>
           </a>
-          <a href="${tenantPrefix}/" class="brand">Lemon <sub><small>1.6.0</small></sub></a>
+          <a href="${tenantPrefix}/" class="brand">Lemon <sub><small>1.6.1</small></sub></a>
           <div class="nav-collapse collapse navbar-responsive-collapse">
             <ul class="nav">
               <li class="divider-vertical"></li>
