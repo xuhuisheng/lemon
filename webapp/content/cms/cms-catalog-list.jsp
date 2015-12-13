@@ -74,12 +74,12 @@ $(function() {
 
 	  <article class="m-blank">
 	    <div class="pull-left">
-		  <region:region-permission permission="cmsCatalog:create">
+		  <tags:hasPerm value="cmsCatalog:create">
 		  <button class="btn btn-small a-insert" onclick="location.href='cms-catalog-input.do'">新建</button>
-		  </region:region-permission>
-		  <region:region-permission permission="cmsCatalog:delete">
+		  </tags:hasPerm>
+		  <tags:hasPerm value="cmsCatalog:delete">
 		  <button class="btn btn-small a-remove" onclick="table.removeAll()">删除</button>
-		  </region:region-permission>
+		  </tags:hasPerm>
 		  <button class="btn btn-small a-export" onclick="table.exportExcel()">导出</button>
 		</div>
 
