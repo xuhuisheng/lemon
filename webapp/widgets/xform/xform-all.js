@@ -43,6 +43,9 @@ xf.getTarget = function(e) {
 	var x = ev.clientX;
 	var y = ev.clientY;
 	var target = ev.srcElement ? ev.srcElement : ev.target;
+	if (target.tagName == 'IMG' && target.parentNode.className == 'xf-pallete') {
+		target = target.parentNode;
+	}
 	return target;
 }
 
@@ -151,7 +154,7 @@ xf.Xform.prototype.initEvents = function() {
 xf.Xform.prototype.mouseDown = function(e) {
 	var target = xf.getTarget(e);
 	var handler = xf.getHandler(target);
-	if (handler) {
+	if (handler || target.className == 'xf-pallete') {
 		e.preventDefault();
 	}
 
