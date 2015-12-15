@@ -17,6 +17,7 @@ import javax.ws.rs.core.MediaType;
 
 import com.mossle.api.store.StoreConnector;
 import com.mossle.api.store.StoreDTO;
+import com.mossle.api.tenant.TenantHolder;
 
 import com.mossle.core.store.ByteArrayDataSource;
 import com.mossle.core.util.BaseDTO;
@@ -37,6 +38,7 @@ public class StoreResource {
     private static Logger logger = LoggerFactory.getLogger(StoreResource.class);
     private StoreService storeService;
     private StoreConnector storeConnector;
+    private TenantHolder tenantHolder;
 
     @GET
     @Path("getStore")
@@ -102,8 +104,8 @@ public class StoreResource {
     @GET
     @Path("view")
     public InputStream view(@QueryParam("model") String model,
-            @QueryParam("key") String key,
-            @QueryParam("tenantId") String tenantId) throws Exception {
+            @QueryParam("key") String key) throws Exception {
+        String tenantId = tenantHolder.getTenantId();
         StoreDTO storeDto = storeConnector.getStore(model, key, tenantId);
 
         return storeDto.getDataSource().getInputStream();
@@ -117,5 +119,10 @@ public class StoreResource {
     @Resource
     public void setStoreService(StoreService storeService) {
         this.storeService = storeService;
+    }
+
+    @Resource
+    public void setTenantHolder(TenantHolder tenantHolder) {
+        this.tenantHolder = tenantHolder;
     }
 }
