@@ -65,16 +65,15 @@ $(function() {
     </div>
   </div>
   <div class="control-group">
-    <label class="control-label" for="model-info_code">类型</label>
+    <label class="control-label" for="model-info_code">编码</label>
 	<div class="controls">
-	  <label><input id="mailTemplate_manual0" type="radio" name="type" value="manual" ${model.type == 'manual' ? 'checked' : ''}>手工</label>
-	  <label><input id="mailTemplate_manual0" type="radio" name="type" value="ckeditor" ${empty model.type || model.type == 'ckeditor' ? 'checked' : ''}>ckeditor</label>
+	  <input id="model-info_name" type="text" name="code" value="${model.code}" size="40" class="text required" minlength="2" maxlength="10">
     </div>
   </div>
   <div class="control-group">
-    <label class="control-label" for="modelField_content">内容</label>
+    <label class="control-label" for="model-info_type">类型</label>
 	<div class="controls">
-	  <textarea id="modelField_content" name="content">${model.content}</textarea>
+	  <input id="model-info_type" type="text" name="type" value="${model.type}" size="40" class="text required" minlength="2" maxlength="10">
     </div>
   </div>
   <div class="control-group">
