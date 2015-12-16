@@ -64,6 +64,10 @@ public class TaskNotificationHumanTaskListener implements HumanTaskListener {
             } else {
                 userDto = userConnector.findById(receiver);
             }
+			if (userDto == null) {
+				logger.debug("userDto is null");
+				continue;
+			}
 
             NotificationDTO notificationDto = new NotificationDTO();
             notificationDto.setReceiver(userDto.getId());
