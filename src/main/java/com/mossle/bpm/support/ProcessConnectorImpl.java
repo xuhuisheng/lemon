@@ -81,6 +81,12 @@ public class ProcessConnectorImpl implements ProcessConnector {
     }
 
     public ProcessDTO findProcess(String processId) {
+        if (processId == null) {
+            logger.info("processId is null");
+
+            return null;
+        }
+
         ProcessDTO processDto = new ProcessDTO();
         BpmProcess bpmProcess = bpmProcessManager
                 .get(Long.parseLong(processId));
@@ -104,6 +110,18 @@ public class ProcessConnectorImpl implements ProcessConnector {
                 .processDefinitionId(processDefinitionId).singleResult();
         FirstTaskForm firstTaskForm = processEngine.getManagementService()
                 .executeCommand(new FindFirstTaskFormCmd(processDefinitionId));
+
+        if ((!firstTaskForm.isExists())
+                && (firstTaskForm.getActivityId() != null)) {
+            // 再从数据库里找一遍配置
+            com.mossle.spi.humantask.FormDTO humantaskFormDto = taskDefinitionConnector
+                    .findForm(firstTaskForm.getActivityId(),
+                            processDefinitionId);
+
+            if (humantaskFormDto != null) {
+                firstTaskForm.setFormKey(humantaskFormDto.getKey());
+            }
+        }
 
         if (!firstTaskForm.isExists()) {
             logger.info("cannot find startForm : {}", processDefinitionId);
