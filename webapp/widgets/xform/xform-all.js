@@ -1558,8 +1558,8 @@ xf.field.DatePicker.prototype.updateName = function(value) {
 		'<div class="xf-handler">'
 	    + '<div style="padding-left: 0px;margin-bottom:0px;" class="input-append datepicker date">'
 	    + '<input type="text" name="' + this.name + '" style="background-color:white;cursor:default; width: 175px;" '
-		+ (this.readOnly ? 'readOnly' : '') + ' value="' + (this.value ? this.value : '')
-		+ (this.required ? '" required="true" class="required"' : '') + '>'
+		+ (this.readOnly ? 'readOnly' : '') + ' value="' + (this.value ? this.value : '') + '"'
+		+ (this.required ? ' required="true" class="required"' : '') + '>'
 	    + '<span style="padding-top: 2px; padding-bottom: 2px;" class="add-on"><i class="icon-calendar"></i></span>'
 	    + '<label for="' + this.name + '" class="validate-error" generated="true" style="display:none;"></label>'
 	    + '</div>'
