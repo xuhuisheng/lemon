@@ -37,9 +37,21 @@ function focusUsername() {
   <div class="container-fluid">
     <div class="navbar-header">
       <a class="navbar-brand" href="${tenantPrefix}">
-	    Lemon <sub><small>1.6.0</small></sub>
+	    Lemon <sub><small>1.6.1</small></sub>
       </a>
     </div>
+
+    <div class="navbar-collapse collapse">
+
+      <ul class="nav navbar-nav navbar-right">
+	    <li>
+          <a href="?locale=zh_CN">zh_CN</a>
+		</li>
+	    <li>
+          <a href="?locale=en_US">en_US</a>
+		</li>
+	  </ul>
+	</div>
   </div>
 </div>
     <!-- end of header bar -->
