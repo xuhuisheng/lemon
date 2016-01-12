@@ -1,6 +1,7 @@
 package com.mossle.form.web;
 
 import java.util.Date;
+import java.util.HashSet;
 import java.util.List;
 import java.util.Map;
 
@@ -170,6 +171,7 @@ public class FormTemplateController {
         targetFormTemplate.setCode(code);
         targetFormTemplate.setName(name);
         targetFormTemplate.setUserId(userId);
+        targetFormTemplate.setFormSchemas(new HashSet());
         formTemplateManager.save(targetFormTemplate);
 
         return "redirect:/form/form-template-list.do";
