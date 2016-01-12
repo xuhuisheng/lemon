@@ -57,8 +57,6 @@ $(function() {
         <div id="orgEntitySearch" class="content content-inner">
 
 		  <form name="orgEntityForm" method="post" action="party-entity-list.do" class="form-inline">
-		    <label for="orgentity_code"><spring:message code='org.org.list.search.code' text='代码'/>:</label>
-		    <input type="text" id="orgentity_code" name="filter_LIKES_code" value="${param.filter_LIKES_code}">
 		    <label for="orgentity_name"><spring:message code='org.org.list.search.name' text='名称'/>:</label>
 		    <input type="text" id="orgentity_name" name="filter_LIKES_name" value="${param.filter_LIKES_name}">
 			<button class="btn btn-small" onclick="document.orgEntityForm.submit()">查询</button>
