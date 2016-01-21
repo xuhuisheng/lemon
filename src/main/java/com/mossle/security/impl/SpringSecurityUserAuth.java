@@ -30,7 +30,7 @@ public class SpringSecurityUserAuth extends UserAuthDTO implements UserDetails {
         return authorities;
     }
 
-    public void getAuthorities(
+    public void setAuthorities(
             Collection<? extends GrantedAuthority> authorities) {
         this.authorities = authorities;
     }
