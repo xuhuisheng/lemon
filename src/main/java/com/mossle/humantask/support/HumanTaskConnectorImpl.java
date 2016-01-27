@@ -27,6 +27,7 @@ import com.mossle.humantask.persistence.manager.TaskDeadlineManager;
 import com.mossle.humantask.persistence.manager.TaskInfoManager;
 import com.mossle.humantask.persistence.manager.TaskParticipantManager;
 
+import com.mossle.spi.humantask.TaskDefinitionConnector;
 import com.mossle.spi.process.InternalProcessConnector;
 import com.mossle.spi.process.ProcessTaskDefinition;
 
@@ -44,6 +45,7 @@ public class HumanTaskConnectorImpl implements HumanTaskConnector {
     private TaskConfUserManager taskConfUserManager;
     private TaskDeadlineManager taskDeadlineManager;
     private InternalProcessConnector internalProcessConnector;
+    private TaskDefinitionConnector taskDefinitionConnector;
     private FormConnector formConnector;
     private BeanMapper beanMapper = new BeanMapper();
     private List<HumanTaskListener> humanTaskListeners;
@@ -81,8 +83,8 @@ public class HumanTaskConnectorImpl implements HumanTaskConnector {
     }
 
     public void removeHumanTask(TaskInfo taskInfo) {
-		taskInfoManager.removeAll(taskInfo.getTaskDeadlines());
-		taskInfoManager.removeAll(taskInfo.getTaskLogs());
+        taskInfoManager.removeAll(taskInfo.getTaskDeadlines());
+        taskInfoManager.removeAll(taskInfo.getTaskLogs());
         taskInfoManager.remove(taskInfo);
     }
 
@@ -174,11 +176,22 @@ public class HumanTaskConnectorImpl implements HumanTaskConnector {
         FormDTO formDto = null;
 
         if (humanTaskDto.getTaskId() != null) {
-            formDto = internalProcessConnector.findTaskForm(humanTaskDto
-                    .getTaskId());
+            // formDto = internalProcessConnector.findTaskForm(humanTaskDto
+            // .getTaskId());
+            com.mossle.spi.humantask.FormDTO taskFormDto = taskDefinitionConnector
+                    .findForm(humanTaskDto.getCode(),
+                            humanTaskDto.getProcessDefinitionId());
+            formDto = new FormDTO();
+            formDto.setCode(taskFormDto.getKey());
+            formDto.setActivityId(humanTaskDto.getCode());
+            formDto.setProcessDefinitionId(humanTaskDto
+                    .getProcessDefinitionId());
         } else {
             formDto = new FormDTO();
             formDto.setCode(humanTaskDto.getForm());
+            formDto.setActivityId(humanTaskDto.getCode());
+            formDto.setProcessDefinitionId(humanTaskDto
+                    .getProcessDefinitionId());
         }
 
         formDto.setTaskId(humanTaskId);
@@ -637,6 +650,12 @@ public class HumanTaskConnectorImpl implements HumanTaskConnector {
     public void setInternalProcessConnector(
             InternalProcessConnector internalProcessConnector) {
         this.internalProcessConnector = internalProcessConnector;
+    }
+
+    @Resource
+    public void setTaskDefinitionConnector(
+            TaskDefinitionConnector taskDefinitionConnector) {
+        this.taskDefinitionConnector = taskDefinitionConnector;
     }
 
     @Resource
