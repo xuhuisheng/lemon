@@ -35,6 +35,7 @@ import org.activiti.engine.RuntimeService;
 import org.activiti.engine.TaskService;
 import org.activiti.engine.history.HistoricActivityInstance;
 import org.activiti.engine.history.HistoricProcessInstance;
+import org.activiti.engine.history.HistoricProcessInstanceQuery;
 import org.activiti.engine.history.HistoricTaskInstance;
 import org.activiti.engine.impl.identity.Authentication;
 import org.activiti.engine.repository.Deployment;
@@ -265,10 +266,26 @@ public class ProcessConnectorImpl implements ProcessConnector {
         long count = historyService.createHistoricProcessInstanceQuery()
                 .processInstanceTenantId(tenantId).startedBy(userId)
                 .unfinished().count();
-        List<HistoricProcessInstance> historicProcessInstances = historyService
+        HistoricProcessInstanceQuery query = historyService
                 .createHistoricProcessInstanceQuery()
                 .processInstanceTenantId(tenantId).startedBy(userId)
-                .unfinished()
+                .unfinished();
+
+        if (page.getOrderBy() != null) {
+            String orderBy = page.getOrderBy();
+
+            if ("processInstanceStartTime".equals(orderBy)) {
+                query.orderByProcessInstanceStartTime();
+            }
+
+            if (page.isAsc()) {
+                query.asc();
+            } else {
+                query.desc();
+            }
+        }
+
+        List<HistoricProcessInstance> historicProcessInstances = query
                 .listPage((int) page.getStart(), page.getPageSize());
 
         page.setResult(historicProcessInstances);
