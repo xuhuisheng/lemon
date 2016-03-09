@@ -50,6 +50,12 @@ body {
       ${article.content}
 
 	  <!-- ==================================================================== -->
+
+	  <#if article.cmsAttachments??>
+	    <#list article.cmsAttachments as item>
+	    <p><a href="../rs/cms/attachments?key=${item.path}">${item.name}</a></p>
+		</#list>
+	  </#if>
         </div>
         <div class="col-md-3" style="background-color:gray;">
           热门目录

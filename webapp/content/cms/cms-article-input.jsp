@@ -42,7 +42,7 @@ $(function() {
 		</header>
 		<div class="content content-inner">
 
-<form id="cmsArticleForm" method="post" action="cms-article-save.do" class="form-horizontal">
+<form id="cmsArticleForm" method="post" action="cms-article-save.do" class="form-horizontal" enctype="multipart/form-data">
   <c:if test="${model != null}">
   <input id="cms-article_id" type="hidden" name="id" value="${model.id}">
   </c:if>
@@ -167,6 +167,12 @@ $(function() {
   </div>
 -->
 
+  <div class="form-group">
+    <label class="control-label col-md-1" for="cmsArticle_file">附件</label>
+	<div class="col-sm-5">
+	  <input id="cmsArticle_file" type="file" name="file" value="" class="">
+    </div>
+  </div>
   <div class="control-group">
     <div class="controls">
       <button id="submitButton" class="btn a-submit"><spring:message code='core.input.save' text='保存'/></button>

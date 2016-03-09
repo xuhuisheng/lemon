@@ -13,6 +13,9 @@ import javax.ws.rs.core.MediaType;
 import com.mossle.api.store.StoreConnector;
 import com.mossle.api.store.StoreDTO;
 import com.mossle.api.tenant.TenantHolder;
+import javax.servlet.http.HttpServletRequest;
+import javax.servlet.http.HttpServletResponse;
+import com.mossle.core.util.ServletUtils;
 
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
@@ -77,6 +80,21 @@ public class CmsResource {
         String tenantId = tenantHolder.getTenantId();
         StoreDTO storeDto = storeConnector.getStore("cms/html/r/attachment",
                 key, tenantId);
+
+        return storeDto.getDataSource().getInputStream();
+    }
+
+    @GET
+    @Path("attachments")
+    @Produces(MediaType.APPLICATION_OCTET_STREAM)
+    public InputStream attachments(@QueryParam("key") String key,
+            HttpServletRequest request, HttpServletResponse response)
+            throws Exception {
+        String tenantId = tenantHolder.getTenantId();
+        StoreDTO storeDto = storeConnector.getStore("cms/html/r/attachments",
+                key, tenantId);
+        ServletUtils.setFileDownloadHeader(request, response,
+                storeDto.getDisplayName());
 
         return storeDto.getDataSource().getInputStream();
     }
