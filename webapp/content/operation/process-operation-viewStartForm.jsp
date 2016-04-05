@@ -12,8 +12,8 @@
 	<link href="${tenantPrefix}/widgets/xform/styles/xform.css" rel="stylesheet">
     <script type="text/javascript" src="${tenantPrefix}/widgets/xform/xform-packed.js"></script>
 
-    <link type="text/css" rel="stylesheet" href="../widgets/userpicker/userpicker.css">
-    <script type="text/javascript" src="../widgets/userpicker/userpicker.js"></script>
+    <link type="text/css" rel="stylesheet" href="../widgets/userpicker-v2/userpicker.css">
+    <script type="text/javascript" src="../widgets/userpicker-v2/userpicker.js"></script>
 
 	<style type="text/css">
 .xf-handler {
@@ -52,7 +52,9 @@ $(function() {
 
 	createUserPicker({
 		multiple: true,
-		url: '${tenantPrefix}/rs/user/search'
+		searchUrl: '${tenantPrefix}/rs/user/search',
+		treeUrl: '${tenantPrefix}/rs/party/tree?partyStructTypeId=1',
+		childUrl: '${tenantPrefix}/rs/party/searchUser'
 	});
 
 	setTimeout(function() {
