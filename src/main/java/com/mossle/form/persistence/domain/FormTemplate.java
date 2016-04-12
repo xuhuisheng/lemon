@@ -8,7 +8,6 @@ import java.util.Set;
 import javax.persistence.Column;
 import javax.persistence.Entity;
 import javax.persistence.FetchType;
-import javax.persistence.GeneratedValue;
 import javax.persistence.Id;
 import javax.persistence.OneToMany;
 import javax.persistence.Table;
@@ -16,7 +15,7 @@ import javax.persistence.Temporal;
 import javax.persistence.TemporalType;
 
 /**
- * FormTemplate .
+ * FormTemplate 表单模板.
  * 
  * @author Lingo
  */
@@ -25,28 +24,28 @@ import javax.persistence.TemporalType;
 public class FormTemplate implements java.io.Serializable {
     private static final long serialVersionUID = 0L;
 
-    /** null. */
+    /** 主键. */
     private Long id;
 
-    /** null. */
+    /** 分类. */
     private Integer type;
 
-    /** null. */
+    /** 名称. */
     private String name;
 
-    /** null. */
+    /** 内容. */
     private String content;
 
-    /** null. */
+    /** 编码. */
     private String code;
 
-    /** null. */
+    /** 租户. */
     private String tenantId;
 
-    /** null. */
+    /** 用户. */
     private String userId;
 
-    /** null. */
+    /** 创建时间. */
     private Date createTime;
 
     /** . */
@@ -55,9 +54,14 @@ public class FormTemplate implements java.io.Serializable {
     public FormTemplate() {
     }
 
-    public FormTemplate(Integer type, String name, String content, String code,
-            String tenantId, String userId, Date createTime,
+    public FormTemplate(Long id) {
+        this.id = id;
+    }
+
+    public FormTemplate(Long id, Integer type, String name, String content,
+            String code, String tenantId, String userId, Date createTime,
             Set<FormSchema> formSchemas) {
+        this.id = id;
         this.type = type;
         this.name = name;
         this.content = content;
@@ -68,9 +72,8 @@ public class FormTemplate implements java.io.Serializable {
         this.formSchemas = formSchemas;
     }
 
-    /** @return null. */
+    /** @return 主键. */
     @Id
-    @GeneratedValue
     @Column(name = "ID", unique = true, nullable = false)
     public Long getId() {
         return this.id;
@@ -78,13 +81,13 @@ public class FormTemplate implements java.io.Serializable {
 
     /**
      * @param id
-     *            null.
+     *            主键.
      */
     public void setId(Long id) {
         this.id = id;
     }
 
-    /** @return null. */
+    /** @return 分类. */
     @Column(name = "TYPE")
     public Integer getType() {
         return this.type;
@@ -92,13 +95,13 @@ public class FormTemplate implements java.io.Serializable {
 
     /**
      * @param type
-     *            null.
+     *            分类.
      */
     public void setType(Integer type) {
         this.type = type;
     }
 
-    /** @return null. */
+    /** @return 名称. */
     @Column(name = "NAME", length = 200)
     public String getName() {
         return this.name;
@@ -106,13 +109,13 @@ public class FormTemplate implements java.io.Serializable {
 
     /**
      * @param name
-     *            null.
+     *            名称.
      */
     public void setName(String name) {
         this.name = name;
     }
 
-    /** @return null. */
+    /** @return 内容. */
     @Column(name = "CONTENT", length = 65535)
     public String getContent() {
         return this.content;
@@ -120,13 +123,13 @@ public class FormTemplate implements java.io.Serializable {
 
     /**
      * @param content
-     *            null.
+     *            内容.
      */
     public void setContent(String content) {
         this.content = content;
     }
 
-    /** @return null. */
+    /** @return 编码. */
     @Column(name = "CODE", length = 50)
     public String getCode() {
         return this.code;
@@ -134,13 +137,13 @@ public class FormTemplate implements java.io.Serializable {
 
     /**
      * @param code
-     *            null.
+     *            编码.
      */
     public void setCode(String code) {
         this.code = code;
     }
 
-    /** @return null. */
+    /** @return 租户. */
     @Column(name = "TENANT_ID", length = 64)
     public String getTenantId() {
         return this.tenantId;
@@ -148,13 +151,13 @@ public class FormTemplate implements java.io.Serializable {
 
     /**
      * @param tenantId
-     *            null.
+     *            租户.
      */
     public void setTenantId(String tenantId) {
         this.tenantId = tenantId;
     }
 
-    /** @return null. */
+    /** @return 用户. */
     @Column(name = "USER_ID", length = 64)
     public String getUserId() {
         return this.userId;
@@ -162,13 +165,13 @@ public class FormTemplate implements java.io.Serializable {
 
     /**
      * @param userId
-     *            null.
+     *            用户.
      */
     public void setUserId(String userId) {
         this.userId = userId;
     }
 
-    /** @return null. */
+    /** @return 创建时间. */
     @Temporal(TemporalType.TIMESTAMP)
     @Column(name = "CREATE_TIME", length = 26)
     public Date getCreateTime() {
@@ -177,7 +180,7 @@ public class FormTemplate implements java.io.Serializable {
 
     /**
      * @param createTime
-     *            null.
+     *            创建时间.
      */
     public void setCreateTime(Date createTime) {
         this.createTime = createTime;

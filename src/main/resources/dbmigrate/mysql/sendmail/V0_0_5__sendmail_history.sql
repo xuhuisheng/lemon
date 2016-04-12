@@ -4,7 +4,7 @@
 --  sendmail history
 -------------------------------------------------------------------------------
 CREATE TABLE SENDMAIL_HISTORY(
-        ID BIGINT AUTO_INCREMENT,
+        ID BIGINT NOT NULL,
         SUBJECT VARCHAR(50),
 	SENDER VARCHAR(200),
 	RECEIVER VARCHAR(200),

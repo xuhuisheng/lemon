@@ -60,6 +60,11 @@ public class MockInternalProcessConnector implements InternalProcessConnector {
         return null;
     }
 
+    public String findFirstUserTaskActivityId(String processDefinitionId,
+            String initiator) {
+        return null;
+    }
+
     public void signalExecution(String executionId) {
     }
 }

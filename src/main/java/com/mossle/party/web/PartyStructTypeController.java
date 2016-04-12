@@ -7,9 +7,9 @@ import javax.annotation.Resource;
 
 import com.mossle.api.tenant.TenantHolder;
 
-import com.mossle.core.hibernate.PropertyFilter;
 import com.mossle.core.mapper.BeanMapper;
 import com.mossle.core.page.Page;
+import com.mossle.core.query.PropertyFilter;
 import com.mossle.core.spring.MessageHelper;
 
 import com.mossle.party.persistence.domain.PartyStructType;

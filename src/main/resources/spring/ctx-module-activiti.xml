@@ -17,6 +17,17 @@
 		<property name="jobExecutorActivate" value="false" />
 		<!-- 历史级别 -->
 		<property name="history" value="audit" />
+		
+		<property name="typedEventListeners">
+			<map>
+				<entry key="ENTITY_INITIALIZED" >
+					<list>
+						<bean class="com.mossle.bpm.listener.UpdateProcessInstanceNameEventListener" />
+					</list>
+				</entry>
+			</map>
+		</property>
+
 
 		<!-- 添加的自定义监听器 -->
  		<property name="customDefaultBpmnParseHandlers">
@@ -65,6 +76,12 @@
 			<bean class="org.activiti.engine.impl.persistence.StrongUuidGenerator" />
 		</property>
 		-->
+
+		<property name="eventListeners">
+		  <list>
+			 <bean class="com.mossle.bpm.listener.FunctionEventListener" />
+		  </list>
+		</property>
 	</bean>
 
 	<!-- 流程引擎 -->

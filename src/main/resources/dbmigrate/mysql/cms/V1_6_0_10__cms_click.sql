@@ -4,7 +4,7 @@
 --  cms click
 -------------------------------------------------------------------------------
 CREATE TABLE CMS_CLICK(
-        ID BIGINT AUTO_INCREMENT,
+        ID BIGINT NOT NULL,
 	TYPE VARCHAR(50),
 	USER_ID VARCHAR(50),
 	CREATE_TIME DATETIME,

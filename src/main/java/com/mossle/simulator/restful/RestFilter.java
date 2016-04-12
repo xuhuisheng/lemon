@@ -86,7 +86,7 @@ public class RestFilter implements Filter {
     public Map<String, String> parseBody(InputStream inputStream)
             throws IOException {
         String body = IoUtils.readString(inputStream);
-        body = URLDecoder.decode(body, "UTF-8");
+        // body = URLDecoder.decode(body, "UTF-8");
         logger.debug("body : {}", body);
 
         Map<String, String> parameters = new HashMap<String, String>();
@@ -101,6 +101,10 @@ public class RestFilter implements Filter {
             int index = text.indexOf("=");
             String key = text.substring(0, index);
             String value = text.substring(index + 1);
+
+            if (value != null) {
+                value = URLDecoder.decode(value, "UTF-8");
+            }
 
             parameters.put(key, value);
         }
@@ -203,18 +207,31 @@ public class RestFilter implements Filter {
                         arguments.add(value);
                     } else if ((parameterTypeArray[i] == Boolean.class)
                             || (parameterTypeArray[i] == boolean.class)) {
-                        arguments.add(Boolean.valueOf(value));
+                        if (value.length() == 0) {
+                            arguments.add(false);
+                        } else {
+                            arguments.add(Boolean.valueOf(value));
+                        }
                     } else if ((parameterTypeArray[i] == Long.class)
                             || (parameterTypeArray[i] == long.class)) {
-                        arguments.add(Long.parseLong(value));
+                        if (value.length() == 0) {
+                            arguments.add(0L);
+                        } else {
+                            arguments.add(Long.parseLong(value));
+                        }
                     } else if ((parameterTypeArray[i] == Integer.class)
                             || (parameterTypeArray[i] == int.class)) {
-                        arguments.add(Integer.parseInt(value));
-                    } else if ((parameterTypeArray[i] == Long.class)
-                            || (parameterTypeArray[i] == long.class)) {
-                        arguments.add(Long.parseLong(value));
+                        if (value.length() == 0) {
+                            arguments.add(0);
+                        } else {
+                            arguments.add(Integer.parseInt(value));
+                        }
                     } else if (parameterTypeArray[i] == Date.class) {
-                        arguments.add(dateConverter.convert(value));
+                        if (value.length() == 0) {
+                            arguments.add(null);
+                        } else {
+                            arguments.add(dateConverter.convert(value));
+                        }
                     } else {
                         throw new IllegalArgumentException("unsupport type : "
                                 + parameterTypeArray[i]);

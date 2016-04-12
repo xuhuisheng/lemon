@@ -67,17 +67,14 @@ public class ProcessConnectorImpl implements ProcessConnector {
                 .startProcessInstanceById(processDefinitionId, businessKey,
                         processParameters);
 
-        // {流程标题:title}-{发起人:startUser}-{发起时间:startTime}
-        String processDefinitionName = processEngine.getRepositoryService()
-                .createProcessDefinitionQuery()
-                .processDefinitionId(processDefinitionId).singleResult()
-                .getName();
-        String processInstanceName = processDefinitionName + "-"
-                + userConnector.findById(userId).getDisplayName() + "-"
-                + new SimpleDateFormat("yyyy-MM-dd HH:mm").format(new Date());
-        processEngine.getRuntimeService().setProcessInstanceName(
-                processInstance.getId(), processInstanceName);
-
+        /*
+         * // {流程标题:title}-{发起人:startUser}-{发起时间:startTime} String processDefinitionName =
+         * processEngine.getRepositoryService() .createProcessDefinitionQuery()
+         * .processDefinitionId(processDefinitionId).singleResult() .getName(); String processInstanceName =
+         * processDefinitionName + "-" + userConnector.findById(userId).getDisplayName() + "-" + new
+         * SimpleDateFormat("yyyy-MM-dd HH:mm").format(new Date());
+         * processEngine.getRuntimeService().setProcessInstanceName( processInstance.getId(), processInstanceName);
+         */
         return processInstance.getId();
     }
 
@@ -399,6 +396,24 @@ public class ProcessConnectorImpl implements ProcessConnector {
                 .count();
         List<Task> tasks = taskService.createTaskQuery().taskTenantId(tenantId)
                 .taskOwner(userId).taskDelegationState(DelegationState.PENDING)
+                .listPage((int) page.getStart(), page.getPageSize());
+        page.setResult(tasks);
+        page.setTotalCount(count);
+
+        return page;
+    }
+
+    /**
+     * 同时返回已领取和未领取的任务.
+     */
+    public Page findCandidateOrAssignedTasks(String userId, String tenantId,
+            Page page) {
+        TaskService taskService = processEngine.getTaskService();
+
+        long count = taskService.createTaskQuery().taskTenantId(tenantId)
+                .taskCandidateOrAssigned(userId).count();
+        List<Task> tasks = taskService.createTaskQuery().taskTenantId(tenantId)
+                .taskCandidateOrAssigned(userId)
                 .listPage((int) page.getStart(), page.getPageSize());
         page.setResult(tasks);
         page.setTotalCount(count);

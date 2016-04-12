@@ -4,7 +4,6 @@ package com.mossle.humantask.persistence.domain;
 import javax.persistence.Column;
 import javax.persistence.Entity;
 import javax.persistence.FetchType;
-import javax.persistence.GeneratedValue;
 import javax.persistence.Id;
 import javax.persistence.JoinColumn;
 import javax.persistence.ManyToOne;
@@ -23,7 +22,7 @@ public class TaskParticipant implements java.io.Serializable {
     /** 主键. */
     private Long id;
 
-    /** 外键，taskId. */
+    /** 外键，任务. */
     private TaskInfo taskInfo;
 
     /** 分类. */
@@ -32,14 +31,19 @@ public class TaskParticipant implements java.io.Serializable {
     /** 类型. */
     private String type;
 
-    /** 引用. */
+    /** 外部引用. */
     private String ref;
 
     public TaskParticipant() {
     }
 
-    public TaskParticipant(TaskInfo taskInfo, String category, String type,
-            String ref) {
+    public TaskParticipant(Long id) {
+        this.id = id;
+    }
+
+    public TaskParticipant(Long id, TaskInfo taskInfo, String category,
+            String type, String ref) {
+        this.id = id;
         this.taskInfo = taskInfo;
         this.category = category;
         this.type = type;
@@ -48,7 +52,6 @@ public class TaskParticipant implements java.io.Serializable {
 
     /** @return 主键. */
     @Id
-    @GeneratedValue
     @Column(name = "ID", unique = true, nullable = false)
     public Long getId() {
         return this.id;
@@ -62,7 +65,7 @@ public class TaskParticipant implements java.io.Serializable {
         this.id = id;
     }
 
-    /** @return 外键，taskId. */
+    /** @return 外键，任务. */
     @ManyToOne(fetch = FetchType.LAZY)
     @JoinColumn(name = "TASK_ID")
     public TaskInfo getTaskInfo() {
@@ -71,7 +74,7 @@ public class TaskParticipant implements java.io.Serializable {
 
     /**
      * @param taskInfo
-     *            外键，taskId.
+     *            外键，任务.
      */
     public void setTaskInfo(TaskInfo taskInfo) {
         this.taskInfo = taskInfo;
@@ -105,7 +108,7 @@ public class TaskParticipant implements java.io.Serializable {
         this.type = type;
     }
 
-    /** @return 引用. */
+    /** @return 外部引用. */
     @Column(name = "REF", length = 200)
     public String getRef() {
         return this.ref;
@@ -113,7 +116,7 @@ public class TaskParticipant implements java.io.Serializable {
 
     /**
      * @param ref
-     *            引用.
+     *            外部引用.
      */
     public void setRef(String ref) {
         this.ref = ref;

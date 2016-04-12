@@ -11,9 +11,9 @@ import com.mossle.api.user.UserConnector;
 import com.mossle.api.user.UserDTO;
 import com.mossle.api.user.UserSyncConnector;
 
-import com.mossle.core.hibernate.PropertyFilter;
-import com.mossle.core.hibernate.PropertyFilterUtils;
 import com.mossle.core.page.Page;
+import com.mossle.core.query.PropertyFilter;
+import com.mossle.core.query.PropertyFilterUtils;
 
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;

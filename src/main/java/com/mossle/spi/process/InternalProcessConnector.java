@@ -82,6 +82,12 @@ public interface InternalProcessConnector {
     String findInitialActivityId(String processDefinitionId);
 
     /**
+     * 获得第一个UserTask的节点id.
+     */
+    String findFirstUserTaskActivityId(String processDefinitionId,
+            String initiator);
+
+    /**
      * 触发execution继续执行.
      */
     void signalExecution(String executionId);

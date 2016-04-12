@@ -22,6 +22,8 @@ import com.mossle.spi.process.InternalProcessConnector;
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
 
+import org.springframework.beans.factory.annotation.Value;
+
 import org.springframework.scheduling.annotation.Scheduled;
 
 import org.springframework.stereotype.Component;
@@ -36,10 +38,15 @@ public class TaskDeadlineJob {
     private NotificationConnector notificationConnector;
     private UserConnector userConnector;
     private InternalProcessConnector internalProcessConnector;
+    private boolean active;
 
     @Scheduled(cron = "0/10 * * * * ?")
     @Transactional
     public void execute() throws Exception {
+        if (!active) {
+            return;
+        }
+
         logger.debug("start");
 
         String hql = "from TaskDeadline";
@@ -132,5 +139,10 @@ public class TaskDeadlineJob {
     public void setInternalProcessConnector(
             InternalProcessConnector internalProcessConnector) {
         this.internalProcessConnector = internalProcessConnector;
+    }
+
+    @Value("${humantask.schedule.deadline.active}")
+    public void setActive(boolean active) {
+        this.active = active;
     }
 }

@@ -5,8 +5,10 @@
 
 	<!-- ================================================== -->
 
+	<alias name="defaultCacheManager" alias="userRepoCacheManager"/>
+
 	<bean id="userRepoCache" class="com.mossle.user.support.UserRepoCacheImpl">
-		<property name="cacheStrategy" ref="localCacheStrategy"/>
+		<property name="cacheManager" ref="userRepoCacheManager"/>
 	</bean>
 
 	<bean id="userRepoConnector" class="com.mossle.user.support.UserRepoConnectorFactoryBean">
@@ -21,8 +23,10 @@
 
 	<!-- ================================================== -->
 
+	<alias name="defaultCacheManager" alias="userCacheManager"/>
+
 	<bean id="userCache" class="com.mossle.user.support.UserCacheImpl">
-		<property name="cacheStrategy" ref="remoteCacheStrategy"/>
+		<property name="cacheManager" ref="userCacheManager"/>
 	</bean>
 
 	<bean id="userConnector" class="com.mossle.user.support.UserConnectorFactoryBean">
@@ -33,8 +37,10 @@
 
 	<!-- ================================================== -->
 
+	<alias name="defaultCacheManager" alias="userAuthCacheManager"/>
+
 	<bean id="userAuthCache" class="com.mossle.auth.support.UserAuthCacheImpl">
-		<property name="cacheStrategy" ref="remoteCacheStrategy"/>
+		<property name="cacheManager" ref="userAuthCacheManager"/>
 	</bean>
 
 	<bean id="userAuthConnector" class="com.mossle.auth.support.UserAuthConnectorFactoryBean">
@@ -59,6 +65,22 @@
 	<!-- 菜单 -->
 	<bean id="menuConnector" class="${menu.connector}"/>
 
+	<alias name="defaultCacheManager" alias="menuCacheManager"/>
+
+	<bean id="menuCache" class="com.mossle.auth.support.MenuCache">
+		<property name="cacheManager" ref="menuCacheManager"/>
+	</bean>
+
 	<!-- 认证 -->
 	<bean id="authenticationHandler" class="com.mossle.user.authenticate.NormalAuthenticationHandler"/>
+
+	<!-- 设备 -->
+	<bean id="deviceConnector" class="${device.connector}"/>
+
+	<!-- avatar -->
+	<alias name="defaultCacheManager" alias="avatarCacheManager"/>
+
+	<bean id="avatarCache" class="com.mossle.user.support.AvatarCache">
+		<property name="cacheManager" ref="avatarCacheManager"/>
+	</bean>
 </beans>

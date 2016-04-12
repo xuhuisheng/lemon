@@ -35,7 +35,7 @@ import org.springframework.stereotype.Component;
 @Path("android/msg")
 public class AndroidMsgResource {
     private static Logger logger = LoggerFactory
-            .getLogger(AndroidCmsResource.class);
+            .getLogger(AndroidMsgResource.class);
     private JsonMapper jsonMapper = new JsonMapper();
     private TenantHolder tenantHolder;
     private MsgInfoManager msgInfoManager;

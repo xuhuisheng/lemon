@@ -8,6 +8,7 @@ import com.mossle.api.user.UserDTO;
 
 import com.mossle.auth.component.AuthCache;
 
+import com.mossle.core.id.IdGenerator;
 import com.mossle.core.mapper.JsonMapper;
 import com.mossle.core.subscribe.Subscribable;
 
@@ -25,19 +26,20 @@ import org.springframework.transaction.annotation.Transactional;
 public class UserCreatedSubscriber implements Subscribable<String> {
     private static Logger logger = LoggerFactory
             .getLogger(UserCreatedSubscriber.class);
-    private String insertSql = "INSERT INTO AUTH_USER_STATUS(USERNAME,REF,STATUS,PASSWORD,USER_REPO_REF,TENANT_ID) VALUES(?,?,1,'',?,?)";
+    private String insertSql = "INSERT INTO AUTH_USER_STATUS(ID,USERNAME,REF,STATUS,PASSWORD,USER_REPO_REF,TENANT_ID) VALUES(?,?,?,1,'',?,?)";
     private JsonMapper jsonMapper = new JsonMapper();
     private String destinationName = "queue.user.sync.created";
     private JdbcTemplate jdbcTemplate;
     private AuthCache authCache;
+    private IdGenerator idGenerator;
 
     public void handleMessage(String message) {
         try {
             UserDTO userDto = jsonMapper.fromJson(message, UserDTO.class);
             String tenantId = userDto.getUserRepoRef();
 
-            jdbcTemplate.update(insertSql, userDto.getUsername(),
-                    userDto.getId(), tenantId, tenantId);
+            jdbcTemplate.update(insertSql, idGenerator.generateId(),
+                    userDto.getUsername(), userDto.getId(), tenantId, tenantId);
 
             logger.info("create user : {}", message);
             authCache.evictUser(userDto.getId());
@@ -66,5 +68,10 @@ public class UserCreatedSubscriber implements Subscribable<String> {
     @Resource
     public void setAuthCache(AuthCache authCache) {
         this.authCache = authCache;
+    }
+
+    @Resource
+    public void setIdGenerator(IdGenerator idGenerator) {
+        this.idGenerator = idGenerator;
     }
 }

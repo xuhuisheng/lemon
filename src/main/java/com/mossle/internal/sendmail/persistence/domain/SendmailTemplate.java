@@ -7,7 +7,6 @@ import java.util.Set;
 import javax.persistence.Column;
 import javax.persistence.Entity;
 import javax.persistence.FetchType;
-import javax.persistence.GeneratedValue;
 import javax.persistence.Id;
 import javax.persistence.OneToMany;
 import javax.persistence.Table;
@@ -66,12 +65,17 @@ public class SendmailTemplate implements java.io.Serializable {
     public SendmailTemplate() {
     }
 
-    public SendmailTemplate(String name, String receiver, String sender,
-            String cc, String bcc, String subject, String content,
-            Integer manual, String tenantId,
+    public SendmailTemplate(Long id) {
+        this.id = id;
+    }
+
+    public SendmailTemplate(Long id, String name, String receiver,
+            String sender, String cc, String bcc, String subject,
+            String content, Integer manual, String tenantId,
             Set<SendmailAttachment> sendmailAttachments,
             Set<SendmailHistory> sendmailHistories,
             Set<SendmailQueue> sendmailQueues) {
+        this.id = id;
         this.name = name;
         this.receiver = receiver;
         this.sender = sender;
@@ -88,7 +92,6 @@ public class SendmailTemplate implements java.io.Serializable {
 
     /** @return null. */
     @Id
-    @GeneratedValue
     @Column(name = "ID", unique = true, nullable = false)
     public Long getId() {
         return this.id;

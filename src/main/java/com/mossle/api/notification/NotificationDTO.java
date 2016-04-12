@@ -7,6 +7,7 @@ import java.util.Map;
 
 public class NotificationDTO {
     private List<String> types = new ArrayList<String>();
+    private String sender;
     private String receiver;
     private String receiverType;
     private String subject;
@@ -20,6 +21,14 @@ public class NotificationDTO {
 
     public void setTypes(List<String> types) {
         this.types = types;
+    }
+
+    public String getSender() {
+        return sender;
+    }
+
+    public void setSender(String sender) {
+        this.sender = sender;
     }
 
     public String getReceiver() {

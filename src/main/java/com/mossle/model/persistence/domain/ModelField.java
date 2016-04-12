@@ -4,7 +4,6 @@ package com.mossle.model.persistence.domain;
 import javax.persistence.Column;
 import javax.persistence.Entity;
 import javax.persistence.FetchType;
-import javax.persistence.GeneratedValue;
 import javax.persistence.Id;
 import javax.persistence.JoinColumn;
 import javax.persistence.ManyToOne;
@@ -56,10 +55,15 @@ public class ModelField implements java.io.Serializable {
     public ModelField() {
     }
 
-    public ModelField(ModelInfo modelInfo, String code, String name,
+    public ModelField(Long id) {
+        this.id = id;
+    }
+
+    public ModelField(Long id, ModelInfo modelInfo, String code, String name,
             String type, Integer priority, String searchable,
             String displayable, String viewList, String viewForm,
             String tenantId) {
+        this.id = id;
         this.modelInfo = modelInfo;
         this.code = code;
         this.name = name;
@@ -74,7 +78,6 @@ public class ModelField implements java.io.Serializable {
 
     /** @return null. */
     @Id
-    @GeneratedValue
     @Column(name = "ID", unique = true, nullable = false)
     public Long getId() {
         return this.id;

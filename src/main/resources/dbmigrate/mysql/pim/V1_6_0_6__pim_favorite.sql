@@ -4,7 +4,7 @@
 --  pim favorite
 -------------------------------------------------------------------------------
 CREATE TABLE PIM_FAVORITE(
-        ID BIGINT AUTO_INCREMENT,
+        ID BIGINT NOT NULL,
 	MODULE_TYPE VARCHAR(50),
 	MODULE_ID VARCHAR(64),
 	TITLE VARCHAR(100),

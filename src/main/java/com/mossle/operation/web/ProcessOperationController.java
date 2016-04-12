@@ -29,6 +29,7 @@ import com.mossle.button.ButtonHelper;
 import com.mossle.core.MultipartHandler;
 import com.mossle.core.auth.CurrentUserHolder;
 import com.mossle.core.mapper.JsonMapper;
+import com.mossle.core.page.Page;
 import com.mossle.core.spring.MessageHelper;
 
 import com.mossle.operation.service.OperationService;
@@ -43,6 +44,7 @@ import org.springframework.stereotype.Controller;
 
 import org.springframework.ui.Model;
 
+import org.springframework.web.bind.annotation.ModelAttribute;
 import org.springframework.web.bind.annotation.RequestMapping;
 import org.springframework.web.bind.annotation.RequestParam;
 import org.springframework.web.multipart.MultipartResolver;
@@ -87,12 +89,13 @@ public class ProcessOperationController {
      * 列出所有草稿.
      */
     @RequestMapping("process-operation-listDrafts")
-    public String listDrafts(Model model) throws Exception {
+    public String listDrafts(@ModelAttribute Page page, Model model)
+            throws Exception {
         String userId = currentUserHolder.getUserId();
         String tenantId = tenantHolder.getTenantId();
-        List<Record> records = keyValueConnector.findByStatus(
-                STATUS_DRAFT_PROCESS, userId, tenantId);
-        model.addAttribute("records", records);
+        page = keyValueConnector.pagedQuery(page, STATUS_DRAFT_PROCESS, userId,
+                tenantId);
+        model.addAttribute("page", page);
 
         return "operation/process-operation-listDrafts";
     }
@@ -125,7 +128,8 @@ public class ProcessOperationController {
 
         String processDefinitionId = processDto.getProcessDefinitionId();
 
-        FormDTO formDto = this.findStartForm(processDefinitionId);
+        FormDTO formDto = this.processConnector
+                .findStartForm(processDefinitionId);
         formParameter.setFormDto(formDto);
 
         if (formDto.isExists()) {
@@ -203,7 +207,7 @@ public class ProcessOperationController {
     public String startProcessInstance(HttpServletRequest request, Model model)
             throws Exception {
         FormParameter formParameter = this.doSaveRecord(request);
-        doConfirmStartProcess(formParameter, model);
+        this.doConfirmStartProcess(formParameter, model);
 
         Record record = keyValueConnector.findByCode(formParameter
                 .getBusinessKey());
@@ -262,8 +266,10 @@ public class ProcessOperationController {
 
         try {
             multipartHandler.handle(request);
-            logger.info("{}", multipartHandler.getMultiValueMap());
-            logger.info("{}", multipartHandler.getMultiFileMap());
+            logger.debug("multiValueMap : {}",
+                    multipartHandler.getMultiValueMap());
+            logger.debug("multiFileMap : {}",
+                    multipartHandler.getMultiFileMap());
 
             formParameter = this.buildFormParameter(multipartHandler);
 
@@ -360,15 +366,6 @@ public class ProcessOperationController {
         model.addAttribute("humanTaskDefinitions", humanTaskDefinitions);
 
         return "operation/process-operation-taskConf";
-    }
-
-    /**
-     * 根据流程定义获得formDto.
-     */
-    public FormDTO findStartForm(String processDefinitionId) {
-        FormDTO formDto = processConnector.findStartForm(processDefinitionId);
-
-        return formDto;
     }
 
     /**

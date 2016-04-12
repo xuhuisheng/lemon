@@ -67,7 +67,11 @@ public class FileStoreHelper implements StoreHelper {
         String suffix = this.getSuffix(dataSource.getName());
         String path = prefix + "/" + UUID.randomUUID() + suffix;
         File dir = new File(baseDir + "/" + model + "/" + prefix);
-        dir.mkdirs();
+        boolean success = dir.mkdirs();
+
+        if (!success) {
+            logger.error("cannot create directory : {}", dir);
+        }
 
         File targetFile = new File(baseDir + "/" + model + "/" + path);
         FileOutputStream fos = new FileOutputStream(targetFile);

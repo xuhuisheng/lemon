@@ -4,7 +4,7 @@
 --  job user
 -------------------------------------------------------------------------------
 CREATE TABLE JOB_USER(
-        ID BIGINT AUTO_INCREMENT,
+        ID BIGINT NOT NULL,
 	USER_REF VARCHAR(50),
 	JOB_INFO_ID BIGINT,
 	SCOPE_ID VARCHAR(50),

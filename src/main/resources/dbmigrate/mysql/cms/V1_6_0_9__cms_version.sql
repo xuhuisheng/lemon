@@ -4,7 +4,7 @@
 --  cms version
 -------------------------------------------------------------------------------
 CREATE TABLE CMS_VERSION(
-        ID BIGINT AUTO_INCREMENT,
+        ID BIGINT NOT NULL,
 	CODE VARCHAR(64),
 	NAME VARCHAR(50),
 	USER_ID VARCHAR(64),

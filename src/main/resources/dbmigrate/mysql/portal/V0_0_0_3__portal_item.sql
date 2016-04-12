@@ -4,7 +4,7 @@
 --  portal item
 -------------------------------------------------------------------------------
 CREATE TABLE PORTAL_ITEM(
-        ID BIGINT AUTO_INCREMENT,
+        ID BIGINT NOT NULL,
         NAME VARCHAR(200),
 	COLUMN_INDEX INT,
 	ROW_INDEX INT,

@@ -1,5 +1,11 @@
 package com.mossle.bpm.listener;
 
+import javax.annotation.Resource;
+
+import com.mossle.api.humantask.HumanTaskConnector;
+import com.mossle.api.humantask.HumanTaskConstants;
+import com.mossle.api.humantask.HumanTaskDTO;
+
 import com.mossle.bpm.cmd.CompleteTaskWithCommentCmd;
 import com.mossle.bpm.support.DefaultTaskListener;
 
@@ -22,6 +28,7 @@ public class AutoCompleteFirstTaskListener extends DefaultTaskListener {
     /** logger. */
     private static Logger logger = LoggerFactory
             .getLogger(AutoCompleteFirstTaskListener.class);
+    private HumanTaskConnector humanTaskConnector;
 
     @Override
     public void onCreate(DelegateTask delegateTask) throws Exception {
@@ -64,6 +71,12 @@ public class AutoCompleteFirstTaskListener extends DefaultTaskListener {
             }
         }
 
+        // 对提交流程的任务进行特殊处理
+        HumanTaskDTO humanTaskDto = humanTaskConnector
+                .findHumanTaskByTaskId(delegateTask.getId());
+        humanTaskDto.setCatalog(HumanTaskConstants.CATALOG_START);
+        humanTaskConnector.saveHumanTask(humanTaskDto);
+
         // ((TaskEntity) delegateTask).complete();
         // Context.getCommandContext().getHistoryManager().recordTaskId((TaskEntity) delegateTask);
         new CompleteTaskWithCommentCmd(delegateTask.getId(), null, "发起流程")
@@ -97,5 +110,10 @@ public class AutoCompleteFirstTaskListener extends DefaultTaskListener {
         }
 
         return targetActivity;
+    }
+
+    @Resource
+    public void setHumanTaskConnector(HumanTaskConnector humanTaskConnector) {
+        this.humanTaskConnector = humanTaskConnector;
     }
 }

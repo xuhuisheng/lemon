@@ -7,14 +7,13 @@ import java.util.Set;
 import javax.persistence.Column;
 import javax.persistence.Entity;
 import javax.persistence.FetchType;
-import javax.persistence.GeneratedValue;
 import javax.persistence.Id;
 import javax.persistence.OneToMany;
 import javax.persistence.OrderBy;
 import javax.persistence.Table;
 
 /**
- * PermType .
+ * PermType 权限类型.
  * 
  * @author Lingo
  */
@@ -23,22 +22,22 @@ import javax.persistence.Table;
 public class PermType implements java.io.Serializable {
     private static final long serialVersionUID = 0L;
 
-    /** null. */
+    /** 主键. */
     private Long id;
 
-    /** null. */
+    /** 名称. */
     private String name;
 
-    /** null. */
+    /** 类型. */
     private Integer type;
 
-    /** null. */
+    /** 排序. */
     private Integer priority;
 
-    /** null. */
+    /** 备注. */
     private String descn;
 
-    /** null. */
+    /** 租户. */
     private String tenantId;
 
     /** . */
@@ -47,8 +46,13 @@ public class PermType implements java.io.Serializable {
     public PermType() {
     }
 
-    public PermType(String name, Integer type, Integer priority, String descn,
-            String tenantId, Set<Perm> perms) {
+    public PermType(Long id) {
+        this.id = id;
+    }
+
+    public PermType(Long id, String name, Integer type, Integer priority,
+            String descn, String tenantId, Set<Perm> perms) {
+        this.id = id;
         this.name = name;
         this.type = type;
         this.priority = priority;
@@ -57,9 +61,8 @@ public class PermType implements java.io.Serializable {
         this.perms = perms;
     }
 
-    /** @return null. */
+    /** @return 主键. */
     @Id
-    @GeneratedValue
     @Column(name = "ID", unique = true, nullable = false)
     public Long getId() {
         return this.id;
@@ -67,13 +70,13 @@ public class PermType implements java.io.Serializable {
 
     /**
      * @param id
-     *            null.
+     *            主键.
      */
     public void setId(Long id) {
         this.id = id;
     }
 
-    /** @return null. */
+    /** @return 名称. */
     @Column(name = "NAME", length = 50)
     public String getName() {
         return this.name;
@@ -81,13 +84,13 @@ public class PermType implements java.io.Serializable {
 
     /**
      * @param name
-     *            null.
+     *            名称.
      */
     public void setName(String name) {
         this.name = name;
     }
 
-    /** @return null. */
+    /** @return 类型. */
     @Column(name = "TYPE")
     public Integer getType() {
         return this.type;
@@ -95,13 +98,13 @@ public class PermType implements java.io.Serializable {
 
     /**
      * @param type
-     *            null.
+     *            类型.
      */
     public void setType(Integer type) {
         this.type = type;
     }
 
-    /** @return null. */
+    /** @return 排序. */
     @Column(name = "PRIORITY")
     public Integer getPriority() {
         return this.priority;
@@ -109,13 +112,13 @@ public class PermType implements java.io.Serializable {
 
     /**
      * @param priority
-     *            null.
+     *            排序.
      */
     public void setPriority(Integer priority) {
         this.priority = priority;
     }
 
-    /** @return null. */
+    /** @return 备注. */
     @Column(name = "DESCN", length = 200)
     public String getDescn() {
         return this.descn;
@@ -123,13 +126,13 @@ public class PermType implements java.io.Serializable {
 
     /**
      * @param descn
-     *            null.
+     *            备注.
      */
     public void setDescn(String descn) {
         this.descn = descn;
     }
 
-    /** @return null. */
+    /** @return 租户. */
     @Column(name = "TENANT_ID", length = 50)
     public String getTenantId() {
         return this.tenantId;
@@ -137,7 +140,7 @@ public class PermType implements java.io.Serializable {
 
     /**
      * @param tenantId
-     *            null.
+     *            租户.
      */
     public void setTenantId(String tenantId) {
         this.tenantId = tenantId;

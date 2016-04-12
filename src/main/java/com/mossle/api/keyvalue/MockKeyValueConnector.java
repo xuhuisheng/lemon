@@ -24,12 +24,20 @@ public class MockKeyValueConnector implements KeyValueConnector {
         return null;
     }
 
+    public Page pagedQuery(Page page, int status, String userId, String tenantId) {
+        return null;
+    }
+
     public long findTotalCount(String category, String q, String tenantId) {
         return 0L;
     }
 
     public List<Map<String, Object>> findResult(Page page, String category,
             String tenantId, Map<String, String> headers, String q) {
+        return null;
+    }
+
+    public Record copyRecord(Record original, List<String> fields) {
         return null;
     }
 }

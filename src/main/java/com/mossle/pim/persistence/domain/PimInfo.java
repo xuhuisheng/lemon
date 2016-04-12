@@ -5,7 +5,6 @@ import java.util.Date;
 
 import javax.persistence.Column;
 import javax.persistence.Entity;
-import javax.persistence.GeneratedValue;
 import javax.persistence.Id;
 import javax.persistence.Table;
 import javax.persistence.Temporal;
@@ -57,9 +56,14 @@ public class PimInfo implements java.io.Serializable {
     public PimInfo() {
     }
 
-    public PimInfo(String name, String photo, Date birthday, String address,
-            String tel, String email, String org, String title,
+    public PimInfo(Long id) {
+        this.id = id;
+    }
+
+    public PimInfo(Long id, String name, String photo, Date birthday,
+            String address, String tel, String email, String org, String title,
             String tenantId, String userId) {
+        this.id = id;
         this.name = name;
         this.photo = photo;
         this.birthday = birthday;
@@ -74,7 +78,6 @@ public class PimInfo implements java.io.Serializable {
 
     /** @return null. */
     @Id
-    @GeneratedValue
     @Column(name = "ID", unique = true, nullable = false)
     public Long getId() {
         return this.id;

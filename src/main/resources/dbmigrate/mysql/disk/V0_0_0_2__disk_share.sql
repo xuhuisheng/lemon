@@ -4,7 +4,7 @@
 --  disk share
 -------------------------------------------------------------------------------
 CREATE TABLE DISK_SHARE(
-        ID BIGINT AUTO_INCREMENT,
+        ID BIGINT NOT NULL,
 	SHARE_TYPE VARCHAR(50),
 	SHARE_TIME DATETIME,
 	INFO_ID BIGINT,

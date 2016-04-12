@@ -7,11 +7,11 @@
 
   <head>
     <%@include file="/common/meta.jsp"%>
-    <title>列表</title>
-    <%@include file="/common/s.jsp"%>
+    <title><spring:message code="dev.store-info.list.title" text="列表"/></title>
+    <%@include file="/common/s3.jsp"%>
     <script type="text/javascript">
 var config = {
-    id: 'storeInfoGrid',
+    id: 'store-infoGrid',
     pageNo: ${page.pageNo},
     pageSize: ${page.pageSize},
     totalCount: ${page.totalCount},
@@ -23,7 +23,7 @@ var config = {
         'filter_LIKES_name': '${param.filter_LIKES_name}'
     },
 	selectedItemClass: 'selectedItem',
-	gridFormId: 'storeInfoGridForm',
+	gridFormId: 'store-infoGridForm',
 	exportUrl: 'store-info-export.do'
 };
 
@@ -45,56 +45,58 @@ $(function() {
 	  <%@include file="/menu/store.jsp"%>
 
 	  <!-- start of main -->
-      <section id="m-main" class="span10">
+      <section id="m-main" class="col-md-10" style="padding-top:65px;">
 
-	  <article class="m-widget">
-        <header class="header">
-		  <h4 class="title">查询</h4>
-		  <div class="ctrl">
-		    <a class="btn"><i id="storeInfoSearchIcon" class="icon-chevron-up"></i></a>
-		  </div>
-		</header>
-        <div id="storeInfoSearch" class="content content-inner">
+<div class="panel panel-default">
+  <div class="panel-heading">
+	<i class="glyphicon glyphicon-list"></i>
+    查询
+	<div class="pull-right ctrl">
+	  <a class="btn btn-default btn-xs"><i id="store-infoSearchIcon" class="glyphicon glyphicon-chevron-up"></i></a>
+    </div>
+  </div>
+  <div class="panel-body">
 
-		  <form name="storeInfoForm" method="post" action="store-info-list.do" class="form-inline">
-		    <label for="storeInfo_name">名称:</label>
-		    <input type="text" id="storeInfo_name" name="filter_LIKES_name" value="${param.filter_LIKES_name}">
-			<button class="btn btn-small a-search" onclick="document.storeInfoForm.submit()">查询</button>&nbsp;
+		  <form name="store-infoForm" method="post" action="store-info-list.do" class="form-inline">
+		    <label for="store-info_name"><spring:message code='store-info.store-info.list.search.name' text='名称'/>:</label>
+		    <input type="text" id="store-info_name" name="filter_LIKES_name" value="${param.filter_LIKES_name}" class="form-control">
+			<button class="btn btn-default a-search" onclick="document.store-infoForm.submit()">查询</button>&nbsp;
 		  </form>
 
 		</div>
-	  </article>
+	  </div>
 
-	  <article class="m-blank">
-	    <div class="pull-left">
-		  <button class="btn btn-small a-insert" onclick="location.href='store-info-input.do'">新建</button>
-		  <button class="btn btn-small a-remove" onclick="table.removeAll()">删除</button>
-		  <button class="btn btn-small a-export" onclick="table.exportExcel()">导出</button>
+      <div style="margin-bottom: 20px;">
+	    <div class="pull-left btn-group" role="group">
+		  <button class="btn btn-default a-insert" onclick="location.href='store-info-input.do'">新建</button>
+		  <button class="btn btn-default a-remove" onclick="table.removeAll()">删除</button>
+		  <button class="btn btn-default a-export" onclick="table.exportExcel()">导出</button>
 		</div>
 
 		<div class="pull-right">
 		  每页显示
-		  <select class="m-page-size">
+		  <select class="m-page-size form-control" style="display:inline;width:auto;">
 		    <option value="10">10</option>
 		    <option value="20">20</option>
 		    <option value="50">50</option>
 		  </select>
 		  条
+        </div>
+
+	    <div class="clearfix"></div>
+	  </div>
+
+<form id="store-infoGridForm" name="store-infoGridForm" method='post' action="store-info-remove.do" class="m-form-blank">
+      <div class="panel panel-default">
+        <div class="panel-heading">
+		  <i class="glyphicon glyphicon-list"></i>
+		  <spring:message code="scope-info.scope-info.list.title" text="列表"/>
 		</div>
 
-	    <div class="m-clear"></div>
-	  </article>
-
-      <article class="m-widget">
-        <header class="header">
-		  <h4 class="title">列表</h4>
-		</header>
-        <div class="content">
-<form id="storeInfoGridForm" name="storeInfoGridForm" method='post' action="store-info-remove.do" class="m-form-blank">
-  <table id="storeInfoGrid" class="m-table table-hover">
+  <table id="storeInfoGrid" class="table table-hover">
     <thead>
       <tr>
-        <th width="10" class="m-table-check"><input type="checkbox" name="checkAll" onchange="toggleSelectedItems(this.checked)"></th>
+        <th width="10" class="table-check"><input type="checkbox" name="checkAll" onchange="toggleSelectedItems(this.checked)"></th>
         <th>编号</th>
         <th>名称</th>
         <th>模块</th>
@@ -121,23 +123,24 @@ $(function() {
       </c:forEach>
     </tbody>
   </table>
-</form>
-        </div>
-      </article>
 
-	  <article>
+
+      </div>
+</form>
+
+	  <div>
 	    <div class="m-page-info pull-left">
 		  共100条记录 显示1到10条记录
 		</div>
 
 		<div class="btn-group m-pagination pull-right">
-		  <button class="btn btn-small">&lt;</button>
-		  <button class="btn btn-small">1</button>
-		  <button class="btn btn-small">&gt;</button>
+		  <button class="btn btn-default">&lt;</button>
+		  <button class="btn btn-default">1</button>
+		  <button class="btn btn-default">&gt;</button>
 		</div>
 
-	    <div class="m-clear"></div>
-      </article>
+	    <div class="clearfix"></div>
+      </div>
 
       <div class="m-spacer"></div>
 
@@ -148,3 +151,4 @@ $(function() {
   </body>
 
 </html>
+

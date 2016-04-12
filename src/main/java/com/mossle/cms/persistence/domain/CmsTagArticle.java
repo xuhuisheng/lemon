@@ -4,7 +4,6 @@ package com.mossle.cms.persistence.domain;
 import javax.persistence.Column;
 import javax.persistence.Entity;
 import javax.persistence.FetchType;
-import javax.persistence.GeneratedValue;
 import javax.persistence.Id;
 import javax.persistence.JoinColumn;
 import javax.persistence.ManyToOne;
@@ -38,8 +37,13 @@ public class CmsTagArticle implements java.io.Serializable {
     public CmsTagArticle() {
     }
 
-    public CmsTagArticle(CmsTag cmsTag, CmsArticle cmsArticle, String type,
-            String tenantId) {
+    public CmsTagArticle(Long id) {
+        this.id = id;
+    }
+
+    public CmsTagArticle(Long id, CmsTag cmsTag, CmsArticle cmsArticle,
+            String type, String tenantId) {
+        this.id = id;
         this.cmsTag = cmsTag;
         this.cmsArticle = cmsArticle;
         this.type = type;
@@ -48,7 +52,6 @@ public class CmsTagArticle implements java.io.Serializable {
 
     /** @return null. */
     @Id
-    @GeneratedValue
     @Column(name = "ID", unique = true, nullable = false)
     public Long getId() {
         return this.id;

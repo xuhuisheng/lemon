@@ -4,7 +4,6 @@ package com.mossle.group.persistence.domain;
 import javax.persistence.Column;
 import javax.persistence.Entity;
 import javax.persistence.FetchType;
-import javax.persistence.GeneratedValue;
 import javax.persistence.Id;
 import javax.persistence.JoinColumn;
 import javax.persistence.ManyToOne;
@@ -30,20 +29,29 @@ public class GroupAlias implements java.io.Serializable {
     private String name;
 
     /** null. */
+    private String catalog;
+
+    /** null. */
     private String tenantId;
 
     public GroupAlias() {
     }
 
-    public GroupAlias(GroupInfo groupInfo, String name, String tenantId) {
+    public GroupAlias(Long id) {
+        this.id = id;
+    }
+
+    public GroupAlias(Long id, GroupInfo groupInfo, String name,
+            String catalog, String tenantId) {
+        this.id = id;
         this.groupInfo = groupInfo;
         this.name = name;
+        this.catalog = catalog;
         this.tenantId = tenantId;
     }
 
     /** @return null. */
     @Id
-    @GeneratedValue
     @Column(name = "ID", unique = true, nullable = false)
     public Long getId() {
         return this.id;
@@ -84,6 +92,20 @@ public class GroupAlias implements java.io.Serializable {
      */
     public void setName(String name) {
         this.name = name;
+    }
+
+    /** @return null. */
+    @Column(name = "CATALOG", length = 100)
+    public String getCatalog() {
+        return this.catalog;
+    }
+
+    /**
+     * @param catalog
+     *            null.
+     */
+    public void setCatalog(String catalog) {
+        this.catalog = catalog;
     }
 
     /** @return null. */

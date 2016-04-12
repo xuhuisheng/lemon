@@ -62,7 +62,7 @@ public class CustomProcessDiagramGenerator {
     private static List<String> gatewayType = new ArrayList<String>();
     private static List<String> subProcessType = new ArrayList<String>();
     private static Color RUNNING_COLOR = Color.RED;
-    private static Color HISTORY_COLOR = Color.GREEN;
+    private static Color HISTORY_COLOR = Color.decode("#337ab7");
     private static Color SKIP_COLOR = Color.GRAY;
     private static Stroke THICK_BORDER_STROKE = new BasicStroke(3.0f);
     private int minX = 0;

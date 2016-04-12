@@ -5,7 +5,6 @@ import java.util.Date;
 
 import javax.persistence.Column;
 import javax.persistence.Entity;
-import javax.persistence.GeneratedValue;
 import javax.persistence.Id;
 import javax.persistence.Table;
 import javax.persistence.Temporal;
@@ -48,15 +47,20 @@ public class AccountLog implements java.io.Serializable {
     /** null. */
     private String description;
 
-    /** null. */
+    /** 租户. */
     private String tenantId;
 
     public AccountLog() {
     }
 
-    public AccountLog(String username, String result, String reason,
+    public AccountLog(Long id) {
+        this.id = id;
+    }
+
+    public AccountLog(Long id, String username, String result, String reason,
             String application, Date logTime, String client, String server,
             String description, String tenantId) {
+        this.id = id;
         this.username = username;
         this.result = result;
         this.reason = reason;
@@ -70,7 +74,6 @@ public class AccountLog implements java.io.Serializable {
 
     /** @return null. */
     @Id
-    @GeneratedValue
     @Column(name = "ID", unique = true, nullable = false)
     public Long getId() {
         return this.id;
@@ -197,7 +200,7 @@ public class AccountLog implements java.io.Serializable {
         this.description = description;
     }
 
-    /** @return null. */
+    /** @return 租户. */
     @Column(name = "TENANT_ID", length = 64)
     public String getTenantId() {
         return this.tenantId;
@@ -205,7 +208,7 @@ public class AccountLog implements java.io.Serializable {
 
     /**
      * @param tenantId
-     *            null.
+     *            租户.
      */
     public void setTenantId(String tenantId) {
         this.tenantId = tenantId;

@@ -12,9 +12,9 @@
   <body>
     <div id="wrap">&nbsp;
 
-<%@include file="_header.jsp"%>
+<%@include file="/header/_disk.jsp"%>
 
-      <div class="container" style="padding: 0px 15px 0;" id="top">
+      <div class="container-fluid" style="padding: 0px 15px 0;" id="top">
         <div class="row">
           <div class="col-md-12">
             <div class="alert-fixed-top" data-alerts="alerts" data-titles="{}" data-ids="myid" data-fade="1000"></div>

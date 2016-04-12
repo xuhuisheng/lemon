@@ -7,11 +7,11 @@
 
   <head>
     <%@include file="/common/meta.jsp"%>
-    <title>任务列表</title>
-    <%@include file="/common/s.jsp"%>
-	<script type="text/javascript">
+    <title><spring:message code="dev.consoleTasks.list.title" text="列表"/></title>
+    <%@include file="/common/s3.jsp"%>
+    <script type="text/javascript">
 var config = {
-    id: 'processGrid',
+    id: 'consoleTasksGrid',
     pageNo: ${page.pageNo},
     pageSize: ${page.pageSize},
     totalCount: ${page.totalCount},
@@ -20,10 +20,11 @@ var config = {
     orderBy: '${page.orderBy == null ? "" : page.orderBy}',
     asc: ${page.asc},
     params: {
+        'filter_LIKES_name': '${param.filter_LIKES_name}'
     },
 	selectedItemClass: 'selectedItem',
-	gridFormId: 'processGridForm',
-	exportUrl: 'process-export.do'
+	gridFormId: 'consoleTasksGridForm',
+	exportUrl: 'consoleTasks-export.do'
 };
 
 var table;
@@ -41,39 +42,64 @@ $(function() {
     <%@include file="/header/bpm-console.jsp"%>
 
     <div class="row-fluid">
-	<%@include file="/menu/bpm-console.jsp"%>
+	  <%@include file="/menu/bpm-console.jsp"%>
 
-	<!-- start of main -->
-    <section id="m-main" class="span10" style="float:right">
+	  <!-- start of main -->
+      <section id="m-main" class="col-md-10" style="padding-top:65px;">
+<%--
+<div class="panel panel-default">
+  <div class="panel-heading">
+	<i class="glyphicon glyphicon-list"></i>
+    查询
+	<div class="pull-right ctrl">
+	  <a class="btn btn-default btn-xs"><i id="consoleTasksSearchIcon" class="glyphicon glyphicon-chevron-up"></i></a>
+    </div>
+  </div>
+  <div class="panel-body">
 
-	  <article class="m-blank">
-	    <div class="pull-left">
-          &nbsp;
+		  <form name="consoleTasksForm" method="post" action="consoleTasks-list.do" class="form-inline">
+		    <label for="consoleTasks_name"><spring:message code='consoleTasks.consoleTasks.list.search.name' text='名称'/>:</label>
+		    <input type="text" id="consoleTasks_name" name="filter_LIKES_name" value="${param.filter_LIKES_name}" class="form-control">
+			<button class="btn btn-default a-search" onclick="document.consoleTasksForm.submit()">查询</button>&nbsp;
+		  </form>
+
+		</div>
+	  </div>
+--%>
+      <div style="margin-bottom: 20px;">
+	    <div class="pull-left btn-group" role="group">
+		<%--
+		  <button class="btn btn-default a-insert" onclick="location.href='consoleTasks-input.do'">新建</button>
+		  <button class="btn btn-default a-remove" onclick="table.removeAll()">删除</button>
+		  <button class="btn btn-default a-export" onclick="table.exportExcel()">导出</button>
+		  --%>
 		</div>
 
 		<div class="pull-right">
 		  每页显示
-		  <select class="m-page-size">
+		  <select class="m-page-size form-control" style="display:inline;width:auto;">
 		    <option value="10">10</option>
 		    <option value="20">20</option>
 		    <option value="50">50</option>
 		  </select>
 		  条
+        </div>
+
+	    <div class="clearfix"></div>
+	  </div>
+
+<form id="consoleTasksGridForm" name="consoleTasksGridForm" method='post' action="consoleTasks-remove.do" class="m-form-blank">
+      <div class="panel panel-default">
+        <div class="panel-heading">
+		  <i class="glyphicon glyphicon-list"></i>
+		  <spring:message code="scope-info.scope-info.list.title" text="列表"/>
 		</div>
 
-	    <div class="m-clear"></div>
-	  </article>
 
-      <article class="m-widget">
-        <header class="header">
-		  <h4 class="title">列表</h4>
-		</header>
-		<div class="content">
-
-  <table id="demoGrid" class="m-table table-hover">
+  <table id="demoGrid" class="table table-hover">
     <thead>
       <tr>
-        <th width="10" class="m-table-check"><input type="checkbox" name="checkAll" onchange="toggleSelectedItems(this.checked)"></th>
+        <th width="10" class="table-check"><input type="checkbox" name="checkAll" onchange="toggleSelectedItems(this.checked)"></th>
         <th class="sorting" name="id">编号</th>
         <th class="sorting" name="name">名称</th>
         <th class="sorting" name="createTime">创建时间</th>
@@ -109,27 +135,32 @@ $(function() {
       </c:forEach>
     </tbody>
   </table>
-        </div>
-      </article>
 
-	  <article>
+
+      </div>
+</form>
+
+	  <div>
 	    <div class="m-page-info pull-left">
 		  共100条记录 显示1到10条记录
 		</div>
 
 		<div class="btn-group m-pagination pull-right">
-		  <button class="btn btn-small">&lt;</button>
-		  <button class="btn btn-small">1</button>
-		  <button class="btn btn-small">&gt;</button>
+		  <button class="btn btn-default">&lt;</button>
+		  <button class="btn btn-default">1</button>
+		  <button class="btn btn-default">&gt;</button>
 		</div>
 
-	    <div class="m-clear"></div>
-      </article>
+	    <div class="clearfix"></div>
+      </div>
 
-    </section>
-	<!-- end of main -->
+      <div class="m-spacer"></div>
+
+      </section>
+	  <!-- end of main -->
 	</div>
 
   </body>
 
 </html>
+

@@ -21,10 +21,10 @@
 %>
 
               <li class="dropdown ${currentHeader == menu.code ? 'active' : ''}">
-                <a data-toggle="dropdown" class="dropdown-toggle" href="#"><i class="icon-user"></i>${menu.title} <b class="caret"></b></a>
+                <a data-toggle="dropdown" class="dropdown-toggle" href="#"><i class="icon-list"></i>${menu.title} <b class="caret"></b></a>
                 <ul class="dropdown-menu">
     <c:forEach items="${menu.children}" var="child">
-      <li><a href="${tenantPrefix}/${child.url}"><i class="icon-user"></i>${child.title}</a></li>
+      <li><a href="${tenantPrefix}/${child.url}"><i class="icon-list"></i>${child.title}</a></li>
       <li class="divider"></li>
     </c:forEach>
                 </ul>

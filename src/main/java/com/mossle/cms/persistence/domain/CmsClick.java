@@ -6,7 +6,6 @@ import java.util.Date;
 import javax.persistence.Column;
 import javax.persistence.Entity;
 import javax.persistence.FetchType;
-import javax.persistence.GeneratedValue;
 import javax.persistence.Id;
 import javax.persistence.JoinColumn;
 import javax.persistence.ManyToOne;
@@ -48,8 +47,13 @@ public class CmsClick implements java.io.Serializable {
     public CmsClick() {
     }
 
-    public CmsClick(CmsArticle cmsArticle, String type, String userId,
+    public CmsClick(Long id) {
+        this.id = id;
+    }
+
+    public CmsClick(Long id, CmsArticle cmsArticle, String type, String userId,
             Date createTime, Integer priority, String tenantId) {
+        this.id = id;
         this.cmsArticle = cmsArticle;
         this.type = type;
         this.userId = userId;
@@ -60,7 +64,6 @@ public class CmsClick implements java.io.Serializable {
 
     /** @return null. */
     @Id
-    @GeneratedValue
     @Column(name = "ID", unique = true, nullable = false)
     public Long getId() {
         return this.id;

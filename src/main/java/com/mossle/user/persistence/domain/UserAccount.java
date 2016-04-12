@@ -4,7 +4,6 @@ package com.mossle.user.persistence.domain;
 import javax.persistence.Column;
 import javax.persistence.Entity;
 import javax.persistence.FetchType;
-import javax.persistence.GeneratedValue;
 import javax.persistence.Id;
 import javax.persistence.JoinColumn;
 import javax.persistence.ManyToOne;
@@ -41,8 +40,13 @@ public class UserAccount implements java.io.Serializable {
     public UserAccount() {
     }
 
-    public UserAccount(UserAccountType userAccountType, UserBase userBase,
-            String username, String password, String scopeId) {
+    public UserAccount(Long id) {
+        this.id = id;
+    }
+
+    public UserAccount(Long id, UserAccountType userAccountType,
+            UserBase userBase, String username, String password, String scopeId) {
+        this.id = id;
         this.userAccountType = userAccountType;
         this.userBase = userBase;
         this.username = username;
@@ -52,7 +56,6 @@ public class UserAccount implements java.io.Serializable {
 
     /** @return null. */
     @Id
-    @GeneratedValue
     @Column(name = "ID", unique = true, nullable = false)
     public Long getId() {
         return this.id;

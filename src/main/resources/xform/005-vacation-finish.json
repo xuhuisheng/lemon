@@ -7,7 +7,7 @@
 		"text":"销假"
 	},{
 		"type":"grid",
-		"row":"4",
+		"row":"6",
 		"col":"4",
 		"merge":[{
 			"startId":"0-1",
@@ -22,16 +22,28 @@
 			"maxRow":1,
 			"maxCol":3
 		},{
-			"startId":"2-1",
+			"startId":"2-2",
 			"minRow":2,
-			"minCol":1,
+			"minCol":2,
 			"maxRow":2,
 			"maxCol":3
 		},{
-			"startId":"3-1",
+			"startId":"3-2",
 			"minRow":3,
-			"minCol":1,
+			"minCol":2,
 			"maxRow":3,
+			"maxCol":3
+		},{
+			"startId":"4-1",
+			"minRow":4,
+			"minCol":1,
+			"maxRow":4,
+			"maxCol":3
+		},{
+			"startId":"5-1",
+			"minRow":5,
+			"minCol":1,
+			"maxRow":5,
 			"maxCol":3
 		}],
 		"fields":[{
@@ -72,6 +84,14 @@
 			"required":false,
 			"readOnly":true
 		},{
+			"type":"select",
+			"row":2,
+			"col":2,
+			"name":"startDateTime",
+			"items":"上午,下午",
+			"required":false,
+			"readOnly":true
+		},{
 			"type":"label",
 			"row":3,
 			"col":0,
@@ -81,6 +101,40 @@
 			"row":3,
 			"col":1,
 			"name":"endDate",
+			"required":false,
+			"readOnly":true
+		},{
+			"type":"select",
+			"row":3,
+			"col":2,
+			"name":"endDateTime",
+			"items":"下午,上午",
+			"required":false,
+			"readOnly":true
+		},{
+			"type":"label",
+			"row":4,
+			"col":0,
+			"text":"部门经理意见"
+		},{
+			"type":"radio",
+			"row":4,
+			"col":1,
+			"name":"leaderComment",
+			"items":"同意,不同意",
+			"required":false,
+			"readOnly":true
+		},{
+			"type":"label",
+			"row":5,
+			"col":0,
+			"text":"人事意见"
+		},{
+			"type":"radio",
+			"row":5,
+			"col":1,
+			"name":"hrComment",
+			"items":"同意,不同意",
 			"required":false,
 			"readOnly":true
 		}]

@@ -1,10 +1,11 @@
 package com.mossle.portal.web;
 
+import java.util.Collections;
 import java.util.HashSet;
 import java.util.LinkedHashMap;
 import java.util.List;
 import java.util.Map;
-import java.util.Collections;
+
 import javax.annotation.Resource;
 
 import com.mossle.api.tenant.TenantHolder;
@@ -61,17 +62,20 @@ public class PortalController {
                 .find("select distinct columnIndex from PortalItem where portalInfo=? order by columnIndex",
                         portalInfo);
         logger.debug("columnIndexes : {}", columnIndexes);
-		if (!columnIndexes.contains(Integer.valueOf(1))) {
-			columnIndexes.add(Integer.valueOf(1));
-		}
-		if (!columnIndexes.contains(Integer.valueOf(2))) {
-			columnIndexes.add(Integer.valueOf(2));
-		}
-		if (!columnIndexes.contains(Integer.valueOf(3))) {
-			columnIndexes.add(Integer.valueOf(3));
-		}
 
-		Collections.sort(columnIndexes);
+        if (!columnIndexes.contains(Integer.valueOf(1))) {
+            columnIndexes.add(Integer.valueOf(1));
+        }
+
+        if (!columnIndexes.contains(Integer.valueOf(2))) {
+            columnIndexes.add(Integer.valueOf(2));
+        }
+
+        if (!columnIndexes.contains(Integer.valueOf(3))) {
+            columnIndexes.add(Integer.valueOf(3));
+        }
+
+        Collections.sort(columnIndexes);
 
         Map<Integer, List<PortalItem>> map = new LinkedHashMap<Integer, List<PortalItem>>();
 
@@ -103,14 +107,24 @@ public class PortalController {
         if (id == null) {
             portalItem = new PortalItem();
 
-            int columnIndex = (Integer) portalItemManager
+            Integer columnIndex = (Integer) portalItemManager
                     .findUnique(
                             "select min(columnIndex) from PortalItem where portalInfo=?",
                             portalInfo);
+
+            if (columnIndex == null) {
+                columnIndex = 0;
+            }
+
             Long rowIndexLong = (Long) portalItemManager
                     .findUnique(
                             "select count(*) from PortalItem where portalInfo=? and columnIndex=?",
                             portalInfo, columnIndex);
+
+            if (rowIndexLong == null) {
+                rowIndexLong = 0L;
+            }
+
             int rowIndex = rowIndexLong.intValue();
             portalItem.setColumnIndex(columnIndex);
             portalItem.setRowIndex(rowIndex);

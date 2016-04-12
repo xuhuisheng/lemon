@@ -7,7 +7,6 @@ import java.util.Set;
 import javax.persistence.Column;
 import javax.persistence.Entity;
 import javax.persistence.FetchType;
-import javax.persistence.GeneratedValue;
 import javax.persistence.Id;
 import javax.persistence.JoinColumn;
 import javax.persistence.ManyToOne;
@@ -66,11 +65,16 @@ public class WhitelistApp implements java.io.Serializable {
     public WhitelistApp() {
     }
 
-    public WhitelistApp(WhitelistType whitelistType, String name,
+    public WhitelistApp(Long id) {
+        this.id = id;
+    }
+
+    public WhitelistApp(Long id, WhitelistType whitelistType, String name,
             String userId, String description, Integer forceRelogin,
             String code, String username, String password, Integer level,
             String tenantId, Set<WhitelistHost> whitelistHosts,
             Set<WhitelistIp> whitelistIps) {
+        this.id = id;
         this.whitelistType = whitelistType;
         this.name = name;
         this.userId = userId;
@@ -87,7 +91,6 @@ public class WhitelistApp implements java.io.Serializable {
 
     /** @return null. */
     @Id
-    @GeneratedValue
     @Column(name = "ID", unique = true, nullable = false)
     public Long getId() {
         return this.id;

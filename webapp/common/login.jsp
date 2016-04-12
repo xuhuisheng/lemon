@@ -33,11 +33,12 @@ function focusUsername() {
   <body>
 
     <!-- start of header bar -->
-<div class="navbar navbar-inverse navbar-fixed-top">
+<div class="navbar navbar-default navbar-fixed-top">
   <div class="container-fluid">
     <div class="navbar-header">
       <a class="navbar-brand" href="${tenantPrefix}">
-	    Lemon <sub><small>1.6.1</small></sub>
+	    <img src="${tenantPrefix}/s/logo32.png" class="img-responsive pull-left" style="margin-top:-5px;margin-right:5px;">
+	    Lemon <sub><small>1.7.0-SNAPSHOT</small></sub>
       </a>
     </div>
 
@@ -45,10 +46,10 @@ function focusUsername() {
 
       <ul class="nav navbar-nav navbar-right">
 	    <li>
-          <a href="?locale=zh_CN">zh_CN</a>
+          <a href="?locale=zh_CN"><img src="${ctx}/s/flags/china.gif" height="20"></a>
 		</li>
 	    <li>
-          <a href="?locale=en_US">en_US</a>
+          <a href="?locale=en_US"><img src="${ctx}/s/flags/us.gif" height="20"></a>
 		</li>
 	  </ul>
 	</div>
@@ -72,7 +73,7 @@ function focusUsername() {
 
       <article class="panel panel-default">
         <header class="panel-heading">
-		  <h4 class="title"><spring:message code="core.login.title" text="登录"/></h4>
+		  <spring:message code="core.login.title" text="登录"/>
 		</header>
 
 		<div class="panel-body">
@@ -81,20 +82,39 @@ function focusUsername() {
   <div class="form-group" style="display:none">
     <label class="col-md-2 control-label" for="tenant">租户</label>
 	<div class="col-md-10">
-      <input type='text' id="tenant" name='tenant' class="form-control" value="default">
+      <input type='text' id="tenant" name='tenant' class="form-control" value="${empty sessionScope['SECURITY_LAST_TENANT'] ? cookie['SECURITY_LAST_TENANT'].value : sessionScope['SECURITY_LAST_TENANT']}">
+      <span id="tenantText" class="glyphicon glyphicon-remove form-control-feedback" aria-hidden="true" style="right:15px;cursor:pointer;pointer-events:auto;display:none;"></span>
     </div>
   </div>
   <div class="form-group">
     <label class="col-md-2 control-label" for="username"><spring:message code="core.login.username" text="账号"/></label>
 	<div class="col-md-10">
       <input type='text' id="username" name='j_username' class="form-control" value="${empty sessionScope['SECURITY_LAST_USERNAME'] ? cookie['SECURITY_LAST_USERNAME'].value : sessionScope['SECURITY_LAST_USERNAME']}" aria-describedby="inputSuccess3Status">
-      <span id="usernameText" class="glyphicon glyphicon-remove form-control-feedback" aria-hidden="true" style="right:15px;cursor:pointer;pointer-events:auto;" onclick="$('#username').val('');$('#usernameText').hide();"></span>
+      <span id="usernameText" class="glyphicon glyphicon-remove form-control-feedback" aria-hidden="true" style="right:15px;cursor:pointer;pointer-events:auto;display:none;"></span>
     </div>
   </div>
   <div class="form-group">
     <label class="col-md-2 control-label" for="password"><spring:message code="core.login.password" text="密码"/></label>
 	<div class="col-md-10">
       <input type='password' id="password" name='j_password' class="form-control" value=''>
+    </div>
+  </div>
+  <c:if test="${sessionScope['captchaSessionToken']}">
+  <div class="form-group" id="captchaArea">
+    <label class="col-md-2 control-label" for="password" style="padding-left:0px;">验证码</label>
+	<div class="col-md-2">
+	  <img id="captchaPicture" src="captcha.jsp?_=<%=System.currentTimeMillis()%>" onclick="this.src='captcha.jsp?_=' + new Date().getTime()">
+	</div>
+	<div class="col-md-8">
+      <input type='text' id="captcha" name='captcha' class="form-control" value=''>
+    </div>
+  </div>
+  </c:if>
+  <div class="form-group">
+    <label class="col-md-2 control-label" for="username">&nbsp;</label>
+	<div class="col-md-10">
+      <input type='checkbox' name='_spring_security_remember_me' id="_spring_security_remember_me" />
+	  <label for="_spring_security_remember_me">两周内自动登陆</label>
     </div>
   </div>
   <div class="form-group">

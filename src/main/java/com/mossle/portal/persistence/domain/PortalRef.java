@@ -4,7 +4,6 @@ package com.mossle.portal.persistence.domain;
 import javax.persistence.Column;
 import javax.persistence.Entity;
 import javax.persistence.FetchType;
-import javax.persistence.GeneratedValue;
 import javax.persistence.Id;
 import javax.persistence.JoinColumn;
 import javax.persistence.ManyToOne;
@@ -35,7 +34,13 @@ public class PortalRef implements java.io.Serializable {
     public PortalRef() {
     }
 
-    public PortalRef(PortalInfo portalInfo, String userId, String tenantId) {
+    public PortalRef(Long id) {
+        this.id = id;
+    }
+
+    public PortalRef(Long id, PortalInfo portalInfo, String userId,
+            String tenantId) {
+        this.id = id;
         this.portalInfo = portalInfo;
         this.userId = userId;
         this.tenantId = tenantId;
@@ -43,7 +48,6 @@ public class PortalRef implements java.io.Serializable {
 
     /** @return null. */
     @Id
-    @GeneratedValue
     @Column(name = "ID", unique = true, nullable = false)
     public Long getId() {
         return this.id;

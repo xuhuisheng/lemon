@@ -19,10 +19,15 @@ import com.mossle.api.process.ProcessDTO;
 
 import org.apache.commons.lang3.StringUtils;
 
+import org.slf4j.Logger;
+import org.slf4j.LoggerFactory;
+
 import org.springframework.stereotype.Component;
 
 @Component
 public class OperationService {
+    private static Logger logger = LoggerFactory
+            .getLogger(OperationService.class);
     public static final String OPERATION_BUSINESS_KEY = "businessKey";
     public static final String OPERATION_TASK_ID = "taskId";
     public static final String OPERATION_BPM_PROCESS_ID = "bpmProcessId";
@@ -33,6 +38,9 @@ public class OperationService {
     private HumanTaskConnector humanTaskConnector;
     private ProcessConnector processConnector;
 
+    /**
+     * 保存草稿.
+     */
     public String saveDraft(String userId, String tenantId,
             FormParameter formParameter) {
         String humanTaskId = formParameter.getHumanTaskId();
@@ -65,7 +73,7 @@ public class OperationService {
             record = new RecordBuilder().build(record, STATUS_DRAFT_PROCESS,
                     formParameter);
             keyValueConnector.save(record);
-        } else {
+        } else if (StringUtils.isNotBlank(bpmProcessId)) {
             // 如果是第一次保存草稿，肯定是流程草稿，先初始化record，再保存数据
             Record record = new RecordBuilder().build(bpmProcessId,
                     STATUS_DRAFT_PROCESS, formParameter, userId, tenantId);
@@ -73,6 +81,12 @@ public class OperationService {
             record.setName(processDto.getProcessDefinitionName());
             keyValueConnector.save(record);
             businessKey = record.getCode();
+        } else {
+            logger.error(
+                    "humanTaskId, businessKey, bpmProcessId all null : {}",
+                    formParameter.getMultiValueMap());
+            throw new IllegalArgumentException(
+                    "humanTaskId, businessKey, bpmProcessId all null");
         }
 
         return businessKey;

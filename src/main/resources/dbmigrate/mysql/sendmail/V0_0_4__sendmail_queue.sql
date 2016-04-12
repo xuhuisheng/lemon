@@ -4,7 +4,7 @@
 --  sendmail queue
 -------------------------------------------------------------------------------
 CREATE TABLE SENDMAIL_QUEUE(
-        ID BIGINT AUTO_INCREMENT,
+        ID BIGINT NOT NULL,
         SUBJECT VARCHAR(50),
 	SENDER VARCHAR(200),
 	RECEIVER VARCHAR(200),

@@ -33,7 +33,7 @@ public class StoreService {
         storeInfo.setModel(model);
         storeInfo.setPath(storeDto.getKey());
         storeInfo.setCreateTime(new Date());
-		storeInfo.setTenantId(tenantId);
+        storeInfo.setTenantId(tenantId);
         storeInfoManager.save(storeInfo);
 
         return storeDto;
@@ -49,7 +49,7 @@ public class StoreService {
         storeInfo.setModel(model);
         storeInfo.setPath(storeDto.getKey());
         storeInfo.setCreateTime(new Date());
-		storeInfo.setTenantId(tenantId);
+        storeInfo.setTenantId(tenantId);
         storeInfoManager.save(storeInfo);
 
         return storeDto;

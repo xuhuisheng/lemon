@@ -5,7 +5,6 @@ import java.util.Date;
 
 import javax.persistence.Column;
 import javax.persistence.Entity;
-import javax.persistence.GeneratedValue;
 import javax.persistence.Id;
 import javax.persistence.Table;
 import javax.persistence.Temporal;
@@ -51,9 +50,14 @@ public class DelegateHistory implements java.io.Serializable {
     public DelegateHistory() {
     }
 
-    public DelegateHistory(String assignee, String attorney, Date delegateTime,
-            String taskId, String processDefinitionId,
+    public DelegateHistory(Long id) {
+        this.id = id;
+    }
+
+    public DelegateHistory(Long id, String assignee, String attorney,
+            Date delegateTime, String taskId, String processDefinitionId,
             String taskDefinitionKey, Integer status, String tenantId) {
+        this.id = id;
         this.assignee = assignee;
         this.attorney = attorney;
         this.delegateTime = delegateTime;
@@ -66,7 +70,6 @@ public class DelegateHistory implements java.io.Serializable {
 
     /** @return null. */
     @Id
-    @GeneratedValue
     @Column(name = "ID", unique = true, nullable = false)
     public Long getId() {
         return this.id;

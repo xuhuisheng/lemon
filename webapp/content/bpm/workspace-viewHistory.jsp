@@ -8,7 +8,7 @@
   <head>
     <%@include file="/common/meta.jsp"%>
     <title>流程列表</title>
-    <%@include file="/common/s.jsp"%>
+    <%@include file="/common/s3.jsp"%>
 	<script>
 $(function () {
   $('#processGraphMask').css($('#processGraphWrapper').position());
@@ -77,23 +77,26 @@ var replay = new Replay(
   </head>
 
   <body>
-    <%@include file="/header/bpm-workspace.jsp"%>
+    <%@include file="/header/bpm-workspace3.jsp"%>
 
     <div class="row-fluid">
-	<%@include file="/menu/bpm-workspace.jsp"%>
+	<%@include file="/menu/bpm-workspace3.jsp"%>
 
 	<!-- start of main -->
-    <section id="m-main" class="span10" style="float:right">
+      <section id="m-main" class="col-md-10" style="padding-top:65px;">
 
-	  <article class="m-widget">
-        <header class="header">
-		  <h4 class="title">流程图</h4>
+      <div class="panel panel-default">
+        <div class="panel-heading">
+		  流程图 ${historicProcessInstance.name}
 		  <div class="pull-right">
-		    <button class="btn btn-mini" onclick="replay.prev()"><i class="icon-backward"></i></button>
-		    <button class="btn btn-mini" onclick="replay.next()"><i class="icon-forward"></i></button>
-		    <button class="btn btn-mini" onclick="replay.replay()"><i class="icon-play"></i></button>
+		    <button class="btn btn-xs" onclick="replay.prev()"><i class="glyphicon glyphicon-backward"></i></button>
+		    <button class="btn btn-xs" onclick="replay.next()"><i class="glyphicon glyphicon-forward"></i></button>
+		    <button class="btn btn-xs" onclick="replay.replay()"><i class="glyphicon glyphicon-play"></i></button>
 		  </div>
-		</header>
+		</div>
+
+		<div class="panel-body">
+
         <div id="processGraphWrapper" class="content">
 
 		  <img src="workspace-graphHistoryProcessInstance.do?processInstanceId=${param.processInstanceId}">
@@ -105,46 +108,50 @@ var replay = new Replay(
 		  </div>
 
 		</div>
-	  </article>
+		</div>
+      </div>
 
-      <article class="m-widget">
-        <header class="header">
-		  <h4 class="title">列表</h4>
-		</header>
-		<div class="content">
-
-  <table id="demoGrid" class="m-table table-hover">
+      <div class="panel panel-default">
+        <div class="panel-heading">
+		  列表
+		</div>
+  <table id="demoGrid" class="table table-hover">
     <thead>
       <tr>
+	    <%--
         <th class="sorting" name="id">编号</th>
+		--%>
         <th class="sorting" name="name">名称</th>
         <th class="sorting" name="startTime">开始时间</th>
         <th class="sorting" name="endTime">结束时间</th>
         <th class="sorting" name="assignee">负责人</th>
-        <th class="sorting" name="deleteReason">处理结果</th>
-      </tr>
+        <th>状态</th>
+        <th>意见</th>
+	  </tr>
     </thead>
 
     <tbody>
-      <c:forEach items="${historicTasks}" var="item">
+      <c:forEach items="${humanTasks}" var="item">
       <tr>
+	    <%--
 	    <td>${item.id}</td>
+		--%>
 	    <td>${item.name}</td>
-	    <td><fmt:formatDate value="${item.startTime}" pattern="yyyy-MM-dd HH:mm:ss" /></td>
-	    <td><fmt:formatDate value="${item.endTime}" pattern="yyyy-MM-dd HH:mm:ss" /></td>
+	    <td><fmt:formatDate value="${item.createTime}" pattern="yyyy-MM-dd HH:mm:ss" /></td>
+	    <td><fmt:formatDate value="${item.completeTime}" pattern="yyyy-MM-dd HH:mm:ss" /></td>
 	    <td>
 		  <tags:user userId="${item.assignee}"/>
 		  <c:if test="${not empty item.owner && item.assignee != item.owner}">
 		  <b>(原执行人:<tags:user userId="${item.owner}"/>)</b>
 		  </c:if>
 		</td>
-	    <td>${item.deleteReason}</td>
+	    <td>${item.action}</td>
+	    <td>${item.comment}</td>
       </tr>
       </c:forEach>
     </tbody>
   </table>
-        </div>
-      </article>
+      </div>
 
 <!--
       <article class="m-widget">

@@ -4,7 +4,7 @@
 --  account history credential
 -------------------------------------------------------------------------------
 CREATE TABLE ACCOUNT_HISTORY_CREDENTIAL(
-        ID BIGINT AUTO_INCREMENT,
+        ID BIGINT NOT NULL,
 	MODIFY_TIME DATETIME,
 	PASSWORD VARCHAR(100),
 	CREDENTIAL_ID BIGINT,

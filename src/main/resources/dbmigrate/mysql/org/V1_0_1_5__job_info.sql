@@ -4,7 +4,7 @@
 --  job info
 -------------------------------------------------------------------------------
 CREATE TABLE JOB_INFO(
-        ID BIGINT AUTO_INCREMENT,
+        ID BIGINT NOT NULL,
 	NAME VARCHAR(50),
 	LEVEL_ID BIGINT,
 	TYPE_ID BIGINT,

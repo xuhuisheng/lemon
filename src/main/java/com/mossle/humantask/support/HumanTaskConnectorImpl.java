@@ -1,6 +1,7 @@
 package com.mossle.humantask.support;
 
 import java.util.ArrayList;
+import java.util.Collections;
 import java.util.Date;
 import java.util.List;
 import java.util.Map;
@@ -10,6 +11,7 @@ import javax.annotation.Resource;
 import com.mossle.api.form.FormConnector;
 import com.mossle.api.form.FormDTO;
 import com.mossle.api.humantask.HumanTaskConnector;
+import com.mossle.api.humantask.HumanTaskConstants;
 import com.mossle.api.humantask.HumanTaskDTO;
 import com.mossle.api.humantask.HumanTaskDefinition;
 import com.mossle.api.humantask.ParticipantDTO;
@@ -30,6 +32,8 @@ import com.mossle.humantask.persistence.manager.TaskParticipantManager;
 import com.mossle.spi.humantask.TaskDefinitionConnector;
 import com.mossle.spi.process.InternalProcessConnector;
 import com.mossle.spi.process.ProcessTaskDefinition;
+
+import org.apache.commons.lang3.StringUtils;
 
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
@@ -117,6 +121,10 @@ public class HumanTaskConnectorImpl implements HumanTaskConnector {
 
         beanMapper.copy(humanTaskDto, taskInfo, HumanTaskDTO.class,
                 TaskInfo.class);
+        logger.debug("action : {}", humanTaskDto.getAction());
+        logger.debug("comment : {}", humanTaskDto.getComment());
+        logger.debug("action : {}", taskInfo.getAction());
+        logger.debug("comment : {}", taskInfo.getComment());
 
         if (humanTaskDto.getParentId() != null) {
             taskInfo.setTaskInfo(taskInfoManager.get(Long
@@ -161,10 +169,26 @@ public class HumanTaskConnectorImpl implements HumanTaskConnector {
         return humanTaskDto;
     }
 
+    public List<HumanTaskDTO> findHumanTasksByProcessInstanceId(
+            String processInstanceId) {
+        List<TaskInfo> taskInfos = taskInfoManager
+                .find("from TaskInfo where processInstanceId=? order by createTime asc",
+                        processInstanceId);
+
+        return this.convertHumanTaskDtos(taskInfos);
+    }
+
     public HumanTaskDTO findHumanTask(String humanTaskId) {
         TaskInfo taskInfo = taskInfoManager.get(Long.parseLong(humanTaskId));
 
         return this.convertHumanTaskDto(taskInfo);
+    }
+
+    public List<HumanTaskDTO> findSubTasks(String parentTaskId) {
+        List<TaskInfo> taskInfos = taskInfoManager.findBy("taskInfo.id",
+                Long.parseLong(parentTaskId));
+
+        return this.convertHumanTaskDtos(taskInfos);
     }
 
     /**
@@ -183,6 +207,11 @@ public class HumanTaskConnectorImpl implements HumanTaskConnector {
                             humanTaskDto.getProcessDefinitionId());
             formDto = new FormDTO();
             formDto.setCode(taskFormDto.getKey());
+
+            List<String> operations = taskDefinitionConnector.findOperations(
+                    humanTaskDto.getCode(),
+                    humanTaskDto.getProcessDefinitionId());
+            formDto.getButtons().addAll(operations);
             formDto.setActivityId(humanTaskDto.getCode());
             formDto.setProcessDefinitionId(humanTaskDto
                     .getProcessDefinitionId());
@@ -262,12 +291,23 @@ public class HumanTaskConnectorImpl implements HumanTaskConnector {
     /**
      * 完成任务.
      */
-    public void completeTask(String humanTaskId, String userId,
+    public void completeTask(String humanTaskId, String userId, String comment,
             Map<String, Object> taskParameters) {
+        logger.info("completeTask humanTaskId : {}, userId : {}, comment: {}",
+                humanTaskId, userId, comment);
+
         HumanTaskDTO humanTaskDto = findHumanTask(humanTaskId);
 
         if (humanTaskDto == null) {
             throw new IllegalStateException("任务不存在");
+        }
+
+        humanTaskDto.setStatus("complete");
+        humanTaskDto.setCompleteTime(new Date());
+        humanTaskDto.setAction("完成");
+
+        if (StringUtils.isNotBlank(comment)) {
+            humanTaskDto.setComment(comment);
         }
 
         Long longTaskId = Long.parseLong(humanTaskDto.getId());
@@ -282,7 +322,8 @@ public class HumanTaskConnectorImpl implements HumanTaskConnector {
         if ("copy".equals(humanTaskDto.getCategory())) {
             humanTaskDto.setStatus("complete");
             humanTaskDto.setCompleteTime(new Date());
-            this.saveHumanTask(humanTaskDto);
+            humanTaskDto.setAction("完成");
+            this.saveHumanTask(humanTaskDto, false);
 
             return;
         }
@@ -290,8 +331,9 @@ public class HumanTaskConnectorImpl implements HumanTaskConnector {
         // 处理startEvent任务
         if ("startEvent".equals(humanTaskDto.getCategory())) {
             humanTaskDto.setStatus("complete");
+            humanTaskDto.setAction("提交");
             humanTaskDto.setCompleteTime(new Date());
-            this.saveHumanTask(humanTaskDto);
+            this.saveHumanTask(humanTaskDto, false);
             internalProcessConnector.signalExecution(humanTaskDto
                     .getExecutionId());
 
@@ -304,7 +346,8 @@ public class HumanTaskConnectorImpl implements HumanTaskConnector {
         if ("pending".equals(humanTaskDto.getDelegateStatus())) {
             humanTaskDto.setDelegateStatus("resolved");
             humanTaskDto.setAssignee(humanTaskDto.getOwner());
-            this.saveHumanTask(humanTaskDto);
+            humanTaskDto.setAction("完成");
+            this.saveHumanTask(humanTaskDto, false);
             internalProcessConnector.resolveTask(humanTaskDto.getTaskId());
 
             return;
@@ -315,7 +358,8 @@ public class HumanTaskConnectorImpl implements HumanTaskConnector {
             humanTaskDto.setCompleteTime(new Date());
             humanTaskDto.setDelegateStatus("resolved");
             humanTaskDto.setStatus("complete");
-            this.saveHumanTask(humanTaskDto);
+            humanTaskDto.setAction("完成");
+            this.saveHumanTask(humanTaskDto, false);
 
             if (humanTaskDto.getParentId() != null) {
                 HumanTaskDTO targetHumanTaskDto = this
@@ -326,12 +370,13 @@ public class HumanTaskConnectorImpl implements HumanTaskConnector {
                     targetHumanTaskDto.setDelegateStatus("resolved");
                 }
 
-                this.saveHumanTask(targetHumanTaskDto);
+                this.saveHumanTask(targetHumanTaskDto, false);
             }
 
             return;
         }
 
+        this.saveHumanTask(humanTaskDto, false);
         internalProcessConnector.completeTask(humanTaskDto.getTaskId(), userId,
                 taskParameters);
 
@@ -406,7 +451,7 @@ public class HumanTaskConnectorImpl implements HumanTaskConnector {
     /**
      * 释放任务.
      */
-    public void releaseTask(String humanTaskId) {
+    public void releaseTask(String humanTaskId, String comment) {
         TaskInfo taskInfo = taskInfoManager.get(Integer.parseInt(humanTaskId));
 
         taskInfo.setAssignee(null);
@@ -416,20 +461,31 @@ public class HumanTaskConnectorImpl implements HumanTaskConnector {
     /**
      * 转办.
      */
-    public void transfer(String humanTaskId, String userId) {
+    public void transfer(String humanTaskId, String userId, String comment) {
         HumanTaskDTO humanTaskDto = this.findHumanTask(humanTaskId);
         humanTaskDto.setOwner(humanTaskDto.getAssignee());
         humanTaskDto.setAssignee(userId);
-        this.saveHumanTask(humanTaskDto);
+        this.saveHumanTask(humanTaskDto, false);
 
         internalProcessConnector.transfer(humanTaskDto.getTaskId(),
                 humanTaskDto.getAssignee(), humanTaskDto.getOwner());
     }
 
     /**
+     * 取消转办.
+     */
+    public void cancel(String humanTaskId, String userId, String comment) {
+        HumanTaskDTO humanTaskDto = this.findHumanTask(humanTaskId);
+        humanTaskDto.setAssignee(humanTaskDto.getOwner());
+        humanTaskDto.setOwner("");
+        this.saveHumanTask(humanTaskDto, false);
+    }
+
+    /**
      * 回退，指定节点，重新分配.
      */
-    public void rollbackActivity(String humanTaskId, String activityId) {
+    public void rollbackActivity(String humanTaskId, String activityId,
+            String comment) {
         HumanTaskDTO humanTaskDto = findHumanTask(humanTaskId);
 
         if (humanTaskDto == null) {
@@ -443,7 +499,8 @@ public class HumanTaskConnectorImpl implements HumanTaskConnector {
     /**
      * 回退，指定节点，上个执行人.
      */
-    public void rollbackActivityLast(String humanTaskId, String activityId) {
+    public void rollbackActivityLast(String humanTaskId, String activityId,
+            String comment) {
         HumanTaskDTO humanTaskDto = findHumanTask(humanTaskId);
 
         if (humanTaskDto == null) {
@@ -458,7 +515,7 @@ public class HumanTaskConnectorImpl implements HumanTaskConnector {
      * 回退，指定节点，指定执行人.
      */
     public void rollbackActivityAssignee(String humanTaskId, String activityId,
-            String userId) {
+            String userId, String comment) {
         HumanTaskDTO humanTaskDto = findHumanTask(humanTaskId);
 
         if (humanTaskDto == null) {
@@ -472,7 +529,7 @@ public class HumanTaskConnectorImpl implements HumanTaskConnector {
     /**
      * 回退，上个节点，重新分配.
      */
-    public void rollbackPrevious(String humanTaskId) {
+    public void rollbackPrevious(String humanTaskId, String comment) {
         HumanTaskDTO humanTaskDto = findHumanTask(humanTaskId);
 
         if (humanTaskDto == null) {
@@ -486,7 +543,7 @@ public class HumanTaskConnectorImpl implements HumanTaskConnector {
     /**
      * 回退，上个节点，上个执行人.
      */
-    public void rollbackPreviousLast(String humanTaskId) {
+    public void rollbackPreviousLast(String humanTaskId, String comment) {
         HumanTaskDTO humanTaskDto = findHumanTask(humanTaskId);
 
         if (humanTaskDto == null) {
@@ -500,7 +557,8 @@ public class HumanTaskConnectorImpl implements HumanTaskConnector {
     /**
      * 回退，上个节点，指定执行人.
      */
-    public void rollbackPreviousAssignee(String humanTaskId, String userId) {
+    public void rollbackPreviousAssignee(String humanTaskId, String userId,
+            String comment) {
         HumanTaskDTO humanTaskDto = findHumanTask(humanTaskId);
 
         if (humanTaskDto == null) {
@@ -514,7 +572,7 @@ public class HumanTaskConnectorImpl implements HumanTaskConnector {
     /**
      * 回退，开始事件，流程发起人.
      */
-    public void rollbackStart(String humanTaskId) {
+    public void rollbackStart(String humanTaskId, String comment) {
         HumanTaskDTO humanTaskDto = findHumanTask(humanTaskId);
 
         if (humanTaskDto == null) {
@@ -532,9 +590,32 @@ public class HumanTaskConnectorImpl implements HumanTaskConnector {
     }
 
     /**
+     * 回退，流程发起人.
+     */
+    public void rollbackInitiator(String humanTaskId, String comment) {
+        HumanTaskDTO humanTaskDto = findHumanTask(humanTaskId);
+        humanTaskDto.setAction("回退（发起人）");
+        humanTaskDto.setComment(comment);
+        this.saveHumanTask(humanTaskDto, false);
+
+        if (humanTaskDto == null) {
+            throw new IllegalStateException("任务不存在");
+        }
+
+        String taskId = humanTaskDto.getTaskId();
+        String processDefinitionId = humanTaskDto.getProcessDefinitionId();
+        String processInstanceId = humanTaskDto.getProcessInstanceId();
+        String initiator = this.internalProcessConnector
+                .findInitiator(processInstanceId);
+        String activityId = this.internalProcessConnector
+                .findFirstUserTaskActivityId(processDefinitionId, initiator);
+        internalProcessConnector.rollback(taskId, activityId, initiator);
+    }
+
+    /**
      * 撤销.
      */
-    public void withdraw(String humanTaskId) {
+    public void withdraw(String humanTaskId, String comment) {
         HumanTaskDTO humanTaskDto = findHumanTask(humanTaskId);
 
         if (humanTaskDto == null) {
@@ -547,23 +628,24 @@ public class HumanTaskConnectorImpl implements HumanTaskConnector {
     /**
      * 协办.
      */
-    public void delegateTask(String humanTaskId, String userId) {
+    public void delegateTask(String humanTaskId, String userId, String comment) {
         HumanTaskDTO humanTaskDto = this.findHumanTask(humanTaskId);
         humanTaskDto.setOwner(humanTaskDto.getAssignee());
         humanTaskDto.setAssignee(userId);
         humanTaskDto.setDelegateStatus("pending");
-        this.saveHumanTask(humanTaskDto);
+        this.saveHumanTask(humanTaskDto, false);
         internalProcessConnector.delegateTask(humanTaskDto.getTaskId(), userId);
     }
 
     /**
      * 协办，链状.
      */
-    public void delegateTaskCreate(String humanTaskId, String userId) {
+    public void delegateTaskCreate(String humanTaskId, String userId,
+            String comment) {
         HumanTaskDTO humanTaskDto = this.findHumanTask(humanTaskId);
         humanTaskDto.setDelegateStatus("pendingCreate");
         humanTaskDto.setStatus("pending");
-        this.saveHumanTask(humanTaskDto);
+        this.saveHumanTask(humanTaskDto, false);
 
         HumanTaskDTO targetHumanTaskDto = this.createHumanTask();
         beanMapper.copy(humanTaskDto, targetHumanTaskDto);
@@ -583,8 +665,52 @@ public class HumanTaskConnectorImpl implements HumanTaskConnector {
                     userId);
             humanTaskDto.setAssignee(humanTaskDto.getOwner());
             humanTaskDto.setOwner(null);
-            this.saveHumanTask(humanTaskDto);
+            this.saveHumanTask(humanTaskDto, false);
         }
+    }
+
+    /**
+     * 沟通.
+     */
+    public void communicate(String humanTaskId, String userId, String comment) {
+        HumanTaskDTO humanTaskDto = this.findHumanTask(humanTaskId);
+        HumanTaskDTO target = new HumanTaskDTO();
+        beanMapper.copy(humanTaskDto, target);
+        target.setId(null);
+        target.setCatalog(HumanTaskConstants.CATALOG_COMMUNICATE);
+        target.setAssignee(userId);
+        target.setParentId(humanTaskId);
+        target.setMessage(comment);
+
+        this.saveHumanTask(target, false);
+    }
+
+    /**
+     * 反馈.
+     */
+    public void callback(String humanTaskId, String userId, String comment) {
+        HumanTaskDTO humanTaskDto = this.findHumanTask(humanTaskId);
+        humanTaskDto.setStatus("complete");
+        humanTaskDto.setCompleteTime(new Date());
+        humanTaskDto.setAction("反馈");
+        humanTaskDto.setComment(comment);
+        this.saveHumanTask(humanTaskDto, false);
+    }
+
+    /**
+     * 跳过.
+     */
+    public void skip(String humanTaskId, String userId, String comment) {
+        HumanTaskDTO humanTaskDto = this.findHumanTask(humanTaskId);
+        humanTaskDto.setStatus("complete");
+        humanTaskDto.setCompleteTime(new Date());
+        humanTaskDto.setAction("跳过");
+        humanTaskDto.setComment(comment);
+        humanTaskDto.setOwner(humanTaskDto.getAssignee());
+        humanTaskDto.setAssignee(userId);
+        this.saveHumanTask(humanTaskDto, false);
+        internalProcessConnector.completeTask(humanTaskDto.getTaskId(), userId,
+                Collections.<String,Object>emptyMap());
     }
 
     // ~ ==================================================

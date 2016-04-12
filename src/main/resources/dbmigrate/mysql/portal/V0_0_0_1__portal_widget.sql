@@ -4,7 +4,7 @@
 --  portal widget
 -------------------------------------------------------------------------------
 CREATE TABLE PORTAL_WIDGET(
-        ID BIGINT AUTO_INCREMENT,
+        ID BIGINT NOT NULL,
 	NAME VARCHAR(200),
 	URL VARCHAR(200),
 	DATA VARCHAR(200),

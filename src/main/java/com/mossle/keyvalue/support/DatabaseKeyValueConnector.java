@@ -13,13 +13,16 @@ import com.mossle.api.keyvalue.KeyValueConnector;
 import com.mossle.api.keyvalue.Prop;
 import com.mossle.api.keyvalue.Record;
 
-import com.mossle.core.hibernate.PropertyFilter;
+import com.mossle.core.id.IdGenerator;
 import com.mossle.core.page.Page;
+import com.mossle.core.query.PropertyFilter;
 
 import org.apache.commons.lang3.StringUtils;
 
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
+
+import org.springframework.dao.EmptyResultDataAccessException;
 
 import org.springframework.jdbc.core.JdbcTemplate;
 
@@ -29,7 +32,9 @@ import org.springframework.transaction.annotation.Transactional;
 public class DatabaseKeyValueConnector implements KeyValueConnector {
     private static Logger logger = LoggerFactory
             .getLogger(DatabaseKeyValueConnector.class);
+    public static final int STATUS_DRAFT_PROCESS = 0;
     private JdbcTemplate jdbcTemplate;
+    private IdGenerator idGenerator;
 
     /**
      * 根据code获得记录.
@@ -45,6 +50,10 @@ public class DatabaseKeyValueConnector implements KeyValueConnector {
             Map<String, Object> map = jdbcTemplate.queryForMap(
                     "select * from KV_RECORD where id=?", code);
             record = convertRecord(map);
+        } catch (EmptyResultDataAccessException ex) {
+            logger.info("cannot find record by code : {}", code);
+
+            return null;
         } catch (Exception ex) {
             logger.error(ex.getMessage(), ex);
         }
@@ -66,6 +75,10 @@ public class DatabaseKeyValueConnector implements KeyValueConnector {
             Map<String, Object> map = jdbcTemplate.queryForMap(
                     "select * from KV_RECORD where ref=?", ref);
             record = convertRecord(map);
+        } catch (EmptyResultDataAccessException ex) {
+            logger.info("cannot find record by ref : {}", ref);
+
+            return null;
         } catch (Exception ex) {
             logger.error(ex.getMessage(), ex);
         }
@@ -108,6 +121,32 @@ public class DatabaseKeyValueConnector implements KeyValueConnector {
         }
 
         return records;
+    }
+
+    /**
+     * 分页.
+     */
+    public Page pagedQuery(Page page, int status, String userId, String tenantId) {
+        long totalCount = jdbcTemplate
+                .queryForObject(
+                        "select count(*) from KV_RECORD WHERE STATUS=? AND USER_ID=? AND TENANT_ID=?",
+                        Long.class, status, userId, tenantId);
+        List<Map<String, Object>> list = jdbcTemplate
+                .queryForList(
+                        "SELECT * FROM KV_RECORD WHERE STATUS=? AND USER_ID=? AND TENANT_ID=? limit ?,?",
+                        status, userId, tenantId, page.getStart(),
+                        page.getPageSize());
+        List<Record> records = new ArrayList<Record>();
+
+        for (Map<String, Object> map : list) {
+            Record record = convertRecord(map);
+            records.add(record);
+        }
+
+        page.setTotalCount(totalCount);
+        page.setResult(records);
+
+        return page;
     }
 
     // ~ ======================================================================
@@ -196,8 +235,9 @@ public class DatabaseKeyValueConnector implements KeyValueConnector {
      * 新建一条数据.
      */
     public void insert(Record record) {
-        String sqlRecordInsert = "insert into KV_RECORD(name,form_template_code,category,status,ref,create_time,user_id,tenant_id)"
-                + " values(?,?,?,?,?,?,?,?)";
+        String sqlRecordInsert = "insert into KV_RECORD(id,name,form_template_code,category,status,ref,create_time,user_id,tenant_id)"
+                + " values(?,?,?,?,?,?,?,?,?)";
+        Long id = idGenerator.generateId();
         String name = record.getName();
         String formTemplateCode = record.getFormTemplateCode();
         String originalRef = record.getRef();
@@ -210,7 +250,7 @@ public class DatabaseKeyValueConnector implements KeyValueConnector {
             ref = UUID.randomUUID().toString();
         }
 
-        jdbcTemplate.update(sqlRecordInsert, name, formTemplateCode,
+        jdbcTemplate.update(sqlRecordInsert, id, name, formTemplateCode,
                 record.getCategory(), record.getStatus(), ref, createTime,
                 userId, tenantId);
 
@@ -224,11 +264,12 @@ public class DatabaseKeyValueConnector implements KeyValueConnector {
 
         record.setCode(resultRecord.getCode());
 
-        String sqlProp = "insert into KV_PROP(code,type,value,record_id) values(?,?,?,?)";
+        String sqlProp = "insert into KV_PROP(id,code,type,value,record_id) values(?,?,?,?,?)";
 
         for (Prop prop : record.getProps().values()) {
-            jdbcTemplate.update(sqlProp, prop.getCode(), prop.getType(),
-                    prop.getValue(), record.getCode());
+            jdbcTemplate.update(sqlProp, idGenerator.generateId(),
+                    prop.getCode(), prop.getType(), prop.getValue(),
+                    record.getCode());
         }
     }
 
@@ -242,7 +283,7 @@ public class DatabaseKeyValueConnector implements KeyValueConnector {
                 record.getStatus(), record.getRef(), record.getCode());
 
         Record resultRecord = findByCode(record.getCode());
-        String sqlPropInsert = "insert into KV_PROP(code,type,value,record_id) values(?,?,?,?)";
+        String sqlPropInsert = "insert into KV_PROP(id,code,type,value,record_id) values(?,?,?,?,?)";
         String sqlPropUpdate = "update KV_PROP set type=?,value=? where code=? and record_id=?";
 
         for (Prop prop : record.getProps().values()) {
@@ -251,8 +292,9 @@ public class DatabaseKeyValueConnector implements KeyValueConnector {
                 jdbcTemplate.update(sqlPropUpdate, prop.getType(),
                         prop.getValue(), prop.getCode(), record.getCode());
             } else {
-                jdbcTemplate.update(sqlPropInsert, prop.getCode(),
-                        prop.getType(), prop.getValue(), record.getCode());
+                jdbcTemplate.update(sqlPropInsert, idGenerator.generateId(),
+                        prop.getCode(), prop.getType(), prop.getValue(),
+                        record.getCode());
             }
         }
     }
@@ -398,8 +440,54 @@ public class DatabaseKeyValueConnector implements KeyValueConnector {
         return list;
     }
 
+    /**
+     * 复制数据.
+     */
+    public Record copyRecord(Record original, List<String> fields) {
+        Record record = new Record();
+        //
+        record.setName(original.getName());
+        record.setFormTemplateCode(original.getFormTemplateCode());
+        // bpmProcessId
+        record.setCategory(original.getCategory());
+        record.setStatus(STATUS_DRAFT_PROCESS);
+        // processInstanceId
+        record.setRef(null);
+        record.setCreateTime(new Date());
+        record.setUserId(original.getUserId());
+        record.setTenantId(original.getTenantId());
+
+        List<Map<String, Object>> list = jdbcTemplate.queryForList(
+                "select * from KV_PROP where record_id=?", original.getCode());
+
+        for (Map<String, Object> propMap : list) {
+            logger.debug("prop map : {}", propMap);
+
+            String code = getStringValue(propMap, "code");
+
+            if (!fields.contains(code)) {
+                continue;
+            }
+
+            Prop prop = new Prop();
+            prop.setCode(code);
+            prop.setType(getIntValue(propMap, "type"));
+            prop.setValue(getStringValue(propMap, "value"));
+            record.getProps().put(prop.getCode(), prop);
+        }
+
+        this.insert(record);
+
+        return record;
+    }
+
     @Resource
     public void setJdbcTemplate(JdbcTemplate jdbcTemplate) {
         this.jdbcTemplate = jdbcTemplate;
+    }
+
+    @Resource
+    public void setIdGenerator(IdGenerator idGenerator) {
+        this.idGenerator = idGenerator;
     }
 }

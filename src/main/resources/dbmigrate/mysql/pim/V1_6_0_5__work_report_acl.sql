@@ -4,7 +4,7 @@
 --  work report acl
 -------------------------------------------------------------------------------
 CREATE TABLE WORK_REPORT_ACL(
-        ID BIGINT AUTO_INCREMENT,
+        ID BIGINT NOT NULL,
 	TYPE VARCHAR(200),
 	REF VARCHAR(200),
 	TENANT_ID VARCHAR(64),

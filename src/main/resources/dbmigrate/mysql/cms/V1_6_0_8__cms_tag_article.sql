@@ -4,7 +4,7 @@
 --  cms tag article
 -------------------------------------------------------------------------------
 CREATE TABLE CMS_TAG_ARTICLE(
-        ID BIGINT AUTO_INCREMENT,
+        ID BIGINT NOT NULL,
 	TYPE VARCHAR(50),
 	TAG_ID BIGINT,
 	ARTICLE_ID BIGINT,

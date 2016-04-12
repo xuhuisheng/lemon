@@ -14,6 +14,9 @@ import com.mossle.core.auth.LogoutEvent;
 
 import com.mossle.security.impl.SpringSecurityUserAuth;
 
+import org.slf4j.Logger;
+import org.slf4j.LoggerFactory;
+
 import org.springframework.context.ApplicationContext;
 import org.springframework.context.ApplicationContextAware;
 
@@ -26,6 +29,8 @@ import org.springframework.security.web.authentication.logout.SimpleUrlLogoutSuc
  */
 public class LogoutSuccessHandlerImpl extends SimpleUrlLogoutSuccessHandler
         implements ApplicationContextAware {
+    private static Logger logger = LoggerFactory
+            .getLogger(LogoutSuccessHandlerImpl.class);
     private TenantHolder tenantHolder;
     private ApplicationContext ctx;
 
@@ -34,6 +39,12 @@ public class LogoutSuccessHandlerImpl extends SimpleUrlLogoutSuccessHandler
             HttpServletResponse response, Authentication authentication)
             throws IOException, ServletException {
         super.handle(request, response, authentication);
+
+        if (authentication == null) {
+            logger.info("authentication is null");
+
+            return;
+        }
 
         String tenantId = tenantHolder.getTenantId();
 

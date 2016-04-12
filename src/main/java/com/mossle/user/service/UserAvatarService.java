@@ -16,6 +16,7 @@ import com.mossle.user.persistence.domain.AccountAvatar;
 import com.mossle.user.persistence.domain.AccountInfo;
 import com.mossle.user.persistence.manager.AccountAvatarManager;
 import com.mossle.user.persistence.manager.AccountInfoManager;
+import com.mossle.user.support.AvatarCache;
 
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
@@ -32,11 +33,45 @@ public class UserAvatarService {
     private AccountInfoManager accountInfoManager;
     private AccountAvatarManager accountAvatarManager;
     private StoreConnector storeConnector;
+    private AvatarCache avatarCache;
 
-    public DataSource viewAvatar(Long accountId, int width, String tenantId)
+    public DataSource viewAvatarById(Long accountId, int width, String tenantId)
             throws Exception {
+        String key = "accountId:" + accountId + ":" + width;
+        DataSource dataSource = this.avatarCache.getByCode(key);
+
+        if (dataSource != null) {
+            return dataSource;
+        }
+
         AccountInfo accountInfo = accountInfoManager.get(accountId);
 
+        dataSource = this.viewAvatarByAccountInfo(accountInfo, width, tenantId);
+        this.avatarCache.updateDataSource(key, dataSource);
+
+        return dataSource;
+    }
+
+    public DataSource viewAvatarByUsername(String username, int width,
+            String tenantId) throws Exception {
+        String key = "username:" + username + ":" + width;
+        DataSource dataSource = this.avatarCache.getByCode(key);
+
+        if (dataSource != null) {
+            return dataSource;
+        }
+
+        AccountInfo accountInfo = accountInfoManager.findUniqueBy("username",
+                username);
+
+        dataSource = this.viewAvatarByAccountInfo(accountInfo, width, tenantId);
+        this.avatarCache.updateDataSource(key, dataSource);
+
+        return dataSource;
+    }
+
+    public DataSource viewAvatarByAccountInfo(AccountInfo accountInfo,
+            int width, String tenantId) throws Exception {
         String key = null;
 
         if (accountInfo != null) {
@@ -104,5 +139,10 @@ public class UserAvatarService {
     @Resource
     public void setStoreConnector(StoreConnector storeConnector) {
         this.storeConnector = storeConnector;
+    }
+
+    @Resource
+    public void setAvatarCache(AvatarCache avatarCache) {
+        this.avatarCache = avatarCache;
     }
 }

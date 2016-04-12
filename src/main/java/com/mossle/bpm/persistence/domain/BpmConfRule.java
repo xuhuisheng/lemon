@@ -4,14 +4,13 @@ package com.mossle.bpm.persistence.domain;
 import javax.persistence.Column;
 import javax.persistence.Entity;
 import javax.persistence.FetchType;
-import javax.persistence.GeneratedValue;
 import javax.persistence.Id;
 import javax.persistence.JoinColumn;
 import javax.persistence.ManyToOne;
 import javax.persistence.Table;
 
 /**
- * BpmConfRule .
+ * BpmConfRule 配置规则（暂时未用）.
  * 
  * @author Lingo
  */
@@ -20,26 +19,30 @@ import javax.persistence.Table;
 public class BpmConfRule implements java.io.Serializable {
     private static final long serialVersionUID = 0L;
 
-    /** null. */
+    /** 主键. */
     private Long id;
 
-    /** null. */
+    /** 外键，配置节点. */
     private BpmConfNode bpmConfNode;
 
-    /** null. */
+    /** 值. */
     private String value;
 
     public BpmConfRule() {
     }
 
-    public BpmConfRule(BpmConfNode bpmConfNode, String value) {
+    public BpmConfRule(Long id) {
+        this.id = id;
+    }
+
+    public BpmConfRule(Long id, BpmConfNode bpmConfNode, String value) {
+        this.id = id;
         this.bpmConfNode = bpmConfNode;
         this.value = value;
     }
 
-    /** @return null. */
+    /** @return 主键. */
     @Id
-    @GeneratedValue
     @Column(name = "ID", unique = true, nullable = false)
     public Long getId() {
         return this.id;
@@ -47,13 +50,13 @@ public class BpmConfRule implements java.io.Serializable {
 
     /**
      * @param id
-     *            null.
+     *            主键.
      */
     public void setId(Long id) {
         this.id = id;
     }
 
-    /** @return null. */
+    /** @return 外键，配置节点. */
     @ManyToOne(fetch = FetchType.LAZY)
     @JoinColumn(name = "NODE_ID")
     public BpmConfNode getBpmConfNode() {
@@ -62,13 +65,13 @@ public class BpmConfRule implements java.io.Serializable {
 
     /**
      * @param bpmConfNode
-     *            null.
+     *            外键，配置节点.
      */
     public void setBpmConfNode(BpmConfNode bpmConfNode) {
         this.bpmConfNode = bpmConfNode;
     }
 
-    /** @return null. */
+    /** @return 值. */
     @Column(name = "VALUE", length = 200)
     public String getValue() {
         return this.value;
@@ -76,7 +79,7 @@ public class BpmConfRule implements java.io.Serializable {
 
     /**
      * @param value
-     *            null.
+     *            值.
      */
     public void setValue(String value) {
         this.value = value;

@@ -4,7 +4,7 @@
 --  pim info
 -------------------------------------------------------------------------------
 CREATE TABLE PIM_INFO(
-        ID BIGINT AUTO_INCREMENT,
+        ID BIGINT NOT NULL,
         NAME VARCHAR(200),
 	PHOTO VARCHAR(200),
 	BIRTHDAY DATE,

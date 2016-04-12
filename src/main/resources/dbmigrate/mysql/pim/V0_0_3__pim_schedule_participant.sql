@@ -4,7 +4,7 @@
 --  schedule participant
 -------------------------------------------------------------------------------
 CREATE TABLE PIM_SCHEDULE_PARTICIPANT(
-        ID BIGINT AUTO_INCREMENT,
+        ID BIGINT NOT NULL,
 	TYPE INTEGER,
 	USER_ID VARCHAR(64),
 	STATUS INTEGER,

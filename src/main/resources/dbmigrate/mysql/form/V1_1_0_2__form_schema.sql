@@ -4,7 +4,7 @@
 --  form schema
 -------------------------------------------------------------------------------
 CREATE TABLE FORM_SCHEMA(
-        ID BIGINT AUTO_INCREMENT,
+        ID BIGINT NOT NULL,
 	CODE VARCHAR(50),
         NAME VARCHAR(50),
         TYPE VARCHAR(200),

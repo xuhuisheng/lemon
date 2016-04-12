@@ -59,6 +59,11 @@ public interface ProcessConnector {
     Page findDelegatedTasks(String userId, String tenantId, Page page);
 
     /**
+     * 同时返回已领取和未领取的任务.
+     */
+    Page findCandidateOrAssignedTasks(String userId, String tenantId, Page page);
+
+    /**
      * 流程定义.
      */
     Page findProcessDefinitions(String tenantId, Page page);

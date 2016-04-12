@@ -7,11 +7,11 @@
 
   <head>
     <%@include file="/common/meta.jsp"%>
-    <title><spring:message code="user.user.role.title" text="设置角色"/></title>
-    <%@include file="/common/s.jsp"%>
+    <title>编辑</title>
+    <%@include file="/common/s3.jsp"%>
     <script type="text/javascript">
 $(function() {
-    $("#userForm2").validate({
+    $("#user-roleForm").validate({
         submitHandler: function(form) {
 			bootbox.animate(false);
 			var box = bootbox.dialog('<div class="progress progress-striped active" style="margin:0px;"><div class="bar" style="width: 100%;"></div></div>');
@@ -19,7 +19,7 @@ $(function() {
         },
         errorClass: 'validate-error'
     });
-});
+})
     </script>
   </head>
 
@@ -27,21 +27,24 @@ $(function() {
     <%@include file="/header/auth.jsp"%>
 
     <div class="row-fluid">
-	<%@include file="/menu/auth.jsp"%>
+	  <%@include file="/menu/auth.jsp"%>
 
 	<!-- start of main -->
-    <section id="m-main" class="span10">
+      <section id="m-main" class="col-md-10" style="padding-top:65px;">
 
-	  <article class="m-widget">
-        <header class="header">
-		  <h4 class="title"><spring:message code="user.user.role.title" text="设置角色"/></h4>
-		</header>
-		<div class="content content-inner">
+      <div class="panel panel-default">
+        <div class="panel-heading">
+		  <i class="glyphicon glyphicon-list"></i>
+		  编辑
+		</div>
+
+		<div class="panel-body">
+
 
 <form id="userForm2" method="post" action="user-role-save.do" class="form-horizontal">
   <input type="hidden" name="id" value="${id}">
-  <div class="control-group">
-    <div class="controls">
+  <div class="form-group">
+    <div class="col-sm-5">
 	  <h5>local</h5>
 	  <c:forEach items="${roles}" var="item">
         <input id="selectedItem-${item.id}" type="checkbox" name="selectedItem" value="${item.id}" <tags:contains items="${userRoleIds}" item="${item.id}">checked</tags:contains>>&nbsp;
@@ -51,8 +54,8 @@ $(function() {
   </div>
   <hr>
 <c:forEach items="${sharedRoleMap}" var="entry">
-  <div class="control-group">
-    <div class="controls">
+  <div class="form-group">
+    <div class="col-sm-5">
 	  <h5>${entry.key}</h5>
 	  <c:forEach items="${entry.value}" var="item">
         <input id="selectedItem-${item.id}" type="checkbox" name="selectedItem" value="${item.id}" <tags:contains items="${userRoleIds}" item="${item.id}">checked</tags:contains>>&nbsp;
@@ -62,18 +65,17 @@ $(function() {
   </div>
   <hr>
 </c:forEach>
-  <div class="control-group">
-    <div class="controls">
+  <div class="form-group">
+    <div class="col-sm-5">
       <button id="submitButton" class="btn a-submit"><spring:message code='core.input.save' text='保存'/></button>
 	  &nbsp;
       <button type="button" onclick="history.back();" class="btn"><spring:message code='core.input.back' text='返回'/></button>
     </div>
   </div>
 </form>
-        </div>
-	  </article>
 
-      <div class="m-spacer"></div>
+		</div>
+      </article>
 
     </section>
 	<!-- end of main -->
@@ -82,3 +84,4 @@ $(function() {
   </body>
 
 </html>
+

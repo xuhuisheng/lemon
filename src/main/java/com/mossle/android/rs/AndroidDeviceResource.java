@@ -37,7 +37,6 @@ public class AndroidDeviceResource {
     private AuthenticationHandler authenticationHandler;
     private UserConnector userConnector;
     private JsonMapper jsonMapper = new JsonMapper();
-    private UUID uuid = UUID.randomUUID();
 
     @POST
     @Path("login")
@@ -97,10 +96,13 @@ public class AndroidDeviceResource {
                 pimDevice.setStatus("active");
                 pimDevice.setCreateTime(new Date());
                 pimDevice.setUserId(userDto.getId());
+
+                UUID uuid = UUID.randomUUID();
                 pimDevice.setSessionId(uuid.toString());
                 pimDeviceManager.save(pimDevice);
             } else {
                 UserDTO userDto = userConnector.findByUsername(username, "1");
+                UUID uuid = UUID.randomUUID();
                 pimDevice.setSessionId(uuid.toString());
                 pimDevice.setUserId(userDto.getId());
                 pimDeviceManager.save(pimDevice);

@@ -43,10 +43,12 @@ public class BpmConfOperationController {
         operations.add("saveDraft");
         operations.add("completeTask");
         operations.add("rollbackPrevious");
-        operations.add("rollbackStart");
+        operations.add("rollbackInitiator");
         operations.add("transfer");
         operations.add("delegateTask");
         operations.add("delegateTaskCreate");
+        operations.add("communicate");
+        operations.add("callback");
 
         BpmConfNode bpmConfNode = bpmConfNodeManager.get(bpmConfNodeId);
         Long bpmConfBaseId = bpmConfNode.getBpmConfBase().getId();

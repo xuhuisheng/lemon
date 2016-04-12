@@ -8,6 +8,7 @@ import java.util.Map;
 import java.util.Set;
 
 import com.mossle.api.humantask.HumanTaskConnector;
+import com.mossle.api.humantask.HumanTaskConstants;
 import com.mossle.api.humantask.HumanTaskDTO;
 
 import com.mossle.bpm.graph.ActivitiHistoryGraphBuilder;
@@ -20,6 +21,7 @@ import com.mossle.core.spring.ApplicationContextHelper;
 
 import org.activiti.engine.delegate.DelegateTask;
 import org.activiti.engine.form.StartFormData;
+import org.activiti.engine.history.HistoricProcessInstance;
 import org.activiti.engine.impl.HistoricActivityInstanceQueryImpl;
 import org.activiti.engine.impl.HistoricTaskInstanceQueryImpl;
 import org.activiti.engine.impl.Page;
@@ -594,7 +596,7 @@ public class RollbackTaskCmd implements Command<Object> {
 
         try {
             // humanTask
-            this.createHumanTask(task);
+            this.createHumanTask(task, historicTaskInstanceEntity);
         } catch (Exception ex) {
             logger.error(ex.getMessage(), ex);
         }
@@ -684,12 +686,25 @@ public class RollbackTaskCmd implements Command<Object> {
     /**
      * 创建humanTask.
      */
-    public HumanTaskDTO createHumanTask(DelegateTask delegateTask)
+    public HumanTaskDTO createHumanTask(DelegateTask delegateTask,
+            HistoricTaskInstanceEntity historicTaskInstanceEntity)
             throws Exception {
         HumanTaskConnector humanTaskConnector = ApplicationContextHelper
                 .getBean(HumanTaskConnector.class);
         HumanTaskDTO humanTaskDto = new HumanTaskBuilder().setDelegateTask(
                 delegateTask).build();
+
+        if ("发起流程".equals(historicTaskInstanceEntity.getDeleteReason())) {
+            humanTaskDto.setCatalog(HumanTaskConstants.CATALOG_START);
+        }
+
+        HistoricProcessInstance historicProcessInstance = Context
+                .getCommandContext()
+                .getHistoricProcessInstanceEntityManager()
+                .findHistoricProcessInstance(
+                        delegateTask.getProcessInstanceId());
+        humanTaskDto
+                .setProcessStarter(historicProcessInstance.getStartUserId());
         humanTaskDto = humanTaskConnector.saveHumanTask(humanTaskDto);
 
         return humanTaskDto;

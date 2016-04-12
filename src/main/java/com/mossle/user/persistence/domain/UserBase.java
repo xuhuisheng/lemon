@@ -8,7 +8,6 @@ import java.util.Set;
 import javax.persistence.Column;
 import javax.persistence.Entity;
 import javax.persistence.FetchType;
-import javax.persistence.GeneratedValue;
 import javax.persistence.Id;
 import javax.persistence.JoinColumn;
 import javax.persistence.ManyToOne;
@@ -114,14 +113,19 @@ public class UserBase implements java.io.Serializable {
     public UserBase() {
     }
 
-    public UserBase(UserRepo userRepo, String username, String displayName,
-            String password, Integer status, String ref, String scopeId,
-            String email, String mobile, String firstName, String lastName,
-            String fullName, String nickName, String avatar,
+    public UserBase(Long id) {
+        this.id = id;
+    }
+
+    public UserBase(Long id, UserRepo userRepo, String username,
+            String displayName, String password, Integer status, String ref,
+            String scopeId, String email, String mobile, String firstName,
+            String lastName, String fullName, String nickName, String avatar,
             String description, String gender, Date birthday, String location,
             String station, String telephone, String language, String country,
             String timezone, String employeeNo, String cardNo,
             Set<UserAttr> userAttrs, Set<UserAccount> userAccounts) {
+        this.id = id;
         this.userRepo = userRepo;
         this.username = username;
         this.displayName = displayName;
@@ -153,7 +157,6 @@ public class UserBase implements java.io.Serializable {
 
     /** @return null. */
     @Id
-    @GeneratedValue
     @Column(name = "ID", unique = true, nullable = false)
     public Long getId() {
         return this.id;

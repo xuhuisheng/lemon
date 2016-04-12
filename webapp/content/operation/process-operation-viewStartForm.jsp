@@ -8,12 +8,15 @@
   <head>
     <%@include file="/common/meta.jsp"%>
     <title><spring:message code="demo.demo.input.title" text="编辑"/></title>
-    <%@include file="/common/s.jsp"%>
-	<link href="${tenantPrefix}/widgets/xform/styles/xform.css" rel="stylesheet">
-    <script type="text/javascript" src="${tenantPrefix}/widgets/xform/xform-packed.js"></script>
+    <%@include file="/common/s3.jsp"%>
 
-    <link type="text/css" rel="stylesheet" href="../widgets/userpicker-v2/userpicker.css">
-    <script type="text/javascript" src="../widgets/userpicker-v2/userpicker.js"></script>
+	<!-- bootbox -->
+    <script type="text/javascript" src="${ctx}/s/bootbox/bootbox.min.js"></script>
+	<link href="${tenantPrefix}/widgets/xform3/styles/xform.css" rel="stylesheet">
+    <script type="text/javascript" src="${tenantPrefix}/widgets/xform3/xform-packed.js"></script>
+
+    <link type="text/css" rel="stylesheet" href="../widgets/userpicker3-v2/userpicker.css">
+    <script type="text/javascript" src="../widgets/userpicker3-v2/userpicker.js"></script>
 
 	<style type="text/css">
 .xf-handler {
@@ -76,17 +79,17 @@ var taskOperation = new TaskOperation();
   </head>
 
   <body>
-    <%@include file="/header/bpm-workspace.jsp"%>
+    <%@include file="/header/bpm-workspace3.jsp"%>
 
     <div class="row-fluid">
-	<%@include file="/menu/bpm-workspace.jsp"%>
+	<%@include file="/menu/bpm-workspace3.jsp"%>
 
 	<!-- start of main -->
-    <section id="m-main" class="span10" style="float:right">
+      <section id="m-main" class="col-md-10" style="padding-top:65px;">
 
       <div id="xformToolbar">
 	    <c:forEach var="item" items="${buttons}">
-		<button id="${item.name}" type="button" class="btn" onclick="taskOperation.${item.name}()">${item.label}</button>
+		<button id="${item.name}" type="button" class="btn btn-default" onclick="taskOperation.${item.name}()">${item.label}</button>
 		</c:forEach>
       </div>
 

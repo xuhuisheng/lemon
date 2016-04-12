@@ -4,7 +4,7 @@
 --  task log
 -------------------------------------------------------------------------------
 CREATE TABLE TASK_LOG(
-	ID BIGINT AUTO_INCREMENT,
+	ID BIGINT NOT NULL,
 
 	EVENT_TYPE VARCHAR(100),
 	EVENT_TIME DATETIME,
@@ -20,5 +20,17 @@ CREATE TABLE TASK_LOG(
         CONSTRAINT PK_TASK_LOG PRIMARY KEY(ID),
 	CONSTRAINT FK_TASK_LOG_TASK  FOREIGN KEY(TASK_ID) REFERENCES TASK_INFO(ID)
 ) ENGINE=INNODB CHARSET=UTF8;
+
+
+
+
+
+
+
+
+
+
+
+
 
 

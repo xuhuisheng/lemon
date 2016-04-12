@@ -7,7 +7,6 @@ import java.util.Set;
 import javax.persistence.Column;
 import javax.persistence.Entity;
 import javax.persistence.FetchType;
-import javax.persistence.GeneratedValue;
 import javax.persistence.Id;
 import javax.persistence.JoinColumn;
 import javax.persistence.ManyToOne;
@@ -15,7 +14,7 @@ import javax.persistence.OneToMany;
 import javax.persistence.Table;
 
 /**
- * TaskDefDeadline .
+ * TaskDefDeadline 任务定义截止时间.
  * 
  * @author Lingo
  */
@@ -24,40 +23,40 @@ import javax.persistence.Table;
 public class TaskDefDeadline implements java.io.Serializable {
     private static final long serialVersionUID = 0L;
 
-    /** null. */
+    /** 主键. */
     private Long id;
 
-    /** null. */
+    /** 外键，任务定义. */
     private TaskDefBase taskDefBase;
 
-    /** null. */
+    /** 分类. */
     private String type;
 
-    /** null. */
+    /** 持续时间. */
     private String duration;
 
-    /** null. */
+    /** 状态. */
     private String status;
 
-    /** null. */
+    /** 升级类型. */
     private String escalationType;
 
-    /** null. */
-    private String condition;
+    /** 提醒条件. */
+    private String notificationCondition;
 
-    /** null. */
+    /** 提醒类型. */
     private String notificationType;
 
-    /** null. */
+    /** 提醒接收人. */
     private String notificationReceiver;
 
-    /** null. */
+    /** 提醒模板编号. */
     private String notificationTemplateCode;
 
-    /** null. */
+    /** 重分配. */
     private String reassginment;
 
-    /** null. */
+    /** 操作. */
     private String operation;
 
     /** . */
@@ -67,18 +66,23 @@ public class TaskDefDeadline implements java.io.Serializable {
     public TaskDefDeadline() {
     }
 
-    public TaskDefDeadline(TaskDefBase taskDefBase, String type,
+    public TaskDefDeadline(Long id) {
+        this.id = id;
+    }
+
+    public TaskDefDeadline(Long id, TaskDefBase taskDefBase, String type,
             String duration, String status, String escalationType,
-            String condition, String notificationType,
+            String notificationCondition, String notificationType,
             String notificationReceiver, String notificationTemplateCode,
             String reassginment, String operation,
             Set<TaskDefEscalation> taskDefEscalations) {
+        this.id = id;
         this.taskDefBase = taskDefBase;
         this.type = type;
         this.duration = duration;
         this.status = status;
         this.escalationType = escalationType;
-        this.condition = condition;
+        this.notificationCondition = notificationCondition;
         this.notificationType = notificationType;
         this.notificationReceiver = notificationReceiver;
         this.notificationTemplateCode = notificationTemplateCode;
@@ -87,9 +91,8 @@ public class TaskDefDeadline implements java.io.Serializable {
         this.taskDefEscalations = taskDefEscalations;
     }
 
-    /** @return null. */
+    /** @return 主键. */
     @Id
-    @GeneratedValue
     @Column(name = "ID", unique = true, nullable = false)
     public Long getId() {
         return this.id;
@@ -97,13 +100,13 @@ public class TaskDefDeadline implements java.io.Serializable {
 
     /**
      * @param id
-     *            null.
+     *            主键.
      */
     public void setId(Long id) {
         this.id = id;
     }
 
-    /** @return null. */
+    /** @return 外键，任务定义. */
     @ManyToOne(fetch = FetchType.LAZY)
     @JoinColumn(name = "BASE_ID")
     public TaskDefBase getTaskDefBase() {
@@ -112,13 +115,13 @@ public class TaskDefDeadline implements java.io.Serializable {
 
     /**
      * @param taskDefBase
-     *            null.
+     *            外键，任务定义.
      */
     public void setTaskDefBase(TaskDefBase taskDefBase) {
         this.taskDefBase = taskDefBase;
     }
 
-    /** @return null. */
+    /** @return 分类. */
     @Column(name = "TYPE", length = 50)
     public String getType() {
         return this.type;
@@ -126,13 +129,13 @@ public class TaskDefDeadline implements java.io.Serializable {
 
     /**
      * @param type
-     *            null.
+     *            分类.
      */
     public void setType(String type) {
         this.type = type;
     }
 
-    /** @return null. */
+    /** @return 持续时间. */
     @Column(name = "DURATION", length = 100)
     public String getDuration() {
         return this.duration;
@@ -140,13 +143,13 @@ public class TaskDefDeadline implements java.io.Serializable {
 
     /**
      * @param duration
-     *            null.
+     *            持续时间.
      */
     public void setDuration(String duration) {
         this.duration = duration;
     }
 
-    /** @return null. */
+    /** @return 状态. */
     @Column(name = "STATUS", length = 50)
     public String getStatus() {
         return this.status;
@@ -154,13 +157,13 @@ public class TaskDefDeadline implements java.io.Serializable {
 
     /**
      * @param status
-     *            null.
+     *            状态.
      */
     public void setStatus(String status) {
         this.status = status;
     }
 
-    /** @return null. */
+    /** @return 升级类型. */
     @Column(name = "ESCALATION_TYPE", length = 50)
     public String getEscalationType() {
         return this.escalationType;
@@ -168,27 +171,27 @@ public class TaskDefDeadline implements java.io.Serializable {
 
     /**
      * @param escalationType
-     *            null.
+     *            升级类型.
      */
     public void setEscalationType(String escalationType) {
         this.escalationType = escalationType;
     }
 
-    /** @return null. */
-    @Column(name = "CONDITION", length = 200)
-    public String getCondition() {
-        return this.condition;
+    /** @return 提醒条件. */
+    @Column(name = "NOTIFICATION_CONDITION", length = 200)
+    public String getNotificationCondition() {
+        return this.notificationCondition;
     }
 
     /**
-     * @param condition
-     *            null.
+     * @param notificationCondition
+     *            提醒条件.
      */
-    public void setCondition(String condition) {
-        this.condition = condition;
+    public void setNotificationCondition(String notificationCondition) {
+        this.notificationCondition = notificationCondition;
     }
 
-    /** @return null. */
+    /** @return 提醒类型. */
     @Column(name = "NOTIFICATION_TYPE", length = 200)
     public String getNotificationType() {
         return this.notificationType;
@@ -196,13 +199,13 @@ public class TaskDefDeadline implements java.io.Serializable {
 
     /**
      * @param notificationType
-     *            null.
+     *            提醒类型.
      */
     public void setNotificationType(String notificationType) {
         this.notificationType = notificationType;
     }
 
-    /** @return null. */
+    /** @return 提醒接收人. */
     @Column(name = "NOTIFICATION_RECEIVER", length = 200)
     public String getNotificationReceiver() {
         return this.notificationReceiver;
@@ -210,13 +213,13 @@ public class TaskDefDeadline implements java.io.Serializable {
 
     /**
      * @param notificationReceiver
-     *            null.
+     *            提醒接收人.
      */
     public void setNotificationReceiver(String notificationReceiver) {
         this.notificationReceiver = notificationReceiver;
     }
 
-    /** @return null. */
+    /** @return 提醒模板编号. */
     @Column(name = "NOTIFICATION_TEMPLATE_CODE", length = 200)
     public String getNotificationTemplateCode() {
         return this.notificationTemplateCode;
@@ -224,13 +227,13 @@ public class TaskDefDeadline implements java.io.Serializable {
 
     /**
      * @param notificationTemplateCode
-     *            null.
+     *            提醒模板编号.
      */
     public void setNotificationTemplateCode(String notificationTemplateCode) {
         this.notificationTemplateCode = notificationTemplateCode;
     }
 
-    /** @return null. */
+    /** @return 重分配. */
     @Column(name = "REASSGINMENT", length = 200)
     public String getReassginment() {
         return this.reassginment;
@@ -238,13 +241,13 @@ public class TaskDefDeadline implements java.io.Serializable {
 
     /**
      * @param reassginment
-     *            null.
+     *            重分配.
      */
     public void setReassginment(String reassginment) {
         this.reassginment = reassginment;
     }
 
-    /** @return null. */
+    /** @return 操作. */
     @Column(name = "OPERATION", length = 200)
     public String getOperation() {
         return this.operation;
@@ -252,7 +255,7 @@ public class TaskDefDeadline implements java.io.Serializable {
 
     /**
      * @param operation
-     *            null.
+     *            操作.
      */
     public void setOperation(String operation) {
         this.operation = operation;

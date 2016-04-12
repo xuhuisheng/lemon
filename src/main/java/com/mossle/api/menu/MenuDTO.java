@@ -7,6 +7,8 @@ public class MenuDTO {
     private String code;
     private String title;
     private String url;
+    private String permission;
+    private String type;
     private List<MenuDTO> children = new ArrayList<MenuDTO>();
 
     public String getCode() {
@@ -31,6 +33,22 @@ public class MenuDTO {
 
     public void setUrl(String url) {
         this.url = url;
+    }
+
+    public String getPermission() {
+        return permission;
+    }
+
+    public void setPermission(String permission) {
+        this.permission = permission;
+    }
+
+    public String getType() {
+        return type;
+    }
+
+    public void setType(String type) {
+        this.type = type;
     }
 
     public List<MenuDTO> getChildren() {

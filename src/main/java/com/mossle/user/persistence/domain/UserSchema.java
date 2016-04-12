@@ -7,7 +7,6 @@ import java.util.Set;
 import javax.persistence.Column;
 import javax.persistence.Entity;
 import javax.persistence.FetchType;
-import javax.persistence.GeneratedValue;
 import javax.persistence.Id;
 import javax.persistence.JoinColumn;
 import javax.persistence.ManyToOne;
@@ -72,11 +71,16 @@ public class UserSchema implements java.io.Serializable {
     public UserSchema() {
     }
 
-    public UserSchema(UserRepo userRepo, String code, String name, String type,
-            Integer readOnly, Integer notNull, Integer uniqueConstraint,
-            String validator, String conversionPattern, Integer multiple,
-            String enumerationKeys, String enumerationValues, String scopeId,
-            Set<UserAttr> userAttrs) {
+    public UserSchema(Long id) {
+        this.id = id;
+    }
+
+    public UserSchema(Long id, UserRepo userRepo, String code, String name,
+            String type, Integer readOnly, Integer notNull,
+            Integer uniqueConstraint, String validator,
+            String conversionPattern, Integer multiple, String enumerationKeys,
+            String enumerationValues, String scopeId, Set<UserAttr> userAttrs) {
+        this.id = id;
         this.userRepo = userRepo;
         this.code = code;
         this.name = name;
@@ -95,7 +99,6 @@ public class UserSchema implements java.io.Serializable {
 
     /** @return null. */
     @Id
-    @GeneratedValue
     @Column(name = "ID", unique = true, nullable = false)
     public Long getId() {
         return this.id;

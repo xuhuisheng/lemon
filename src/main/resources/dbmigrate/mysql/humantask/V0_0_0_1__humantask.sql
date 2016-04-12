@@ -4,7 +4,7 @@
 --  humantask
 -------------------------------------------------------------------------------
 CREATE TABLE HT_HUMANTASK(
-        ID BIGINT AUTO_INCREMENT,
+	ID BIGINT NOT NULL,
 	NAME VARCHAR(200),
 	DESCRIPTION VARCHAR(200),
 	ASSIGNEE VARCHAR(64),

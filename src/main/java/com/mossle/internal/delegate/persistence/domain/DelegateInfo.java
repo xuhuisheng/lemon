@@ -5,7 +5,6 @@ import java.util.Date;
 
 import javax.persistence.Column;
 import javax.persistence.Entity;
-import javax.persistence.GeneratedValue;
 import javax.persistence.Id;
 import javax.persistence.Table;
 import javax.persistence.Temporal;
@@ -51,9 +50,14 @@ public class DelegateInfo implements java.io.Serializable {
     public DelegateInfo() {
     }
 
-    public DelegateInfo(String assignee, String attorney, Date startTime,
-            Date endTime, String processDefinitionId, String taskDefinitionKey,
-            Integer status, String tenantId) {
+    public DelegateInfo(Long id) {
+        this.id = id;
+    }
+
+    public DelegateInfo(Long id, String assignee, String attorney,
+            Date startTime, Date endTime, String processDefinitionId,
+            String taskDefinitionKey, Integer status, String tenantId) {
+        this.id = id;
         this.assignee = assignee;
         this.attorney = attorney;
         this.startTime = startTime;
@@ -66,7 +70,6 @@ public class DelegateInfo implements java.io.Serializable {
 
     /** @return null. */
     @Id
-    @GeneratedValue
     @Column(name = "ID", unique = true, nullable = false)
     public Long getId() {
         return this.id;

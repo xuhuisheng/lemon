@@ -8,7 +8,6 @@ import java.util.Set;
 import javax.persistence.Column;
 import javax.persistence.Entity;
 import javax.persistence.FetchType;
-import javax.persistence.GeneratedValue;
 import javax.persistence.Id;
 import javax.persistence.JoinColumn;
 import javax.persistence.ManyToOne;
@@ -18,7 +17,7 @@ import javax.persistence.Temporal;
 import javax.persistence.TemporalType;
 
 /**
- * TaskInfo .
+ * TaskInfo 人工任务.
  * 
  * @author Lingo
  */
@@ -27,134 +26,149 @@ import javax.persistence.TemporalType;
 public class TaskInfo implements java.io.Serializable {
     private static final long serialVersionUID = 0L;
 
-    /** null. */
+    /** 主键. */
     private Long id;
 
-    /** null. */
+    /** 外键，父任务. */
     private TaskInfo taskInfo;
 
-    /** null. */
+    /** 业务标识. */
     private String businessKey;
 
-    /** null. */
+    /** 代码. */
     private String code;
 
-    /** null. */
+    /** 任务名称. */
     private String name;
 
-    /** null. */
+    /** 任务描述. */
     private String description;
 
-    /** null. */
+    /** 优先级. */
     private Integer priority;
 
-    /** null. */
+    /** 分类. */
     private String category;
 
-    /** null. */
+    /** 表单. */
     private String form;
 
-    /** null. */
+    /** 租户. */
     private String tenantId;
 
-    /** null. */
+    /** 状态. */
     private String status;
 
-    /** null. */
+    /** 暂停状态. */
     private String suspendStatus;
 
-    /** null. */
+    /** 代理状态. */
     private String delegateStatus;
 
-    /** null. */
+    /** 完成状态. */
     private String completeStatus;
 
-    /** null. */
+    /** 跳过状态. */
     private String skipStatus;
 
-    /** null. */
+    /** 升级状态. */
     private String escalateStatus;
 
-    /** null. */
+    /** 抄送状态. */
     private String copyStatus;
 
-    /** null. */
+    /** 抄送任务ID. */
     private String copyTaskId;
 
-    /** null. */
+    /** 展示名称. */
     private String presentationName;
 
-    /** null. */
+    /** 展示标题. */
     private String presentationSubject;
 
-    /** null. */
+    /** 创建时间. */
     private Date createTime;
 
-    /** null. */
+    /** 激活时间. */
     private Date activationTime;
 
-    /** null. */
+    /** 领取时间. */
     private Date claimTime;
 
-    /** null. */
+    /** 完成时间. */
     private Date completeTime;
 
-    /** null. */
+    /** 过期时间. */
     private Date expirationTime;
 
-    /** null. */
+    /** 最后修改时间. */
     private Date lastModifiedTime;
 
-    /** null. */
+    /** 持续时间. */
     private String duration;
 
-    /** null. */
+    /** 创建人. */
     private String creator;
 
-    /** null. */
+    /** 任务发起人. */
     private String initiator;
 
-    /** null. */
+    /** 负责人. */
     private String assignee;
 
-    /** null. */
+    /** 委托人（被代理）. */
     private String owner;
 
-    /** null. */
+    /** 最后处理人. */
     private String lastModifier;
 
-    /** null. */
+    /** 泳道. */
     private String swimlane;
 
-    /** null. */
+    /** 关联的任务ID. */
     private String taskId;
 
-    /** null. */
+    /** 关联的分支ID. */
     private String executionId;
 
-    /** null. */
+    /** 关联的流程实例ID. */
     private String processInstanceId;
 
-    /** null. */
+    /** 关联的流程定义ID. */
     private String processDefinitionId;
 
-    /** null. */
+    /** 扩展字段1. */
     private String attr1;
 
-    /** null. */
+    /** 扩展字段2. */
     private String attr2;
 
-    /** null. */
+    /** 扩展字段3. */
     private String attr3;
 
-    /** null. */
+    /** 扩展字段4. */
     private String attr4;
 
-    /** null. */
+    /** 扩展字段5. */
     private String attr5;
 
-    /** null. */
+    /** 流程业务标识. */
     private String processBusinessKey;
+
+    /** 关联的流程发起人. */
+    private String processStarter;
+
+    /** 分类. */
+    private String catalog;
+
+    /** 操作. */
+    private String action;
+
+    /** 意见. */
+    private String comment;
+
+    /** 消息. */
+    private String message;
 
     /** . */
     private Set<TaskDeadline> taskDeadlines = new HashSet<TaskDeadline>(0);
@@ -172,22 +186,29 @@ public class TaskInfo implements java.io.Serializable {
     public TaskInfo() {
     }
 
-    public TaskInfo(TaskInfo taskInfo, String businessKey, String code,
-            String name, String description, Integer priority, String category,
-            String form, String tenantId, String status, String suspendStatus,
-            String delegateStatus, String completeStatus, String skipStatus,
-            String escalateStatus, String copyStatus, String copyTaskId,
-            String presentationName, String presentationSubject,
-            Date createTime, Date activationTime, Date claimTime,
-            Date completeTime, Date expirationTime, Date lastModifiedTime,
-            String duration, String creator, String initiator, String assignee,
-            String owner, String lastModifier, String swimlane, String taskId,
+    public TaskInfo(Long id) {
+        this.id = id;
+    }
+
+    public TaskInfo(Long id, TaskInfo taskInfo, String businessKey,
+            String code, String name, String description, Integer priority,
+            String category, String form, String tenantId, String status,
+            String suspendStatus, String delegateStatus, String completeStatus,
+            String skipStatus, String escalateStatus, String copyStatus,
+            String copyTaskId, String presentationName,
+            String presentationSubject, Date createTime, Date activationTime,
+            Date claimTime, Date completeTime, Date expirationTime,
+            Date lastModifiedTime, String duration, String creator,
+            String initiator, String assignee, String owner,
+            String lastModifier, String swimlane, String taskId,
             String executionId, String processInstanceId,
             String processDefinitionId, String attr1, String attr2,
             String attr3, String attr4, String attr5,
-            String processBusinessKey, Set<TaskDeadline> taskDeadlines,
-            Set<TaskInfo> taskInfos, Set<TaskParticipant> taskParticipants,
-            Set<TaskLog> taskLogs) {
+            String processBusinessKey, String processStarter, String catalog,
+            String action, String comment, String message,
+            Set<TaskDeadline> taskDeadlines, Set<TaskInfo> taskInfos,
+            Set<TaskParticipant> taskParticipants, Set<TaskLog> taskLogs) {
+        this.id = id;
         this.taskInfo = taskInfo;
         this.businessKey = businessKey;
         this.code = code;
@@ -230,15 +251,19 @@ public class TaskInfo implements java.io.Serializable {
         this.attr4 = attr4;
         this.attr5 = attr5;
         this.processBusinessKey = processBusinessKey;
+        this.processStarter = processStarter;
+        this.catalog = catalog;
+        this.action = action;
+        this.comment = comment;
+        this.message = message;
         this.taskDeadlines = taskDeadlines;
         this.taskInfos = taskInfos;
         this.taskParticipants = taskParticipants;
         this.taskLogs = taskLogs;
     }
 
-    /** @return null. */
+    /** @return 主键. */
     @Id
-    @GeneratedValue
     @Column(name = "ID", unique = true, nullable = false)
     public Long getId() {
         return this.id;
@@ -246,13 +271,13 @@ public class TaskInfo implements java.io.Serializable {
 
     /**
      * @param id
-     *            null.
+     *            主键.
      */
     public void setId(Long id) {
         this.id = id;
     }
 
-    /** @return null. */
+    /** @return 外键，父任务. */
     @ManyToOne(fetch = FetchType.LAZY)
     @JoinColumn(name = "PARENT_ID")
     public TaskInfo getTaskInfo() {
@@ -261,13 +286,13 @@ public class TaskInfo implements java.io.Serializable {
 
     /**
      * @param taskInfo
-     *            null.
+     *            外键，父任务.
      */
     public void setTaskInfo(TaskInfo taskInfo) {
         this.taskInfo = taskInfo;
     }
 
-    /** @return null. */
+    /** @return 业务标识. */
     @Column(name = "BUSINESS_KEY", length = 100)
     public String getBusinessKey() {
         return this.businessKey;
@@ -275,13 +300,13 @@ public class TaskInfo implements java.io.Serializable {
 
     /**
      * @param businessKey
-     *            null.
+     *            业务标识.
      */
     public void setBusinessKey(String businessKey) {
         this.businessKey = businessKey;
     }
 
-    /** @return null. */
+    /** @return 代码. */
     @Column(name = "CODE", length = 100)
     public String getCode() {
         return this.code;
@@ -289,13 +314,13 @@ public class TaskInfo implements java.io.Serializable {
 
     /**
      * @param code
-     *            null.
+     *            代码.
      */
     public void setCode(String code) {
         this.code = code;
     }
 
-    /** @return null. */
+    /** @return 任务名称. */
     @Column(name = "NAME", length = 200)
     public String getName() {
         return this.name;
@@ -303,13 +328,13 @@ public class TaskInfo implements java.io.Serializable {
 
     /**
      * @param name
-     *            null.
+     *            任务名称.
      */
     public void setName(String name) {
         this.name = name;
     }
 
-    /** @return null. */
+    /** @return 任务描述. */
     @Column(name = "DESCRIPTION", length = 200)
     public String getDescription() {
         return this.description;
@@ -317,13 +342,13 @@ public class TaskInfo implements java.io.Serializable {
 
     /**
      * @param description
-     *            null.
+     *            任务描述.
      */
     public void setDescription(String description) {
         this.description = description;
     }
 
-    /** @return null. */
+    /** @return 优先级. */
     @Column(name = "PRIORITY")
     public Integer getPriority() {
         return this.priority;
@@ -331,13 +356,13 @@ public class TaskInfo implements java.io.Serializable {
 
     /**
      * @param priority
-     *            null.
+     *            优先级.
      */
     public void setPriority(Integer priority) {
         this.priority = priority;
     }
 
-    /** @return null. */
+    /** @return 分类. */
     @Column(name = "CATEGORY", length = 100)
     public String getCategory() {
         return this.category;
@@ -345,13 +370,13 @@ public class TaskInfo implements java.io.Serializable {
 
     /**
      * @param category
-     *            null.
+     *            分类.
      */
     public void setCategory(String category) {
         this.category = category;
     }
 
-    /** @return null. */
+    /** @return 表单. */
     @Column(name = "FORM", length = 100)
     public String getForm() {
         return this.form;
@@ -359,13 +384,13 @@ public class TaskInfo implements java.io.Serializable {
 
     /**
      * @param form
-     *            null.
+     *            表单.
      */
     public void setForm(String form) {
         this.form = form;
     }
 
-    /** @return null. */
+    /** @return 租户. */
     @Column(name = "TENANT_ID", length = 100)
     public String getTenantId() {
         return this.tenantId;
@@ -373,13 +398,13 @@ public class TaskInfo implements java.io.Serializable {
 
     /**
      * @param tenantId
-     *            null.
+     *            租户.
      */
     public void setTenantId(String tenantId) {
         this.tenantId = tenantId;
     }
 
-    /** @return null. */
+    /** @return 状态. */
     @Column(name = "STATUS", length = 50)
     public String getStatus() {
         return this.status;
@@ -387,13 +412,13 @@ public class TaskInfo implements java.io.Serializable {
 
     /**
      * @param status
-     *            null.
+     *            状态.
      */
     public void setStatus(String status) {
         this.status = status;
     }
 
-    /** @return null. */
+    /** @return 暂停状态. */
     @Column(name = "SUSPEND_STATUS", length = 50)
     public String getSuspendStatus() {
         return this.suspendStatus;
@@ -401,13 +426,13 @@ public class TaskInfo implements java.io.Serializable {
 
     /**
      * @param suspendStatus
-     *            null.
+     *            暂停状态.
      */
     public void setSuspendStatus(String suspendStatus) {
         this.suspendStatus = suspendStatus;
     }
 
-    /** @return null. */
+    /** @return 代理状态. */
     @Column(name = "DELEGATE_STATUS", length = 50)
     public String getDelegateStatus() {
         return this.delegateStatus;
@@ -415,13 +440,13 @@ public class TaskInfo implements java.io.Serializable {
 
     /**
      * @param delegateStatus
-     *            null.
+     *            代理状态.
      */
     public void setDelegateStatus(String delegateStatus) {
         this.delegateStatus = delegateStatus;
     }
 
-    /** @return null. */
+    /** @return 完成状态. */
     @Column(name = "COMPLETE_STATUS", length = 50)
     public String getCompleteStatus() {
         return this.completeStatus;
@@ -429,13 +454,13 @@ public class TaskInfo implements java.io.Serializable {
 
     /**
      * @param completeStatus
-     *            null.
+     *            完成状态.
      */
     public void setCompleteStatus(String completeStatus) {
         this.completeStatus = completeStatus;
     }
 
-    /** @return null. */
+    /** @return 跳过状态. */
     @Column(name = "SKIP_STATUS", length = 50)
     public String getSkipStatus() {
         return this.skipStatus;
@@ -443,13 +468,13 @@ public class TaskInfo implements java.io.Serializable {
 
     /**
      * @param skipStatus
-     *            null.
+     *            跳过状态.
      */
     public void setSkipStatus(String skipStatus) {
         this.skipStatus = skipStatus;
     }
 
-    /** @return null. */
+    /** @return 升级状态. */
     @Column(name = "ESCALATE_STATUS", length = 50)
     public String getEscalateStatus() {
         return this.escalateStatus;
@@ -457,13 +482,13 @@ public class TaskInfo implements java.io.Serializable {
 
     /**
      * @param escalateStatus
-     *            null.
+     *            升级状态.
      */
     public void setEscalateStatus(String escalateStatus) {
         this.escalateStatus = escalateStatus;
     }
 
-    /** @return null. */
+    /** @return 抄送状态. */
     @Column(name = "COPY_STATUS", length = 50)
     public String getCopyStatus() {
         return this.copyStatus;
@@ -471,13 +496,13 @@ public class TaskInfo implements java.io.Serializable {
 
     /**
      * @param copyStatus
-     *            null.
+     *            抄送状态.
      */
     public void setCopyStatus(String copyStatus) {
         this.copyStatus = copyStatus;
     }
 
-    /** @return null. */
+    /** @return 抄送任务ID. */
     @Column(name = "COPY_TASK_ID", length = 64)
     public String getCopyTaskId() {
         return this.copyTaskId;
@@ -485,13 +510,13 @@ public class TaskInfo implements java.io.Serializable {
 
     /**
      * @param copyTaskId
-     *            null.
+     *            抄送任务ID.
      */
     public void setCopyTaskId(String copyTaskId) {
         this.copyTaskId = copyTaskId;
     }
 
-    /** @return null. */
+    /** @return 展示名称. */
     @Column(name = "PRESENTATION_NAME", length = 200)
     public String getPresentationName() {
         return this.presentationName;
@@ -499,13 +524,13 @@ public class TaskInfo implements java.io.Serializable {
 
     /**
      * @param presentationName
-     *            null.
+     *            展示名称.
      */
     public void setPresentationName(String presentationName) {
         this.presentationName = presentationName;
     }
 
-    /** @return null. */
+    /** @return 展示标题. */
     @Column(name = "PRESENTATION_SUBJECT", length = 200)
     public String getPresentationSubject() {
         return this.presentationSubject;
@@ -513,13 +538,13 @@ public class TaskInfo implements java.io.Serializable {
 
     /**
      * @param presentationSubject
-     *            null.
+     *            展示标题.
      */
     public void setPresentationSubject(String presentationSubject) {
         this.presentationSubject = presentationSubject;
     }
 
-    /** @return null. */
+    /** @return 创建时间. */
     @Temporal(TemporalType.TIMESTAMP)
     @Column(name = "CREATE_TIME", length = 26)
     public Date getCreateTime() {
@@ -528,13 +553,13 @@ public class TaskInfo implements java.io.Serializable {
 
     /**
      * @param createTime
-     *            null.
+     *            创建时间.
      */
     public void setCreateTime(Date createTime) {
         this.createTime = createTime;
     }
 
-    /** @return null. */
+    /** @return 激活时间. */
     @Temporal(TemporalType.TIMESTAMP)
     @Column(name = "ACTIVATION_TIME", length = 26)
     public Date getActivationTime() {
@@ -543,13 +568,13 @@ public class TaskInfo implements java.io.Serializable {
 
     /**
      * @param activationTime
-     *            null.
+     *            激活时间.
      */
     public void setActivationTime(Date activationTime) {
         this.activationTime = activationTime;
     }
 
-    /** @return null. */
+    /** @return 领取时间. */
     @Temporal(TemporalType.TIMESTAMP)
     @Column(name = "CLAIM_TIME", length = 26)
     public Date getClaimTime() {
@@ -558,13 +583,13 @@ public class TaskInfo implements java.io.Serializable {
 
     /**
      * @param claimTime
-     *            null.
+     *            领取时间.
      */
     public void setClaimTime(Date claimTime) {
         this.claimTime = claimTime;
     }
 
-    /** @return null. */
+    /** @return 完成时间. */
     @Temporal(TemporalType.TIMESTAMP)
     @Column(name = "COMPLETE_TIME", length = 26)
     public Date getCompleteTime() {
@@ -573,13 +598,13 @@ public class TaskInfo implements java.io.Serializable {
 
     /**
      * @param completeTime
-     *            null.
+     *            完成时间.
      */
     public void setCompleteTime(Date completeTime) {
         this.completeTime = completeTime;
     }
 
-    /** @return null. */
+    /** @return 过期时间. */
     @Temporal(TemporalType.TIMESTAMP)
     @Column(name = "EXPIRATION_TIME", length = 26)
     public Date getExpirationTime() {
@@ -588,13 +613,13 @@ public class TaskInfo implements java.io.Serializable {
 
     /**
      * @param expirationTime
-     *            null.
+     *            过期时间.
      */
     public void setExpirationTime(Date expirationTime) {
         this.expirationTime = expirationTime;
     }
 
-    /** @return null. */
+    /** @return 最后修改时间. */
     @Temporal(TemporalType.TIMESTAMP)
     @Column(name = "LAST_MODIFIED_TIME", length = 26)
     public Date getLastModifiedTime() {
@@ -603,13 +628,13 @@ public class TaskInfo implements java.io.Serializable {
 
     /**
      * @param lastModifiedTime
-     *            null.
+     *            最后修改时间.
      */
     public void setLastModifiedTime(Date lastModifiedTime) {
         this.lastModifiedTime = lastModifiedTime;
     }
 
-    /** @return null. */
+    /** @return 持续时间. */
     @Column(name = "DURATION", length = 50)
     public String getDuration() {
         return this.duration;
@@ -617,13 +642,13 @@ public class TaskInfo implements java.io.Serializable {
 
     /**
      * @param duration
-     *            null.
+     *            持续时间.
      */
     public void setDuration(String duration) {
         this.duration = duration;
     }
 
-    /** @return null. */
+    /** @return 创建人. */
     @Column(name = "CREATOR", length = 64)
     public String getCreator() {
         return this.creator;
@@ -631,13 +656,13 @@ public class TaskInfo implements java.io.Serializable {
 
     /**
      * @param creator
-     *            null.
+     *            创建人.
      */
     public void setCreator(String creator) {
         this.creator = creator;
     }
 
-    /** @return null. */
+    /** @return 任务发起人. */
     @Column(name = "INITIATOR", length = 64)
     public String getInitiator() {
         return this.initiator;
@@ -645,13 +670,13 @@ public class TaskInfo implements java.io.Serializable {
 
     /**
      * @param initiator
-     *            null.
+     *            任务发起人.
      */
     public void setInitiator(String initiator) {
         this.initiator = initiator;
     }
 
-    /** @return null. */
+    /** @return 负责人. */
     @Column(name = "ASSIGNEE", length = 64)
     public String getAssignee() {
         return this.assignee;
@@ -659,13 +684,13 @@ public class TaskInfo implements java.io.Serializable {
 
     /**
      * @param assignee
-     *            null.
+     *            负责人.
      */
     public void setAssignee(String assignee) {
         this.assignee = assignee;
     }
 
-    /** @return null. */
+    /** @return 委托人（被代理）. */
     @Column(name = "OWNER", length = 64)
     public String getOwner() {
         return this.owner;
@@ -673,13 +698,13 @@ public class TaskInfo implements java.io.Serializable {
 
     /**
      * @param owner
-     *            null.
+     *            委托人（被代理）.
      */
     public void setOwner(String owner) {
         this.owner = owner;
     }
 
-    /** @return null. */
+    /** @return 最后处理人. */
     @Column(name = "LAST_MODIFIER", length = 64)
     public String getLastModifier() {
         return this.lastModifier;
@@ -687,13 +712,13 @@ public class TaskInfo implements java.io.Serializable {
 
     /**
      * @param lastModifier
-     *            null.
+     *            最后处理人.
      */
     public void setLastModifier(String lastModifier) {
         this.lastModifier = lastModifier;
     }
 
-    /** @return null. */
+    /** @return 泳道. */
     @Column(name = "SWIMLANE", length = 100)
     public String getSwimlane() {
         return this.swimlane;
@@ -701,13 +726,13 @@ public class TaskInfo implements java.io.Serializable {
 
     /**
      * @param swimlane
-     *            null.
+     *            泳道.
      */
     public void setSwimlane(String swimlane) {
         this.swimlane = swimlane;
     }
 
-    /** @return null. */
+    /** @return 关联的任务ID. */
     @Column(name = "TASK_ID", length = 200)
     public String getTaskId() {
         return this.taskId;
@@ -715,13 +740,13 @@ public class TaskInfo implements java.io.Serializable {
 
     /**
      * @param taskId
-     *            null.
+     *            关联的任务ID.
      */
     public void setTaskId(String taskId) {
         this.taskId = taskId;
     }
 
-    /** @return null. */
+    /** @return 关联的分支ID. */
     @Column(name = "EXECUTION_ID", length = 200)
     public String getExecutionId() {
         return this.executionId;
@@ -729,13 +754,13 @@ public class TaskInfo implements java.io.Serializable {
 
     /**
      * @param executionId
-     *            null.
+     *            关联的分支ID.
      */
     public void setExecutionId(String executionId) {
         this.executionId = executionId;
     }
 
-    /** @return null. */
+    /** @return 关联的流程实例ID. */
     @Column(name = "PROCESS_INSTANCE_ID", length = 200)
     public String getProcessInstanceId() {
         return this.processInstanceId;
@@ -743,13 +768,13 @@ public class TaskInfo implements java.io.Serializable {
 
     /**
      * @param processInstanceId
-     *            null.
+     *            关联的流程实例ID.
      */
     public void setProcessInstanceId(String processInstanceId) {
         this.processInstanceId = processInstanceId;
     }
 
-    /** @return null. */
+    /** @return 关联的流程定义ID. */
     @Column(name = "PROCESS_DEFINITION_ID", length = 200)
     public String getProcessDefinitionId() {
         return this.processDefinitionId;
@@ -757,13 +782,13 @@ public class TaskInfo implements java.io.Serializable {
 
     /**
      * @param processDefinitionId
-     *            null.
+     *            关联的流程定义ID.
      */
     public void setProcessDefinitionId(String processDefinitionId) {
         this.processDefinitionId = processDefinitionId;
     }
 
-    /** @return null. */
+    /** @return 扩展字段1. */
     @Column(name = "ATTR1", length = 100)
     public String getAttr1() {
         return this.attr1;
@@ -771,13 +796,13 @@ public class TaskInfo implements java.io.Serializable {
 
     /**
      * @param attr1
-     *            null.
+     *            扩展字段1.
      */
     public void setAttr1(String attr1) {
         this.attr1 = attr1;
     }
 
-    /** @return null. */
+    /** @return 扩展字段2. */
     @Column(name = "ATTR2", length = 100)
     public String getAttr2() {
         return this.attr2;
@@ -785,13 +810,13 @@ public class TaskInfo implements java.io.Serializable {
 
     /**
      * @param attr2
-     *            null.
+     *            扩展字段2.
      */
     public void setAttr2(String attr2) {
         this.attr2 = attr2;
     }
 
-    /** @return null. */
+    /** @return 扩展字段3. */
     @Column(name = "ATTR3", length = 100)
     public String getAttr3() {
         return this.attr3;
@@ -799,13 +824,13 @@ public class TaskInfo implements java.io.Serializable {
 
     /**
      * @param attr3
-     *            null.
+     *            扩展字段3.
      */
     public void setAttr3(String attr3) {
         this.attr3 = attr3;
     }
 
-    /** @return null. */
+    /** @return 扩展字段4. */
     @Column(name = "ATTR4", length = 100)
     public String getAttr4() {
         return this.attr4;
@@ -813,13 +838,13 @@ public class TaskInfo implements java.io.Serializable {
 
     /**
      * @param attr4
-     *            null.
+     *            扩展字段4.
      */
     public void setAttr4(String attr4) {
         this.attr4 = attr4;
     }
 
-    /** @return null. */
+    /** @return 扩展字段5. */
     @Column(name = "ATTR5", length = 100)
     public String getAttr5() {
         return this.attr5;
@@ -827,13 +852,13 @@ public class TaskInfo implements java.io.Serializable {
 
     /**
      * @param attr5
-     *            null.
+     *            扩展字段5.
      */
     public void setAttr5(String attr5) {
         this.attr5 = attr5;
     }
 
-    /** @return null. */
+    /** @return 流程业务标识. */
     @Column(name = "PROCESS_BUSINESS_KEY", length = 200)
     public String getProcessBusinessKey() {
         return this.processBusinessKey;
@@ -841,10 +866,80 @@ public class TaskInfo implements java.io.Serializable {
 
     /**
      * @param processBusinessKey
-     *            null.
+     *            流程业务标识.
      */
     public void setProcessBusinessKey(String processBusinessKey) {
         this.processBusinessKey = processBusinessKey;
+    }
+
+    /** @return 关联的流程发起人. */
+    @Column(name = "PROCESS_STARTER", length = 64)
+    public String getProcessStarter() {
+        return this.processStarter;
+    }
+
+    /**
+     * @param processStarter
+     *            关联的流程发起人.
+     */
+    public void setProcessStarter(String processStarter) {
+        this.processStarter = processStarter;
+    }
+
+    /** @return 分类. */
+    @Column(name = "CATALOG", length = 100)
+    public String getCatalog() {
+        return this.catalog;
+    }
+
+    /**
+     * @param catalog
+     *            分类.
+     */
+    public void setCatalog(String catalog) {
+        this.catalog = catalog;
+    }
+
+    /** @return 操作. */
+    @Column(name = "ACTION", length = 200)
+    public String getAction() {
+        return this.action;
+    }
+
+    /**
+     * @param action
+     *            操作.
+     */
+    public void setAction(String action) {
+        this.action = action;
+    }
+
+    /** @return 意见. */
+    @Column(name = "COMMENT", length = 200)
+    public String getComment() {
+        return this.comment;
+    }
+
+    /**
+     * @param comment
+     *            意见.
+     */
+    public void setComment(String comment) {
+        this.comment = comment;
+    }
+
+    /** @return 消息. */
+    @Column(name = "MESSAGE", length = 200)
+    public String getMessage() {
+        return this.message;
+    }
+
+    /**
+     * @param message
+     *            消息.
+     */
+    public void setMessage(String message) {
+        this.message = message;
     }
 
     /** @return . */

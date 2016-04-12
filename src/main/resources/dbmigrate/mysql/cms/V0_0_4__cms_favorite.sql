@@ -4,7 +4,7 @@
 --  cms favorite
 -------------------------------------------------------------------------------
 CREATE TABLE CMS_FAVORITE(
-        ID BIGINT AUTO_INCREMENT,
+        ID BIGINT NOT NULL,
 	SUBJECT VARCHAR(200),
 	CREATE_TIME TIMESTAMP,
 	USER_ID VARCHAR(200),

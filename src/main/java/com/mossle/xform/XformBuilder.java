@@ -40,6 +40,12 @@ public class XformBuilder {
     }
 
     public XformBuilder setRecord(Record record) throws Exception {
+        if (record == null) {
+            logger.info("record is null");
+
+            return this;
+        }
+
         for (Prop prop : record.getProps().values()) {
             String name = prop.getCode();
             String value = prop.getValue();

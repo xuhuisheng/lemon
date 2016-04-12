@@ -3,12 +3,12 @@
 <%pageContext.setAttribute("currentHeader", "template");%>
 <%pageContext.setAttribute("currentMenu", "template");%>
 <!doctype html>
-<html lang="en">
+<html>
 
   <head>
     <%@include file="/common/meta.jsp"%>
-    <title><spring:message code="template-info.template-info.input.title" text="编辑"/></title>
-    <%@include file="/common/s.jsp"%>
+    <title>编辑</title>
+    <%@include file="/common/s3.jsp"%>
     <script type="text/javascript">
 $(function() {
     $("#template-infoForm").validate({
@@ -29,47 +29,51 @@ $(function() {
     <div class="row-fluid">
 	  <%@include file="/menu/template-info.jsp"%>
 
-	  <!-- start of main -->
-      <section id="m-main" class="span10">
+	<!-- start of main -->
+      <section id="m-main" class="col-md-10" style="padding-top:65px;">
 
-      <article class="m-widget">
-        <header class="header">
-		  <h4 class="title"><spring:message code="template-info.template-info.input.title" text="编辑"/></h4>
-		</header>
+      <div class="panel panel-default">
+        <div class="panel-heading">
+		  <i class="glyphicon glyphicon-list"></i>
+		  编辑
+		</div>
 
-		<div class="content content-inner">
+		<div class="panel-body">
+
 
 <form id="template-infoForm" method="post" action="template-info-save.do" class="form-horizontal">
   <c:if test="${model != null}">
   <input id="template-info_id" type="hidden" name="id" value="${model.id}">
   </c:if>
-  <div class="control-group">
-    <label class="control-label" for="template-info_name"><spring:message code="template-info.template-info.input.name" text="名称"/></label>
-	<div class="controls">
-	  <input id="template-info_name" type="text" name="name" value="${model.name}" size="40" class="text required" minlength="2" maxlength="10">
+  <div class="form-group">
+    <label class="control-label col-md-1" for="template-info_name"><spring:message code="template-info.template-info.input.name" text="名称"/></label>
+	<div class="col-sm-5">
+	  <input id="template-info_name" type="text" name="name" value="${model.name}" size="40" class="form-control required" minlength="2" maxlength="10">
     </div>
   </div>
-  <div class="control-group">
-    <label class="control-label" for="template-info_code">编码</label>
-	<div class="controls">
+  <div class="form-group">
+    <label class="control-label col-md-1" for="template-info_code">编码</label>
+	<div class="col-sm-5">
 	  <input id="template-info_code" type="text" name="code" value="${model.code}" size="40" class="text">
     </div>
   </div>
-  <div class="control-group">
-    <div class="controls">
+  <div class="form-group">
+    <div class="col-sm-5">
       <button type="submit" class="btn a-submit"><spring:message code='core.input.save' text='保存'/></button>
 	  &nbsp;
       <button type="button" class="btn a-cancel" onclick="history.back();"><spring:message code='core.input.back' text='返回'/></button>
     </div>
   </div>
 </form>
-        </div>
+
+		</div>
       </article>
 
-      </section>
-	  <!-- end of main -->
+    </section>
+	<!-- end of main -->
 	</div>
 
   </body>
 
 </html>
+

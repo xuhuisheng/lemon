@@ -4,7 +4,7 @@
 --  meeting room
 -------------------------------------------------------------------------------
 CREATE TABLE MEETING_ROOM(
-        ID BIGINT AUTO_INCREMENT,
+        ID BIGINT NOT NULL,
 	NAME VARCHAR(200),
 	MAP_REF VARCHAR(200),
 	NUM INTEGER,

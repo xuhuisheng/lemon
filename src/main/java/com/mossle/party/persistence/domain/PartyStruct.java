@@ -4,14 +4,13 @@ package com.mossle.party.persistence.domain;
 import javax.persistence.Column;
 import javax.persistence.Entity;
 import javax.persistence.FetchType;
-import javax.persistence.GeneratedValue;
 import javax.persistence.Id;
 import javax.persistence.JoinColumn;
 import javax.persistence.ManyToOne;
 import javax.persistence.Table;
 
 /**
- * PartyStruct .
+ * PartyStruct 组织关系.
  * 
  * @author Lingo
  */
@@ -20,44 +19,48 @@ import javax.persistence.Table;
 public class PartyStruct implements java.io.Serializable {
     private static final long serialVersionUID = 0L;
 
-    /** null. */
+    /** 主键. */
     private Long id;
 
-    /** null. */
+    /** 外键，上级实体. */
     private PartyEntity parentEntity;
 
-    /** null. */
+    /** 外键，下级实体. */
     private PartyEntity childEntity;
 
-    /** null. */
+    /** 外键，组织关系类型. */
     private PartyStructType partyStructType;
 
-    /** null. */
+    /** 排序. */
     private Integer priority;
 
-    /** null. */
+    /** 租户. */
     private String tenantId;
 
-    /** null. */
+    /** 兼职. */
     private Integer partTime;
 
-    /** null. */
+    /** 关联. */
     private Integer link;
 
-    /** null. */
+    /** 管理. */
     private Integer admin;
 
     public PartyStruct() {
     }
 
-    public PartyStruct(PartyEntity childEntity, PartyStructType partyStructType) {
+    public PartyStruct(Long id, PartyEntity childEntity,
+            PartyStructType partyStructType) {
+        this.id = id;
         this.childEntity = childEntity;
         this.partyStructType = partyStructType;
     }
 
-    public PartyStruct(PartyEntity parentEntity, PartyEntity childEntity,
-            PartyStructType partyStructType, Integer priority, String tenantId,
-            Integer partTime, Integer link, Integer admin) {
+    public PartyStruct(Long id, PartyEntity parentEntity,
+            PartyEntity childEntity, PartyStructType partyStructType,
+            Integer priority, String tenantId, Integer partTime, Integer link,
+            Integer admin) {
+        this.id = id;
         this.parentEntity = parentEntity;
         this.childEntity = childEntity;
         this.partyStructType = partyStructType;
@@ -68,9 +71,8 @@ public class PartyStruct implements java.io.Serializable {
         this.admin = admin;
     }
 
-    /** @return null. */
+    /** @return 主键. */
     @Id
-    @GeneratedValue
     @Column(name = "ID", unique = true, nullable = false)
     public Long getId() {
         return this.id;
@@ -78,13 +80,13 @@ public class PartyStruct implements java.io.Serializable {
 
     /**
      * @param id
-     *            null.
+     *            主键.
      */
     public void setId(Long id) {
         this.id = id;
     }
 
-    /** @return null. */
+    /** @return 外键，上级实体. */
     @ManyToOne(fetch = FetchType.LAZY)
     @JoinColumn(name = "PARENT_ENTITY_ID")
     public PartyEntity getParentEntity() {
@@ -93,13 +95,13 @@ public class PartyStruct implements java.io.Serializable {
 
     /**
      * @param parentEntity
-     *            null.
+     *            外键，上级实体.
      */
     public void setParentEntity(PartyEntity parentEntity) {
         this.parentEntity = parentEntity;
     }
 
-    /** @return null. */
+    /** @return 外键，下级实体. */
     @ManyToOne(fetch = FetchType.LAZY)
     @JoinColumn(name = "CHILD_ENTITY_ID", nullable = false)
     public PartyEntity getChildEntity() {
@@ -108,13 +110,13 @@ public class PartyStruct implements java.io.Serializable {
 
     /**
      * @param childEntity
-     *            null.
+     *            外键，下级实体.
      */
     public void setChildEntity(PartyEntity childEntity) {
         this.childEntity = childEntity;
     }
 
-    /** @return null. */
+    /** @return 外键，组织关系类型. */
     @ManyToOne(fetch = FetchType.LAZY)
     @JoinColumn(name = "STRUCT_TYPE_ID", nullable = false)
     public PartyStructType getPartyStructType() {
@@ -123,13 +125,13 @@ public class PartyStruct implements java.io.Serializable {
 
     /**
      * @param partyStructType
-     *            null.
+     *            外键，组织关系类型.
      */
     public void setPartyStructType(PartyStructType partyStructType) {
         this.partyStructType = partyStructType;
     }
 
-    /** @return null. */
+    /** @return 排序. */
     @Column(name = "PRIORITY")
     public Integer getPriority() {
         return this.priority;
@@ -137,13 +139,13 @@ public class PartyStruct implements java.io.Serializable {
 
     /**
      * @param priority
-     *            null.
+     *            排序.
      */
     public void setPriority(Integer priority) {
         this.priority = priority;
     }
 
-    /** @return null. */
+    /** @return 租户. */
     @Column(name = "TENANT_ID", length = 50)
     public String getTenantId() {
         return this.tenantId;
@@ -151,13 +153,13 @@ public class PartyStruct implements java.io.Serializable {
 
     /**
      * @param tenantId
-     *            null.
+     *            租户.
      */
     public void setTenantId(String tenantId) {
         this.tenantId = tenantId;
     }
 
-    /** @return null. */
+    /** @return 兼职. */
     @Column(name = "PART_TIME")
     public Integer getPartTime() {
         return this.partTime;
@@ -165,13 +167,13 @@ public class PartyStruct implements java.io.Serializable {
 
     /**
      * @param partTime
-     *            null.
+     *            兼职.
      */
     public void setPartTime(Integer partTime) {
         this.partTime = partTime;
     }
 
-    /** @return null. */
+    /** @return 关联. */
     @Column(name = "LINK")
     public Integer getLink() {
         return this.link;
@@ -179,13 +181,13 @@ public class PartyStruct implements java.io.Serializable {
 
     /**
      * @param link
-     *            null.
+     *            关联.
      */
     public void setLink(Integer link) {
         this.link = link;
     }
 
-    /** @return null. */
+    /** @return 管理. */
     @Column(name = "ADMIN")
     public Integer getAdmin() {
         return this.admin;
@@ -193,7 +195,7 @@ public class PartyStruct implements java.io.Serializable {
 
     /**
      * @param admin
-     *            null.
+     *            管理.
      */
     public void setAdmin(Integer admin) {
         this.admin = admin;

@@ -78,8 +78,17 @@ public class SkipTaskListener extends DefaultTaskListener {
                             .execute(Context.getCommandContext());
                 }
             } else {
-                Boolean result = (Boolean) expressionManager.createExpression(
-                        value).getValue(mapVariableScope);
+                Object objectResult = expressionManager.createExpression(value)
+                        .getValue(mapVariableScope);
+
+                if ((objectResult == null)
+                        || (!(objectResult instanceof Boolean))) {
+                    logger.error("{} is not Boolean, just return", objectResult);
+
+                    return;
+                }
+
+                Boolean result = (Boolean) objectResult;
 
                 logger.info("value : {}, result : {}", value, result);
 

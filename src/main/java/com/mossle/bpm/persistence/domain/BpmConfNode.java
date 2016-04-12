@@ -7,7 +7,6 @@ import java.util.Set;
 import javax.persistence.Column;
 import javax.persistence.Entity;
 import javax.persistence.FetchType;
-import javax.persistence.GeneratedValue;
 import javax.persistence.Id;
 import javax.persistence.JoinColumn;
 import javax.persistence.ManyToOne;
@@ -15,7 +14,7 @@ import javax.persistence.OneToMany;
 import javax.persistence.Table;
 
 /**
- * BpmConfNode .
+ * BpmConfNode 节点配置.
  * 
  * @author Lingo
  */
@@ -24,40 +23,40 @@ import javax.persistence.Table;
 public class BpmConfNode implements java.io.Serializable {
     private static final long serialVersionUID = 0L;
 
-    /** null. */
+    /** 主键. */
     private Long id;
 
-    /** null. */
+    /** 外键，流程配置. */
     private BpmConfBase bpmConfBase;
 
-    /** null. */
+    /** 节点ID. */
     private String code;
 
-    /** null. */
+    /** 节点名称. */
     private String name;
 
-    /** null. */
+    /** 节点类型. */
     private String type;
 
-    /** null. */
+    /** 配置用户. */
     private Integer confUser;
 
-    /** null. */
+    /** 配置回调. */
     private Integer confListener;
 
-    /** null. */
+    /** 配置规则. */
     private Integer confRule;
 
-    /** null. */
+    /** 配置表单. */
     private Integer confForm;
 
-    /** null. */
+    /** 配置操作. */
     private Integer confOperation;
 
-    /** null. */
+    /** 配置提醒. */
     private Integer confNotice;
 
-    /** null. */
+    /** 排序. */
     private Integer priority;
 
     /** . */
@@ -90,8 +89,12 @@ public class BpmConfNode implements java.io.Serializable {
     public BpmConfNode() {
     }
 
-    public BpmConfNode(BpmConfBase bpmConfBase, String code, String name,
-            String type, Integer confUser, Integer confListener,
+    public BpmConfNode(Long id) {
+        this.id = id;
+    }
+
+    public BpmConfNode(Long id, BpmConfBase bpmConfBase, String code,
+            String name, String type, Integer confUser, Integer confListener,
             Integer confRule, Integer confForm, Integer confOperation,
             Integer confNotice, Integer priority,
             Set<BpmConfListener> bpmConfListeners,
@@ -100,6 +103,7 @@ public class BpmConfNode implements java.io.Serializable {
             Set<BpmConfCountersign> bpmConfCountersigns,
             Set<BpmConfForm> bpmConfForms, Set<BpmConfRule> bpmConfRules,
             Set<BpmConfOperation> bpmConfOperations) {
+        this.id = id;
         this.bpmConfBase = bpmConfBase;
         this.code = code;
         this.name = name;
@@ -121,9 +125,8 @@ public class BpmConfNode implements java.io.Serializable {
         this.bpmConfOperations = bpmConfOperations;
     }
 
-    /** @return null. */
+    /** @return 主键. */
     @Id
-    @GeneratedValue
     @Column(name = "ID", unique = true, nullable = false)
     public Long getId() {
         return this.id;
@@ -131,13 +134,13 @@ public class BpmConfNode implements java.io.Serializable {
 
     /**
      * @param id
-     *            null.
+     *            主键.
      */
     public void setId(Long id) {
         this.id = id;
     }
 
-    /** @return null. */
+    /** @return 外键，流程配置. */
     @ManyToOne(fetch = FetchType.LAZY)
     @JoinColumn(name = "CONF_BASE_ID")
     public BpmConfBase getBpmConfBase() {
@@ -146,13 +149,13 @@ public class BpmConfNode implements java.io.Serializable {
 
     /**
      * @param bpmConfBase
-     *            null.
+     *            外键，流程配置.
      */
     public void setBpmConfBase(BpmConfBase bpmConfBase) {
         this.bpmConfBase = bpmConfBase;
     }
 
-    /** @return null. */
+    /** @return 节点ID. */
     @Column(name = "CODE", length = 200)
     public String getCode() {
         return this.code;
@@ -160,13 +163,13 @@ public class BpmConfNode implements java.io.Serializable {
 
     /**
      * @param code
-     *            null.
+     *            节点ID.
      */
     public void setCode(String code) {
         this.code = code;
     }
 
-    /** @return null. */
+    /** @return 节点名称. */
     @Column(name = "NAME", length = 200)
     public String getName() {
         return this.name;
@@ -174,13 +177,13 @@ public class BpmConfNode implements java.io.Serializable {
 
     /**
      * @param name
-     *            null.
+     *            节点名称.
      */
     public void setName(String name) {
         this.name = name;
     }
 
-    /** @return null. */
+    /** @return 节点类型. */
     @Column(name = "TYPE", length = 200)
     public String getType() {
         return this.type;
@@ -188,13 +191,13 @@ public class BpmConfNode implements java.io.Serializable {
 
     /**
      * @param type
-     *            null.
+     *            节点类型.
      */
     public void setType(String type) {
         this.type = type;
     }
 
-    /** @return null. */
+    /** @return 配置用户. */
     @Column(name = "CONF_USER")
     public Integer getConfUser() {
         return this.confUser;
@@ -202,13 +205,13 @@ public class BpmConfNode implements java.io.Serializable {
 
     /**
      * @param confUser
-     *            null.
+     *            配置用户.
      */
     public void setConfUser(Integer confUser) {
         this.confUser = confUser;
     }
 
-    /** @return null. */
+    /** @return 配置回调. */
     @Column(name = "CONF_LISTENER")
     public Integer getConfListener() {
         return this.confListener;
@@ -216,13 +219,13 @@ public class BpmConfNode implements java.io.Serializable {
 
     /**
      * @param confListener
-     *            null.
+     *            配置回调.
      */
     public void setConfListener(Integer confListener) {
         this.confListener = confListener;
     }
 
-    /** @return null. */
+    /** @return 配置规则. */
     @Column(name = "CONF_RULE")
     public Integer getConfRule() {
         return this.confRule;
@@ -230,13 +233,13 @@ public class BpmConfNode implements java.io.Serializable {
 
     /**
      * @param confRule
-     *            null.
+     *            配置规则.
      */
     public void setConfRule(Integer confRule) {
         this.confRule = confRule;
     }
 
-    /** @return null. */
+    /** @return 配置表单. */
     @Column(name = "CONF_FORM")
     public Integer getConfForm() {
         return this.confForm;
@@ -244,13 +247,13 @@ public class BpmConfNode implements java.io.Serializable {
 
     /**
      * @param confForm
-     *            null.
+     *            配置表单.
      */
     public void setConfForm(Integer confForm) {
         this.confForm = confForm;
     }
 
-    /** @return null. */
+    /** @return 配置操作. */
     @Column(name = "CONF_OPERATION")
     public Integer getConfOperation() {
         return this.confOperation;
@@ -258,13 +261,13 @@ public class BpmConfNode implements java.io.Serializable {
 
     /**
      * @param confOperation
-     *            null.
+     *            配置操作.
      */
     public void setConfOperation(Integer confOperation) {
         this.confOperation = confOperation;
     }
 
-    /** @return null. */
+    /** @return 配置提醒. */
     @Column(name = "CONF_NOTICE")
     public Integer getConfNotice() {
         return this.confNotice;
@@ -272,13 +275,13 @@ public class BpmConfNode implements java.io.Serializable {
 
     /**
      * @param confNotice
-     *            null.
+     *            配置提醒.
      */
     public void setConfNotice(Integer confNotice) {
         this.confNotice = confNotice;
     }
 
-    /** @return null. */
+    /** @return 排序. */
     @Column(name = "PRIORITY")
     public Integer getPriority() {
         return this.priority;
@@ -286,7 +289,7 @@ public class BpmConfNode implements java.io.Serializable {
 
     /**
      * @param priority
-     *            null.
+     *            排序.
      */
     public void setPriority(Integer priority) {
         this.priority = priority;

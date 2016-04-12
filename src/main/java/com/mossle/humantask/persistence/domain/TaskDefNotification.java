@@ -4,14 +4,13 @@ package com.mossle.humantask.persistence.domain;
 import javax.persistence.Column;
 import javax.persistence.Entity;
 import javax.persistence.FetchType;
-import javax.persistence.GeneratedValue;
 import javax.persistence.Id;
 import javax.persistence.JoinColumn;
 import javax.persistence.ManyToOne;
 import javax.persistence.Table;
 
 /**
- * TaskDefNotification .
+ * TaskDefNotification 任务定义提醒.
  * 
  * @author Lingo
  */
@@ -20,29 +19,34 @@ import javax.persistence.Table;
 public class TaskDefNotification implements java.io.Serializable {
     private static final long serialVersionUID = 0L;
 
-    /** null. */
+    /** 主键. */
     private Long id;
 
-    /** null. */
+    /** 外键，任务定义. */
     private TaskDefBase taskDefBase;
 
-    /** null. */
+    /** 事件名称. */
     private String eventName;
 
-    /** null. */
+    /** 接收人. */
     private String receiver;
 
-    /** null. */
+    /** 类型. */
     private String type;
 
-    /** null. */
+    /** 模板编号. */
     private String templateCode;
 
     public TaskDefNotification() {
     }
 
-    public TaskDefNotification(TaskDefBase taskDefBase, String eventName,
-            String receiver, String type, String templateCode) {
+    public TaskDefNotification(Long id) {
+        this.id = id;
+    }
+
+    public TaskDefNotification(Long id, TaskDefBase taskDefBase,
+            String eventName, String receiver, String type, String templateCode) {
+        this.id = id;
         this.taskDefBase = taskDefBase;
         this.eventName = eventName;
         this.receiver = receiver;
@@ -50,9 +54,8 @@ public class TaskDefNotification implements java.io.Serializable {
         this.templateCode = templateCode;
     }
 
-    /** @return null. */
+    /** @return 主键. */
     @Id
-    @GeneratedValue
     @Column(name = "ID", unique = true, nullable = false)
     public Long getId() {
         return this.id;
@@ -60,13 +63,13 @@ public class TaskDefNotification implements java.io.Serializable {
 
     /**
      * @param id
-     *            null.
+     *            主键.
      */
     public void setId(Long id) {
         this.id = id;
     }
 
-    /** @return null. */
+    /** @return 外键，任务定义. */
     @ManyToOne(fetch = FetchType.LAZY)
     @JoinColumn(name = "BASE_ID")
     public TaskDefBase getTaskDefBase() {
@@ -75,13 +78,13 @@ public class TaskDefNotification implements java.io.Serializable {
 
     /**
      * @param taskDefBase
-     *            null.
+     *            外键，任务定义.
      */
     public void setTaskDefBase(TaskDefBase taskDefBase) {
         this.taskDefBase = taskDefBase;
     }
 
-    /** @return null. */
+    /** @return 事件名称. */
     @Column(name = "EVENT_NAME", length = 100)
     public String getEventName() {
         return this.eventName;
@@ -89,13 +92,13 @@ public class TaskDefNotification implements java.io.Serializable {
 
     /**
      * @param eventName
-     *            null.
+     *            事件名称.
      */
     public void setEventName(String eventName) {
         this.eventName = eventName;
     }
 
-    /** @return null. */
+    /** @return 接收人. */
     @Column(name = "RECEIVER", length = 200)
     public String getReceiver() {
         return this.receiver;
@@ -103,13 +106,13 @@ public class TaskDefNotification implements java.io.Serializable {
 
     /**
      * @param receiver
-     *            null.
+     *            接收人.
      */
     public void setReceiver(String receiver) {
         this.receiver = receiver;
     }
 
-    /** @return null. */
+    /** @return 类型. */
     @Column(name = "TYPE", length = 50)
     public String getType() {
         return this.type;
@@ -117,13 +120,13 @@ public class TaskDefNotification implements java.io.Serializable {
 
     /**
      * @param type
-     *            null.
+     *            类型.
      */
     public void setType(String type) {
         this.type = type;
     }
 
-    /** @return null. */
+    /** @return 模板编号. */
     @Column(name = "TEMPLATE_CODE", length = 200)
     public String getTemplateCode() {
         return this.templateCode;
@@ -131,7 +134,7 @@ public class TaskDefNotification implements java.io.Serializable {
 
     /**
      * @param templateCode
-     *            null.
+     *            模板编号.
      */
     public void setTemplateCode(String templateCode) {
         this.templateCode = templateCode;

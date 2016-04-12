@@ -24,8 +24,8 @@ public class UserAvatarConnectorImpl implements UserAvatarConnector {
     public InputStream findAvatarInputStream(String userId) {
         try {
             Long accountId = Long.parseLong(userId);
-            DataSource dataSource = userAvatarService.viewAvatar(accountId, 35,
-                    "1");
+            DataSource dataSource = userAvatarService.viewAvatarById(accountId,
+                    35, "1");
 
             return dataSource.getInputStream();
         } catch (Exception ex) {

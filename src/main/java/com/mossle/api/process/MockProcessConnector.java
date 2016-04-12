@@ -82,6 +82,14 @@ public class MockProcessConnector implements ProcessConnector {
     }
 
     /**
+     * 同时返回已领取和未领取的任务.
+     */
+    public Page findCandidateOrAssignedTasks(String userId, String tenantId,
+            Page page) {
+        return null;
+    }
+
+    /**
      * 流程定义.
      */
     public Page findProcessDefinitions(String tenantId, Page page) {

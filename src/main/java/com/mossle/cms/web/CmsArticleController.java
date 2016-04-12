@@ -27,10 +27,10 @@ import com.mossle.cms.service.RenderService;
 import com.mossle.core.auth.CurrentUserHolder;
 import com.mossle.core.export.Exportor;
 import com.mossle.core.export.TableModel;
-import com.mossle.core.hibernate.PropertyFilter;
 import com.mossle.core.mapper.BeanMapper;
 import com.mossle.core.mapper.JsonMapper;
 import com.mossle.core.page.Page;
+import com.mossle.core.query.PropertyFilter;
 import com.mossle.core.spring.MessageHelper;
 import com.mossle.core.store.MultipartFileDataSource;
 
@@ -45,6 +45,9 @@ import org.springframework.web.bind.annotation.ResponseBody;
 import org.springframework.web.multipart.MultipartFile;
 import org.springframework.web.servlet.mvc.support.RedirectAttributes;
 
+/**
+ * 文章.
+ */
 @Controller
 @RequestMapping("cms")
 public class CmsArticleController {
@@ -61,6 +64,9 @@ public class CmsArticleController {
     private CurrentUserHolder currentUserHolder;
     private TenantHolder tenantHolder;
 
+    /**
+     * 文章列表.
+     */
     @RequestMapping("cms-article-list")
     public String list(@ModelAttribute Page page,
             @RequestParam Map<String, Object> parameterMap, Model model) {
@@ -74,6 +80,9 @@ public class CmsArticleController {
         return "cms/cms-article-list";
     }
 
+    /**
+     * 编辑.
+     */
     @RequestMapping("cms-article-input")
     public String input(@RequestParam(value = "id", required = false) Long id,
             Model model) {
@@ -90,6 +99,9 @@ public class CmsArticleController {
         return "cms/cms-article-input";
     }
 
+    /**
+     * 保存文章.
+     */
     @RequestMapping("cms-article-save")
     public String save(@ModelAttribute CmsArticle cmsArticle,
             @RequestParam("cmsCatalogId") Long cmsCatalogId,
@@ -113,7 +125,6 @@ public class CmsArticleController {
         }
 
         dest.setCmsCatalog(cmsCatalogManager.get(cmsCatalogId));
-
         cmsArticleManager.save(dest);
 
         // attachment
@@ -127,13 +138,18 @@ public class CmsArticleController {
             cmsAttachment.setPath(storeDto.getKey());
             cmsAttachmentManager.save(cmsAttachment);
         }
+
         cmsArticleManager.save(dest);
+
         messageHelper.addFlashMessage(redirectAttributes, "core.success.save",
                 "保存成功");
 
         return "redirect:/cms/cms-article-list.do";
     }
 
+    /**
+     * 删除文章.
+     */
     @RequestMapping("cms-article-remove")
     public String remove(@RequestParam("selectedItem") List<Long> selectedItem,
             RedirectAttributes redirectAttributes) {
@@ -151,6 +167,9 @@ public class CmsArticleController {
         return "redirect:/cms/cms-article-list.do";
     }
 
+    /**
+     * 导出
+     */
     @RequestMapping("cms-article-export")
     public void export(@ModelAttribute Page page,
             @RequestParam Map<String, Object> parameterMap,
@@ -171,6 +190,9 @@ public class CmsArticleController {
         exportor.export(request, response, tableModel);
     }
 
+    /**
+     * 检查重名.
+     */
     @RequestMapping("cms-article-checkName")
     @ResponseBody
     public boolean checkName(@RequestParam("name") String name,
@@ -192,6 +214,9 @@ public class CmsArticleController {
         return result;
     }
 
+    /**
+     * 发布.
+     */
     @RequestMapping("cms-article-publish")
     public String publish(@RequestParam("id") Long id) {
         CmsArticle cmsArticle = cmsArticleManager.get(id);
@@ -202,6 +227,9 @@ public class CmsArticleController {
         return "redirect:/cms/cms-article-list.do";
     }
 
+    /**
+     * 查看.
+     */
     @RequestMapping("cms-article-view")
     public String view(@RequestParam("id") Long id, Model model) {
         CmsArticle cmsArticle = cmsArticleManager.get(id);
@@ -212,6 +240,9 @@ public class CmsArticleController {
         return "cms/cms-article-view";
     }
 
+    /**
+     * 上传图片.
+     */
     @RequestMapping("cms-article-uploadImage")
     @ResponseBody
     public String uploadImage(@RequestParam("CKEditorFuncNum") String callback,
@@ -226,6 +257,9 @@ public class CmsArticleController {
                 + "</script>";
     }
 
+    /**
+     * 下载.
+     */
     @RequestMapping("cms-article-download")
     @ResponseBody
     public String download(@RequestParam("id") Long id) throws Exception {
@@ -248,6 +282,9 @@ public class CmsArticleController {
         return jsonMapper.toJson(data);
     }
 
+    /**
+     * 上传.
+     */
     @RequestMapping("cms-article-upload")
     @ResponseBody
     public String upload(@RequestParam("id") Long id,
@@ -275,6 +312,9 @@ public class CmsArticleController {
         return jsonMapper.toJson(data);
     }
 
+    /**
+     * 图库类文章.
+     */
     @RequestMapping("cms-article-image")
     public String imageArticle(
             @RequestParam(value = "id", required = false) Long id, Model model) {
@@ -282,6 +322,10 @@ public class CmsArticleController {
 
         if (id == null) {
             CmsArticle cmsArticle = new CmsArticle();
+            cmsArticle.setUserId(currentUserHolder.getUserId());
+            cmsArticle.setCreateTime(new Date());
+            cmsArticle.setTenantId(tenantId);
+            cmsArticle.setContent("");
             cmsArticle.setType(CmsConstants.TYPE_IMAGE);
             cmsArticleManager.save(cmsArticle);
             model.addAttribute("model", cmsArticle);
@@ -296,6 +340,9 @@ public class CmsArticleController {
         return "cms/cms-article-image";
     }
 
+    /**
+     * 音频类文章.
+     */
     @RequestMapping("cms-article-audio")
     public String audioArticle(
             @RequestParam(value = "id", required = false) Long id, Model model) {
@@ -303,6 +350,10 @@ public class CmsArticleController {
 
         if (id == null) {
             CmsArticle cmsArticle = new CmsArticle();
+            cmsArticle.setUserId(currentUserHolder.getUserId());
+            cmsArticle.setCreateTime(new Date());
+            cmsArticle.setTenantId(tenantId);
+            cmsArticle.setContent("");
             cmsArticle.setType(CmsConstants.TYPE_AUDIO);
             cmsArticleManager.save(cmsArticle);
             model.addAttribute("model", cmsArticle);
@@ -317,6 +368,9 @@ public class CmsArticleController {
         return "cms/cms-article-audio";
     }
 
+    /**
+     * 视频文章.
+     */
     @RequestMapping("cms-article-video")
     public String videoArticle(
             @RequestParam(value = "id", required = false) Long id, Model model) {
@@ -324,6 +378,10 @@ public class CmsArticleController {
 
         if (id == null) {
             CmsArticle cmsArticle = new CmsArticle();
+            cmsArticle.setUserId(currentUserHolder.getUserId());
+            cmsArticle.setCreateTime(new Date());
+            cmsArticle.setTenantId(tenantId);
+            cmsArticle.setContent("");
             cmsArticle.setType(CmsConstants.TYPE_VIDEO);
             cmsArticleManager.save(cmsArticle);
             model.addAttribute("model", cmsArticle);

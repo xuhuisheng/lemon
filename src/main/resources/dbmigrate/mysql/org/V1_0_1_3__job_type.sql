@@ -4,7 +4,7 @@
 --  job type
 -------------------------------------------------------------------------------
 CREATE TABLE JOB_TYPE(
-        ID BIGINT AUTO_INCREMENT,
+        ID BIGINT NOT NULL,
 	NAME VARCHAR(50),
 	PARENT_ID BIGINT,
 	SCOPE_ID VARCHAR(50),

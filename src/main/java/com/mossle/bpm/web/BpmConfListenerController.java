@@ -43,6 +43,32 @@ public class BpmConfListenerController {
         return "bpm/bpm-conf-listener-list";
     }
 
+    @RequestMapping("bpm-conf-listener-save")
+    public String save(@RequestParam("bpmConfNodeId") Long bpmConfNodeId,
+            @RequestParam("value") String value,
+            @RequestParam("type") Integer type) {
+        BpmConfNode bpmConfNode = bpmConfNodeManager.get(bpmConfNodeId);
+        BpmConfListener bpmConfListener = new BpmConfListener();
+        bpmConfListener.setBpmConfNode(bpmConfNode);
+        bpmConfListener.setValue(value);
+        bpmConfListener.setType(type);
+        bpmConfListener.setStatus(1);
+        bpmConfListener.setPriority(0);
+        bpmConfListenerManager.save(bpmConfListener);
+
+        return "redirect:/bpm/bpm-conf-listener-list.do?bpmConfNodeId="
+                + bpmConfNodeId;
+    }
+
+    @RequestMapping("bpm-conf-listener-remove")
+    public String remove(@RequestParam("bpmConfNodeId") Long bpmConfNodeId,
+            @RequestParam("id") Long id) {
+        bpmConfListenerManager.removeById(id);
+
+        return "redirect:/bpm/bpm-conf-listener-list.do?bpmConfNodeId="
+                + bpmConfNodeId;
+    }
+
     // ~ ======================================================================
     @Resource
     public void setBpmConfNodeManager(BpmConfNodeManager bpmConfNodeManager) {

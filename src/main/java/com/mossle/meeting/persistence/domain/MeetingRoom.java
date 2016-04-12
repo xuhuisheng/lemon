@@ -8,7 +8,6 @@ import java.util.Set;
 import javax.persistence.Column;
 import javax.persistence.Entity;
 import javax.persistence.FetchType;
-import javax.persistence.GeneratedValue;
 import javax.persistence.Id;
 import javax.persistence.OneToMany;
 import javax.persistence.Table;
@@ -64,10 +63,15 @@ public class MeetingRoom implements java.io.Serializable {
     public MeetingRoom() {
     }
 
-    public MeetingRoom(String name, String mapRef, Integer num,
+    public MeetingRoom(Long id) {
+        this.id = id;
+    }
+
+    public MeetingRoom(Long id, String name, String mapRef, Integer num,
             String projector, String type, Date startTime, Date endTime,
             String building, String floor, String tenantId,
             Set<MeetingInfo> meetingInfos) {
+        this.id = id;
         this.name = name;
         this.mapRef = mapRef;
         this.num = num;
@@ -83,7 +87,6 @@ public class MeetingRoom implements java.io.Serializable {
 
     /** @return null. */
     @Id
-    @GeneratedValue
     @Column(name = "ID", unique = true, nullable = false)
     public Long getId() {
         return this.id;

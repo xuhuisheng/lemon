@@ -4,7 +4,7 @@
 --  whitelist app
 -------------------------------------------------------------------------------
 CREATE TABLE WHITELIST_APP(
-        ID BIGINT AUTO_INCREMENT,
+        ID BIGINT NOT NULL,
 	NAME VARCHAR(50),
 	TYPE_ID BIGINT,
 	USER_ID VARCHAR(50),

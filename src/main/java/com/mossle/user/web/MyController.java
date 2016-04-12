@@ -6,6 +6,8 @@ import java.io.ByteArrayInputStream;
 import java.io.ByteArrayOutputStream;
 import java.io.OutputStream;
 
+import java.util.List;
+
 import javax.annotation.Resource;
 
 import javax.imageio.ImageIO;
@@ -16,6 +18,7 @@ import com.mossle.api.tenant.TenantHolder;
 
 import com.mossle.core.auth.CurrentUserHolder;
 import com.mossle.core.mapper.BeanMapper;
+import com.mossle.core.page.Page;
 import com.mossle.core.spring.MessageHelper;
 import com.mossle.core.store.InputStreamDataSource;
 import com.mossle.core.store.MultipartFileDataSource;
@@ -23,9 +26,11 @@ import com.mossle.core.util.IoUtils;
 
 import com.mossle.user.ImageUtils;
 import com.mossle.user.persistence.domain.AccountAvatar;
+import com.mossle.user.persistence.domain.AccountDevice;
 import com.mossle.user.persistence.domain.AccountInfo;
 import com.mossle.user.persistence.domain.PersonInfo;
 import com.mossle.user.persistence.manager.AccountAvatarManager;
+import com.mossle.user.persistence.manager.AccountDeviceManager;
 import com.mossle.user.persistence.manager.AccountInfoManager;
 import com.mossle.user.persistence.manager.PersonInfoManager;
 import com.mossle.user.service.ChangePasswordService;
@@ -51,6 +56,7 @@ public class MyController {
     private AccountInfoManager accountInfoManager;
     private PersonInfoManager personInfoManager;
     private AccountAvatarManager accountAvatarManager;
+    private AccountDeviceManager accountDeviceManager;
     private MessageHelper messageHelper;
     private BeanMapper beanMapper = new BeanMapper();
     private CurrentUserHolder currentUserHolder;
@@ -286,6 +292,54 @@ public class MyController {
         return "user/my-avatar-save";
     }
 
+    /**
+     * 设备列表.
+     */
+    @RequestMapping("my-device-list")
+    public String myDeviceList(@ModelAttribute Page page, Model model) {
+        Long accountId = Long.parseLong(currentUserHolder.getUserId());
+        String hql = "from AccountDevice where accountInfo.id=?";
+        page = accountDeviceManager.pagedQuery(hql, page.getPageNo(),
+                page.getPageSize(), accountId);
+        model.addAttribute("page", page);
+
+        return "user/my-device-list";
+    }
+
+    @RequestMapping("my-device-active")
+    public String active(@RequestParam("id") Long id,
+            RedirectAttributes redirectAttributes) {
+        AccountDevice accountDevice = accountDeviceManager.get(id);
+        accountDevice.setStatus("active");
+        accountDeviceManager.save(accountDevice);
+        messageHelper.addFlashMessage(redirectAttributes,
+                "core.success.update", "操作成功");
+
+        return "redirect:/user/my-device-list.do";
+    }
+
+    @RequestMapping("my-device-disable")
+    public String disable(@RequestParam("id") Long id,
+            RedirectAttributes redirectAttributes) {
+        AccountDevice accountDevice = accountDeviceManager.get(id);
+        accountDevice.setStatus("disabled");
+        accountDeviceManager.save(accountDevice);
+        messageHelper.addFlashMessage(redirectAttributes,
+                "core.success.update", "操作成功");
+
+        return "redirect:/user/my-device-list.do";
+    }
+
+    @RequestMapping("my-device-remove")
+    public String remove(@RequestParam("id") Long id,
+            RedirectAttributes redirectAttributes) {
+        accountDeviceManager.removeById(id);
+        messageHelper.addFlashMessage(redirectAttributes,
+                "core.success.update", "操作成功");
+
+        return "redirect:/user/my-device-list.do";
+    }
+
     // ~ ======================================================================
     @Resource
     public void setAccountInfoManager(AccountInfoManager accountInfoManager) {
@@ -301,6 +355,12 @@ public class MyController {
     public void setAccountAvatarManager(
             AccountAvatarManager accountAvatarManager) {
         this.accountAvatarManager = accountAvatarManager;
+    }
+
+    @Resource
+    public void setAccountDeviceManager(
+            AccountDeviceManager accountDeviceManager) {
+        this.accountDeviceManager = accountDeviceManager;
     }
 
     @Resource

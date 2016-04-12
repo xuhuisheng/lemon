@@ -64,10 +64,12 @@ public class TaskNotificationHumanTaskListener implements HumanTaskListener {
             } else {
                 userDto = userConnector.findById(receiver);
             }
-			if (userDto == null) {
-				logger.debug("userDto is null");
-				continue;
-			}
+
+            if (userDto == null) {
+                logger.debug("userDto is null : {}", receiver);
+
+                continue;
+            }
 
             NotificationDTO notificationDto = new NotificationDTO();
             notificationDto.setReceiver(userDto.getId());
@@ -83,7 +85,12 @@ public class TaskNotificationHumanTaskListener implements HumanTaskListener {
         String assignee = taskInfo.getAssignee();
         String initiator = internalProcessConnector.findInitiator(taskInfo
                 .getProcessInstanceId());
-        UserDTO assigneeUser = userConnector.findById(assignee);
+        UserDTO assigneeUser = null;
+
+        if (assignee != null) {
+            assigneeUser = userConnector.findById(assignee);
+        }
+
         UserDTO initiatorUser = userConnector.findById(initiator);
 
         Map<String, Object> data = new HashMap<String, Object>();
@@ -91,7 +98,10 @@ public class TaskNotificationHumanTaskListener implements HumanTaskListener {
         Map<String, Object> taskEntity = new HashMap<String, Object>();
         taskEntity.put("id", taskInfo.getId());
         taskEntity.put("name", taskInfo.getName());
-        taskEntity.put("assignee", assigneeUser.getDisplayName());
+
+        if (assigneeUser != null) {
+            taskEntity.put("assignee", assigneeUser.getDisplayName());
+        }
 
         data.put("task", taskEntity);
         data.put("initiator", initiatorUser.getDisplayName());

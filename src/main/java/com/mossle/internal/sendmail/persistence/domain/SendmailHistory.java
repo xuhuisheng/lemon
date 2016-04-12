@@ -6,7 +6,6 @@ import java.util.Date;
 import javax.persistence.Column;
 import javax.persistence.Entity;
 import javax.persistence.FetchType;
-import javax.persistence.GeneratedValue;
 import javax.persistence.Id;
 import javax.persistence.JoinColumn;
 import javax.persistence.ManyToOne;
@@ -72,11 +71,16 @@ public class SendmailHistory implements java.io.Serializable {
     public SendmailHistory() {
     }
 
-    public SendmailHistory(SendmailTemplate sendmailTemplate,
+    public SendmailHistory(Long id) {
+        this.id = id;
+    }
+
+    public SendmailHistory(Long id, SendmailTemplate sendmailTemplate,
             SendmailConfig sendmailConfig, String subject, String sender,
             String receiver, String cc, String bcc, String content,
             String attachment, String data, Date createTime, String status,
             String info, String tenantId) {
+        this.id = id;
         this.sendmailTemplate = sendmailTemplate;
         this.sendmailConfig = sendmailConfig;
         this.subject = subject;
@@ -95,7 +99,6 @@ public class SendmailHistory implements java.io.Serializable {
 
     /** @return null. */
     @Id
-    @GeneratedValue
     @Column(name = "ID", unique = true, nullable = false)
     public Long getId() {
         return this.id;

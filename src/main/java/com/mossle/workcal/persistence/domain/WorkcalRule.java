@@ -8,7 +8,6 @@ import java.util.Set;
 import javax.persistence.Column;
 import javax.persistence.Entity;
 import javax.persistence.FetchType;
-import javax.persistence.GeneratedValue;
 import javax.persistence.Id;
 import javax.persistence.JoinColumn;
 import javax.persistence.ManyToOne;
@@ -57,9 +56,14 @@ public class WorkcalRule implements java.io.Serializable {
     public WorkcalRule() {
     }
 
-    public WorkcalRule(WorkcalType workcalType, Integer year, Integer week,
-            String name, Date workDate, Integer status, String tenantId,
-            Set<WorkcalPart> workcalParts) {
+    public WorkcalRule(Long id) {
+        this.id = id;
+    }
+
+    public WorkcalRule(Long id, WorkcalType workcalType, Integer year,
+            Integer week, String name, Date workDate, Integer status,
+            String tenantId, Set<WorkcalPart> workcalParts) {
+        this.id = id;
         this.workcalType = workcalType;
         this.year = year;
         this.week = week;
@@ -72,7 +76,6 @@ public class WorkcalRule implements java.io.Serializable {
 
     /** @return null. */
     @Id
-    @GeneratedValue
     @Column(name = "ID", unique = true, nullable = false)
     public Long getId() {
         return this.id;

@@ -26,7 +26,11 @@
 
     <jmxConfigurator />
 
-	<include resource="logback/console.xml"/>
+	<if condition='${log.console.enable}'>
+		<then>
+			<include resource="logback/console.xml"/>
+		</then>
+	</if>
 
 	<if condition='${log.file.enable}'>
 		<then>
@@ -53,7 +57,11 @@
 	</if>
 
     <root level="info">
-        <appender-ref ref="CONSOLE" />
+		<if condition='${log.console.enable}'>
+			<then>
+				<appender-ref ref="CONSOLE" />
+			</then>
+		</if>
 		<if condition='${log.file.enable}'>
 			<then>
 		        <appender-ref ref="FILE" />
@@ -82,6 +90,5 @@
 	<logger name="org.springframework.security.access.event.LoggerListener" level="error"/>
 	<logger name="org.springframework.security.authentication.event.LoggerListener" level="error"/>
 	<logger name="org.springframework.web.servlet.mvc.method.annotation.RequestMappingHandlerMapping" level="warn"/>
-
 
 </configuration>

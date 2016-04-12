@@ -7,7 +7,6 @@ import java.util.Set;
 import javax.persistence.Column;
 import javax.persistence.Entity;
 import javax.persistence.FetchType;
-import javax.persistence.GeneratedValue;
 import javax.persistence.Id;
 import javax.persistence.JoinColumn;
 import javax.persistence.JoinTable;
@@ -17,7 +16,7 @@ import javax.persistence.OneToMany;
 import javax.persistence.Table;
 
 /**
- * Perm .
+ * Perm 权限.
  * 
  * @author Lingo
  */
@@ -26,22 +25,22 @@ import javax.persistence.Table;
 public class Perm implements java.io.Serializable {
     private static final long serialVersionUID = 0L;
 
-    /** null. */
+    /** 主键. */
     private Long id;
 
-    /** null. */
+    /** 外键，权限类型. */
     private PermType permType;
 
-    /** null. */
+    /** 编码. */
     private String code;
 
-    /** null. */
+    /** 名称. */
     private String name;
 
-    /** null. */
+    /** 租户. */
     private String tenantId;
 
-    /** null. */
+    /** 排序. */
     private Integer priority;
 
     /** . */
@@ -56,13 +55,15 @@ public class Perm implements java.io.Serializable {
     public Perm() {
     }
 
-    public Perm(PermType permType) {
+    public Perm(Long id, PermType permType) {
+        this.id = id;
         this.permType = permType;
     }
 
-    public Perm(PermType permType, String code, String name, String tenantId,
-            Integer priority, Set<RoleDef> roleDefs, Set<Access> accesses,
-            Set<Menu> menus) {
+    public Perm(Long id, PermType permType, String code, String name,
+            String tenantId, Integer priority, Set<RoleDef> roleDefs,
+            Set<Access> accesses, Set<Menu> menus) {
+        this.id = id;
         this.permType = permType;
         this.code = code;
         this.name = name;
@@ -73,9 +74,8 @@ public class Perm implements java.io.Serializable {
         this.menus = menus;
     }
 
-    /** @return null. */
+    /** @return 主键. */
     @Id
-    @GeneratedValue
     @Column(name = "ID", unique = true, nullable = false)
     public Long getId() {
         return this.id;
@@ -83,13 +83,13 @@ public class Perm implements java.io.Serializable {
 
     /**
      * @param id
-     *            null.
+     *            主键.
      */
     public void setId(Long id) {
         this.id = id;
     }
 
-    /** @return null. */
+    /** @return 外键，权限类型. */
     @ManyToOne(fetch = FetchType.LAZY)
     @JoinColumn(name = "PERM_TYPE_ID", nullable = false)
     public PermType getPermType() {
@@ -98,13 +98,13 @@ public class Perm implements java.io.Serializable {
 
     /**
      * @param permType
-     *            null.
+     *            外键，权限类型.
      */
     public void setPermType(PermType permType) {
         this.permType = permType;
     }
 
-    /** @return null. */
+    /** @return 编码. */
     @Column(name = "CODE", length = 200)
     public String getCode() {
         return this.code;
@@ -112,13 +112,13 @@ public class Perm implements java.io.Serializable {
 
     /**
      * @param code
-     *            null.
+     *            编码.
      */
     public void setCode(String code) {
         this.code = code;
     }
 
-    /** @return null. */
+    /** @return 名称. */
     @Column(name = "NAME", length = 200)
     public String getName() {
         return this.name;
@@ -126,13 +126,13 @@ public class Perm implements java.io.Serializable {
 
     /**
      * @param name
-     *            null.
+     *            名称.
      */
     public void setName(String name) {
         this.name = name;
     }
 
-    /** @return null. */
+    /** @return 租户. */
     @Column(name = "TENANT_ID", length = 50)
     public String getTenantId() {
         return this.tenantId;
@@ -140,13 +140,13 @@ public class Perm implements java.io.Serializable {
 
     /**
      * @param tenantId
-     *            null.
+     *            租户.
      */
     public void setTenantId(String tenantId) {
         this.tenantId = tenantId;
     }
 
-    /** @return null. */
+    /** @return 排序. */
     @Column(name = "PRIORITY")
     public Integer getPriority() {
         return this.priority;
@@ -154,7 +154,7 @@ public class Perm implements java.io.Serializable {
 
     /**
      * @param priority
-     *            null.
+     *            排序.
      */
     public void setPriority(Integer priority) {
         this.priority = priority;

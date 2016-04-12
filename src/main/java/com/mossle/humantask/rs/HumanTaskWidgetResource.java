@@ -39,9 +39,7 @@ public class HumanTaskWidgetResource {
         buff.append("<table class='table table-hover'>");
         buff.append("  <thead>");
         buff.append("    <tr>");
-        buff.append("      <th>编号</th>");
         buff.append("      <th>名称</th>");
-        buff.append("      <th>创建时间</th>");
         buff.append("      <th width='20%'>&nbsp;</th>");
         buff.append("    </tr>");
         buff.append("  </thead>");
@@ -51,10 +49,8 @@ public class HumanTaskWidgetResource {
 
         for (HumanTaskDTO humanTaskDto : humanTaskDtos) {
             buff.append("    <tr>");
-            buff.append("      <td>" + humanTaskDto.getId() + "</td>");
-            buff.append("      <td>" + humanTaskDto.getName() + "</td>");
-            buff.append("      <td>"
-                    + dateFormat.format(humanTaskDto.getCreateTime()) + "</td>");
+            buff.append("      <td>" + humanTaskDto.getPresentationSubject()
+                    + "</td>");
             buff.append("      <td>");
             buff.append("        <a href='" + ".."
                     + "/operation/task-operation-viewTaskForm.do?humanTaskId="

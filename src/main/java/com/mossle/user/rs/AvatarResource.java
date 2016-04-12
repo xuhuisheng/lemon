@@ -31,7 +31,8 @@ public class AvatarResource {
     @GET
     @Produces(MediaType.APPLICATION_OCTET_STREAM)
     public InputStream view(@QueryParam("id") String id,
-            @QueryParam("width") @DefaultValue("0") int width) throws Exception {
+            @QueryParam("width") @DefaultValue("16") int width)
+            throws Exception {
         logger.debug("width : {}", width);
 
         String tenantId = tenantHolder.getTenantId();
@@ -44,7 +45,22 @@ public class AvatarResource {
             logger.error(ex.getMessage(), ex);
         }
 
-        return userAvatarService.viewAvatar(longId, width, tenantId)
+        return userAvatarService.viewAvatarById(longId, width, tenantId)
+                .getInputStream();
+    }
+
+    @GET
+    @Path("username")
+    @Produces(MediaType.APPLICATION_OCTET_STREAM)
+    public InputStream username(@QueryParam("username") String username,
+            @QueryParam("width") @DefaultValue("16") int width)
+            throws Exception {
+        logger.debug("width : {}", width);
+
+        String tenantId = tenantHolder.getTenantId();
+
+        return userAvatarService
+                .viewAvatarByUsername(username, width, tenantId)
                 .getInputStream();
     }
 

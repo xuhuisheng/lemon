@@ -4,7 +4,6 @@ package com.mossle.form.persistence.domain;
 import javax.persistence.Column;
 import javax.persistence.Entity;
 import javax.persistence.FetchType;
-import javax.persistence.GeneratedValue;
 import javax.persistence.Id;
 import javax.persistence.JoinColumn;
 import javax.persistence.ManyToOne;
@@ -65,11 +64,16 @@ public class FormSchema implements java.io.Serializable {
     public FormSchema() {
     }
 
-    public FormSchema(FormTemplate formTemplate, String code, String name,
-            String type, Integer readOnly, Integer notNull,
+    public FormSchema(Long id) {
+        this.id = id;
+    }
+
+    public FormSchema(Long id, FormTemplate formTemplate, String code,
+            String name, String type, Integer readOnly, Integer notNull,
             Integer uniqueConstraint, String validator,
             String conversionPattern, Integer multiple, String enumerationKeys,
             String enumerationValues, String tenantId) {
+        this.id = id;
         this.formTemplate = formTemplate;
         this.code = code;
         this.name = name;
@@ -87,7 +91,6 @@ public class FormSchema implements java.io.Serializable {
 
     /** @return null. */
     @Id
-    @GeneratedValue
     @Column(name = "ID", unique = true, nullable = false)
     public Long getId() {
         return this.id;

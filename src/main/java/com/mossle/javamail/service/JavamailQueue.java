@@ -46,18 +46,24 @@ public class JavamailQueue implements Runnable {
 
     public void doProcess() throws Exception {
         JavamailCmd javamailCmd = queue.poll(1, TimeUnit.SECONDS);
+        logger.debug("process : {}", javamailCmd);
 
         if (javamailCmd == null) {
             return;
         }
 
-        if ("send".equals(javamailCmd.getType())) {
-            javamailService.send(javamailCmd.getFrom(), javamailCmd.getTo(),
-                    javamailCmd.getSubject(), javamailCmd.getContent());
-        } else if ("receive".equals(javamailCmd.getType())) {
-            javamailService.receive(javamailCmd.getFrom());
-        } else {
-            logger.info("unsupport : {}", javamailCmd.getType());
+        try {
+            if ("send".equals(javamailCmd.getType())) {
+                javamailService.send(javamailCmd.getFrom(),
+                        javamailCmd.getTo(), javamailCmd.getSubject(),
+                        javamailCmd.getContent());
+            } else if ("receive".equals(javamailCmd.getType())) {
+                javamailService.receive(javamailCmd.getFrom());
+            } else {
+                logger.info("unsupport : {}", javamailCmd.getType());
+            }
+        } catch (Exception ex) {
+            logger.error(ex.getMessage(), ex);
         }
     }
 

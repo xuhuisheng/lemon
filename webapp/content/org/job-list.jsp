@@ -7,19 +7,36 @@
 
   <head>
     <%@include file="/common/meta.jsp"%>
-    <title>职位矩阵</title>
-    <%@include file="/common/s.jsp"%>
+    <title><spring:message code="dev.job.list.title" text="列表"/></title>
+    <%@include file="/common/s3.jsp"%>
     <script type="text/javascript">
+/*
+var config = {
+    id: 'jobGrid',
+    pageNo: ${page.pageNo},
+    pageSize: ${page.pageSize},
+    totalCount: ${page.totalCount},
+    resultSize: ${page.resultSize},
+    pageCount: ${page.pageCount},
+    orderBy: '${page.orderBy == null ? "" : page.orderBy}',
+    asc: ${page.asc},
+    params: {
+        'filter_LIKES_name': '${param.filter_LIKES_name}'
+    },
+	selectedItemClass: 'selectedItem',
+	gridFormId: 'jobGridForm',
+	exportUrl: 'job-export.do'
+};
+
+var table;
+
 $(function() {
-    $("#orgForm").validate({
-        submitHandler: function(form) {
-			bootbox.animate(false);
-			var box = bootbox.dialog('<div class="progress progress-striped active" style="margin:0px;"><div class="bar" style="width: 100%;"></div></div>');
-            form.submit();
-        },
-        errorClass: 'validate-error'
-    });
-})
+	table = new Table(config);
+    table.configPagination('.m-pagination');
+    table.configPageInfo('.m-page-info');
+    table.configPageSize('.m-page-size');
+});
+*/
     </script>
   </head>
 
@@ -27,17 +44,17 @@ $(function() {
     <%@include file="/header/org-sys.jsp"%>
 
     <div class="row-fluid">
-	<%@include file="/menu/org-sys.jsp"%>
+	  <%@include file="/menu/org-sys.jsp"%>
 
-	<!-- start of main -->
-    <section id="m-main" class="span10">
+	  <!-- start of main -->
+      <section id="m-main" class="col-md-10" style="padding-top:65px;">
 
-      <article class="m-widget">
-        <header class="header">
-		  <h4 class="title">职位矩阵</h4>
-		</header>
+      <div class="panel panel-default">
+        <div class="panel-heading">
+		  <i class="glyphicon glyphicon-list"></i>
+		  职位矩阵
+		</div>
 
-		<div class="content content-inner">
 
 <table class="table">
   <thead>
@@ -64,15 +81,14 @@ $(function() {
   </tbody>
 </table>
 
-        </div>
-      </article>
+      </div>
 
-      <div class="m-spacer"></div>
 
-    </section>
-	<!-- end of main -->
+      </section>
+	  <!-- end of main -->
 	</div>
 
   </body>
 
 </html>
+

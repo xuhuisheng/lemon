@@ -5,7 +5,6 @@ import java.util.Date;
 
 import javax.persistence.Column;
 import javax.persistence.Entity;
-import javax.persistence.GeneratedValue;
 import javax.persistence.Id;
 import javax.persistence.Table;
 import javax.persistence.Temporal;
@@ -39,7 +38,13 @@ public class PimNote implements java.io.Serializable {
     public PimNote() {
     }
 
-    public PimNote(String title, String content, Date createTime, String userId) {
+    public PimNote(Long id) {
+        this.id = id;
+    }
+
+    public PimNote(Long id, String title, String content, Date createTime,
+            String userId) {
+        this.id = id;
         this.title = title;
         this.content = content;
         this.createTime = createTime;
@@ -48,7 +53,6 @@ public class PimNote implements java.io.Serializable {
 
     /** @return null. */
     @Id
-    @GeneratedValue
     @Column(name = "ID", unique = true, nullable = false)
     public Long getId() {
         return this.id;

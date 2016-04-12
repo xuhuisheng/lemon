@@ -4,7 +4,6 @@ package com.mossle.bpm.persistence.domain;
 import javax.persistence.Column;
 import javax.persistence.Entity;
 import javax.persistence.FetchType;
-import javax.persistence.GeneratedValue;
 import javax.persistence.Id;
 import javax.persistence.JoinColumn;
 import javax.persistence.ManyToOne;
@@ -44,9 +43,14 @@ public class BpmTaskDefNotice implements java.io.Serializable {
     public BpmTaskDefNotice() {
     }
 
-    public BpmTaskDefNotice(BpmMailTemplate bpmMailTemplate,
+    public BpmTaskDefNotice(Long id) {
+        this.id = id;
+    }
+
+    public BpmTaskDefNotice(Long id, BpmMailTemplate bpmMailTemplate,
             BpmProcess bpmProcess, String taskDefinitionKey, Integer type,
             String receiver, String dueDate) {
+        this.id = id;
         this.bpmMailTemplate = bpmMailTemplate;
         this.bpmProcess = bpmProcess;
         this.taskDefinitionKey = taskDefinitionKey;
@@ -57,7 +61,6 @@ public class BpmTaskDefNotice implements java.io.Serializable {
 
     /** @return null. */
     @Id
-    @GeneratedValue
     @Column(name = "ID", unique = true, nullable = false)
     public Long getId() {
         return this.id;

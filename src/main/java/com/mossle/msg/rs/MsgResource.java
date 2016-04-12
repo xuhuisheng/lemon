@@ -16,6 +16,8 @@ import com.mossle.msg.persistence.manager.MsgInfoManager;
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
 
+import org.springframework.beans.factory.annotation.Value;
+
 import org.springframework.stereotype.Component;
 
 @Component
@@ -25,11 +27,16 @@ public class MsgResource {
     private MsgInfoManager msgInfoManager;
     private JsonMapper jsonMapper = new JsonMapper();
     private CurrentUserHolder currentUserHolder;
+    private boolean enable = true;
 
     @GET
     @Path("unreadCount")
     @Produces(MediaType.APPLICATION_JSON)
     public BaseDTO unreadCount() {
+        if (!enable) {
+            return new BaseDTO();
+        }
+
         String userId = currentUserHolder.getUserId();
         Integer count = msgInfoManager.getCount(
                 "select count(*) from MsgInfo where receiverId=? and status=0",
@@ -49,5 +56,10 @@ public class MsgResource {
     @Resource
     public void setCurrentUserHolder(CurrentUserHolder currentUserHolder) {
         this.currentUserHolder = currentUserHolder;
+    }
+
+    @Value("${msg.enable}")
+    public void setEnable(boolean enable) {
+        this.enable = enable;
     }
 }

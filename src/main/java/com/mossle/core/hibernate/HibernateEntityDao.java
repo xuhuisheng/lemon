@@ -8,7 +8,10 @@ import java.util.HashMap;
 import java.util.List;
 import java.util.Map;
 
+import com.mossle.core.id.IdGenerator;
 import com.mossle.core.page.Page;
+import com.mossle.core.query.MatchType;
+import com.mossle.core.query.PropertyFilter;
 import com.mossle.core.util.GenericsUtils;
 
 import org.hibernate.Criteria;
@@ -158,9 +161,26 @@ public class HibernateEntityDao<T> extends HibernatePagingDao {
     @Transactional
     @Override
     public void save(Object entity) {
+        this.save(entity, this.getIdGenerator());
+    }
+
+    @Transactional
+    public void save(Object entity, IdGenerator idGenerator) {
         try {
             boolean isCreated = getId(entity.getClass(), entity) == null;
-            super.save(entity);
+
+            if (idGenerator != null) {
+                if (isCreated) {
+                    String idFieldName = getIdName(entity.getClass());
+                    Serializable id = getIdGenerator().generateId();
+                    setId(entity.getClass(), entity, id);
+                    super.insert(entity);
+                } else {
+                    super.update(entity);
+                }
+            } else {
+                super.save(entity);
+            }
 
             if (isCreated) {
                 publishEvent(new EntityCreatedEvent(entity));

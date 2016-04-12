@@ -41,6 +41,12 @@ public class PartyOrgConnector implements OrgConnector {
         // 找到userId对应的partyEntity
         PartyEntity partyEntity = this.findUser(userId);
 
+        if (partyEntity == null) {
+            logger.info("cannot find user : {}", userId);
+
+            return -1;
+        }
+
         // 如果直接上级是岗位，就返回岗位级别
         for (PartyStruct partyStruct : partyEntity.getParentStructs()) {
             if (partyStruct.getParentEntity().getPartyType().getType() == PartyConstants.TYPE_POSITION) {
@@ -243,15 +249,24 @@ public class PartyOrgConnector implements OrgConnector {
      * 获得上级部门.
      */
     public PartyEntity findUpperDepartment(PartyEntity child) {
+        if (child == null) {
+            logger.info("child is null");
+
+            return null;
+        }
+
         for (PartyStruct partyStruct : child.getParentStructs()) {
             PartyEntity parent = partyStruct.getParentEntity();
+
+            if (parent == null) {
+                logger.info("parent is null, child : {}", child.getName());
+
+                continue;
+            }
+
             logger.debug("parent : {}, child : {}", parent.getName(),
                     child.getName());
             logger.debug("admin : [{}]", partyStruct.getAdmin());
-
-            if (parent == null) {
-                continue;
-            }
 
             if ((parent.getPartyType().getType() == PartyConstants.TYPE_ORG)
                     && (!Integer.valueOf(1).equals(partyStruct.getAdmin()))) {

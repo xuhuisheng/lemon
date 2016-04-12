@@ -1,0 +1,4 @@
+
+
+alter table CMS_ARTICLE ADD COLUMN CODE VARCHAR(50);
+

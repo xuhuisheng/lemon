@@ -8,7 +8,6 @@ import java.util.Set;
 import javax.persistence.Column;
 import javax.persistence.Entity;
 import javax.persistence.FetchType;
-import javax.persistence.GeneratedValue;
 import javax.persistence.Id;
 import javax.persistence.JoinColumn;
 import javax.persistence.ManyToOne;
@@ -63,10 +62,15 @@ public class CmsComment implements java.io.Serializable {
     public CmsComment() {
     }
 
-    public CmsComment(CmsComment cmsComment, CmsArticle cmsArticle,
+    public CmsComment(Long id) {
+        this.id = id;
+    }
+
+    public CmsComment(Long id, CmsComment cmsComment, CmsArticle cmsArticle,
             String title, String content, Integer status, Date createTime,
             String userId, String tenantId, Set<CmsFavorite> cmsFavorites,
             Set<CmsComment> cmsComments) {
+        this.id = id;
         this.cmsComment = cmsComment;
         this.cmsArticle = cmsArticle;
         this.title = title;
@@ -81,7 +85,6 @@ public class CmsComment implements java.io.Serializable {
 
     /** @return null. */
     @Id
-    @GeneratedValue
     @Column(name = "ID", unique = true, nullable = false)
     public Long getId() {
         return this.id;

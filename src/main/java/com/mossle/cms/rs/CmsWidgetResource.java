@@ -39,7 +39,7 @@ public class CmsWidgetResource {
         buff.append("<marquee direction='up' scrollamount='2'>");
 
         for (CmsArticle cmsArticle : cmsArticles) {
-            buff.append("<div>");
+            buff.append("<div style='padding-left:20px;'>");
             buff.append("  <h4><a href='../cms/cms-article-view.do?id="
                     + cmsArticle.getId() + "'>" + cmsArticle.getTitle()
                     + "</h4>");

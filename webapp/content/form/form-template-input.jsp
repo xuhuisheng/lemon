@@ -3,25 +3,26 @@
 <%pageContext.setAttribute("currentHeader", "form");%>
 <%pageContext.setAttribute("currentMenu", "form");%>
 <!doctype html>
-<html lang="en">
+<html>
 
   <head>
     <%@include file="/common/meta.jsp"%>
     <title>designer</title>
-    <%@include file="/common/s.jsp"%>
+    <%@include file="/common/s3.jsp"%>
 	<link href="${tenantPrefix}/widgets/xform/styles/xform.css" rel="stylesheet">
-    <script type="text/javascript" src="${tenantPrefix}/widgets/xform/xform-all.js"></script>
-    <script type="text/javascript" src="${tenantPrefix}/widgets/xform/adaptor.js"></script>
+    <script type="text/javascript" src="${tenantPrefix}/widgets/xform3/xform-all.js"></script>
+    <script type="text/javascript" src="${tenantPrefix}/widgets/xform3/adaptor.js"></script>
   </head>
 
   <body>
     <%@include file="/header/form.jsp"%>
 
     <div class="row-fluid">
-	<%@include file="/menu/form.jsp"%>
+	  <%@include file="/menu/form.jsp"%>
 
 	<!-- start of main -->
-    <section id="m-main" class="span10">
+      <section id="m-main" class="col-md-10" style="padding-top:65px;">
+
 	  <div id="__gef_container__" style="padding-left:5px;">
 	    <div id="__gef_palette__" style="float:left;width:260px;">
 		  <ul class="nav nav-tabs" id="myTab">
@@ -134,8 +135,9 @@
 
 		</div>
 
-    </section>
+    </div>
 	<!-- end of main -->
+	</div>
 
     <form id="f" action="form-template-save.do" method="post" style="display:none;">
 	<c:if test="${model != null}">
@@ -149,3 +151,4 @@
   </body>
 
 </html>
+

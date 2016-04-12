@@ -4,7 +4,6 @@ package com.mossle.group.persistence.domain;
 import javax.persistence.Column;
 import javax.persistence.Entity;
 import javax.persistence.FetchType;
-import javax.persistence.GeneratedValue;
 import javax.persistence.Id;
 import javax.persistence.JoinColumn;
 import javax.persistence.ManyToOne;
@@ -35,7 +34,13 @@ public class GroupMember implements java.io.Serializable {
     public GroupMember() {
     }
 
-    public GroupMember(GroupInfo groupInfo, String userId, String tenantId) {
+    public GroupMember(Long id) {
+        this.id = id;
+    }
+
+    public GroupMember(Long id, GroupInfo groupInfo, String userId,
+            String tenantId) {
+        this.id = id;
         this.groupInfo = groupInfo;
         this.userId = userId;
         this.tenantId = tenantId;
@@ -43,7 +48,6 @@ public class GroupMember implements java.io.Serializable {
 
     /** @return null. */
     @Id
-    @GeneratedValue
     @Column(name = "ID", unique = true, nullable = false)
     public Long getId() {
         return this.id;

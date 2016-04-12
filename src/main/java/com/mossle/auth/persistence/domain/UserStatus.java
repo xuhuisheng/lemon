@@ -7,7 +7,6 @@ import java.util.Set;
 import javax.persistence.Column;
 import javax.persistence.Entity;
 import javax.persistence.FetchType;
-import javax.persistence.GeneratedValue;
 import javax.persistence.Id;
 import javax.persistence.JoinColumn;
 import javax.persistence.JoinTable;
@@ -15,7 +14,7 @@ import javax.persistence.ManyToMany;
 import javax.persistence.Table;
 
 /**
- * UserStatus .
+ * UserStatus 账号.
  * 
  * @author Lingo
  */
@@ -24,25 +23,25 @@ import javax.persistence.Table;
 public class UserStatus implements java.io.Serializable {
     private static final long serialVersionUID = 0L;
 
-    /** null. */
+    /** 主键. */
     private Long id;
 
-    /** null. */
+    /** 账号. */
     private String username;
 
-    /** null. */
+    /** 遗留字段. */
     private String password;
 
-    /** null. */
+    /** 状态. */
     private Integer status;
 
-    /** null. */
+    /** 外部引用. */
     private String ref;
 
-    /** null. */
+    /** 账号体系引用，暂时没用. */
     private String userRepoRef;
 
-    /** null. */
+    /** 租户. */
     private String tenantId;
 
     /** . */
@@ -51,8 +50,14 @@ public class UserStatus implements java.io.Serializable {
     public UserStatus() {
     }
 
-    public UserStatus(String username, String password, Integer status,
-            String ref, String userRepoRef, String tenantId, Set<Role> roles) {
+    public UserStatus(Long id) {
+        this.id = id;
+    }
+
+    public UserStatus(Long id, String username, String password,
+            Integer status, String ref, String userRepoRef, String tenantId,
+            Set<Role> roles) {
+        this.id = id;
         this.username = username;
         this.password = password;
         this.status = status;
@@ -62,9 +67,8 @@ public class UserStatus implements java.io.Serializable {
         this.roles = roles;
     }
 
-    /** @return null. */
+    /** @return 主键. */
     @Id
-    @GeneratedValue
     @Column(name = "ID", unique = true, nullable = false)
     public Long getId() {
         return this.id;
@@ -72,13 +76,13 @@ public class UserStatus implements java.io.Serializable {
 
     /**
      * @param id
-     *            null.
+     *            主键.
      */
     public void setId(Long id) {
         this.id = id;
     }
 
-    /** @return null. */
+    /** @return 账号. */
     @Column(name = "USERNAME", length = 50)
     public String getUsername() {
         return this.username;
@@ -86,13 +90,13 @@ public class UserStatus implements java.io.Serializable {
 
     /**
      * @param username
-     *            null.
+     *            账号.
      */
     public void setUsername(String username) {
         this.username = username;
     }
 
-    /** @return null. */
+    /** @return 遗留字段. */
     @Column(name = "PASSWORD", length = 50)
     public String getPassword() {
         return this.password;
@@ -100,13 +104,13 @@ public class UserStatus implements java.io.Serializable {
 
     /**
      * @param password
-     *            null.
+     *            遗留字段.
      */
     public void setPassword(String password) {
         this.password = password;
     }
 
-    /** @return null. */
+    /** @return 状态. */
     @Column(name = "STATUS")
     public Integer getStatus() {
         return this.status;
@@ -114,13 +118,13 @@ public class UserStatus implements java.io.Serializable {
 
     /**
      * @param status
-     *            null.
+     *            状态.
      */
     public void setStatus(Integer status) {
         this.status = status;
     }
 
-    /** @return null. */
+    /** @return 外部引用. */
     @Column(name = "REF", length = 200)
     public String getRef() {
         return this.ref;
@@ -128,13 +132,13 @@ public class UserStatus implements java.io.Serializable {
 
     /**
      * @param ref
-     *            null.
+     *            外部引用.
      */
     public void setRef(String ref) {
         this.ref = ref;
     }
 
-    /** @return null. */
+    /** @return 账号体系引用，暂时没用. */
     @Column(name = "USER_REPO_REF", length = 50)
     public String getUserRepoRef() {
         return this.userRepoRef;
@@ -142,13 +146,13 @@ public class UserStatus implements java.io.Serializable {
 
     /**
      * @param userRepoRef
-     *            null.
+     *            账号体系引用，暂时没用.
      */
     public void setUserRepoRef(String userRepoRef) {
         this.userRepoRef = userRepoRef;
     }
 
-    /** @return null. */
+    /** @return 租户. */
     @Column(name = "TENANT_ID", length = 50)
     public String getTenantId() {
         return this.tenantId;
@@ -156,7 +160,7 @@ public class UserStatus implements java.io.Serializable {
 
     /**
      * @param tenantId
-     *            null.
+     *            租户.
      */
     public void setTenantId(String tenantId) {
         this.tenantId = tenantId;

@@ -16,12 +16,9 @@
 package org.springframework.session.web.http;
 
 import java.io.IOException;
-import java.util.Collections;
 import java.util.Enumeration;
 import java.util.HashMap;
 import java.util.Map;
-import java.util.NoSuchElementException;
-import java.util.Set;
 
 import javax.servlet.FilterChain;
 import javax.servlet.ServletContext;
@@ -30,8 +27,9 @@ import javax.servlet.http.HttpServletRequest;
 import javax.servlet.http.HttpServletRequestWrapper;
 import javax.servlet.http.HttpServletResponse;
 import javax.servlet.http.HttpSession;
-import javax.servlet.http.HttpSessionContext;
 
+import org.apache.commons.logging.Log;
+import org.apache.commons.logging.LogFactory;
 import org.springframework.core.annotation.Order;
 import org.springframework.session.ExpiringSession;
 import org.springframework.session.Session;
@@ -63,9 +61,12 @@ import org.springframework.session.SessionRepository;
  * @since 1.0
  * @author Rob Winch
  */
-@SuppressWarnings("deprecation")
 @Order(SessionRepositoryFilter.DEFAULT_ORDER)
 public class SessionRepositoryFilter<S extends ExpiringSession> extends OncePerRequestFilter {
+	private static final String SESSION_LOGGER_NAME = SessionRepositoryFilter.class.getName().concat(".SESSION_LOGGER");
+
+	private static final Log SESSION_LOGGER = LogFactory.getLog(SESSION_LOGGER_NAME);
+
 	public static final String SESSION_REPOSITORY_ATTR = SessionRepository.class.getName();
 
 	public static final int DEFAULT_ORDER = Integer.MIN_VALUE + 50;
@@ -189,7 +190,7 @@ public class SessionRepositoryFilter<S extends ExpiringSession> extends OncePerR
 					httpSessionStrategy.onInvalidateSession(this, response);
 				}
 			} else {
-				S session = wrappedSession.session;
+				S session = wrappedSession.getSession();
 				sessionRepository.save(session);
 				if(!isRequestedSessionIdValid() || !session.getId().equals(getRequestedSessionId())) {
 					httpSessionStrategy.onNewSession(session, this, response);
@@ -210,7 +211,7 @@ public class SessionRepositoryFilter<S extends ExpiringSession> extends OncePerR
 			}
 		}
 
-		@SuppressWarnings({ "unused", "unchecked" })
+		@SuppressWarnings("unused")
 		public String changeSessionId() {
 			HttpSession session = getSession(false);
 
@@ -232,8 +233,8 @@ public class SessionRepositoryFilter<S extends ExpiringSession> extends OncePerR
 			HttpSessionWrapper original = getCurrentSession();
 			setCurrentSession(null);
 
-			HttpSession newSession = getSession();
-			original.session = ((HttpSessionWrapper)newSession).session;
+			HttpSessionWrapper newSession = getSession();
+			original.setSession(newSession.getSession());
 
 			newSession.setMaxInactiveInterval(session.getMaxInactiveInterval());
 			for(Map.Entry<String, Object> attr : attrs.entrySet()) {
@@ -247,7 +248,7 @@ public class SessionRepositoryFilter<S extends ExpiringSession> extends OncePerR
 		public boolean isRequestedSessionIdValid() {
 			if(requestedSessionIdValid == null) {
 				String sessionId = getRequestedSessionId();
-				S session = sessionId == null ? null : sessionRepository.getSession(sessionId);
+				S session = sessionId == null ? null : getSession(sessionId);
 				return isRequestedSessionIdValid(session);
 			}
 
@@ -265,15 +266,24 @@ public class SessionRepositoryFilter<S extends ExpiringSession> extends OncePerR
 			return getCurrentSession() == null && requestedSessionInvalidated;
 		}
 
+		private S getSession(String sessionId) {
+			S session = sessionRepository.getSession(sessionId);
+			if(session == null) {
+				return null;
+			}
+			session.setLastAccessedTime(System.currentTimeMillis());
+			return session;
+		}
+
 		@Override
-		public HttpSession getSession(boolean create) {
+		public HttpSessionWrapper getSession(boolean create) {
 			HttpSessionWrapper currentSession = getCurrentSession();
 			if(currentSession != null) {
 				return currentSession;
 			}
 			String requestedSessionId = getRequestedSessionId();
 			if(requestedSessionId != null) {
-				S session = sessionRepository.getSession(requestedSessionId);
+				S session = getSession(requestedSessionId);
 				if(session != null) {
 					this.requestedSessionIdValid = true;
 					currentSession = new HttpSessionWrapper(session, getServletContext());
@@ -285,7 +295,13 @@ public class SessionRepositoryFilter<S extends ExpiringSession> extends OncePerR
 			if(!create) {
 				return null;
 			}
+			if(SESSION_LOGGER.isDebugEnabled()) {
+				SESSION_LOGGER
+						.debug("A new session was created. To help you troubleshoot where the session was created we provided a StackTrace (this is not an error). You can prevent this from appearing by disabling DEBUG logging for "
+								+ SESSION_LOGGER_NAME, new RuntimeException("For debugging purposes only (not an error)"));
+			}
 			S session = sessionRepository.createSession();
+			session.setLastAccessedTime(System.currentTimeMillis());
 			currentSession = new HttpSessionWrapper(session, getServletContext());
 			setCurrentSession(currentSession);
 			return currentSession;
@@ -301,7 +317,7 @@ public class SessionRepositoryFilter<S extends ExpiringSession> extends OncePerR
 		}
 
 		@Override
-		public HttpSession getSession() {
+		public HttpSessionWrapper getSession() {
 			return getSession(true);
 		}
 
@@ -316,131 +332,20 @@ public class SessionRepositoryFilter<S extends ExpiringSession> extends OncePerR
 		 * @author Rob Winch
 		 * @since 1.0
 		 */
-		private final class HttpSessionWrapper implements HttpSession {
-			private S session;
-			private final ServletContext servletContext;
-			private boolean invalidated;
-			private boolean old;
+		private final class HttpSessionWrapper extends ExpiringSessionHttpSession<S> {
 
 			public HttpSessionWrapper(S session, ServletContext servletContext) {
-				this.session = session;
-				this.servletContext = servletContext;
-			}
-
-			public long getCreationTime() {
-				checkState();
-				return session.getCreationTime();
-			}
-
-			public String getId() {
-				return session.getId();
-			}
-
-			public long getLastAccessedTime() {
-				checkState();
-				return session.getLastAccessedTime();
-			}
-
-			public ServletContext getServletContext() {
-				return servletContext;
-			}
-
-			public void setMaxInactiveInterval(int interval) {
-				session.setMaxInactiveIntervalInSeconds(interval);
-			}
-
-			public int getMaxInactiveInterval() {
-				return session.getMaxInactiveIntervalInSeconds();
-			}
-
-			@SuppressWarnings("deprecation")
-			public HttpSessionContext getSessionContext() {
-				return NOOP_SESSION_CONTEXT;
-			}
-
-			public Object getAttribute(String name) {
-				checkState();
-				return session.getAttribute(name);
-			}
-
-			public Object getValue(String name) {
-				return getAttribute(name);
-			}
-
-			public Enumeration<String> getAttributeNames() {
-				checkState();
-				return Collections.enumeration(session.getAttributeNames());
-			}
-
-			public String[] getValueNames() {
-				checkState();
-				Set<String> attrs = session.getAttributeNames();
-				return attrs.toArray(new String[0]);
-			}
-
-			public void setAttribute(String name, Object value) {
-				checkState();
-				session.setAttribute(name, value);
-			}
-
-			public void putValue(String name, Object value) {
-				setAttribute(name, value);
-			}
-
-			public void removeAttribute(String name) {
-				checkState();
-				session.removeAttribute(name);
-			}
-
-			public void removeValue(String name) {
-				removeAttribute(name);
+				super(session, servletContext);
 			}
 
 			public void invalidate() {
-				checkState();
-				this.invalidated = true;
+				super.invalidate();
 				requestedSessionInvalidated = true;
 				setCurrentSession(null);
 				sessionRepository.delete(getId());
 			}
-
-			public void setNew(boolean isNew) {
-				this.old = !isNew;
-			}
-
-			public boolean isNew() {
-				checkState();
-				return !old;
-			}
-
-			private void checkState() {
-				if(invalidated) {
-					throw new IllegalStateException("The HttpSession has already be invalidated.");
-				}
-			}
 		}
 	}
-
-	@SuppressWarnings("deprecation")
-	private static final HttpSessionContext NOOP_SESSION_CONTEXT = new HttpSessionContext() {
-		public HttpSession getSession(String sessionId) {
-			return null;
-		}
-
-		public Enumeration<String> getIds() {
-			return EMPTY_ENUMERATION;
-		}
-	};
-
-	private static final Enumeration<String> EMPTY_ENUMERATION = new Enumeration<String>() {
-		public boolean hasMoreElements() {
-			return false;
-		}
-
-		public String nextElement() {
-			throw new NoSuchElementException("a");
-		}
-	};
 
 	static class MultiHttpSessionStrategyAdapter implements MultiHttpSessionStrategy {
 		private HttpSessionStrategy delegate;

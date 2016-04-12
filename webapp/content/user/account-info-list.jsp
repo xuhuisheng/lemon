@@ -8,7 +8,7 @@
   <head>
     <%@include file="/common/meta.jsp"%>
     <title><spring:message code="user.user.list.title" text="用户列表"/></title>
-    <%@include file="/common/s.jsp"%>
+    <%@include file="/common/s3.jsp"%>
     <script type="text/javascript">
 var config = {
     id: 'userGrid',
@@ -46,74 +46,68 @@ $(function() {
 	  <%@include file="/menu/user.jsp"%>
 
 	<!-- start of main -->
-    <section id="m-main" class="span10">
+      <section id="m-main" class="col-md-10" style="padding-top:65px;">
 
-	  <article class="m-widget">
-        <header class="header">
-		  <h4 class="title">查询</h4>
-		  <div class="ctrl">
-			<a class="btn"><i id="userSearchIcon" class="icon-chevron-up"></i></a>
-		  </div>
-		</header>
-        <div id="userSearch" class="content content-inner">
-
+<div class="panel panel-default">
+  <div class="panel-heading">
+	<i class="glyphicon glyphicon-list"></i>
+    查询
+	<div class="pull-right ctrl">
+	  <a class="btn btn-default btn-xs"><i id="pimRemindSearchIcon" class="glyphicon glyphicon-chevron-up"></i></a>
+    </div>
+  </div>
+  <div class="panel-body">
 		  <form name="userForm" method="post" action="account-info-list.do" class="form-inline">
 		    <label for="user_username"><spring:message code='user.user.list.search.username' text='账号'/>:</label>
-		    <input type="text" id="user_username" name="filter_LIKES_username" value="${param.filter_LIKES_username}">
+		    <input type="text" id="user_username" name="filter_LIKES_username" value="${param.filter_LIKES_username}" class="form-control">
 		    <label for="user_enabled"><spring:message code='user.user.list.search.status' text='状态'/>:</label>
-		    <select id="user_enabled" name="filter_EQS_status" class="input-mini">
+		    <select id="user_enabled" name="filter_EQS_status" class="form-control">
 			  <option value=""></option>
 			  <option value="active" ${param.filter_EQS_status == 'active' ? 'selected' : ''}><spring:message code='user.user.list.search.enabled.true' text='启用'/></option>
 			  <option value="disabled" ${param.filter_EQS_status == 'disabled' ? 'selected' : ''}><spring:message code='user.user.list.search.enabled.false' text='禁用'/></option>
 		    </select>
-			<button class="btn btn-small" onclick="document.userForm.submit()">查询</button>
+			<button class="btn btn-default" onclick="document.userForm.submit()">查询</button>
 		  </form>
+  </div>
+</div>
 
-		</div>
-	  </article>
-
-	  <article class="m-blank">
-	    <div class="pull-left">
-		  <region:region-permission permission="user:create">
-		  <button class="btn btn-small a-insert" onclick="location.href='account-info-input.do'">新建</button>
-		  </region:region-permission>
-		  <%--
-		  <region:region-permission permission="user:delete">
-		  <button class="btn btn-small a-remove" onclick="table.removeAll()">删除</button>
-		  </region:region-permission>
-		  <button class="btn btn-small a-export" onclick="table.exportExcel()">导出</button>
-		  --%>
+      <div style="margin-bottom: 20px;">
+	    <div class="pull-left btn-group" role="group">
+		  <button class="btn btn-default a-insert" onclick="location.href='account-info-input.do'">新建</button>
+		  <!--
+		  <button class="btn btn-default a-remove" onclick="table.removeAll()">删除</button>
+		  <button class="btn btn-default a-export" onclick="table.exportExcel()">导出</button>
+		  -->
 		</div>
 
 		<div class="pull-right">
 		  每页显示
-		  <select class="m-page-size">
+		  <select class="m-page-size form-control" style="display:inline;width:auto;">
 		    <option value="10">10</option>
 		    <option value="20">20</option>
 		    <option value="50">50</option>
 		  </select>
 		  条
+        </div>
+
+	    <div class="clearfix"></div>
+	  </div>
+	  
+<form id="pimRemindGridForm" name="pimRemindGridForm" method='post' action="account-info-remove.do" class="m-form-blank">
+      <div class="panel panel-default">
+        <div class="panel-heading">
+		  <i class="glyphicon glyphicon-list"></i>
+		  <spring:message code="user.user.list.title" text="用户列表"/>
 		</div>
-
-	    <div class="m-clear"></div>
-	  </article>
-
-      <article class="m-widget">
-        <header class="header">
-		  <h4 class="title"><spring:message code="user.user.list.title" text="用户列表"/></h4>
-		</header>
-		<div class="content">
-
-<form id="userGridForm" name="userGridForm" method='post' action="account-info-remove.do" class="m-form-blank">
-  <table id="userGrid" class="m-table table-hover">
+  <table id="userGrid" class="table table-hover">
     <thead>
       <tr>
 	    <%--
         <th width="10" class="m-table-check"><input type="checkbox" name="checkAll" onchange="toggleSelectedItems(this.checked)"></th>
 		--%>
-        <th class="sorting" name="id"><spring:message code="user.user.list.id" text="编号"/></th>
         <th class="sorting" name="username"><spring:message code="user.user.list.username" text="账号"/></th>
         <th class="sorting" name="displayName">显示名</th>
+        <th class="sorting" name="createTime">类型</th>
         <th class="sorting" name="status"><spring:message code="user.user.list.status" text="状态"/></th>
         <th class="sorting" name="createTime">创建时间</th>
         <th width="120">&nbsp;</th>
@@ -126,9 +120,9 @@ $(function() {
 	    <%--
         <td><input type="checkbox" class="selectedItem a-check" name="selectedItem" value="${item.id}"></td>
 		--%>
-        <td>${item.id}</td>
         <td>${item.username}</td>
         <td>${item.displayName}</td>
+        <td>${item.type}</td>
         <td>
 		  <c:if test="${item.status=='active'}">
 		    <span style="color:green;">启用</span>(<a href="account-info-disable.do?id=${item.id}">禁用</a>)
@@ -137,7 +131,7 @@ $(function() {
 		    <span style="color:red;">禁用</span>(<a href="account-info-active.do?id=${item.id}">启用</a>)
 		  </c:if>
 		</td>
-        <td>${item.createTime}</td>
+        <td><fmt:formatDate value="${item.createTime}" type="both"/></td>
         <td>
           <a href="account-info-input.do?id=${item.id}" class="a-update"><spring:message code="core.list.edit" text="编辑"/></a>
           <a href="person-info-account-input.do?code=${item.id}">详细信息</a>
@@ -146,23 +140,22 @@ $(function() {
       </c:forEach>
     </tbody>
   </table>
+      </div>
 </form>
-        </div>
-      </article>
 
-	  <article>
+	  <div>
 	    <div class="m-page-info pull-left">
 		  共100条记录 显示1到10条记录
 		</div>
 
 		<div class="btn-group m-pagination pull-right">
-		  <button class="btn btn-small">&lt;</button>
-		  <button class="btn btn-small">1</button>
-		  <button class="btn btn-small">&gt;</button>
+		  <button class="btn btn-default">&lt;</button>
+		  <button class="btn btn-default">1</button>
+		  <button class="btn btn-default">&gt;</button>
 		</div>
 
-	    <div class="m-clear"></div>
-      </article>
+	    <div class="clearfix"></div>
+      </div>
 
     </section>
 	<!-- end of main -->

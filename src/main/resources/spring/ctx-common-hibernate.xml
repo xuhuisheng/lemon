@@ -19,4 +19,9 @@
 		</property>
 	</bean>
 
+	<!-- id -->
+	<bean id="idGenerator" class="com.mossle.core.id.SnowFlakeIdGenerator">
+		<constructor-arg value="${node.id}"/>
+	</bean>
+
 </beans>

@@ -2,6 +2,8 @@ package com.mossle.humantask.listener;
 
 import javax.annotation.Resource;
 
+import com.mossle.api.humantask.HumanTaskConstants;
+
 import com.mossle.humantask.persistence.domain.TaskInfo;
 import com.mossle.humantask.persistence.manager.TaskParticipantManager;
 
@@ -18,6 +20,10 @@ public class TaskConfUserHumanTaskListener implements HumanTaskListener {
 
     @Override
     public void onCreate(TaskInfo taskInfo) throws Exception {
+        if (HumanTaskConstants.CATALOG_COPY.equals(taskInfo.getCatalog())) {
+            return;
+        }
+
         String taskDefinitionKey = taskInfo.getCode();
         String businessKey = taskInfo.getBusinessKey();
         String assignee = taskDefinitionConnector.findTaskConfUser(

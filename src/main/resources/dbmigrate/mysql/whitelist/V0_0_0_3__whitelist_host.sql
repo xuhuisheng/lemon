@@ -4,7 +4,7 @@
 --  whitelist host
 -------------------------------------------------------------------------------
 CREATE TABLE WHITELIST_HOST(
-        ID BIGINT AUTO_INCREMENT,
+        ID BIGINT NOT NULL,
         VALUE VARCHAR(50),
 	PRIORITY INT,
 	APP_ID BIGINT,

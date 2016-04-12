@@ -4,7 +4,7 @@
 --  disk info
 -------------------------------------------------------------------------------
 CREATE TABLE DISK_INFO(
-        ID BIGINT AUTO_INCREMENT,
+        ID BIGINT NOT NULL,
 	NAME VARCHAR(200),
 	DESCRIPTION VARCHAR(255),
 	TYPE VARCHAR(50),

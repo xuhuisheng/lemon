@@ -8,6 +8,8 @@ import javax.servlet.http.HttpServletResponse;
 import com.mossle.core.util.ServletUtils;
 
 public class CsvExportor implements Exportor {
+    private String encoding = "GBK";
+
     public void export(HttpServletRequest request,
             HttpServletResponse response, TableModel tableModel)
             throws IOException {
@@ -38,7 +40,11 @@ public class CsvExportor implements Exportor {
         response.setContentType(ServletUtils.STREAM_TYPE);
         ServletUtils.setFileDownloadHeader(request, response,
                 tableModel.getName() + ".csv");
-        response.getOutputStream().write(buff.toString().getBytes("UTF-8"));
+        response.getOutputStream().write(buff.toString().getBytes(encoding));
         response.getOutputStream().flush();
+    }
+
+    public void setEncoding(String encoding) {
+        this.encoding = encoding;
     }
 }

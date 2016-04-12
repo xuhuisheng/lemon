@@ -5,7 +5,6 @@ import java.util.Date;
 
 import javax.persistence.Column;
 import javax.persistence.Entity;
-import javax.persistence.GeneratedValue;
 import javax.persistence.Id;
 import javax.persistence.Table;
 import javax.persistence.Temporal;
@@ -36,14 +35,19 @@ public class AccountLockInfo implements java.io.Serializable {
     /** null. */
     private Date releaseTime;
 
-    /** null. */
+    /** 租户. */
     private String tenantId;
 
     public AccountLockInfo() {
     }
 
-    public AccountLockInfo(String type, String username, Date lockTime,
-            Date releaseTime, String tenantId) {
+    public AccountLockInfo(Long id) {
+        this.id = id;
+    }
+
+    public AccountLockInfo(Long id, String type, String username,
+            Date lockTime, Date releaseTime, String tenantId) {
+        this.id = id;
         this.type = type;
         this.username = username;
         this.lockTime = lockTime;
@@ -53,7 +57,6 @@ public class AccountLockInfo implements java.io.Serializable {
 
     /** @return null. */
     @Id
-    @GeneratedValue
     @Column(name = "ID", unique = true, nullable = false)
     public Long getId() {
         return this.id;
@@ -125,7 +128,7 @@ public class AccountLockInfo implements java.io.Serializable {
         this.releaseTime = releaseTime;
     }
 
-    /** @return null. */
+    /** @return 租户. */
     @Column(name = "TENANT_ID", length = 64)
     public String getTenantId() {
         return this.tenantId;
@@ -133,7 +136,7 @@ public class AccountLockInfo implements java.io.Serializable {
 
     /**
      * @param tenantId
-     *            null.
+     *            租户.
      */
     public void setTenantId(String tenantId) {
         this.tenantId = tenantId;

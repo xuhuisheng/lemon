@@ -6,7 +6,6 @@ import java.util.Date;
 import javax.persistence.Column;
 import javax.persistence.Entity;
 import javax.persistence.FetchType;
-import javax.persistence.GeneratedValue;
 import javax.persistence.Id;
 import javax.persistence.JoinColumn;
 import javax.persistence.ManyToOne;
@@ -36,14 +35,20 @@ public class AccountHistoryCredential implements java.io.Serializable {
     /** null. */
     private String password;
 
-    /** null. */
+    /** 租户. */
     private String tenantId;
 
     public AccountHistoryCredential() {
     }
 
-    public AccountHistoryCredential(AccountCredential accountCredential,
-            Date modifyTime, String password, String tenantId) {
+    public AccountHistoryCredential(Long id) {
+        this.id = id;
+    }
+
+    public AccountHistoryCredential(Long id,
+            AccountCredential accountCredential, Date modifyTime,
+            String password, String tenantId) {
+        this.id = id;
         this.accountCredential = accountCredential;
         this.modifyTime = modifyTime;
         this.password = password;
@@ -52,7 +57,6 @@ public class AccountHistoryCredential implements java.io.Serializable {
 
     /** @return null. */
     @Id
-    @GeneratedValue
     @Column(name = "ID", unique = true, nullable = false)
     public Long getId() {
         return this.id;
@@ -110,7 +114,7 @@ public class AccountHistoryCredential implements java.io.Serializable {
         this.password = password;
     }
 
-    /** @return null. */
+    /** @return 租户. */
     @Column(name = "TENANT_ID", length = 64)
     public String getTenantId() {
         return this.tenantId;
@@ -118,7 +122,7 @@ public class AccountHistoryCredential implements java.io.Serializable {
 
     /**
      * @param tenantId
-     *            null.
+     *            租户.
      */
     public void setTenantId(String tenantId) {
         this.tenantId = tenantId;

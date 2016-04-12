@@ -4,7 +4,7 @@
 --  dict type
 -------------------------------------------------------------------------------
 CREATE TABLE DICT_TYPE(
-        ID BIGINT AUTO_INCREMENT,
+        ID BIGINT NOT NULL,
         NAME VARCHAR(200),
 	TYPE VARCHAR(200),
 	DESCN VARCHAR(200),

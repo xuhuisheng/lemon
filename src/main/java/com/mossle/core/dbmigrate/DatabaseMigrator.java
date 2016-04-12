@@ -65,11 +65,20 @@ public class DatabaseMigrator implements ApplicationContextAware {
 
         Flyway flyway = new Flyway();
         flyway.setPlaceholderPrefix("$${");
-        flyway.setInitOnMigrate(true);
-        flyway.setInitVersion("0");
+        // flyway.setInitOnMigrate(true);
+        flyway.setBaselineOnMigrate(true);
+        // flyway.setInitVersion("0");
+        flyway.setBaselineVersionAsString("0");
         flyway.setDataSource(dataSource);
         flyway.setTable(table);
         flyway.setLocations(new String[] { location });
+
+        try {
+            flyway.repair();
+        } catch (Exception ex) {
+            logger.error(ex.getMessage(), ex);
+        }
+
         flyway.migrate();
     }
 

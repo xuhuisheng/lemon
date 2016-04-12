@@ -61,6 +61,7 @@ public class AndroidUserResource {
         UserDTO userDto = userConnector.findById(userId);
 
         Map<String, String> map = new HashMap<String, String>();
+        map.put("username", userDto.getUsername());
         map.put("displayName", userDto.getDisplayName());
         map.put("email", userDto.getEmail());
         map.put("mobile", userDto.getMobile());

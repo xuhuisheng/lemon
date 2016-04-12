@@ -13,9 +13,11 @@ public class FormParameter {
     public static final String OPERATION_BUSINESS_KEY = "businessKey";
     public static final String OPERATION_BPM_PROCESS_ID = "bpmProcessId";
     public static final String OPERATION_HUMAN_TASK_ID = "humanTaskId";
+    public static final String OPERATION_COMMENT = "_humantask_comment_";
     private String businessKey = null;
     private String bpmProcessId = null;
     private String humanTaskId = null;
+    private String comment = null;
     private MultiValueMap<String, String> multiValueMap;
     private MultiValueMap<String, MultipartFile> multiFileMap;
     private FormDTO formDto;
@@ -51,6 +53,14 @@ public class FormParameter {
 
     public void setHumanTaskId(String humanTaskId) {
         this.humanTaskId = humanTaskId;
+    }
+
+    public String getComment() {
+        return comment;
+    }
+
+    public void setComment(String comment) {
+        this.comment = comment;
     }
 
     public MultiValueMap<String, String> getMultiValueMap() {

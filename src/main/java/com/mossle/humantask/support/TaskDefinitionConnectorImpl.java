@@ -108,7 +108,7 @@ public class TaskDefinitionConnectorImpl implements TaskDefinitionConnector {
             String processDefinitionId) {
         String hql = "from TaskDefOperation where taskDefBase.code=? and taskDefBase.processDefinitionId=?";
         List<TaskDefOperation> taskDefOperations = taskDefOperationManager
-                .findUnique(hql, taskDefinitionKey, processDefinitionId);
+                .find(hql, taskDefinitionKey, processDefinitionId);
 
         if (taskDefOperations.isEmpty()) {
             return Collections.emptyList();
@@ -229,16 +229,24 @@ public class TaskDefinitionConnectorImpl implements TaskDefinitionConnector {
     public void create(TaskDefinitionDTO taskDefinition) {
         logger.info("create task definition : {}", taskDefinition.getCode());
 
-        String hql = "from TaskDefBase where code=? and processDefinitionId=?";
+        String hql = "from TaskDefBase where code=? and processDefinitionKey=? and processDefinitionVersion=?";
+        String processDefinitionId = taskDefinition.getProcessDefinitionId();
+        String processDefinitionKey = processDefinitionId.split("\\:")[0];
+        int processDefinitionVersion = Integer.parseInt(processDefinitionId
+                .split("\\:")[1]);
         TaskDefBase taskDefBase = taskDefBaseManager.findUnique(hql,
-                taskDefinition.getCode(),
-                taskDefinition.getProcessDefinitionId());
+                taskDefinition.getCode(), processDefinitionKey,
+                processDefinitionVersion);
 
         if (taskDefBase == null) {
             taskDefBase = new TaskDefBase();
             taskDefBase.setCode(taskDefinition.getCode());
-            taskDefBase.setProcessDefinitionId(taskDefinition
-                    .getProcessDefinitionId());
+            taskDefBase.setProcessDefinitionKey(processDefinitionKey);
+            taskDefBase.setProcessDefinitionVersion(processDefinitionVersion);
+        }
+
+        if (taskDefBase.getProcessDefinitionId() == null) {
+            taskDefBase.setProcessDefinitionId(processDefinitionId);
         }
 
         taskDefBase.setName(taskDefinition.getName());

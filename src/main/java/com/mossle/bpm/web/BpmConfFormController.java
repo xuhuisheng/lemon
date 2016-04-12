@@ -56,7 +56,7 @@ public class BpmConfFormController {
 
         if (dest == null) {
             // 如果不存在，就创建一个
-			dest = bpmConfForm;
+            dest = bpmConfForm;
             dest.setBpmConfNode(bpmConfNodeManager.get(bpmConfNodeId));
             dest.setStatus(1);
             bpmConfFormManager.save(dest);

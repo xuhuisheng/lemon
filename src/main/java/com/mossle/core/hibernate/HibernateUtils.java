@@ -7,6 +7,8 @@ import java.util.Locale;
 import java.util.regex.Matcher;
 import java.util.regex.Pattern;
 
+import com.mossle.core.query.MatchType;
+import com.mossle.core.query.PropertyFilter;
 import com.mossle.core.util.BeanUtils;
 
 import org.hibernate.Criteria;

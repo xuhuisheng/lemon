@@ -4,12 +4,12 @@
 --  javamail message
 -------------------------------------------------------------------------------
 CREATE TABLE JAVAMAIL_MESSAGE(
-        ID BIGINT AUTO_INCREMENT,
+        ID BIGINT NOT NULL,
 	SENDER VARCHAR(200),
 	RECEIVER VARCHAR(200),
 	CC VARCHAR(200),
 	BCC VARCHAR(200),
-	SUBJECT VARCHAR(200),
+	SUBJECT TEXT,
 	CONTENT TEXT,
 	SEND_TIME DATETIME,
 	RECEIVE_TIME DATETIME,

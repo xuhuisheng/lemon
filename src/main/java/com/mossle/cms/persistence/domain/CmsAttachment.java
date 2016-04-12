@@ -6,7 +6,6 @@ import java.util.Date;
 import javax.persistence.Column;
 import javax.persistence.Entity;
 import javax.persistence.FetchType;
-import javax.persistence.GeneratedValue;
 import javax.persistence.Id;
 import javax.persistence.JoinColumn;
 import javax.persistence.ManyToOne;
@@ -57,9 +56,14 @@ public class CmsAttachment implements java.io.Serializable {
     public CmsAttachment() {
     }
 
-    public CmsAttachment(CmsArticle cmsArticle, String type, String name,
-            String path, Integer size, Integer height, Integer width,
-            Date createTime, String userId) {
+    public CmsAttachment(Long id) {
+        this.id = id;
+    }
+
+    public CmsAttachment(Long id, CmsArticle cmsArticle, String type,
+            String name, String path, Integer size, Integer height,
+            Integer width, Date createTime, String userId) {
+        this.id = id;
         this.cmsArticle = cmsArticle;
         this.type = type;
         this.name = name;
@@ -73,7 +77,6 @@ public class CmsAttachment implements java.io.Serializable {
 
     /** @return null. */
     @Id
-    @GeneratedValue
     @Column(name = "ID", unique = true, nullable = false)
     public Long getId() {
         return this.id;

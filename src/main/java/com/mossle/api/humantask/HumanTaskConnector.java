@@ -27,6 +27,9 @@ public interface HumanTaskConnector {
      */
     HumanTaskDTO saveHumanTask(HumanTaskDTO humanTaskDto);
 
+    HumanTaskDTO saveHumanTask(HumanTaskDTO humanTaskDto,
+            boolean triggerListener);
+
     /**
      * 保存任务，同时处理参与者.
      */
@@ -35,7 +38,7 @@ public interface HumanTaskConnector {
     /**
      * 完成任务.
      */
-    void completeTask(String humanTaskId, String userId,
+    void completeTask(String humanTaskId, String userId, String comment,
             Map<String, Object> taskParameters);
 
     /**
@@ -46,69 +49,101 @@ public interface HumanTaskConnector {
     /**
      * 释放任务。
      */
-    void releaseTask(String humanTaskId);
+    void releaseTask(String humanTaskId, String comment);
 
     /**
      * 转发任务.
      */
-    void transfer(String humanTaskId, String userId);
+    void transfer(String humanTaskId, String userId, String comment);
+
+    /**
+     * 取消转办.
+     */
+    void cancel(String humanTaskId, String userId, String comment);
 
     /**
      * 回退，指定节点，重新分配.
      */
-    void rollbackActivity(String humanTaskId, String activityId);
+    void rollbackActivity(String humanTaskId, String activityId, String comment);
 
     /**
      * 回退，指定节点，上个执行人.
      */
-    void rollbackActivityLast(String humanTaskId, String activityId);
+    void rollbackActivityLast(String humanTaskId, String activityId,
+            String comment);
 
     /**
      * 回退，指定节点，指定执行人.
      */
     void rollbackActivityAssignee(String humanTaskId, String activityId,
-            String userId);
+            String userId, String comment);
 
     /**
      * 回退，上个节点，重新分配.
      */
-    void rollbackPrevious(String humanTaskId);
+    void rollbackPrevious(String humanTaskId, String comment);
 
     /**
      * 回退，上个节点，上个执行人.
      */
-    void rollbackPreviousLast(String humanTaskId);
+    void rollbackPreviousLast(String humanTaskId, String comment);
 
     /**
      * 回退，上个节点，指定执行人.
      */
-    void rollbackPreviousAssignee(String humanTaskId, String userId);
+    void rollbackPreviousAssignee(String humanTaskId, String userId,
+            String comment);
 
     /**
      * 回退，开始事件，流程发起人.
      */
-    void rollbackStart(String humanTaskId);
+    void rollbackStart(String humanTaskId, String comment);
+
+    /**
+     * 回退，流程发起人.
+     */
+    void rollbackInitiator(String humanTaskId, String comment);
 
     /**
      * 撤销.
      */
-    void withdraw(String humanTaskId);
+    void withdraw(String humanTaskId, String comment);
 
     /**
      * 协办.
      */
-    void delegateTask(String humanTaskId, String userId);
+    void delegateTask(String humanTaskId, String userId, String comment);
 
     /**
      * 协办，链状.
      */
-    void delegateTaskCreate(String humanTaskId, String userId);
+    void delegateTaskCreate(String humanTaskId, String userId, String comment);
+
+    /**
+     * 沟通.
+     */
+    void communicate(String humanTaskId, String userId, String comment);
+
+    /**
+     * 反馈.
+     */
+    void callback(String humanTaskId, String userId, String comment);
+
+    /**
+     * 跳过.
+     */
+    void skip(String humanTaskId, String userId, String comment);
 
     void saveParticipant(ParticipantDTO participantDto);
 
     HumanTaskDTO findHumanTaskByTaskId(String taskId);
 
+    List<HumanTaskDTO> findHumanTasksByProcessInstanceId(
+            String processInstanceId);
+
     HumanTaskDTO findHumanTask(String humanTaskId);
+
+    List<HumanTaskDTO> findSubTasks(String parentTaskId);
 
     FormDTO findTaskForm(String humanTaskId);
 

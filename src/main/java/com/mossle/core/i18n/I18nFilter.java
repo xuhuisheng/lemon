@@ -43,14 +43,16 @@ public class I18nFilter implements Filter {
 
             if (requestedLocale != null) {
                 Locale locale;
-				String[] array = requestedLocale.split("_");
-				if (array.length == 2) {
-					locale = new Locale(array[0], array[1]);
-				} else {
-					locale = new Locale(array[0]);
-				}
+                String[] array = requestedLocale.split("_");
+
+                if (array.length == 2) {
+                    locale = new Locale(array[0], array[1]);
+                } else {
+                    locale = new Locale(array[0]);
+                }
+
                 localeResolver.setLocale(req, res, locale);
-				logger.debug("update locale : {}", locale);
+                logger.debug("update locale : {}", locale);
             }
         }
 

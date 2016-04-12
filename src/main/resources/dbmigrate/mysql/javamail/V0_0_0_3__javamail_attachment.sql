@@ -4,7 +4,7 @@
 --  javamail attachment
 -------------------------------------------------------------------------------
 CREATE TABLE JAVAMAIL_ATTACHMENT(
-        ID BIGINT AUTO_INCREMENT,
+        ID BIGINT NOT NULL,
 	NAME VARCHAR(200),
 	REF VARCHAR(200),
 	TYPE VARCHAR(50),

@@ -6,7 +6,6 @@ import java.util.Date;
 import javax.persistence.Column;
 import javax.persistence.Entity;
 import javax.persistence.FetchType;
-import javax.persistence.GeneratedValue;
 import javax.persistence.Id;
 import javax.persistence.JoinColumn;
 import javax.persistence.ManyToOne;
@@ -15,7 +14,7 @@ import javax.persistence.Temporal;
 import javax.persistence.TemporalType;
 
 /**
- * BpmInstance .
+ * BpmInstance 流程实例.
  * 
  * @author Lingo
  */
@@ -24,39 +23,44 @@ import javax.persistence.TemporalType;
 public class BpmInstance implements java.io.Serializable {
     private static final long serialVersionUID = 0L;
 
-    /** null. */
+    /** 主键. */
     private Long id;
 
-    /** null. */
+    /** 外键，流程定义. */
     private BpmProcess bpmProcess;
 
-    /** null. */
+    /** 名称. */
     private String name;
 
-    /** null. */
+    /** 业务标识. */
     private String businessKey;
 
-    /** null. */
+    /** 外部引用. */
     private String ref;
 
-    /** null. */
+    /** 创建时间. */
     private Date createTime;
 
-    /** null. */
+    /** 发起人. */
     private String initiator;
 
-    /** null. */
+    /** 优先级. */
     private Integer priority;
 
-    /** null. */
+    /** 租户. */
     private String tenantId;
 
     public BpmInstance() {
     }
 
-    public BpmInstance(BpmProcess bpmProcess, String name, String businessKey,
-            String ref, Date createTime, String initiator, Integer priority,
-            String tenantId) {
+    public BpmInstance(Long id) {
+        this.id = id;
+    }
+
+    public BpmInstance(Long id, BpmProcess bpmProcess, String name,
+            String businessKey, String ref, Date createTime, String initiator,
+            Integer priority, String tenantId) {
+        this.id = id;
         this.bpmProcess = bpmProcess;
         this.name = name;
         this.businessKey = businessKey;
@@ -67,9 +71,8 @@ public class BpmInstance implements java.io.Serializable {
         this.tenantId = tenantId;
     }
 
-    /** @return null. */
+    /** @return 主键. */
     @Id
-    @GeneratedValue
     @Column(name = "ID", unique = true, nullable = false)
     public Long getId() {
         return this.id;
@@ -77,13 +80,13 @@ public class BpmInstance implements java.io.Serializable {
 
     /**
      * @param id
-     *            null.
+     *            主键.
      */
     public void setId(Long id) {
         this.id = id;
     }
 
-    /** @return null. */
+    /** @return 外键，流程定义. */
     @ManyToOne(fetch = FetchType.LAZY)
     @JoinColumn(name = "PROCESS_ID")
     public BpmProcess getBpmProcess() {
@@ -92,13 +95,13 @@ public class BpmInstance implements java.io.Serializable {
 
     /**
      * @param bpmProcess
-     *            null.
+     *            外键，流程定义.
      */
     public void setBpmProcess(BpmProcess bpmProcess) {
         this.bpmProcess = bpmProcess;
     }
 
-    /** @return null. */
+    /** @return 名称. */
     @Column(name = "NAME", length = 200)
     public String getName() {
         return this.name;
@@ -106,13 +109,13 @@ public class BpmInstance implements java.io.Serializable {
 
     /**
      * @param name
-     *            null.
+     *            名称.
      */
     public void setName(String name) {
         this.name = name;
     }
 
-    /** @return null. */
+    /** @return 业务标识. */
     @Column(name = "BUSINESS_KEY", length = 64)
     public String getBusinessKey() {
         return this.businessKey;
@@ -120,13 +123,13 @@ public class BpmInstance implements java.io.Serializable {
 
     /**
      * @param businessKey
-     *            null.
+     *            业务标识.
      */
     public void setBusinessKey(String businessKey) {
         this.businessKey = businessKey;
     }
 
-    /** @return null. */
+    /** @return 外部引用. */
     @Column(name = "REF", length = 64)
     public String getRef() {
         return this.ref;
@@ -134,13 +137,13 @@ public class BpmInstance implements java.io.Serializable {
 
     /**
      * @param ref
-     *            null.
+     *            外部引用.
      */
     public void setRef(String ref) {
         this.ref = ref;
     }
 
-    /** @return null. */
+    /** @return 创建时间. */
     @Temporal(TemporalType.TIMESTAMP)
     @Column(name = "CREATE_TIME", length = 26)
     public Date getCreateTime() {
@@ -149,13 +152,13 @@ public class BpmInstance implements java.io.Serializable {
 
     /**
      * @param createTime
-     *            null.
+     *            创建时间.
      */
     public void setCreateTime(Date createTime) {
         this.createTime = createTime;
     }
 
-    /** @return null. */
+    /** @return 发起人. */
     @Column(name = "INITIATOR", length = 64)
     public String getInitiator() {
         return this.initiator;
@@ -163,13 +166,13 @@ public class BpmInstance implements java.io.Serializable {
 
     /**
      * @param initiator
-     *            null.
+     *            发起人.
      */
     public void setInitiator(String initiator) {
         this.initiator = initiator;
     }
 
-    /** @return null. */
+    /** @return 优先级. */
     @Column(name = "PRIORITY")
     public Integer getPriority() {
         return this.priority;
@@ -177,13 +180,13 @@ public class BpmInstance implements java.io.Serializable {
 
     /**
      * @param priority
-     *            null.
+     *            优先级.
      */
     public void setPriority(Integer priority) {
         this.priority = priority;
     }
 
-    /** @return null. */
+    /** @return 租户. */
     @Column(name = "TENANT_ID", length = 64)
     public String getTenantId() {
         return this.tenantId;
@@ -191,7 +194,7 @@ public class BpmInstance implements java.io.Serializable {
 
     /**
      * @param tenantId
-     *            null.
+     *            租户.
      */
     public void setTenantId(String tenantId) {
         this.tenantId = tenantId;

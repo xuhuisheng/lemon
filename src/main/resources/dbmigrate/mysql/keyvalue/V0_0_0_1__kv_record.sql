@@ -4,7 +4,7 @@
 --  kv record
 -------------------------------------------------------------------------------
 CREATE TABLE KV_RECORD(
-        ID BIGINT AUTO_INCREMENT,
+        ID BIGINT NOT NULL,
 	CATEGORY VARCHAR(200),
 	STATUS INT,
 	REF VARCHAR(200),

@@ -4,7 +4,7 @@
 --  participant
 -------------------------------------------------------------------------------
 CREATE TABLE HT_PARTICIPANT(
-        ID BIGINT AUTO_INCREMENT,
+	ID BIGINT NOT NULL,
 	CATEGORY VARCHAR(200),
 	TYPE VARCHAR(200),
 	REF VARCHAR(200),

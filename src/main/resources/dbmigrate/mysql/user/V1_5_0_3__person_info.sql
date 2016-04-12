@@ -4,7 +4,7 @@
 -- person info
 -------------------------------------------------------------------------------
 CREATE TABLE PERSON_INFO(
-        ID BIGINT AUTO_INCREMENT,
+        ID BIGINT NOT NULL,
 
 	CODE VARCHAR(200),
 	USERNAME VARCHAR(200),
@@ -47,4 +47,39 @@ CREATE TABLE PERSON_INFO(
 
         CONSTRAINT PK_PERSON_INFO PRIMARY KEY(ID)
 ) ENGINE=INNODB CHARSET=UTF8;
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
 

@@ -4,7 +4,7 @@
 --  cms catalog
 -------------------------------------------------------------------------------
 CREATE TABLE CMS_CATALOG(
-        ID BIGINT AUTO_INCREMENT,
+        ID BIGINT NOT NULL,
 	NAME VARCHAR(50),
 	CODE VARCHAR(200),
 	LOGO VARCHAR(200),

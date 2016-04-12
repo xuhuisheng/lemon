@@ -8,7 +8,6 @@ import java.util.Set;
 import javax.persistence.Column;
 import javax.persistence.Entity;
 import javax.persistence.FetchType;
-import javax.persistence.GeneratedValue;
 import javax.persistence.Id;
 import javax.persistence.JoinColumn;
 import javax.persistence.ManyToOne;
@@ -99,14 +98,19 @@ public class DiskInfo implements java.io.Serializable {
     public DiskInfo() {
     }
 
-    public DiskInfo(DiskInfo diskInfo, String name, String description,
-            String type, Long fileSize, String creator, Date createTime,
-            String ref, String previewStatus, String previewRef,
-            String parentPath, Integer dirType, Integer priority,
-            String lastModifier, Date lastModifiedTime, String status,
-            Date expireTime, String checkoutStatus, String fileVersion,
-            String securityLevel, Set<DiskInfo> diskInfos,
+    public DiskInfo(Long id) {
+        this.id = id;
+    }
+
+    public DiskInfo(Long id, DiskInfo diskInfo, String name,
+            String description, String type, Long fileSize, String creator,
+            Date createTime, String ref, String previewStatus,
+            String previewRef, String parentPath, Integer dirType,
+            Integer priority, String lastModifier, Date lastModifiedTime,
+            String status, Date expireTime, String checkoutStatus,
+            String fileVersion, String securityLevel, Set<DiskInfo> diskInfos,
             Set<DiskShare> diskShares) {
+        this.id = id;
         this.diskInfo = diskInfo;
         this.name = name;
         this.description = description;
@@ -133,7 +137,6 @@ public class DiskInfo implements java.io.Serializable {
 
     /** @return null. */
     @Id
-    @GeneratedValue
     @Column(name = "ID", unique = true, nullable = false)
     public Long getId() {
         return this.id;

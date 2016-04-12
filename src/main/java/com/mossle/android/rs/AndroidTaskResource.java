@@ -1,5 +1,8 @@
 package com.mossle.android.rs;
 
+import java.text.DateFormat;
+import java.text.SimpleDateFormat;
+
 import java.util.ArrayList;
 import java.util.HashMap;
 import java.util.List;
@@ -23,6 +26,7 @@ import com.mossle.api.keyvalue.Record;
 import com.mossle.api.keyvalue.RecordBuilder;
 import com.mossle.api.store.StoreConnector;
 import com.mossle.api.tenant.TenantHolder;
+import com.mossle.api.user.UserConnector;
 
 import com.mossle.bpm.persistence.manager.BpmProcessManager;
 
@@ -65,6 +69,7 @@ public class AndroidTaskResource {
     private OperationService operationService;
     private KeyValueConnector keyValueConnector;
     private StoreConnector storeConnector;
+    private UserConnector userConnector;
 
     @POST
     @Path("tasks")
@@ -90,11 +95,19 @@ public class AndroidTaskResource {
                 .getResult();
         List<Map<String, Object>> list = new ArrayList<Map<String, Object>>();
 
-        for (HumanTaskDTO humanTaskDTO : humanTaskDtos) {
+        DateFormat dateFormat = new SimpleDateFormat("yyyy-MM-dd HH:mm:ss");
+
+        for (HumanTaskDTO humanTaskDto : humanTaskDtos) {
             Map<String, Object> map = new HashMap<String, Object>();
-            map.put("id", humanTaskDTO.getId());
-            map.put("name", humanTaskDTO.getName());
-            map.put("createTime", humanTaskDTO.getCreateTime());
+            map.put("id", humanTaskDto.getId());
+            map.put("name", humanTaskDto.getName());
+            map.put("presentationSubject",
+                    humanTaskDto.getPresentationSubject());
+            map.put("createTime",
+                    dateFormat.format(humanTaskDto.getCreateTime()));
+            map.put("assignee", humanTaskDto.getAssignee());
+            map.put("assigneeDisplayName", userConnector.findById(userId)
+                    .getDisplayName());
             list.add(map);
         }
 
@@ -161,9 +174,11 @@ public class AndroidTaskResource {
         Map<String, Object> taskParameters = xform.getMapData();
         logger.info("taskParameters : {}", taskParameters);
 
+        String comment = "";
+
         try {
-            humanTaskConnector
-                    .completeTask(humanTaskId, userId, taskParameters);
+            humanTaskConnector.completeTask(humanTaskId, userId, comment,
+                    taskParameters);
         } catch (IllegalStateException ex) {
             logger.error(ex.getMessage(), ex);
 
@@ -252,5 +267,10 @@ public class AndroidTaskResource {
     @Resource
     public void setStoreConnector(StoreConnector storeConnector) {
         this.storeConnector = storeConnector;
+    }
+
+    @Resource
+    public void setUserConnector(UserConnector userConnector) {
+        this.userConnector = userConnector;
     }
 }

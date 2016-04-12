@@ -125,6 +125,10 @@ public class ModelDeployer {
             throws IOException {
         FormDTO formDto = formConnector.findForm(formKey, tenantId);
 
+        if (formDto == null) {
+            return;
+        }
+
         if (formDto.isRedirect()) {
             return;
         }

@@ -4,7 +4,7 @@
 --  dict schema
 -------------------------------------------------------------------------------
 CREATE TABLE DICT_SCHEMA(
-        ID BIGINT AUTO_INCREMENT,
+        ID BIGINT NOT NULL,
         NAME VARCHAR(200),
 	TYPE VARCHAR(50),
 	PRIORITY INT,

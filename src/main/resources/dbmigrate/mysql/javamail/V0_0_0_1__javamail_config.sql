@@ -4,7 +4,7 @@
 --  javamail config
 -------------------------------------------------------------------------------
 CREATE TABLE JAVAMAIL_CONFIG(
-        ID BIGINT AUTO_INCREMENT,
+        ID BIGINT NOT NULL,
 	USERNAME VARCHAR(200),
 	PASSWORD VARCHAR(200),
 	RECEIVE_TYPE VARCHAR(50),

@@ -4,7 +4,6 @@ package com.mossle.pim.persistence.domain;
 import javax.persistence.Column;
 import javax.persistence.Entity;
 import javax.persistence.FetchType;
-import javax.persistence.GeneratedValue;
 import javax.persistence.Id;
 import javax.persistence.JoinColumn;
 import javax.persistence.ManyToOne;
@@ -38,8 +37,13 @@ public class WorkReportAcl implements java.io.Serializable {
     public WorkReportAcl() {
     }
 
-    public WorkReportAcl(WorkReportInfo workReportInfo, String type,
+    public WorkReportAcl(Long id) {
+        this.id = id;
+    }
+
+    public WorkReportAcl(Long id, WorkReportInfo workReportInfo, String type,
             String ref, String tenantId) {
+        this.id = id;
         this.workReportInfo = workReportInfo;
         this.type = type;
         this.ref = ref;
@@ -48,7 +52,6 @@ public class WorkReportAcl implements java.io.Serializable {
 
     /** @return null. */
     @Id
-    @GeneratedValue
     @Column(name = "ID", unique = true, nullable = false)
     public Long getId() {
         return this.id;

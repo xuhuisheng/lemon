@@ -8,17 +8,17 @@
   <head>
     <%@include file="/common/meta.jsp"%>
     <title>流程列表</title>
-    <%@include file="/common/s.jsp"%>
+    <%@include file="/common/s3.jsp"%>
   </head>
 
   <body>
-    <%@include file="/header/bpm-workspace.jsp"%>
+    <%@include file="/header/bpm-workspace3.jsp"%>
 
     <div class="row-fluid">
-    <%@include file="/menu/bpm-workspace.jsp"%>
+    <%@include file="/menu/bpm-workspace3.jsp"%>
 
     <!-- start of main -->
-    <section id="m-main" class="span10" style="float:right">
+      <section id="m-main" class="col-md-10" style="padding-top:65px;">
 
 <c:forEach items="${bpmCategories}" var="bpmCategory">
       <div class="row-fluid">
@@ -26,25 +26,20 @@
         <h3>${bpmCategory.name}</h3>
       </div>
 
-      <ul class="thumbnails">
+      <div class="">
       <c:forEach items="${bpmCategory.bpmProcesses}" var="bpmProcess">
-        <li class="span2">
+        <div class="col-md-2">
 		  <div class="caption">
 		    <h3>${bpmProcess.name}&nbsp;</h3>
             <p>${bpmProcess.descn}&nbsp;</p>
             <div class="btn-group" style="margin-bottom:10px;">
-              <a class="btn btn-small" href="${tenantPrefix}/operation/process-operation-viewStartForm.do?bpmProcessId=${bpmProcess.id}"><i class="icon-play"></i>发起</a>
-              <a class="btn btn-small" href="workspace-graphProcessDefinition.do?bpmProcessId=${bpmProcess.id}" target="_blank"><i class="icon-picture"></i>图形</a>
+              <a class="btn btn-default btn-sm" href="${tenantPrefix}/operation/process-operation-viewStartForm.do?bpmProcessId=${bpmProcess.id}"><i class="glyphicon glyphicon-play"></i> 发起</a>
+              <a class="btn btn-default btn-sm" href="workspace-graphProcessDefinition.do?bpmProcessId=${bpmProcess.id}" target="_blank"><i class="glyphicon glyphicon-picture"></i> 图形</a>
             </div>
-		    <div style="width:100%;height:100px;">
-              <a href="#" class="thumbnail">
-                <img src="workspace-graphProcessDefinition.do?bpmProcessId=${bpmProcess.id}">
-              </a>
-		    </div>
 		  </div>
-        </li>
+        </div>
       </c:forEach>
-      </ul>
+      </div>
 
 </c:forEach>
 

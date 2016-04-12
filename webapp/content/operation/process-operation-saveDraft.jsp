@@ -8,7 +8,7 @@
   <head>
     <%@include file="/common/meta.jsp"%>
     <title>表单列表</title>
-    <%@include file="/common/s.jsp"%>
+    <%@include file="/common/s3.jsp"%>
     <script type="text/javascript">
 var config = {
     id: 'dynamicModelGrid',
@@ -38,15 +38,18 @@ $(function() {
   </head>
 
   <body>
-    <%@include file="/header/bpm-workspace.jsp"%>
+    <%@include file="/header/bpm-workspace3.jsp"%>
 
     <div class="row-fluid">
-	<%@include file="/menu/bpm-workspace.jsp"%>
+	<%@include file="/menu/bpm-workspace3.jsp"%>
 
 	<!-- start of main -->
-    <section id="m-main" class="span10">
-
-      草稿已保存
+      <section id="m-main" class="col-md-10" style="margin-top:65px;">
+	 
+	  <div class="alert alert-info" role="alert">
+		<button type="button" class="close" data-dismiss="alert" style="margin-right:30px;">×</button>
+		<strong>草稿已保存</strong>
+	  </div>
 
     </section>
 	<!-- end of main -->

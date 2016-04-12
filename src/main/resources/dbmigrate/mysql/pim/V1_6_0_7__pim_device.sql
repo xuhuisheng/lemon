@@ -4,7 +4,7 @@
 --  pim device
 -------------------------------------------------------------------------------
 CREATE TABLE PIM_DEVICE(
-        ID BIGINT AUTO_INCREMENT,
+        ID BIGINT NOT NULL,
 	CODE VARCHAR(64),
 	NAME VARCHAR(64),
 	TYPE VARCHAR(64),

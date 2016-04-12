@@ -8,7 +8,6 @@ import java.util.Set;
 import javax.persistence.Column;
 import javax.persistence.Entity;
 import javax.persistence.FetchType;
-import javax.persistence.GeneratedValue;
 import javax.persistence.Id;
 import javax.persistence.OneToMany;
 import javax.persistence.Table;
@@ -68,10 +67,15 @@ public class PimSchedule implements java.io.Serializable {
     public PimSchedule() {
     }
 
-    public PimSchedule(String name, String location, String content,
+    public PimSchedule(Long id) {
+        this.id = id;
+    }
+
+    public PimSchedule(Long id, String name, String location, String content,
             Integer type, Date startTime, Date endTime, String alertTime,
             String userId, Integer status, String ref, String tenantId,
             Set<PimScheduleParticipant> pimScheduleParticipants) {
+        this.id = id;
         this.name = name;
         this.location = location;
         this.content = content;
@@ -88,7 +92,6 @@ public class PimSchedule implements java.io.Serializable {
 
     /** @return null. */
     @Id
-    @GeneratedValue
     @Column(name = "ID", unique = true, nullable = false)
     public Long getId() {
         return this.id;

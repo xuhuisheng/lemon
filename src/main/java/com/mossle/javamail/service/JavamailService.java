@@ -101,33 +101,39 @@ public class JavamailService {
     public void send(String to, String cc, String bcc, String subject,
             String content, JavamailConfig javamailConfig)
             throws MessagingException {
-        Properties props = createSmtpProperties(javamailConfig);
-        String username = javamailConfig.getUsername();
-        String password = javamailConfig.getPassword();
+        logger.debug("send : {}, {}", to, subject);
 
-        // 创建Session实例对象
-        Session session = Session.getInstance(props, new SmtpAuthenticator(
-                username, password));
-        session.setDebug(false);
+        try {
+            Properties props = createSmtpProperties(javamailConfig);
+            String username = javamailConfig.getUsername();
+            String password = javamailConfig.getPassword();
 
-        // 创建MimeMessage实例对象
-        MimeMessage message = new MimeMessage(session);
-        // 设置邮件主题
-        message.setSubject(subject);
-        // 设置发送人
-        message.setFrom(new InternetAddress(username));
-        // 设置发送时间
-        message.setSentDate(new Date());
-        // 设置收件人
-        message.setRecipients(RecipientType.TO, InternetAddress.parse(to));
-        // 设置html内容为邮件正文，指定MIME类型为text/html类型，并指定字符编码为gbk
-        message.setContent(content, "text/html;charset=gbk");
+            // 创建Session实例对象
+            Session session = Session.getInstance(props, new SmtpAuthenticator(
+                    username, password));
+            session.setDebug(false);
 
-        // 保存并生成最终的邮件内容
-        message.saveChanges();
+            // 创建MimeMessage实例对象
+            MimeMessage message = new MimeMessage(session);
+            // 设置邮件主题
+            message.setSubject(subject);
+            // 设置发送人
+            message.setFrom(new InternetAddress(username));
+            // 设置发送时间
+            message.setSentDate(new Date());
+            // 设置收件人
+            message.setRecipients(RecipientType.TO, InternetAddress.parse(to));
+            // 设置html内容为邮件正文，指定MIME类型为text/html类型，并指定字符编码为gbk
+            message.setContent(content, "text/html;charset=gbk");
 
-        // 发送邮件
-        Transport.send(message);
+            // 保存并生成最终的邮件内容
+            message.saveChanges();
+
+            // 发送邮件
+            Transport.send(message);
+        } catch (Exception ex) {
+            logger.error(ex.getMessage(), ex);
+        }
     }
 
     public void receive(String userId) throws MessagingException, IOException {

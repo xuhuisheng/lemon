@@ -4,6 +4,8 @@ import java.util.List;
 
 import javax.annotation.Resource;
 
+import com.mossle.api.humantask.HumanTaskConstants;
+
 import com.mossle.humantask.persistence.domain.TaskInfo;
 import com.mossle.humantask.persistence.domain.TaskParticipant;
 import com.mossle.humantask.persistence.manager.TaskParticipantManager;
@@ -22,6 +24,10 @@ public class TaskDefUserHumanTaskListener implements HumanTaskListener {
 
     @Override
     public void onCreate(TaskInfo taskInfo) throws Exception {
+        if (HumanTaskConstants.CATALOG_COPY.equals(taskInfo.getCatalog())) {
+            return;
+        }
+
         String taskDefinitionKey = taskInfo.getCode();
         String processDefinitionId = taskInfo.getProcessDefinitionId();
         List<TaskUserDTO> taskUsers = taskDefinitionConnector.findTaskUsers(

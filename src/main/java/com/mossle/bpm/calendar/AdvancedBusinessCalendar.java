@@ -17,20 +17,33 @@ import org.joda.time.format.ISODateTimeFormat;
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
 
+/**
+ * 支持工作日的工作日历.
+ */
 public abstract class AdvancedBusinessCalendar implements BusinessCalendar {
+    /** logger. */
     private static Logger logger = LoggerFactory
             .getLogger(AdvancedBusinessCalendar.class);
     private WorkCalendarConnector workCalendarConnector;
     protected ClockReader clockReader = new DefaultClockImpl();
 
+    /**
+     * 解析截止时间.
+     */
     @Override
     public Date resolveDuedate(String duedateDescription) {
         return resolveDuedate(duedateDescription, -1);
     }
 
+    /**
+     * 解析截止时间.
+     */
     public abstract Date resolveDuedate(String duedateDescription,
             int maxIterations);
 
+    /**
+     * 校验截止时间是否有效.
+     */
     @Override
     public Boolean validateDuedate(String duedateDescription,
             int maxIterations, Date endDate, Date newTimer) {
@@ -38,6 +51,9 @@ public abstract class AdvancedBusinessCalendar implements BusinessCalendar {
                 || endDate.equals(newTimer);
     }
 
+    /**
+     * 解析结束时间.
+     */
     @Override
     public Date resolveEndDate(String endDateString) {
         return ISODateTimeFormat

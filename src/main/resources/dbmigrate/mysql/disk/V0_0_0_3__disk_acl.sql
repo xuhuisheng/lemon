@@ -4,7 +4,7 @@
 --  disk acl
 -------------------------------------------------------------------------------
 CREATE TABLE DISK_ACL(
-        ID BIGINT AUTO_INCREMENT,
+        ID BIGINT NOT NULL,
 	TYPE VARCHAR(50),
 	REF VARCHAR(64),
 

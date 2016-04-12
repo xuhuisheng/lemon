@@ -97,6 +97,7 @@ public class TaskOperationController {
             return "redirect:/humantask/workspace-listPersonalTasks.do";
         }
 
+        // 表单
         FormDTO formDto = this.findTaskForm(humanTaskDto);
 
         if (formDto.isRedirect()) {
@@ -108,7 +109,14 @@ public class TaskOperationController {
 
         model.addAttribute("formDto", formDto);
         model.addAttribute("humanTaskId", humanTaskId);
+        model.addAttribute("humanTask", humanTaskDto);
 
+        if (humanTaskDto.getParentId() != null) {
+            model.addAttribute("parentHumanTask", humanTaskConnector
+                    .findHumanTask(humanTaskDto.getParentId()));
+        }
+
+        // 表单和数据
         if ((humanTaskId != null) && (!"".equals(humanTaskId))) {
             // 如果是任务草稿，直接通过processInstanceId获得record，更新数据
             // TODO: 分支肯定有问题
@@ -126,10 +134,11 @@ public class TaskOperationController {
             model.addAttribute("xform", xform);
         }
 
+        // 操作
         List<ButtonDTO> buttons = new ArrayList<ButtonDTO>();
 
         for (String button : formDto.getButtons()) {
-            buttons.add(buttonHelper.findButton(button));
+            buttons.add(buttonHelper.findButton(button.trim()));
         }
 
         if (buttons.isEmpty()) {
@@ -138,6 +147,17 @@ public class TaskOperationController {
         }
 
         model.addAttribute("buttons", buttons);
+
+        // 沟通
+        List<HumanTaskDTO> children = humanTaskConnector
+                .findSubTasks(humanTaskId);
+        model.addAttribute("children", children);
+
+        // 审批记录
+        List<HumanTaskDTO> logHumanTaskDtos = humanTaskConnector
+                .findHumanTasksByProcessInstanceId(humanTaskDto
+                        .getProcessInstanceId());
+        model.addAttribute("logHumanTaskDtos", logHumanTaskDtos);
 
         return "operation/task-operation-viewTaskForm";
     }
@@ -160,8 +180,10 @@ public class TaskOperationController {
 
         try {
             multipartHandler.handle(request);
-            logger.info("{}", multipartHandler.getMultiValueMap());
-            logger.info("{}", multipartHandler.getMultiFileMap());
+            logger.debug("getMultiValueMap : {}",
+                    multipartHandler.getMultiValueMap());
+            logger.debug("getMultiFileMap : {}",
+                    multipartHandler.getMultiFileMap());
 
             formParameter = this.buildFormParameter(multipartHandler);
 
@@ -190,7 +212,8 @@ public class TaskOperationController {
 
         try {
             humanTaskConnector.completeTask(humanTaskId,
-                    currentUserHolder.getUserId(), taskParameters);
+                    currentUserHolder.getUserId(), formParameter.getComment(),
+                    taskParameters);
         } catch (IllegalStateException ex) {
             logger.error(ex.getMessage(), ex);
             messageHelper.addFlashMessage(redirectAttributes, ex.getMessage());
@@ -225,7 +248,7 @@ public class TaskOperationController {
      */
     @RequestMapping("task-operation-releaseTask")
     public String releaseTask(@RequestParam("humanTaskId") String humanTaskId) {
-        humanTaskConnector.releaseTask(humanTaskId);
+        humanTaskConnector.releaseTask(humanTaskId, "");
 
         return "redirect:/humantask/workspace-personalTasks.do";
     }
@@ -236,7 +259,7 @@ public class TaskOperationController {
     @RequestMapping("task-operation-rollbackPrevious")
     public String rollbackPrevious(
             @RequestParam("humanTaskId") String humanTaskId) {
-        humanTaskConnector.rollbackPrevious(humanTaskId);
+        humanTaskConnector.rollbackPrevious(humanTaskId, "");
 
         return "redirect:/humantask/workspace-personalTasks.do";
     }
@@ -246,7 +269,19 @@ public class TaskOperationController {
      */
     @RequestMapping("task-operation-rollbackStart")
     public String rollbackStart(@RequestParam("humanTaskId") String humanTaskId) {
-        humanTaskConnector.rollbackStart(humanTaskId);
+        humanTaskConnector.rollbackStart(humanTaskId, "");
+
+        return "redirect:/humantask/workspace-personalTasks.do";
+    }
+
+    /**
+     * 回退任务，发起人.
+     */
+    @RequestMapping("task-operation-rollbackInitiator")
+    public String rollbackInitiator(
+            @RequestParam("humanTaskId") String humanTaskId,
+            @RequestParam("_humantask_comment_") String comment) {
+        humanTaskConnector.rollbackInitiator(humanTaskId, comment);
 
         return "redirect:/humantask/workspace-personalTasks.do";
     }
@@ -255,8 +290,9 @@ public class TaskOperationController {
      * 撤销任务.
      */
     @RequestMapping("task-operation-withdraw")
-    public String withdraw(@RequestParam("humanTaskId") String humanTaskId) {
-        humanTaskConnector.withdraw(humanTaskId);
+    public String withdraw(@RequestParam("humanTaskId") String humanTaskId,
+            @RequestParam("comment") String comment) {
+        humanTaskConnector.withdraw(humanTaskId, comment);
 
         return "redirect:/humantask/workspace-personalTasks.do";
     }
@@ -266,10 +302,23 @@ public class TaskOperationController {
      */
     @RequestMapping("task-operation-transfer")
     public String transfer(@RequestParam("humanTaskId") String humanTaskId,
-            @RequestParam("userId") String userId) {
-        humanTaskConnector.transfer(humanTaskId, userId);
+            @RequestParam("userId") String userId,
+            @RequestParam("comment") String comment) {
+        humanTaskConnector.transfer(humanTaskId, userId, comment);
 
         return "redirect:/humantask/workspace-delegatedTasks.do";
+    }
+
+    /**
+     * 取消.
+     */
+    @RequestMapping("task-operation-cancel")
+    public String cancel(@RequestParam("humanTaskId") String humanTaskId,
+            @RequestParam("userId") String userId,
+            @RequestParam("comment") String comment) {
+        humanTaskConnector.cancel(humanTaskId, userId, comment);
+
+        return "redirect:/humantask/workspace-personalTasks.do";
     }
 
     /**
@@ -277,8 +326,9 @@ public class TaskOperationController {
      */
     @RequestMapping("task-operation-delegateTask")
     public String delegateTask(@RequestParam("humanTaskId") String humanTaskId,
-            @RequestParam("userId") String userId) {
-        humanTaskConnector.delegateTask(humanTaskId, userId);
+            @RequestParam("userId") String userId,
+            @RequestParam("comment") String comment) {
+        humanTaskConnector.delegateTask(humanTaskId, userId, comment);
 
         return "redirect:/humantask/workspace-delegatedTasks.do";
     }
@@ -289,10 +339,37 @@ public class TaskOperationController {
     @RequestMapping("task-operation-delegateTaskCreate")
     public String delegateTaskCreate(
             @RequestParam("humanTaskId") String humanTaskId,
-            @RequestParam("userId") String userId) {
-        humanTaskConnector.delegateTaskCreate(humanTaskId, userId);
+            @RequestParam("userId") String userId,
+            @RequestParam("comment") String comment) {
+        humanTaskConnector.delegateTaskCreate(humanTaskId, userId, comment);
 
         return "redirect:/humantask/workspace-delegatedTasks.do";
+    }
+
+    /**
+     * 沟通.
+     */
+    @RequestMapping("task-operation-communicate")
+    public String communicate(@RequestParam("humanTaskId") String humanTaskId,
+            @RequestParam("userId") String userId,
+            @RequestParam("comment") String comment) {
+        logger.info(
+                "communicate : humanTaskId : {}, userId : {}, comment : {}",
+                humanTaskId, userId, comment);
+        humanTaskConnector.communicate(humanTaskId, userId, comment);
+
+        return "redirect:/humantask/workspace-personalTasks.do";
+    }
+
+    /**
+     * 反馈.
+     */
+    @RequestMapping("task-operation-callback")
+    public String callback(@RequestParam("humanTaskId") String humanTaskId,
+            @RequestParam("comment") String comment) {
+        humanTaskConnector.callback(humanTaskId, "", comment);
+
+        return "redirect:/humantask/workspace-personalTasks.do";
     }
 
     // ~ ======================================================================
@@ -309,6 +386,8 @@ public class TaskOperationController {
                 .getFirst("bpmProcessId"));
         formParameter.setHumanTaskId(multipartHandler.getMultiValueMap()
                 .getFirst("humanTaskId"));
+        formParameter.setComment(multipartHandler.getMultiValueMap().getFirst(
+                "_humantask_comment_"));
 
         return formParameter;
     }

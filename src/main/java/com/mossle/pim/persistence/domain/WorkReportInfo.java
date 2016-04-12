@@ -8,7 +8,6 @@ import java.util.Set;
 import javax.persistence.Column;
 import javax.persistence.Entity;
 import javax.persistence.FetchType;
-import javax.persistence.GeneratedValue;
 import javax.persistence.Id;
 import javax.persistence.OneToMany;
 import javax.persistence.Table;
@@ -56,10 +55,15 @@ public class WorkReportInfo implements java.io.Serializable {
     public WorkReportInfo() {
     }
 
-    public WorkReportInfo(String type, String content, Date reportDate,
-            Date createTime, String userId, String tenantId,
+    public WorkReportInfo(Long id) {
+        this.id = id;
+    }
+
+    public WorkReportInfo(Long id, String type, String content,
+            Date reportDate, Date createTime, String userId, String tenantId,
             Set<WorkReportAttachment> workReportAttachments,
             Set<WorkReportAcl> workReportAcls) {
+        this.id = id;
         this.type = type;
         this.content = content;
         this.reportDate = reportDate;
@@ -72,7 +76,6 @@ public class WorkReportInfo implements java.io.Serializable {
 
     /** @return null. */
     @Id
-    @GeneratedValue
     @Column(name = "ID", unique = true, nullable = false)
     public Long getId() {
         return this.id;

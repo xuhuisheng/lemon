@@ -1,23 +1,35 @@
 <%@ page language="java" pageEncoding="UTF-8" %>
-
       <!-- start of sidebar -->
-      <aside id="m-sidebar" class="span2" style="height:100%">
+<style type="text/css">
+#accordion .panel-heading {
+	cursor: pointer;
+}
+#accordion .panel-body {
+	padding:0px;
+}
+</style>
 
-        <div class="accordion-group" style="height:100%">
-          <div class="accordion-heading">
-            <a class="accordion-toggle" data-toggle="collapse" data-parent="#m-sidebar" href="#collapse-javamail">
-              <i class="icon-user"></i>
-              <span class="title">邮箱</span>
-            </a>
-          </div>
-          <div id="collapse-javamail" class="accordion-body collapse ${currentMenu == 'javamail' ? 'in' : ''} full-height" style="overflow:auto;">
-		    <button onclick="location.href='create.do'" class="btn">新邮件</button>
-		    <button onclick="location.href='config.do'" class="btn">配置</button>
-            <ul id="treeMenu" class="ztree"></ul>
-          </div>
-        </div>
 
-      </aside>
+<div class="panel-group col-md-2" id="accordion" role="tablist" aria-multiselectable="true" style="padding-top:65px;">
+
+  <div class="panel panel-default">
+    <div class="panel-heading" role="tab" id="collapse-header-javamail" data-toggle="collapse" data-parent="#accordion" href="#collapse-body-javamail" aria-expanded="true" aria-controls="collapse-body-javamail">
+      <h4 class="panel-title">
+	    <i class="glyphicon glyphicon-list"></i>
+        邮箱
+      </h4>
+    </div>
+    <div id="collapse-body-javamail" class="panel-collapse collapse ${currentMenu == 'javamail' ? 'in' : ''}" role="tabpanel" aria-labelledby="collapse-header-javamail">
+      <div class="panel-body full-height">
+		<button onclick="location.href='create.do'" class="btn btn-default">新邮件</button>
+		<button onclick="location.href='config.do'" class="btn btn-default">配置</button>
+		<ul id="treeMenu" class="ztree"></ul>
+      </div>
+    </div>
+  </div>
+
+</div>
+
       <!-- end of sidebar -->
 
 <script type="text/javascript">

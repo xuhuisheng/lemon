@@ -4,14 +4,13 @@ package com.mossle.party.persistence.domain;
 import javax.persistence.Column;
 import javax.persistence.Entity;
 import javax.persistence.FetchType;
-import javax.persistence.GeneratedValue;
 import javax.persistence.Id;
 import javax.persistence.JoinColumn;
 import javax.persistence.ManyToOne;
 import javax.persistence.Table;
 
 /**
- * PartyStructRule .
+ * PartyStructRule 组织关系规则.
  * 
  * @author Lingo
  */
@@ -20,40 +19,42 @@ import javax.persistence.Table;
 public class PartyStructRule implements java.io.Serializable {
     private static final long serialVersionUID = 0L;
 
-    /** null. */
+    /** 主键. */
     private Long id;
 
-    /** null. */
+    /** 外键，上级类型. */
     private PartyType parentType;
 
-    /** null. */
+    /** 外键，下级类型. */
     private PartyType childType;
 
-    /** null. */
+    /** 外键，组织关系类型. */
     private PartyStructType partyStructType;
 
-    /** null. */
+    /** 租户. */
     private String tenantId;
 
     public PartyStructRule() {
     }
 
-    public PartyStructRule(PartyType childType, PartyStructType partyStructType) {
+    public PartyStructRule(Long id, PartyType childType,
+            PartyStructType partyStructType) {
+        this.id = id;
         this.childType = childType;
         this.partyStructType = partyStructType;
     }
 
-    public PartyStructRule(PartyType parentType, PartyType childType,
+    public PartyStructRule(Long id, PartyType parentType, PartyType childType,
             PartyStructType partyStructType, String tenantId) {
+        this.id = id;
         this.parentType = parentType;
         this.childType = childType;
         this.partyStructType = partyStructType;
         this.tenantId = tenantId;
     }
 
-    /** @return null. */
+    /** @return 主键. */
     @Id
-    @GeneratedValue
     @Column(name = "ID", unique = true, nullable = false)
     public Long getId() {
         return this.id;
@@ -61,13 +62,13 @@ public class PartyStructRule implements java.io.Serializable {
 
     /**
      * @param id
-     *            null.
+     *            主键.
      */
     public void setId(Long id) {
         this.id = id;
     }
 
-    /** @return null. */
+    /** @return 外键，上级类型. */
     @ManyToOne(fetch = FetchType.LAZY)
     @JoinColumn(name = "PARENT_TYPE_ID")
     public PartyType getParentType() {
@@ -76,13 +77,13 @@ public class PartyStructRule implements java.io.Serializable {
 
     /**
      * @param parentType
-     *            null.
+     *            外键，上级类型.
      */
     public void setParentType(PartyType parentType) {
         this.parentType = parentType;
     }
 
-    /** @return null. */
+    /** @return 外键，下级类型. */
     @ManyToOne(fetch = FetchType.LAZY)
     @JoinColumn(name = "CHILD_TYPE_ID", nullable = false)
     public PartyType getChildType() {
@@ -91,13 +92,13 @@ public class PartyStructRule implements java.io.Serializable {
 
     /**
      * @param childType
-     *            null.
+     *            外键，下级类型.
      */
     public void setChildType(PartyType childType) {
         this.childType = childType;
     }
 
-    /** @return null. */
+    /** @return 外键，组织关系类型. */
     @ManyToOne(fetch = FetchType.LAZY)
     @JoinColumn(name = "STRUCT_TYPE_ID", nullable = false)
     public PartyStructType getPartyStructType() {
@@ -106,13 +107,13 @@ public class PartyStructRule implements java.io.Serializable {
 
     /**
      * @param partyStructType
-     *            null.
+     *            外键，组织关系类型.
      */
     public void setPartyStructType(PartyStructType partyStructType) {
         this.partyStructType = partyStructType;
     }
 
-    /** @return null. */
+    /** @return 租户. */
     @Column(name = "TENANT_ID", length = 50)
     public String getTenantId() {
         return this.tenantId;
@@ -120,7 +121,7 @@ public class PartyStructRule implements java.io.Serializable {
 
     /**
      * @param tenantId
-     *            null.
+     *            租户.
      */
     public void setTenantId(String tenantId) {
         this.tenantId = tenantId;

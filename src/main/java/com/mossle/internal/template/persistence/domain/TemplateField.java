@@ -4,7 +4,6 @@ package com.mossle.internal.template.persistence.domain;
 import javax.persistence.Column;
 import javax.persistence.Entity;
 import javax.persistence.FetchType;
-import javax.persistence.GeneratedValue;
 import javax.persistence.Id;
 import javax.persistence.JoinColumn;
 import javax.persistence.ManyToOne;
@@ -41,8 +40,13 @@ public class TemplateField implements java.io.Serializable {
     public TemplateField() {
     }
 
-    public TemplateField(TemplateInfo templateInfo, String name, String type,
-            String content, String tenantId) {
+    public TemplateField(Long id) {
+        this.id = id;
+    }
+
+    public TemplateField(Long id, TemplateInfo templateInfo, String name,
+            String type, String content, String tenantId) {
+        this.id = id;
         this.templateInfo = templateInfo;
         this.name = name;
         this.type = type;
@@ -52,7 +56,6 @@ public class TemplateField implements java.io.Serializable {
 
     /** @return null. */
     @Id
-    @GeneratedValue
     @Column(name = "ID", unique = true, nullable = false)
     public Long getId() {
         return this.id;

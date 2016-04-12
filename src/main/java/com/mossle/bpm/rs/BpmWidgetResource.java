@@ -66,7 +66,7 @@ public class BpmWidgetResource {
             buff.append("        <a href='" + ".."
                     + "/bpm/workspace-viewHistory.do?processInstanceId="
                     + historicProcessInstance.getId()
-                    + "' class='btn btn-xs btn-primary'>历史</a>");
+                    + "' class='btn btn-xs btn-primary'>详情</a>");
             buff.append("      </td>");
             buff.append("    </tr>");
         }

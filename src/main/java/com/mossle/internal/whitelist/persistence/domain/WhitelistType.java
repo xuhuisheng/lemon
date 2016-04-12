@@ -7,7 +7,6 @@ import java.util.Set;
 import javax.persistence.Column;
 import javax.persistence.Entity;
 import javax.persistence.FetchType;
-import javax.persistence.GeneratedValue;
 import javax.persistence.Id;
 import javax.persistence.OneToMany;
 import javax.persistence.Table;
@@ -40,8 +39,13 @@ public class WhitelistType implements java.io.Serializable {
     public WhitelistType() {
     }
 
-    public WhitelistType(String name, String code, String tenantId,
+    public WhitelistType(Long id) {
+        this.id = id;
+    }
+
+    public WhitelistType(Long id, String name, String code, String tenantId,
             Set<WhitelistApp> whitelistApps) {
+        this.id = id;
         this.name = name;
         this.code = code;
         this.tenantId = tenantId;
@@ -50,7 +54,6 @@ public class WhitelistType implements java.io.Serializable {
 
     /** @return null. */
     @Id
-    @GeneratedValue
     @Column(name = "ID", unique = true, nullable = false)
     public Long getId() {
         return this.id;

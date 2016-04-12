@@ -4,7 +4,7 @@
 --  sendmail config
 -------------------------------------------------------------------------------
 CREATE TABLE SENDMAIL_CONFIG(
-        ID BIGINT AUTO_INCREMENT,
+        ID BIGINT NOT NULL,
         NAME VARCHAR(50),
 	HOST VARCHAR(200),
 	USERNAME VARCHAR(200),

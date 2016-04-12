@@ -9,12 +9,13 @@
   expressionLanguage='http://www.w3.org/1999/XPath'
   targetNamespace='http://www.mossle.com'>
 <process id='vacation' name='请假流程' isExecutable='true'>
-  <startEvent id='vacation_1' name='填写请假单' activiti:initiator='initiator'/>
+  <documentation>请假流程</documentation>
+  <startEvent id='vacation_1' name='填写请假单'/>
   <sequenceFlow id='transition-1' sourceRef='vacation_1' targetRef='taskuser-1'/>
   <userTask id='taskuser-1' name='填写请假单' activiti:formKey='vacation-request'>
     <humanPerformer>
       <resourceAssignmentExpression>
-        <formalExpression>${initiator}</formalExpression>
+        <formalExpression>常用语:流程发起人</formalExpression>
       </resourceAssignmentExpression>
     </humanPerformer>
   </userTask>
@@ -52,7 +53,7 @@
   <userTask id='taskuser-5' name='调整申请' activiti:formKey='vacation-modify'>
     <humanPerformer>
       <resourceAssignmentExpression>
-        <formalExpression>${initiator}</formalExpression>
+        <formalExpression>常用语:流程发起人</formalExpression>
       </resourceAssignmentExpression>
     </humanPerformer>
   </userTask>
@@ -67,12 +68,12 @@
   <userTask id='taskuser-6' name='销假' activiti:formKey='vacation-finish'>
     <humanPerformer>
       <resourceAssignmentExpression>
-        <formalExpression>${initiator}</formalExpression>
+        <formalExpression>常用语:流程发起人</formalExpression>
       </resourceAssignmentExpression>
     </humanPerformer>
   </userTask>
   <sequenceFlow id='transition-14' sourceRef='taskuser-6' targetRef='endnone-2'/>
-  <endEvent id='endnone-2' name='endnone-2'/>
+  <endEvent id='endnone-2' name='结束'/>
 </process>
 <bpmndi:BPMNDiagram id='BPMNDiagram_vacation'>
   <bpmndi:BPMNPlane bpmnElement='vacation' id='BPMNPlane_vacation'>

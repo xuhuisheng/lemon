@@ -51,6 +51,8 @@ import org.springframework.ui.Model;
 import org.springframework.web.bind.annotation.ModelAttribute;
 import org.springframework.web.bind.annotation.RequestMapping;
 import org.springframework.web.bind.annotation.RequestParam;
+import org.springframework.web.multipart.MultipartFile;
+import org.springframework.web.servlet.mvc.support.RedirectAttributes;
 
 /**
  * 管理控制台.
@@ -163,6 +165,29 @@ public class ConsoleController {
     @RequestMapping("console-create")
     public String create() {
         return "bpm/console-create";
+    }
+
+    /**
+     * 准备上传流程定义.
+     */
+    @RequestMapping("console-process-input")
+    public String processInput() {
+        return "bpm/console-process-input";
+    }
+
+    /**
+     * 上传发布流程定义.
+     */
+    @RequestMapping("console-process-upload")
+    public String processUpload(@RequestParam("file") MultipartFile file,
+            RedirectAttributes redirectAttributes) throws Exception {
+        String tenantId = tenantHolder.getTenantId();
+        String fileName = file.getOriginalFilename();
+        processEngine.getRepositoryService().createDeployment()
+                .addInputStream(fileName, file.getInputStream())
+                .tenantId(tenantId).deploy();
+
+        return "redirect:/bpm/console-listProcessDefinitions.do";
     }
 
     /**

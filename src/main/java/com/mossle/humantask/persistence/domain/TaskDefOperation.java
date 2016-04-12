@@ -4,14 +4,13 @@ package com.mossle.humantask.persistence.domain;
 import javax.persistence.Column;
 import javax.persistence.Entity;
 import javax.persistence.FetchType;
-import javax.persistence.GeneratedValue;
 import javax.persistence.Id;
 import javax.persistence.JoinColumn;
 import javax.persistence.ManyToOne;
 import javax.persistence.Table;
 
 /**
- * TaskDefOperation .
+ * TaskDefOperation 任务定义操作.
  * 
  * @author Lingo
  */
@@ -20,29 +19,34 @@ import javax.persistence.Table;
 public class TaskDefOperation implements java.io.Serializable {
     private static final long serialVersionUID = 0L;
 
-    /** null. */
+    /** 主键. */
     private Long id;
 
-    /** null. */
+    /** 外键，任务定义. */
     private TaskDefBase taskDefBase;
 
-    /** null. */
+    /** 值. */
     private String value;
 
-    /** null. */
+    /** 类型. */
     private String type;
 
-    /** null. */
+    /** 状态. */
     private String status;
 
-    /** null. */
+    /** 排序. */
     private Integer priority;
 
     public TaskDefOperation() {
     }
 
-    public TaskDefOperation(TaskDefBase taskDefBase, String value, String type,
-            String status, Integer priority) {
+    public TaskDefOperation(Long id) {
+        this.id = id;
+    }
+
+    public TaskDefOperation(Long id, TaskDefBase taskDefBase, String value,
+            String type, String status, Integer priority) {
+        this.id = id;
         this.taskDefBase = taskDefBase;
         this.value = value;
         this.type = type;
@@ -50,9 +54,8 @@ public class TaskDefOperation implements java.io.Serializable {
         this.priority = priority;
     }
 
-    /** @return null. */
+    /** @return 主键. */
     @Id
-    @GeneratedValue
     @Column(name = "ID", unique = true, nullable = false)
     public Long getId() {
         return this.id;
@@ -60,13 +63,13 @@ public class TaskDefOperation implements java.io.Serializable {
 
     /**
      * @param id
-     *            null.
+     *            主键.
      */
     public void setId(Long id) {
         this.id = id;
     }
 
-    /** @return null. */
+    /** @return 外键，任务定义. */
     @ManyToOne(fetch = FetchType.LAZY)
     @JoinColumn(name = "BASE_ID")
     public TaskDefBase getTaskDefBase() {
@@ -75,13 +78,13 @@ public class TaskDefOperation implements java.io.Serializable {
 
     /**
      * @param taskDefBase
-     *            null.
+     *            外键，任务定义.
      */
     public void setTaskDefBase(TaskDefBase taskDefBase) {
         this.taskDefBase = taskDefBase;
     }
 
-    /** @return null. */
+    /** @return 值. */
     @Column(name = "VALUE", length = 200)
     public String getValue() {
         return this.value;
@@ -89,13 +92,13 @@ public class TaskDefOperation implements java.io.Serializable {
 
     /**
      * @param value
-     *            null.
+     *            值.
      */
     public void setValue(String value) {
         this.value = value;
     }
 
-    /** @return null. */
+    /** @return 类型. */
     @Column(name = "TYPE", length = 50)
     public String getType() {
         return this.type;
@@ -103,13 +106,13 @@ public class TaskDefOperation implements java.io.Serializable {
 
     /**
      * @param type
-     *            null.
+     *            类型.
      */
     public void setType(String type) {
         this.type = type;
     }
 
-    /** @return null. */
+    /** @return 状态. */
     @Column(name = "STATUS", length = 50)
     public String getStatus() {
         return this.status;
@@ -117,13 +120,13 @@ public class TaskDefOperation implements java.io.Serializable {
 
     /**
      * @param status
-     *            null.
+     *            状态.
      */
     public void setStatus(String status) {
         this.status = status;
     }
 
-    /** @return null. */
+    /** @return 排序. */
     @Column(name = "PRIORITY")
     public Integer getPriority() {
         return this.priority;
@@ -131,7 +134,7 @@ public class TaskDefOperation implements java.io.Serializable {
 
     /**
      * @param priority
-     *            null.
+     *            排序.
      */
     public void setPriority(Integer priority) {
         this.priority = priority;

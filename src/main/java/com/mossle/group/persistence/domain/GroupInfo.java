@@ -7,7 +7,6 @@ import java.util.Set;
 import javax.persistence.Column;
 import javax.persistence.Entity;
 import javax.persistence.FetchType;
-import javax.persistence.GeneratedValue;
 import javax.persistence.Id;
 import javax.persistence.JoinColumn;
 import javax.persistence.ManyToOne;
@@ -40,6 +39,15 @@ public class GroupInfo implements java.io.Serializable {
     private String ref;
 
     /** null. */
+    private String descn;
+
+    /** null. */
+    private Integer memberCount;
+
+    /** null. */
+    private String status;
+
+    /** null. */
     private String tenantId;
 
     /** . */
@@ -53,30 +61,43 @@ public class GroupInfo implements java.io.Serializable {
     private Set<GroupAlias> groupAliases = new HashSet<GroupAlias>(0);
 
     /** . */
+    private Set<GroupAdmin> groupAdmins = new HashSet<GroupAdmin>(0);
+
+    /** . */
     private Set<GroupRelation> groupRelationsForParentId = new HashSet<GroupRelation>(
             0);
 
     public GroupInfo() {
     }
 
-    public GroupInfo(GroupType groupType, String code, String name, String ref,
+    public GroupInfo(Long id) {
+        this.id = id;
+    }
+
+    public GroupInfo(Long id, GroupType groupType, String code, String name,
+            String ref, String descn, Integer memberCount, String status,
             String tenantId, Set<GroupRelation> groupRelationsForChildId,
             Set<GroupMember> groupMembers, Set<GroupAlias> groupAliases,
+            Set<GroupAdmin> groupAdmins,
             Set<GroupRelation> groupRelationsForParentId) {
+        this.id = id;
         this.groupType = groupType;
         this.code = code;
         this.name = name;
         this.ref = ref;
+        this.descn = descn;
+        this.memberCount = memberCount;
+        this.status = status;
         this.tenantId = tenantId;
         this.groupRelationsForChildId = groupRelationsForChildId;
         this.groupMembers = groupMembers;
         this.groupAliases = groupAliases;
+        this.groupAdmins = groupAdmins;
         this.groupRelationsForParentId = groupRelationsForParentId;
     }
 
     /** @return null. */
     @Id
-    @GeneratedValue
     @Column(name = "ID", unique = true, nullable = false)
     public Long getId() {
         return this.id;
@@ -148,6 +169,48 @@ public class GroupInfo implements java.io.Serializable {
     }
 
     /** @return null. */
+    @Column(name = "DESCN", length = 200)
+    public String getDescn() {
+        return this.descn;
+    }
+
+    /**
+     * @param descn
+     *            null.
+     */
+    public void setDescn(String descn) {
+        this.descn = descn;
+    }
+
+    /** @return null. */
+    @Column(name = "MEMBER_COUNT")
+    public Integer getMemberCount() {
+        return this.memberCount;
+    }
+
+    /**
+     * @param memberCount
+     *            null.
+     */
+    public void setMemberCount(Integer memberCount) {
+        this.memberCount = memberCount;
+    }
+
+    /** @return null. */
+    @Column(name = "STATUS", length = 50)
+    public String getStatus() {
+        return this.status;
+    }
+
+    /**
+     * @param status
+     *            null.
+     */
+    public void setStatus(String status) {
+        this.status = status;
+    }
+
+    /** @return null. */
     @Column(name = "TENANT_ID", length = 64)
     public String getTenantId() {
         return this.tenantId;
@@ -202,6 +265,20 @@ public class GroupInfo implements java.io.Serializable {
      */
     public void setGroupAliases(Set<GroupAlias> groupAliases) {
         this.groupAliases = groupAliases;
+    }
+
+    /** @return . */
+    @OneToMany(fetch = FetchType.LAZY, mappedBy = "groupInfo")
+    public Set<GroupAdmin> getGroupAdmins() {
+        return this.groupAdmins;
+    }
+
+    /**
+     * @param groupAdmins
+     *            .
+     */
+    public void setGroupAdmins(Set<GroupAdmin> groupAdmins) {
+        this.groupAdmins = groupAdmins;
     }
 
     /** @return . */
