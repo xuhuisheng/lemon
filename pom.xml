@@ -2,7 +2,7 @@
   <modelVersion>4.0.0</modelVersion>
   <groupId>com.mossle</groupId>
   <artifactId>lemon</artifactId>
-  <version>1.7.0-SNAPSHOT</version>
+  <version>1.7.0-beta1</version>
   <name>lemon</name>
   <packaging>war</packaging>
   <description>Lemon is an OA.</description>
@@ -150,6 +150,10 @@
 	</dependency><dependency>
       <groupId>io.dropwizard.metrics</groupId>
       <artifactId>metrics-servlets</artifactId>
+      <version>3.1.2</version>
+    </dependency><dependency>
+      <groupId>io.dropwizard.metrics</groupId>
+      <artifactId>metrics-servlet</artifactId>
       <version>3.1.2</version>
     </dependency><dependency>
       <groupId>javax.cache</groupId>
