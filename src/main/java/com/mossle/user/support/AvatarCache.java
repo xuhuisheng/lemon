@@ -1,8 +1,5 @@
 package com.mossle.user.support;
 
-import java.io.ByteArrayInputStream;
-import java.io.InputStream;
-
 import javax.activation.DataSource;
 
 import javax.annotation.PostConstruct;

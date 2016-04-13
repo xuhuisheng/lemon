@@ -19,7 +19,6 @@ import com.mossle.bpm.support.HumanTaskBuilder;
 import com.mossle.core.mapper.BeanMapper;
 
 import org.activiti.engine.delegate.DelegateTask;
-import org.activiti.engine.history.HistoricTaskInstance;
 import org.activiti.engine.impl.context.Context;
 import org.activiti.engine.impl.el.ExpressionManager;
 import org.activiti.engine.impl.identity.Authentication;

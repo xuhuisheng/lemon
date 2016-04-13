@@ -6,7 +6,6 @@ import javax.annotation.Resource;
 
 import com.mossle.api.phrase.PhraseConnector;
 
-import com.mossle.pim.persistence.domain.PimPhrase;
 import com.mossle.pim.persistence.manager.PimPhraseManager;
 
 public class PhraseConnectorImpl implements PhraseConnector {

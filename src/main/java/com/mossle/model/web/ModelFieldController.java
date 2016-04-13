@@ -14,7 +14,6 @@ import com.mossle.core.query.PropertyFilter;
 import com.mossle.core.spring.MessageHelper;
 
 import com.mossle.model.persistence.domain.ModelField;
-import com.mossle.model.persistence.domain.ModelInfo;
 import com.mossle.model.persistence.manager.ModelFieldManager;
 import com.mossle.model.persistence.manager.ModelInfoManager;
 

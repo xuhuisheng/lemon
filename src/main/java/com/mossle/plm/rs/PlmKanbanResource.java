@@ -1,9 +1,7 @@
 package com.mossle.plm.rs;
 
-import java.util.ArrayList;
 import java.util.Date;
 import java.util.HashMap;
-import java.util.List;
 import java.util.Map;
 
 import javax.annotation.Resource;
@@ -21,9 +19,7 @@ import com.mossle.api.user.UserDTO;
 
 import com.mossle.core.auth.CurrentUserHolder;
 import com.mossle.core.mapper.BeanMapper;
-import com.mossle.core.mapper.JsonMapper;
 import com.mossle.core.util.BaseDTO;
-import com.mossle.core.util.StringUtils;
 
 import com.mossle.plm.persistence.domain.PlmIssue;
 import com.mossle.plm.persistence.domain.PlmSprint;

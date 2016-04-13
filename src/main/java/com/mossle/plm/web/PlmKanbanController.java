@@ -1,7 +1,6 @@
 package com.mossle.plm.web;
 
 import java.util.ArrayList;
-import java.util.Date;
 import java.util.HashMap;
 import java.util.List;
 import java.util.Map;
@@ -10,16 +9,9 @@ import javax.annotation.Resource;
 
 import com.mossle.core.auth.CurrentUserHolder;
 import com.mossle.core.mapper.BeanMapper;
-import com.mossle.core.page.Page;
 
-import com.mossle.plm.persistence.domain.PlmCategory;
-import com.mossle.plm.persistence.domain.PlmComment;
-import com.mossle.plm.persistence.domain.PlmIssue;
-import com.mossle.plm.persistence.domain.PlmLog;
-import com.mossle.plm.persistence.domain.PlmProject;
 import com.mossle.plm.persistence.domain.PlmSprint;
 import com.mossle.plm.persistence.domain.PlmStep;
-import com.mossle.plm.persistence.domain.PlmVersion;
 import com.mossle.plm.persistence.manager.PlmCategoryManager;
 import com.mossle.plm.persistence.manager.PlmCommentManager;
 import com.mossle.plm.persistence.manager.PlmIssueManager;
@@ -36,11 +28,8 @@ import org.springframework.stereotype.Controller;
 
 import org.springframework.ui.Model;
 
-import org.springframework.web.bind.annotation.ModelAttribute;
 import org.springframework.web.bind.annotation.RequestMapping;
 import org.springframework.web.bind.annotation.RequestParam;
-import org.springframework.web.bind.annotation.ResponseBody;
-import org.springframework.web.servlet.mvc.support.RedirectAttributes;
 
 @Controller
 @RequestMapping("plm")

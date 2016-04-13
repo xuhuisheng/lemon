@@ -710,7 +710,7 @@ public class HumanTaskConnectorImpl implements HumanTaskConnector {
         humanTaskDto.setAssignee(userId);
         this.saveHumanTask(humanTaskDto, false);
         internalProcessConnector.completeTask(humanTaskDto.getTaskId(), userId,
-                Collections.<String,Object>emptyMap());
+                Collections.<String, Object> emptyMap());
     }
 
     // ~ ==================================================

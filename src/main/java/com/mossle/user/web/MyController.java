@@ -6,8 +6,6 @@ import java.io.ByteArrayInputStream;
 import java.io.ByteArrayOutputStream;
 import java.io.OutputStream;
 
-import java.util.List;
-
 import javax.annotation.Resource;
 
 import javax.imageio.ImageIO;
