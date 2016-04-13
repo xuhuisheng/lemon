@@ -1,4 +1,4 @@
-package com.mossle.user.rs;
+package com.mossle.plm.rs;
 
 import java.util.ArrayList;
 import java.util.Date;

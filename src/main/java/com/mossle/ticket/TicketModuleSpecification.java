@@ -1,4 +1,4 @@
-package com.mossle.monitor;
+package com.mossle.ticket;
 
 import com.mossle.core.dbmigrate.ModuleSpecification;
 
