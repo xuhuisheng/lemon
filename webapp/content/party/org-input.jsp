@@ -22,8 +22,8 @@ $(function() {
 })
     </script>
 
-    <link type="text/css" rel="stylesheet" href="${tenantPrefix}/widgets/userpicker/userpicker.css">
-    <script type="text/javascript" src="${tenantPrefix}/widgets/userpicker/userpicker.js"></script>
+    <link type="text/css" rel="stylesheet" href="${tenantPrefix}/widgets/userpicker3/userpicker.css">
+    <script type="text/javascript" src="${tenantPrefix}/widgets/userpicker3/userpicker.js"></script>
 	<script type="text/javascript">
 $(function() {
 	createUserPicker({
@@ -165,12 +165,12 @@ $(function() {
   <div class="form-group">
     <label class="control-label col-md-1" for="org_orgname"><spring:message code="org.org.input.orgname" text="名称"/></label>
 	<div class="col-sm-5">
-	  <div class="input-append userPicker">
-		<input id="_task_name_key" type="hidden" name="childEntityRef" class="input-medium" value="">
-		<input type="text" name="username" style="width: 175px;" value="">
-		<span class="add-on"><i class="icon-user"></i></span>
-	  </div>
-    </div>
+	  <div class="input-group userPicker">
+        <input id="_task_name_key" type="hidden" name="childEntityRef" value="">
+        <input type="text" class="form-control" name="username" placeholder="" value="">
+        <div class="input-group-addon"><i class="glyphicon glyphicon-user"></i></div>
+      </div>
+	</div>
   </div>
   <div class="form-group">
     <label class="control-label col-md-1" for="orgInputUser_status">是否兼职</label>
@@ -220,7 +220,7 @@ $(function() {
 	  <input id="org_id" type="hidden" name="childEntityId" value="">
       <input id="org_name" type="text" name="childEntityName" value="" size="40" class="form-control required" minlength="1" maxlength="50" autocomplete="off">
 	  <button id="btnClean" type="button" class="btn" style="display:none;">清空</button>
-	  <button id="btnOpen" type="button" class="btn">选择已有组织</button>
+	  <button id="btnOpen" type="button" class="btn btn-default">选择已有组织</button>
     </div>
   </div>
   <div class="form-group">
@@ -268,9 +268,9 @@ $(function() {
   </div>
 </c:if>
   <div class="form-group">
-    <div class="col-sm-5">
-      <button id="submitButton" class="btn a-submit"><spring:message code='core.input.save' text='保存'/></button>
-      <button type="button" onclick="history.back();" class="btn"><spring:message code='core.input.back' text='返回'/></button>
+    <div class="col-md-offset-1 col-sm-5">
+      <button id="submitButton" class="btn btn-default a-submit"><spring:message code='core.input.save' text='保存'/></button>
+      <button type="button" onclick="history.back();" class="btn btn-link"><spring:message code='core.input.back' text='返回'/></button>
     </div>
   </div>
 </form>

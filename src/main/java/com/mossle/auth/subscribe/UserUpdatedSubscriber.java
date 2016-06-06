@@ -60,6 +60,7 @@ public class UserUpdatedSubscriber implements Subscribable<String> {
                 logger.info("refresh cache : {}, {}", userStatus.getUsername(),
                         userStatus.getTenantId());
             } else {
+                authCache.evictUser(userDto.getId());
                 logger.info("cannot find cache : {}", userDto.getUsername());
             }
         }

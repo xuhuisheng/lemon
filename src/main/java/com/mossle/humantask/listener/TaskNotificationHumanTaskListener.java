@@ -21,6 +21,8 @@ import com.mossle.spi.process.InternalProcessConnector;
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
 
+import org.springframework.beans.factory.annotation.Value;
+
 public class TaskNotificationHumanTaskListener implements HumanTaskListener {
     private static Logger logger = LoggerFactory
             .getLogger(TaskNotificationHumanTaskListener.class);
@@ -28,6 +30,7 @@ public class TaskNotificationHumanTaskListener implements HumanTaskListener {
     private NotificationConnector notificationConnector;
     private UserConnector userConnector;
     private InternalProcessConnector internalProcessConnector;
+    private String baseUrl;
 
     @Override
     public void onCreate(TaskInfo taskInfo) throws Exception {
@@ -105,6 +108,9 @@ public class TaskNotificationHumanTaskListener implements HumanTaskListener {
 
         data.put("task", taskEntity);
         data.put("initiator", initiatorUser.getDisplayName());
+        data.put("humanTask", taskInfo);
+        data.put("baseUrl", baseUrl);
+        data.put("humanTaskId", Long.toString(taskInfo.getId()));
 
         return data;
     }
@@ -130,5 +136,10 @@ public class TaskNotificationHumanTaskListener implements HumanTaskListener {
     public void setInternalProcessConnector(
             InternalProcessConnector internalProcessConnector) {
         this.internalProcessConnector = internalProcessConnector;
+    }
+
+    @Value("${application.baseUrl}")
+    public void setBaseUrl(String baseUrl) {
+        this.baseUrl = baseUrl;
     }
 }

@@ -30,6 +30,15 @@
 			<i id="unreadMsg" class="badge"></i>
 	      </a>
 		</li>
+		<li>
+          <a href="javascript:createFavorite();">
+            <i class="glyphicon glyphicon-heart"></i>
+	      </a>
+		</li>
 
-		<li><button class="btn btn-default btn-sm navbar-btn" onclick="insertWidget()"><i class="glyphicon glyphicon-plus"></i></button></li>
+        <script type="text/javascript">
+function createFavorite() {
+	location.href = '${tenantPrefix}/pim/pim-favorite-input.do?title=' + document.title + '&content=' + encodeURIComponent(location.href);
+}
+		</script>
       </ul>

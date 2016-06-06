@@ -9,6 +9,9 @@
     <%@include file="/common/meta.jsp"%>
     <title>列表</title>
     <%@include file="/common/s3.jsp"%>
+
+    <link type="text/css" rel="stylesheet" href="../widgets/userpicker3-v2/userpicker.css">
+    <script type="text/javascript" src="../widgets/userpicker3-v2/userpicker.js"></script>
     <script type="text/javascript">
 var config = {
     id: 'processGrid',
@@ -33,7 +36,22 @@ $(function() {
     table.configPagination('.m-pagination');
     table.configPageInfo('.m-page-info');
     table.configPageSize('.m-page-size');
+
+	createUserPicker({
+		modalId: 'userPicker',
+		searchUrl: '${tenantPrefix}/rs/user/search',
+		treeUrl: '${tenantPrefix}/rs/party/tree?partyStructTypeId=1',
+		childUrl: '${tenantPrefix}/rs/party/searchUser'
+	});
 });
+
+var ROOT_URL = '${tenantPrefix}';
+
+function doTransfer(humanTaskId) {
+	$('#modal form').attr('action', ROOT_URL + '/humantask/workspace-transferTask.do');
+	$('#humanTaskId').val(humanTaskId);
+	$('#modal').modal();
+}
     </script>
   </head>
 
@@ -77,7 +95,7 @@ $(function() {
         <th>流程</th>
         <th>环节</th>
         <th>状态</th>
-        <th width="170">&nbsp;</th>
+        <th width="110">&nbsp;</th>
       </tr>
     </thead>
 
@@ -94,7 +112,8 @@ $(function() {
 		</td>
 	    <td>完成</td>
         <td>
-          <a href="${tenantPrefix}/operation/task-operation-withdraw.do?humanTaskId=${item.id}">撤销</a>
+          <a href="${tenantPrefix}/operation/task-operation-withdraw.do?humanTaskId=${item.id}&comment=">撤销</a>
+          <a href="javascript:void(0);doTransfer(${item.id})">转发</a>
           <a href="${tenantPrefix}/bpm/workspace-viewHistory.do?processInstanceId=${item.processInstanceId}">详情</a>
         </td>
       </tr>
@@ -120,6 +139,25 @@ $(function() {
 
       </section>
 	  <!-- end of main -->
+	</div>
+
+	<div id="modal" class="modal fade">
+	  <div class="modal-dialog">
+	    <div class="modal-content">
+	      <div class="modal-body">
+	        <form>
+	          <input type="hidden" id="humanTaskId" name="humanTaskId" value=""/>
+			  <div class="input-group userPicker" style="width:200px;">
+				<input id="_assignee_key_" type="hidden" name="assignee" class="input-medium" value="">
+				<input type="text" class="form-control" name="username" placeholder="" value="">
+				<div class="input-group-addon"><i class="glyphicon glyphicon-user"></i></div>
+			  </div>
+		      <br>
+		      <button class="btn btn-default">提交</button>
+		    </form>
+	      </div>
+		</div>
+	  </div>
 	</div>
 
   </body>

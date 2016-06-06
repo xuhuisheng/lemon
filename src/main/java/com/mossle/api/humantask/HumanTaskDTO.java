@@ -1,6 +1,8 @@
 package com.mossle.api.humantask;
 
+import java.util.ArrayList;
 import java.util.Date;
+import java.util.List;
 
 public class HumanTaskDTO {
     private String id;
@@ -32,6 +34,7 @@ public class HumanTaskDTO {
     private String action;
     private String comment;
     private String message;
+    private List<HumanTaskDTO> children = new ArrayList<HumanTaskDTO>();
 
     public String getId() {
         return id;
@@ -263,5 +266,13 @@ public class HumanTaskDTO {
 
     public void setMessage(String message) {
         this.message = message;
+    }
+
+    public List<HumanTaskDTO> getChildren() {
+        return children;
+    }
+
+    public void setChildren(List<HumanTaskDTO> children) {
+        this.children = children;
     }
 }

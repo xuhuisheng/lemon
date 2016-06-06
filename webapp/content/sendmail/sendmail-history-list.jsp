@@ -99,12 +99,14 @@ $(function() {
     <thead>
       <tr>
         <th width="10" class="table-check"><input type="checkbox" name="checkAll" onchange="toggleSelectedItems(this.checked)"></th>
+		<!--
         <th>编号</th>
+		-->
         <th>创建时间</th>
         <th>模板</th>
         <th>接收者</th>
         <th>状态</th>
-        <th width="80">&nbsp;</th>
+        <th width="90">&nbsp;</th>
       </tr>
     </thead>
 
@@ -112,7 +114,9 @@ $(function() {
       <c:forEach items="${page.result}" var="item">
       <tr>
         <td><input type="checkbox" class="selectedItem a-check" name="selectedItem" value="${item.id}"></td>
+		<!--
         <td>${item.id}</td>
+		-->
         <td>${item.createTime}</td>
         <td>${item.sendmailTemplate.name}</td>
         <td>${item.receiver}</td>

@@ -99,6 +99,14 @@ public class AndroidBpmResource {
     @Produces(MediaType.APPLICATION_JSON)
     public BaseDTO processInstances(@HeaderParam("sessionId") String sessionId)
             throws Exception {
+        return this.processInstancesRunning(sessionId);
+    }
+
+    @POST
+    @Path("processInstancesRunning")
+    @Produces(MediaType.APPLICATION_JSON)
+    public BaseDTO processInstancesRunning(
+            @HeaderParam("sessionId") String sessionId) throws Exception {
         logger.info("start");
 
         PimDevice pimDevice = pimDeviceManager.findUniqueBy("sessionId",
@@ -125,6 +133,96 @@ public class AndroidBpmResource {
             Map<String, Object> map = new HashMap<String, Object>();
             map.put("name", historicProcessInstance.getName());
             map.put("processInstanceId", historicProcessInstance.getId());
+            list.add(map);
+        }
+
+        String json = jsonMapper.toJson(list);
+        BaseDTO result = new BaseDTO();
+        result.setCode(200);
+        result.setData(json);
+        logger.info("end");
+
+        return result;
+    }
+
+    @POST
+    @Path("processInstancesComplete")
+    @Produces(MediaType.APPLICATION_JSON)
+    public BaseDTO processInstancesComplete(
+            @HeaderParam("sessionId") String sessionId) throws Exception {
+        logger.info("start");
+
+        PimDevice pimDevice = pimDeviceManager.findUniqueBy("sessionId",
+                sessionId);
+
+        if (pimDevice == null) {
+            BaseDTO result = new BaseDTO();
+            result.setCode(401);
+            result.setMessage("auth fail");
+
+            return result;
+        }
+
+        String userId = pimDevice.getUserId();
+        String tenantId = "1";
+        List<HistoricProcessInstance> historicProcessInstances = processEngine
+                .getHistoryService().createHistoricProcessInstanceQuery()
+                .processInstanceTenantId(tenantId).startedBy(userId).finished()
+                .list();
+
+        List<Map<String, Object>> list = new ArrayList<Map<String, Object>>();
+
+        for (HistoricProcessInstance historicProcessInstance : historicProcessInstances) {
+            Map<String, Object> map = new HashMap<String, Object>();
+            map.put("name", historicProcessInstance.getName());
+            map.put("processInstanceId", historicProcessInstance.getId());
+            list.add(map);
+        }
+
+        String json = jsonMapper.toJson(list);
+        BaseDTO result = new BaseDTO();
+        result.setCode(200);
+        result.setData(json);
+        logger.info("end");
+
+        return result;
+    }
+
+    @POST
+    @Path("processInstancesDraft")
+    @Produces(MediaType.APPLICATION_JSON)
+    public BaseDTO processInstancesDraft(
+            @HeaderParam("sessionId") String sessionId) throws Exception {
+        logger.info("start");
+
+        PimDevice pimDevice = pimDeviceManager.findUniqueBy("sessionId",
+                sessionId);
+
+        if (pimDevice == null) {
+            BaseDTO result = new BaseDTO();
+            result.setCode(401);
+            result.setMessage("auth fail");
+
+            return result;
+        }
+
+        String userId = pimDevice.getUserId();
+        String tenantId = "1";
+
+        List<Record> records = keyValueConnector.findByStatus(
+                STATUS_DRAFT_PROCESS, userId, tenantId);
+
+        List<Map<String, Object>> list = new ArrayList<Map<String, Object>>();
+
+        for (Record record : records) {
+            Map<String, Object> map = new HashMap<String, Object>();
+            map.put("name", record.getName());
+            map.put("formTemplateCode", record.getFormTemplateCode());
+            map.put("code", record.getCode());
+            map.put("category", record.getCategory());
+            map.put("status", record.getStatus());
+            map.put("ref", record.getRef());
+            map.put("createTime", record.getCreateTime());
             list.add(map);
         }
 

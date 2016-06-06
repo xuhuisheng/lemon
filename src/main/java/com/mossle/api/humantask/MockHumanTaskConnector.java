@@ -64,15 +64,27 @@ public class MockHumanTaskConnector implements HumanTaskConnector {
             List<String> taskDefinitionKeys, List<String> taskAssigness) {
     }
 
-    public void completeTask(String humanTaskId, String userId, String comment,
-            Map<String, Object> taskParameters) {
+    public void completeTask(String humanTaskId, String userId, String action,
+            String comment, Map<String, Object> taskParameters) {
     }
 
-    public Page findPersonalTasks(String userId, int pageNo, int pageSize) {
+    public Page findPersonalTasks(String userId, String tenantId, int pageNo,
+            int pageSize) {
         return null;
     }
 
-    public Page findFinishedTasks(String userId, int pageNo, int pageSize) {
+    public Page findFinishedTasks(String userId, String tenantId, int pageNo,
+            int pageSize) {
+        return null;
+    }
+
+    public Page findGroupTasks(String userId, String tenantId, int pageNo,
+            int pageSize) {
+        return null;
+    }
+
+    public Page findDelegateTasks(String userId, String tenantId, int pageNo,
+            int pageSize) {
         return null;
     }
 

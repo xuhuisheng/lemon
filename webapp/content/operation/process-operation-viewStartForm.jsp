@@ -13,7 +13,7 @@
 	<!-- bootbox -->
     <script type="text/javascript" src="${ctx}/s/bootbox/bootbox.min.js"></script>
 	<link href="${tenantPrefix}/widgets/xform3/styles/xform.css" rel="stylesheet">
-    <script type="text/javascript" src="${tenantPrefix}/widgets/xform3/xform-packed.js"></script>
+    <script type="text/javascript" src="${tenantPrefix}/widgets/xform3/xform-all.js"></script>
 
     <link type="text/css" rel="stylesheet" href="../widgets/userpicker3-v2/userpicker.css">
     <script type="text/javascript" src="../widgets/userpicker3-v2/userpicker.js"></script>

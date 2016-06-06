@@ -152,11 +152,11 @@ public class PartyOrgConnector implements OrgConnector {
 
                 // 如果叶子是岗位，并且这个职位是管理岗位
                 if ((childPartyEntity.getPartyType().getType() == PartyConstants.TYPE_POSITION)
-                        && (partyStruct.getAdmin() == 1)) {
+                        && this.isAdmin(partyStruct)) {
                     // 就找这个岗位下面的管理者
                     superior = this.findAdministrator(childPartyEntity);
                 } else if ((childPartyEntity.getPartyType().getType() == PartyConstants.TYPE_USER)
-                        && (partyStruct.getAdmin() == 1)) {
+                        && this.isAdmin(partyStruct)) {
                     // 如果是人员，并且人员是管理者，也当做是管理者
                     superior = childPartyEntity;
                 }
@@ -172,6 +172,22 @@ public class PartyOrgConnector implements OrgConnector {
 
         // 找不到上级领导
         return null;
+    }
+
+    public boolean isAdmin(PartyStruct partyStruct) {
+        if (partyStruct == null) {
+            return false;
+        }
+
+        if (partyStruct.getAdmin() == null) {
+            return false;
+        }
+
+        return partyStruct.getAdmin() == 1;
+    }
+
+    public boolean isNotAdmin(PartyStruct partyStruct) {
+        return !this.isAdmin(partyStruct);
     }
 
     /**
@@ -269,7 +285,7 @@ public class PartyOrgConnector implements OrgConnector {
             logger.debug("admin : [{}]", partyStruct.getAdmin());
 
             if ((parent.getPartyType().getType() == PartyConstants.TYPE_ORG)
-                    && (!Integer.valueOf(1).equals(partyStruct.getAdmin()))) {
+                    && this.isNotAdmin(partyStruct)) {
                 logger.debug("upper department : {}, admin : [{}]",
                         parent.getName(), partyStruct.getAdmin());
 

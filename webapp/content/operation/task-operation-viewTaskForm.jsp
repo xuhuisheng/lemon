@@ -15,8 +15,8 @@
 	<link href="${tenantPrefix}/widgets/xform3/styles/xform.css" rel="stylesheet">
     <script type="text/javascript" src="${tenantPrefix}/widgets/xform3/xform-packed.js"></script>
 
-    <link type="text/css" rel="stylesheet" href="../widgets/userpicker3/userpicker.css">
-    <script type="text/javascript" src="../widgets/userpicker3/userpicker.js"></script>
+    <link type="text/css" rel="stylesheet" href="../widgets/userpicker3-v2/userpicker.css">
+    <script type="text/javascript" src="../widgets/userpicker3-v2/userpicker.js"></script>
 
 	<style type="text/css">
 .xf-handler {
@@ -64,8 +64,10 @@ $(function() {
 	<script type="text/javascript">
 $(function() {
 	createUserPicker({
-		modalId: 'userPicker',
-		url: '${tenantPrefix}/rs/user/search'
+		multiple: true,
+		searchUrl: '${tenantPrefix}/rs/user/search',
+		treeUrl: '${tenantPrefix}/rs/party/tree?partyStructTypeId=1',
+		childUrl: '${tenantPrefix}/rs/party/searchUser'
 	});
 })
     </script>
@@ -165,11 +167,12 @@ var taskOperation = new TaskOperation();
 	  <form id="xform" method="post" action="${tenantPrefix}/operation/task-operation-completeTask.do" class="xf-form" enctype="multipart/form-data">
 		<input id="humanTaskId" type="hidden" name="humanTaskId" value="${humanTaskId}">
 		<div id="xf-form-table"></div>
-	    
+
 		<c:if test="${humanTask.catalog == 'normal' || humanTask.catalog == 'vote'}">
 		<div class="padding-top:20px;">
 		  <fieldset>
 		    <legend>意见</legend>
+			<input type="hidden" id="_humantask_action_" name="_humantask_action_" value="">
 		    <textarea name="_humantask_comment_" class="form-control"></textarea>
 		  </fieldset>
 		</div>
@@ -245,6 +248,26 @@ var taskOperation = new TaskOperation();
 	        <form>
 	          <input type="hidden" name="humanTaskId" value="${humanTaskId}"/>
 	          <textarea name="comment" class="form-control"></textarea>
+		      <br>
+		      <button class="btn btn-default">提交</button>
+		    </form>
+	      </div>
+		</div>
+	  </div>
+	</div>
+
+	<div id="modalCreateVote" class="modal fade">
+	  <div class="modal-dialog">
+	    <div class="modal-content">
+	      <div class="modal-body">
+	        <form>
+	          <input type="hidden" name="humanTaskId" value="${humanTaskId}"/>
+	          <input type="hidden" name="comment" value=""/>
+			  <div class="input-group userPicker" style="width:200px;" data-multiple="true">
+				<input id="_task_name_key" type="hidden" name="userIds" class="input-medium" value="">
+				<input type="text" class="form-control" name="username" placeholder="" value="">
+				<div class="input-group-addon"><i class="glyphicon glyphicon-user"></i></div>
+			  </div>
 		      <br>
 		      <button class="btn btn-default">提交</button>
 		    </form>

@@ -34,6 +34,7 @@ public class JavamailController {
 
     @RequestMapping("index")
     public String index(@RequestParam(value = "id", required = false) Long id,
+            @RequestParam(value = "folder", required = false) String folder,
             Model model) throws Exception {
         String userId = currentUserHolder.getUserId();
         JavamailConfig javamailConfig = javamailConfigManager.findUniqueBy(
@@ -43,9 +44,13 @@ public class JavamailController {
             // javamailService.receive(javamailConfig);
             javamailQueue.receive(userId);
 
-            String hql = "from JavamailMessage where javamailConfig.id=? order by sendTime desc";
+            if (folder == null) {
+                folder = "INBOX";
+            }
+
+            String hql = "from JavamailMessage where javamailConfig.id=? and folder=? order by sendTime desc";
             List<JavamailMessage> javamailMessages = javamailMessageManager
-                    .find(hql, javamailConfig.getId());
+                    .find(hql, javamailConfig.getId(), folder);
             model.addAttribute("javamailMessages", javamailMessages);
         }
 
@@ -64,13 +69,15 @@ public class JavamailController {
 
     @RequestMapping("send")
     public String send(@RequestParam("receiver") String receiver,
+            @RequestParam(value = "cc", required = false) String cc,
+            @RequestParam(value = "bcc", required = false) String bcc,
             @RequestParam("subject") String subject,
             @RequestParam("content") String content) throws Exception {
         String userId = currentUserHolder.getUserId();
         JavamailConfig javamailConfig = javamailConfigManager.findUniqueBy(
                 "userId", userId);
         // this.javamailService.send(receiver, subject, content, javamailConfig);
-        javamailQueue.send(userId, receiver, subject, content);
+        javamailQueue.send(userId, receiver, cc, bcc, subject, content);
 
         return "redirect:/javamail/index.do";
     }

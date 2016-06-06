@@ -76,7 +76,8 @@ public class CaptchaFilter implements Filter {
         String captchaSessionValue = (String) session
                 .getAttribute(captchaSessionAttributeName);
 
-        if (captchaParameterValue.equals(captchaSessionValue)) {
+        if ((captchaParameterValue != null)
+                && captchaParameterValue.equals(captchaSessionValue)) {
             logger.debug("captcha match, pass");
             session.removeAttribute(captchaSessionTokenName);
             chain.doFilter(request, response);

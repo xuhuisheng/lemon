@@ -103,9 +103,14 @@ $(function() {
       <c:forEach items="${page.result}" var="item">
       <tr>
         <td><input type="checkbox" class="selectedItem a-check" name="selectedItem" value="${item.id}"></td>
-        <td>${item.title}</td>
-        <td>${item.content}</td>
-        <td>${item.createTime}</td>
+        <td>
+		  ${item.title}
+		</td>
+        <td>
+		  ${item.content}
+		  <a href="${item.content}" target="_blank"><i class="glyphicon glyphicon-link"></i></a>
+		</td>
+        <td><fmt:formatDate value="${item.createTime}" type="both"/></td>
         <td>
           <a href="pim-favorite-input.do?id=${item.id}" class="a-update"><spring:message code="core.list.edit" text="编辑"/></a>
         </td>

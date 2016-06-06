@@ -1,5 +1,5 @@
 /*
- * Copyright 2002-2015 the original author or authors.
+ * Copyright 2014-2016 the original author or authors.
  *
  * Licensed under the Apache License, Version 2.0 (the "License");
  * you may not use this file except in compliance with the License.
@@ -13,14 +13,15 @@
  * See the License for the specific language governing permissions and
  * limitations under the License.
  */
+
 package org.springframework.session.events;
 
 import org.springframework.session.Session;
 import org.springframework.session.SessionRepository;
 
 /**
- * For {@link SessionRepository} implementations that support it, this event is
- * fired when a {@link Session} is destroyed via expiration.
+ * For {@link SessionRepository} implementations that support it, this event is fired when
+ * a {@link Session} is destroyed via expiration.
  *
  * @author Mark Anderson
  * @author Rob Winch

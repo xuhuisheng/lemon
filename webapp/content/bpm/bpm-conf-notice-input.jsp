@@ -47,7 +47,7 @@ $(function() {
   <div class="form-group">
     <label class="control-label col-md-1">类型</label>
 	<div class="col-sm-5">
-	  <select name="type">
+	  <select name="type" class="form-control">
 	    <option value="0">到达</option>
 	    <option value="1">完成</option>
 	    <option value="2">超时</option>
@@ -57,27 +57,27 @@ $(function() {
   <div class="form-group">
     <label class="control-label col-md-1">提醒人</label>
 	<div class="col-sm-5">
-	  <input type="text" name="receiver" value="">
+	  <input type="text" name="receiver" value="" class="form-control">
     </div>
   </div>
   <div class="form-group">
     <label class="control-label col-md-1">提醒时间</label>
 	<div class="col-sm-5">
-	  <input type="text" name="dueDate" value="">
+	  <input type="text" name="dueDate" value="" class="form-control">
     </div>
   </div>
   <div class="form-group">
     <label class="control-label col-md-1">提醒方式</label>
 	<div class="col-sm-5">
 	  <c:forEach items="${types}" var="item">
-	  <label><input type="checkbox" name="notificationTypes" value="${item}">${item}</label>
+	  <label><input type="checkbox" name="notificationTypes" value="${item}"> ${item}</label>
 	  </c:forEach>
     </div>
   </div>
   <div class="form-group">
     <label class="control-label col-md-1">模板</label>
 	<div class="col-sm-5">
-	  <select name="templateCode">
+	  <select name="templateCode" class="form-control">
 	    <c:forEach items="${templateDtos}" var="item">
 	    <option value="${item.code}">${item.name}</option>
 		</c:forEach>
@@ -86,9 +86,9 @@ $(function() {
   </div>
   <div class="form-group">
     <div class="col-sm-5">
-      <button id="submitButton" type="submit" class="btn">保存</button>
+      <button id="submitButton" type="submit" class="btn btn-default">保存</button>
 	  &nbsp;
-      <button type="button" onclick="history.back();" class="btn">返回</button>
+      <button type="button" onclick="history.back();" class="btn btn-link">返回</button>
     </div>
   </div>
 

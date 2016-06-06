@@ -1,11 +1,13 @@
 var createUserPicker = function(conf) {
 	conf = conf ? conf : {};
+
 	var defaults = {
 		modalId: 'userPicker',
 		multiple: false,
 		searchUrl: '/mossle-app-lemon/rs/party/searchUser',
 		treeUrl: '/mossle-app-lemon/rs/party/tree?partyStructTypeId=1'
 	};
+
 	for (var key in defaults) {
 		if (!conf[key]) {
 			conf[key] = defaults[key];
@@ -118,6 +120,12 @@ var createUserPicker = function(conf) {
 	}
 
     $(document).delegate('.userPicker .input-group-addon', 'click', function(e) {
+
+		var multiple = $(this).parent().data('multiple');
+		if (multiple) {
+			conf.multiple = true;
+		}
+
 		var setting = {
 			async: {
 				enable: true,
@@ -173,6 +181,12 @@ var createUserPicker = function(conf) {
 
 	$(document).delegate('#' + conf.modalId + '_search', 'click', function(e) {
 		doSearch($('#' + conf.modalId + '_username').val());
+	});
+
+	$(document).delegate('#' + conf.modalId + '_username', 'keypress', function(e) {
+		if (e.which == 13) {
+			doSearch($('#' + conf.modalId + '_username').val());
+		}
 	});
 
     $(document).delegate('#' + conf.modalId + '_select', 'click', function(e) {

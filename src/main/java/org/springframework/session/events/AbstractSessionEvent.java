@@ -1,5 +1,5 @@
 /*
- * Copyright 2002-2015 the original author or authors.
+ * Copyright 2014-2016 the original author or authors.
  *
  * Licensed under the Apache License, Version 2.0 (the "License");
  * you may not use this file except in compliance with the License.
@@ -13,6 +13,7 @@
  * See the License for the specific language governing permissions and
  * limitations under the License.
  */
+
 package org.springframework.session.events;
 
 import org.springframework.context.ApplicationEvent;
@@ -20,8 +21,8 @@ import org.springframework.session.Session;
 import org.springframework.session.SessionRepository;
 
 /**
- * For {@link SessionRepository} implementations that support it, this event is
- * fired when a {@link Session} is updated.
+ * For {@link SessionRepository} implementations that support it, this event is fired when
+ * a {@link Session} is updated.
  *
  * @author Rob Winch
  * @since 1.1
@@ -38,26 +39,27 @@ public abstract class AbstractSessionEvent extends ApplicationEvent {
 		this.session = null;
 	}
 
-	 AbstractSessionEvent(Object source, Session session) {
+	AbstractSessionEvent(Object source, Session session) {
 		super(source);
 		this.session = session;
 		this.sessionId = session.getId();
 	}
 
 	/**
-	 * Gets the {@link Session} that was destroyed. For some
-	 * {@link SessionRepository} implementations it may not be possible to get
-	 * the original session in which case this may be null.
+	 * Gets the {@link Session} that was destroyed. For some {@link SessionRepository}
+	 * implementations it may not be possible to get the original session in which case
+	 * this may be null.
 	 *
 	 * @param <S> The type of Session
-	 * @return the expired {@link Session} or null if the data store does not support obtaining it
+	 * @return the expired {@link Session} or null if the data store does not support
+	 * obtaining it
 	 */
 	@SuppressWarnings("unchecked")
 	public <S extends Session> S getSession() {
-		return (S) session;
+		return (S) this.session;
 	}
 
 	public String getSessionId() {
-		return sessionId;
+		return this.sessionId;
 	}
 }

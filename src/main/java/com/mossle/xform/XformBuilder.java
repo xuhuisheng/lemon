@@ -8,6 +8,8 @@ import com.mossle.api.keyvalue.Prop;
 import com.mossle.api.keyvalue.Record;
 import com.mossle.api.store.StoreConnector;
 import com.mossle.api.store.StoreDTO;
+import com.mossle.api.user.UserConnector;
+import com.mossle.api.user.UserDTO;
 
 import com.mossle.core.mapper.JsonMapper;
 
@@ -19,9 +21,16 @@ public class XformBuilder {
     private Xform xform = new Xform();
     private JsonMapper jsonMapper = new JsonMapper();
     private StoreConnector storeConnector;
+    private UserConnector userConnector;
 
     public XformBuilder setStoreConnector(StoreConnector storeConnector) {
         this.storeConnector = storeConnector;
+
+        return this;
+    }
+
+    public XformBuilder setUserConnector(UserConnector userConnector) {
+        this.userConnector = userConnector;
 
         return this;
     }
@@ -64,6 +73,21 @@ public class XformBuilder {
                 xformField.setContentType(storeDto.getDataSource()
                         .getContentType());
                 xformField.setLabel(storeDto.getDisplayName());
+            } else if ("userpicker".equals(type)) {
+                xformField.setValue(value);
+
+                StringBuilder buff = new StringBuilder();
+
+                for (String userId : value.split(",")) {
+                    UserDTO userDto = userConnector.findById(userId);
+                    buff.append(userDto.getDisplayName()).append(",");
+                }
+
+                if (buff.length() > 0) {
+                    buff.deleteCharAt(buff.length() - 1);
+                }
+
+                xformField.setLabel(buff.toString());
             } else {
                 xformField.setValue(value);
             }

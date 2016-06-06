@@ -331,7 +331,15 @@
 
     function refreshPanel(panel) {
         var url = panel.data('url');
-        if (!url) return;
+        if (!url) {
+			return;
+		}
+		if (url.indexOf('?') == -1)
+		{
+			url += '?_sed=' + new Date().getTime();
+		} else {
+			url += '&_sed=' + new Date().getTime();
+		}
         panel.addClass('panel-loading').find('.panel-heading .glyphicon-refresh,.panel-heading .glyphicon-repeat').addClass('glyphicon-spin');
         $.ajax({
             url: url,

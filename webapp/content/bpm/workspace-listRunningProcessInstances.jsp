@@ -73,31 +73,35 @@ $(function() {
 	    <%--
         <th width="10" class="m-table-check"><input type="checkbox" name="checkAll" onchange="toggleSelectedItems(this.checked)"></th>
 		--%>
+		<!--
         <th class="sorting" name="id">编号</th>
+		-->
         <th>标题</th>
         <th>流程定义</th>
         <th>创建时间</th>
         <th>状态</th>
-        <th width="170">&nbsp;</th>
+        <th width="140">&nbsp;</th>
       </tr>
     </thead>
 
     <tbody>
       <c:forEach items="${page.result}" var="item">
       <tr>
+	    <!--
 	    <td>${item.id}</td>
+		-->
 	    <td><a href="workspace-viewHistory.do?processInstanceId=${item.id}">${item.name}</a></td>
 	    <td><tags:processName processDefinitionId="${item.processDefinitionId}"/></td>
 	    <td><fmt:formatDate value="${item.startTime}" pattern="yyyy-MM-dd HH:mm:ss" /></td>
 	    <td>运行中</td>
         <td>
-          <a href="workspace-viewHistory.do?processInstanceId=${item.id}"><i class="glyphicon glyphicon-list"></i>&nbsp;查看</a>
-          <a href="workspace-remind.do?processInstanceId=${item.id}&userId=&comment="><i class="glyphicon glyphicon-list"></i>&nbsp;催办</a>
-          <a href="workspace-endProcessInstance.do?processInstanceId=${item.id}"><i class="glyphicon glyphicon-list"></i>&nbsp;终止</a>
-          <a href="workspace-skip.do?processInstanceId=${item.id}&userId=&comment="><i class="glyphicon glyphicon-list"></i>&nbsp;跳过</a>
+          <a href="workspace-endProcessInstance.do?processInstanceId=${item.id}">终止</a>
+          <a href="workspace-remind.do?processInstanceId=${item.id}&userId=&comment=">催办</a>
+          <a href="workspace-skip.do?processInstanceId=${item.id}&userId=&comment=">跳过</a>
 		  <!--
-          <a href="workspace-withdraw.do?processInstanceId=${item.id}"><i class="glyphicon glyphicon-list"></i>&nbsp;撤销</a>
+          <a href="workspace-withdraw.do?processInstanceId=${item.id}">撤销</a>
 		  -->
+          <a href="workspace-viewHistory.do?processInstanceId=${item.id}">详情</a>
         </td>
       </tr>
       </c:forEach>

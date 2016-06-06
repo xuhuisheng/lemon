@@ -11,6 +11,7 @@ import javax.servlet.http.HttpServletRequest;
 
 import com.mossle.api.form.FormDTO;
 import com.mossle.api.humantask.HumanTaskConnector;
+import com.mossle.api.humantask.HumanTaskConstants;
 import com.mossle.api.humantask.HumanTaskDTO;
 import com.mossle.api.keyvalue.FormParameter;
 import com.mossle.api.keyvalue.KeyValueConnector;
@@ -26,6 +27,7 @@ import com.mossle.button.ButtonHelper;
 
 import com.mossle.core.MultipartHandler;
 import com.mossle.core.auth.CurrentUserHolder;
+import com.mossle.core.mapper.BeanMapper;
 import com.mossle.core.mapper.JsonMapper;
 import com.mossle.core.spring.MessageHelper;
 
@@ -70,6 +72,7 @@ public class TaskOperationController {
     private ButtonHelper buttonHelper = new ButtonHelper();
     private JsonMapper jsonMapper = new JsonMapper();
     private TenantHolder tenantHolder;
+    private BeanMapper beanMapper = new BeanMapper();
 
     /**
      * 保存草稿.
@@ -95,6 +98,13 @@ public class TaskOperationController {
             messageHelper.addFlashMessage(redirectAttributes, "任务不存在");
 
             return "redirect:/humantask/workspace-listPersonalTasks.do";
+        }
+
+        // 处理转发抄送任务，设置为已读
+        if (HumanTaskConstants.CATALOG_COPY.equals(humanTaskDto.getCatalog())) {
+            humanTaskDto.setStatus("complete");
+            humanTaskDto.setAction("read");
+            humanTaskConnector.saveHumanTask(humanTaskDto);
         }
 
         // 表单
@@ -211,9 +221,12 @@ public class TaskOperationController {
         logger.info("taskParameters : {}", taskParameters);
 
         try {
-            humanTaskConnector.completeTask(humanTaskId,
-                    currentUserHolder.getUserId(), formParameter.getComment(),
-                    taskParameters);
+            // humanTaskConnector.completeTask(humanTaskId,
+            // currentUserHolder.getUserId(), formParameter.getAction(),
+            // formParameter.getComment(), taskParameters);
+            this.operationService.completeTask(humanTaskId, userId,
+                    formParameter, taskParameters, record,
+                    humanTaskDto.getProcessInstanceId());
         } catch (IllegalStateException ex) {
             logger.error(ex.getMessage(), ex);
             messageHelper.addFlashMessage(redirectAttributes, ex.getMessage());
@@ -221,14 +234,12 @@ public class TaskOperationController {
             return "redirect:/humantask/workspace-personalTasks.do";
         }
 
-        if (record == null) {
-            record = new Record();
-        }
-
-        record = new RecordBuilder().build(record, STATUS_RUNNING,
-                humanTaskDto.getProcessInstanceId());
-        keyValueConnector.save(record);
-
+        // if (record == null) {
+        // record = new Record();
+        // }
+        // record = new RecordBuilder().build(record, STATUS_RUNNING,
+        // humanTaskDto.getProcessInstanceId());
+        // keyValueConnector.save(record);
         return "operation/task-operation-completeTask";
     }
 
@@ -372,6 +383,43 @@ public class TaskOperationController {
         return "redirect:/humantask/workspace-personalTasks.do";
     }
 
+    /**
+     * 加签.
+     */
+    @RequestMapping("task-operation-createVote")
+    public String createVote(@RequestParam("humanTaskId") String humanTaskId,
+            @RequestParam("userIds") String userIds,
+            @RequestParam("comment") String comment) {
+        HumanTaskDTO parentTask = humanTaskConnector.findHumanTask(humanTaskId);
+        parentTask.setOwner(parentTask.getAssignee());
+        parentTask.setAssignee("");
+        humanTaskConnector.saveHumanTask(parentTask, false);
+
+        for (String userId : userIds.split(",")) {
+            HumanTaskDTO childTask = humanTaskConnector.createHumanTask();
+            // copy
+            childTask.setName(parentTask.getName());
+            childTask.setPresentationSubject(parentTask
+                    .getPresentationSubject());
+            childTask.setForm(parentTask.getForm());
+            childTask.setProcessInstanceId(parentTask.getProcessInstanceId());
+            childTask.setProcessDefinitionId(parentTask
+                    .getProcessDefinitionId());
+            childTask.setTaskId(parentTask.getTaskId());
+            childTask.setCode(parentTask.getCode());
+            childTask.setBusinessKey(parentTask.getBusinessKey());
+            childTask.setTenantId(parentTask.getTenantId());
+            childTask.setStatus("active");
+            // config
+            childTask.setParentId(humanTaskId);
+            childTask.setAssignee(userId);
+            childTask.setCatalog(HumanTaskConstants.CATALOG_VOTE);
+            humanTaskConnector.saveHumanTask(childTask, false);
+        }
+
+        return "redirect:/humantask/workspace-personalTasks.do";
+    }
+
     // ~ ======================================================================
     /**
      * 通过multipart请求构建formParameter.
@@ -388,6 +436,8 @@ public class TaskOperationController {
                 .getFirst("humanTaskId"));
         formParameter.setComment(multipartHandler.getMultiValueMap().getFirst(
                 "_humantask_comment_"));
+        formParameter.setAction(multipartHandler.getMultiValueMap().getFirst(
+                "_humantask_action_"));
 
         return formParameter;
     }

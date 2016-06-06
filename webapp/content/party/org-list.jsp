@@ -97,7 +97,9 @@ $(function() {
   <table id="orgGrid" class="table table-hover">
     <thead>
       <tr>
+	    <!--
         <th width="10" class="table-check"><input type="checkbox" name="checkAll" onchange="toggleSelectedItems(this.checked)"></th>
+		-->
         <th class="sorting" name="id"><spring:message code="org.org.list.id" text="编号"/></th>
         <th class="sorting" name="name">名称</th>
         <th class="sorting" name="partyType">类型</th>
@@ -109,7 +111,9 @@ $(function() {
     <tbody>
       <c:forEach items="${page.result}" var="item">
       <tr>
+	    <!--
         <td><input type="checkbox" class="selectedItem" name="selectedItem" value="${item.childEntity.id}"></td>
+		-->
         <td>${item.childEntity.id}</td>
         <td>${item.childEntity.name}</td>
         <td>${item.childEntity.partyType.name}</td>

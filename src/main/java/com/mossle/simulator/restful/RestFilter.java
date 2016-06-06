@@ -32,6 +32,7 @@ import javax.ws.rs.POST;
 import javax.ws.rs.PUT;
 import javax.ws.rs.Path;
 import javax.ws.rs.PathParam;
+import javax.ws.rs.Produces;
 import javax.ws.rs.QueryParam;
 import javax.ws.rs.core.MediaType;
 
@@ -267,12 +268,29 @@ public class RestFilter implements Filter {
 
             Object result = method.invoke(object, arguments.toArray());
 
+            if (result == null) {
+                response.sendError(HttpServletResponse.SC_NOT_FOUND);
+
+                return;
+            }
+
             if (result instanceof String) {
                 response.setContentType(MediaType.TEXT_HTML);
                 response.getOutputStream().write(
                         ((String) result).getBytes("UTF-8"));
             } else if (result instanceof InputStream) {
-                response.setContentType(MediaType.APPLICATION_OCTET_STREAM);
+                Produces produces = method.getAnnotation(Produces.class);
+                String contentType = MediaType.APPLICATION_OCTET_STREAM;
+
+                if (produces != null) {
+                    String[] values = produces.value();
+
+                    if ((values != null) && (values.length > 0)) {
+                        contentType = values[0];
+                    }
+                }
+
+                response.setContentType(contentType);
                 IoUtils.copyStream((InputStream) result,
                         response.getOutputStream());
             } else {

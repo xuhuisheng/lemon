@@ -14,6 +14,7 @@ import javax.ws.rs.core.MediaType;
 
 import com.mossle.api.humantask.HumanTaskConnector;
 import com.mossle.api.humantask.HumanTaskDTO;
+import com.mossle.api.tenant.TenantHolder;
 
 import com.mossle.core.auth.CurrentUserHolder;
 import com.mossle.core.page.Page;
@@ -25,13 +26,16 @@ import org.springframework.stereotype.Component;
 public class HumanTaskWidgetResource {
     private HumanTaskConnector humanTaskConnector;
     private CurrentUserHolder currentUserHolder;
+    private TenantHolder tenantHolder;
 
     @GET
     @Path("personalTasks")
     @Produces(MediaType.TEXT_HTML)
     public String personalTasks() {
         String userId = currentUserHolder.getUserId();
-        Page page = humanTaskConnector.findPersonalTasks(userId, 1, 10);
+        String tenantId = tenantHolder.getTenantId();
+        Page page = humanTaskConnector.findPersonalTasks(userId, tenantId, 1,
+                10);
         List<HumanTaskDTO> humanTaskDtos = (List<HumanTaskDTO>) page
                 .getResult();
 
@@ -74,5 +78,10 @@ public class HumanTaskWidgetResource {
     @Resource
     public void setCurrentUserHolder(CurrentUserHolder currentUserHolder) {
         this.currentUserHolder = currentUserHolder;
+    }
+
+    @Resource
+    public void setTenantHolder(TenantHolder tenantHolder) {
+        this.tenantHolder = tenantHolder;
     }
 }

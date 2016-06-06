@@ -48,19 +48,19 @@ $(function() {
   <div class="form-group">
     <label class="control-label col-md-1" for="mailConfig_name">名称</label>
 	<div class="col-sm-5">
-	  <input id="mailConfig_name" type="text" name="name" value="${model.name}" class="required" minlength="2" maxlength="50">
+	  <input id="mailConfig_name" type="text" name="name" value="${model.name}" class="form-control required" minlength="2" maxlength="50">
     </div>
   </div>
   <div class="form-group">
     <label class="control-label col-md-1" for="mailConfig_host">SMTP服务器</label>
 	<div class="col-sm-5">
-	  <input id="mailConfig_host" type="text" name="host" value="${model.host}" class="required" minlength="2" maxlength="50">
+	  <input id="mailConfig_host" type="text" name="host" value="${model.host}" class="form-control required" minlength="2" maxlength="50">
     </div>
   </div>
   <div class="form-group">
     <label class="control-label col-md-1" for="mailConfig_port">SMTP端口</label>
 	<div class="col-sm-5">
-	  <input id="mailConfig_port" type="text" name="port" value="${empty model.port ? '25' : model.port}" class="required number" minlength="2" maxlength="50">
+	  <input id="mailConfig_port" type="text" name="port" value="${empty model.port ? '25' : model.port}" class="form-control required number" minlength="2" maxlength="50">
     </div>
   </div>
   <div class="form-group">
@@ -87,19 +87,19 @@ $(function() {
   <div class="form-group">
     <label class="control-label col-md-1" for="mailConfig_username">账号</label>
 	<div class="col-sm-5">
-	  <input id="mailConfig_username" type="text" name="username" value="${model.username}" maxlength="50">
+	  <input id="mailConfig_username" type="text" name="username" value="${model.username}" maxlength="50" class="form-control">
     </div>
   </div>
   <div class="form-group">
     <label class="control-label col-md-1" for="mailConfig_password">密码</label>
 	<div class="col-sm-5">
-	  <input id="mailConfig_password" type="password" name="password" value="${model.password}" maxlength="50">
+	  <input id="mailConfig_password" type="password" name="password" value="${model.password}" maxlength="50" class="form-control">
     </div>
   </div>
   <div class="form-group">
     <label class="control-label col-md-1" for="mailConfig_defaultFrom">默认发件人</label>
 	<div class="col-sm-5">
-	  <input id="mailConfig_defaultFrom" type="text" name="defaultFrom" value="${model.defaultFrom}" maxlength="50">
+	  <input id="mailConfig_defaultFrom" type="text" name="defaultFrom" value="${model.defaultFrom}" maxlength="50" class="form-control">
     </div>
   </div>
   <div class="form-group">
@@ -113,14 +113,14 @@ $(function() {
   <div class="form-group">
     <label class="control-label col-md-1" for="mailConfig_testMail">测试邮件</label>
 	<div class="col-sm-5">
-	  <input id="mailConfig_testMail" type="text" name="testMail" value="${model.testMail}" maxlength="50">
+	  <input id="mailConfig_testMail" type="text" name="testMail" value="${model.testMail}" maxlength="50" class="form-control">
     </div>
   </div>
   <div class="form-group">
     <div class="col-sm-5">
-      <button type="submit" class="btn a-submit"><spring:message code='core.input.save' text='保存'/></button>
+      <button type="submit" class="btn btn-default a-submit"><spring:message code='core.input.save' text='保存'/></button>
 	  &nbsp;
-      <button type="button" class="btn a-cancel" onclick="history.back();"><spring:message code='core.input.back' text='返回'/></button>
+      <button type="button" class="btn btn-link a-cancel" onclick="history.back();"><spring:message code='core.input.back' text='返回'/></button>
     </div>
   </div>
 </form>

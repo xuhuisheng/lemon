@@ -1,5 +1,6 @@
 package com.mossle.humantask.web;
 
+import java.util.Date;
 import java.util.List;
 import java.util.Map;
 
@@ -10,6 +11,7 @@ import javax.servlet.http.HttpServletResponse;
 
 import com.mossle.api.tenant.TenantHolder;
 
+import com.mossle.core.auth.CurrentUserHolder;
 import com.mossle.core.export.Exportor;
 import com.mossle.core.export.TableModel;
 import com.mossle.core.mapper.BeanMapper;
@@ -43,6 +45,7 @@ public class TaskInfoController {
     private BeanMapper beanMapper = new BeanMapper();
     private JsonMapper jsonMapper = new JsonMapper();
     private MessageHelper messageHelper;
+    private CurrentUserHolder currentUserHolder;
     private TenantHolder tenantHolder;
 
     @RequestMapping("task-info-list")
@@ -74,6 +77,7 @@ public class TaskInfoController {
             @RequestParam Map<String, Object> parameterMap,
             RedirectAttributes redirectAttributes) {
         String tenantId = tenantHolder.getTenantId();
+        String userId = currentUserHolder.getUserId();
         TaskInfo dest = null;
         Long id = taskInfo.getId();
 
@@ -82,7 +86,10 @@ public class TaskInfoController {
             beanMapper.copy(taskInfo, dest);
         } else {
             dest = taskInfo;
+            dest.setCreator(userId);
+            dest.setInitiator(userId);
             dest.setTenantId(tenantId);
+            dest.setCreateTime(new Date());
         }
 
         taskInfoManager.save(dest);
@@ -142,5 +149,10 @@ public class TaskInfoController {
     @Resource
     public void setTenantHolder(TenantHolder tenantHolder) {
         this.tenantHolder = tenantHolder;
+    }
+
+    @Resource
+    public void setCurrentUserHolder(CurrentUserHolder currentUserHolder) {
+        this.currentUserHolder = currentUserHolder;
     }
 }

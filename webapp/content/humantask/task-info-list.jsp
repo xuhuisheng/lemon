@@ -20,7 +20,8 @@ var config = {
     orderBy: '${page.orderBy == null ? "" : page.orderBy}',
     asc: ${page.asc},
     params: {
-        'filter_LIKES_name': '${param.filter_LIKES_name}'
+        'filter_LIKES_name': '${param.filter_LIKES_name}',
+        'filter_LIKES_status': '${param.filter_LIKES_status}'
     },
 	selectedItemClass: 'selectedItem',
 	gridFormId: 'task-infoGridForm',
@@ -60,6 +61,12 @@ $(function() {
 		  <form name="task-infoForm" method="post" action="task-info-list.do" class="form-inline">
 		    <label for="task-info_name"><spring:message code='task-info.task-info.list.search.name' text='名称'/>:</label>
 		    <input type="text" id="task-info_name" name="filter_LIKES_name" value="${param.filter_LIKES_name}" class="form-control">
+		    <label for="taskInfo_status"><spring:message code='user.user.list.search.status' text='状态'/>:</label>
+		    <select id="taskInfo_status" name="filter_EQS_status" class="form-control">
+			  <option value=""></option>
+			  <option value="active" ${param.filter_EQS_status == 'active' ? 'selected' : ''}>进行中</option>
+			  <option value="completed" ${param.filter_EQS_status == 'completed' ? 'selected' : ''}>完成</option>
+		    </select>
 			<button class="btn btn-default a-search" onclick="document.task-infoForm.submit()">查询</button>&nbsp;
 		  </form>
 
@@ -98,11 +105,16 @@ $(function() {
     <thead>
       <tr>
         <th width="10" class="table-check"><input type="checkbox" name="checkAll" onchange="toggleSelectedItems(this.checked)"></th>
+		<!--
         <th class="sorting" name="id"><spring:message code="user.user.list.id" text="编号"/></th>
+		-->
+        <th>优先级</th>
         <th class="sorting" name="name">名称</th>
+        <th class="sorting" name="name">创建人</th>
         <th class="sorting" name="name">负责人</th>
         <th class="sorting" name="name">创建时间</th>
         <th class="sorting" name="name">完成时间</th>
+        <th class="sorting" name="name">过期时间</th>
         <th class="sorting" name="name">状态</th>
         <th width="80">&nbsp;</th>
       </tr>
@@ -112,11 +124,16 @@ $(function() {
       <c:forEach items="${page.result}" var="item">
       <tr>
         <td><input type="checkbox" class="selectedItem" name="selectedItem" value="${item.id}"></td>
+		<!--
         <td>${item.id}</td>
-        <td>${item.name}</td>
+		-->
+        <td>${item.priority}</td>
+        <td>${item.presentationSubject}</td>
+        <td><tags:user userId="${item.creator}"/></td>
         <td><tags:user userId="${item.assignee}"/></td>
-        <td>${item.createTime}</td>
-        <td>${item.completeTime}</td>
+        <td><fmt:formatDate value="${item.createTime}" type="both"/></td>
+        <td><fmt:formatDate value="${item.completeTime}" type="both"/></td>
+        <td><fmt:formatDate value="${item.expirationTime}" type="both"/></td>
         <td>${item.status}</td>
         <td>
           <a href="task-info-input.do?id=${item.id}"><spring:message code="core.list.edit" text="编辑"/></a>

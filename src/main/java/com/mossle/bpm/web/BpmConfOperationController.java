@@ -49,6 +49,7 @@ public class BpmConfOperationController {
         operations.add("delegateTaskCreate");
         operations.add("communicate");
         operations.add("callback");
+        operations.add("addCounterSign");
 
         BpmConfNode bpmConfNode = bpmConfNodeManager.get(bpmConfNodeId);
         Long bpmConfBaseId = bpmConfNode.getBpmConfBase().getId();

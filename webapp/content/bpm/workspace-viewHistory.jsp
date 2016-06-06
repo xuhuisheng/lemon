@@ -130,8 +130,8 @@ var replay = new Replay(
 	  </tr>
     </thead>
 
+    <c:forEach items="${humanTasks}" var="item">
     <tbody>
-      <c:forEach items="${humanTasks}" var="item">
       <tr>
 	    <%--
 	    <td>${item.id}</td>
@@ -148,8 +148,54 @@ var replay = new Replay(
 	    <td>${item.action}</td>
 	    <td>${item.comment}</td>
       </tr>
-      </c:forEach>
+	  <c:forEach items="${item.children}" var="child">
+      <tr>
+	    <td class="active text-muted">&nbsp;*&nbsp;${child.name}</td>
+	    <td class="active text-muted"><fmt:formatDate value="${child.createTime}" pattern="yyyy-MM-dd HH:mm:ss" /></td>
+	    <td class="active text-muted"><fmt:formatDate value="${child.completeTime}" pattern="yyyy-MM-dd HH:mm:ss" /></td>
+	    <td class="active text-muted">
+		  <tags:user userId="${child.assignee}"/>
+		  <c:if test="${not empty child.owner && child.assignee != child.owner}">
+		  <b>(原执行人:<tags:user userId="${child.owner}"/>)</b>
+		  </c:if>
+		</td>
+	    <td class="active text-muted">
+		  <c:if test="${child.catalog == 'communicate'}">
+		    沟通
+		  </c:if>
+		  <c:if test="${child.catalog == 'copy'}">
+		    抄送
+		  </c:if>
+		  <c:if test="${child.catalog == 'vote'}">
+		    加签
+		  </c:if>
+		  (${child.action})
+		</td>
+	    <td class="active text-muted">${child.comment}</td>
+      </tr>
+	    <c:forEach items="${child.children}" var="third">
+      <tr>
+	    <td class="active text-muted">&nbsp;**&nbsp;${third.name}</td>
+	    <td class="active text-muted"><fmt:formatDate value="${third.createTime}" pattern="yyyy-MM-dd HH:mm:ss" /></td>
+	    <td class="active text-muted"><fmt:formatDate value="${third.completeTime}" pattern="yyyy-MM-dd HH:mm:ss" /></td>
+	    <td class="active text-muted">
+		  <tags:user userId="${third.assignee}"/>
+		  <c:if test="${not empty third.owner && third.assignee != third.owner}">
+		  <b>(原执行人:<tags:user userId="${third.owner}"/>)</b>
+		  </c:if>
+		</td>
+	    <td class="active text-muted">
+		  <c:if test="${third.catalog == 'vote'}">
+		    加签
+		  </c:if>
+		  (${third.action})
+		</td>
+	    <td class="active text-muted">${third.comment}</td>
+      </tr>
+	    </c:forEach>
+	  </c:forEach>
     </tbody>
+    </c:forEach>
   </table>
       </div>
 

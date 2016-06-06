@@ -1617,11 +1617,18 @@ xf.field.UserPicker = function(parentNode) {
 	this.name = 'userpicker-' + this.row + '-' + this.col;
 	this.required = false;
 	this.readOnly = false;
+	this.value = {
+		key: '',
+		label: ''
+	}
 }
 
 xf.field.UserPicker.prototype.render = function() {
 	this.updateName(this.name);
-	this.setValue('');
+	this.setValue({
+		key: '',
+		label: ''
+	});
 }
 
 xf.field.UserPicker.prototype.doExport = function() {
@@ -1645,12 +1652,18 @@ xf.field.UserPicker.prototype.viewForm = function(formNode) {
 xf.field.UserPicker.prototype.updateName = function(value) {
 	this.name = value;
 	var parentNode = xf.$(this.parentId);
+	if (!this.value) {
+		this.value = {
+			key: '',
+			label: ''
+		}
+	}
 	parentNode.innerHTML = 
 		'<div class="xf-handler">'
 		+'	<div class="input-group userPicker" style="width:200px;">'
-		+'      <input type="hidden" name="' + this.name + '" value="">'
-		+'      <input type="text" name="' + this.name + '_name" class="form-control" value=""'
-		+ (this.required ? ' required="true" class="required"' : '') + ' style="width:175px;">'
+		+'      <input type="hidden" name="' + this.name + '" value="' + this.value.key + '">'
+		+'      <input type="text" name="' + this.name + '_name" class="form-control" value="' + this.value.label + '"'
+		+ (this.required ? ' required="true" class="required"' : '') + ' style="width:175px;" readOnly="readOnly">'
 		+'      <div class="input-group-addon"><i class="glyphicon glyphicon-user"></i></div>'
 		+'	</div>'
 		+ '</div>';
@@ -1669,6 +1682,6 @@ xf.field.UserPicker.prototype.setValue = function(value) {
 	this.updateName(this.name);
 	if (this.readOnly) {
 		var parentNode = xf.$(this.parentId);
-		parentNode.innerHTML = '<div class="xf-handler">' + value + '</div>';
+		parentNode.innerHTML = '<div class="xf-handler">' + value.label + '</div>';
 	}
 }

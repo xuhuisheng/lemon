@@ -15,6 +15,8 @@ import com.mossle.api.tenant.TenantHolder;
 
 import com.mossle.user.service.UserAvatarService;
 
+import org.apache.commons.lang3.StringUtils;
+
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
 
@@ -29,10 +31,28 @@ public class AvatarResource {
     private TenantHolder tenantHolder;
 
     @GET
-    @Produces(MediaType.APPLICATION_OCTET_STREAM)
+    @Produces("image/png")
     public InputStream view(@QueryParam("id") String id,
             @QueryParam("width") @DefaultValue("16") int width)
             throws Exception {
+        if (StringUtils.isBlank(id)) {
+            logger.info("id cannot be blank");
+
+            return null;
+        }
+
+        if (id.indexOf("_") != -1) {
+			String text = id;
+            logger.info("process : {}", text);
+
+            int index = text.indexOf("_");
+            int nextIndex = text.indexOf("x");
+            id = text.substring(0, index);
+            width = Integer.parseInt(text.substring(index + 1, nextIndex));
+
+            logger.info("id : {}, width : {}", id, width);
+        }
+
         logger.debug("width : {}", width);
 
         String tenantId = tenantHolder.getTenantId();

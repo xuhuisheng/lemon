@@ -11,7 +11,7 @@
 	</c:if>
 	<script type="text/javascript">
 function unreadCount() {
-	$.getJSON('${tenantPrefix}/rs/msg/unreadCount', {}, function(data) {
+	$.getJSON('${tenantPrefix}/rs/msg/unreadCount?_sed=' + new Date().getTime(), {}, function(data) {
 		if (data.data == 0) {
 			$('#unreadMsg').html('');
 		} else {

@@ -31,6 +31,7 @@
 <form id="pimRemindGridForm" name="pimRemindGridForm" method='post' action="pim-note-remove.do" class="m-form-blank">
       <div class="panel panel-default">
         <div class="panel-heading">
+		  <i class="glyphicon glyphicon-list"></i>
 		  列表
 		</div>
   <table id="pimRemindGrid" class="table table-hover">

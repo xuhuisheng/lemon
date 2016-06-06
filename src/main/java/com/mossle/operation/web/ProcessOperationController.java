@@ -22,6 +22,7 @@ import com.mossle.api.process.ProcessConnector;
 import com.mossle.api.process.ProcessDTO;
 import com.mossle.api.store.StoreConnector;
 import com.mossle.api.tenant.TenantHolder;
+import com.mossle.api.user.UserConnector;
 
 import com.mossle.button.ButtonDTO;
 import com.mossle.button.ButtonHelper;
@@ -74,6 +75,7 @@ public class ProcessOperationController {
     private FormConnector formConnector;
     private JsonMapper jsonMapper = new JsonMapper();
     private TenantHolder tenantHolder;
+    private UserConnector userConnector;
 
     /**
      * 保存草稿.
@@ -219,17 +221,21 @@ public class ProcessOperationController {
         FormDTO formDto = processConnector.findStartForm(processDefinitionId);
 
         Xform xform = new XformBuilder().setStoreConnector(storeConnector)
+                .setUserConnector(userConnector)
                 .setContent(formDto.getContent()).setRecord(record).build();
         Map<String, Object> processParameters = xform.getMapData();
         logger.info("processParameters : {}", processParameters);
 
-        String processInstanceId = processConnector.startProcess(
-                currentUserHolder.getUserId(), formParameter.getBusinessKey(),
-                processDefinitionId, processParameters);
-
-        record = new RecordBuilder().build(record, STATUS_RUNNING,
-                processInstanceId);
-        keyValueConnector.save(record);
+        // String processInstanceId = processConnector.startProcess(
+        // currentUserHolder.getUserId(), formParameter.getBusinessKey(),
+        // processDefinitionId, processParameters);
+        // record = new RecordBuilder().build(record, STATUS_RUNNING,
+        // processInstanceId);
+        // keyValueConnector.save(record);
+        String userId = currentUserHolder.getUserId();
+        String businessKey = formParameter.getBusinessKey();
+        this.operationService.startProcessInstance(userId, businessKey,
+                processDefinitionId, processParameters, record);
 
         return "operation/process-operation-startProcessInstance";
     }
@@ -340,10 +346,12 @@ public class ProcessOperationController {
 
         if (record != null) {
             Xform xform = new XformBuilder().setStoreConnector(storeConnector)
+                    .setUserConnector(userConnector)
                     .setContent(formDto.getContent()).setRecord(record).build();
             model.addAttribute("xform", xform);
         } else {
             Xform xform = new XformBuilder().setStoreConnector(storeConnector)
+                    .setUserConnector(userConnector)
                     .setContent(formDto.getContent()).build();
             model.addAttribute("xform", xform);
         }
@@ -438,5 +446,10 @@ public class ProcessOperationController {
     @Resource
     public void setTenantHolder(TenantHolder tenantHolder) {
         this.tenantHolder = tenantHolder;
+    }
+
+    @Resource
+    public void setUserConnector(UserConnector userConnector) {
+        this.userConnector = userConnector;
     }
 }

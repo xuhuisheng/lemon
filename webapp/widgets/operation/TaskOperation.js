@@ -73,20 +73,28 @@ TaskOperation.prototype.communicate = function() {
 
 TaskOperation.prototype.approve = function() {
 	$('#' + this.formId).attr('action', ROOT_URL + '/operation/task-operation-completeTask.do');
+	$('#_humantask_action_').val("同意");
 	$('#' + this.formId).submit();
 };
 
 TaskOperation.prototype.reject = function() {
 	$('#' + this.formId).attr('action', ROOT_URL + '/operation/task-operation-completeTask.do');
+	$('#_humantask_action_').val("反对");
 	$('#' + this.formId).submit();
 };
 
 TaskOperation.prototype.abandon = function() {
 	$('#' + this.formId).attr('action', ROOT_URL + '/operation/task-operation-completeTask.do');
+	$('#_humantask_action_').val("弃权");
 	$('#' + this.formId).submit();
 };
 
 TaskOperation.prototype.callback = function() {
 	$('#modalCallback form').attr('action', ROOT_URL + '/operation/task-operation-callback.do');
 	$('#modalCallback').modal();
+};
+
+TaskOperation.prototype.addCounterSign = function() {
+	$('#modalCreateVote form').attr('action', ROOT_URL + '/operation/task-operation-createVote.do');
+	$('#modalCreateVote').modal();
 };

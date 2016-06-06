@@ -38,14 +38,16 @@ $(function() {
     table.configPageSize('.m-page-size');
 });
     </script>
-    <link type="text/css" rel="stylesheet" href="${tenantPrefix}/widgets/userpicker3/userpicker.css">
-    <script type="text/javascript" src="${tenantPrefix}/widgets/userpicker3/userpicker.js"></script>
+    <link type="text/css" rel="stylesheet" href="${tenantPrefix}/widgets/userpicker3-v2/userpicker.css">
+    <script type="text/javascript" src="${tenantPrefix}/widgets/userpicker3-v2/userpicker.js"></script>
 	<script type="text/javascript">
 $(function() {
 	createUserPicker({
 		modalId: 'userPicker',
 		showExpression: true,
-		url: '${tenantPrefix}/rs/user/search'
+		searchUrl: '${tenantPrefix}/rs/user/search',
+		treeUrl: '${tenantPrefix}/rs/party/tree?partyStructTypeId=1',
+		childUrl: '${tenantPrefix}/rs/party/searchUser'
 	});
 })
     </script>
@@ -156,16 +158,16 @@ $(function() {
           <td>${item.id}</td>
           <td>
 		    <c:if test="${item.type==0}">
-			  ${item.value}
+			  <tags:user userId="${item.value}"/>
 			</c:if>
 		    <c:if test="${item.type==1}">
-			  ${item.value}
+			  <tags:user userId="${item.value}"/>
 			</c:if>
 		    <c:if test="${item.type==2}">
-			  ${item.value}
+			  <tags:user userId="${item.value}"/>
 			</c:if>
 		    <c:if test="${item.type==3}">
-			  ${item.value}
+			  <tags:user userId="${item.value}"/>
 			</c:if>
 		  </td>
           <td>

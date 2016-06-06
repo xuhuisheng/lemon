@@ -35,6 +35,15 @@ public class PimNote implements java.io.Serializable {
     /** null. */
     private String userId;
 
+    /** null. */
+    private Integer clientX;
+
+    /** null. */
+    private Integer clientY;
+
+    /** null. */
+    private String status;
+
     public PimNote() {
     }
 
@@ -43,12 +52,15 @@ public class PimNote implements java.io.Serializable {
     }
 
     public PimNote(Long id, String title, String content, Date createTime,
-            String userId) {
+            String userId, Integer clientX, Integer clientY, String status) {
         this.id = id;
         this.title = title;
         this.content = content;
         this.createTime = createTime;
         this.userId = userId;
+        this.clientX = clientX;
+        this.clientY = clientY;
+        this.status = status;
     }
 
     /** @return null. */
@@ -121,5 +133,47 @@ public class PimNote implements java.io.Serializable {
      */
     public void setUserId(String userId) {
         this.userId = userId;
+    }
+
+    /** @return null. */
+    @Column(name = "CLIENT_X")
+    public Integer getClientX() {
+        return this.clientX;
+    }
+
+    /**
+     * @param clientX
+     *            null.
+     */
+    public void setClientX(Integer clientX) {
+        this.clientX = clientX;
+    }
+
+    /** @return null. */
+    @Column(name = "CLIENT_Y")
+    public Integer getClientY() {
+        return this.clientY;
+    }
+
+    /**
+     * @param clientY
+     *            null.
+     */
+    public void setClientY(Integer clientY) {
+        this.clientY = clientY;
+    }
+
+    /** @return null. */
+    @Column(name = "STATUS", length = 50)
+    public String getStatus() {
+        return this.status;
+    }
+
+    /**
+     * @param status
+     *            null.
+     */
+    public void setStatus(String status) {
+        this.status = status;
     }
 }

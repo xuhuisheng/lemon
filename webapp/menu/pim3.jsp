@@ -74,6 +74,7 @@
       <div class="panel-body">
         <ul class="nav nav-list">
 		  <li><a href="${tenantPrefix}/pim/pim-note-list.do"><i class="glyphicon glyphicon-list"></i> 便签</a></li>
+		  <li><a href="${tenantPrefix}/pim/pim-note-view.do"><i class="glyphicon glyphicon-list"></i> 便签墙</a></li>
         </ul>
       </div>
     </div>

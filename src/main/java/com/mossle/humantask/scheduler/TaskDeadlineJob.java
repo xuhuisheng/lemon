@@ -39,6 +39,7 @@ public class TaskDeadlineJob {
     private UserConnector userConnector;
     private InternalProcessConnector internalProcessConnector;
     private boolean active;
+    private String baseUrl;
 
     @Scheduled(cron = "0/10 * * * * ?")
     @Transactional
@@ -115,6 +116,9 @@ public class TaskDeadlineJob {
 
         data.put("task", taskEntity);
         data.put("initiator", initiatorUser.getDisplayName());
+        data.put("humanTask", taskInfo);
+        data.put("baseUrl", baseUrl);
+        data.put("humanTaskId", Long.toString(taskInfo.getId()));
 
         return data;
     }
@@ -144,5 +148,10 @@ public class TaskDeadlineJob {
     @Value("${humantask.schedule.deadline.active}")
     public void setActive(boolean active) {
         this.active = active;
+    }
+
+    @Value("${application.baseUrl}")
+    public void setBaseUrl(String baseUrl) {
+        this.baseUrl = baseUrl;
     }
 }

@@ -51,14 +51,18 @@ public class ModelDeployer {
             return;
         }
 
-        TenantDTO tenantDto = tenantConnector.findByCode(defaultTenantCode);
-        Page page = processConnector.findProcessDefinitions(tenantDto.getId(),
-                new Page());
-        List<ProcessDefinition> processDefinitions = (List<ProcessDefinition>) page
-                .getResult();
+        try {
+            TenantDTO tenantDto = tenantConnector.findByCode(defaultTenantCode);
+            Page page = processConnector.findProcessDefinitions(
+                    tenantDto.getId(), new Page());
+            List<ProcessDefinition> processDefinitions = (List<ProcessDefinition>) page
+                    .getResult();
 
-        for (ProcessDefinition processDefinition : processDefinitions) {
-            this.processBusiness(processDefinition);
+            for (ProcessDefinition processDefinition : processDefinitions) {
+                this.processBusiness(processDefinition);
+            }
+        } catch (Exception ex) {
+            logger.error(ex.getMessage(), ex);
         }
     }
 

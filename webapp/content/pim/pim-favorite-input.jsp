@@ -46,13 +46,13 @@ $(function() {
   <div class="form-group">
     <label class="control-label col-md-1" for="pimFavorite_title">标题</label>
 	<div class="col-sm-5">
-	  <input id="pimFavorite_title" name="title" class="form-control required" minlength="2" maxlength="50">
+	  <input id="pimFavorite_title" name="title" class="form-control required" minlength="2" maxlength="50" value="${empty model.title ? param.title : model.title}">
     </div>
   </div>
   <div class="form-group">
     <label class="control-label col-md-1" for="pimFavorite_content">网址</label>
 	<div class="col-sm-5">
-	  <input id="pimFavorite_content" name="content" class="form-control required" minlength="2" maxlength="200">
+	  <input id="pimFavorite_content" name="content" class="form-control required" minlength="2" maxlength="200" value="${empty model.content ? param.content : model.content}">
     </div>
   </div>
   <div class="form-group">

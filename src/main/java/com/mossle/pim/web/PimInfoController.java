@@ -127,11 +127,19 @@ public class PimInfoController {
         response.setContentType("text/vcard");
         ServletUtils.setFileDownloadHeader(request, response, "vcard.vcf");
 
-        String text = "BEGIN:VCARD\n" + "VERSION:2.1\n" + "FN:"
-                + pimInfo.getName() + "\n" + "TEL;WORK;VOICE:"
-                + pimInfo.getTel() + "\n" + "EMAIL;PREF;INTERNET:"
-                + pimInfo.getEmail() + "\n" + "END:VCARD";
-        response.getWriter().write(text);
+        StringBuilder buff = new StringBuilder();
+        buff.append("BEGIN:VCARD\n");
+        buff.append("VERSION:2.1\n");
+        buff.append("FN;CHARSET=UTF8:" + pimInfo.getName() + "\n");
+        buff.append("ORG;CHARSET=UTF8:" + pimInfo.getOrg() + ";"
+                + pimInfo.getDepartment() + "\n");
+        buff.append("TITLE;CHARSET=UTF8:" + pimInfo.getTitle() + "\n");
+        buff.append("TEL;WORK;VOICE:" + pimInfo.getTel() + "\n");
+        buff.append("EMAIL;PREF;INTERNET:" + pimInfo.getEmail() + "\n");
+        buff.append("IMPP:" + pimInfo.getImpp() + "\n");
+        buff.append("END:VCARD");
+
+        response.getWriter().write(buff.toString());
     }
 
     // ~ ======================================================================

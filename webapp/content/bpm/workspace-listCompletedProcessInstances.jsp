@@ -10,8 +10,8 @@
     <title>流程列表</title>
     <%@include file="/common/s3.jsp"%>
 
-    <link type="text/css" rel="stylesheet" href="../widgets/userpicker3/userpicker.css">
-    <script type="text/javascript" src="../widgets/userpicker3/userpicker.js"></script>
+    <link type="text/css" rel="stylesheet" href="../widgets/userpicker3-v2/userpicker.css">
+    <script type="text/javascript" src="../widgets/userpicker3-v2/userpicker.js"></script>
     <script type="text/javascript">
 var config = {
     id: 'processGrid',
@@ -39,7 +39,9 @@ $(function() {
 
 	createUserPicker({
 		modalId: 'userPicker',
-		url: '${tenantPrefix}/rs/user/search'
+		searchUrl: '${tenantPrefix}/rs/user/search',
+		treeUrl: '${tenantPrefix}/rs/party/tree?partyStructTypeId=1',
+		childUrl: '${tenantPrefix}/rs/party/searchUser'
 	});
 });
 
@@ -86,21 +88,25 @@ function doTransfer(processInstanceId) {
   <table id="pimRemindGrid" class="table table-hover">
     <thead>
       <tr>
+	    <!--
         <th class="sorting" name="id">编号</th>
+		-->
         <th>标题</th>
         <th class="sorting" name="name">流程定义</th>
         <th class="sorting" name="createTime">创建时间</th>
         <th class="sorting" name="endTime">结束时间</th>
         <th>持续时间</th>
         <th>状态</th>
-        <th>&nbsp;</th>
+        <th width="110">&nbsp;</th>
       </tr>
     </thead>
 
     <tbody>
       <c:forEach items="${page.result}" var="item">
       <tr>
+	    <!--
 	    <td>${item.id}</td>
+		-->
 	    <td><a href="workspace-viewHistory.do?processInstanceId=${item.id}">${item.name}</a></td>
 	    <td><tags:processName processDefinitionId="${item.processDefinitionId}"/></td>
 	    <td><fmt:formatDate value="${item.startTime}" pattern="yyyy-MM-dd HH:mm:ss" /></td>
@@ -108,9 +114,9 @@ function doTransfer(processInstanceId) {
 	    <td><tags:duration startTime="${item.startTime}" endTime="${item.endTime}"/></td>
 	    <td>结束</td>
         <td>
-          <a href="workspace-viewHistory.do?processInstanceId=${item.id}">查看</a>
           <a href="workspace-copyProcessInstance.do?processInstanceId=${item.id}">复制</a>
           <a href="javascript:void(0);doTransfer(${item.id})">转发</a>
+          <a href="workspace-viewHistory.do?processInstanceId=${item.id}">详情</a>
         </td>
       </tr>
       </c:forEach>

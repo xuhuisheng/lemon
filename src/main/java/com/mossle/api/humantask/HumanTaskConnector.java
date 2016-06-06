@@ -38,8 +38,8 @@ public interface HumanTaskConnector {
     /**
      * 完成任务.
      */
-    void completeTask(String humanTaskId, String userId, String comment,
-            Map<String, Object> taskParameters);
+    void completeTask(String humanTaskId, String userId, String action,
+            String comment, Map<String, Object> taskParameters);
 
     /**
      * 领取任务.
@@ -153,7 +153,18 @@ public interface HumanTaskConnector {
     void configTaskDefinitions(String businessKey,
             List<String> taskDefinitionKeys, List<String> taskAssigness);
 
-    Page findPersonalTasks(String userId, int pageNo, int pageSize);
+    /** 待办任务. */
+    Page findPersonalTasks(String userId, String tenantId, int pageNo,
+            int pageSize);
 
-    Page findFinishedTasks(String userId, int pageNo, int pageSize);
+    /** 已办任务. */
+    Page findFinishedTasks(String userId, String tenantId, int pageNo,
+            int pageSize);
+
+    /** 待领任务. */
+    Page findGroupTasks(String userId, String tenantId, int pageNo, int pageSize);
+
+    /** 经手任务. */
+    Page findDelegateTasks(String userId, String tenantId, int pageNo,
+            int pageSize);
 }

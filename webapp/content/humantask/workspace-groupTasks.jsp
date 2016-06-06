@@ -72,13 +72,13 @@ $(function() {
       <tr>
 	    <%--
         <th width="10" class="m-table-check"><input type="checkbox" name="checkAll" onchange="toggleSelectedItems(this.checked)"></th>
-		--%>
         <th class="sorting" name="id">编号</th>
-        <th class="sorting" name="name">名称</th>
-        <th class="sorting" name="createTime">创建时间</th>
+		--%>
+        <th class="sorting" name="name">标题</th>
+        <th class="sorting" name="createTime">到达时间</th>
         <th class="sorting" name="assignee">负责人</th>
         <th class="sorting" name="suspended">状态</th>
-        <th width="170">&nbsp;</th>
+        <th width="110">&nbsp;</th>
       </tr>
     </thead>
 
@@ -87,8 +87,8 @@ $(function() {
       <tr>
 	    <%--
         <td><input type="checkbox" class="selectedItem" name="selectedItem" value="${item.id}"></td>
-		--%>
 	    <td>${item.id}</td>
+		--%>
 	    <td>${item.name}</td>
 	    <td><fmt:formatDate value="${item.createTime}" pattern="yyyy-MM-dd HH:mm:ss" /></td>
 	    <td>&nbsp;</td>

@@ -80,7 +80,9 @@
 	<!-- avatar -->
 	<alias name="defaultCacheManager" alias="avatarCacheManager"/>
 
-	<bean id="avatarCache" class="com.mossle.user.support.AvatarCache">
+	<bean id="avatarCache" class="com.mossle.user.avatar.AvatarCache">
 		<property name="cacheManager" ref="avatarCacheManager"/>
 	</bean>
+
+	<bean id="avatarConnector" class="com.mossle.user.avatar.AvatarConnectorImpl"/>
 </beans>

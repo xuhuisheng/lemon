@@ -6,6 +6,7 @@ import java.util.List;
 import org.activiti.engine.ActivitiException;
 import org.activiti.engine.impl.bpmn.parser.BpmnParse;
 import org.activiti.engine.impl.cmd.GetDeploymentProcessDefinitionCmd;
+import org.activiti.engine.impl.identity.Authentication;
 import org.activiti.engine.impl.interceptor.Command;
 import org.activiti.engine.impl.interceptor.CommandContext;
 import org.activiti.engine.impl.persistence.entity.ExecutionEntity;
@@ -33,7 +34,6 @@ public class ReOpenProcessCmd implements Command<Void> {
         String initiator = historicProcessInstanceEntity.getStartUserId();
         String businessKey = historicProcessInstanceEntity.getBusinessKey();
 
-        // Authentication.setAuthenticatedUserId(initiator);
         ProcessDefinitionEntity processDefinition = new GetDeploymentProcessDefinitionCmd(
                 processDefinitionId).execute(commandContext);
 
@@ -43,8 +43,13 @@ public class ReOpenProcessCmd implements Command<Void> {
                 historicProcessInstanceEntity.getId(), businessKey, initiator,
                 processDefinition);
 
-        // start
-        processInstance.start();
+        try {
+            Authentication.setAuthenticatedUserId(initiator);
+            // start
+            processInstance.start();
+        } finally {
+            Authentication.setAuthenticatedUserId(null);
+        }
 
         return null;
     }
@@ -101,6 +106,7 @@ public class ReOpenProcessCmd implements Command<Void> {
         processInstance.setId(id);
         processInstance.insert();
         processInstance.setProcessDefinition(processDefinition);
+        processInstance.setTenantId(processDefinition.getTenantId());
         processInstance.setProcessInstance(processInstance);
         processInstance.initialize();
 

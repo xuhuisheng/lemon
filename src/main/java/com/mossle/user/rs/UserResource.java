@@ -14,6 +14,7 @@ import javax.ws.rs.QueryParam;
 import javax.ws.rs.core.MediaType;
 
 import com.mossle.core.mapper.JsonMapper;
+import com.mossle.core.page.Page;
 import com.mossle.core.util.BaseDTO;
 import com.mossle.core.util.StringUtils;
 
@@ -92,8 +93,10 @@ public class UserResource {
     @Produces(MediaType.APPLICATION_JSON)
     public List<Map<String, Object>> search(
             @QueryParam("username") String username) {
-        List<AccountInfo> accountInfos = accountInfoManager.find(
-                "from AccountInfo where username like ?", "%" + username + "%");
+        Page page = accountInfoManager.pagedQuery(
+                "from AccountInfo where username like ?", 1, 5, "%" + username
+                        + "%");
+        List<AccountInfo> accountInfos = (List<AccountInfo>) page.getResult();
         List<Map<String, Object>> list = new ArrayList<Map<String, Object>>();
 
         for (AccountInfo accountInfo : accountInfos) {

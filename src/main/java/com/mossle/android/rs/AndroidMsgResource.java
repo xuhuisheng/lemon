@@ -7,6 +7,7 @@ import java.util.Map;
 
 import javax.annotation.Resource;
 
+import javax.ws.rs.FormParam;
 import javax.ws.rs.HeaderParam;
 import javax.ws.rs.POST;
 import javax.ws.rs.Path;
@@ -75,6 +76,7 @@ public class AndroidMsgResource {
             }
 
             Map<String, Object> map = new HashMap<String, Object>();
+            map.put("id", Long.toString(msgInfo.getId()));
 
             if (userDto != null) {
                 map.put("senderUsername", userDto.getUsername());
@@ -87,6 +89,56 @@ public class AndroidMsgResource {
         }
 
         String json = jsonMapper.toJson(list);
+        BaseDTO result = new BaseDTO();
+        result.setCode(200);
+        result.setData(json);
+        logger.info("end");
+
+        return result;
+    }
+
+    @POST
+    @Path("view")
+    @Produces(MediaType.APPLICATION_JSON)
+    public BaseDTO view(@HeaderParam("sessionId") String sessionId,
+            @FormParam("msgId") String msgId) throws Exception {
+        logger.info("start");
+
+        PimDevice pimDevice = pimDeviceManager.findUniqueBy("sessionId",
+                sessionId);
+
+        if (pimDevice == null) {
+            BaseDTO result = new BaseDTO();
+            result.setCode(401);
+            result.setMessage("auth fail");
+
+            return result;
+        }
+
+        String userId = pimDevice.getUserId();
+        MsgInfo msgInfo = msgInfoManager.get(Long.parseLong(msgId));
+
+        UserDTO userDto = null;
+
+        if ((msgInfo.getSenderId() != null)
+                && (!"".equals(msgInfo.getSenderId()))) {
+            userDto = userConnector.findById(msgInfo.getSenderId());
+        }
+
+        Map<String, Object> map = new HashMap<String, Object>();
+        map.put("id", Long.toString(msgInfo.getId()));
+
+        if (userDto != null) {
+            map.put("senderUsername", userDto.getUsername());
+        } else {
+            map.put("senderUsername", "system");
+        }
+
+        map.put("content", msgInfo.getContent());
+        map.put("data", msgInfo.getData());
+
+        String json = jsonMapper.toJson(map);
+
         BaseDTO result = new BaseDTO();
         result.setCode(200);
         result.setData(json);

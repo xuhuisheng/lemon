@@ -33,6 +33,7 @@ function utf16to8(str) {
 }  
 function showModal(displayName, mobile, email) {
 	$('#modal').modal('show');
+	$('#qr').html('');
 	$('#qr').qrcode(
 		"BEGIN:VCARD\n"
 		+ "VERSION:2.1\n"
@@ -83,10 +84,10 @@ function showModal(displayName, mobile, email) {
 
 	    <table style="padding-bottom:20px;">
 		  <tr>
-		    <td rowspan="2"><img src="${tenantPrefix}/rs/avatar?id=${item.id}&width=80" style="width:80px;height:80px;margin-left:10px;"/></td>
+		    <td width="100" rowspan="2"><img src="${tenantPrefix}/rs/avatar?id=${item.id}&width=80" style="width:80px;height:80px;margin-left:10px;"/></td>
 			<td width="20">&nbsp;</td>
-			<td align="right">账号: </td>
-			<td>
+			<td width="40" align="right">账号: </td>
+			<td width="180">
 			  ${item.username}
 			  <a href="javascript:void(0);showModal('${item.displayName}', '${item.mobile}', '${item.email}');"><i class="glyphicon glyphicon-qrcode"></i></a>
 			</td>

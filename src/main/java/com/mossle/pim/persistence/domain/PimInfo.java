@@ -53,6 +53,18 @@ public class PimInfo implements java.io.Serializable {
     /** null. */
     private String userId;
 
+    /** null. */
+    private String department;
+
+    /** null. */
+    private String impp;
+
+    /** null. */
+    private String type;
+
+    /** null. */
+    private String ref;
+
     public PimInfo() {
     }
 
@@ -62,7 +74,8 @@ public class PimInfo implements java.io.Serializable {
 
     public PimInfo(Long id, String name, String photo, Date birthday,
             String address, String tel, String email, String org, String title,
-            String tenantId, String userId) {
+            String tenantId, String userId, String department, String impp,
+            String type, String ref) {
         this.id = id;
         this.name = name;
         this.photo = photo;
@@ -74,6 +87,10 @@ public class PimInfo implements java.io.Serializable {
         this.title = title;
         this.tenantId = tenantId;
         this.userId = userId;
+        this.department = department;
+        this.impp = impp;
+        this.type = type;
+        this.ref = ref;
     }
 
     /** @return null. */
@@ -230,5 +247,61 @@ public class PimInfo implements java.io.Serializable {
      */
     public void setUserId(String userId) {
         this.userId = userId;
+    }
+
+    /** @return null. */
+    @Column(name = "DEPARTMENT", length = 100)
+    public String getDepartment() {
+        return this.department;
+    }
+
+    /**
+     * @param department
+     *            null.
+     */
+    public void setDepartment(String department) {
+        this.department = department;
+    }
+
+    /** @return null. */
+    @Column(name = "IMPP", length = 100)
+    public String getImpp() {
+        return this.impp;
+    }
+
+    /**
+     * @param impp
+     *            null.
+     */
+    public void setImpp(String impp) {
+        this.impp = impp;
+    }
+
+    /** @return null. */
+    @Column(name = "TYPE", length = 50)
+    public String getType() {
+        return this.type;
+    }
+
+    /**
+     * @param type
+     *            null.
+     */
+    public void setType(String type) {
+        this.type = type;
+    }
+
+    /** @return null. */
+    @Column(name = "REF", length = 64)
+    public String getRef() {
+        return this.ref;
+    }
+
+    /**
+     * @param ref
+     *            null.
+     */
+    public void setRef(String ref) {
+        this.ref = ref;
     }
 }

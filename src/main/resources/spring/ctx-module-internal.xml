@@ -19,4 +19,10 @@
 	<!-- 自动委托 -->
 	<bean id="delegateConnector" class="${delegate.connector}"/>
 
+	<!-- 发送短信的占位符 -->
+	<bean id="smsConnector" class="${sms.connector}"/>
+
+	<!-- 附件 -->
+	<bean id="attachmentConnector" class="com.mossle.spi.attachment.LocalAttachmentConnector"/>
+
 </beans>

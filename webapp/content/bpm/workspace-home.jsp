@@ -21,13 +21,18 @@
       <section id="m-main" class="col-md-10" style="padding-top:65px;">
 
 <c:forEach items="${bpmCategories}" var="bpmCategory">
-      <div class="row-fluid">
-      <div class="page-header">
-        <h3>${bpmCategory.name}</h3>
-      </div>
+        <div class="row">
 
-      <div class="">
+		    <div class="panel panel-default">
+		      <div class="panel-heading">
+			    <h3 class="panel-title">
+				  <i class="glyphicon glyphicon-list"></i>
+				  ${bpmCategory.name}
+				</h3>
+		      </div>
+			  <div class="panel-body">
       <c:forEach items="${bpmCategory.bpmProcesses}" var="bpmProcess">
+
         <div class="col-md-2">
 		  <div class="caption">
 		    <h3>${bpmProcess.name}&nbsp;</h3>
@@ -38,9 +43,12 @@
             </div>
 		  </div>
         </div>
-      </c:forEach>
-      </div>
 
+      </c:forEach>
+			  </div>
+		    </div>
+
+        </div>
 </c:forEach>
 
     </section>

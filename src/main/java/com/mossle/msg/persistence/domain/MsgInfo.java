@@ -47,6 +47,9 @@ public class MsgInfo implements java.io.Serializable {
     /** null. */
     private String tenantId;
 
+    /** null. */
+    private String data;
+
     public MsgInfo() {
     }
 
@@ -56,7 +59,7 @@ public class MsgInfo implements java.io.Serializable {
 
     public MsgInfo(Long id, String name, String content, Integer type,
             Date createTime, String senderId, String receiverId,
-            Integer status, String tenantId) {
+            Integer status, String tenantId, String data) {
         this.id = id;
         this.name = name;
         this.content = content;
@@ -66,6 +69,7 @@ public class MsgInfo implements java.io.Serializable {
         this.receiverId = receiverId;
         this.status = status;
         this.tenantId = tenantId;
+        this.data = data;
     }
 
     /** @return null. */
@@ -194,5 +198,19 @@ public class MsgInfo implements java.io.Serializable {
      */
     public void setTenantId(String tenantId) {
         this.tenantId = tenantId;
+    }
+
+    /** @return null. */
+    @Column(name = "DATA")
+    public String getData() {
+        return this.data;
+    }
+
+    /**
+     * @param data
+     *            null.
+     */
+    public void setData(String data) {
+        this.data = data;
     }
 }

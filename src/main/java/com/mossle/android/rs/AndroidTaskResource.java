@@ -90,7 +90,212 @@ public class AndroidTaskResource {
         }
 
         String userId = pimDevice.getUserId();
-        Page page = humanTaskConnector.findPersonalTasks(userId, 1, 10);
+        String tenantId = "1";
+        Page page = humanTaskConnector.findPersonalTasks(userId, tenantId, 1,
+                10);
+        List<HumanTaskDTO> humanTaskDtos = (List<HumanTaskDTO>) page
+                .getResult();
+        List<Map<String, Object>> list = new ArrayList<Map<String, Object>>();
+
+        DateFormat dateFormat = new SimpleDateFormat("yyyy-MM-dd HH:mm:ss");
+
+        for (HumanTaskDTO humanTaskDto : humanTaskDtos) {
+            Map<String, Object> map = new HashMap<String, Object>();
+            map.put("id", humanTaskDto.getId());
+            map.put("name", humanTaskDto.getName());
+            map.put("presentationSubject",
+                    humanTaskDto.getPresentationSubject());
+            map.put("createTime",
+                    dateFormat.format(humanTaskDto.getCreateTime()));
+            map.put("assignee", humanTaskDto.getAssignee());
+            map.put("assigneeDisplayName", userConnector.findById(userId)
+                    .getDisplayName());
+            list.add(map);
+        }
+
+        String json = jsonMapper.toJson(list);
+        BaseDTO result = new BaseDTO();
+        result.setCode(200);
+        result.setData(json);
+        logger.info("end");
+
+        return result;
+    }
+
+    @POST
+    @Path("tasksPersonal")
+    @Produces(MediaType.APPLICATION_JSON)
+    public BaseDTO tasksPersonal(@HeaderParam("sessionId") String sessionId)
+            throws Exception {
+        logger.info("start");
+
+        PimDevice pimDevice = pimDeviceManager.findUniqueBy("sessionId",
+                sessionId);
+
+        if (pimDevice == null) {
+            BaseDTO result = new BaseDTO();
+            result.setCode(401);
+            result.setMessage("auth fail");
+
+            return result;
+        }
+
+        String userId = pimDevice.getUserId();
+        String tenantId = "1";
+        Page page = humanTaskConnector.findPersonalTasks(userId, tenantId, 1,
+                10);
+        List<HumanTaskDTO> humanTaskDtos = (List<HumanTaskDTO>) page
+                .getResult();
+        List<Map<String, Object>> list = new ArrayList<Map<String, Object>>();
+
+        DateFormat dateFormat = new SimpleDateFormat("yyyy-MM-dd HH:mm:ss");
+
+        for (HumanTaskDTO humanTaskDto : humanTaskDtos) {
+            Map<String, Object> map = new HashMap<String, Object>();
+            map.put("id", humanTaskDto.getId());
+            map.put("name", humanTaskDto.getName());
+            map.put("presentationSubject",
+                    humanTaskDto.getPresentationSubject());
+            map.put("createTime",
+                    dateFormat.format(humanTaskDto.getCreateTime()));
+            map.put("assignee", humanTaskDto.getAssignee());
+            map.put("assigneeDisplayName", userConnector.findById(userId)
+                    .getDisplayName());
+            list.add(map);
+        }
+
+        String json = jsonMapper.toJson(list);
+        BaseDTO result = new BaseDTO();
+        result.setCode(200);
+        result.setData(json);
+        logger.info("end");
+
+        return result;
+    }
+
+    @POST
+    @Path("tasksGroup")
+    @Produces(MediaType.APPLICATION_JSON)
+    public BaseDTO tasksGroup(@HeaderParam("sessionId") String sessionId)
+            throws Exception {
+        logger.info("start");
+
+        PimDevice pimDevice = pimDeviceManager.findUniqueBy("sessionId",
+                sessionId);
+
+        if (pimDevice == null) {
+            BaseDTO result = new BaseDTO();
+            result.setCode(401);
+            result.setMessage("auth fail");
+
+            return result;
+        }
+
+        String userId = pimDevice.getUserId();
+        String tenantId = "1";
+        Page page = humanTaskConnector.findGroupTasks(userId, tenantId, 1, 10);
+        List<HumanTaskDTO> humanTaskDtos = (List<HumanTaskDTO>) page
+                .getResult();
+        List<Map<String, Object>> list = new ArrayList<Map<String, Object>>();
+
+        DateFormat dateFormat = new SimpleDateFormat("yyyy-MM-dd HH:mm:ss");
+
+        for (HumanTaskDTO humanTaskDto : humanTaskDtos) {
+            Map<String, Object> map = new HashMap<String, Object>();
+            map.put("id", humanTaskDto.getId());
+            map.put("name", humanTaskDto.getName());
+            map.put("presentationSubject",
+                    humanTaskDto.getPresentationSubject());
+            map.put("createTime",
+                    dateFormat.format(humanTaskDto.getCreateTime()));
+            map.put("assignee", humanTaskDto.getAssignee());
+            map.put("assigneeDisplayName", userConnector.findById(userId)
+                    .getDisplayName());
+            list.add(map);
+        }
+
+        String json = jsonMapper.toJson(list);
+        BaseDTO result = new BaseDTO();
+        result.setCode(200);
+        result.setData(json);
+        logger.info("end");
+
+        return result;
+    }
+
+    @POST
+    @Path("tasksComplete")
+    @Produces(MediaType.APPLICATION_JSON)
+    public BaseDTO tasksComplete(@HeaderParam("sessionId") String sessionId)
+            throws Exception {
+        logger.info("start");
+
+        PimDevice pimDevice = pimDeviceManager.findUniqueBy("sessionId",
+                sessionId);
+
+        if (pimDevice == null) {
+            BaseDTO result = new BaseDTO();
+            result.setCode(401);
+            result.setMessage("auth fail");
+
+            return result;
+        }
+
+        String userId = pimDevice.getUserId();
+        String tenantId = "1";
+        Page page = humanTaskConnector.findFinishedTasks(userId, tenantId, 1,
+                10);
+        List<HumanTaskDTO> humanTaskDtos = (List<HumanTaskDTO>) page
+                .getResult();
+        List<Map<String, Object>> list = new ArrayList<Map<String, Object>>();
+
+        DateFormat dateFormat = new SimpleDateFormat("yyyy-MM-dd HH:mm:ss");
+
+        for (HumanTaskDTO humanTaskDto : humanTaskDtos) {
+            Map<String, Object> map = new HashMap<String, Object>();
+            map.put("id", humanTaskDto.getId());
+            map.put("name", humanTaskDto.getName());
+            map.put("presentationSubject",
+                    humanTaskDto.getPresentationSubject());
+            map.put("createTime",
+                    dateFormat.format(humanTaskDto.getCreateTime()));
+            map.put("assignee", humanTaskDto.getAssignee());
+            map.put("assigneeDisplayName", userConnector.findById(userId)
+                    .getDisplayName());
+            list.add(map);
+        }
+
+        String json = jsonMapper.toJson(list);
+        BaseDTO result = new BaseDTO();
+        result.setCode(200);
+        result.setData(json);
+        logger.info("end");
+
+        return result;
+    }
+
+    @POST
+    @Path("tasksDelegate")
+    @Produces(MediaType.APPLICATION_JSON)
+    public BaseDTO tasksDelegate(@HeaderParam("sessionId") String sessionId)
+            throws Exception {
+        logger.info("start");
+
+        PimDevice pimDevice = pimDeviceManager.findUniqueBy("sessionId",
+                sessionId);
+
+        if (pimDevice == null) {
+            BaseDTO result = new BaseDTO();
+            result.setCode(401);
+            result.setMessage("auth fail");
+
+            return result;
+        }
+
+        String userId = pimDevice.getUserId();
+        String tenantId = "1";
+        Page page = humanTaskConnector.findDelegateTasks(userId, tenantId, 1,
+                10);
         List<HumanTaskDTO> humanTaskDtos = (List<HumanTaskDTO>) page
                 .getResult();
         List<Map<String, Object>> list = new ArrayList<Map<String, Object>>();
@@ -175,10 +380,11 @@ public class AndroidTaskResource {
         logger.info("taskParameters : {}", taskParameters);
 
         String comment = "";
+        String action = "";
 
         try {
-            humanTaskConnector.completeTask(humanTaskId, userId, comment,
-                    taskParameters);
+            humanTaskConnector.completeTask(humanTaskId, userId, action,
+                    comment, taskParameters);
         } catch (IllegalStateException ex) {
             logger.error(ex.getMessage(), ex);
 

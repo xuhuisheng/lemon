@@ -101,6 +101,24 @@
   </div>
 
   <div class="panel panel-default">
+    <div class="panel-heading" role="tab" id="collapse-header-sendsms" data-toggle="collapse" data-parent="#accordion" href="#collapse-body-sendsms" aria-expanded="true" aria-controls="collapse-body-sendsms">
+      <h4 class="panel-title">
+	    <i class="glyphicon glyphicon-list"></i>
+        发送短信
+      </h4>
+    </div>
+    <div id="collapse-body-sendsms" class="panel-collapse collapse ${currentMenu == 'sendsms' ? 'in' : ''}" role="tabpanel" aria-labelledby="collapse-header-sendsms">
+      <div class="panel-body">
+        <ul class="nav nav-list">
+		  <li><a href="${tenantPrefix}/sendsms/sendsms-config-list.do"><i class="glyphicon glyphicon-list"></i> 短信配置</a></li>
+		  <li><a href="${tenantPrefix}/sendsms/sendsms-queue-list.do"><i class="glyphicon glyphicon-list"></i> 短信队列</a></li>
+		  <li><a href="${tenantPrefix}/sendsms/sendsms-history-list.do"><i class="glyphicon glyphicon-list"></i> 短信历史</a></li>
+        </ul>
+      </div>
+    </div>
+  </div>
+
+  <div class="panel panel-default">
     <div class="panel-heading" role="tab" id="collapse-header-audit" data-toggle="collapse" data-parent="#accordion" href="#collapse-body-audit" aria-expanded="true" aria-controls="collapse-body-audit">
       <h4 class="panel-title">
 	    <i class="glyphicon glyphicon-list"></i>

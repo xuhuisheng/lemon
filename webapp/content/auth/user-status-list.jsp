@@ -121,7 +121,9 @@ $(function() {
             <a href="user-status-input.do?id=${item.id}"><spring:message code="core.list.edit" text="编辑"/></a>&nbsp;
 			</tags:hasPerm>
 			<tags:hasPerm value="user:auth">
+			<!--
             <a href="user-status-password.do?id=${item.id}"><spring:message code="user.user.list.password" text="设置密码"/></a>
+			-->
             <a href="javascript:void(0);location.href='user-role-input.do?id=${item.id}'"><spring:message code="user.user.list.role" text="设置权限"/></a>
 			</tags:hasPerm>
         </td>

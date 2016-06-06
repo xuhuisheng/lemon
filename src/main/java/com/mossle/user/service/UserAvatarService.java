@@ -12,11 +12,11 @@ import com.mossle.api.store.StoreDTO;
 import com.mossle.core.store.ByteArrayDataSource;
 
 import com.mossle.user.ImageUtils;
+import com.mossle.user.avatar.AvatarCache;
 import com.mossle.user.persistence.domain.AccountAvatar;
 import com.mossle.user.persistence.domain.AccountInfo;
 import com.mossle.user.persistence.manager.AccountAvatarManager;
 import com.mossle.user.persistence.manager.AccountInfoManager;
-import com.mossle.user.support.AvatarCache;
 
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
@@ -37,8 +37,15 @@ public class UserAvatarService {
 
     public DataSource viewAvatarById(Long accountId, int width, String tenantId)
             throws Exception {
+        if (accountId == null) {
+            logger.info("accountId cannot be null");
+
+            return null;
+        }
+
         String key = "accountId:" + accountId + ":" + width;
-        DataSource dataSource = this.avatarCache.getByCode(key);
+        String userId = Long.toString(accountId);
+        DataSource dataSource = this.avatarCache.getDataSource(userId, width);
 
         if (dataSource != null) {
             return dataSource;
@@ -47,25 +54,25 @@ public class UserAvatarService {
         AccountInfo accountInfo = accountInfoManager.get(accountId);
 
         dataSource = this.viewAvatarByAccountInfo(accountInfo, width, tenantId);
-        this.avatarCache.updateDataSource(key, dataSource);
+        this.avatarCache.updateDataSource(userId, width, dataSource);
 
         return dataSource;
     }
 
     public DataSource viewAvatarByUsername(String username, int width,
             String tenantId) throws Exception {
-        String key = "username:" + username + ":" + width;
-        DataSource dataSource = this.avatarCache.getByCode(key);
+        // String key = "username:" + username + ":" + width;
+        AccountInfo accountInfo = accountInfoManager.findUniqueBy("username",
+                username);
+        String userId = Long.toString(accountInfo.getId());
+        DataSource dataSource = this.avatarCache.getDataSource(userId, width);
 
         if (dataSource != null) {
             return dataSource;
         }
 
-        AccountInfo accountInfo = accountInfoManager.findUniqueBy("username",
-                username);
-
         dataSource = this.viewAvatarByAccountInfo(accountInfo, width, tenantId);
-        this.avatarCache.updateDataSource(key, dataSource);
+        this.avatarCache.updateDataSource(userId, width, dataSource);
 
         return dataSource;
     }

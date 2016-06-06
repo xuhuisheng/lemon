@@ -24,7 +24,10 @@ import org.slf4j.LoggerFactory;
 
 import org.springframework.stereotype.Component;
 
+import org.springframework.transaction.annotation.Transactional;
+
 @Component
+@Transactional
 public class OperationService {
     private static Logger logger = LoggerFactory
             .getLogger(OperationService.class);
@@ -90,6 +93,45 @@ public class OperationService {
         }
 
         return businessKey;
+    }
+
+    /**
+     * 发起流程.
+     */
+    public void startProcessInstance(String userId, String businessKey,
+            String processDefinitionId, Map<String, Object> processParameters,
+            Record record) {
+        String processInstanceId = processConnector.startProcess(userId,
+                businessKey, processDefinitionId, processParameters);
+
+        record = new RecordBuilder().build(record, STATUS_RUNNING,
+                processInstanceId);
+        keyValueConnector.save(record);
+    }
+
+    /**
+     * 完成任务.
+     */
+    public void completeTask(String humanTaskId, String userId,
+            FormParameter formParameter, Map<String, Object> taskParameters,
+            Record record, String processInstanceId) {
+        // try {
+        humanTaskConnector.completeTask(humanTaskId, userId,
+                formParameter.getAction(), formParameter.getComment(),
+                taskParameters);
+
+        // } catch (IllegalStateException ex) {
+        // logger.error(ex.getMessage(), ex);
+        // messageHelper.addFlashMessage(redirectAttributes, ex.getMessage());
+        // return "redirect:/humantask/workspace-personalTasks.do";
+        // }
+        if (record == null) {
+            record = new Record();
+        }
+
+        record = new RecordBuilder().build(record, STATUS_RUNNING,
+                processInstanceId);
+        keyValueConnector.save(record);
     }
 
     public String getParameter(Map<String, String[]> parameters, String name) {

@@ -57,8 +57,20 @@ $(function() {
         邮件
       </h4>
     </div>
+    <div class="panel-body full-height" style="overflow: auto; height: 100px;">
+<c:forEach var="item" items="${javamailMessages}">
+	    <div>
+			    <a href="${tenantPrefix}/javamail/index.do?id=${item.id}"><c:out value="${item.sender}"/></a>
+				<ftm:formatDate value="${item.sendTime}" type="both"/>
+				<br>
+			    <a href="${tenantPrefix}/javamail/index.do?id=${item.id}">${item.subject}</a>
+		</div>
+		<hr>
+</c:forEach>
+	</div>
+<%--
     <div id="collapse-body-javamail" class="panel-collapse collapse ${currentMenu == 'javamail' ? 'in' : ''}" role="tabpanel" aria-labelledby="collapse-header-javamail">
-      <div class="panel-body" style="overflow: auto; height: 663px;">
+      <div class="panel-body full-height" style="overflow: auto; height: 520px;">
 <c:forEach var="item" items="${javamailMessages}">
 		    <blockquote>
 			  <p>
@@ -74,6 +86,7 @@ $(function() {
 </c:forEach>
       </div>
     </div>
+--%>
   </div>
 
 </div>
@@ -84,7 +97,7 @@ $(function() {
 <div class="panel-group col-md-7" id="accordion3" role="tablist" aria-multiselectable="true" style="padding-top:65px;">
 
 
-  <div class="panel panel-default" style="height:100%;">
+  <div class="panel panel-default">
     <div class="panel-heading" role="tab" id="collapse-header-javamail" data-toggle="collapse" data-parent="#accordion" href="#collapse-body-javamail" aria-expanded="true" aria-controls="collapse-body-javamail">
       <h4 class="panel-title">
 	    <i class="glyphicon glyphicon-list"></i>
@@ -92,7 +105,7 @@ $(function() {
       </h4>
     </div>
     <div id="collapse-body-javamail" class="panel-collapse collapse ${currentMenu == 'javamail' ? 'in' : ''}" role="tabpanel" aria-labelledby="collapse-header-javamail">
-      <div class="panel-body" style="overflow: auto; height: 663px;">
+      <div class="panel-body full-height" style="overflow: auto; height: 520px;">
 
 		    <p><c:out value="${javamailMessage.sender}"/><fmt:formatDate value="${javamailMessage.sendTime}" type="both"/></p>
             ${javamailMessage.content}

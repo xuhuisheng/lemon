@@ -137,7 +137,7 @@ public class SendmailConfigController {
         mailServerInfo.setDefaultFrom(sendmailConfig.getDefaultFrom());
 
         MailDTO mailDto = new MailDTO();
-        mailDto.setTo("lingo@mossle.com");
+        mailDto.setTo(sendmailConfig.getUsername());
         mailDto.setSubject("test");
         mailDto.setContent("test");
 

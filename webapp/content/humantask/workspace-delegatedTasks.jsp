@@ -78,7 +78,7 @@ $(function() {
         <th>流程</th>
         <th>环节</th>
         <th>负责人</th>
-        <th width="170">&nbsp;</th>
+        <th width="90">&nbsp;</th>
       </tr>
     </thead>
 
@@ -88,7 +88,7 @@ $(function() {
 	    <%--
         <td><input type="checkbox" class="selectedItem" name="selectedItem" value="${item.id}"></td>
 		--%>
-	    <td>${item.name}</td>
+	    <td>${item.presentationSubject}</td>
 	    <td><fmt:formatDate value="${item.createTime}" pattern="yyyy-MM-dd HH:mm:ss" /></td>
 	    <td><tags:processName processDefinitionId="${item.processDefinitionId}"/></td>
 	    <td>
@@ -98,8 +98,8 @@ $(function() {
 		  <tags:user userId="${item.assignee}"/>
 		</td>
         <td>
-          <a href="${tenantPrefix}/bpm/workspace-viewHistory.do?processInstanceId=${item.processInstanceId}">详情</a>
           <a href="${tenantPrefix}/operation/task-operation-cancel.do?humanTaskId=${item.id}&userId=&comment=">取消</a>
+          <a href="${tenantPrefix}/bpm/workspace-viewHistory.do?processInstanceId=${item.processInstanceId}">详情</a>
         </td>
       </tr>
       </c:forEach>

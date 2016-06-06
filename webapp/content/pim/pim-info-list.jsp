@@ -92,11 +92,17 @@ $(function() {
     <thead>
       <tr>
         <th width="10" class="m-table-check"><input type="checkbox" name="checkAll" onchange="toggleSelectedItems(this.checked)"></th>
+		<!--
         <th>编号</th>
-        <th>名称</th>
+		-->
+        <th>姓名</th>
+        <th>公司</th>
+        <th>部门</th>
+        <th>职位</th>
         <th>电话</th>
         <th>邮箱</th>
-        <th width="80">&nbsp;</th>
+        <th>即时通讯</th>
+        <th width="110">&nbsp;</th>
       </tr>
     </thead>
 
@@ -104,10 +110,16 @@ $(function() {
       <c:forEach items="${page.result}" var="item">
       <tr>
         <td><input type="checkbox" class="selectedItem a-check" name="selectedItem" value="${item.id}"></td>
+		<!--
         <td>${item.id}</td>
+		-->
         <td>${item.name}</td>
+        <td>${item.org}</td>
+        <td>${item.department}</td>
+        <td>${item.title}</td>
         <td>${item.tel}</td>
         <td>${item.email}</td>
+        <td>${item.impp}</td>
         <td>
           <a href="pim-info-input.do?id=${item.id}" class="a-update"><spring:message code="core.list.edit" text="编辑"/></a>
 		  <a href="pim-info-vcard.do?id=${item.id}">vcard</a>

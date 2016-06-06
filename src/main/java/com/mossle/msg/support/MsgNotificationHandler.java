@@ -1,6 +1,8 @@
 package com.mossle.msg.support;
 
 import java.util.Date;
+import java.util.HashMap;
+import java.util.Map;
 
 import javax.annotation.Resource;
 
@@ -14,6 +16,7 @@ import org.apache.commons.lang3.StringUtils;
 
 public class MsgNotificationHandler implements NotificationHandler {
     private MsgInfoManager msgInfoManager;
+    private String defaultSender = "";
 
     public void handle(NotificationDTO notificationDto, String tenantId) {
         if (!"userid".equals(notificationDto.getReceiverType())) {
@@ -28,10 +31,14 @@ public class MsgNotificationHandler implements NotificationHandler {
         msgInfo.setStatus(0);
         msgInfo.setTenantId(tenantId);
 
+        String humanTaskId = (String) notificationDto.getData().get(
+                "humanTaskId");
+        msgInfo.setData(humanTaskId);
+
         if (StringUtils.isNotBlank(notificationDto.getSender())) {
             msgInfo.setSenderId(notificationDto.getSender());
         } else {
-            msgInfo.setSenderId("");
+            msgInfo.setSenderId(defaultSender);
         }
 
         msgInfoManager.save(msgInfo);
@@ -39,6 +46,10 @@ public class MsgNotificationHandler implements NotificationHandler {
 
     public String getType() {
         return "msg";
+    }
+
+    public void setDefaultSender(String defaultSender) {
+        this.defaultSender = defaultSender;
     }
 
     @Resource

@@ -1,8 +1,10 @@
 package com.mossle.humantask.support;
 
 import java.util.ArrayList;
+import java.util.Collection;
 import java.util.Collections;
 import java.util.Date;
+import java.util.HashMap;
 import java.util.List;
 import java.util.Map;
 
@@ -205,16 +207,24 @@ public class HumanTaskConnectorImpl implements HumanTaskConnector {
             com.mossle.spi.humantask.FormDTO taskFormDto = taskDefinitionConnector
                     .findForm(humanTaskDto.getCode(),
                             humanTaskDto.getProcessDefinitionId());
-            formDto = new FormDTO();
-            formDto.setCode(taskFormDto.getKey());
 
-            List<String> operations = taskDefinitionConnector.findOperations(
-                    humanTaskDto.getCode(),
-                    humanTaskDto.getProcessDefinitionId());
-            formDto.getButtons().addAll(operations);
-            formDto.setActivityId(humanTaskDto.getCode());
-            formDto.setProcessDefinitionId(humanTaskDto
-                    .getProcessDefinitionId());
+            if (taskFormDto == null) {
+                logger.info(
+                        "cannot find form by code : {}, processDefinition : {}",
+                        humanTaskDto.getCode(),
+                        humanTaskDto.getProcessDefinitionId());
+            } else {
+                formDto = new FormDTO();
+                formDto.setCode(taskFormDto.getKey());
+
+                List<String> operations = taskDefinitionConnector
+                        .findOperations(humanTaskDto.getCode(),
+                                humanTaskDto.getProcessDefinitionId());
+                formDto.getButtons().addAll(operations);
+                formDto.setActivityId(humanTaskDto.getCode());
+                formDto.setProcessDefinitionId(humanTaskDto
+                        .getProcessDefinitionId());
+            }
         } else {
             formDto = new FormDTO();
             formDto.setCode(humanTaskDto.getForm());
@@ -291,8 +301,8 @@ public class HumanTaskConnectorImpl implements HumanTaskConnector {
     /**
      * 完成任务.
      */
-    public void completeTask(String humanTaskId, String userId, String comment,
-            Map<String, Object> taskParameters) {
+    public void completeTask(String humanTaskId, String userId, String action,
+            String comment, Map<String, Object> taskParameters) {
         logger.info("completeTask humanTaskId : {}, userId : {}, comment: {}",
                 humanTaskId, userId, comment);
 
@@ -305,6 +315,10 @@ public class HumanTaskConnectorImpl implements HumanTaskConnector {
         humanTaskDto.setStatus("complete");
         humanTaskDto.setCompleteTime(new Date());
         humanTaskDto.setAction("完成");
+
+        if (StringUtils.isNotBlank(action)) {
+            humanTaskDto.setAction(action);
+        }
 
         if (StringUtils.isNotBlank(comment)) {
             humanTaskDto.setComment(comment);
@@ -344,6 +358,7 @@ public class HumanTaskConnectorImpl implements HumanTaskConnector {
 
         // 处理协办任务
         if ("pending".equals(humanTaskDto.getDelegateStatus())) {
+            humanTaskDto.setStatus("active");
             humanTaskDto.setDelegateStatus("resolved");
             humanTaskDto.setAssignee(humanTaskDto.getOwner());
             humanTaskDto.setAction("完成");
@@ -377,8 +392,35 @@ public class HumanTaskConnectorImpl implements HumanTaskConnector {
         }
 
         this.saveHumanTask(humanTaskDto, false);
-        internalProcessConnector.completeTask(humanTaskDto.getTaskId(), userId,
-                taskParameters);
+
+        // 判断加签
+        if ("vote".equals(humanTaskDto.getCatalog())) {
+            HumanTaskDTO parentTask = this.findHumanTask(humanTaskDto
+                    .getParentId());
+            boolean completed = true;
+
+            for (HumanTaskDTO childTask : parentTask.getChildren()) {
+                if (!"complete".equals(childTask.getStatus())) {
+                    completed = false;
+
+                    break;
+                }
+            }
+
+            if (completed) {
+                parentTask.setAssignee(parentTask.getOwner());
+                parentTask.setOwner("");
+                parentTask.setStatus("complete");
+                parentTask.setCompleteTime(new Date());
+                parentTask.setAction("完成");
+                this.saveHumanTask(parentTask, false);
+                internalProcessConnector.completeTask(humanTaskDto.getTaskId(),
+                        userId, taskParameters);
+            }
+        } else {
+            internalProcessConnector.completeTask(humanTaskDto.getTaskId(),
+                    userId, taskParameters);
+        }
 
         if (humanTaskListeners != null) {
             Long id = null;
@@ -408,10 +450,12 @@ public class HumanTaskConnectorImpl implements HumanTaskConnector {
     /**
      * 待办任务.
      */
-    public Page findPersonalTasks(String userId, int pageNo, int pageSize) {
-        Page page = taskInfoManager.pagedQuery(
-                "from TaskInfo where assignee=? and status='active'", pageNo,
-                pageSize, userId);
+    public Page findPersonalTasks(String userId, String tenantId, int pageNo,
+            int pageSize) {
+        Page page = taskInfoManager
+                .pagedQuery(
+                        "from TaskInfo where assignee=? and tenantId=? and status='active'",
+                        pageNo, pageSize, userId, tenantId);
         List<TaskInfo> taskInfos = (List<TaskInfo>) page.getResult();
         List<HumanTaskDTO> humanTaskDtos = this.convertHumanTaskDtos(taskInfos);
         page.setResult(humanTaskDtos);
@@ -422,10 +466,57 @@ public class HumanTaskConnectorImpl implements HumanTaskConnector {
     /**
      * 已办任务.
      */
-    public Page findFinishedTasks(String userId, int pageNo, int pageSize) {
-        Page page = taskInfoManager.pagedQuery(
-                "from TaskInfo where assignee=? and status='complete'", pageNo,
-                pageSize, userId);
+    public Page findFinishedTasks(String userId, String tenantId, int pageNo,
+            int pageSize) {
+        Page page = taskInfoManager
+                .pagedQuery(
+                        "from TaskInfo where assignee=? and tenantId=? and status='complete'",
+                        pageNo, pageSize, userId, tenantId);
+        List<TaskInfo> taskInfos = (List<TaskInfo>) page.getResult();
+        List<HumanTaskDTO> humanTaskDtos = this.convertHumanTaskDtos(taskInfos);
+        page.setResult(humanTaskDtos);
+
+        return page;
+    }
+
+    /**
+     * 待领任务.
+     */
+    public Page findGroupTasks(String userId, String tenantId, int pageNo,
+            int pageSize) {
+        List<String> partyIds = new ArrayList<String>();
+        partyIds.addAll(this.findGroupIds(userId));
+        partyIds.addAll(this.findUserIds(userId));
+
+        logger.debug("party ids : {}", partyIds);
+
+        Map<String, Object> map = new HashMap<String, Object>();
+        map.put("partyIds", partyIds);
+        map.put("tenantId", tenantId);
+
+        String hql = "select t from TaskInfo t join t.taskParticipants p with p.ref in (:partyIds) where t.tenantId=:tenantId and t.status='active'";
+        Page page = taskInfoManager.pagedQuery(hql, pageNo, pageSize, map);
+
+        // List<PropertyFilter> propertyFilters = PropertyFilter
+        // .buildFromMap(parameterMap);
+        // propertyFilters.add(new PropertyFilter("EQS_status", "active"));
+        // propertyFilters.add(new PropertyFilter("INLS_assignee", null));
+        List<TaskInfo> taskInfos = (List<TaskInfo>) page.getResult();
+        List<HumanTaskDTO> humanTaskDtos = this.convertHumanTaskDtos(taskInfos);
+        page.setResult(humanTaskDtos);
+
+        return page;
+    }
+
+    /**
+     * 经手任务.
+     */
+    public Page findDelegateTasks(String userId, String tenantId, int pageNo,
+            int pageSize) {
+        Page page = taskInfoManager
+                .pagedQuery(
+                        "from TaskInfo where owner=? and tenantId=? and status='active'",
+                        pageNo, pageSize, userId, tenantId);
         List<TaskInfo> taskInfos = (List<TaskInfo>) page.getResult();
         List<HumanTaskDTO> humanTaskDtos = this.convertHumanTaskDtos(taskInfos);
         page.setResult(humanTaskDtos);
@@ -713,8 +804,37 @@ public class HumanTaskConnectorImpl implements HumanTaskConnector {
                 Collections.<String, Object> emptyMap());
     }
 
+    public List<String> findGroupIds(String userId) {
+        String groupSql = "select ps.PARENT_ENTITY_ID as ID from PARTY_STRUCT ps,PARTY_ENTITY child,PARTY_TYPE type"
+                + " where ps.CHILD_ENTITY_ID=child.ID and child.TYPE_ID=type.ID and type.TYPE='1' and child.REF=?";
+        List<Map<String, Object>> list = jdbcTemplate.queryForList(groupSql,
+                userId);
+        List<String> partyIds = new ArrayList<String>();
+
+        for (Map<String, Object> map : list) {
+            partyIds.add(map.get("ID").toString());
+        }
+
+        return partyIds;
+    }
+
+    public List<String> findUserIds(String userId) {
+        String userSql = "select pe.ID as ID from PARTY_ENTITY pe,PARTY_TYPE type"
+                + " where pe.TYPE_ID=type.ID and type.TYPE='1' and pe.REF=?";
+        List<Map<String, Object>> list = jdbcTemplate.queryForList(userSql,
+                userId);
+        List<String> partyIds = new ArrayList<String>();
+
+        for (Map<String, Object> map : list) {
+            partyIds.add(map.get("ID").toString());
+        }
+
+        return partyIds;
+    }
+
     // ~ ==================================================
-    public List<HumanTaskDTO> convertHumanTaskDtos(List<TaskInfo> taskInfos) {
+    public List<HumanTaskDTO> convertHumanTaskDtos(
+            Collection<TaskInfo> taskInfos) {
         List<HumanTaskDTO> humanTaskDtos = new ArrayList<HumanTaskDTO>();
 
         for (TaskInfo taskInfo : taskInfos) {
@@ -725,12 +845,22 @@ public class HumanTaskConnectorImpl implements HumanTaskConnector {
     }
 
     public HumanTaskDTO convertHumanTaskDto(TaskInfo taskInfo) {
+        if (taskInfo == null) {
+            return null;
+        }
+
         HumanTaskDTO humanTaskDto = new HumanTaskDTO();
         beanMapper.copy(taskInfo, humanTaskDto);
 
         if (taskInfo.getTaskInfo() != null) {
             humanTaskDto.setParentId(Long.toString(taskInfo.getTaskInfo()
                     .getId()));
+        }
+
+        if (!taskInfo.getTaskInfos().isEmpty()) {
+            List<HumanTaskDTO> children = this.convertHumanTaskDtos(taskInfo
+                    .getTaskInfos());
+            humanTaskDto.setChildren(children);
         }
 
         return humanTaskDto;

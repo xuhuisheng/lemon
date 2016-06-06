@@ -51,6 +51,24 @@ $(function() {
     </div>
   </div>
   <div class="form-group">
+    <label class="control-label col-md-1" for="pimInfo_org">公司</label>
+	<div class="col-sm-5">
+	  <input id="pimInfo_org" type="text" name="org" value="${model.org}" class="form-control required" minlength="2" maxlength="50">
+    </div>
+  </div>
+  <div class="form-group">
+    <label class="control-label col-md-1" for="pimInfo_department">部门</label>
+	<div class="col-sm-5">
+	  <input id="pimInfo_department" type="text" name="department" value="${model.department}" class="form-control required" minlength="2" maxlength="50">
+    </div>
+  </div>
+  <div class="form-group">
+    <label class="control-label col-md-1" for="pimInfo_title">职位</label>
+	<div class="col-sm-5">
+	  <input id="pimInfo_title" type="text" name="title" value="${model.title}" class="form-control required" minlength="2" maxlength="50">
+    </div>
+  </div>
+  <div class="form-group">
     <label class="control-label col-md-1" for="pimInfo_tel">电话</label>
 	<div class="col-sm-5">
 	  <input id="pimInfo_tel" type="text" name="tel" value="${model.tel}" class="form-control required" minlength="2" maxlength="50">
@@ -60,6 +78,12 @@ $(function() {
     <label class="control-label col-md-1" for="pimInfo_email">邮箱</label>
 	<div class="col-sm-5">
 	  <input id="pimInfo_email" type="text" name="email" value="${model.email}" class="form-control required" minlength="2" maxlength="50">
+    </div>
+  </div>
+  <div class="form-group">
+    <label class="control-label col-md-1" for="pimInfo_impp">即时通讯</label>
+	<div class="col-sm-5">
+	  <input id="pimInfo_impp" type="text" name="impp" value="${model.impp}" class="form-control required" minlength="2" maxlength="50">
     </div>
   </div>
   <div class="form-group">

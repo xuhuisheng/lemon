@@ -8,10 +8,10 @@
 		<smtpHost>mail.mossle.com</smtpHost>
 		<smtpPort>465</smtpPort>
 		<SSL>true</SSL>
-		<username>lingo@gmail.com</username>
-		<password>lingo2mossle</password>
+		<username>bot@gmail.com</username>
+		<password>bot2mossle</password>
 
-		<to>lingo@mossle.com</to>
+		<to>bot@mossle.com</to>
 		<!--
 		<from>demo.mossle@gmail.com</from>
 		-->

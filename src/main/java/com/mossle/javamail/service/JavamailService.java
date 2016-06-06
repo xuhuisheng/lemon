@@ -1,4 +1,4 @@
-package com.mossle.javamail.service;
+ package com.mossle.javamail.service;
 
 import java.io.IOException;
 import java.io.UnsupportedEncodingException;
@@ -86,11 +86,11 @@ public class JavamailService {
         return props;
     }
 
-    public void send(String from, String to, String subject, String content)
-            throws MessagingException {
+    public void send(String from, String to, String cc, String bcc,
+            String subject, String content) throws MessagingException {
         JavamailConfig javamailConfig = javamailConfigManager.findUniqueBy(
                 "userId", from);
-        this.send(to, subject, content, javamailConfig);
+        this.send(to, cc, bcc, subject, content, javamailConfig);
     }
 
     public void send(String to, String subject, String content,
@@ -160,76 +160,136 @@ public class JavamailService {
         store.connect(javamailConfig.getUsername(),
                 javamailConfig.getPassword());
 
-        // 获得收件箱
-        Folder folder = store.getFolder("INBOX");
-        /*
-         * Folder.READ_ONLY：只读权限 Folder.READ_WRITE：可读可写（可以修改邮件的状态）
-         */
-        folder.open(Folder.READ_WRITE); // 打开收件箱
+        Folder defaultFolder = store.getDefaultFolder();
+        logger.info("default folder : {}", defaultFolder);
 
-        // 获得收件箱的邮件列表
-        Message[] messages = folder.getMessages();
+        this.receiveByFolder(defaultFolder, javamailConfig);
 
-        // 打印不同状态的邮件数量
-        logger.debug("收件箱中共" + messages.length + "封邮件!");
-        logger.debug("收件箱中共" + folder.getUnreadMessageCount() + "封未读邮件!");
-        logger.debug("收件箱中共" + folder.getNewMessageCount() + "封新邮件!");
-        logger.debug("收件箱中共" + folder.getDeletedMessageCount() + "封已删除邮件!");
+        logger.info("personal folder");
 
-        logger.debug("------------------------开始解析邮件----------------------------------");
+        for (Folder folder : store.getPersonalNamespaces()) {
+            logger.info("personal folder : {}", folder);
 
-        // 解析邮件
-        for (Message message : messages) {
-            // IMAPMessage msg = (IMAPMessage) message;
-            MimeMessage mimeMessage = (MimeMessage) message;
+            this.receiveByFolder(folder, javamailConfig);
+        }
 
-            try {
-                if (javamailMessageManager.findUniqueBy("messageId",
-                        mimeMessage.getMessageID()) != null) {
-                    continue;
-                }
-            } catch (Exception ex) {
-                logger.error(ex.getMessage(), ex);
+        logger.info("shared folder");
 
-                continue;
+        for (Folder folder : store.getSharedNamespaces()) {
+            logger.info("shared folder : {}", folder);
+
+            this.receiveByFolder(folder, javamailConfig);
+        }
+
+        logger.info("user folder : {}", javamailConfig.getUsername());
+
+        for (Folder folder : store.getUserNamespaces(javamailConfig
+                .getUsername())) {
+            logger.info("user folder : {}", folder);
+
+            this.receiveByFolder(folder, javamailConfig);
+        }
+
+        store.close();
+    }
+
+    public void receiveByFolder(Folder folder, JavamailConfig javamailConfig)
+            throws MessagingException, IOException {
+        logger.info("receive : {}", folder);
+
+        if ((Folder.HOLDS_MESSAGES & folder.getType()) != 0) {
+            this.receiveMessageByFolder(folder, javamailConfig);
+        }
+
+        if ((Folder.HOLDS_FOLDERS & folder.getType()) != 0) {
+            for (Folder childFolder : folder.list()) {
+                this.receiveByFolder(childFolder, javamailConfig);
             }
-
-            String subject = this.getSubject(mimeMessage);
-            logger.debug("[" + subject + "]未读，是否需要阅读此邮件（yes/no）？");
-
-            // BufferedReader reader = new BufferedReader(new InputStreamReader(System.in));
-            // String answer = reader.readLine();
-            // String answer = "no";
-            // if ("yes".equalsIgnoreCase(answer)) {
-            // POP3ReceiveMailTest.parseMessage(msg); // 解析邮件
-            // 第二个参数如果设置为true，则将修改反馈给服务器。false则不反馈给服务器
-            // msg.setFlag(Flag.SEEN, true); //设置已读标志
-            String from = this.getFrom(mimeMessage);
-            logger.debug("from : " + from);
-
-            JavamailMessage javamailMessage = new JavamailMessage();
-            javamailMessage.setSubject(subject);
-            javamailMessage.setSender(from);
-            javamailMessage.setSendTime(mimeMessage.getSentDate());
-            javamailMessage.setReceiveTime(mimeMessage.getReceivedDate());
-            javamailMessage.setMessageNumber(mimeMessage.getMessageNumber());
-            javamailMessage.setMessageId(mimeMessage.getMessageID());
-            logger.debug("before content");
-
-            StringBuffer content = new StringBuffer(30);
-            getMailTextContent(message, content);
-            logger.debug("content : " + content);
-            javamailMessage.setContent(content.toString());
-            javamailMessage.setJavamailConfig(javamailConfig);
-            javamailMessageManager.save(javamailMessage);
-            logger.debug("end");
-
-            // }
         }
 
         // 关闭资源
         folder.close(false);
-        store.close();
+    }
+
+    public void receiveMessageByFolder(Folder folder,
+            JavamailConfig javamailConfig) {
+        try {
+            /*
+             * Folder.READ_ONLY：只读权限 Folder.READ_WRITE：可读可写（可以修改邮件的状态）
+             */
+            folder.open(Folder.READ_WRITE); // 打开收件箱
+
+            // 获得收件箱的邮件列表
+            Message[] messages = folder.getMessages();
+
+            // 打印不同状态的邮件数量
+            logger.debug("收件箱中共" + messages.length + "封邮件!");
+            logger.debug("收件箱中共" + folder.getUnreadMessageCount() + "封未读邮件!");
+            logger.debug("收件箱中共" + folder.getNewMessageCount() + "封新邮件!");
+            logger.debug("收件箱中共" + folder.getDeletedMessageCount() + "封已删除邮件!");
+
+            logger.debug("------------------------开始解析邮件----------------------------------");
+
+            // 解析邮件
+            for (Message message : messages) {
+                // IMAPMessage msg = (IMAPMessage) message;
+                MimeMessage mimeMessage = (MimeMessage) message;
+
+                try {
+                    if (javamailMessageManager.findUniqueBy("messageId",
+                            mimeMessage.getMessageID()) != null) {
+                        continue;
+                    }
+                } catch (Exception ex) {
+                    logger.error(ex.getMessage(), ex);
+
+                    continue;
+                }
+
+                String subject = this.getSubject(mimeMessage);
+                logger.debug("[" + subject + "]未读，是否需要阅读此邮件（yes/no）？");
+
+                // BufferedReader reader = new BufferedReader(new InputStreamReader(System.in));
+                // String answer = reader.readLine();
+                // String answer = "no";
+                // if ("yes".equalsIgnoreCase(answer)) {
+                // POP3ReceiveMailTest.parseMessage(msg); // 解析邮件
+                // 第二个参数如果设置为true，则将修改反馈给服务器。false则不反馈给服务器
+                // msg.setFlag(Flag.SEEN, true); //设置已读标志
+                String from = this.getFrom(mimeMessage);
+                logger.debug("from : " + from);
+
+                JavamailMessage javamailMessage = new JavamailMessage();
+
+                if (subject.length() > 255) {
+                    logger.info("{} length {} larger than 255", subject,
+                            subject.length());
+                    subject = subject.substring(0, 255);
+                }
+
+                javamailMessage.setSubject(subject);
+                javamailMessage.setSender(from);
+                javamailMessage.setSendTime(mimeMessage.getSentDate());
+                javamailMessage.setReceiveTime(mimeMessage.getReceivedDate());
+                javamailMessage
+                        .setMessageNumber(mimeMessage.getMessageNumber());
+                javamailMessage.setMessageId(mimeMessage.getMessageID());
+                javamailMessage.setFolder("INBOX");
+                logger.debug("before content");
+
+                StringBuffer content = new StringBuffer(30);
+                getMailTextContent(message, content);
+                logger.debug("content : " + content);
+                javamailMessage.setContent(content.toString());
+                javamailMessage.setJavamailConfig(javamailConfig);
+                javamailMessageManager.save(javamailMessage);
+                logger.debug("end");
+
+                // }
+            }
+        } catch (Exception ex) {
+            logger.error(ex.getMessage(), ex);
+        }
     }
 
     public static String getSubject(MimeMessage msg)

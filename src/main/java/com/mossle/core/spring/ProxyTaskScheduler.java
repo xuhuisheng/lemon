@@ -167,14 +167,15 @@ public class ProxyTaskScheduler implements TaskScheduler, InitializingBean,
     }
 
     public String findRunnableKey(Runnable runnable) {
-        logger.info("{}", runnable);
+        logger.info("findRunnableKey : {}", runnable);
 
         if (runnable instanceof ScheduledMethodRunnable) {
             ScheduledMethodRunnable scheduledMethodRunnable = (ScheduledMethodRunnable) runnable;
             Method method = scheduledMethodRunnable.getMethod();
             Class clz = method.getDeclaringClass();
 
-            // logger.info(clz.getCanonicalName() + "." + method.getName());
+            logger.info("{}.{}", clz.getCanonicalName(), method.getName());
+
             return clz.getCanonicalName() + "." + method.getName();
         } else {
             return runnable.toString();

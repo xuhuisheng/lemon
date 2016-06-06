@@ -13,6 +13,7 @@ import javax.servlet.http.HttpServletResponse;
 
 import com.mossle.api.form.FormDTO;
 import com.mossle.api.humantask.HumanTaskConnector;
+import com.mossle.api.humantask.HumanTaskConstants;
 import com.mossle.api.humantask.HumanTaskDTO;
 import com.mossle.api.keyvalue.KeyValueConnector;
 import com.mossle.api.keyvalue.Record;
@@ -59,6 +60,8 @@ import org.apache.commons.io.IOUtils;
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
 
+import org.springframework.beans.factory.annotation.Value;
+
 import org.springframework.stereotype.Controller;
 
 import org.springframework.ui.Model;
@@ -88,6 +91,7 @@ public class WorkspaceController {
     private HumanTaskConnector humanTaskConnector;
     private NotificationConnector notificationConnector;
     private InternalProcessConnector internalProcessConnector;
+    private String baseUrl;
 
     @RequestMapping("workspace-home")
     public String home(Model model) {
@@ -477,9 +481,20 @@ public class WorkspaceController {
         // .processInstanceId(processInstanceId).list();
         model.addAttribute("historicTasks", historicTasks);
 
+        // 获取流程对应的所有人工任务（目前还没有区分历史）
         List<HumanTaskDTO> humanTasks = humanTaskConnector
                 .findHumanTasksByProcessInstanceId(processInstanceId);
-        model.addAttribute("humanTasks", humanTasks);
+        List<HumanTaskDTO> humanTaskDtos = new ArrayList<HumanTaskDTO>();
+
+        for (HumanTaskDTO humanTaskDto : humanTasks) {
+            if (humanTaskDto.getParentId() != null) {
+                continue;
+            }
+
+            humanTaskDtos.add(humanTaskDto);
+        }
+
+        model.addAttribute("humanTasks", humanTaskDtos);
         // model.addAttribute("historicVariableInstances",
         // historicVariableInstances);
         model.addAttribute("nodeDtos",
@@ -565,6 +580,8 @@ public class WorkspaceController {
     public String transferProcessInstance(
             @RequestParam("processInstanceId") String processInstanceId,
             @RequestParam("assignee") String assignee) {
+        String tenantId = tenantHolder.getTenantId();
+
         // 1. 找到历史
         HistoricProcessInstance historicProcessInstance = processEngine
                 .getHistoryService().createHistoricProcessInstanceQuery()
@@ -575,6 +592,28 @@ public class WorkspaceController {
         humanTaskDto.setProcessInstanceId(processInstanceId);
         humanTaskDto.setPresentationSubject(historicProcessInstance.getName());
         humanTaskDto.setAssignee(assignee);
+        humanTaskDto.setTenantId(tenantId);
+        // TODO: 还没有字段
+        // humanTaskDto.setCopyStatus("unread");
+        humanTaskDto.setCatalog(HumanTaskConstants.CATALOG_COPY);
+        humanTaskDto.setAction("unread");
+        humanTaskDto.setBusinessKey(historicProcessInstance.getBusinessKey());
+        humanTaskDto.setProcessDefinitionId(historicProcessInstance
+                .getProcessDefinitionId());
+
+        try {
+            // TODO: 等到流程支持viewFormKey，才能设置。目前做不到
+            List<HistoricTaskInstance> historicTaskInstances = processEngine
+                    .getHistoryService().createHistoricTaskInstanceQuery()
+                    .processInstanceId(processInstanceId).list();
+            HistoricTaskInstance historicTaskInstance = historicTaskInstances
+                    .get(0);
+            humanTaskDto.setForm(historicTaskInstance.getFormKey());
+            humanTaskDto.setName(historicTaskInstance.getName());
+        } catch (Exception ex) {
+            logger.error(ex.getMessage(), ex);
+        }
+
         humanTaskConnector.saveHumanTask(humanTaskDto);
 
         // 3. 把任务分配给对应的人员
@@ -612,8 +651,12 @@ public class WorkspaceController {
             notificationDto.setSubject("请尽快办理 "
                     + humanTaskDto.getPresentationSubject());
 
-            notificationDto.setContent("请尽快办理 "
-                    + humanTaskDto.getPresentationSubject());
+            String url = baseUrl
+                    + "/operation/task-operation-viewTaskForm.do?humanTaskId="
+                    + humanTaskDto.getId();
+            String content = "请尽快办理 " + humanTaskDto.getPresentationSubject()
+                    + "<p><a href='" + url + "'>" + url + "</a></p>";
+            notificationDto.setContent(content);
 
             notificationConnector.send(notificationDto, "1");
         }
@@ -741,5 +784,10 @@ public class WorkspaceController {
     public void setInternalProcessConnector(
             InternalProcessConnector internalProcessConnector) {
         this.internalProcessConnector = internalProcessConnector;
+    }
+
+    @Value("${application.baseUrl}")
+    public void setBaseUrl(String baseUrl) {
+        this.baseUrl = baseUrl;
     }
 }
