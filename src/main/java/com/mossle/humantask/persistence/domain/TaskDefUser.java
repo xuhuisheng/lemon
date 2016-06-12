@@ -34,6 +34,9 @@ public class TaskDefUser implements java.io.Serializable {
     /** 分类. */
     private String catalog;
 
+    /** 状态. */
+    private String status;
+
     public TaskDefUser() {
     }
 
@@ -42,12 +45,13 @@ public class TaskDefUser implements java.io.Serializable {
     }
 
     public TaskDefUser(Long id, TaskDefBase taskDefBase, String value,
-            String type, String catalog) {
+            String type, String catalog, String status) {
         this.id = id;
         this.taskDefBase = taskDefBase;
         this.value = value;
         this.type = type;
         this.catalog = catalog;
+        this.status = status;
     }
 
     /** @return 主键. */
@@ -120,5 +124,19 @@ public class TaskDefUser implements java.io.Serializable {
      */
     public void setCatalog(String catalog) {
         this.catalog = catalog;
+    }
+
+    /** @return 状态. */
+    @Column(name = "STATUS", length = 50)
+    public String getStatus() {
+        return this.status;
+    }
+
+    /**
+     * @param status
+     *            状态.
+     */
+    public void setStatus(String status) {
+        this.status = status;
     }
 }

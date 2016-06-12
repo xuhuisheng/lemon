@@ -86,7 +86,7 @@ public class BpmConfUserController {
             taskUser.setCatalog("notification");
         }
 
-        if (type == 1) {
+        if ((type == 0) || (type == 1)) {
             taskUser.setType("user");
         } else if (type == 2) {
             taskUser.setType("group");
@@ -106,11 +106,14 @@ public class BpmConfUserController {
         Long bpmConfNodeId = bpmConfUser.getBpmConfNode().getId();
 
         if (bpmConfUser.getStatus() == 0) {
+            // Ĭ�� -> ����
             bpmConfUser.setStatus(2);
             bpmConfUserManager.save(bpmConfUser);
         } else if (bpmConfUser.getStatus() == 1) {
+            // ɾ�������ӵ�
             bpmConfUserManager.remove(bpmConfUser);
         } else if (bpmConfUser.getStatus() == 2) {
+            // ���� -> Ĭ��
             bpmConfUser.setStatus(0);
             bpmConfUserManager.save(bpmConfUser);
         }
@@ -132,15 +135,27 @@ public class BpmConfUserController {
             taskUser.setCatalog("notification");
         }
 
-        if (type == 1) {
+        if ((type == 0) || (type == 1)) {
             taskUser.setType("user");
         } else if (type == 2) {
             taskUser.setType("group");
         }
 
         taskUser.setValue(value);
-        taskDefinitionConnector.removeTaskUser(taskDefinitionKey,
-                processDefinitionId, taskUser);
+
+        if (bpmConfUser.getStatus() == 0) {
+            // ���� > Ĭ��
+            taskDefinitionConnector.updateTaskUser(taskDefinitionKey,
+                    processDefinitionId, taskUser, "active");
+        } else if (bpmConfUser.getStatus() == 1) {
+            // ��� > ɾ��
+            taskDefinitionConnector.removeTaskUser(taskDefinitionKey,
+                    processDefinitionId, taskUser);
+        } else if (bpmConfUser.getStatus() == 2) {
+            // Ĭ�� > ����
+            taskDefinitionConnector.updateTaskUser(taskDefinitionKey,
+                    processDefinitionId, taskUser, "disable");
+        }
 
         return "redirect:/bpm/bpm-conf-user-list.do?bpmConfNodeId="
                 + bpmConfNodeId;

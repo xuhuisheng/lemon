@@ -97,6 +97,12 @@ public interface TaskDefinitionConnector {
             TaskUserDTO taskUser);
 
     /**
+     * 更新参与者.
+     */
+    void updateTaskUser(String taskDefinitionKey, String processDefinitionId,
+            TaskUserDTO taskUser, String status);
+
+    /**
      * 新增提醒.
      */
     void addTaskNotification(String taskDefinitionKey,
