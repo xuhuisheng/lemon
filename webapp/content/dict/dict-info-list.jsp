@@ -7,24 +7,24 @@
 
   <head>
     <%@include file="/common/meta.jsp"%>
-    <title><spring:message code="dev.dict-info.list.title" text="列表"/></title>
-    <%@include file="/common/s.jsp"%>
+    <title><spring:message code="dev.dict-type.list.title" text="列表"/></title>
+    <%@include file="/common/s3.jsp"%>
     <script type="text/javascript">
 var config = {
-    id: 'dict-infoGrid',
-    pageNo: 1,
-    pageSize: ${fn:length(dictInfos)},
-    totalCount: ${fn:length(dictInfos)},
-    resultSize: ${fn:length(dictInfos)},
-    pageCount: 1,
+    id: 'dict-typeGrid',
+    pageNo: ${page.pageNo},
+    pageSize: ${page.pageSize},
+    totalCount: ${page.totalCount},
+    resultSize: ${page.resultSize},
+    pageCount: ${page.pageCount},
     orderBy: '${page.orderBy == null ? "" : page.orderBy}',
-    asc: true,
+    asc: ${page.asc},
     params: {
         'filter_LIKES_name': '${param.filter_LIKES_name}'
     },
 	selectedItemClass: 'selectedItem',
-	gridFormId: 'dict-infoGridForm',
-	exportUrl: 'dict-info-export.do'
+	gridFormId: 'dict-typeGridForm',
+	exportUrl: 'dict-type-export.do'
 };
 
 var table;
@@ -45,57 +45,55 @@ $(function() {
 	  <%@include file="/menu/dict.jsp"%>
 
 	  <!-- start of main -->
-      <section id="m-main" class="span10">
+      <section id="m-main" class="col-md-10" style="padding-top:65px;">
 
-	  <article class="m-widget">
-        <header class="header">
-		  <h4 class="title">查询</h4>
-		  <div class="ctrl">
-		    <a class="btn"><i id="dict-infoSearchIcon" class="icon-chevron-up"></i></a>
-		  </div>
-		</header>
-        <div id="dict-infoSearch" class="content content-inner">
+<div class="panel panel-default">
+  <div class="panel-heading">
+	<i class="glyphicon glyphicon-list"></i>
+    查询
+	<div class="pull-right ctrl">
+	  <a class="btn btn-default btn-xs"><i id="dict-typeSearchIcon" class="glyphicon glyphicon-chevron-up"></i></a>
+    </div>
+  </div>
+  <div class="panel-body">
 
-		  <form name="dict-infoForm" method="post" action="dict-info-list.do" class="form-inline">
-		    <label for="dict-info_name"><spring:message code='dict-info.dict-info.list.search.name' text='名称'/>:</label>
-		    <input type="text" id="dict-info_name" name="filter_LIKES_name" value="${param.filter_LIKES_name}">
-			<button class="btn btn-small a-search" onclick="document.dict-infoForm.submit()">查询</button>&nbsp;
+		  <form name="dict-typeForm" method="post" action="dict-type-list.do" class="form-inline">
+		    <label for="dict-type_name"><spring:message code='dict-type.dict-type.list.search.name' text='名称'/>:</label>
+		    <input type="text" id="dict-type_name" name="filter_LIKES_name" value="${param.filter_LIKES_name}" class="form-control">
+			<button class="btn btn-default a-search" onclick="document.dict-typeForm.submit()">查询</button>&nbsp;
 		  </form>
 
 		</div>
-	  </article>
+	  </div>
 
-	  <article class="m-blank">
-	    <div class="pull-left">
-		  <region:region-permission permission="dict-info:create">
-		  <button class="btn btn-small a-insert" onclick="location.href='dict-info-input.do?typeId=${param.typeId}'">新建</button>
-		  </region:region-permission>
-		  <region:region-permission permission="dict-info:delete">
-		  <button class="btn btn-small a-remove" onclick="table.removeAll()">删除</button>
-		  </region:region-permission>
-		  <button class="btn btn-small a-export" onclick="table.exportExcel()">导出</button>
+      <div style="margin-bottom: 20px;">
+	    <div class="pull-left btn-group" role="group">
+		  <button class="btn btn-default a-insert" onclick="location.href='dict-type-input.do'">新建</button>
+		  <button class="btn btn-default a-remove" onclick="table.removeAll()">删除</button>
+		  <button class="btn btn-default a-export" onclick="table.exportExcel()">导出</button>
 		</div>
 
 		<div class="pull-right">
 		  每页显示
-		  <select class="m-page-size">
+		  <select class="m-page-size form-control" style="display:inline;width:auto;">
 		    <option value="10">10</option>
 		    <option value="20">20</option>
 		    <option value="50">50</option>
 		  </select>
 		  条
+        </div>
+
+	    <div class="clearfix"></div>
+	  </div>
+
+<form id="dict-infoGridForm" name="dict-infoGridForm" method='post' action="dict-info-remove.do?typeId=${param.typeId}" class="m-form-blank">
+      <div class="panel panel-default">
+        <div class="panel-heading">
+		  <i class="glyphicon glyphicon-list"></i>
+		  <spring:message code="scope-info.scope-info.list.title" text="列表"/>
 		</div>
 
-	    <div class="m-clear"></div>
-	  </article>
-
-      <article class="m-widget">
-        <header class="header">
-		  <h4 class="title"><spring:message code="dict-info.dict-info.list.title" text="列表"/></h4>
-		</header>
-        <div class="content">
-<form id="dict-infoGridForm" name="dict-infoGridForm" method='post' action="dict-info-remove.do?typeId=${param.typeId}" class="m-form-blank">
-  <table id="dict-infoGrid" class="m-table table-hover">
+  <table id="dict-infoGrid" class="table table-hover">
     <thead>
       <tr>
         <th width="10" class="m-table-check"><input type="checkbox" name="checkAll" onchange="toggleSelectedItems(this.checked)"></th>
@@ -120,23 +118,24 @@ $(function() {
       </c:forEach>
     </tbody>
   </table>
-</form>
-        </div>
-      </article>
 
-	  <article>
+
+      </div>
+</form>
+
+	  <div>
 	    <div class="m-page-info pull-left">
 		  共100条记录 显示1到10条记录
 		</div>
 
 		<div class="btn-group m-pagination pull-right">
-		  <button class="btn btn-small">&lt;</button>
-		  <button class="btn btn-small">1</button>
-		  <button class="btn btn-small">&gt;</button>
+		  <button class="btn btn-default">&lt;</button>
+		  <button class="btn btn-default">1</button>
+		  <button class="btn btn-default">&gt;</button>
 		</div>
 
-	    <div class="m-clear"></div>
-      </article>
+	    <div class="clearfix"></div>
+      </div>
 
       <div class="m-spacer"></div>
 
@@ -147,3 +146,4 @@ $(function() {
   </body>
 
 </html>
+
