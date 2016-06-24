@@ -1,4 +1,4 @@
- package com.mossle.javamail.service;
+package com.mossle.javamail.service;
 
 import java.io.IOException;
 import java.io.UnsupportedEncodingException;
@@ -69,8 +69,6 @@ public class JavamailService {
                 javamailConfig.getReceiveType());
         props.setProperty("mail.pop3.host", javamailConfig.getReceiveHost());
         props.setProperty("mail.pop3.port", javamailConfig.getReceivePort());
-        props.setProperty("mail.pop3.ssl.enable", "true");
-        props.setProperty("mail.pop3.ssl.trust", "*");
 
         if ("ssl".equals(javamailConfig.getReceiveSecure())) {
             props.setProperty("mail.pop3.ssl.enable", "true");
