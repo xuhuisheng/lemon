@@ -205,8 +205,10 @@ public class JavamailService {
             }
         }
 
-        // 关闭资源
-        folder.close(false);
+        if (folder.isOpen()) {
+            // 关闭资源
+            folder.close(false);
+        }
     }
 
     public void receiveMessageByFolder(Folder folder,
