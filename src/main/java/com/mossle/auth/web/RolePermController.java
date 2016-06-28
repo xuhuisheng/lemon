@@ -8,11 +8,13 @@ import javax.annotation.Resource;
 
 import com.mossle.api.tenant.TenantHolder;
 
+import com.mossle.auth.component.AuthCache;
 import com.mossle.auth.component.RoleDefChecker;
 import com.mossle.auth.persistence.domain.Perm;
 import com.mossle.auth.persistence.domain.PermType;
 import com.mossle.auth.persistence.domain.Role;
 import com.mossle.auth.persistence.domain.RoleDef;
+import com.mossle.auth.persistence.domain.UserStatus;
 import com.mossle.auth.persistence.manager.PermManager;
 import com.mossle.auth.persistence.manager.PermTypeManager;
 import com.mossle.auth.persistence.manager.RoleDefManager;
@@ -44,6 +46,7 @@ public class RolePermController {
     private RoleDefChecker roleDefChecker;
     private RoleManager roleManager;
     private TenantHolder tenantHolder;
+    private AuthCache authCache;
 
     @RequestMapping("role-perm-save")
     public String save(
@@ -69,6 +72,12 @@ public class RolePermController {
             roleDefManager.save(roleDef);
             messageHelper.addFlashMessage(redirectAttributes,
                     "core.success.save", "保存成功");
+
+            for (Role roleInstance : roleDef.getRoles()) {
+                for (UserStatus userStatus : roleInstance.getUserStatuses()) {
+                    authCache.evictUserStatus(userStatus);
+                }
+            }
         } catch (CheckRoleException ex) {
             logger.warn(ex.getMessage(), ex);
             messageHelper.addFlashMessage(redirectAttributes, ex.getMessage());
@@ -133,5 +142,10 @@ public class RolePermController {
     @Resource
     public void setTenantHolder(TenantHolder tenantHolder) {
         this.tenantHolder = tenantHolder;
+    }
+
+    @Resource
+    public void setAuthCache(AuthCache authCache) {
+        this.authCache = authCache;
     }
 }
