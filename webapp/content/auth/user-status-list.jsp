@@ -20,7 +20,7 @@ var config = {
     orderBy: '${page.orderBy == null ? "" : page.orderBy}',
     asc: ${page.asc},
     params: {
-        'filter_LIKES_name': '${param.filter_LIKES_name}'
+        'filter_LIKES_username': '${param.filter_LIKES_username}'
     },
 	selectedItemClass: 'selectedItem',
 	gridFormId: 'user-statusGridForm',
@@ -59,7 +59,7 @@ $(function() {
 
 		  <form name="user-statusForm" method="post" action="user-status-list.do" class="form-inline">
 		    <label for="user-status_name"><spring:message code='user-status.user-status.list.search.name' text='名称'/>:</label>
-		    <input type="text" id="user-status_name" name="filter_LIKES_name" value="${param.filter_LIKES_name}" class="form-control">
+		    <input type="text" id="user-status_name" name="filter_LIKES_username" value="${param.filter_LIKES_username}" class="form-control">
 			<button class="btn btn-default a-search" onclick="document.user-statusForm.submit()">查询</button>&nbsp;
 		  </form>
 
