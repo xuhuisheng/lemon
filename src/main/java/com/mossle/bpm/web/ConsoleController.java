@@ -183,9 +183,18 @@ public class ConsoleController {
             RedirectAttributes redirectAttributes) throws Exception {
         String tenantId = tenantHolder.getTenantId();
         String fileName = file.getOriginalFilename();
-        processEngine.getRepositoryService().createDeployment()
+        Deployment deployment = processEngine.getRepositoryService()
+                .createDeployment()
                 .addInputStream(fileName, file.getInputStream())
                 .tenantId(tenantId).deploy();
+        List<ProcessDefinition> processDefinitions = processEngine
+                .getRepositoryService().createProcessDefinitionQuery()
+                .deploymentId(deployment.getId()).list();
+
+        for (ProcessDefinition processDefinition : processDefinitions) {
+            processEngine.getManagementService().executeCommand(
+                    new SyncProcessCmd(processDefinition.getId()));
+        }
 
         return "redirect:/bpm/console-listProcessDefinitions.do";
     }
