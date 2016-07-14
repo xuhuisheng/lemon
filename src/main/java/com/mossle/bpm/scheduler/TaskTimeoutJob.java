@@ -1,27 +1,20 @@
 package com.mossle.bpm.scheduler;
 
-import java.util.Calendar;
-import java.util.Date;
 import java.util.List;
 
 import javax.annotation.Resource;
 
-import javax.xml.datatype.DatatypeFactory;
-import javax.xml.datatype.Duration;
-
 import com.mossle.bpm.cmd.SendNoticeCmd;
-import com.mossle.bpm.persistence.domain.BpmMailTemplate;
-import com.mossle.bpm.persistence.domain.BpmProcess;
-import com.mossle.bpm.persistence.domain.BpmTaskDefNotice;
 import com.mossle.bpm.persistence.manager.BpmProcessManager;
 import com.mossle.bpm.persistence.manager.BpmTaskDefNoticeManager;
 
 import org.activiti.engine.ProcessEngine;
-import org.activiti.engine.repository.ProcessDefinition;
 import org.activiti.engine.task.Task;
 
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
+
+import org.springframework.scheduling.annotation.Scheduled;
 
 public class TaskTimeoutJob {
     private static Logger logger = LoggerFactory
@@ -33,7 +26,10 @@ public class TaskTimeoutJob {
     private BpmProcessManager bpmProcessManager;
     private BpmTaskDefNoticeManager bpmTaskDefNoticeManager;
 
+    @Scheduled(cron = "0/10 * * * * ?")
     public void execute() throws Exception {
+        logger.info("start");
+
         List<Task> tasks = processEngine.getTaskService().createTaskQuery()
                 .list();
 
@@ -44,6 +40,8 @@ public class TaskTimeoutJob {
                         sendNoticeCmd);
             }
         }
+
+        logger.info("end");
     }
 
     @Resource

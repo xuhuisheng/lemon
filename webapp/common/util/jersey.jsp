@@ -176,7 +176,7 @@ function doTest(className, methodName) {
 			if (queryParams != '') {
 				queryParams += '&';
 			}
-			queryParams += item.name + '=' +  document.getElementById(id + '-' + item.name).value;
+			queryParams += item.name + '=' +  encodeURIComponent(document.getElementById(id + '-' + item.name).value);
 		} else if (item.type == 'form') {
 			if (formParams != '') {
 				formParams += '&';

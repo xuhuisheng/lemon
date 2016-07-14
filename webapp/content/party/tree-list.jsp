@@ -3,7 +3,7 @@
 <%pageContext.setAttribute("currentHeader", "party");%>
 <%pageContext.setAttribute("currentMenu", "party");%>
 <%@page import="java.util.*"%>
-<%@page import="com.mossle.party.domain.*"%>
+<%@page import="com.mossle.party.persistence.domain.*"%>
 <%!
 	public String generatePartyEntities(List<PartyEntity> partyEntities, long partyStructTypeId) {
 		if (partyEntities == null) {
@@ -44,49 +44,61 @@
 	}
 %>
 <!doctype html>
-<html lang="en">
+<html>
 
   <head>
     <%@include file="/common/meta.jsp"%>
-    <title><spring:message code="org.org.list.title" text="组织机构列表"/></title>
-    <%@include file="/common/s.jsp"%>
+    <title>&nbsp;</title>
+    <%@include file="/common/s3.jsp"%>
+    <script type="text/javascript">
+$(function() {
+    $("#tree-listForm").validate({
+        submitHandler: function(form) {
+			bootbox.animate(false);
+			var box = bootbox.dialog('<div class="progress progress-striped active" style="margin:0px;"><div class="bar" style="width: 100%;"></div></div>');
+            form.submit();
+        },
+        errorClass: 'validate-error'
+    });
+})
+    </script>
   </head>
 
   <body>
     <%@include file="/header/party.jsp"%>
 
     <div class="row-fluid">
-	<%@include file="/menu/party.jsp"%>
+	  <%@include file="/menu/party.jsp"%>
 
 	<!-- start of main -->
-    <section id="m-main" class="span10">
+      <section id="m-main" class="col-md-10" style="padding-top:65px;">
 
-	  <article class="m-widget">
-        <header class="header">
-		  <h4 class="title">查询</h4>
-		  <div class="ctrl">
-			<a class="btn"><i id="orgSearchIcon" class="icon-chevron-up"></i></a>
-		  </div>
-		</header>
-        <div id="orgSearch" class="content content-inner">
+      <div class="panel panel-default">
+        <div class="panel-heading">
+		  <i class="glyphicon glyphicon-list"></i>
+		  &nbsp;
+		</div>
 
+		<div class="panel-body">
 		  <form name="orgForm" method="post" action="tree-list.do" class="form-inline">
-			<select name="partyStructTypeId">
+			<select name="partyStructTypeId" class="form-control">
 			  <c:forEach items="${partyStructTypes}" var="item">
 			  <option value="${item.id}" ${param.partyStructTypeId == item.id ? 'selected' : ''}>${item.name}</option>
 			  </c:forEach>
 			</select>
 			<button class="btn"><spring:message code='org.tree.list.view' text='查看'/></button>
 		  </form>
+		  </div>
+		  </div>
 
+      <div class="panel panel-default">
+        <div class="panel-heading">
+		  <i class="glyphicon glyphicon-list"></i>
+		  &nbsp;
 		</div>
-	  </article>
 
-      <article class="m-widget">
-        <header class="header">
-		  <h4 class="title"><spring:message code="org.org.list.title" text="组织机构列表"/></h4>
-		</header>
-		<div class="content content-inner">
+		<div class="panel-body">
+
 
 <c:set var="partyEntities" value="${partyEntities}"/>
 <%
@@ -99,10 +111,10 @@ try {
 List<PartyEntity> partyEntities = (List<PartyEntity>) pageContext.getAttribute("partyEntities");
 out.print(generatePartyEntities(partyEntities, partyStructTypeId));
 %>
-        </div>
-      </article>
 
-      <div class="m-spacer"></div>
+
+		</div>
+      </article>
 
     </section>
 	<!-- end of main -->
@@ -111,3 +123,4 @@ out.print(generatePartyEntities(partyEntities, partyStructTypeId));
   </body>
 
 </html>
+

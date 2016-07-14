@@ -1,0 +1,88 @@
+<?xml version="1.0" encoding="UTF-8"?>
+<beans xmlns="http://www.springframework.org/schema/beans"
+	    xmlns:xsi="http://www.w3.org/2001/XMLSchema-instance"
+	    xsi:schemaLocation="http://www.springframework.org/schema/beans http://www.springframework.org/schema/beans/spring-beans.xsd">
+
+	<!-- ================================================== -->
+
+	<alias name="defaultCacheManager" alias="userRepoCacheManager"/>
+
+	<bean id="userRepoCache" class="com.mossle.user.support.UserRepoCacheImpl">
+		<property name="cacheManager" ref="userRepoCacheManager"/>
+	</bean>
+
+	<bean id="userRepoConnector" class="com.mossle.user.support.UserRepoConnectorFactoryBean">
+		<property name="type" value="${userrepo.connector.type}"/>
+		<property name="userRepoCache" ref="userRepoCache"/>
+		<property name="jdbcTemplate" ref="jdbcTemplate"/>
+	</bean>
+
+	<bean class="com.mossle.user.support.UserRepoPopulator">
+		<property name="debug" value="${userrepo.connector.debug}"/>
+	</bean>
+
+	<!-- ================================================== -->
+
+	<alias name="defaultCacheManager" alias="userCacheManager"/>
+
+	<bean id="userCache" class="com.mossle.user.support.UserCacheImpl">
+		<property name="cacheManager" ref="userCacheManager"/>
+	</bean>
+
+	<bean id="userConnector" class="com.mossle.user.support.UserConnectorFactoryBean">
+		<property name="type" value="${user.connector.type}"/>
+		<property name="userCache" ref="userCache"/>
+		<property name="jdbcTemplate" ref="jdbcTemplate"/>
+	</bean>
+
+	<!-- ================================================== -->
+
+	<alias name="defaultCacheManager" alias="userAuthCacheManager"/>
+
+	<bean id="userAuthCache" class="com.mossle.auth.support.UserAuthCacheImpl">
+		<property name="cacheManager" ref="userAuthCacheManager"/>
+	</bean>
+
+	<bean id="userAuthConnector" class="com.mossle.auth.support.UserAuthConnectorFactoryBean">
+		<property name="type" value="${userauth.connector.type}"/>
+		<property name="userAuthCache" ref="userAuthCache"/>
+		<property name="jdbcTemplate" ref="jdbcTemplate"/>
+		<property name="userConnector" ref="userConnector"/>
+		<property name="tenantConnector" ref="tenantConnector"/>
+	</bean>
+
+	<!-- ================================================== -->
+
+	<!-- 这个是SPI，仅在spring security认证时获取密码用 -->
+	<bean id="accountCredentialConnector" class="${user.accountCredentialConnector}"/>
+
+	<!-- 管理用户时，同步party的工具（应该是人事模块吗？还没想明白） -->
+	<bean id="userNotification" class="com.mossle.user.notification.PartyUserNotification"/>
+
+	<!-- 获取账号状态的工具（应该是spi吗？还没想明白） -->
+	<bean id="accountStatusHelper" class="com.mossle.user.support.LocalAccountStatusHelper"/>
+
+	<!-- 菜单 -->
+	<bean id="menuConnector" class="${menu.connector}"/>
+
+	<alias name="defaultCacheManager" alias="menuCacheManager"/>
+
+	<bean id="menuCache" class="com.mossle.auth.support.MenuCache">
+		<property name="cacheManager" ref="menuCacheManager"/>
+	</bean>
+
+	<!-- 认证 -->
+	<bean id="authenticationHandler" class="com.mossle.user.authenticate.NormalAuthenticationHandler"/>
+
+	<!-- 设备 -->
+	<bean id="deviceConnector" class="${device.connector}"/>
+
+	<!-- avatar -->
+	<alias name="defaultCacheManager" alias="avatarCacheManager"/>
+
+	<bean id="avatarCache" class="com.mossle.user.avatar.AvatarCache">
+		<property name="cacheManager" ref="avatarCacheManager"/>
+	</bean>
+
+	<bean id="avatarConnector" class="com.mossle.user.avatar.AvatarConnectorImpl"/>
+</beans>

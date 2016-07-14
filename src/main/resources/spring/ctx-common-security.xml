@@ -1,0 +1,38 @@
+<?xml version="1.0" encoding="UTF-8"?>
+<beans:beans xmlns="http://www.springframework.org/schema/security"
+             xmlns:beans="http://www.springframework.org/schema/beans"
+             xmlns:xsi="http://www.w3.org/2001/XMLSchema-instance"
+             xsi:schemaLocation="http://www.springframework.org/schema/beans http://www.springframework.org/schema/beans/spring-beans.xsd
+             http://www.springframework.org/schema/security http://www.springframework.org/schema/security/spring-security.xsd">
+
+    <http security="none" pattern="/s/**"/>
+	<http security="none" pattern="/favicon.ico"/>
+	<http security="none" pattern="/**/*.js"/>
+	<http security="none" pattern="/**/*.css"/>
+	<http security="none" pattern="/**/*.jpg"/>
+	<http security="none" pattern="/**/*.gif"/>
+	<http security="none" pattern="/**/*.png"/>
+
+    <http auto-config='true' access-decision-manager-ref='accessDecisionManager' security-context-repository-ref="securityContextRepository">
+		<form-login login-page="/common/login.jsp"
+                    default-target-url="/"
+					authentication-success-handler-ref="authenticationSuccessHandler"
+					authentication-failure-handler-ref="authenticationFailureHandler"/>
+		<logout success-handler-ref="logoutSuccessHandler" />
+		<!--
+        <csrf disabled="true"/>
+		-->
+		<remember-me key="lemon"/>
+        <custom-filter ref="autoLoginFilter" after="SECURITY_CONTEXT_FILTER" />
+		<custom-filter ref="captchaFilter" before="FORM_LOGIN_FILTER" />
+        <custom-filter ref="switchUserFilter" position="SWITCH_USER_FILTER" />
+    </http>
+
+    <authentication-manager>
+        <authentication-provider ref="authenticationProvider"/>
+    </authentication-manager>
+
+	<global-method-security proxy-target-class="true"
+	                        access-decision-manager-ref="accessDecisionManager"
+							secured-annotations="enabled"/>
+</beans:beans>

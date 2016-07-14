@@ -1,2 +1,2 @@
 
-alter table AUTH_USER_STATUS change reference ref varchar(64);
+ALTER TABLE AUTH_USER_STATUS CHANGE reference ref VARCHAR(200);

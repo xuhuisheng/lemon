@@ -1,22 +1,23 @@
 package com.mossle.bpm.cmd;
 
-import java.sql.Connection;
-import java.sql.SQLException;
-import java.sql.Statement;
-
 import java.util.ArrayList;
 import java.util.Date;
 import java.util.List;
+
+import com.mossle.api.humantask.HumanTaskConnector;
+import com.mossle.api.humantask.HumanTaskConstants;
+import com.mossle.api.humantask.HumanTaskDTO;
 
 import com.mossle.bpm.graph.ActivitiHistoryGraphBuilder;
 import com.mossle.bpm.graph.Edge;
 import com.mossle.bpm.graph.Graph;
 import com.mossle.bpm.graph.Node;
+import com.mossle.bpm.support.HumanTaskBuilder;
 
 import com.mossle.core.spring.ApplicationContextHelper;
 
-import org.activiti.engine.ActivitiException;
-import org.activiti.engine.history.HistoricActivityInstance;
+import org.activiti.engine.delegate.DelegateTask;
+import org.activiti.engine.history.HistoricProcessInstance;
 import org.activiti.engine.impl.HistoricActivityInstanceQueryImpl;
 import org.activiti.engine.impl.Page;
 import org.activiti.engine.impl.cmd.GetDeploymentProcessDefinitionCmd;
@@ -28,9 +29,7 @@ import org.activiti.engine.impl.persistence.entity.HistoricActivityInstanceEntit
 import org.activiti.engine.impl.persistence.entity.HistoricTaskInstanceEntity;
 import org.activiti.engine.impl.persistence.entity.ProcessDefinitionEntity;
 import org.activiti.engine.impl.persistence.entity.TaskEntity;
-import org.activiti.engine.impl.pvm.PvmTransition;
 import org.activiti.engine.impl.pvm.process.ActivityImpl;
-import org.activiti.engine.impl.pvm.process.TransitionImpl;
 
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
@@ -123,7 +122,7 @@ public class WithdrawTaskCmd implements Command<Integer> {
 
     public boolean checkCouldWithdraw(Node node) {
         // TODO: 如果是catchEvent，也应该可以撤销，到时候再说
-        for (Edge edge : node.getEdges()) {
+        for (Edge edge : node.getOutgoingEdges()) {
             Node dest = edge.getDest();
             String type = dest.getType();
 
@@ -157,6 +156,12 @@ public class WithdrawTaskCmd implements Command<Integer> {
      * 删除未完成任务.
      */
     public void deleteActiveTasks(String processInstanceId) {
+        // humantask
+        HumanTaskConnector humanTaskConnector = ApplicationContextHelper
+                .getBean(HumanTaskConnector.class);
+        humanTaskConnector
+                .removeHumanTaskByProcessInstanceId(processInstanceId);
+
         Context.getCommandContext().getTaskEntityManager()
                 .deleteTasksByProcessInstanceId(processInstanceId, null, true);
     }
@@ -165,7 +170,7 @@ public class WithdrawTaskCmd implements Command<Integer> {
         logger.info("node : {}, {}, {}", node.getId(), node.getType(),
                 node.getName());
 
-        for (Edge edge : node.getEdges()) {
+        for (Edge edge : node.getOutgoingEdges()) {
             logger.info("edge : {}", edge.getName());
 
             Node dest = edge.getDest();
@@ -221,8 +226,20 @@ public class WithdrawTaskCmd implements Command<Integer> {
                 .getProcessInstanceId());
         task.setDescriptionWithoutCascade(historicTaskInstanceEntity
                 .getDescription());
+        task.setTenantId(historicTaskInstanceEntity.getTenantId());
 
         Context.getCommandContext().getTaskEntityManager().insert(task);
+
+        try {
+            HumanTaskConnector humanTaskConnector = ApplicationContextHelper
+                    .getBean(HumanTaskConnector.class);
+            // humantask
+            humanTaskConnector
+                    .removeHumanTaskByTaskId(historicTaskInstanceEntity.getId());
+            this.createHumanTask(task, historicTaskInstanceEntity);
+        } catch (Exception ex) {
+            logger.error(ex.getMessage(), ex);
+        }
 
         ExecutionEntity executionEntity = Context.getCommandContext()
                 .getExecutionEntityManager()
@@ -254,5 +271,29 @@ public class WithdrawTaskCmd implements Command<Integer> {
         String deleteReason = historicTaskInstanceEntity.getDeleteReason();
 
         return "跳过".equals(deleteReason);
+    }
+
+    public HumanTaskDTO createHumanTask(DelegateTask delegateTask,
+            HistoricTaskInstanceEntity historicTaskInstanceEntity)
+            throws Exception {
+        HumanTaskConnector humanTaskConnector = ApplicationContextHelper
+                .getBean(HumanTaskConnector.class);
+        HumanTaskDTO humanTaskDto = new HumanTaskBuilder().setDelegateTask(
+                delegateTask).build();
+
+        if ("发起流程".equals(historicTaskInstanceEntity.getDeleteReason())) {
+            humanTaskDto.setCatalog(HumanTaskConstants.CATALOG_START);
+        }
+
+        HistoricProcessInstance historicProcessInstance = Context
+                .getCommandContext()
+                .getHistoricProcessInstanceEntityManager()
+                .findHistoricProcessInstance(
+                        delegateTask.getProcessInstanceId());
+        humanTaskDto
+                .setProcessStarter(historicProcessInstance.getStartUserId());
+        humanTaskDto = humanTaskConnector.saveHumanTask(humanTaskDto);
+
+        return humanTaskDto;
     }
 }

@@ -7,12 +7,8 @@ import java.util.Map;
 
 import javax.annotation.Resource;
 
-import com.mossle.api.scope.ScopeHolder;
 import com.mossle.api.user.UserDTO;
 
-import com.mossle.user.component.UserPublisher;
-import com.mossle.user.notification.DefaultUserNotification;
-import com.mossle.user.notification.UserNotification;
 import com.mossle.user.persistence.domain.UserAttr;
 import com.mossle.user.persistence.domain.UserBase;
 import com.mossle.user.persistence.domain.UserSchema;
@@ -20,11 +16,10 @@ import com.mossle.user.persistence.manager.UserAttrManager;
 import com.mossle.user.persistence.manager.UserBaseManager;
 import com.mossle.user.persistence.manager.UserRepoManager;
 import com.mossle.user.persistence.manager.UserSchemaManager;
+import com.mossle.user.publish.UserPublisher;
 
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
-
-import org.springframework.beans.factory.annotation.Autowired;
 
 import org.springframework.stereotype.Service;
 
@@ -48,7 +43,7 @@ public class UserService {
         // user repo
         userBase.setUserRepo(userRepoManager.get(userRepoId));
 
-        userBase.setScopeId(ScopeHolder.getScopeId());
+        // userBase.setTenantId(TenantHolder.getTenantId());
         userBaseManager.save(userBase);
 
         for (Map.Entry<String, Object> entry : parameters.entrySet()) {
@@ -68,7 +63,7 @@ public class UserService {
             UserAttr userAttr = new UserAttr();
             userAttr.setUserSchema(userSchema);
             userAttr.setUserBase(userBase);
-            userAttr.setScopeId(ScopeHolder.getScopeId());
+            // userAttr.setTenantId(TenantHolder.getTenantId());
             userAttrManager.save(userAttr);
 
             String type = userSchema.getType();
@@ -130,7 +125,8 @@ public class UserService {
                 userAttr = new UserAttr();
                 userAttr.setUserSchema(userSchema);
                 userAttr.setUserBase(userBase);
-                userAttr.setScopeId(ScopeHolder.getScopeId());
+
+                // userAttr.setTenantId(TenantHolder.getTenantId());
             }
 
             String type = userSchema.getType();

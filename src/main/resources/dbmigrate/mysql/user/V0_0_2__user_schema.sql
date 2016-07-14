@@ -4,7 +4,7 @@
 --  user schema
 -------------------------------------------------------------------------------
 CREATE TABLE USER_SCHEMA(
-        ID BIGINT auto_increment,
+        ID BIGINT NOT NULL,
 	CODE VARCHAR(50),
         NAME VARCHAR(50),
         TYPE VARCHAR(200),

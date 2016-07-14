@@ -1,27 +1,23 @@
 package com.mossle.party.web;
 
 import java.util.List;
-import java.util.Map;
 
 import javax.annotation.Resource;
 
-import javax.servlet.http.HttpServletResponse;
+import com.mossle.api.tenant.TenantHolder;
 
-import com.mossle.party.domain.PartyEntity;
-import com.mossle.party.domain.PartyStructType;
-import com.mossle.party.manager.PartyEntityManager;
-import com.mossle.party.manager.PartyStructTypeManager;
+import com.mossle.party.persistence.domain.PartyEntity;
+import com.mossle.party.persistence.domain.PartyStructType;
+import com.mossle.party.persistence.manager.PartyEntityManager;
+import com.mossle.party.persistence.manager.PartyStructTypeManager;
 import com.mossle.party.service.PartyService;
 
 import org.springframework.stereotype.Controller;
 
 import org.springframework.ui.Model;
 
-import org.springframework.web.bind.annotation.ModelAttribute;
 import org.springframework.web.bind.annotation.RequestMapping;
 import org.springframework.web.bind.annotation.RequestParam;
-import org.springframework.web.bind.annotation.ResponseBody;
-import org.springframework.web.servlet.mvc.support.RedirectAttributes;
 
 @Controller
 @RequestMapping("party")
@@ -29,13 +25,15 @@ public class TreeController {
     private PartyEntityManager partyEntityManager;
     private PartyStructTypeManager partyStructTypeManager;
     private PartyService partyService;
+    private TenantHolder tenantHolder;
 
     @RequestMapping("tree-list")
     public String list(
             @RequestParam(value = "partyStructTypeId", required = false) Long partyStructTypeId,
             Model model) {
-        List<PartyStructType> partyStructTypes = partyStructTypeManager
-                .getAll();
+        String tenantId = tenantHolder.getTenantId();
+        List<PartyStructType> partyStructTypes = partyStructTypeManager.findBy(
+                "tenantId", tenantId);
 
         List<PartyEntity> partyEntities = partyService
                 .getTopPartyEntities(partyStructTypeId);
@@ -60,5 +58,10 @@ public class TreeController {
     @Resource
     public void setPartyService(PartyService partyService) {
         this.partyService = partyService;
+    }
+
+    @Resource
+    public void setTenantHolder(TenantHolder tenantHolder) {
+        this.tenantHolder = tenantHolder;
     }
 }

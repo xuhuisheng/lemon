@@ -1,19 +1,10 @@
 package com.mossle.bpm.cmd;
 
-import java.util.ArrayList;
-import java.util.Collection;
-import java.util.HashMap;
-import java.util.HashSet;
 import java.util.List;
-import java.util.Map;
-import java.util.Set;
 
 import com.mossle.core.spring.ApplicationContextHelper;
 
-import org.activiti.engine.ActivitiException;
-import org.activiti.engine.history.HistoricActivityInstance;
 import org.activiti.engine.impl.ExecutionQueryImpl;
-import org.activiti.engine.impl.HistoricActivityInstanceQueryImpl;
 import org.activiti.engine.impl.JobQueryImpl;
 import org.activiti.engine.impl.db.DbSqlSession;
 import org.activiti.engine.impl.interceptor.Command;
@@ -27,19 +18,10 @@ import org.activiti.engine.impl.persistence.entity.JobEntity;
 import org.activiti.engine.impl.persistence.entity.ProcessDefinitionEntity;
 import org.activiti.engine.impl.persistence.entity.TaskEntity;
 import org.activiti.engine.impl.persistence.entity.TaskEntityManager;
-import org.activiti.engine.impl.pvm.delegate.ActivityExecution;
-import org.activiti.engine.impl.pvm.process.ActivityImpl;
-import org.activiti.engine.impl.pvm.process.ProcessDefinitionImpl;
 import org.activiti.engine.runtime.Execution;
 import org.activiti.engine.runtime.Job;
-import org.activiti.engine.runtime.ProcessInstance;
-
-import org.slf4j.Logger;
-import org.slf4j.LoggerFactory;
 
 import org.springframework.jdbc.core.JdbcTemplate;
-
-import org.springframework.util.Assert;
 
 public class MigrateCmd implements Command<Void> {
     private String processInstanceId;

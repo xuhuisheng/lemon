@@ -6,7 +6,7 @@ import com.mossle.security.api.UserResponse;
 
 public class UserResponseImpl implements UserResponse {
     private String id;
-    private String scopeId;
+    private String tenantId;
     private String username;
     private String displayName;
     private String status;
@@ -21,12 +21,12 @@ public class UserResponseImpl implements UserResponse {
         this.id = id;
     }
 
-    public String getScopeId() {
-        return scopeId;
+    public String getTenantId() {
+        return tenantId;
     }
 
-    public void setScopeId(String scopeId) {
-        this.scopeId = scopeId;
+    public void setTenantId(String tenantId) {
+        this.tenantId = tenantId;
     }
 
     public String getUsername() {

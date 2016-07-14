@@ -2,7 +2,7 @@ package com.mossle.auth.component;
 
 import javax.annotation.Resource;
 
-import com.mossle.auth.domain.Perm;
+import com.mossle.auth.persistence.domain.Perm;
 
 import com.mossle.core.hibernate.EntityEvent;
 

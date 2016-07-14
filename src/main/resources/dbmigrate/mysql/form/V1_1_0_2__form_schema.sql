@@ -3,8 +3,8 @@
 -------------------------------------------------------------------------------
 --  form schema
 -------------------------------------------------------------------------------
-CREATE TABLE Form_SCHEMA(
-        ID BIGINT auto_increment,
+CREATE TABLE FORM_SCHEMA(
+        ID BIGINT NOT NULL,
 	CODE VARCHAR(50),
         NAME VARCHAR(50),
         TYPE VARCHAR(200),

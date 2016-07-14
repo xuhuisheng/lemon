@@ -1,0 +1,262 @@
+.icon-16 {
+	background: rgba(0, 0, 0, 0) url("icon-16.gif") no-repeat scroll -43px -27px;
+    display: inline-block;
+    height: 16px;
+    width: 16px;
+	vertical-align: middle;
+}
+
+.icon-16-multi {
+    background-position: -43px -27px;
+}
+.icon-16-shouchang {
+    background-position: -202px -3px;
+}
+.icon-16-yingyong_child,
+.icon-16-yingyong {
+    background-position: -43px -3px;
+}
+.icon-16-beifen {
+    background-position: -121px -3px;
+}
+.icon-16-doc,
+.icon-16-docx {
+    background-position: -101px -83px;
+}
+.icon-16-xls,
+.icon-16-xlsx {
+    background-position: -133px -83px;
+}
+.icon-16-ppt,
+.icon-16-pptx {
+    background-position: -261px -83px;
+}
+.icon-16-vsd {
+    background-position: -37px -83px;
+}
+.icon-16-pdf {
+    background-position: -69px -83px;
+}
+.icon-16-apk {
+    background-position: -389px -83px;
+}
+.icon-16-dws,
+.icon-16-dwt,
+.icon-16-dxf,
+.icon-16-dwg {
+    background-position: -6px -105px;
+}
+.icon-16-mmap {
+    background-position: -37px -106px;
+}
+.icon-16-xmind {
+    background-position: -69px -106px;
+}
+.icon-16-mm {
+    background-position: -69px -106px;
+}
+.icon-16-exe,
+.icon-16-msi,
+.icon-16-dmg {
+    background-position: -325px -83px;
+}
+.icon-16-ipa {
+    background-position: -293px -83px;
+}
+.icon-16-zip,
+.icon-16-rar {
+    background-position: -357px -83px;
+}
+.icon-16-psd {
+    background-position: -517px -83px;
+}
+.icon-16-key {
+    background-position: -550px -83px;
+}
+.icon-16-ai {
+    background-position: -583px -83px;
+}
+.icon-16-txt {
+    background-position: -165px -83px;
+}
+.icon-16-torrent {
+    background-position: -453px -83px;
+}
+.icon-16-dir {
+    background-position: -5px -3px;
+}
+.icon-16-jpg,
+.icon-16-jpeg,
+.icon-16-gif,
+.icon-16-bmp,
+.icon-16-png,
+.icon-16-jpe,
+.icon-16-cur,
+.icon-16-svg,
+.icon-16-svgz,
+.icon-16-tif,
+.icon-16-tiff,
+.icon-16-ico {
+    background-position: -5px -83px;
+}
+.icon-16-wma,
+.icon-16-wav,
+.icon-16-mp3,
+.icon-16-aac,
+.icon-16-ra,
+.icon-16-ram,
+.icon-16-mp2,
+.icon-16-ogg,
+.icon-16-aif,
+.icon-16-mpega,
+.icon-16-amr,
+.icon-16-mid,
+.icon-16-midi,
+.icon-16-m4a {
+    background-position: -197px -83px;
+}
+.icon-16-wmv,
+.icon-16-rmvb,
+.icon-16-mpeg4,
+.icon-16-mpeg2,
+.icon-16-flv,
+.icon-16-avi,
+.icon-16-3gp,
+.icon-16-mpga,
+.icon-16-qt,
+.icon-16-rm,
+.icon-16-wmz,
+.icon-16-wmd,
+.icon-16-wvx,
+.icon-16-wmx,
+.icon-16-wm,
+.icon-16-swf,
+.icon-16-mpg,
+.icon-16-mp4,
+.icon-16-mkv,
+.icon-16-mpeg,
+.icon-16-mov,
+.icon-16-asf {
+    background-position: -229px -83px;
+}
+
+.file-16-name {
+	vertical-align: middle;
+}
+
+.icon-62 {
+    background: rgba(0, 0, 0, 0) url("icon-62.png") no-repeat scroll -2902px -2px;
+    display: inline-block;
+    height: 92px;
+    width: 92px;
+}
+
+.icon-62-dir {
+    background: rgba(0, 0, 0, 0) url("icon-62-dir.png") no-repeat scroll -24px 0;
+    display: inline-block;
+    height: 92px;
+    width: 92px;
+}
+
+.icon-62-multi {
+}
+.icon-62-shouchang {
+    background: rgba(0, 0, 0, 0) url("icon-62.png") no-repeat scroll -820px 0;
+}
+.icon-62-yingyong_child, .icon-62-yingyong {
+    background: rgba(0, 0, 0, 0) url("icon-62.png") no-repeat scroll -182px 0;
+}
+.icon-62-beifen {
+    background: rgba(0, 0, 0, 0) url("icon-62.png") no-repeat scroll -339px 0;
+}
+.icon-62-doc, .icon-62-docx {
+    background-position: -462px 0;
+}
+.icon-62-xls, .icon-62-xlsx {
+    background-position: -308px 0;
+}
+.icon-62-ppt, .icon-62-pptx {
+    background-position: -616px 0;
+}
+.icon-62-vsd {
+    background-position: -770px 0;
+}
+.icon-62-pdf {
+    background-position: -924px 0;
+}
+.icon-62-apk {
+    background-position: -1225px 0;
+}
+.icon-62-dws, .icon-62-dwt, .icon-62-dxf, .icon-62-dwg {
+    background-position: 0 -117px;
+}
+.icon-62-mmap {
+    background-position: -153px -117px;
+}
+.icon-62-xmind {
+    background-position: -306px -117px;
+}
+.icon-62-mm {
+    background-position: -460px -117px;
+}
+.icon-62-exe, .icon-62-msi {
+    background-position: -1378px 0;
+}
+.icon-62-dmg {
+    background-position: -2602px 0;
+}
+.icon-62-ipa {
+    background-position: -1540px 0;
+}
+.icon-62-zip {
+    background-position: -154px 0;
+}
+.icon-62-rar {
+    background-position: -2142px 0;
+}
+.icon-62-psd {
+    background-position: -2294px 0;
+}
+.icon-62-key {
+    background-position: -2447px 0;
+}
+.icon-62-ai {
+    background-position: -2753px 0;
+}
+.icon-62-txt {
+    background-position: -1072px 0;
+}
+.icon-62-torrent {
+    background-position: -1990px 0;
+}
+.icon-62-dir {
+    background: rgba(0, 0, 0, 0) url("icon-62-dir.png") no-repeat scroll -24px 0;
+}
+.icon-62-jpg, .icon-62-jpeg, .icon-62-gif, .icon-62-bmp, .icon-62-png, .icon-62-jpe, .icon-62-cur, .icon-62-svg, .icon-62-svgz, .icon-62-tif, .icon-62-tiff, .icon-62-ico {
+}
+.icon-62-wma, .icon-62-wav, .icon-62-mp3, .icon-62-aac, .icon-62-ra, .icon-62-ram, .icon-62-mp2, .icon-62-ogg, .icon-62-aif, .icon-62-mpega, .icon-62-amr, .icon-62-mid, .icon-62-midi, .icon-62-m4a {
+    background-position: -1836px 0;
+}
+.icon-62-wmv, .icon-62-rmvb, .icon-62-mpeg4, .icon-62-mpeg2, .icon-62-flv, .icon-62-avi, .icon-62-3gp, .icon-62-mpga, .icon-62-qt, .icon-62-rm, .icon-62-wmz, .icon-62-wmd, .icon-62-wvx, .icon-62-wmx, .icon-62-wm, .icon-62-swf, .icon-62-mpg, .icon-62-mp4, .icon-62-mkv, .icon-62-mpeg, .icon-62-mov, .icon-62-asf {
+    background-position: -1685px 0;
+}
+.icon-62-multi {
+    background-position: -2902px -2px;
+}
+
+.file-62-name {
+	color: #333;
+    cursor: default;
+    display: inline-block;
+    overflow: hidden;
+    text-overflow: ellipsis;
+    white-space: nowrap;
+    width: 100%;
+}
+
+.ico_open_ico_open,
+.ico_open_ico_docu {
+	background-position: -110px -16px;
+    margin-right: 2px;
+    vertical-align: top;
+}

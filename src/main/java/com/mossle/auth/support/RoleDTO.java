@@ -3,8 +3,8 @@ package com.mossle.auth.support;
 public class RoleDTO {
     private Long id;
     private String name;
-    private String scopeId;
-    private String scopeCode;
+    private String tenantId;
+    private String tenantCode;
     private String status;
 
     public Long getId() {
@@ -23,20 +23,20 @@ public class RoleDTO {
         this.name = name;
     }
 
-    public String getScopeId() {
-        return scopeId;
+    public String getTenantId() {
+        return tenantId;
     }
 
-    public void setScopeId(String scopeId) {
-        this.scopeId = scopeId;
+    public void setTenantId(String tenantId) {
+        this.tenantId = tenantId;
     }
 
-    public String getScopeCode() {
-        return scopeCode;
+    public String getTenantCode() {
+        return tenantCode;
     }
 
-    public void setScopeCode(String scopeCode) {
-        this.scopeCode = scopeCode;
+    public void setTenantCode(String tenantCode) {
+        this.tenantCode = tenantCode;
     }
 
     public String getStatus() {

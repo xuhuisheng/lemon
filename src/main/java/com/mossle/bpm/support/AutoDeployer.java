@@ -7,6 +7,9 @@ import java.util.zip.ZipInputStream;
 
 import javax.annotation.PostConstruct;
 
+import com.mossle.api.tenant.TenantConnector;
+import com.mossle.api.tenant.TenantDTO;
+
 import com.mossle.bpm.cmd.SyncProcessCmd;
 
 import org.activiti.engine.ActivitiException;
@@ -31,6 +34,8 @@ public class AutoDeployer {
     private ProcessEngine processEngine;
     private Resource[] deploymentResources = new Resource[0];
     private boolean enable = true;
+    private String defaultTenantCode;
+    private TenantConnector tenantConnector;
 
     @PostConstruct
     public void init() {
@@ -41,6 +46,8 @@ public class AutoDeployer {
         if ((deploymentResources == null) || (deploymentResources.length == 0)) {
             return;
         }
+
+        TenantDTO tenantDto = tenantConnector.findByCode(defaultTenantCode);
 
         RepositoryService repositoryService = processEngine
                 .getRepositoryService();
@@ -77,7 +84,8 @@ public class AutoDeployer {
                             resource.getInputStream());
                 }
 
-                Deployment deployment = deploymentBuilder.deploy();
+                Deployment deployment = deploymentBuilder.tenantId(
+                        tenantDto.getId()).deploy();
                 logger.info("auto deploy : {}", resourceName);
 
                 for (ProcessDefinition processDefinition : repositoryService
@@ -122,5 +130,13 @@ public class AutoDeployer {
 
     public void setEnable(boolean enable) {
         this.enable = enable;
+    }
+
+    public void setDefaultTenantCode(String defaultTenantCode) {
+        this.defaultTenantCode = defaultTenantCode;
+    }
+
+    public void setTenantConnector(TenantConnector tenantConnector) {
+        this.tenantConnector = tenantConnector;
     }
 }

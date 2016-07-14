@@ -1,0 +1,263 @@
+<?xml version="1.0" encoding="UTF-8"?>
+<beans xmlns="http://www.springframework.org/schema/beans"
+	    xmlns:xsi="http://www.w3.org/2001/XMLSchema-instance"
+	    xsi:schemaLocation="http://www.springframework.org/schema/beans http://www.springframework.org/schema/beans/spring-beans.xsd">
+
+	<bean id="compositeFilter" class="com.mossle.core.servlet.CompositeFilter">
+		<property name="filters">
+			<list>
+				<ref bean="javasimonFilter"/>
+				<ref bean="metricsFilter"/>
+			    <ref bean="beforeInvocationFilter"/>
+			    <ref bean="springSessionFilter"/>
+				<!--
+				<ref bean="tenantFilter"/>
+				-->
+				<ref bean="cmsFilter"/>
+				<ref bean="springSecurityFilterChainProxy"/>
+				<ref bean="openSessionInViewFilter"/>
+				<ref bean="auditTrailFilter"/>
+				<ref bean="restFilter"/>
+				<ref bean="servletFilter"/>
+			</list>
+		</property>
+	</bean>
+
+	<bean id="beforeInvocationFilter" class="com.mossle.core.servlet.BeforeInvocationFilter">
+		<property name="filters">
+			<list>
+				<!--
+			    <ref bean="deviceFilter"/>
+				-->
+			    <ref bean="staticContentFilterStatic"/>
+			    <ref bean="staticContentFilterWidgets"/>
+			    <ref bean="staticContentFilterDocs"/>
+			    <ref bean="whitelistFilter"/>
+				<ref bean="characterEncodingFilter"/>
+				<ref bean="i18nFilter"/>
+			</list>
+		</property>
+	</bean>
+
+	<bean id="deviceFilter" class="com.mossle.core.servlet.ProxyFilter">
+		<property name="name" value="device"/>
+		<property name="filter">
+			<bean class="com.mossle.spi.device.DeviceFilter"/>
+		</property>
+	</bean>
+
+	<bean id="staticContentFilterStatic" class="com.mossle.core.servlet.ProxyFilter">
+		<property name="name" value="staticContent"/>
+		<property name="filter">
+			<bean class="com.mossle.core.servlet.StaticContentFilter"/>
+		</property>
+		<property name="urlPattern" value="/s/*"/>
+	</bean>
+
+	<bean id="staticContentFilterWidgets" class="com.mossle.core.servlet.ProxyFilter">
+		<property name="name" value="staticContent"/>
+		<property name="filter">
+			<bean class="com.mossle.core.servlet.StaticContentFilter"/>
+		</property>
+		<property name="urlPattern" value="/widgets/*"/>
+	</bean>
+
+	<bean id="staticContentFilterDocs" class="com.mossle.core.servlet.ProxyFilter">
+		<property name="name" value="staticContent"/>
+		<property name="filter">
+			<bean class="com.mossle.core.servlet.StaticContentFilter"/>
+		</property>
+		<property name="urlPattern" value="/docs/*"/>
+	</bean>
+
+	<bean id="whitelistFilter" class="com.mossle.core.servlet.ProxyFilter">
+		<property name="name" value="whitelist"/>
+		<property name="filter">
+			<bean class="com.mossle.core.whitelist.WhitelistFilter">
+				<property name="value">
+					<value>/ws/*=127.0.0.1</value>
+				</property>
+			</bean>
+		</property>
+	</bean>
+
+	<bean id="springSessionFilter" class="com.mossle.core.servlet.ProxyFilter">
+		<property name="name" value="springSession"/>
+		<property name="filter">
+			<bean class="org.springframework.session.web.http.SessionRepositoryFilter">
+				<constructor-arg>
+					<bean class="org.springframework.session.MapSessionRepository"/>
+				</constructor-arg>
+			</bean>
+		</property>
+	</bean>
+
+	<bean id="characterEncodingFilter" class="com.mossle.core.servlet.ProxyFilter">
+		<property name="name" value="encode"/>
+		<property name="filter">
+			<bean class="org.springframework.web.filter.CharacterEncodingFilter">
+				<property name="encoding" value="UTF-8"/>
+				<property name="forceEncoding" value="true"/>
+			</bean>
+		</property>
+	</bean>
+
+	<bean id="i18nFilter" class="com.mossle.core.servlet.ProxyFilter">
+		<property name="name" value="i18n"/>
+		<property name="filter">
+			<bean class="com.mossle.core.i18n.I18nFilter"/>
+		</property>
+	</bean>
+
+	<bean id="javasimonFilter" class="com.mossle.core.servlet.ProxyFilter">
+		<property name="name" value="javasimon"/>
+		<property name="filter">
+			<bean class="org.javasimon.javaee.SimonServletFilter"/>
+		</property>
+		<property name="map">
+			<map>
+				<entry key="stopwatch-source-props">
+					<value>includeHttpMethodName=ALWAYS</value>
+				</entry>
+			</map>
+		</property>
+	</bean>
+
+	<bean id="metricsFilter" class="com.mossle.core.servlet.ProxyFilter">
+		<property name="name" value="javasimon"/>
+		<property name="filter">
+			<bean class="com.codahale.metrics.servlet.InstrumentedFilter"/>
+		</property>
+	</bean>
+
+	<!--
+	<bean id="tenantFilter" class="com.mossle.core.servlet.ProxyFilter">
+		<property name="name" value="tenant"/>
+		<property name="filter">
+			<bean class="com.mossle.tenant.filter.TenantFilterFactoryBean">
+				<property name="internalUserAuthConnector" ref="internalUserAuthConnector"/>
+				<property name="tenantConnector" ref="tenantConnector"/>
+				<property name="type" value="${tenant.filter.type}"/>
+			</bean>
+		</property>
+		<property name="enable" value="${tenant.filter.enable}"/>
+	</bean>
+	-->
+
+	<bean id="cmsFilter" class="com.mossle.core.servlet.ProxyFilter">
+		<property name="name" value="cms"/>
+		<property name="filter">
+			<bean class="com.mossle.cms.support.CmsFilter">
+				<property name="baseDir" value="${store.baseDir}/cms/html"/>
+			</bean>
+		</property>
+		<property name="enable" value="${filter.cms.enable}"/>
+	</bean>
+
+	<bean id="springSecurityFilterChainProxy" class="com.mossle.core.servlet.ProxyFilter">
+		<property name="name" value="security"/>
+		<property name="filter" ref="springSecurityFilterChain"/>
+	</bean>
+
+	<bean id="openSessionInViewFilter" class="com.mossle.core.servlet.ProxyFilter">
+		<property name="name" value="hibernate"/>
+		<property name="filter">
+			<bean class="org.springframework.orm.hibernate4.support.OpenSessionInViewFilter"/>
+		</property>
+		<property name="excludePatterns" value="/common/util/*"/>
+	</bean>
+
+	<bean id="auditTrailFilter" class="com.mossle.core.servlet.ProxyFilter">
+		<property name="name" value="inspektr"/>
+		<property name="filter">
+			<bean class="com.github.inspektr.common.web.ClientInfoThreadLocalFilter"/>
+		</property>
+		<property name="enable" value="${filter.inspektr.enable}"/>
+	</bean>
+
+	<bean id="restFilter" class="com.mossle.core.servlet.ProxyFilter">
+		<property name="name" value="rest"/>
+		<property name="filter">
+			<bean class="com.mossle.simulator.restful.RestFilter"/>
+		</property>
+		<property name="urlPattern" value="/rs/*"/>
+	</bean>
+
+	<!-- ====================================================================== -->
+
+	<bean id="servletFilter" class="com.mossle.core.servlet.ServletFilter">
+		<property name="name" value="servlet"/>
+		<property name="servletMap">
+			<map>
+				<entry key="/jolokia/*">
+					<ref bean="jolokia"/>
+				</entry>
+				<entry key="/javasimon/*">
+					<ref bean="javasimon"/>
+				</entry>
+				<entry key="/metrics/*">
+					<ref bean="metricsServlet"/>
+				</entry>
+				<entry key="/healthCheck/*">
+					<ref bean="healthCheckServlet"/>
+				</entry>
+				<entry key="*.do">
+					<ref bean="springmvc"/>
+				</entry>
+			</map>
+		</property>
+	</bean>
+
+	<bean id="jolokia" class="com.mossle.core.servlet.ProxyServlet">
+		<constructor-arg index="0" value="jolokia"/>
+		<constructor-arg index="1">
+			<bean class="org.jolokia.http.AgentServlet"/>
+		</constructor-arg>
+		<constructor-arg index="2" value="${servlet.jolokia.enable}"/>
+	</bean>
+
+	<bean id="javasimon" class="com.mossle.core.servlet.ProxyServlet">
+		<constructor-arg index="0" value="javasimon"/>
+		<constructor-arg index="1">
+			<bean class="org.javasimon.console.SimonConsoleServlet"/>
+		</constructor-arg>
+		<constructor-arg index="2">
+			<map>
+				<entry key="url-prefix">
+					<value>/javasimon</value>
+				</entry>
+			</map>
+		</constructor-arg>
+	</bean>
+
+	<bean id="springmvc" class="com.mossle.core.servlet.ProxyServlet">
+		<constructor-arg index="0" value="springmvc"/>
+		<constructor-arg index="1">
+			<bean class="org.springframework.web.servlet.DispatcherServlet"/>
+		</constructor-arg>
+	</bean>
+
+	<bean id="metricsServlet" class="com.mossle.core.servlet.ProxyServlet">
+		<constructor-arg index="0" value="metricsServlet"/>
+		<constructor-arg index="1">
+			<bean class="com.codahale.metrics.servlets.MetricsServlet"/>
+		</constructor-arg>
+	</bean>
+
+	<bean id="healthCheckServlet" class="com.mossle.core.servlet.ProxyServlet">
+		<constructor-arg index="0" value="healthCheckServlet"/>
+		<constructor-arg index="1">
+			<bean class="com.codahale.metrics.servlets.HealthCheckServlet"/>
+		</constructor-arg>
+	</bean>
+
+	<!-- listener -->
+	<bean class="com.mossle.security.util.LogoutHttpSessionListener"/>
+
+	<bean class="com.mossle.core.metrics.InstrumentedFilterContextListener"/>
+
+	<bean class="com.mossle.core.metrics.MetricRegistryListener"/>
+
+	<bean class="com.mossle.core.metrics.HealthCheckRegistryListener"/>
+
+</beans>

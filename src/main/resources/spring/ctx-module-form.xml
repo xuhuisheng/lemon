@@ -1,0 +1,22 @@
+<?xml version="1.0" encoding="UTF-8"?>
+<beans xmlns="http://www.springframework.org/schema/beans"
+	    xmlns:xsi="http://www.w3.org/2001/XMLSchema-instance"
+	    xsi:schemaLocation="http://www.springframework.org/schema/beans http://www.springframework.org/schema/beans/spring-beans.xsd">
+
+	<bean id="formConnector" class="${form.connector}"/>
+
+	<bean id="keyValueConnector" class="${keyvalue.connector}"/>
+
+	<!-- 自动部署form -->
+	<bean class="com.mossle.form.support.XFormDeployer">
+		<property name="autoDeploy" value="${form.autoDeploy}"/>
+	</bean>
+
+	<!-- 自动解析model -->
+	<bean class="com.mossle.model.support.ModelDeployer">
+		<property name="autoDeploy" value="${model.autoDeploy}"/>
+		<property name="defaultTenantCode" value="${tenant.default.code}"/>
+		<property name="tenantConnector" ref="tenantConnector"/>
+	</bean>
+
+</beans>

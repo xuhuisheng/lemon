@@ -1,0 +1,64 @@
+<!doctype html>
+<html>
+  <head>
+    <meta charset="utf-8" />
+    <meta http-equiv="X-UA-Compatible" content="IE=edge,chrome=1" />
+    <title>${catalog.name}</title>
+	<!-- static start -->
+	<link rel="stylesheet" href="../s/bootstrap/3.3.1/css/bootstrap.min.css">
+    <script type="text/javascript" src="../s/jquery/jquery.min.js"></script>
+	<script type="text/javascript" src="../s/bootstrap/3.3.1/js/bootstrap.min.js"></script>
+	<style type="text/css">
+body {
+	padding-top: 70px;
+}
+	</style>
+	<!-- static end -->
+  </head>
+  <body>
+    <!-- navbar activiti start -->
+    <div class="navbar navbar-fixed-top navbar-inverse" role="navigation">
+      <div class="navbar-inner">
+        <div class="container">
+          <div class="navbar-header">
+            <a class="navbar-brand" href="index.do">Mossle</a>
+          </div>
+        </div><!-- /.container -->
+	  </div>
+    </div><!-- /.navbar -->
+    <!-- navbar activiti end -->
+
+    <div class="container">
+      <h3><a href="catalog.do?id=${catalog.id}">${catalog.name}</a></h3>
+    </div>
+
+    <div class="container">
+<#list catalog.cmsArticles as article>
+	  <!-- ==================================================================== -->
+      <div class="panel panel-info">
+        <div class="panel-heading">
+          <h3 class="panel-title">
+		    ${article.title}
+			<small><a href="article.do?id=${article.id}">详情</a></small>
+		  </h3>
+        </div>
+
+        <div class="panel-body">
+		  <p>${article.content}</p>
+        </div>
+      </div>
+</#list>
+
+	  <!-- ==================================================================== -->
+    </div>
+
+    <hr>
+
+    <div class="container">
+      <div class="row" style="text-align:center;">
+        &copy; Mossle
+      </div>
+    </div>
+
+  </body>
+</html>

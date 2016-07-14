@@ -2,12 +2,11 @@ package com.mossle.bpm.service;
 
 import javax.annotation.Resource;
 
-import com.mossle.bpm.persistence.domain.BpmConfCountersign;
-import com.mossle.bpm.persistence.manager.BpmConfCountersignManager;
+import com.mossle.spi.humantask.CounterSignDTO;
+import com.mossle.spi.humantask.TaskDefinitionConnector;
 
-import org.activiti.engine.HistoryService;
+import org.activiti.engine.ProcessEngine;
 import org.activiti.engine.RuntimeService;
-import org.activiti.engine.TaskService;
 import org.activiti.engine.impl.persistence.entity.ExecutionEntity;
 import org.activiti.engine.runtime.Execution;
 
@@ -15,8 +14,6 @@ import org.apache.commons.lang3.builder.ToStringBuilder;
 
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
-
-import org.springframework.beans.factory.annotation.Autowired;
 
 import org.springframework.stereotype.Service;
 
@@ -28,10 +25,8 @@ import org.springframework.stereotype.Service;
 @Service
 public class CounterSignService {
     private Logger logger = LoggerFactory.getLogger(CounterSignService.class);
-    private RuntimeService runtimeService;
-    private TaskService taskService;
-    private HistoryService historyService;
-    private BpmConfCountersignManager bpmConfCountersignManager;
+    private ProcessEngine processEngine;
+    private TaskDefinitionConnector taskDefinitionConnector;
 
     public Boolean canComplete(Execution execution, Integer nrOfInstances,
             Integer nrOfActiveInstances, Integer nrOfCompletedInstances,
@@ -50,13 +45,13 @@ public class CounterSignService {
         String processDefinitionId = ((ExecutionEntity) execution)
                 .getProcessInstance().getProcessDefinitionId();
 
-        BpmConfCountersign bpmConfCountersign = bpmConfCountersignManager
-                .findUnique(
-                        "from BpmConfCountersign where bpmConfNode.bpmConfBase.processDefinitionId=? and bpmConfNode.code=?",
-                        processDefinitionId, activityId);
+        RuntimeService runtimeService = processEngine.getRuntimeService();
 
-        if (bpmConfCountersign != null) {
-            rate = bpmConfCountersign.getRate();
+        CounterSignDTO counterSign = taskDefinitionConnector.findCounterSign(
+                activityId, processDefinitionId);
+
+        if (counterSign != null) {
+            rate = counterSign.getRate();
         }
 
         String agreeCounterName = "agreeCounter";
@@ -92,23 +87,13 @@ public class CounterSignService {
     }
 
     @Resource
-    public void setRuntimeService(RuntimeService runtimeService) {
-        this.runtimeService = runtimeService;
+    public void setProcessEngine(ProcessEngine processEngine) {
+        this.processEngine = processEngine;
     }
 
     @Resource
-    public void setTaskService(TaskService taskService) {
-        this.taskService = taskService;
-    }
-
-    @Resource
-    public void setHistoryService(HistoryService historyService) {
-        this.historyService = historyService;
-    }
-
-    @Resource
-    public void setBpmConfCountersignManager(
-            BpmConfCountersignManager bpmConfCountersignManager) {
-        this.bpmConfCountersignManager = bpmConfCountersignManager;
+    public void setTaskDefinitionConnector(
+            TaskDefinitionConnector taskDefinitionConnector) {
+        this.taskDefinitionConnector = taskDefinitionConnector;
     }
 }

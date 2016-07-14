@@ -6,7 +6,7 @@
 
     <context-param>
         <param-name>contextConfigLocation</param-name>
-        <param-value>classpath*:spring/applicationContext*.xml</param-value>
+        <param-value>classpath*:spring/ctx*.xml</param-value>
     </context-param>
 
     <filter>
@@ -26,6 +26,10 @@
         <listener-class>org.springframework.web.context.ContextLoaderListener</listener-class>
     </listener>
 
+    <listener>
+        <listener-class>com.mossle.core.spring.ProxyServletListener</listener-class>
+    </listener>
+
     <error-page>
         <error-code>401</error-code>
         <location>/common/401.jsp</location>
@@ -33,6 +37,10 @@
     <error-page>
         <error-code>403</error-code>
         <location>/common/403.jsp</location>
+    </error-page>
+    <error-page>
+        <error-code>404</error-code>
+        <location>/common/404.jsp</location>
     </error-page>
     <error-page>
         <error-code>500</error-code>

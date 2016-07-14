@@ -1,0 +1,23 @@
+
+
+-------------------------------------------------------------------------------
+--  task def user
+-------------------------------------------------------------------------------
+CREATE TABLE TASK_DEF_USER(
+	ID BIGINT NOT NULL,
+	VALUE VARCHAR(200),
+	TYPE VARCHAR(50),
+	CATALOG VARCHAR(200),
+	BASE_ID BIGINT,
+        CONSTRAINT PK_TASK_DEF_USER PRIMARY KEY(ID),
+        CONSTRAINT FK_TASK_DEF_USER_BASE FOREIGN KEY(BASE_ID) REFERENCES TASK_DEF_BASE(ID)
+);
+
+COMMENT ON TABLE TASK_DEF_USER IS '任务定义用户';
+COMMENT ON COLUMN TASK_DEF_USER.ID IS '主键';
+COMMENT ON COLUMN TASK_DEF_USER.VALUE IS '值';
+COMMENT ON COLUMN TASK_DEF_USER.TYPE IS '类型';
+COMMENT ON COLUMN TASK_DEF_USER.CATALOG IS '分类';
+COMMENT ON COLUMN TASK_DEF_USER.BASE_ID IS '外键，任务定义';
+
+

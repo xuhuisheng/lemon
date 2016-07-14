@@ -6,27 +6,27 @@ import java.util.Map;
 
 import javax.annotation.Resource;
 
+import javax.servlet.http.HttpServletRequest;
 import javax.servlet.http.HttpServletResponse;
 
-import com.mossle.api.scope.ScopeConnector;
-import com.mossle.api.scope.ScopeDTO;
-import com.mossle.api.scope.ScopeHolder;
+import com.mossle.api.tenant.TenantConnector;
+import com.mossle.api.tenant.TenantDTO;
+import com.mossle.api.tenant.TenantHolder;
 
 import com.mossle.auth.component.RoleDefChecker;
-import com.mossle.auth.domain.Role;
-import com.mossle.auth.domain.RoleDef;
-import com.mossle.auth.manager.RoleDefManager;
-import com.mossle.auth.manager.RoleManager;
+import com.mossle.auth.persistence.domain.Role;
+import com.mossle.auth.persistence.domain.RoleDef;
+import com.mossle.auth.persistence.manager.RoleDefManager;
+import com.mossle.auth.persistence.manager.RoleManager;
 import com.mossle.auth.support.CheckRoleException;
 import com.mossle.auth.support.RoleDTO;
 
-import com.mossle.core.hibernate.PropertyFilter;
+import com.mossle.core.export.Exportor;
+import com.mossle.core.export.TableModel;
 import com.mossle.core.mapper.BeanMapper;
 import com.mossle.core.page.Page;
+import com.mossle.core.query.PropertyFilter;
 import com.mossle.core.spring.MessageHelper;
-
-import com.mossle.ext.export.Exportor;
-import com.mossle.ext.export.TableModel;
 
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
@@ -52,15 +52,16 @@ public class RoleDefController {
     private RoleDefChecker roleDefChecker;
     private Exportor exportor;
     private BeanMapper beanMapper = new BeanMapper();
-    private ScopeConnector scopeConnector;
+    private TenantConnector tenantConnector;
+    private TenantHolder tenantHolder;
 
     @RequestMapping("role-def-list")
     public String list(@ModelAttribute Page page,
             @RequestParam Map<String, Object> parameterMap, Model model) {
         List<PropertyFilter> propertyFilters = PropertyFilter
                 .buildFromMap(parameterMap);
-        propertyFilters.add(new PropertyFilter("EQS_scopeId", ScopeHolder
-                .getScopeId()));
+        propertyFilters.add(new PropertyFilter("EQS_tenantId", tenantHolder
+                .getTenantId()));
         page = roleDefManager.pagedQuery(page, propertyFilters);
         model.addAttribute("page", page);
 
@@ -97,7 +98,7 @@ public class RoleDefController {
             }
 
             if (id == null) {
-                dest.setScopeId(ScopeHolder.getScopeId());
+                dest.setTenantId(tenantHolder.getTenantId());
             }
 
             roleDefManager.save(dest);
@@ -139,7 +140,8 @@ public class RoleDefController {
     @RequestMapping("role-def-export")
     public void export(@ModelAttribute Page page,
             @RequestParam Map<String, Object> parameterMap,
-            HttpServletResponse response) throws Exception {
+            HttpServletRequest request, HttpServletResponse response)
+            throws Exception {
         List<PropertyFilter> propertyFilters = PropertyFilter
                 .buildFromMap(parameterMap);
         page = roleDefManager.pagedQuery(page, propertyFilters);
@@ -149,7 +151,7 @@ public class RoleDefController {
         tableModel.setName("role");
         tableModel.addHeaders("id", "name", "descn");
         tableModel.setData(roleDefs);
-        exportor.export(response, tableModel);
+        exportor.export(request, response, tableModel);
     }
 
     @RequestMapping("role-def-checkName")
@@ -157,12 +159,12 @@ public class RoleDefController {
     public boolean checkName(@RequestParam("name") String name,
             @RequestParam(value = "id", required = false) Long id)
             throws Exception {
-        String hql = "from RoleDef where scopeId=" + ScopeHolder.getScopeId()
-                + " and name=?";
+        String hql = "from RoleDef where tenantId="
+                + tenantHolder.getTenantId() + " and name=?";
         Object[] params = { name };
 
         if (id != null) {
-            hql = "from RoleDef where scopeId=" + ScopeHolder.getScopeId()
+            hql = "from RoleDef where tenantId=" + tenantHolder.getTenantId()
                     + " and name=? and id<>?";
             params = new Object[] { name, id };
         }
@@ -178,23 +180,23 @@ public class RoleDefController {
         RoleDef roleDef = roleDefManager.get(id);
         List<Role> roles = roleManager.findBy("roleDef.id", id);
 
-        ScopeDTO currentScope = ScopeHolder.getScopeDto();
-        List<ScopeDTO> scopeDtos;
+        TenantDTO currentTenant = tenantHolder.getTenantDto();
+        List<TenantDTO> tenantDtos;
 
-        if (currentScope.isShared()) {
-            scopeDtos = scopeConnector.findAll();
+        if (currentTenant.isShared()) {
+            tenantDtos = tenantConnector.findAll();
         } else {
-            scopeDtos = new ArrayList<ScopeDTO>();
-            scopeDtos.add(currentScope);
+            tenantDtos = new ArrayList<TenantDTO>();
+            tenantDtos.add(currentTenant);
         }
 
         List<RoleDTO> roleDtos = new ArrayList<RoleDTO>();
 
-        for (ScopeDTO scopeDto : scopeDtos) {
+        for (TenantDTO tenantDto : tenantDtos) {
             Role existedRole = null;
 
             for (Role role : roles) {
-                if (role.getScopeId().equals(scopeDto.getId())) {
+                if (role.getTenantId().equals(tenantDto.getId())) {
                     existedRole = role;
 
                     break;
@@ -204,14 +206,14 @@ public class RoleDefController {
             if (existedRole == null) {
                 RoleDTO roleDto = new RoleDTO();
                 roleDto.setName(roleDef.getName());
-                roleDto.setScopeId(scopeDto.getId());
+                roleDto.setTenantId(tenantDto.getId());
                 roleDto.setStatus("added");
                 roleDtos.add(roleDto);
             } else {
                 RoleDTO roleDto = new RoleDTO();
                 roleDto.setName(roleDef.getName());
                 roleDto.setId(existedRole.getId());
-                roleDto.setScopeId(scopeDto.getId());
+                roleDto.setTenantId(tenantDto.getId());
                 roleDto.setStatus("existed");
                 roleDtos.add(roleDto);
             }
@@ -220,8 +222,8 @@ public class RoleDefController {
         for (Role role : roles) {
             boolean existed = false;
 
-            for (ScopeDTO scopeDto : scopeDtos) {
-                if (role.getScopeId().equals(scopeDto.getId())) {
+            for (TenantDTO tenantDto : tenantDtos) {
+                if (role.getTenantId().equals(tenantDto.getId())) {
                     existed = true;
 
                     break;
@@ -232,7 +234,7 @@ public class RoleDefController {
                 RoleDTO roleDto = new RoleDTO();
                 roleDto.setName(roleDef.getName());
                 roleDto.setId(role.getId());
-                roleDto.setScopeId(role.getScopeId());
+                roleDto.setTenantId(role.getTenantId());
                 roleDto.setStatus("removed");
                 roleDtos.add(roleDto);
             }
@@ -248,21 +250,21 @@ public class RoleDefController {
         RoleDef roleDef = roleDefManager.get(id);
         List<Role> roles = roleManager.findBy("roleDef.id", id);
 
-        ScopeDTO currentScope = ScopeHolder.getScopeDto();
-        List<ScopeDTO> scopeDtos;
+        TenantDTO currentTenant = tenantHolder.getTenantDto();
+        List<TenantDTO> tenantDtos;
 
-        if (currentScope.isShared()) {
-            scopeDtos = scopeConnector.findAll();
+        if (currentTenant.isShared()) {
+            tenantDtos = tenantConnector.findAll();
         } else {
-            scopeDtos = new ArrayList<ScopeDTO>();
-            scopeDtos.add(currentScope);
+            tenantDtos = new ArrayList<TenantDTO>();
+            tenantDtos.add(currentTenant);
         }
 
-        for (ScopeDTO scopeDto : scopeDtos) {
+        for (TenantDTO tenantDto : tenantDtos) {
             Role existedRole = null;
 
             for (Role role : roles) {
-                if (role.getScopeId().equals(scopeDto.getId())) {
+                if (role.getTenantId().equals(tenantDto.getId())) {
                     existedRole = role;
 
                     break;
@@ -273,7 +275,7 @@ public class RoleDefController {
                 Role role = new Role();
                 role.setName(roleDef.getName());
                 role.setRoleDef(roleDef);
-                role.setScopeId(scopeDto.getId());
+                role.setTenantId(tenantDto.getId());
                 roleManager.save(role);
             }
         }
@@ -281,8 +283,8 @@ public class RoleDefController {
         for (Role role : roles) {
             boolean existed = false;
 
-            for (ScopeDTO scopeDto : scopeDtos) {
-                if (role.getScopeId().equals(scopeDto.getId())) {
+            for (TenantDTO tenantDto : tenantDtos) {
+                if (role.getTenantId().equals(tenantDto.getId())) {
                     existed = true;
 
                     break;
@@ -324,7 +326,12 @@ public class RoleDefController {
     }
 
     @Resource
-    public void setScopeConnector(ScopeConnector scopeConnector) {
-        this.scopeConnector = scopeConnector;
+    public void setTenantConnector(TenantConnector tenantConnector) {
+        this.tenantConnector = tenantConnector;
+    }
+
+    @Resource
+    public void setTenantHolder(TenantHolder tenantHolder) {
+        this.tenantHolder = tenantHolder;
     }
 }

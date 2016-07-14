@@ -90,7 +90,12 @@ $(function() {
 	    <td>${item.name}</td>
 	    <td><fmt:formatDate value="${item.startTime}" pattern="yyyy-MM-dd HH:mm:ss" /></td>
 	    <td><fmt:formatDate value="${item.endTime}" pattern="yyyy-MM-dd HH:mm:ss" /></td>
-	    <td><tags:user userId="${item.assignee}"/></td>
+	    <td>
+		  <tags:user userId="${item.assignee}"/>
+		  <c:if test="${not empty item.owner && item.assignee != item.owner}">
+		  <b>(原执行人:<tags:user userId="${item.owner}"/>)</b>
+		  </c:if>
+		</td>
 	    <td>${item.deleteReason}</td>
         <td>
           <a href="workspace-withdraw.do?taskId=${item.id}">撤销</a>

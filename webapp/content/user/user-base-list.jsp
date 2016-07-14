@@ -124,6 +124,7 @@ $(function() {
         <td>${item.nickName}</td>
         <td>${item.status == 1 ? '启用' : '禁用'}</td>
         <td>
+          <a href="user-avatar-input.do?id=${item.id}">头像</a>
           <a href="user-base-input.do?id=${item.id}" class="a-update"><spring:message code="core.list.edit" text="编辑"/></a>
         </td>
       </tr>

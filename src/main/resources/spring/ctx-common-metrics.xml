@@ -1,0 +1,14 @@
+<?xml version="1.0" encoding="UTF-8"?>
+<beans xmlns="http://www.springframework.org/schema/beans"
+	    xmlns:xsi="http://www.w3.org/2001/XMLSchema-instance"
+	    xsi:schemaLocation="http://www.springframework.org/schema/beans http://www.springframework.org/schema/beans/spring-beans.xsd">
+
+	<bean id="metricRegistry" class="com.codahale.metrics.MetricRegistry"/>
+
+	<bean id="healthCheckRegistry" class="com.codahale.metrics.health.HealthCheckRegistry"/>
+
+	<bean class="com.mossle.core.metrics.MetricsHelper">
+		<property name="metricRegistry" ref="metricRegistry"/>
+	</bean>
+
+</beans>

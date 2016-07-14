@@ -12,6 +12,13 @@ xf.$ = function(id) {
 	return document.getElementById(id);
 }
 
+xf.id = function() {
+	if (typeof xf.sed == 'undefined') {
+		xf.sed = 1;
+	}
+	return 'xf-' + xf.sed++;
+}
+
 xf.addClass = function(el, className) {
 	if ((' ' + el.className).indexOf(' ' + className) == -1) {
 		el.className += ' ' + className;
@@ -36,6 +43,9 @@ xf.getTarget = function(e) {
 	var x = ev.clientX;
 	var y = ev.clientY;
 	var target = ev.srcElement ? ev.srcElement : ev.target;
+	if (target.tagName == 'IMG' && target.parentNode.className == 'xf-pallete') {
+		target = target.parentNode;
+	}
 	return target;
 }
 
@@ -123,7 +133,7 @@ xf.Xform = function(id) {
 }
 
 xf.Xform.prototype.addSection = function(section) {
-	section.id = this.getId();
+	section.id = xf.id();
 	section.xform = this;
 	this.sections.push(section);
 }
@@ -144,7 +154,7 @@ xf.Xform.prototype.initEvents = function() {
 xf.Xform.prototype.mouseDown = function(e) {
 	var target = xf.getTarget(e);
 	var handler = xf.getHandler(target);
-	if (handler) {
+	if (handler || target.className == 'xf-pallete') {
 		e.preventDefault();
 	}
 
@@ -244,10 +254,6 @@ xf.Xform.prototype.findSection = function(e) {
 			return null;
 		}
 	}
-}
-
-xf.Xform.prototype.getId = function() {
-	return 'xf-g-' + (this.sed++);
 }
 
 xf.Xform.prototype.addRow = function() {
@@ -647,6 +653,16 @@ xf.GridSection.prototype.removeRow = function() {
 	var tr = td.parentNode;
 	var tbody = tr.parentNode;
 
+	var rowIndex = 0;
+	
+	for (var i = 0; i < tbody.children.length; i++) {
+		var child = tbody.children[i];
+		if (child == tr) {
+			rowIndex = i;
+			break;
+		}
+	}
+
 	try {
 		if (tbody.children[0] == tr) {
 			for (var i = 0; i < tbody.children[1].children.length; i++) {
@@ -669,7 +685,32 @@ xf.GridSection.prototype.removeRow = function() {
 
 	tr.parentNode.removeChild(tr);
 
+	for (var i = rowIndex; i < this.row - 1; i++) {
+		var targetRowElement = tbody.children[i];
+		var array = targetRowElement.getAttribute("id").split("-");
+		var prefix = array[0] + '-' + array[1] + '-';
+		targetRowElement.setAttribute("id", prefix + rowIndex);
+		for (var j = 0; j < this.col; j++) {
+			var targetColElement = targetRowElement.children[j];
+			targetColElement.setAttribute("id", prefix + rowIndex + "-" + j);
+		}
+	}
+
+	for (var key in this.fieldMap) {
+		var field = this.fieldMap[key];
+		if (field.row == rowIndex) {
+			delete this.fieldMap[key];
+			continue;
+		}
+		if (field.row > rowIndex) {
+			field.row -= 1;
+		}
+	}
+
+	this.row--;
+
 	this.selectedItems = [];
+
 };
 
 xf.GridSection.prototype.findTbody = function() {
@@ -726,8 +767,8 @@ xf.GridSection.prototype.getPosition = function(el) {
 	}
 	var array = el.id.split('-');
 	var p = {};
-	p.row = parseInt(array[3]);
-	p.col = parseInt(array[4]);
+	p.row = parseInt(array[2]);
+	p.col = parseInt(array[3]);
 	p.width = parseInt(el.colSpan);
 	if (p.width == 0) {
 		p.width = 1;
@@ -914,8 +955,8 @@ xf.field.Label = function(parentNode) {
 	var array = parentId.split('-');
 
 	this.parentId = parentId;
-	this.row = array[3];
-	this.col = array[4];
+	this.row = array[2];
+	this.col = array[3];
 	this.name = 'label-' + this.row + '-' + this.col; 
 	this.text = "text";
 }
@@ -941,7 +982,7 @@ xf.field.Label.prototype.updateText = function(text) {
 	var parentNode = xf.$(this.parentId);
 	parentNode.innerHTML = 
 		'<div class="xf-handler">'
-		+ '<label style="display:block;text-align:right;margin-bottom:0px;cursor:move;">' + this.text + '</label>'
+		+ '<label style="display:block;text-align:right;margin-bottom:0px;">' + this.text + '</label>'
 		+ '</div>';
 }
 
@@ -955,8 +996,8 @@ xf.field.TextField = function(parentNode) {
 	var array = parentId.split('-');
 
 	this.parentId = parentId;
-	this.row = array[3];
-	this.col = array[4];
+	this.row = array[2];
+	this.col = array[3];
 	this.name = 'textfield-' + this.row + '-' + this.col;
 	this.required = false;
 	this.readOnly = false;
@@ -987,7 +1028,12 @@ xf.field.TextField.prototype.updateName = function(value) {
 	var parentNode = xf.$(this.parentId);
 	parentNode.innerHTML = 
 		'<div class="xf-handler">'
-		+ '<input type="text" name="' + this.name + '" ' + (this.readOnly ? 'readOnly' : '') + ' value="' + (this.value ? this.value : '') + '" style="margin-bottom:0px;cursor:move;">'
+		
+		+ '<input type="text" name="' + this.name + '" ' + (this.readOnly ? 'readOnly' : '')
+			+ ' value="' + (this.value ? this.value : '') + '"'
+			+ (this.required ? ' required="true" class="required"' : '')
+			+ ' style="margin-bottom:0px;" maxlength="200">'
+		
 		+ '</div>';
 }
 
@@ -1004,7 +1050,7 @@ xf.field.TextField.prototype.setValue = function(value) {
 	this.updateName(this.name);
 	if (this.readOnly) {
 		var parentNode = xf.$(this.parentId);
-		parentNode.innerHTML = value;
+		parentNode.innerHTML = '<div class="xf-handler">' + value + '</div>';
 	}
 }
 
@@ -1018,8 +1064,8 @@ xf.field.Password = function(parentNode) {
 	var array = parentId.split('-');
 
 	this.parentId = parentId;
-	this.row = array[3];
-	this.col = array[4];
+	this.row = array[2];
+	this.col = array[3];
 	this.name = 'password-' + this.row + '-' + this.col;
 	this.required = false;
 	this.readOnly = false;
@@ -1052,7 +1098,10 @@ xf.field.Password.prototype.updateName = function(value) {
 	var parentNode = xf.$(this.parentId);
 	parentNode.innerHTML = 
 		'<div class="xf-handler">'
-		+ '<input type="password" name="' + this.name + '" ' + (this.readOnly ? 'readOnly' : '') + ' style="margin-bottom:0px;cursor:move;">'
+		+ '<input type="password" name="' + this.name + '" '
+		+ (this.readOnly ? 'readOnly' : '')
+		+ (this.required ? ' required="true" class="required"' : '')
+		+ ' style="margin-bottom:0px;" maxlength="200">'
 		+ '</div>';
 }
 
@@ -1077,8 +1126,8 @@ xf.field.TextArea = function(parentNode) {
 	var array = parentId.split('-');
 
 	this.parentId = parentId;
-	this.row = array[3];
-	this.col = array[4];
+	this.row = array[2];
+	this.col = array[3];
 	this.name = 'textarea-' + this.row + '-' + this.col;
 	this.required = false;
 	this.readOnly = false;
@@ -1111,7 +1160,9 @@ xf.field.TextArea.prototype.updateName = function(value) {
 	var parentNode = xf.$(this.parentId);
 	parentNode.innerHTML = 
 		'<div class="xf-handler">'
-		+ '<textarea name="' + this.name + '" ' + (this.readOnly ? 'readOnly' : '') + ' style="margin-bottom:0px;cursor:move;">' + (this.value ? this.value : '') + '</textarea>'
+		+ '<textarea name="' + this.name + '" ' + (this.readOnly ? 'readOnly' : '')
+		+ (this.required ? ' required="true" class="required"' : '')
+		+ ' style="margin-bottom:0px;" maxlength="200">' + (this.value ? this.value : '') + '</textarea>'
 		+ '</div>';
 }
 
@@ -1128,7 +1179,7 @@ xf.field.TextArea.prototype.setValue = function(value) {
 	this.updateName(this.name);
 	if (this.readOnly) {
 		var parentNode = xf.$(this.parentId);
-		parentNode.innerHTML = value;
+		parentNode.innerHTML = '<div class="xf-handler">' + value + '</div>';
 	}
 }
 
@@ -1142,8 +1193,8 @@ xf.field.Select = function(parentNode) {
 	var array = parentId.split('-');
 
 	this.parentId = parentId;
-	this.row = array[3];
-	this.col = array[4];
+	this.row = array[2];
+	this.col = array[3];
 	this.name = 'select-' + this.row + '-' + this.col;
 	this.items = '';
 	this.required = false;
@@ -1185,7 +1236,8 @@ xf.field.Select.prototype.updateItems = function(value) {
 	var parentNode = xf.$(this.parentId);
 	var html = 
 		'<div class="xf-handler">'
-		+ '<select name="' + this.name + '" ' + (this.readOnly ? 'disabled' : '') + ' style="margin-bottom:0px;cursor:move;">';
+		+ '<select name="' + this.name + '" ' + (this.readOnly ? 'disabled' : '')
+		+ (this.required ? ' required="true" class="required"' : '') + ' style="margin-bottom:0px;">';
 	var array = this.items.split(',');
 	for (var i = 0; i < array.length; i++) {
 		var item = array[i];
@@ -1209,7 +1261,7 @@ xf.field.Select.prototype.setValue = function(value) {
 	this.updateName(this.name);
 	if (this.readOnly) {
 		var parentNode = xf.$(this.parentId);
-		parentNode.innerHTML = value;
+		parentNode.innerHTML = '<div class="xf-handler">' + value + '</div>';
 	}
 }
 
@@ -1223,8 +1275,8 @@ xf.field.Radio = function(parentNode) {
 	var array = parentId.split('-');
 
 	this.parentId = parentId;
-	this.row = array[3];
-	this.col = array[4];
+	this.row = array[2];
+	this.col = array[3];
 	this.name = 'radio-' + this.row + '-' + this.col;
 	this.items = '';
 	this.required = false;
@@ -1269,9 +1321,13 @@ xf.field.Radio.prototype.updateItems = function(value) {
 	for (var i = 0; i < array.length; i++) {
 		var item = array[i];
 		html += '<label class="radio inline">';
-		html += '<input type="radio" name="' + this.name + '" value="' + item + '" ' + (this.readOnly ? 'readOnly' : '') + ' ' + (this.value == item ? 'checked' : '') + ' style="margin:0px;cursor:move;">';
+		html += '<input type="radio" name="' + this.name + '" value="' + item + '" '
+			+ (this.readOnly ? 'readOnly' : '') + ' '
+			+ (this.value == item ? 'checked' : '') + ' '
+			+ (this.required ? ' required="true" class="required"' : '') + ' style="margin:1px;">';
 		html += item;
 		html += '</label>';
+		html += '<label for="' + this.name + '" class="validate-error" generated="true" style="display:none;"></label>';
 	}
 	parentNode.innerHTML = html + '</div>';
 }
@@ -1289,7 +1345,7 @@ xf.field.Radio.prototype.setValue = function(value) {
 	this.updateItems(this.items);
 	if (this.readOnly) {
 		var parentNode = xf.$(this.parentId);
-		parentNode.innerHTML = value;
+		parentNode.innerHTML = '<div class="xf-handler">' + value + '</div>';
 	}
 }
 
@@ -1303,8 +1359,8 @@ xf.field.Checkbox = function(parentNode) {
 	var array = parentId.split('-');
 
 	this.parentId = parentId;
-	this.row = array[3];
-	this.col = array[4];
+	this.row = array[2];
+	this.col = array[3];
 	this.name = 'checkbox-' + this.row + '-' + this.col;
 	this.items = '';
 	this.required = false;
@@ -1320,7 +1376,7 @@ xf.field.Checkbox.prototype.doExport = function() {
 		+ ',"col":' + this.col
 		+ ',"name":"' + this.name
 		+ '","items":"' + this.items
-		+ '","required:' + this.required
+		+ '","required":' + this.required
 		+ ',"readOnly":' + this.readOnly
 		+ '}';
 }
@@ -1346,12 +1402,22 @@ xf.field.Checkbox.prototype.updateItems = function(value) {
 	var parentNode = xf.$(this.parentId);
 	var html = '<div class="xf-handler">';
 	var array = this.items.split(',');
+
+	var valueArray = [];
+	if (this.value != null) {
+		valueArray = this.value.split(',');
+	}
+
 	for (var i = 0; i < array.length; i++) {
 		var item = array[i];
 		html += '<label class="checkbox inline">';
-		html += '<input type="checkbox" name="' + this.name + '" value="' + item + '" ' + (this.readOnly ? 'disabled' : '') + ' ' + (this.value == item ? 'checked' : '') + ' style="margin:0px;cursor:move;">';
+		html += '<input type="checkbox" name="' + this.name + '" value="' + item + '" '
+			+ (this.readOnly ? 'readOnly' : '') + ' '
+			+ (this.value == item ? 'checked' : '') + ' '
+			+ (this.required ? ' required="true" class="required"' : '') + ' style="margin:1px;">';
 		html += item;
 		html += '</label>';
+		html += '<label for="' + this.name + '" class="validate-error" generated="true" style="display:none;"></label>';
 	}
 	parentNode.innerHTML = html + '</div>';
 }
@@ -1369,7 +1435,7 @@ xf.field.Checkbox.prototype.setValue = function(value) {
 	this.updateName(this.name);
 	if (this.readOnly) {
 		var parentNode = xf.$(this.parentId);
-		parentNode.innerHTML = value;
+		parentNode.innerHTML = '<div class="xf-handler">' + value + '</div>';
 	}
 }
 
@@ -1383,8 +1449,8 @@ xf.field.FileUpload = function(parentNode) {
 	var array = parentId.split('-');
 
 	this.parentId = parentId;
-	this.row = array[3];
-	this.col = array[4];
+	this.row = array[2];
+	this.col = array[3];
 	this.name = 'fileupload-' + this.row + '-' + this.col;
 	this.required = false;
 	this.readOnly = false;
@@ -1417,7 +1483,7 @@ xf.field.FileUpload.prototype.updateName = function(value) {
 	var parentNode = xf.$(this.parentId);
 	parentNode.innerHTML = 
 		'<div class="xf-handler">'
-		+ '<input type="file" name="' + this.name + '" ' + (this.readOnly ? 'readOnly' : '') + ' style="cursor:move;">'
+		+ '<input type="file" name="' + this.name + '" ' + (this.readOnly ? 'readOnly' : '') + '>'
 		+ '</div>';
 }
 
@@ -1432,7 +1498,17 @@ xf.field.FileUpload.prototype.updateReadOnly = function(value) {
 xf.field.FileUpload.prototype.setValue = function(value) {
 	if (this.readOnly) {
 		var parentNode = xf.$(this.parentId);
-		parentNode.innerHTML = value;
+		parentNode.innerHTML = '<div class="xf-handler"><a href="../rs/store/view?model=form&key=' + value.key + '">' + value.label + '</a></div>';
+	} else {
+		var parentNode = xf.$(this.parentId);
+		if (parentNode.children.length == 1) {
+			var span = document.createElement('span');
+			span.innerHTML = '<div class="xf-handler"><a href="../rs/store/view?model=form&key=' + value.key + '">' + value.label + '</a></div>';
+			parentNode.appendChild(span);
+		} else {
+			var span = parentNode.children[1];
+			span.innerHTML = '<div class="xf-handler"><a href="../rs/store/view?model=form&key=' + value.key + '">' + value.label + '</a></div>';
+		}
 	}
 }
 
@@ -1446,8 +1522,8 @@ xf.field.DatePicker = function(parentNode) {
 	var array = parentId.split('-');
 
 	this.parentId = parentId;
-	this.row = array[3];
-	this.col = array[4];
+	this.row = array[2];
+	this.col = array[3];
 	this.name = 'datepicker-' + this.row + '-' + this.col;
 	this.required = false;
 	this.readOnly = false;
@@ -1481,8 +1557,11 @@ xf.field.DatePicker.prototype.updateName = function(value) {
 	parentNode.innerHTML = 
 		'<div class="xf-handler">'
 	    + '<div style="padding-left: 0px;margin-bottom:0px;" class="input-append datepicker date">'
-	    + '<input type="text" name="' + this.name + '" style="background-color:white;cursor:default; width: 175px;" ' + (this.readOnly ? 'readOnly' : '') + ' value="' + (this.value ? this.value : '') + '">'
+	    + '<input type="text" name="' + this.name + '" style="background-color:white;cursor:default; width: 175px;" '
+		+ (this.readOnly ? 'readOnly' : '') + ' value="' + (this.value ? this.value : '') + '"'
+		+ (this.required ? ' required="true" class="required"' : '') + '>'
 	    + '<span style="padding-top: 2px; padding-bottom: 2px;" class="add-on"><i class="icon-calendar"></i></span>'
+	    + '<label for="' + this.name + '" class="validate-error" generated="true" style="display:none;"></label>'
 	    + '</div>'
 		+ '</div>';
 }
@@ -1500,7 +1579,7 @@ xf.field.DatePicker.prototype.setValue = function(value) {
 	this.updateName(this.name);
 	if (this.readOnly) {
 		var parentNode = xf.$(this.parentId);
-		parentNode.innerHTML = value;
+		parentNode.innerHTML = '<div class="xf-handler">' + value + '</div>';
 	}
 }
 
@@ -1514,8 +1593,8 @@ xf.field.UserPicker = function(parentNode) {
 	var array = parentId.split('-');
 
 	this.parentId = parentId;
-	this.row = array[3];
-	this.col = array[4];
+	this.row = array[2];
+	this.col = array[3];
 	this.name = 'userpicker-' + this.row + '-' + this.col;
 	this.required = false;
 	this.readOnly = false;
@@ -1548,10 +1627,11 @@ xf.field.UserPicker.prototype.updateName = function(value) {
 	var parentNode = xf.$(this.parentId);
 	parentNode.innerHTML = 
 		'<div class="xf-handler">'
-		+'	<div class="input-append userPicker" style="padding-left: 0px;">'
+		+'	<div class="input-append userPicker" style="padding:0px;margin:0px;">'
 		+'      <input type="hidden" name="' + this.name + '" class="input-medium" value="">'
-		+'      <input type="text" name="' + this.name + '_name" class="input-medium" value="">'
-		+'      <span class="add-on"><i class="icon-user"></i></span>'
+		+'      <input type="text" name="' + this.name + '_name" class="input-medium" value=""'
+		+ (this.required ? ' required="true" class="required"' : '') + ' style="width:175px;">'
+		+'      <span class="add-on" style="height:20px;padding:2px 5px;"><i class="icon-user"></i></span>'
 		+'	</div>'
 		+ '</div>';
 }
@@ -1569,6 +1649,6 @@ xf.field.UserPicker.prototype.setValue = function(value) {
 	this.updateName(this.name);
 	if (this.readOnly) {
 		var parentNode = xf.$(this.parentId);
-		parentNode.innerHTML = value;
+		parentNode.innerHTML = '<div class="xf-handler">' + value + '</div>';
 	}
 }

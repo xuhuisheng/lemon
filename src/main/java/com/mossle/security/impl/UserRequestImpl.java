@@ -4,7 +4,7 @@ import com.mossle.security.api.UserRequest;
 
 public class UserRequestImpl implements UserRequest {
     private String id;
-    private String scopeId;
+    private String tenantId;
     private String username;
     private String password;
 
@@ -16,12 +16,12 @@ public class UserRequestImpl implements UserRequest {
         this.id = id;
     }
 
-    public String getScopeId() {
-        return scopeId;
+    public String getTenantId() {
+        return tenantId;
     }
 
-    public void setScopeId(String scopeId) {
-        this.scopeId = scopeId;
+    public void setTenantId(String tenantId) {
+        this.tenantId = tenantId;
     }
 
     public String getUsername() {

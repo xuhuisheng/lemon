@@ -4,14 +4,13 @@ import java.util.List;
 
 import javax.annotation.Resource;
 
-import com.mossle.party.domain.PartyEntity;
-import com.mossle.party.domain.PartyStruct;
-import com.mossle.party.domain.PartyStructType;
-import com.mossle.party.domain.PartyType;
-import com.mossle.party.manager.PartyEntityManager;
-import com.mossle.party.manager.PartyStructManager;
-import com.mossle.party.manager.PartyStructTypeManager;
-import com.mossle.party.manager.PartyTypeManager;
+import com.mossle.party.persistence.domain.PartyEntity;
+import com.mossle.party.persistence.domain.PartyStructType;
+import com.mossle.party.persistence.domain.PartyType;
+import com.mossle.party.persistence.manager.PartyEntityManager;
+import com.mossle.party.persistence.manager.PartyStructManager;
+import com.mossle.party.persistence.manager.PartyStructTypeManager;
+import com.mossle.party.persistence.manager.PartyTypeManager;
 
 import org.springframework.stereotype.Component;
 

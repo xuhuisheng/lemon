@@ -1,23 +1,24 @@
 package com.mossle.workcal.web;
 
-import java.util.ArrayList;
 import java.util.List;
 import java.util.Map;
 
 import javax.annotation.Resource;
 
+import javax.servlet.http.HttpServletRequest;
 import javax.servlet.http.HttpServletResponse;
 
-import com.mossle.core.hibernate.PropertyFilter;
+import com.mossle.api.tenant.TenantHolder;
+
+import com.mossle.core.export.Exportor;
+import com.mossle.core.export.TableModel;
 import com.mossle.core.mapper.BeanMapper;
 import com.mossle.core.page.Page;
+import com.mossle.core.query.PropertyFilter;
 import com.mossle.core.spring.MessageHelper;
 
-import com.mossle.ext.export.Exportor;
-import com.mossle.ext.export.TableModel;
-
-import com.mossle.workcal.domain.WorkcalType;
-import com.mossle.workcal.manager.WorkcalTypeManager;
+import com.mossle.workcal.persistence.domain.WorkcalType;
+import com.mossle.workcal.persistence.manager.WorkcalTypeManager;
 
 import org.springframework.stereotype.Controller;
 
@@ -36,12 +37,15 @@ public class WorkcalTypeController {
     private Exportor exportor;
     private BeanMapper beanMapper = new BeanMapper();
     private MessageHelper messageHelper;
+    private TenantHolder tenantHolder;
 
     @RequestMapping("workcal-type-list")
     public String list(@ModelAttribute Page page,
             @RequestParam Map<String, Object> parameterMap, Model model) {
+        String tenantId = tenantHolder.getTenantId();
         List<PropertyFilter> propertyFilters = PropertyFilter
                 .buildFromMap(parameterMap);
+        propertyFilters.add(new PropertyFilter("EQS_tenantId", tenantId));
         page = workcalTypeManager.pagedQuery(page, propertyFilters);
         model.addAttribute("page", page);
 
@@ -62,6 +66,7 @@ public class WorkcalTypeController {
     @RequestMapping("workcal-type-save")
     public String save(@ModelAttribute WorkcalType workcalType,
             RedirectAttributes redirectAttributes) {
+        String tenantId = tenantHolder.getTenantId();
         Long id = workcalType.getId();
         WorkcalType dest = null;
 
@@ -70,6 +75,7 @@ public class WorkcalTypeController {
             beanMapper.copy(workcalType, dest);
         } else {
             dest = workcalType;
+            dest.setTenantId(tenantId);
         }
 
         workcalTypeManager.save(dest);
@@ -94,9 +100,12 @@ public class WorkcalTypeController {
     @RequestMapping("workcal-type-export")
     public void export(@ModelAttribute Page page,
             @RequestParam Map<String, Object> parameterMap,
-            HttpServletResponse response) throws Exception {
+            HttpServletRequest request, HttpServletResponse response)
+            throws Exception {
+        String tenantId = tenantHolder.getTenantId();
         List<PropertyFilter> propertyFilters = PropertyFilter
                 .buildFromMap(parameterMap);
+        propertyFilters.add(new PropertyFilter("EQS_tenantId", tenantId));
         page = workcalTypeManager.pagedQuery(page, propertyFilters);
 
         List<WorkcalType> workcalTypes = (List<WorkcalType>) page.getResult();
@@ -105,7 +114,7 @@ public class WorkcalTypeController {
         tableModel.setName("workcalType");
         tableModel.addHeaders("id", "name");
         tableModel.setData(workcalTypes);
-        exportor.export(response, tableModel);
+        exportor.export(request, response, tableModel);
     }
 
     @RequestMapping("workcal-type-checkName")
@@ -113,12 +122,13 @@ public class WorkcalTypeController {
     public boolean checkName(@RequestParam("name") String name,
             @RequestParam(value = "id", required = false) Long id)
             throws Exception {
-        String hql = "from WorkcalType where name=?";
-        Object[] params = { name };
+        String tenantId = tenantHolder.getTenantId();
+        String hql = "from WorkcalType where name=? and tenantId=?";
+        Object[] params = { name, tenantId };
 
         if (id != null) {
-            hql = "from WorkcalType where name=? and id<>?";
-            params = new Object[] { name, id };
+            hql = "from WorkcalType where name=? and tenantId=? and id<>?";
+            params = new Object[] { name, tenantId, id };
         }
 
         WorkcalType workcalType = workcalTypeManager.findUnique(hql, params);
@@ -142,5 +152,10 @@ public class WorkcalTypeController {
     @Resource
     public void setMessageHelper(MessageHelper messageHelper) {
         this.messageHelper = messageHelper;
+    }
+
+    @Resource
+    public void setTenantHolder(TenantHolder tenantHolder) {
+        this.tenantHolder = tenantHolder;
     }
 }

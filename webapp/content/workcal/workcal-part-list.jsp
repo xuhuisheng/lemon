@@ -7,11 +7,11 @@
 
   <head>
     <%@include file="/common/meta.jsp"%>
-    <title>工作日历时间段列表</title>
-    <%@include file="/common/s.jsp"%>
+    <title><spring:message code="dev.workcal-part.list.title" text="列表"/></title>
+    <%@include file="/common/s3.jsp"%>
     <script type="text/javascript">
 var config = {
-    id: 'workcalType',
+    id: 'workcal-partGrid',
     pageNo: ${page.pageNo},
     pageSize: ${page.pageSize},
     totalCount: ${page.totalCount},
@@ -23,7 +23,7 @@ var config = {
         'filter_LIKES_name': '${param.filter_LIKES_name}'
     },
 	selectedItemClass: 'selectedItem',
-	gridFormId: 'workcalType_form',
+	gridFormId: 'workcal-partGridForm',
 	exportUrl: 'workcal-part-export.do'
 };
 
@@ -39,66 +39,64 @@ $(function() {
   </head>
 
   <body>
-    <%@include file="/header/scope.jsp"%>
+    <%@include file="/header/workcal.jsp"%>
 
     <div class="row-fluid">
 	  <%@include file="/menu/workcal.jsp"%>
 
 	  <!-- start of main -->
-      <section id="m-main" class="span10">
+      <section id="m-main" class="col-md-10" style="padding-top:65px;">
 
-	  <article class="m-widget">
-        <header class="header">
-		  <h4 class="title">查询</h4>
-		  <div class="ctrl">
-		    <a class="btn"><i id="workcalType_searchIcon" class="icon-chevron-up"></i></a>
-		  </div>
-		</header>
-        <div id="workcalType_searchIcon" class="content content-inner">
+<div class="panel panel-default">
+  <div class="panel-heading">
+	<i class="glyphicon glyphicon-list"></i>
+    查询
+	<div class="pull-right ctrl">
+	  <a class="btn btn-default btn-xs"><i id="workcal-partSearchIcon" class="glyphicon glyphicon-chevron-up"></i></a>
+    </div>
+  </div>
+  <div class="panel-body">
 
-		  <form name="workcalType_form" method="post" action="workcal-part-list.do" class="form-inline">
-		    <label for="workcalType_name"><spring:message code='scope-global.scope-global.list.search.name' text='名称'/>:</label>
-		    <input type="text" id="workcalType_name" name="filter_LIKES_name" value="${param.filter_LIKES_name}">
-			<button class="btn btn-small" onclick="document.workcalType_form.submit()">查询</button>&nbsp;
+		  <form name="workcal-partForm" method="post" action="workcal-part-list.do" class="form-inline">
+		    <label for="workcal-part_name"><spring:message code='workcal-part.workcal-part.list.search.name' text='名称'/>:</label>
+		    <input type="text" id="workcal-part_name" name="filter_LIKES_name" value="${param.filter_LIKES_name}" class="form-control">
+			<button class="btn btn-default a-search" onclick="document.workcal-partForm.submit()">查询</button>&nbsp;
 		  </form>
 
 		</div>
-	  </article>
+	  </div>
 
-	  <article class="m-blank">
-	    <div class="pull-left">
-		  <region:region-permission permission="scope-global:create">
-		  <button class="btn btn-small a-insert" onclick="location.href='workcal-part-input.do'">新建</button>
-		  </region:region-permission>
-		  <region:region-permission permission="scope-global:delete">
-		  <button class="btn btn-small a-remove" onclick="table.removeAll()">删除</button>
-		  </region:region-permission>
-		  <button class="btn btn-small a-export" onclick="table.exportExcel()">导出</button>
+      <div style="margin-bottom: 20px;">
+	    <div class="pull-left btn-group" role="group">
+		  <button class="btn btn-default a-insert" onclick="location.href='workcal-part-input.do'">新建</button>
+		  <button class="btn btn-default a-remove" onclick="table.removeAll()">删除</button>
+		  <button class="btn btn-default a-export" onclick="table.exportExcel()">导出</button>
 		</div>
 
 		<div class="pull-right">
 		  每页显示
-		  <select class="m-page-size">
+		  <select class="m-page-size form-control" style="display:inline;width:auto;">
 		    <option value="10">10</option>
 		    <option value="20">20</option>
 		    <option value="50">50</option>
 		  </select>
 		  条
+        </div>
+
+	    <div class="clearfix"></div>
+	  </div>
+
+<form id="workcal-partGridForm" name="workcal-partGridForm" method='post' action="workcal-part-remove.do" class="m-form-blank">
+      <div class="panel panel-default">
+        <div class="panel-heading">
+		  <i class="glyphicon glyphicon-list"></i>
+		  <spring:message code="scope-info.scope-info.list.title" text="列表"/>
 		</div>
 
-	    <div class="m-clear"></div>
-	  </article>
-
-      <article class="m-widget">
-        <header class="header">
-		  <h4 class="title"><spring:message code="scope-global.scope-global.list.title" text="列表"/></h4>
-		</header>
-        <div class="content">
-<form id="workcalType_form" name="workcalType_form" method='post' action="workcal-part-remove.do" class="m-form-blank">
-  <table id="workcalType_grid" class="m-table table-hover">
+  <table id="workcalType_grid" class="table table-hover">
     <thead>
       <tr>
-        <th width="10" class="m-table-check"><input type="checkbox" name="checkAll" onchange="toggleSelectedItems(this.checked)"></th>
+        <th width="10" class="table-check"><input type="checkbox" name="checkAll" onchange="toggleSelectedItems(this.checked)"></th>
         <th class="sorting" name="id">编号</th>
         <th class="sorting">时间段</th>
         <th class="sorting">开始时间</th>
@@ -129,23 +127,24 @@ $(function() {
       </c:forEach>
     </tbody>
   </table>
-</form>
-        </div>
-      </article>
 
-	  <article>
+
+      </div>
+</form>
+
+	  <div>
 	    <div class="m-page-info pull-left">
 		  共100条记录 显示1到10条记录
 		</div>
 
 		<div class="btn-group m-pagination pull-right">
-		  <button class="btn btn-small">&lt;</button>
-		  <button class="btn btn-small">1</button>
-		  <button class="btn btn-small">&gt;</button>
+		  <button class="btn btn-default">&lt;</button>
+		  <button class="btn btn-default">1</button>
+		  <button class="btn btn-default">&gt;</button>
 		</div>
 
-	    <div class="m-clear"></div>
-      </article>
+	    <div class="clearfix"></div>
+      </div>
 
       <div class="m-spacer"></div>
 
@@ -156,3 +155,4 @@ $(function() {
   </body>
 
 </html>
+

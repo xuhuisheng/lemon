@@ -1,0 +1,68 @@
+<!doctype html>
+<html>
+  <head>
+    <meta charset="utf-8" />
+    <meta http-equiv="X-UA-Compatible" content="IE=edge,chrome=1" />
+    <title>${article.title}</title>
+	<!-- static start -->
+	<link rel="stylesheet" href="../s/bootstrap/3.3.6/css/bootstrap.min.css">
+    <script type="text/javascript" src="../s/jquery/jquery.min.js"></script>
+	<script type="text/javascript" src="../s/bootstrap/3.3.6/js/bootstrap.min.js"></script>
+	<!-- static end -->
+  </head>
+  <body>
+    <!-- navbar start -->
+    <div class="navbar navbar-default" role="navigation">
+      <div class="navbar-inner">
+        <div class="container-fluid"><!-- .container -->
+          <div class="navbar-header">
+            <a class="navbar-brand" href="../">Mossle</a>
+          </div>
+        </div><!-- /.container -->
+	  </div>
+    </div>
+    <!-- navbar end -->
+
+    <div class="container">
+      <div class="row">
+        <div class="col-md-12">
+          <h3>${article.title}</h3>
+	      <p>
+	        <span style="color:gray;">${userConnector.findById(article.userId).displayName}</span>
+		    <span style="color:gray;">${article.publishTime!}</span>
+	      </p>
+
+	    <#if article.logo??>
+	      <img src="${article.logo}">
+	    </#if>
+
+	    <#if article.summary??>
+	      <p style="color:gray;">${article.summary}</p>
+	    </#if>
+	
+	      <hr>
+	      <!-- ==================================================================== -->
+          ${article.content!}
+
+	      <!-- ==================================================================== -->
+
+	    <#if article.cmsAttachments??>
+		  <#list article.cmsAttachments as item>
+	      <p><a href="../rs/cms/attachments?key=${item.path}">${item.name}</a></p>
+		  </#list>
+	    </#if>
+        
+		</div>
+      </div>
+    </div>
+
+    <hr>
+
+    <div class="container">
+      <div class="row" style="text-align:center;">
+        &copy; Mossle
+      </div>
+    </div>
+
+  </body>
+</html>

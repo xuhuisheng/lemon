@@ -1,0 +1,135 @@
+<!doctype html>
+<html>
+  <head>
+    <meta charset="utf-8" />
+    <meta http-equiv="X-UA-Compatible" content="IE=edge,chrome=1" />
+    <title>index</title>
+	<!-- static start -->
+	<link rel="stylesheet" href="../s/bootstrap/3.3.1/css/bootstrap.min.css">
+    <script type="text/javascript" src="../s/jquery/jquery.min.js"></script>
+	<script type="text/javascript" src="../s/bootstrap/3.3.1/js/bootstrap.min.js"></script>
+	<style type="text/css">
+body {
+	padding-top: 70px;
+}
+	</style>
+	<!-- static end -->
+  </head>
+  <body>
+    <!-- navbar activiti start -->
+    <div class="navbar navbar-fixed-top navbar-inverse" role="navigation">
+      <div class="navbar-inner">
+        <div class="container">
+          <div class="navbar-header">
+            <a class="navbar-brand" href="index.do">Mossle</a>
+            <ul class="nav navbar-nav">
+			<#list catalogs as catalog>
+			  <li><a href="catalog.do?id=${catalog.id}">${catalog.name}</a></li>
+			</#list>
+			</ul>
+          </div>
+        </div><!-- /.container -->
+	  </div>
+    </div><!-- /.navbar -->
+    <!-- navbar activiti end -->
+
+<#list catalogs as catalog>
+    <div class="container">
+      <h4 style="padding-left:15px;"><a href="catalog.do?id=${catalog.id}">${catalog.name}</a></h4>
+    </div>
+
+    <div class="container">
+<#list catalog.cmsArticles as article>
+	  <!-- ==================================================================== -->
+      <div class="panel panel-info">
+        <div class="panel-heading">
+          <h3 class="panel-title">
+		    ${article.title}
+			<small><a href="article.do?id=${article.id}">详情</a></small>
+		  </h3>
+        </div>
+
+        <div class="panel-body">
+		  <#if article.type == 0>
+		  <p>${article.content}</p>
+		  </#if>
+
+		  <#if article.type == 1>
+<div id="carousel-example-generic-${article.id}" class="carousel slide" data-ride="carousel">
+  <!-- Indicators -->
+  <ol class="carousel-indicators">
+    <#list article.cmsAttachments as attachment>
+    <li class="<#if attachment_index==0>active</#if>" data-target="#carousel-example-generic-${article.id}" data-slide-to="${attachment_index}"></li>
+    </#list>
+  </ol>
+
+  <!-- Wrapper for slides -->
+  <div class="carousel-inner">
+    <#list article.cmsAttachments as attachment>
+    <div class="item <#if attachment_index==0>active</#if>">
+      <img src="../rs/cms/image?key=${attachment.path}" alt="${attachment.name}">
+      <div class="carousel-caption">
+        ${attachment.name}
+      </div>
+    </div>
+    </#list>
+  </div>
+
+  <!-- Controls -->
+  <a class="left carousel-control" href="#carousel-example-generic-${article.id}" role="button" data-slide="prev">
+    <span class="glyphicon glyphicon-chevron-left"></span>
+  </a>
+  <a class="right carousel-control" href="#carousel-example-generic-${article.id}" role="button" data-slide="next">
+    <span class="glyphicon glyphicon-chevron-right"></span>
+  </a>
+</div>
+		  </#if>
+
+		  <#if article.type == 2>
+		  <p>
+<audio controls>
+    <#list article.cmsAttachments as attachment>
+  <source src="../rs/cms/image?key=${attachment.path}">
+    </#list>
+<!--
+  <source src="../horse.ogg" type="audio/ogg">
+  <source src="../horse.mp3" type="audio/mpeg">
+-->
+Your browser does not support the audio element.
+</audio>
+		  </p>
+		  </#if>
+
+		  <#if article.type == 3>
+		  <p>
+<video controls>
+    <#list article.cmsAttachments as attachment>
+  <source src="../rs/cms/image?key=${attachment.path}">
+    </#list>
+<!--
+  <source src="../mov_bbb.ogg" type="video/ogg">
+  <source src="../mov_bbb.mp4" type="video/mpeg">
+-->
+Your browser does not support the audio element.
+</video>
+		  </p>
+		  </#if>
+
+        </div>
+      </div>
+</#list>
+
+	  <!-- ==================================================================== -->
+    </div>
+</#list>
+
+    <hr>
+
+    <div class="container">
+      <div class="row" style="text-align:center;">
+        &copy; Mossle
+      </div>
+    </div>
+
+  </body>
+</html>

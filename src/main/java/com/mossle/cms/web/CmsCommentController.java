@@ -1,23 +1,22 @@
 package com.mossle.cms.web;
 
-import java.util.ArrayList;
 import java.util.List;
 import java.util.Map;
 
 import javax.annotation.Resource;
 
+import javax.servlet.http.HttpServletRequest;
 import javax.servlet.http.HttpServletResponse;
 
-import com.mossle.cms.domain.CmsComment;
-import com.mossle.cms.manager.CmsCommentManager;
+import com.mossle.cms.persistence.domain.CmsComment;
+import com.mossle.cms.persistence.manager.CmsCommentManager;
 
-import com.mossle.core.hibernate.PropertyFilter;
+import com.mossle.core.export.Exportor;
+import com.mossle.core.export.TableModel;
 import com.mossle.core.mapper.BeanMapper;
 import com.mossle.core.page.Page;
+import com.mossle.core.query.PropertyFilter;
 import com.mossle.core.spring.MessageHelper;
-
-import com.mossle.ext.export.Exportor;
-import com.mossle.ext.export.TableModel;
 
 import org.springframework.stereotype.Controller;
 
@@ -94,7 +93,8 @@ public class CmsCommentController {
     @RequestMapping("cms-comment-export")
     public void export(@ModelAttribute Page page,
             @RequestParam Map<String, Object> parameterMap,
-            HttpServletResponse response) throws Exception {
+            HttpServletRequest request, HttpServletResponse response)
+            throws Exception {
         List<PropertyFilter> propertyFilters = PropertyFilter
                 .buildFromMap(parameterMap);
         page = cmsCommentManager.pagedQuery(page, propertyFilters);
@@ -105,7 +105,7 @@ public class CmsCommentController {
         tableModel.setName("cmsComment");
         tableModel.addHeaders("id", "name");
         tableModel.setData(cmsComments);
-        exportor.export(response, tableModel);
+        exportor.export(request, response, tableModel);
     }
 
     @RequestMapping("cms-comment-checkName")

@@ -3,6 +3,7 @@ var createUserPicker = function(conf) {
 	var defaults = {
 		modalId: 'userPicker',
 		multiple: false,
+		showExpression: false,
 		url: '/mossle-web-user/default/rs/user/search'
 	};
 	for (var key in defaults) {
@@ -19,6 +20,13 @@ var createUserPicker = function(conf) {
 +'    <h3>选择用户</h3>'
 +'  </div>'
 +'  <div class="modal-body">'
++'    <ul class="nav nav-tabs" role="tablist" id="userPickerTabs">'
++'      <li role="presentation" class="active"><a href="#user" aria-controls="user" role="tab" data-toggle="tab">选择用户</a></li>'
++'      <li role="presentation" ' + (conf.showExpression !== true ? 'style="display:none;"' : '') + '><a href="#common" aria-controls="common" role="tab" data-toggle="tab">常用语</a></li>'
++'      <li role="presentation" ' + (conf.showExpression !== true ? 'style="display:none;"' : '') + '><a href="#expr" aria-controls="expr" role="tab" data-toggle="tab">表达式</a></li>'
++'    </ul>'
++'    <div class="tab-content">'
++'      <div role="tabpanel" class="tab-pane active" id="user">'
 +'    <article class="m-blank">'
 +'      <div class="pull-left" style="display:table"><div style="display:table-cell">'
 +'        <label for="' + conf.modalId + '_username" style="display:inline">账号:</label>'
@@ -52,6 +60,60 @@ var createUserPicker = function(conf) {
 +'  </table>'
 +'      </div>'
 +'    </article>'
++'      </div>'
++'      <div role="tabpanel" class="tab-pane" id="common">'
++'    <article class="m-widget">'
++'      <header class="header">'
++'        <h4 class="title">用户</h4>'
++'      </header>'
++'      <div class="content">'
++'  <table id="' + conf.modalId + '_commonGrid" class="m-table table-hover">'
++'    <thead>'
++'      <tr>'
++'        <th width="10" class="m-table-check">&nbsp;</th>'
++'        <th>姓名</th>'
++'      </tr>'
++'    </thead>'
++'    <tbody id="' + conf.modalId + '_commonBody">'
++'      <tr>'
++'        <td><input id="' + conf.modalId + '_item_common_1" type="radio" name="selectedItem" class="selectedItem" value="常用语:直接上级" title="常用语:直接上级" style="margin-top:0px;"></td>'
++'        <td>常用语:直接上级</td>'
++'      </tr>'
++'      <tr>'
++'        <td><input id="' + conf.modalId + '_item_common_2" type="radio" name="selectedItem" class="selectedItem" value="岗位:经理" title="岗位:经理" style="margin-top:0px;"></td>'
++'        <td>岗位:经理</td>'
++'      </tr>'
++'      <tr>'
++'        <td><input id="' + conf.modalId + '_item_common_3" type="radio" name="selectedItem" class="selectedItem" value="岗位:总经理" title="岗位:总经理" style="margin-top:0px;"></td>'
++'        <td>岗位:总经理</td>'
++'      </tr>'
++'    </tbody>'
++'  </table>'
++'      </div>'
++'    </article>'
++'      </div>'
++'      <div role="tabpanel" class="tab-pane" id="expr">'
++'    <article class="m-widget">'
++'      <header class="header">'
++'        <h4 class="title">表达式</h4>'
++'      </header>'
++'      <div class="content">'
++'  <table id="' + conf.modalId + '_exprGrid" class="m-table table-hover">'
++'    <thead>'
++'      <tr>'
++'        <th>姓名</th>'
++'      </tr>'
++'    </thead>'
++'    <tbody id="' + conf.modalId + '_exprBody">'
++'      <tr>'
++'        <td><input id="' + conf.modalId + '_item_expr_1" type="text" name="selectedItem" class="selectedItem" value="${initiator}" title="${initator}" style="margin-top:0px;"></td>'
++'      </tr>'
++'    </tbody>'
++'  </table>'
++'      </div>'
++'    </article>'
++'      </div>'
++'    </div>'
 +'  </div>'
 +'  <div class="modal-footer">'
 +'    <span id="' + conf.modalId + '_result" style="float:left;"></span>'
@@ -59,6 +121,11 @@ var createUserPicker = function(conf) {
 +'    <a id="' + conf.modalId + '_select" href="#" class="btn btn-primary">选择</a>'
 +'  </div>'
 +'</div>');
+
+		$('#userPickerTabs a').click(function (e) {
+		  e.preventDefault();
+		  $(this).tab('show');
+		})
     }
 
 	var doSearch = function(username) {
@@ -73,7 +140,7 @@ var createUserPicker = function(conf) {
                     var item = data[i];
                     html +=
                       '<tr>'
-                        +'<td><input id="' + conf.modalId + '_item_' + i + '" type="' + (conf.multiple ? 'checkbox' : 'radio') + '" class="selectedItem" value="'
+                        +'<td><input id="' + conf.modalId + '_item_' + i + '" type="' + (conf.multiple ? 'checkbox' : 'radio') + '" class="selectedItem" name="name" value="'
                         + item.id + '" title="' + item.displayName + '"></td>'
                         +'<td><label for="' + conf.modalId + '_item_' + i + '">' + item.displayName + '</label></td>'
                       +'</tr>'
@@ -108,6 +175,16 @@ var createUserPicker = function(conf) {
 			var html = '<span class="label" id="' + $(this).val() + '" title="' + $(this).attr('title') + '">' + $(this).attr('title') + '<i class="icon-minus-sign" style="cursor:pointer;"></i></span>';
 			$('#' + conf.modalId + '_result').html(html);
 		}
+	});
+
+    $(document).delegate('#' + conf.modalId + '_commonBody .selectedItem', 'click', function(e) {
+		var html = '<span class="label" id="' + $(this).val() + '" title="' + $(this).attr('title') + '">' + $(this).attr('title') + '<i class="icon-minus-sign" style="cursor:pointer;"></i></span>';
+		$('#' + conf.modalId + '_result').html(html);
+	});
+
+    $(document).delegate('#' + conf.modalId + '_exprBody .selectedItem', 'click', function(e) {
+		var html = '<span class="label" id="' + $(this).val() + '" title="' + $(this).attr('title') + '">' + $(this).attr('title') + '<i class="icon-minus-sign" style="cursor:pointer;"></i></span>';
+		$('#' + conf.modalId + '_result').html(html);
 	});
 
 	$(document).delegate('.icon-minus-sign', 'click', function(e) {

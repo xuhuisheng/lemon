@@ -1,27 +1,25 @@
 package com.mossle.car.web;
 
-import java.util.ArrayList;
 import java.util.List;
 import java.util.Map;
 
 import javax.annotation.Resource;
 
+import javax.servlet.http.HttpServletRequest;
 import javax.servlet.http.HttpServletResponse;
 
+import com.mossle.api.tenant.TenantHolder;
 import com.mossle.api.user.UserConnector;
 
-import com.mossle.car.domain.CarInfo;
-import com.mossle.car.manager.CarInfoManager;
+import com.mossle.car.persistence.domain.CarInfo;
+import com.mossle.car.persistence.manager.CarInfoManager;
 
-import com.mossle.core.hibernate.PropertyFilter;
+import com.mossle.core.export.Exportor;
+import com.mossle.core.export.TableModel;
 import com.mossle.core.mapper.BeanMapper;
 import com.mossle.core.page.Page;
+import com.mossle.core.query.PropertyFilter;
 import com.mossle.core.spring.MessageHelper;
-
-import com.mossle.ext.export.Exportor;
-import com.mossle.ext.export.TableModel;
-
-import com.mossle.security.util.SpringSecurityUtils;
 
 import org.springframework.stereotype.Controller;
 
@@ -30,7 +28,6 @@ import org.springframework.ui.Model;
 import org.springframework.web.bind.annotation.ModelAttribute;
 import org.springframework.web.bind.annotation.RequestMapping;
 import org.springframework.web.bind.annotation.RequestParam;
-import org.springframework.web.bind.annotation.ResponseBody;
 import org.springframework.web.servlet.mvc.support.RedirectAttributes;
 
 @Controller
@@ -41,12 +38,15 @@ public class CarInfoController {
     private BeanMapper beanMapper = new BeanMapper();
     private UserConnector userConnector;
     private MessageHelper messageHelper;
+    private TenantHolder tenantHolder;
 
     @RequestMapping("car-info-list")
     public String list(@ModelAttribute Page page,
             @RequestParam Map<String, Object> parameterMap, Model model) {
+        String tenantId = tenantHolder.getTenantId();
         List<PropertyFilter> propertyFilters = PropertyFilter
                 .buildFromMap(parameterMap);
+        propertyFilters.add(new PropertyFilter("EQS_tenantId", tenantId));
         page = carInfoManager.pagedQuery(page, propertyFilters);
 
         model.addAttribute("page", page);
@@ -69,6 +69,7 @@ public class CarInfoController {
     public String save(@ModelAttribute CarInfo carInfo,
             @RequestParam Map<String, Object> parameterMap,
             RedirectAttributes redirectAttributes) {
+        String tenantId = tenantHolder.getTenantId();
         CarInfo dest = null;
 
         Long id = carInfo.getId();
@@ -78,6 +79,7 @@ public class CarInfoController {
             beanMapper.copy(carInfo, dest);
         } else {
             dest = carInfo;
+            dest.setTenantId(tenantId);
         }
 
         carInfoManager.save(dest);
@@ -104,9 +106,12 @@ public class CarInfoController {
     @RequestMapping("car-info-export")
     public void export(@ModelAttribute Page page,
             @RequestParam Map<String, Object> parameterMap,
-            HttpServletResponse response) throws Exception {
+            HttpServletRequest request, HttpServletResponse response)
+            throws Exception {
+        String tenantId = tenantHolder.getTenantId();
         List<PropertyFilter> propertyFilters = PropertyFilter
                 .buildFromMap(parameterMap);
+        propertyFilters.add(new PropertyFilter("EQS_tenantId", tenantId));
         page = carInfoManager.pagedQuery(page, propertyFilters);
 
         List<CarInfo> carInfos = (List<CarInfo>) page.getResult();
@@ -115,7 +120,7 @@ public class CarInfoController {
         tableModel.setName("car info");
         tableModel.addHeaders("id", "name");
         tableModel.setData(carInfos);
-        exportor.export(response, tableModel);
+        exportor.export(request, response, tableModel);
     }
 
     // ~ ======================================================================
@@ -137,5 +142,10 @@ public class CarInfoController {
     @Resource
     public void setMessageHelper(MessageHelper messageHelper) {
         this.messageHelper = messageHelper;
+    }
+
+    @Resource
+    public void setTenantHolder(TenantHolder tenantHolder) {
+        this.tenantHolder = tenantHolder;
     }
 }

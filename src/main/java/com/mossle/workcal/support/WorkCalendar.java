@@ -37,7 +37,7 @@ public class WorkCalendar {
      * 计算结束时间.
      */
     public Date add(Date date, String period) throws Exception {
-        return add(date, this.parsePeriod(period));
+        return this.add(date, this.parsePeriod(period));
     }
 
     /**

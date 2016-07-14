@@ -8,19 +8,19 @@ import org.springframework.jdbc.core.JdbcTemplate;
 public class DatabaseUserRealm implements UserRealm {
     private JdbcTemplate jdbcTemplate;
 
-    public UserAuth login(String username, String password, String scopeId) {
+    public UserAuth login(String username, String password, String tenantId) {
         return null;
     }
 
-    public UserAuth findByUsername(String username, String scopeId) {
+    public UserAuth findByUsername(String username, String tenantId) {
         return null;
     }
 
-    public UserAuth findByRef(String ref, String scopeId) {
+    public UserAuth findByRef(String ref, String tenantId) {
         return null;
     }
 
-    public UserAuth findById(String id, String scopeId) {
+    public UserAuth findById(String id, String tenantId) {
         return null;
     }
 

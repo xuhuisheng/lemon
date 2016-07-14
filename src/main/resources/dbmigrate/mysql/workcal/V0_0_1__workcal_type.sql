@@ -4,8 +4,8 @@
 --  workcal type
 -------------------------------------------------------------------------------
 CREATE TABLE WORKCAL_TYPE(
-        ID BIGINT auto_increment,
+        ID BIGINT NOT NULL,
 	NAME VARCHAR(50),
         CONSTRAINT PK_WORKCAL_TYPE PRIMARY KEY(ID)
-) engine=innodb;
+) ENGINE=INNODB CHARSET=UTF8;
 

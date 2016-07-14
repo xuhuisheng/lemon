@@ -6,4 +6,5 @@
 <%@taglib prefix="fn" uri="http://java.sun.com/jsp/jstl/functions" %>
 <%@ taglib prefix="tags" tagdir="/WEB-INF/tags" %>
 <%pageContext.setAttribute("ctx", request.getContextPath());%>
-<%pageContext.setAttribute("locale", request.getLocale());%>
+
+<%request.setAttribute("tenantPrefix", request.getContextPath());%>

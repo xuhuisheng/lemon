@@ -1,89 +1,109 @@
 <%@ page language="java" pageEncoding="UTF-8" %>
+<style type="text/css">
+#accordion .panel-heading {
+	cursor: pointer;
+}
+#accordion .panel-body {
+	padding:0px;
+}
+</style>
+
       <!-- start of sidebar -->
-      <aside id="m-sidebar" class="accordion span2" data-spy="affix" data-offset-top="100">
+<div class="panel-group col-md-2" id="accordion" role="tablist" aria-multiselectable="true" style="padding-top:65px;">
 
-        <div class="accordion-group">
-          <div class="accordion-heading">
-            <a class="accordion-toggle" data-toggle="collapse" data-parent="#m-sidebar" href="#collapse-bpm-category">
-              <i class="icon-user"></i>
-              <span class="title">分类管理</span>
-            </a>
-          </div>
-          <div id="collapse-bpm-category" class="accordion-body collapse ${currentMenu == 'bpm-category' ? 'in' : ''}">
-            <ul class="accordion-inner nav nav-list">
-			  <li><a href="${scopePrefix}/bpm/bpm-category-list.do"><i class="icon-user"></i>流程分类</a></li>
-			  <li><a href="${scopePrefix}/bpm/bpm-process-list.do"><i class="icon-user"></i>流程定义</a></li>
-			  <li><a href="${scopePrefix}/bpm/bpm-mail-template-list.do"><i class="icon-user"></i>邮件模板</a></li>
-            </ul>
-          </div>
-		</div>
+  <div class="panel panel-default">
+    <div class="panel-heading" role="tab" id="collapse-header-bpm-category" data-toggle="collapse" data-parent="#accordion" href="#collapse-body-bpm-category" aria-expanded="true" aria-controls="collapse-body-bpm-category">
+      <h4 class="panel-title">
+	    <i class="glyphicon glyphicon-list"></i>
+        分类管理
+      </h4>
+    </div>
+    <div id="collapse-body-bpm-category" class="panel-collapse collapse ${currentMenu == 'bpm-category' ? 'in' : ''}" role="tabpanel" aria-labelledby="collapse-header-bpm-category">
+      <div class="panel-body">
+        <ul class="nav nav-list">
+		  <li><a href="${tenantPrefix}/bpm/bpm-category-list.do"><i class="glyphicon glyphicon-list"></i> 流程分类</a></li>
+		  <li><a href="${tenantPrefix}/bpm/bpm-process-list.do"><i class="glyphicon glyphicon-list"></i> 流程配置</a></li>
+        </ul>
+      </div>
+    </div>
+  </div>
 
-        <div class="accordion-group">
-          <div class="accordion-heading">
-            <a class="accordion-toggle" data-toggle="collapse" data-parent="#m-sidebar" href="#collapse-bpm-process">
-              <i class="icon-user"></i>
-              <span class="title">流程管理</span>
-            </a>
-          </div>
-          <div id="collapse-bpm-process" class="accordion-body collapse ${currentMenu == 'bpm-process' ? 'in' : ''}">
-            <ul class="accordion-inner nav nav-list">
-			  <li><a href="${scopePrefix}/modeler/modeler-list.do"><i class="icon-user"></i>发布流程</a></li>
-			  <li><a href="${scopePrefix}/bpm/console-listProcessDefinitions.do"><i class="icon-user"></i>流程定义</a></li>
-			  <li><a href="${scopePrefix}/bpm/console-listProcessInstances.do"><i class="icon-user"></i>流程实例</a></li>
-			  <li><a href="${scopePrefix}/bpm/console-listTasks.do"><i class="icon-user"></i>任务</a></li>
-			  <li><a href="${scopePrefix}/bpm/console-listDeployments.do"><i class="icon-user"></i>部署</a></li>
-            </ul>
-          </div>
-		</div>
+  <div class="panel panel-default">
+    <div class="panel-heading" role="tab" id="collapse-header-bpm-process" data-toggle="collapse" data-parent="#accordion" href="#collapse-body-bpm-process" aria-expanded="true" aria-controls="collapse-body-bpm-process">
+      <h4 class="panel-title">
+	    <i class="glyphicon glyphicon-list"></i>
+        流程管理
+      </h4>
+    </div>
+    <div id="collapse-body-bpm-process" class="panel-collapse collapse ${currentMenu == 'bpm-process' ? 'in' : ''}" role="tabpanel" aria-labelledby="collapse-header-bpm-process">
+      <div class="panel-body">
+        <ul class="nav nav-list">
+		  <li><a href="${tenantPrefix}/modeler/modeler-list.do"><i class="glyphicon glyphicon-list"></i> 发布流程</a></li>
+		  <li><a href="${tenantPrefix}/bpm/console-listProcessDefinitions.do"><i class="glyphicon glyphicon-list"></i> 流程定义</a></li>
+		  <li><a href="${tenantPrefix}/bpm/console-listProcessInstances.do"><i class="glyphicon glyphicon-list"></i> 流程实例</a></li>
+		  <li><a href="${tenantPrefix}/bpm/console-listTasks.do"><i class="glyphicon glyphicon-list"></i> 任务</a></li>
+		  <li><a href="${tenantPrefix}/bpm/console-listDeployments.do"><i class="glyphicon glyphicon-list"></i> 部署</a></li>
+        </ul>
+      </div>
+    </div>
+  </div>
 
-        <div class="accordion-group">
-          <div class="accordion-heading">
-            <a class="accordion-toggle" data-toggle="collapse" data-parent="#m-sidebar" href="#collapse-history">
-              <i class="icon-user"></i>
-              <span class="title">历史</span>
-            </a>
-          </div>
-          <div id="collapse-history" class="accordion-body collapse ${currentMenu == 'history' ? 'in' : ''}">
-            <ul class="accordion-inner nav nav-list">
-			  <li><a href="${scopePrefix}/bpm/console-listHistoricProcessInstances.do"><i class="icon-user"></i>流程实例</a></li>
-			  <li><a href="${scopePrefix}/bpm/console-listHistoricActivityInstances.do"><i class="icon-user"></i>节点</a></li>
-			  <li><a href="${scopePrefix}/bpm/console-listHistoricTasks.do"><i class="icon-user"></i>任务</a></li>
-            </ul>
-          </div>
-        </div>
+  <div class="panel panel-default">
+    <div class="panel-heading" role="tab" id="collapse-header-bpm-history" data-toggle="collapse" data-parent="#accordion" href="#collapse-body-bpm-history" aria-expanded="true" aria-controls="collapse-body-bpm-history">
+      <h4 class="panel-title">
+	    <i class="glyphicon glyphicon-list"></i>
+        流程历史
+      </h4>
+    </div>
+    <div id="collapse-body-bpm-history" class="panel-collapse collapse ${currentMenu == 'history' ? 'in' : ''}" role="tabpanel" aria-labelledby="collapse-header-bpm-history">
+      <div class="panel-body">
+        <ul class="nav nav-list">
+		  <li><a href="${tenantPrefix}/bpm/console-listHistoricProcessInstances.do"><i class="glyphicon glyphicon-list"></i> 流程实例</a></li>
+		  <li><a href="${tenantPrefix}/bpm/console-listHistoricActivityInstances.do"><i class="glyphicon glyphicon-list"></i> 流程节点</a></li>
+		  <li><a href="${tenantPrefix}/bpm/console-listHistoricTasks.do"><i class="glyphicon glyphicon-list"></i> 流程任务</a></li>
+        </ul>
+      </div>
+    </div>
+  </div>
 
-        <div class="accordion-group">
-          <div class="accordion-heading">
-            <a class="accordion-toggle" data-toggle="collapse" data-parent="#m-sidebar" href="#collapse-delegate">
-              <i class="icon-user"></i>
-              <span class="title">自动委托</span>
-            </a>
-          </div>
-          <div id="collapse-delegate" class="accordion-body collapse ${currentMenu == 'delegate' ? 'in' : ''}">
-            <ul class="accordion-inner nav nav-list">
-			  <li><a href="${scopePrefix}/bpm/delegate-listDelegateInfos.do"><i class="icon-user"></i>自动委托</a></li>
-			  <li><a href="${scopePrefix}/bpm/delegate-listDelegateHistories.do"><i class="icon-user"></i>自动委托记录</a></li>
-            </ul>
-          </div>
-        </div>
+  <div class="panel panel-default">
+    <div class="panel-heading" role="tab" id="collapse-header-bpm-delegate" data-toggle="collapse" data-parent="#accordion" href="#collapse-body-bpm-delegate" aria-expanded="true" aria-controls="collapse-body-bpm-delegate">
+      <h4 class="panel-title">
+	    <i class="glyphicon glyphicon-list"></i>
+        自动委托
+      </h4>
+    </div>
+    <div id="collapse-body-bpm-delegate" class="panel-collapse collapse ${currentMenu == 'delegate' ? 'in' : ''}" role="tabpanel" aria-labelledby="collapse-header-bpm-delegate">
+      <div class="panel-body">
+        <ul class="nav nav-list">
+		  <li><a href="${tenantPrefix}/delegate/delegate-listDelegateInfos.do"><i class="glyphicon glyphicon-list"></i> 自动委托</a></li>
+		  <li><a href="${tenantPrefix}/delegate/delegate-listDelegateHistories.do"><i class="glyphicon glyphicon-list"></i> 自动委托记录</a></li>
+        </ul>
+      </div>
+    </div>
+  </div>
 
-        <div class="accordion-group">
-          <div class="accordion-heading">
-            <a class="accordion-toggle" data-toggle="collapse" data-parent="#m-sidebar" href="#collapse-job">
-              <i class="icon-user"></i>
-              <span class="title">异步消息管理</span>
-            </a>
-          </div>
-          <div id="collapse-job" class="accordion-body collapse ${currentMenu == 'job' ? 'in' : ''}">
-            <ul class="accordion-inner nav nav-list">
-			  <li><a href="${scopePrefix}/bpm/job-list.do"><i class="icon-user"></i>异步消息管理</a></li>
-            </ul>
-          </div>
-        </div>
+  <div class="panel panel-default">
+    <div class="panel-heading" role="tab" id="collapse-header-" data-toggle="collapse" data-parent="#accordion" href="#collapse-body-job" aria-expanded="true" aria-controls="collapse-body-job">
+      <h4 class="panel-title">
+	    <i class="glyphicon glyphicon-list"></i>
+        异步消息管理
+      </h4>
+    </div>
+    <div id="collapse-body-job" class="panel-collapse collapse ${currentMenu == 'job' ? 'in' : ''}" role="tabpanel" aria-labelledby="collapse-header-job">
+      <div class="panel-body">
+        <ul class="nav nav-list">
+		  <li><a href="${tenantPrefix}/bpm/job-list.do"><i class="glyphicon glyphicon-list"></i> 异步消息管理</a></li>
+        </ul>
+      </div>
+    </div>
+  </div>
 
 		<footer id="m-footer" class="text-center">
 		  <hr>
 		  &copy;Mossle
 		</footer>
-      </aside>
+
+</div>
       <!-- end of sidebar -->
+

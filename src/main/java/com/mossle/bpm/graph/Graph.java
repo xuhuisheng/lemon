@@ -24,7 +24,7 @@ public class Graph {
     public void visitNode(Node node, List<Node> nodes) {
         nodes.add(node);
 
-        for (Edge edge : node.getEdges()) {
+        for (Edge edge : node.getOutgoingEdges()) {
             Node nextNode = edge.getDest();
             visitNode(nextNode, nodes);
         }
@@ -38,7 +38,7 @@ public class Graph {
     }
 
     public void visitEdge(Node node, List<Edge> edges) {
-        for (Edge edge : node.getEdges()) {
+        for (Edge edge : node.getOutgoingEdges()) {
             edges.add(edge);
 
             Node nextNode = edge.getDest();

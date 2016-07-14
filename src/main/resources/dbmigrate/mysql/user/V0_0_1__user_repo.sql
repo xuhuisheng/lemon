@@ -4,7 +4,7 @@
 --  user repo
 -------------------------------------------------------------------------------
 CREATE TABLE USER_REPO(
-        ID BIGINT auto_increment,
+        ID BIGINT NOT NULL,
 	CODE VARCHAR(50),
         NAME VARCHAR(50),
 	REFERENCE VARCHAR(50),

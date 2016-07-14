@@ -1,5 +1,5 @@
 
-alter table USER_BASE change REFERENCE REF varchar(64);
+ALTER TABLE USER_BASE CHANGE REFERENCE REF VARCHAR(200);
 
 alter table USER_BASE add EMAIL varchar(100);
 

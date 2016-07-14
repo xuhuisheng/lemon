@@ -34,7 +34,7 @@ public class ProxyUserTaskBpmnParseHandler implements BpmnParseHandler {
         }
 
         UserTask userTask = (UserTask) baseElement;
-        logger.info("bpmnParse : {}, userTask : {}", bpmnParse, userTask);
+        logger.debug("bpmnParse : {}, userTask : {}", bpmnParse, userTask);
 
         TaskDefinition taskDefinition = (TaskDefinition) bpmnParse
                 .getCurrentActivity().getProperty(

@@ -1,25 +1,25 @@
 package com.mossle.workcal.web;
 
-import java.util.ArrayList;
 import java.util.List;
 import java.util.Map;
 
 import javax.annotation.Resource;
 
+import javax.servlet.http.HttpServletRequest;
 import javax.servlet.http.HttpServletResponse;
 
-import com.mossle.core.hibernate.PropertyFilter;
+import com.mossle.api.tenant.TenantHolder;
+
+import com.mossle.core.export.Exportor;
+import com.mossle.core.export.TableModel;
 import com.mossle.core.mapper.BeanMapper;
 import com.mossle.core.page.Page;
+import com.mossle.core.query.PropertyFilter;
 import com.mossle.core.spring.MessageHelper;
 
-import com.mossle.ext.export.Exportor;
-import com.mossle.ext.export.TableModel;
-
-import com.mossle.workcal.domain.WorkcalPart;
-import com.mossle.workcal.domain.WorkcalRule;
-import com.mossle.workcal.manager.WorkcalPartManager;
-import com.mossle.workcal.manager.WorkcalRuleManager;
+import com.mossle.workcal.persistence.domain.WorkcalPart;
+import com.mossle.workcal.persistence.manager.WorkcalPartManager;
+import com.mossle.workcal.persistence.manager.WorkcalRuleManager;
 
 import org.springframework.stereotype.Controller;
 
@@ -32,19 +32,22 @@ import org.springframework.web.bind.annotation.ResponseBody;
 import org.springframework.web.servlet.mvc.support.RedirectAttributes;
 
 @Controller
-@RequestMapping("/workcal")
+@RequestMapping("workcal")
 public class WorkcalPartController {
     private WorkcalPartManager workcalPartManager;
     private WorkcalRuleManager workcalRuleManager;
     private Exportor exportor;
     private BeanMapper beanMapper = new BeanMapper();
     private MessageHelper messageHelper;
+    private TenantHolder tenantHolder;
 
     @RequestMapping("workcal-part-list")
     public String list(@ModelAttribute Page page,
             @RequestParam Map<String, Object> parameterMap, Model model) {
+        String tenantId = tenantHolder.getTenantId();
         List<PropertyFilter> propertyFilters = PropertyFilter
                 .buildFromMap(parameterMap);
+        propertyFilters.add(new PropertyFilter("EQS_tenantId", tenantId));
         page = workcalPartManager.pagedQuery(page, propertyFilters);
         model.addAttribute("page", page);
 
@@ -54,12 +57,15 @@ public class WorkcalPartController {
     @RequestMapping("workcal-part-input")
     public String input(@RequestParam(value = "id", required = false) Long id,
             Model model) {
+        String tenantId = tenantHolder.getTenantId();
+
         if (id != null) {
             WorkcalPart workcalPart = workcalPartManager.get(id);
             model.addAttribute("model", workcalPart);
         }
 
-        model.addAttribute("workcalRules", workcalRuleManager.getAll());
+        model.addAttribute("workcalRules",
+                workcalRuleManager.findBy("tenantId", tenantId));
 
         return "workcal/workcal-part-input";
     }
@@ -68,6 +74,7 @@ public class WorkcalPartController {
     public String save(@ModelAttribute WorkcalPart workcalPart,
             @RequestParam("workcalRuleId") Long workcalRuleId,
             RedirectAttributes redirectAttributes) {
+        String tenantId = tenantHolder.getTenantId();
         Long id = workcalPart.getId();
         WorkcalPart dest = null;
 
@@ -76,6 +83,7 @@ public class WorkcalPartController {
             beanMapper.copy(workcalPart, dest);
         } else {
             dest = workcalPart;
+            dest.setTenantId(tenantId);
         }
 
         dest.setWorkcalRule(workcalRuleManager.get(workcalRuleId));
@@ -102,9 +110,13 @@ public class WorkcalPartController {
     @RequestMapping("workcal-part-export")
     public void export(@ModelAttribute Page page,
             @RequestParam Map<String, Object> parameterMap,
-            HttpServletResponse response) throws Exception {
+            HttpServletRequest request, HttpServletResponse response)
+            throws Exception {
+        String tenantId = tenantHolder.getTenantId();
         List<PropertyFilter> propertyFilters = PropertyFilter
                 .buildFromMap(parameterMap);
+        propertyFilters.add(new PropertyFilter("EQS_tenantId", tenantId));
+
         page = workcalPartManager.pagedQuery(page, propertyFilters);
 
         List<WorkcalPart> workcalParts = (List<WorkcalPart>) page.getResult();
@@ -113,7 +125,7 @@ public class WorkcalPartController {
         tableModel.setName("workcalPart");
         tableModel.addHeaders("id", "name");
         tableModel.setData(workcalParts);
-        exportor.export(response, tableModel);
+        exportor.export(request, response, tableModel);
     }
 
     @RequestMapping("workcal-part-checkName")
@@ -121,12 +133,13 @@ public class WorkcalPartController {
     public boolean checkName(@RequestParam("name") String name,
             @RequestParam(value = "id", required = false) Long id)
             throws Exception {
-        String hql = "from WorkcalPart where name=?";
-        Object[] params = { name };
+        String tenantId = tenantHolder.getTenantId();
+        String hql = "from WorkcalPart where name=? and tenantId=?";
+        Object[] params = { name, tenantId };
 
         if (id != null) {
-            hql = "from WorkcalPart where name=? and id<>?";
-            params = new Object[] { name, id };
+            hql = "from WorkcalPart where name=? and tenantId=? and id<>?";
+            params = new Object[] { name, tenantId, id };
         }
 
         WorkcalPart workcalPart = workcalPartManager.findUnique(hql, params);
@@ -155,5 +168,10 @@ public class WorkcalPartController {
     @Resource
     public void setMessageHelper(MessageHelper messageHelper) {
         this.messageHelper = messageHelper;
+    }
+
+    @Resource
+    public void setTenantHolder(TenantHolder tenantHolder) {
+        this.tenantHolder = tenantHolder;
     }
 }

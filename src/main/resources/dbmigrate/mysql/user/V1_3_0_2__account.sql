@@ -4,7 +4,7 @@
 --  user account
 -------------------------------------------------------------------------------
 CREATE TABLE USER_ACCOUNT(
-        ID BIGINT auto_increment,
+        ID BIGINT NOT NULL,
 	USERNAME VARCHAR(50),
 	PASSWORD VARCHAR(50),
 	SCOPE_ID VARCHAR(50),

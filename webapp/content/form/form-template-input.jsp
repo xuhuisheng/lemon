@@ -3,25 +3,26 @@
 <%pageContext.setAttribute("currentHeader", "form");%>
 <%pageContext.setAttribute("currentMenu", "form");%>
 <!doctype html>
-<html lang="en">
+<html>
 
   <head>
     <%@include file="/common/meta.jsp"%>
     <title>designer</title>
-    <%@include file="/common/s.jsp"%>
-	<link href="${scopePrefix}/widgets/xform/styles/xform.css" rel="stylesheet">
-    <script type="text/javascript" src="${scopePrefix}/widgets/xform/xform-all.js"></script>
-    <script type="text/javascript" src="${scopePrefix}/widgets/xform/adaptor.js"></script>
+    <%@include file="/common/s3.jsp"%>
+	<link href="${tenantPrefix}/widgets/xform/styles/xform.css" rel="stylesheet">
+    <script type="text/javascript" src="${tenantPrefix}/widgets/xform3/xform-all.js"></script>
+    <script type="text/javascript" src="${tenantPrefix}/widgets/xform3/adaptor.js"></script>
   </head>
 
   <body>
     <%@include file="/header/form.jsp"%>
 
     <div class="row-fluid">
-	<%@include file="/menu/form.jsp"%>
+	  <%@include file="/menu/form.jsp"%>
 
 	<!-- start of main -->
-    <section id="m-main" class="span10">
+      <section id="m-main" class="col-md-10" style="padding-top:65px;">
+
 	  <div id="__gef_container__" style="padding-left:5px;">
 	    <div id="__gef_palette__" style="float:left;width:260px;">
 		  <ul class="nav nav-tabs" id="myTab">
@@ -33,43 +34,43 @@
 			<div class="tab-pane active" id="operation">
 			  <div>
 				<div class="xf-pallete" title="label">
-				  <img src="${scopePrefix}/widgets/xform/images/xform/new_label.png">
+				  <img src="${tenantPrefix}/widgets/xform/images/xform/new_label.png">
 				  label
 				</div>
 				<div class="xf-pallete" title="textfield">
-				  <img src="${scopePrefix}/widgets/xform/images/xform/new_input.png">
+				  <img src="${tenantPrefix}/widgets/xform/images/xform/new_input.png">
 				  textfield
 				</div>
 				<div class="xf-pallete" title="password">
-				  <img src="${scopePrefix}/widgets/xform/images/xform/new_secret.png">
+				  <img src="${tenantPrefix}/widgets/xform/images/xform/new_secret.png">
 				  password
 				</div>
 				<div class="xf-pallete" title="textarea">
-				  <img src="${scopePrefix}/widgets/xform/images/xform/new_textarea.png">
+				  <img src="${tenantPrefix}/widgets/xform/images/xform/new_textarea.png">
 				  textarea
 				</div>
 				<div class="xf-pallete" title="select">
-				  <img src="${scopePrefix}/widgets/xform/images/xform/new_select.png">
+				  <img src="${tenantPrefix}/widgets/xform/images/xform/new_select.png">
 				  select
 				</div>
 				<div class="xf-pallete" title="radio">
-				  <img src="${scopePrefix}/widgets/xform/images/xform/new_item.png">
+				  <img src="${tenantPrefix}/widgets/xform/images/xform/new_item.png">
 				  radio
 				</div>
 				<div class="xf-pallete" title="checkbox">
-				  <img src="${scopePrefix}/widgets/xform/images/xform/new_itemset.png">
+				  <img src="${tenantPrefix}/widgets/xform/images/xform/new_itemset.png">
 				  checkbox
 				</div>
 				<div class="xf-pallete" title="fileupload">
-				  <img src="${scopePrefix}/widgets/xform/images/xform/new_upload.png">
+				  <img src="${tenantPrefix}/widgets/xform/images/xform/new_upload.png">
 				  fileupload
 				</div>
 				<div class="xf-pallete" title="datepicker">
-				  <img src="${scopePrefix}/widgets/xform/images/xform/new_range.png">
+				  <img src="${tenantPrefix}/widgets/xform/images/xform/new_range.png">
 				  datepicker
 				</div>
 				<div class="xf-pallete" title="userpicker">
-				  <img src="${scopePrefix}/widgets/xform/images/xform/userpicker.png">
+				  <img src="${tenantPrefix}/widgets/xform/images/xform/userpicker.png">
 				  userpicker
 				</div>
 			  </div>
@@ -112,6 +113,7 @@
 			<button class="btn" onclick="doImport()">import</button>
 -->
 			<button class="btn" onclick="xform.addRow()">add row</button>
+			<button class="btn" onclick="xform.removeRow()">remove row</button>
 			<button class="btn" onclick="doChangeMode(this)">change to merge mode</button>
 			<button class="btn" onclick="doMerge()">merge</button>
 			<button class="btn" onclick="doSplit()">split</button>
@@ -133,8 +135,9 @@
 
 		</div>
 
-    </section>
+    </div>
 	<!-- end of main -->
+	</div>
 
     <form id="f" action="form-template-save.do" method="post" style="display:none;">
 	<c:if test="${model != null}">
@@ -148,3 +151,4 @@
   </body>
 
 </html>
+

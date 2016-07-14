@@ -1,3 +1,3 @@
 <%@ page language="java" pageEncoding="UTF-8" %>
-<%pageContext.setAttribute("currentHeader", "meeting");%>
-<%@include file="/header.jsp"%>
+<%pageContext.setAttribute("currentHeader", "scope");%>
+<%@include file="_logistic.jsp"%>

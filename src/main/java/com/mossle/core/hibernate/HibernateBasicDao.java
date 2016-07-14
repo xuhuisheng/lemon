@@ -11,6 +11,7 @@ import javax.annotation.Resource;
 
 import javax.transaction.Synchronization;
 
+import com.mossle.core.id.IdGenerator;
 import com.mossle.core.util.BeanUtils;
 import com.mossle.core.util.ReflectUtils;
 
@@ -61,6 +62,9 @@ public class HibernateBasicDao implements ApplicationContextAware {
     /** jdbcTemplate. */
     private JdbcTemplate jdbcTemplate;
 
+    /** idGenerator. */
+    private IdGenerator idGenerator;
+
     /** default constructor. */
     public HibernateBasicDao() {
     }
@@ -83,6 +87,11 @@ public class HibernateBasicDao implements ApplicationContextAware {
     /** @return jdbcTemplate. */
     public JdbcTemplate getJdbcTemplate() {
         return jdbcTemplate;
+    }
+
+    /** @return idGenerator. */
+    public IdGenerator getIdGenerator() {
+        return idGenerator;
     }
 
     /** @return session. */
@@ -115,6 +124,15 @@ public class HibernateBasicDao implements ApplicationContextAware {
     @Resource
     public void setJdbcTemplate(JdbcTemplate jdbcTemplate) {
         this.jdbcTemplate = jdbcTemplate;
+    }
+
+    /**
+     * @param idGenerator
+     *            IdGenerator.
+     */
+    @Resource
+    public void setIdGenerator(IdGenerator idGenerator) {
+        this.idGenerator = idGenerator;
     }
 
     // ============================================================================================
@@ -213,6 +231,20 @@ public class HibernateBasicDao implements ApplicationContextAware {
         Assert.notNull(entity, "Entity can not be null.");
         this.getSession().saveOrUpdate(entity);
         logger.debug("save entity: {}", entity);
+    }
+
+    @Transactional
+    public void insert(Object entity) {
+        Assert.notNull(entity, "Entity can not be null.");
+        this.getSession().save(entity);
+        logger.debug("insert entity: {}", entity);
+    }
+
+    @Transactional
+    public void update(Object entity) {
+        Assert.notNull(entity, "Entity can not be null.");
+        this.getSession().update(entity);
+        logger.debug("update entity: {}", entity);
     }
 
     /**
@@ -337,6 +369,23 @@ public class HibernateBasicDao implements ApplicationContextAware {
         String getterName = ReflectUtils.getGetterMethodName(entity, idName);
 
         return (Serializable) BeanUtils.invokeMethod(entity, getterName);
+    }
+
+    public void setId(Class entityClass, Object entity, Serializable idValue) {
+        Assert.notNull(entity);
+        Assert.notNull(idValue);
+
+        try {
+            String idName = getIdName(entityClass);
+            String setterName = ReflectUtils.getSetterMethodName(idName);
+            BeanUtils.invokeMethod(entity, setterName, idValue);
+        } catch (NoSuchMethodException ex) {
+            logger.info(ex.getMessage(), ex);
+        } catch (IllegalAccessException ex) {
+            logger.info(ex.getMessage(), ex);
+        } catch (InvocationTargetException ex) {
+            logger.info(ex.getMessage(), ex);
+        }
     }
 
     /**

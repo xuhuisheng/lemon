@@ -4,14 +4,13 @@ package com.mossle.bpm.persistence.domain;
 import javax.persistence.Column;
 import javax.persistence.Entity;
 import javax.persistence.FetchType;
-import javax.persistence.GeneratedValue;
 import javax.persistence.Id;
 import javax.persistence.JoinColumn;
 import javax.persistence.ManyToOne;
 import javax.persistence.Table;
 
 /**
- * BpmConfNotice .
+ * BpmConfNotice 配置提醒.
  * 
  * @author Lingo
  */
@@ -20,40 +19,52 @@ import javax.persistence.Table;
 public class BpmConfNotice implements java.io.Serializable {
     private static final long serialVersionUID = 0L;
 
-    /** null. */
+    /** 主键. */
     private Long id;
 
-    /** null. */
+    /** 外键，模板. */
     private BpmMailTemplate bpmMailTemplate;
 
-    /** null. */
+    /** 外键，配置节点. */
     private BpmConfNode bpmConfNode;
 
-    /** null. */
+    /** 分类. */
     private Integer type;
 
-    /** null. */
+    /** 接收人. */
     private String receiver;
 
-    /** null. */
+    /** 持续时间. */
     private String dueDate;
+
+    /** 模板编码. */
+    private String templateCode;
+
+    /** 提醒类型. */
+    private String notificationType;
 
     public BpmConfNotice() {
     }
 
-    public BpmConfNotice(BpmMailTemplate bpmMailTemplate,
+    public BpmConfNotice(Long id) {
+        this.id = id;
+    }
+
+    public BpmConfNotice(Long id, BpmMailTemplate bpmMailTemplate,
             BpmConfNode bpmConfNode, Integer type, String receiver,
-            String dueDate) {
+            String dueDate, String templateCode, String notificationType) {
+        this.id = id;
         this.bpmMailTemplate = bpmMailTemplate;
         this.bpmConfNode = bpmConfNode;
         this.type = type;
         this.receiver = receiver;
         this.dueDate = dueDate;
+        this.templateCode = templateCode;
+        this.notificationType = notificationType;
     }
 
-    /** @return null. */
+    /** @return 主键. */
     @Id
-    @GeneratedValue
     @Column(name = "ID", unique = true, nullable = false)
     public Long getId() {
         return this.id;
@@ -61,13 +72,13 @@ public class BpmConfNotice implements java.io.Serializable {
 
     /**
      * @param id
-     *            null.
+     *            主键.
      */
     public void setId(Long id) {
         this.id = id;
     }
 
-    /** @return null. */
+    /** @return 外键，模板. */
     @ManyToOne(fetch = FetchType.LAZY)
     @JoinColumn(name = "TEMPLATE_ID")
     public BpmMailTemplate getBpmMailTemplate() {
@@ -76,13 +87,13 @@ public class BpmConfNotice implements java.io.Serializable {
 
     /**
      * @param bpmMailTemplate
-     *            null.
+     *            外键，模板.
      */
     public void setBpmMailTemplate(BpmMailTemplate bpmMailTemplate) {
         this.bpmMailTemplate = bpmMailTemplate;
     }
 
-    /** @return null. */
+    /** @return 外键，配置节点. */
     @ManyToOne(fetch = FetchType.LAZY)
     @JoinColumn(name = "NODE_ID")
     public BpmConfNode getBpmConfNode() {
@@ -91,13 +102,13 @@ public class BpmConfNotice implements java.io.Serializable {
 
     /**
      * @param bpmConfNode
-     *            null.
+     *            外键，配置节点.
      */
     public void setBpmConfNode(BpmConfNode bpmConfNode) {
         this.bpmConfNode = bpmConfNode;
     }
 
-    /** @return null. */
+    /** @return 分类. */
     @Column(name = "TYPE")
     public Integer getType() {
         return this.type;
@@ -105,13 +116,13 @@ public class BpmConfNotice implements java.io.Serializable {
 
     /**
      * @param type
-     *            null.
+     *            分类.
      */
     public void setType(Integer type) {
         this.type = type;
     }
 
-    /** @return null. */
+    /** @return 接收人. */
     @Column(name = "RECEIVER", length = 200)
     public String getReceiver() {
         return this.receiver;
@@ -119,13 +130,13 @@ public class BpmConfNotice implements java.io.Serializable {
 
     /**
      * @param receiver
-     *            null.
+     *            接收人.
      */
     public void setReceiver(String receiver) {
         this.receiver = receiver;
     }
 
-    /** @return null. */
+    /** @return 持续时间. */
     @Column(name = "DUE_DATE", length = 50)
     public String getDueDate() {
         return this.dueDate;
@@ -133,9 +144,37 @@ public class BpmConfNotice implements java.io.Serializable {
 
     /**
      * @param dueDate
-     *            null.
+     *            持续时间.
      */
     public void setDueDate(String dueDate) {
         this.dueDate = dueDate;
+    }
+
+    /** @return 模板编码. */
+    @Column(name = "TEMPLATE_CODE", length = 200)
+    public String getTemplateCode() {
+        return this.templateCode;
+    }
+
+    /**
+     * @param templateCode
+     *            模板编码.
+     */
+    public void setTemplateCode(String templateCode) {
+        this.templateCode = templateCode;
+    }
+
+    /** @return 提醒类型. */
+    @Column(name = "NOTIFICATION_TYPE", length = 200)
+    public String getNotificationType() {
+        return this.notificationType;
+    }
+
+    /**
+     * @param notificationType
+     *            提醒类型.
+     */
+    public void setNotificationType(String notificationType) {
+        this.notificationType = notificationType;
     }
 }

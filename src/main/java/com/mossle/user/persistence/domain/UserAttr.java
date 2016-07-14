@@ -6,7 +6,6 @@ import java.util.Date;
 import javax.persistence.Column;
 import javax.persistence.Entity;
 import javax.persistence.FetchType;
-import javax.persistence.GeneratedValue;
 import javax.persistence.Id;
 import javax.persistence.JoinColumn;
 import javax.persistence.ManyToOne;
@@ -54,9 +53,14 @@ public class UserAttr implements java.io.Serializable {
     public UserAttr() {
     }
 
-    public UserAttr(UserBase userBase, UserSchema userSchema,
+    public UserAttr(Long id) {
+        this.id = id;
+    }
+
+    public UserAttr(Long id, UserBase userBase, UserSchema userSchema,
             Integer booleanValue, Date dateValue, Long longValue,
             Double doubleValue, String stringValue, String scopeId) {
+        this.id = id;
         this.userBase = userBase;
         this.userSchema = userSchema;
         this.booleanValue = booleanValue;
@@ -69,7 +73,6 @@ public class UserAttr implements java.io.Serializable {
 
     /** @return null. */
     @Id
-    @GeneratedValue
     @Column(name = "ID", unique = true, nullable = false)
     public Long getId() {
         return this.id;

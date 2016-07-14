@@ -1,24 +1,27 @@
 <%@page contentType="text/html;charset=UTF-8"%>
 <%@page import="org.springframework.context.ApplicationContext"%>
 <%@page import="org.springframework.web.context.support.WebApplicationContextUtils"%>
-<%@page import="com.mossle.core.mail.MailService"%>
+<%@page import="com.mossle.core.mail.MailFacade"%>
+<%@page import="com.mossle.core.mail.MailHelper"%>
 <%
 	String action = request.getParameter("action");
 
 	ApplicationContext ctx = WebApplicationContextUtils.getWebApplicationContext(application);
-	MailService mailService = (MailService) ctx.getBean("mailService");
+	MailFacade mailFacade = (MailFacade) ctx.getBean("mailFacade");
+	MailHelper mailHelper = (MailHelper) ctx.getBean("mailHelper");
 
 	if ("update".equals(action)) {
 		String mode = request.getParameter("mode");
 		String testMail = request.getParameter("testMail");
-		mailService.setTestMode(mode == null);
-		mailService.setTestMail(testMail);
+		mailHelper.getDefaultMailServerInfo().setMode(mode);
+		mailHelper.getDefaultMailServerInfo().setTestMail(testMail);
 		response.sendRedirect("mail.jsp");
 	} else if("send".equals(action)) {
-		mailService.send();
+		mailFacade.sendMail("lingo.mossle@gmail.com", "test", "test");
 		response.sendRedirect("mail.jsp");
 	}
-	pageContext.setAttribute("mailService", mailService);
+	pageContext.setAttribute("mailFacade", mailFacade);
+	pageContext.setAttribute("mailHelper", mailHelper);
 %>
 <html>
   <head>
@@ -37,11 +40,11 @@ tbody tr:nth-child(odd) th {
 		<tbody>
 		  <tr>
 			<td>是否测试模式</td>
-			<td><input type="checkbox" name="mode" value="1" ${mailService.testMode ? '' : 'checked'}></td>
+			<td><input type="checkbox" name="mode" value="TEST" ${mailHelper.defaultMailServerInfo.mode ? 'TEST' : 'checked'}></td>
 		  </tr>
 		  <tr>
 			<td>测试邮箱</td>
-			<td><input type="text" name="testMail" value="${mailService.testMail}"></td>
+			<td><input type="text" name="testMail" value="${mailHelper.defaultMailServerInfo.testMail}"></td>
 		  </tr>
 		  <tr>
 			<td colspan="2">

@@ -1,8 +1,5 @@
 package com.mossle.bpm.cmd;
 
-import java.util.Map;
-
-import org.activiti.engine.delegate.TaskListener;
 import org.activiti.engine.impl.context.Context;
 import org.activiti.engine.impl.identity.Authentication;
 import org.activiti.engine.impl.interceptor.Command;

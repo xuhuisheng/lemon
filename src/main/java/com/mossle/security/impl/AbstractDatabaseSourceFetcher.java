@@ -16,7 +16,7 @@ public class AbstractDatabaseSourceFetcher {
         Map<String, String> resourceMap = new LinkedHashMap<String, String>();
 
         for (Map<String, Object> map : list) {
-            String name = (String) map.get("access");
+            String name = (String) map.get("acce");
             String role = (String) map.get("perm");
 
             if (resourceMap.containsKey(name)) {

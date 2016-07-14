@@ -1,33 +1,10 @@
 package com.mossle.bpm.listener;
 
-import java.util.ArrayList;
-import java.util.HashSet;
-import java.util.List;
-import java.util.Map;
-import java.util.Set;
-
-import javax.annotation.Resource;
-
-import com.mossle.api.user.UserConnector;
-
 import com.mossle.bpm.notice.ArrivalNotice;
 import com.mossle.bpm.notice.CompleteNotice;
-import com.mossle.bpm.notice.TimeoutNotice;
-import com.mossle.bpm.persistence.domain.*;
-import com.mossle.bpm.persistence.manager.*;
 import com.mossle.bpm.support.DefaultTaskListener;
 
-import com.mossle.ext.mail.MailFacade;
-
 import org.activiti.engine.delegate.DelegateTask;
-import org.activiti.engine.impl.context.Context;
-import org.activiti.engine.impl.el.ExpressionManager;
-import org.activiti.engine.impl.persistence.entity.*;
-
-import org.slf4j.Logger;
-import org.slf4j.LoggerFactory;
-
-import org.springframework.jdbc.core.JdbcTemplate;
 
 /**
  * <p>

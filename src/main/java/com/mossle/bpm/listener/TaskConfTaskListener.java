@@ -15,7 +15,6 @@ import com.mossle.bpm.support.DefaultTaskListener;
 import org.activiti.engine.delegate.DelegateTask;
 import org.activiti.engine.impl.context.Context;
 import org.activiti.engine.impl.el.ExpressionManager;
-import org.activiti.engine.impl.persistence.entity.TaskEntity;
 
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
@@ -38,7 +37,7 @@ public class TaskConfTaskListener extends DefaultTaskListener implements
                 .getProcessEngineConfiguration().getExpressionManager();
 
         try {
-            String sql = "select assignee from bpm_task_conf where business_key=? and task_definition_key=?";
+            String sql = "select ASSIGNEE from BPM_TASK_CONF where BUSINESS_KEY=? and TASK_DEFINITION_KEY=?";
             String assignee = jdbcTemplate.queryForObject(sql, String.class,
                     businessKey, taskDefinitionKey);
 
@@ -88,9 +87,9 @@ public class TaskConfTaskListener extends DefaultTaskListener implements
     }
 
     public List<String> process(String text) {
-        String sql = "select child.name from party_entity parent,party_struct ps,party_entity child,party_type child_type"
-                + " where parent.id=ps.parent_entity_id and ps.child_entity_id=child.id and child.type_id=child_type.id"
-                + " and child_type.person=1 and parent.name=?";
+        String sql = "select child.NAME from PARTY_ENTITY parent,PARTY_STRUCT ps,PARTY_ENTITY child,PARTY_TYPE child_type"
+                + " where parent.ID=ps.PARENT_ENTITY_ID and ps.CHILD_ENTITY_ID=child.ID and child.TYPE_ID=child_type.ID"
+                + " and child_type.PERSON=1 and parent.NAME=?";
         List<Map<String, Object>> list = jdbcTemplate.queryForList(sql, text);
         List<String> usernames = new ArrayList<String>();
 

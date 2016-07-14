@@ -1,23 +1,22 @@
 package com.mossle.party.web;
 
-import java.util.ArrayList;
 import java.util.List;
 import java.util.Map;
 
 import javax.annotation.Resource;
 
-import javax.servlet.http.HttpServletResponse;
+import com.mossle.api.tenant.TenantHolder;
 
-import com.mossle.core.hibernate.PropertyFilter;
 import com.mossle.core.page.Page;
+import com.mossle.core.query.PropertyFilter;
 import com.mossle.core.spring.MessageHelper;
 
-import com.mossle.party.domain.PartyStructRule;
-import com.mossle.party.domain.PartyStructType;
-import com.mossle.party.domain.PartyType;
-import com.mossle.party.manager.PartyStructRuleManager;
-import com.mossle.party.manager.PartyStructTypeManager;
-import com.mossle.party.manager.PartyTypeManager;
+import com.mossle.party.persistence.domain.PartyStructRule;
+import com.mossle.party.persistence.domain.PartyStructType;
+import com.mossle.party.persistence.domain.PartyType;
+import com.mossle.party.persistence.manager.PartyStructRuleManager;
+import com.mossle.party.persistence.manager.PartyStructTypeManager;
+import com.mossle.party.persistence.manager.PartyTypeManager;
 
 import org.springframework.stereotype.Controller;
 
@@ -26,7 +25,6 @@ import org.springframework.ui.Model;
 import org.springframework.web.bind.annotation.ModelAttribute;
 import org.springframework.web.bind.annotation.RequestMapping;
 import org.springframework.web.bind.annotation.RequestParam;
-import org.springframework.web.bind.annotation.ResponseBody;
 import org.springframework.web.servlet.mvc.support.RedirectAttributes;
 
 @Controller
@@ -36,16 +34,19 @@ public class PartyStructRuleController {
     private PartyStructTypeManager partyStructTypeManager;
     private PartyTypeManager partyTypeManager;
     private MessageHelper messageHelper;
+    private TenantHolder tenantHolder;
 
     @RequestMapping("party-struct-rule-list")
     public String list(@ModelAttribute Page page,
             @RequestParam Map<String, Object> parameterMap, Model model) {
+        String tenantId = tenantHolder.getTenantId();
         List<PropertyFilter> propertyFilters = PropertyFilter
                 .buildFromMap(parameterMap);
+        propertyFilters.add(new PropertyFilter("EQS_tenantId", tenantId));
         page = partyStructRuleManager.pagedQuery(page, propertyFilters);
 
-        List<PartyStructType> partyStructTypes = partyStructTypeManager
-                .getAll();
+        List<PartyStructType> partyStructTypes = partyStructTypeManager.findBy(
+                "tenantId", tenantId);
         model.addAttribute("page", page);
         model.addAttribute("partyStructTypes", partyStructTypes);
 
@@ -55,9 +56,11 @@ public class PartyStructRuleController {
     @RequestMapping("party-struct-rule-input")
     public String input(@RequestParam(value = "id", required = false) Long id,
             Model model) {
-        List<PartyStructType> partyStructTypes = partyStructTypeManager
-                .getAll();
-        List<PartyType> partyTypes = partyTypeManager.getAll();
+        String tenantId = tenantHolder.getTenantId();
+        List<PartyStructType> partyStructTypes = partyStructTypeManager.findBy(
+                "tenantId", tenantId);
+        List<PartyType> partyTypes = partyTypeManager.findBy("tenantId",
+                tenantId);
         model.addAttribute("partyStructTypes", partyStructTypes);
         model.addAttribute("partyTypes", partyTypes);
 
@@ -75,12 +78,15 @@ public class PartyStructRuleController {
             @RequestParam("parentTypeId") Long parentTypeId,
             @RequestParam("childTypeId") Long childTypeId,
             RedirectAttributes redirectAttributes) {
+        String tenantId = tenantHolder.getTenantId();
+
         if (id != null) {
             PartyStructRule partyStructRule = partyStructRuleManager.get(id);
             partyStructRuleManager.remove(partyStructRule);
         }
 
         PartyStructRule partyStructRule = new PartyStructRule();
+        partyStructRule.setTenantId(tenantId);
         partyStructRule.setPartyStructType(partyStructTypeManager
                 .get(partyStructTypeId));
         partyStructRule.setParentType(partyTypeManager.get(parentTypeId));
@@ -125,5 +131,10 @@ public class PartyStructRuleController {
     @Resource
     public void setMessageHelper(MessageHelper messageHelper) {
         this.messageHelper = messageHelper;
+    }
+
+    @Resource
+    public void setTenantHolder(TenantHolder tenantHolder) {
+        this.tenantHolder = tenantHolder;
     }
 }

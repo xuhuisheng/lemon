@@ -3,15 +3,15 @@
 <%pageContext.setAttribute("currentHeader", "auth");%>
 <%pageContext.setAttribute("currentMenu", "auth");%>
 <!doctype html>
-<html>
+<html lang="en">
 
   <head>
     <%@include file="/common/meta.jsp"%>
-    <title><spring:message code="user.user.list.title" text="用户列表"/></title>
-    <%@include file="/common/s.jsp"%>
+    <title><spring:message code="dev.user-status.list.title" text="列表"/></title>
+    <%@include file="/common/s3.jsp"%>
     <script type="text/javascript">
 var config = {
-    id: 'userGrid',
+    id: 'user-statusGrid',
     pageNo: ${page.pageNo},
     pageSize: ${page.pageSize},
     totalCount: ${page.totalCount},
@@ -20,11 +20,10 @@ var config = {
     orderBy: '${page.orderBy == null ? "" : page.orderBy}',
     asc: ${page.asc},
     params: {
-        'filter_LIKES_username': '${param.filter_LIKES_username}',
-        'filter_EQI_status': '${param.filter_EQI_status}'
+        'filter_LIKES_username': '${param.filter_LIKES_username}'
     },
 	selectedItemClass: 'selectedItem',
-	gridFormId: 'userGridForm',
+	gridFormId: 'user-statusGridForm',
 	exportUrl: 'user-status-export.do'
 };
 
@@ -42,75 +41,65 @@ $(function() {
   <body>
     <%@include file="/header/auth.jsp"%>
 
-	<div class="row-fluid">
-	<%@include file="/menu/auth.jsp"%>
+    <div class="row-fluid">
+	  <%@include file="/menu/auth.jsp"%>
 
-	<!-- start of main -->
-    <section id="m-main" class="span10">
+	  <!-- start of main -->
+      <section id="m-main" class="col-md-10" style="padding-top:65px;">
 
-	  <article class="m-widget">
-        <header class="header">
-		  <h4 class="title">查询</h4>
-		  <div class="ctrl">
-		    <a class="btn"><i id="userSearchIcon" class="icon-chevron-up"></i></a>
-		  </div>
-		</header>
-        <div id="userSearch" class="content content-inner">
+<div class="panel panel-default">
+  <div class="panel-heading">
+	<i class="glyphicon glyphicon-list"></i>
+    查询
+	<div class="pull-right ctrl">
+	  <a class="btn btn-default btn-xs"><i id="user-statusSearchIcon" class="glyphicon glyphicon-chevron-up"></i></a>
+    </div>
+  </div>
+  <div class="panel-body">
 
-		  <form name="userForm" method="post" action="user-status-list.do" class="form-inline">
-		    <label for="user_username"><spring:message code='user.user.list.search.username' text='账号'/>:</label>
-		    <input type="text" id="user_username" name="filter_LIKES_username" value="${param.filter_LIKES_username}">
-		    <label for="user_enabled"><spring:message code='user.user.list.search.status' text='状态'/>:</label>
-		    <select id="user_enabled" name="filter_EQI_status" class="input-mini">
-			  <option value=""></option>
-			  <option value="1" ${param.filter_EQI_status == 1 ? 'selected' : ''}><spring:message code='user.user.list.search.enabled.true' text='启用'/></option>
-			  <option value="0" ${param.filter_EQI_status == 0 ? 'selected' : ''}><spring:message code='user.user.list.search.enabled.false' text='禁用'/></option>
-		    </select>
-			<button class="btn btn-small" onclick="document.userForm.submit()">查询</button>
+		  <form name="user-statusForm" method="post" action="user-status-list.do" class="form-inline">
+		    <label for="user-status_name"><spring:message code='user-status.user-status.list.search.name' text='名称'/>:</label>
+		    <input type="text" id="user-status_name" name="filter_LIKES_username" value="${param.filter_LIKES_username}" class="form-control">
+			<button class="btn btn-default a-search" onclick="document.user-statusForm.submit()">查询</button>&nbsp;
 		  </form>
 
 		</div>
-	  </article>
+	  </div>
 
-	  <article class="m-blank">
-	    <div class="pull-left">
-		  <tags:hasPerm value="user:create">
-		  <button class="btn btn-small" onclick="location.href='user-status-input.do'">新建</button>
-		  </tags:hasPerm>
-		  <tags:hasPerm value="user:delete">
-		  <button class="btn btn-small" onclick="table.removeAll()">删除</button>
-		  </tags:hasPerm>
-		  <button class="btn btn-small" onclick="table.exportExcel()">导出</button>
-		  <button class="btn btn-small btn-info" onclick="location.href='user-status-batch-list.do'">批量处理</button>
+      <div style="margin-bottom: 20px;">
+	    <div class="pull-left btn-group" role="group">
+		  <button class="btn btn-default a-insert" onclick="location.href='user-status-input.do'">新建</button>
+		  <button class="btn btn-default a-remove" onclick="table.removeAll()">删除</button>
+		  <button class="btn btn-default a-export" onclick="table.exportExcel()">导出</button>
 		</div>
 
 		<div class="pull-right">
 		  每页显示
-		  <select class="m-page-size">
+		  <select class="m-page-size form-control" style="display:inline;width:auto;">
 		    <option value="10">10</option>
 		    <option value="20">20</option>
 		    <option value="50">50</option>
 		  </select>
 		  条
+        </div>
+
+	    <div class="clearfix"></div>
+	  </div>
+
+<form id="user-statusGridForm" name="user-statusGridForm" method='post' action="user-status-remove.do" class="m-form-blank">
+      <div class="panel panel-default">
+        <div class="panel-heading">
+		  <i class="glyphicon glyphicon-list"></i>
+		  <spring:message code="scope-info.scope-info.list.title" text="列表"/>
 		</div>
 
-	    <div class="m-clear"></div>
-	  </article>
 
-      <article class="m-widget">
-        <header class="header">
-		  <h4 class="title"><spring:message code="user.user.list.title" text="用户列表"/></h4>
-		</header>
-		<div class="content">
-
-<form id="userGridForm" name="userGridForm" method='post' action="user-status-remove.do" class="m-form-blank">
-  <table id="userGrid" class="m-table table-hover">
+  <table id="userGrid" class="table table-hover">
     <thead>
       <tr>
-        <th width="10" class="m-table-check"><input type="checkbox" name="checkAll" onchange="toggleSelectedItems(this.checked)"></th>
+        <th width="10" class="table-check"><input type="checkbox" name="checkAll" onchange="toggleSelectedItems(this.checked)"></th>
         <th class="sorting" name="id"><spring:message code="user.user.list.id" text="编号"/></th>
         <th class="sorting" name="username"><spring:message code="user.user.list.username" text="账号"/></th>
-        <th name="password"><spring:message code="user.user.list.password" text="密码"/></th>
         <th class="sorting" name="status"><spring:message code="user.user.list.status" text="状态"/></th>
         <th class="sorting" name="ref"><spring:message code="user.user.list.ref" text="引用"/></th>
         <th name="description"><spring:message code="user.user.list.authorities" text="权限"/></th>
@@ -124,7 +113,6 @@ $(function() {
         <td><input type="checkbox" class="selectedItem" name="selectedItem" value="${item.id}"></td>
         <td>${item.id}</td>
         <td>${item.username}</td>
-        <td>[protected]</td>
         <td>${item.enabled ? '启用' : '禁用'}</td>
         <td>${item.ref}</td>
         <td>${item.authorities}</td>
@@ -133,39 +121,42 @@ $(function() {
             <a href="user-status-input.do?id=${item.id}"><spring:message code="core.list.edit" text="编辑"/></a>&nbsp;
 			</tags:hasPerm>
 			<tags:hasPerm value="user:auth">
+			<!--
             <a href="user-status-password.do?id=${item.id}"><spring:message code="user.user.list.password" text="设置密码"/></a>
-            <a href="javascript:void(0);location.href='user-role-list.do?id=${item.id}'"><spring:message code="user.user.list.role" text="设置权限"/></a>
+			-->
+            <a href="javascript:void(0);location.href='user-role-input.do?id=${item.id}'"><spring:message code="user.user.list.role" text="设置权限"/></a>
 			</tags:hasPerm>
         </td>
       </tr>
       </c:forEach>
     </tbody>
   </table>
+
+
+      </div>
 </form>
 
-        </div>
-      </article>
-
-	  <article>
+	  <div>
 	    <div class="m-page-info pull-left">
 		  共100条记录 显示1到10条记录
 		</div>
 
 		<div class="btn-group m-pagination pull-right">
-		  <button class="btn btn-small">&lt;</button>
-		  <button class="btn btn-small">1</button>
-		  <button class="btn btn-small">&gt;</button>
+		  <button class="btn btn-default">&lt;</button>
+		  <button class="btn btn-default">1</button>
+		  <button class="btn btn-default">&gt;</button>
 		</div>
 
-	    <div class="m-clear"></div>
-      </article>
+	    <div class="clearfix"></div>
+      </div>
 
       <div class="m-spacer"></div>
 
-    </section>
-	<!-- end of main -->
+      </section>
+	  <!-- end of main -->
 	</div>
 
   </body>
 
 </html>
+

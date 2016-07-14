@@ -1,20 +1,19 @@
 package com.mossle.party.web;
 
-import java.util.ArrayList;
 import java.util.List;
 import java.util.Map;
 
 import javax.annotation.Resource;
 
-import javax.servlet.http.HttpServletResponse;
+import com.mossle.api.tenant.TenantHolder;
 
-import com.mossle.core.hibernate.PropertyFilter;
 import com.mossle.core.mapper.BeanMapper;
 import com.mossle.core.page.Page;
+import com.mossle.core.query.PropertyFilter;
 import com.mossle.core.spring.MessageHelper;
 
-import com.mossle.party.domain.PartyStructType;
-import com.mossle.party.manager.PartyStructTypeManager;
+import com.mossle.party.persistence.domain.PartyStructType;
+import com.mossle.party.persistence.manager.PartyStructTypeManager;
 
 import org.springframework.stereotype.Controller;
 
@@ -23,7 +22,6 @@ import org.springframework.ui.Model;
 import org.springframework.web.bind.annotation.ModelAttribute;
 import org.springframework.web.bind.annotation.RequestMapping;
 import org.springframework.web.bind.annotation.RequestParam;
-import org.springframework.web.bind.annotation.ResponseBody;
 import org.springframework.web.servlet.mvc.support.RedirectAttributes;
 
 @Controller
@@ -32,12 +30,15 @@ public class PartyStructTypeController {
     private PartyStructTypeManager partyStructTypeManager;
     private MessageHelper messageHelper;
     private BeanMapper beanMapper = new BeanMapper();
+    private TenantHolder tenantHolder;
 
     @RequestMapping("party-struct-type-list")
     public String list(@ModelAttribute Page page,
             @RequestParam Map<String, Object> parameterMap, Model model) {
+        String tenantId = tenantHolder.getTenantId();
         List<PropertyFilter> propertyFilters = PropertyFilter
                 .buildFromMap(parameterMap);
+        propertyFilters.add(new PropertyFilter("EQS_tenantId", tenantId));
         page = partyStructTypeManager.pagedQuery(page, propertyFilters);
         model.addAttribute("page", page);
 
@@ -58,6 +59,7 @@ public class PartyStructTypeController {
     @RequestMapping("party-struct-type-save")
     public String save(@ModelAttribute PartyStructType partyStructType,
             RedirectAttributes redirectAttributes) {
+        String tenantId = tenantHolder.getTenantId();
         PartyStructType dest = null;
         Long id = partyStructType.getId();
 
@@ -66,6 +68,7 @@ public class PartyStructTypeController {
             beanMapper.copy(partyStructType, dest);
         } else {
             dest = partyStructType;
+            dest.setTenantId(tenantId);
         }
 
         partyStructTypeManager.save(dest);
@@ -96,5 +99,10 @@ public class PartyStructTypeController {
     @Resource
     public void setMessageHelper(MessageHelper messageHelper) {
         this.messageHelper = messageHelper;
+    }
+
+    @Resource
+    public void setTenantHolder(TenantHolder tenantHolder) {
+        this.tenantHolder = tenantHolder;
     }
 }

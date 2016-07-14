@@ -1,0 +1,19 @@
+<?xml version="1.0" encoding="UTF-8"?>
+<beans xmlns="http://www.springframework.org/schema/beans"
+	    xmlns:xsi="http://www.w3.org/2001/XMLSchema-instance"
+	    xsi:schemaLocation="http://www.springframework.org/schema/beans http://www.springframework.org/schema/beans/spring-beans.xsd">
+
+	<!-- jms连接工厂 -->
+	<bean id="connectionFactory" class="com.mossle.simulator.jms.ProxyConnectionFactory"/>
+
+	<!-- 处理订阅的工具 -->
+	<bean id="subscribeProcessor" class="com.mossle.core.subscribe.SubscribeProcessor">
+		<property name="connectionFactory" ref="connectionFactory"/>
+		<property name="enabled" value="${subscribe.enabled}"/>
+		<property name="properties" ref="applicationProperties"/>
+	</bean>
+
+	<!-- 更新spring security resource的订阅 -->
+	<bean id="resourceSubscriber" class="com.mossle.security.client.ResourceSubscriber"/>
+
+</beans>

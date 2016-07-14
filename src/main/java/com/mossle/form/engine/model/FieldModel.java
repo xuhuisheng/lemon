@@ -1,8 +1,5 @@
 package com.mossle.form.engine.model;
 
-import java.util.ArrayList;
-import java.util.List;
-
 public class FieldModel {
     private String id;
     private String code;

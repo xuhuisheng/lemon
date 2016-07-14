@@ -4,7 +4,7 @@
 --  user account type
 -------------------------------------------------------------------------------
 CREATE TABLE USER_ACCOUNT_TYPE(
-        ID BIGINT auto_increment,
+        ID BIGINT NOT NULL,
         NAME VARCHAR(50),
 	DESCRIPTION VARCHAR(200),
 	SCOPE_ID VARCHAR(50),

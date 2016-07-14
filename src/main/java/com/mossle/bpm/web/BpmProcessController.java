@@ -1,42 +1,31 @@
 package com.mossle.bpm.web;
 
-import java.util.ArrayList;
 import java.util.List;
 import java.util.Map;
 
 import javax.annotation.Resource;
 
+import javax.servlet.http.HttpServletRequest;
 import javax.servlet.http.HttpServletResponse;
 
-import com.mossle.bpm.cmd.FindGraphCmd;
-import com.mossle.bpm.cmd.FindTaskDefinitionsCmd;
-import com.mossle.bpm.graph.ActivitiGraphBuilder;
-import com.mossle.bpm.graph.Graph;
-import com.mossle.bpm.graph.Node;
+import com.mossle.api.tenant.TenantHolder;
+
 import com.mossle.bpm.persistence.domain.BpmCategory;
 import com.mossle.bpm.persistence.domain.BpmConfBase;
-import com.mossle.bpm.persistence.domain.BpmMailTemplate;
 import com.mossle.bpm.persistence.domain.BpmProcess;
-import com.mossle.bpm.persistence.domain.BpmTaskDef;
-import com.mossle.bpm.persistence.domain.BpmTaskDefNotice;
 import com.mossle.bpm.persistence.manager.BpmCategoryManager;
 import com.mossle.bpm.persistence.manager.BpmConfBaseManager;
-import com.mossle.bpm.persistence.manager.BpmMailTemplateManager;
 import com.mossle.bpm.persistence.manager.BpmProcessManager;
 import com.mossle.bpm.persistence.manager.BpmTaskDefManager;
-import com.mossle.bpm.persistence.manager.BpmTaskDefNoticeManager;
 
-import com.mossle.core.hibernate.PropertyFilter;
+import com.mossle.core.export.Exportor;
+import com.mossle.core.export.TableModel;
 import com.mossle.core.mapper.BeanMapper;
 import com.mossle.core.page.Page;
+import com.mossle.core.query.PropertyFilter;
 import com.mossle.core.spring.MessageHelper;
 
-import com.mossle.ext.export.Exportor;
-import com.mossle.ext.export.TableModel;
-
 import org.activiti.engine.ProcessEngine;
-import org.activiti.engine.impl.task.TaskDefinition;
-import org.activiti.engine.repository.ProcessDefinition;
 
 import org.springframework.stereotype.Controller;
 
@@ -45,7 +34,6 @@ import org.springframework.ui.Model;
 import org.springframework.web.bind.annotation.ModelAttribute;
 import org.springframework.web.bind.annotation.RequestMapping;
 import org.springframework.web.bind.annotation.RequestParam;
-import org.springframework.web.bind.annotation.ResponseBody;
 import org.springframework.web.servlet.mvc.support.RedirectAttributes;
 
 @Controller
@@ -53,20 +41,21 @@ import org.springframework.web.servlet.mvc.support.RedirectAttributes;
 public class BpmProcessController {
     private BpmProcessManager bpmProcessManager;
     private BpmCategoryManager bpmCategoryManager;
-    private BpmTaskDefNoticeManager bpmTaskDefNoticeManager;
-    private BpmMailTemplateManager bpmMailTemplateManager;
     private BpmTaskDefManager bpmTaskDefManager;
     private BpmConfBaseManager bpmConfBaseManager;
     private Exportor exportor;
     private BeanMapper beanMapper = new BeanMapper();
     private ProcessEngine processEngine;
     private MessageHelper messageHelper;
+    private TenantHolder tenantHolder;
 
     @RequestMapping("bpm-process-list")
     public String list(@ModelAttribute Page page,
             @RequestParam Map<String, Object> parameterMap, Model model) {
+        String tenantId = tenantHolder.getTenantId();
         List<PropertyFilter> propertyFilters = PropertyFilter
                 .buildFromMap(parameterMap);
+        propertyFilters.add(new PropertyFilter("EQS_tenantId", tenantId));
         page = bpmProcessManager.pagedQuery(page, propertyFilters);
         model.addAttribute("page", page);
 
@@ -102,6 +91,9 @@ public class BpmProcessController {
             beanMapper.copy(bpmProcess, dest);
         } else {
             dest = bpmProcess;
+
+            String tenantId = tenantHolder.getTenantId();
+            dest.setTenantId(tenantId);
         }
 
         dest.setBpmCategory(bpmCategoryManager.get(bpmCategoryId));
@@ -129,7 +121,8 @@ public class BpmProcessController {
     @RequestMapping("bpm-process-export")
     public void export(@ModelAttribute Page page,
             @RequestParam Map<String, Object> parameterMap,
-            HttpServletResponse response) throws Exception {
+            HttpServletRequest request, HttpServletResponse response)
+            throws Exception {
         List<PropertyFilter> propertyFilters = PropertyFilter
                 .buildFromMap(parameterMap);
         page = bpmProcessManager.pagedQuery(page, propertyFilters);
@@ -139,7 +132,7 @@ public class BpmProcessController {
         tableModel.setName("bpm-process");
         tableModel.addHeaders("id", "name");
         tableModel.setData(bpmCategories);
-        exportor.export(response, tableModel);
+        exportor.export(request, response, tableModel);
     }
 
     // ~ ======================================================================
@@ -151,17 +144,6 @@ public class BpmProcessController {
     @Resource
     public void setBpmCategoryManager(BpmCategoryManager bpmCategoryManager) {
         this.bpmCategoryManager = bpmCategoryManager;
-    }
-
-    @Resource
-    public void setBpmTaskDefNoticeManager(
-            BpmTaskDefNoticeManager bpmTaskDefNoticeManager) {
-        this.bpmTaskDefNoticeManager = bpmTaskDefNoticeManager;
-    }
-
-    @Resource
-    public void setBpmMailTemplate(BpmMailTemplateManager bpmMailTemplateManager) {
-        this.bpmMailTemplateManager = bpmMailTemplateManager;
     }
 
     @Resource
@@ -187,5 +169,10 @@ public class BpmProcessController {
     @Resource
     public void setMessageHelper(MessageHelper messageHelper) {
         this.messageHelper = messageHelper;
+    }
+
+    @Resource
+    public void setTenantHolder(TenantHolder tenantHolder) {
+        this.tenantHolder = tenantHolder;
     }
 }

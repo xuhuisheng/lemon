@@ -5,13 +5,13 @@ import java.io.InputStream;
 
 import java.util.List;
 import java.util.Map;
-import java.util.Map;
 
 import javax.annotation.Resource;
 
 import javax.servlet.http.HttpServletResponse;
 
 import com.mossle.api.process.ProcessConnector;
+import com.mossle.api.tenant.TenantHolder;
 
 import com.mossle.bpm.cmd.ChangeSubTaskCmd;
 import com.mossle.bpm.cmd.JumpCmd;
@@ -21,24 +21,26 @@ import com.mossle.bpm.cmd.ProcessDefinitionDiagramCmd;
 import com.mossle.bpm.cmd.ReOpenProcessCmd;
 import com.mossle.bpm.cmd.SyncProcessCmd;
 import com.mossle.bpm.cmd.UpdateProcessCmd;
+import com.mossle.bpm.persistence.domain.BpmConfBase;
+import com.mossle.bpm.persistence.domain.BpmConfCountersign;
+import com.mossle.bpm.persistence.domain.BpmConfForm;
+import com.mossle.bpm.persistence.domain.BpmConfListener;
+import com.mossle.bpm.persistence.domain.BpmConfNode;
+import com.mossle.bpm.persistence.domain.BpmConfNotice;
+import com.mossle.bpm.persistence.domain.BpmConfOperation;
+import com.mossle.bpm.persistence.domain.BpmConfRule;
+import com.mossle.bpm.persistence.domain.BpmConfUser;
+import com.mossle.bpm.persistence.manager.BpmConfBaseManager;
 
 import com.mossle.core.page.Page;
 import com.mossle.core.util.IoUtils;
 
-import org.activiti.engine.HistoryService;
 import org.activiti.engine.ProcessEngine;
 import org.activiti.engine.RepositoryService;
 import org.activiti.engine.RuntimeService;
-import org.activiti.engine.TaskService;
-import org.activiti.engine.history.HistoricActivityInstance;
-import org.activiti.engine.history.HistoricProcessInstance;
-import org.activiti.engine.history.HistoricTaskInstance;
-import org.activiti.engine.impl.ServiceImpl;
 import org.activiti.engine.impl.interceptor.Command;
 import org.activiti.engine.repository.Deployment;
 import org.activiti.engine.repository.ProcessDefinition;
-import org.activiti.engine.runtime.ProcessInstance;
-import org.activiti.engine.task.Task;
 
 import org.apache.commons.io.IOUtils;
 
@@ -49,7 +51,7 @@ import org.springframework.ui.Model;
 import org.springframework.web.bind.annotation.ModelAttribute;
 import org.springframework.web.bind.annotation.RequestMapping;
 import org.springframework.web.bind.annotation.RequestParam;
-import org.springframework.web.bind.annotation.ResponseBody;
+import org.springframework.web.multipart.MultipartFile;
 import org.springframework.web.servlet.mvc.support.RedirectAttributes;
 
 /**
@@ -60,13 +62,16 @@ import org.springframework.web.servlet.mvc.support.RedirectAttributes;
 public class ConsoleController {
     private ProcessEngine processEngine;
     private ProcessConnector processConnector;
+    private BpmConfBaseManager bpmConfBaseManager;
+    private TenantHolder tenantHolder;
 
     /**
      * 部署列表.
      */
     @RequestMapping("console-listDeployments")
     public String listDeployments(@ModelAttribute Page page, Model model) {
-        page = processConnector.findDeployments(page);
+        String tenantId = tenantHolder.getTenantId();
+        page = processConnector.findDeployments(tenantId, page);
         model.addAttribute("page", page);
 
         return "bpm/console-listDeployments";
@@ -95,6 +100,60 @@ public class ConsoleController {
             @RequestParam("deploymentId") String deploymentId) {
         RepositoryService repositoryService = processEngine
                 .getRepositoryService();
+        List<ProcessDefinition> processDefinitions = repositoryService
+                .createProcessDefinitionQuery().deploymentId(deploymentId)
+                .list();
+
+        for (ProcessDefinition processDefinition : processDefinitions) {
+            String hql = "from BpmConfBase where processDefinitionId=? or (processDefinitionKey=? and processDefinitionVersion=?)";
+            List<BpmConfBase> bpmConfBases = bpmConfBaseManager.find(hql,
+                    processDefinition.getId(), processDefinition.getKey(),
+                    processDefinition.getVersion());
+
+            for (BpmConfBase bpmConfBase : bpmConfBases) {
+                for (BpmConfNode bpmConfNode : bpmConfBase.getBpmConfNodes()) {
+                    for (BpmConfCountersign bpmConfCountersign : bpmConfNode
+                            .getBpmConfCountersigns()) {
+                        bpmConfBaseManager.remove(bpmConfCountersign);
+                    }
+
+                    for (BpmConfForm bpmConfForm : bpmConfNode
+                            .getBpmConfForms()) {
+                        bpmConfBaseManager.remove(bpmConfForm);
+                    }
+
+                    for (BpmConfListener bpmConfListener : bpmConfNode
+                            .getBpmConfListeners()) {
+                        bpmConfBaseManager.remove(bpmConfListener);
+                    }
+
+                    for (BpmConfNotice bpmConfNotice : bpmConfNode
+                            .getBpmConfNotices()) {
+                        bpmConfBaseManager.remove(bpmConfNotice);
+                    }
+
+                    for (BpmConfOperation bpmConfOperation : bpmConfNode
+                            .getBpmConfOperations()) {
+                        bpmConfBaseManager.remove(bpmConfOperation);
+                    }
+
+                    for (BpmConfRule bpmConfRule : bpmConfNode
+                            .getBpmConfRules()) {
+                        bpmConfBaseManager.remove(bpmConfRule);
+                    }
+
+                    for (BpmConfUser bpmConfUser : bpmConfNode
+                            .getBpmConfUsers()) {
+                        bpmConfBaseManager.remove(bpmConfUser);
+                    }
+
+                    bpmConfBaseManager.remove(bpmConfNode);
+                }
+
+                bpmConfBaseManager.remove(bpmConfBase);
+            }
+        }
+
         repositoryService.deleteDeployment(deploymentId, true);
 
         return "redirect:/bpm/console-listDeployments.do";
@@ -106,6 +165,38 @@ public class ConsoleController {
     @RequestMapping("console-create")
     public String create() {
         return "bpm/console-create";
+    }
+
+    /**
+     * 准备上传流程定义.
+     */
+    @RequestMapping("console-process-input")
+    public String processInput() {
+        return "bpm/console-process-input";
+    }
+
+    /**
+     * 上传发布流程定义.
+     */
+    @RequestMapping("console-process-upload")
+    public String processUpload(@RequestParam("file") MultipartFile file,
+            RedirectAttributes redirectAttributes) throws Exception {
+        String tenantId = tenantHolder.getTenantId();
+        String fileName = file.getOriginalFilename();
+        Deployment deployment = processEngine.getRepositoryService()
+                .createDeployment()
+                .addInputStream(fileName, file.getInputStream())
+                .tenantId(tenantId).deploy();
+        List<ProcessDefinition> processDefinitions = processEngine
+                .getRepositoryService().createProcessDefinitionQuery()
+                .deploymentId(deployment.getId()).list();
+
+        for (ProcessDefinition processDefinition : processDefinitions) {
+            processEngine.getManagementService().executeCommand(
+                    new SyncProcessCmd(processDefinition.getId()));
+        }
+
+        return "redirect:/bpm/console-listProcessDefinitions.do";
     }
 
     /**
@@ -136,7 +227,8 @@ public class ConsoleController {
      */
     @RequestMapping("console-listProcessDefinitions")
     public String listProcessDefinitions(@ModelAttribute Page page, Model model) {
-        page = processConnector.findProcessDefinitions(page);
+        String tenantId = tenantHolder.getTenantId();
+        page = processConnector.findProcessDefinitions(tenantId, page);
         model.addAttribute("page", page);
 
         return "bpm/console-listProcessDefinitions";
@@ -212,7 +304,8 @@ public class ConsoleController {
      */
     @RequestMapping("console-listProcessInstances")
     public String listProcessInstances(@ModelAttribute Page page, Model model) {
-        page = processConnector.findProcessInstances(page);
+        String tenantId = tenantHolder.getTenantId();
+        page = processConnector.findProcessInstances(tenantId, page);
         model.addAttribute("page", page);
 
         return "bpm/console-listProcessInstances";
@@ -256,11 +349,23 @@ public class ConsoleController {
     }
 
     /**
+     * 删除流程实例，包含历史.
+     */
+    @RequestMapping("console-deleteProcessInstance")
+    public String deleteProcessInstance(@RequestParam("id") String id) {
+        processEngine.getRuntimeService().deleteProcessInstance(id, "delete");
+        processEngine.getHistoryService().deleteHistoricProcessInstance(id);
+
+        return "redirect:/bpm/console-listProcessInstances.do";
+    }
+
+    /**
      * 显示任务列表.
      */
     @RequestMapping("console-listTasks")
     public String listTasks(@ModelAttribute Page page, Model model) {
-        page = processConnector.findTasks(page);
+        String tenantId = tenantHolder.getTenantId();
+        page = processConnector.findTasks(tenantId, page);
         model.addAttribute("page", page);
 
         return "bpm/console-listTasks";
@@ -273,7 +378,8 @@ public class ConsoleController {
     @RequestMapping("console-listHistoricProcessInstances")
     public String listHistoricProcessInstances(@ModelAttribute Page page,
             Model model) {
-        page = processConnector.findHistoricProcessInstances(page);
+        String tenantId = tenantHolder.getTenantId();
+        page = processConnector.findHistoricProcessInstances(tenantId, page);
 
         model.addAttribute("page", page);
 
@@ -286,7 +392,8 @@ public class ConsoleController {
     @RequestMapping("console-listHistoricActivityInstances")
     public String listHistoricActivityInstances(@ModelAttribute Page page,
             Model model) {
-        page = processConnector.findHistoricActivityInstances(page);
+        String tenantId = tenantHolder.getTenantId();
+        page = processConnector.findHistoricActivityInstances(tenantId, page);
         model.addAttribute("page", page);
 
         return "bpm/console-listHistoricActivityInstances";
@@ -297,7 +404,8 @@ public class ConsoleController {
      */
     @RequestMapping("console-listHistoricTasks")
     public String listHistoricTasks(@ModelAttribute Page page, Model model) {
-        page = processConnector.findHistoricTaskInstances(page);
+        String tenantId = tenantHolder.getTenantId();
+        page = processConnector.findHistoricTaskInstances(tenantId, page);
         model.addAttribute("page", page);
 
         return "bpm/console-listHistoricTasks";
@@ -446,5 +554,15 @@ public class ConsoleController {
     @Resource
     public void setProcessConnector(ProcessConnector processConnector) {
         this.processConnector = processConnector;
+    }
+
+    @Resource
+    public void setBpmConfBaseManager(BpmConfBaseManager bpmConfBaseManager) {
+        this.bpmConfBaseManager = bpmConfBaseManager;
+    }
+
+    @Resource
+    public void setTenantHolder(TenantHolder tenantHolder) {
+        this.tenantHolder = tenantHolder;
     }
 }

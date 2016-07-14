@@ -1,0 +1,27 @@
+<?xml version="1.0" encoding="UTF-8"?>
+<beans xmlns="http://www.springframework.org/schema/beans"
+       xmlns:xsi="http://www.w3.org/2001/XMLSchema-instance"
+       xsi:schemaLocation="http://www.springframework.org/schema/beans http://www.springframework.org/schema/beans/spring-beans.xsd">
+
+	<!-- hibernate -->
+    <bean id="sessionFactory" class="com.mossle.core.hibernate.RecoverableSessionFactoryBean" depends-on="databaseMigrator">
+        <property name="dataSource" ref="dataSource"/>
+        <property name="packagesToScan" value="${application.domain.packages}"/>
+		<property name="hibernateProperties" ref="applicationProperties"/>
+    </bean>
+
+	<!-- 事务 -->
+	<bean id="transactionManager" class="com.mossle.core.hibernate.ReadOnlyTransactionManager">
+		<property name="platformTransactionManager">
+			<bean class="org.springframework.orm.hibernate4.HibernateTransactionManager">
+				<property name="sessionFactory" ref="sessionFactory" />
+			</bean>
+		</property>
+	</bean>
+
+	<!-- id -->
+	<bean id="idGenerator" class="com.mossle.core.id.SnowFlakeIdGenerator">
+		<constructor-arg value="${node.id}"/>
+	</bean>
+
+</beans>

@@ -1,20 +1,19 @@
 package com.mossle.party.web;
 
-import java.util.ArrayList;
 import java.util.List;
 import java.util.Map;
 
 import javax.annotation.Resource;
 
-import javax.servlet.http.HttpServletResponse;
+import com.mossle.api.tenant.TenantHolder;
 
-import com.mossle.core.hibernate.PropertyFilter;
 import com.mossle.core.mapper.BeanMapper;
 import com.mossle.core.page.Page;
+import com.mossle.core.query.PropertyFilter;
 import com.mossle.core.spring.MessageHelper;
 
-import com.mossle.party.domain.PartyType;
-import com.mossle.party.manager.PartyTypeManager;
+import com.mossle.party.persistence.domain.PartyType;
+import com.mossle.party.persistence.manager.PartyTypeManager;
 
 import org.springframework.stereotype.Controller;
 
@@ -23,7 +22,6 @@ import org.springframework.ui.Model;
 import org.springframework.web.bind.annotation.ModelAttribute;
 import org.springframework.web.bind.annotation.RequestMapping;
 import org.springframework.web.bind.annotation.RequestParam;
-import org.springframework.web.bind.annotation.ResponseBody;
 import org.springframework.web.servlet.mvc.support.RedirectAttributes;
 
 @Controller
@@ -32,12 +30,15 @@ public class PartyTypeController {
     private PartyTypeManager partyTypeManager;
     private MessageHelper messageHelper;
     private BeanMapper beanMapper = new BeanMapper();
+    private TenantHolder tenantHolder;
 
     @RequestMapping("party-type-list")
     public String list(@ModelAttribute Page page,
             @RequestParam Map<String, Object> parameterMap, Model model) {
+        String tenantId = tenantHolder.getTenantId();
         List<PropertyFilter> propertyFilters = PropertyFilter
                 .buildFromMap(parameterMap);
+        propertyFilters.add(new PropertyFilter("EQS_tenantId", tenantId));
         page = partyTypeManager.pagedQuery(page, propertyFilters);
 
         model.addAttribute("page", page);
@@ -59,6 +60,7 @@ public class PartyTypeController {
     @RequestMapping("party-type-save")
     public String save(@ModelAttribute PartyType partyType,
             RedirectAttributes redirectAttributes) {
+        String tenantId = tenantHolder.getTenantId();
         PartyType dest = null;
         Long id = partyType.getId();
 
@@ -67,6 +69,7 @@ public class PartyTypeController {
             beanMapper.copy(partyType, dest);
         } else {
             dest = partyType;
+            dest.setTenantId(tenantId);
         }
 
         partyTypeManager.save(dest);
@@ -95,5 +98,10 @@ public class PartyTypeController {
     @Resource
     public void setMessageHelper(MessageHelper messageHelper) {
         this.messageHelper = messageHelper;
+    }
+
+    @Resource
+    public void setTenantHolder(TenantHolder tenantHolder) {
+        this.tenantHolder = tenantHolder;
     }
 }

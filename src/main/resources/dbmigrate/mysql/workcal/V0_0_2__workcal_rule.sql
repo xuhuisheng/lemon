@@ -4,7 +4,7 @@
 --  workcal rule
 -------------------------------------------------------------------------------
 CREATE TABLE WORKCAL_RULE(
-        ID BIGINT auto_increment,
+        ID BIGINT NOT NULL,
 	YEAR INT,
         WEEK INT,
 	NAME VARCHAR(50),
@@ -13,5 +13,5 @@ CREATE TABLE WORKCAL_RULE(
 	TYPE_ID BIGINT,
         CONSTRAINT PK_WORKCAL_RULE PRIMARY KEY(ID),
 	CONSTRAINT FK_WORKCAL_RULE_TYPE FOREIGN KEY(TYPE_ID) REFERENCES WORKCAL_TYPE(ID)
-) engine=innodb;
+) ENGINE=INNODB CHARSET=UTF8;
 

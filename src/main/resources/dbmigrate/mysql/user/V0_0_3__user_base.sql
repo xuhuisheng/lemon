@@ -4,7 +4,7 @@
 --  user base
 -------------------------------------------------------------------------------
 CREATE TABLE USER_BASE(
-        ID BIGINT auto_increment,
+        ID BIGINT NOT NULL,
         USERNAME VARCHAR(50),
 	DISPLAY_NAME VARCHAR(50),
         PASSWORD VARCHAR(50),

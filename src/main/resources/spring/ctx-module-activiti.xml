@@ -1,0 +1,130 @@
+<?xml version="1.0" encoding="UTF-8"?>
+<beans xmlns="http://www.springframework.org/schema/beans"
+	xmlns:xsi="http://www.w3.org/2001/XMLSchema-instance"
+	xsi:schemaLocation="http://www.springframework.org/schema/beans http://www.springframework.org/schema/beans/spring-beans.xsd">
+
+	<!-- 流程引擎配置 -->
+	<bean id="processEngineConfiguration" class="org.activiti.spring.SpringProcessEngineConfiguration" depends-on="databaseMigrator">
+		<!-- 数据库连接池 -->
+		<property name="dataSource" ref="dataSource" />
+		<!-- 事务 -->
+		<property name="transactionManager" ref="transactionManager"/>
+		<!-- 数据库自动升级 -->
+		<property name="databaseSchemaUpdate" value="true" />
+		<!-- 不创建identity表 -->
+		<property name="dbIdentityUsed" value="false"/>
+		<!-- 作业执行器 -->
+		<property name="jobExecutorActivate" value="false" />
+		<!-- 历史级别 -->
+		<property name="history" value="audit" />
+		
+		<property name="typedEventListeners">
+			<map>
+				<entry key="ENTITY_INITIALIZED" >
+					<list>
+						<bean class="com.mossle.bpm.listener.UpdateProcessInstanceNameEventListener" />
+					</list>
+				</entry>
+			</map>
+		</property>
+
+
+		<!-- 添加的自定义监听器 -->
+ 		<property name="customDefaultBpmnParseHandlers">
+    	 	<list>
+				<bean class="com.mossle.bpm.listener.ProxyUserTaskBpmnParseHandler">
+					<property name="taskListenerId" value="customTaskListener"/>
+					<property name="useDefaultUserTaskParser" value="true"/>
+				</bean>
+    	 	</list>
+		</property>
+ 		<property name="postBpmnParseHandlers">
+    	 	<list>
+				<bean class="com.mossle.bpm.listener.ProxyUserTaskBpmnParseHandler">
+					<property name="taskListenerId" value="postTaskListener"/>
+				</bean>
+    	 	</list>
+		</property>
+
+		<property name="bpmnParser">
+			<bean class="com.mossle.bpm.parser.CustomBpmnParser" />
+		</property>
+
+		<!-- (databaseType 不用修改,即使连接其他类型数据库)  act引擎会自动替换成相应的type,这里加上是因为act不识别hsqldb类型,故直接映射成H2-->
+		<property name="databaseType" value="${application.database.type}"/>
+
+		<!-- 生成流程图的字体 -->
+        <property name="activityFontName" value="宋体"/>
+        <property name="labelFontName" value="宋体"/>
+
+		<!-- 组织机构适配 -->
+        <property name="customSessionFactories">
+			<list>
+				<bean class="com.mossle.bpm.CustomGroupEntityManagerFactory" >
+					<property name="groupEntityManager">
+						<bean class="com.mossle.bpm.CustomGroupEntityManager"/>
+                    </property>
+               </bean>
+           </list>
+		</property>
+
+		<!-- 工作日历 -->
+		<property name="businessCalendarManager" ref="businessCalendarManager"/>
+
+		<!-- //更换id生成策略
+		<property name="idGenerator">
+			<bean class="org.activiti.engine.impl.persistence.StrongUuidGenerator" />
+		</property>
+		-->
+
+		<property name="eventListeners">
+		  <list>
+			 <bean class="com.mossle.bpm.listener.FunctionEventListener" />
+		  </list>
+		</property>
+	</bean>
+
+	<!-- 流程引擎 -->
+	<bean id="processEngine" class="com.mossle.bpm.proxy.ProxyProcessEngineFactoryBean">
+		<property name="processEngineConfiguration" ref="processEngineConfiguration"/>
+		<property name="enabled" value="${bpm.enabled}"/>
+	</bean>
+
+	<!-- 自动部署 -->
+	<bean id="autoDeployer" class="com.mossle.bpm.support.AutoDeployer" depends-on="applicationContextHelper">
+		<property name="enable" value="${bpm.auto.deploy}"/>
+		<property name="processEngine" ref="processEngine"/>
+		<property name="defaultTenantCode" value="${tenant.default.code}"/>
+		<property name="tenantConnector" ref="tenantConnector"/>
+        <property name="deploymentResources">
+            <list>
+                <value>classpath*:/bpmn2/*</value>
+            </list>
+        </property>
+	</bean>
+
+	<!-- 在记录history之前执行的TaskListener -->
+	<bean id="customTaskListener" class="com.mossle.bpm.listener.ProxyTaskListener">
+		<property name="taskListeners">
+			<list>
+				<bean class="com.mossle.bpm.listener.HumanTaskTaskListener"/>
+			</list>
+		</property>
+	</bean>
+
+	<!-- 在记录history之后执行的TaskListener -->
+	<bean id="postTaskListener" class="com.mossle.bpm.listener.ProxyTaskListener">
+		<property name="taskListeners">
+			<list>
+				<bean class="com.mossle.bpm.listener.AutoCompleteFirstTaskListener"/>
+				<bean class="com.mossle.bpm.listener.SkipTaskListener"/>
+			</list>
+		</property>
+	</bean>
+
+	<!-- 工作日历 -->
+	<bean id="businessCalendarManager" class="com.mossle.bpm.calendar.AdvancedBusinessCalendarManagerFactoryBean">
+		<property name="workCalendarConnector" ref="workCalendarConnector"/>
+	</bean>
+
+</beans>

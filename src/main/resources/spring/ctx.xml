@@ -1,0 +1,37 @@
+<?xml version="1.0" encoding="UTF-8"?>
+<beans xmlns="http://www.springframework.org/schema/beans"
+       xmlns:context="http://www.springframework.org/schema/context"
+       xmlns:tx="http://www.springframework.org/schema/tx"
+       xmlns:xsi="http://www.w3.org/2001/XMLSchema-instance"
+       xsi:schemaLocation="http://www.springframework.org/schema/beans http://www.springframework.org/schema/beans/spring-beans.xsd
+       http://www.springframework.org/schema/context http://www.springframework.org/schema/context/spring-context.xsd
+       http://www.springframework.org/schema/tx http://www.springframework.org/schema/tx/spring-tx.xsd">
+
+	<!-- 扫描除了Controller以外的注解 -->
+	<context:component-scan base-package="com.mossle">
+		<context:exclude-filter type="annotation" expression="org.springframework.stereotype.Controller"/>
+	</context:component-scan>
+
+	<!-- 默认通过application.properties读取配置 -->
+    <bean id="applicationProperties" class="com.mossle.core.spring.ApplicationPropertiesFactoryBean"/>
+
+    <!-- 定义受环境影响易变的变量 -->
+    <bean class="org.springframework.beans.factory.config.PropertyPlaceholderConfigurer">
+        <property name="properties" ref="applicationProperties"/>
+    </bean>
+	
+	<!-- 把jul的日志导入给slf4j -->
+	<bean class="com.mossle.core.logback.JulHandler"/>
+
+	<!-- 无法IoC时，提供一个单例获得当前的ctx -->
+	<bean id="applicationContextHelper" class="com.mossle.core.spring.ApplicationContextHelper"/>
+
+	<!-- 简易的csv导出工具 -->
+	<bean id="exportor" class="com.mossle.core.export.CsvExportor"/>
+
+	<!-- 模板 -->
+	<bean id="templateService" class="com.mossle.core.template.FreemarkerTemplateService">
+		<property name="baseDir" value="${store.baseDir}/cms/template"/>
+	</bean>
+
+</beans>

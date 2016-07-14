@@ -1,0 +1,72 @@
+
+	<script type="text/javascript" src="../s/raphael/raphael-min.js"></script>
+	<script type="text/javascript" src="../s/map/geomap-0.5.4.js"></script>
+
+<div id="map" style="width:100%;height:100%;margin-top:40px;">
+</div>
+
+<div id="tooltip" style="position:absolute;padding:10px;background:#fff;border:5px solid #708090;display:none;">
+</div>
+
+
+
+<script>
+
+	var cities = {
+		'北京': {y:39.90,x:116.42},
+		'上海': {y:31.14,x:121.29},
+		'香港': {y:22.39,x:114.1},
+		'台北': {y:25.03,x:121.30}
+	};
+
+	//实例化一个GeoMap对象
+	var map = new GeoMap({
+		//指定地图渲染位置
+		container: '#map'
+	});
+
+	var color,
+		city,
+		p,
+		arr = map.canvas.set(),
+		tooltip = $('#tooltip');
+
+
+	//ajax获取地图数据
+	$.ajax({
+		url: '../s/map/china.geo.json',
+		dataType: 'json'
+	}).done(function(json){
+		//地图对象加载数据
+		map.load(json);
+		//渲染
+		map.render();
+
+		map.shapes.hover(function(e){
+			this[0].setAttribute('fill', 'yellow');
+
+
+
+				e = $.event.fix(e);
+				var self = this,
+					top = e.pageY,
+					left = e.pageX;
+
+				tooltip.html(self.data('properties').name).css({
+						"top" : top,
+						"left" : left + 10,
+						"line-height" : "200%",
+						"font-size": "12px"
+					}).show();
+
+
+		}, function(e) {
+			this[0].setAttribute('fill', 'white');
+
+				tooltip.empty().hide();
+		});
+
+
+	});
+
+</script>

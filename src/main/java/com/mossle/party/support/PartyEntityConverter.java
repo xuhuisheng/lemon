@@ -3,7 +3,7 @@ package com.mossle.party.support;
 import java.util.ArrayList;
 import java.util.List;
 
-import com.mossle.party.domain.PartyEntity;
+import com.mossle.party.persistence.domain.PartyEntity;
 
 public class PartyEntityConverter {
     public List<PartyEntityDTO> createPartyEntityDtos(

@@ -2,13 +2,15 @@ package com.mossle.security.client;
 
 import java.util.Collections;
 
-import com.mossle.api.scope.ScopeHolder;
+import com.mossle.api.tenant.TenantHolder;
 import com.mossle.api.userauth.UserAuthConnector;
 import com.mossle.api.userauth.UserAuthDTO;
 
 import com.mossle.core.mapper.BeanMapper;
 
 import com.mossle.security.impl.SpringSecurityUserAuth;
+
+import com.mossle.spi.user.AccountCredentialConnector;
 
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
@@ -21,9 +23,11 @@ public class DefaultUserDetailsService implements UserDetailsService {
     private static Logger logger = LoggerFactory
             .getLogger(DefaultUserDetailsService.class);
     private UserAuthConnector userAuthConnector;
+    private AccountCredentialConnector accountCredentialConnector;
     private String defaultPassword;
     private BeanMapper beanMapper = new BeanMapper();
     private boolean debug;
+    private TenantHolder tenantHolder;
 
     /**
      * 遇到的问题.
@@ -34,28 +38,51 @@ public class DefaultUserDetailsService implements UserDetailsService {
             throws UsernameNotFoundException {
         logger.debug("username : {}", username);
 
+        String tenantId = tenantHolder.getTenantId();
+
         if (debug) {
             SpringSecurityUserAuth userAuth = new SpringSecurityUserAuth();
             userAuth.setId("1");
             userAuth.setUsername(username);
             userAuth.setDisplayName(username);
             userAuth.setPermissions(Collections.singletonList("*"));
+            userAuth.setTenantId(tenantId);
 
             return userAuth;
         }
 
+        if (username == null) {
+            logger.info("username is null");
+
+            return null;
+        }
+
+        username = username.toLowerCase();
+
         try {
             UserAuthDTO userAuthDto = userAuthConnector.findByUsername(
-                    username, ScopeHolder.getScopeId());
+                    username, tenantId);
+
+            if (userAuthDto == null) {
+                logger.info("cannot find user : {}, {}", username, tenantId);
+
+                throw new UsernameNotFoundException(username + "," + tenantId);
+            }
+
+            String password = accountCredentialConnector.findPassword(username,
+                    tenantId);
 
             SpringSecurityUserAuth userAuthResult = new SpringSecurityUserAuth();
             beanMapper.copy(userAuthDto, userAuthResult);
+            userAuthResult.setPassword(password);
 
             if (defaultPassword != null) {
                 userAuthResult.setPassword(defaultPassword);
             }
 
             return userAuthResult;
+        } catch (UsernameNotFoundException ex) {
+            throw ex;
         } catch (Exception ex) {
             logger.error(ex.getMessage(), ex);
             throw new UsernameNotFoundException(username, ex);
@@ -66,11 +93,20 @@ public class DefaultUserDetailsService implements UserDetailsService {
         this.userAuthConnector = userAuthConnector;
     }
 
+    public void setAccountCredentialConnector(
+            AccountCredentialConnector accountCredentialConnector) {
+        this.accountCredentialConnector = accountCredentialConnector;
+    }
+
     public void setDefaultPassword(String defaultPassword) {
         this.defaultPassword = defaultPassword;
     }
 
     public void setDebug(boolean debug) {
         this.debug = debug;
+    }
+
+    public void setTenantHolder(TenantHolder tenantHolder) {
+        this.tenantHolder = tenantHolder;
     }
 }

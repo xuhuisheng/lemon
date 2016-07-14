@@ -1,29 +1,28 @@
 package com.mossle.auth.web;
 
-import java.util.ArrayList;
 import java.util.List;
 import java.util.Map;
 
 import javax.annotation.Resource;
 
+import javax.servlet.http.HttpServletRequest;
 import javax.servlet.http.HttpServletResponse;
 
-import com.mossle.api.scope.ScopeHolder;
+import com.mossle.api.tenant.TenantHolder;
 
-import com.mossle.auth.domain.Access;
-import com.mossle.auth.domain.Perm;
-import com.mossle.auth.manager.AccessManager;
-import com.mossle.auth.manager.PermManager;
+import com.mossle.auth.persistence.domain.Access;
+import com.mossle.auth.persistence.domain.Perm;
+import com.mossle.auth.persistence.manager.AccessManager;
+import com.mossle.auth.persistence.manager.PermManager;
 
-import com.mossle.core.hibernate.PropertyFilter;
+import com.mossle.core.export.Exportor;
+import com.mossle.core.export.TableModel;
 import com.mossle.core.mapper.BeanMapper;
 import com.mossle.core.page.Page;
+import com.mossle.core.query.PropertyFilter;
 import com.mossle.core.spring.MessageHelper;
 
-import com.mossle.ext.export.Exportor;
-import com.mossle.ext.export.TableModel;
-
-import com.mossle.security.client.ResourcePublisher;
+import com.mossle.spi.auth.ResourcePublisher;
 
 import org.springframework.stereotype.Controller;
 
@@ -32,7 +31,6 @@ import org.springframework.ui.Model;
 import org.springframework.web.bind.annotation.ModelAttribute;
 import org.springframework.web.bind.annotation.RequestMapping;
 import org.springframework.web.bind.annotation.RequestParam;
-import org.springframework.web.bind.annotation.ResponseBody;
 import org.springframework.web.servlet.mvc.support.RedirectAttributes;
 
 @Controller
@@ -44,14 +42,15 @@ public class AccessController {
     private BeanMapper beanMapper = new BeanMapper();
     private PermManager permManager;
     private ResourcePublisher resourcePublisher;
+    private TenantHolder tenantHolder;
 
     @RequestMapping("access-list")
     public String list(@ModelAttribute Page page,
             @RequestParam Map<String, Object> parameterMap, Model model) {
         List<PropertyFilter> propertyFilters = PropertyFilter
                 .buildFromMap(parameterMap);
-        propertyFilters.add(new PropertyFilter("EQS_scopeId", ScopeHolder
-                .getScopeId()));
+        propertyFilters.add(new PropertyFilter("EQS_tenantId", tenantHolder
+                .getTenantId()));
         page = accessManager.pagedQuery(page, propertyFilters);
         model.addAttribute("page", page);
 
@@ -66,8 +65,8 @@ public class AccessController {
             model.addAttribute("model", access);
         }
 
-        List<Perm> perms = permManager.findBy("scopeId",
-                ScopeHolder.getScopeId());
+        List<Perm> perms = permManager.findBy("tenantId",
+                tenantHolder.getTenantId());
         model.addAttribute("perms", perms);
 
         return "auth/access-input";
@@ -94,7 +93,7 @@ public class AccessController {
         dest.setPerm(perm);
 
         if (id == null) {
-            dest.setScopeId(ScopeHolder.getScopeId());
+            dest.setTenantId(tenantHolder.getTenantId());
         }
 
         // save
@@ -123,7 +122,8 @@ public class AccessController {
     @RequestMapping("access-export")
     public void export(@ModelAttribute Page page,
             @RequestParam Map<String, Object> parameterMap,
-            HttpServletResponse response) throws Exception {
+            HttpServletRequest request, HttpServletResponse response)
+            throws Exception {
         List<PropertyFilter> propertyFilters = PropertyFilter
                 .buildFromMap(parameterMap);
         page = accessManager.pagedQuery(page, propertyFilters);
@@ -132,9 +132,9 @@ public class AccessController {
         TableModel tableModel = new TableModel();
         tableModel.setName("access");
         tableModel.addHeaders("id", "type", "value", "perm.name", "priority",
-                "scopeId");
+                "tenantId");
         tableModel.setData(accesses);
-        exportor.export(response, tableModel);
+        exportor.export(request, response, tableModel);
     }
 
     // ~ ======================================================================
@@ -161,5 +161,10 @@ public class AccessController {
     @Resource
     public void setExportor(Exportor exportor) {
         this.exportor = exportor;
+    }
+
+    @Resource
+    public void setTenantHolder(TenantHolder tenantHolder) {
+        this.tenantHolder = tenantHolder;
     }
 }

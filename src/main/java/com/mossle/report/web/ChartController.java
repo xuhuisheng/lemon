@@ -4,28 +4,30 @@ import java.util.List;
 
 import javax.annotation.Resource;
 
+import com.mossle.api.tenant.TenantHolder;
+
 import org.springframework.jdbc.core.JdbcTemplate;
 
 import org.springframework.stereotype.Controller;
 
 import org.springframework.ui.Model;
 
-import org.springframework.web.bind.annotation.ModelAttribute;
 import org.springframework.web.bind.annotation.RequestMapping;
-import org.springframework.web.bind.annotation.RequestParam;
-import org.springframework.web.bind.annotation.ResponseBody;
-import org.springframework.web.servlet.mvc.support.RedirectAttributes;
 
 @Controller
 @RequestMapping("report")
 public class ChartController {
     private JdbcTemplate jdbcTemplate;
+    private TenantHolder tenantHolder;
 
     @RequestMapping("chart-mostActiveProcess")
     public String mostActiveProcess(Model model) {
-        String sql = "select pd.name_ as name,count(pd.name_) as c"
-                + " from act_hi_procinst pi,act_re_procdef pd where pi.proc_def_id_ =pd.id_ group by pd.name_";
-        List list = jdbcTemplate.queryForList(sql);
+        String tenantId = tenantHolder.getTenantId();
+        String sql = "SELECT PD.NAME_ AS NAME,COUNT(PD.NAME_) AS C"
+                + " FROM ACT_HI_PROCINST PI,ACT_RE_PROCDEF PD"
+                + " WHERE PI.PROC_DEF_ID_ =PD.ID_ AND PD.TENANT_ID_=?"
+                + " GROUP BY PD.NAME_";
+        List list = jdbcTemplate.queryForList(sql, tenantId);
         model.addAttribute("list", list);
 
         return "report/chart-mostActiveProcess";
@@ -35,5 +37,10 @@ public class ChartController {
     @Resource
     public void setJdbcTemplate(JdbcTemplate jdbcTemplate) {
         this.jdbcTemplate = jdbcTemplate;
+    }
+
+    @Resource
+    public void setTenantHolder(TenantHolder tenantHolder) {
+        this.tenantHolder = tenantHolder;
     }
 }

@@ -7,11 +7,11 @@
 
   <head>
     <%@include file="/common/meta.jsp"%>
-    <title>流程列表</title>
-    <%@include file="/common/s.jsp"%>
-	<script type="text/javascript">
+    <title><spring:message code="dev.consoleHistoricActivityInstances.list.title" text="列表"/></title>
+    <%@include file="/common/s3.jsp"%>
+    <script type="text/javascript">
 var config = {
-    id: 'processGrid',
+    id: 'consoleHistoricActivityInstancesGrid',
     pageNo: ${page.pageNo},
     pageSize: ${page.pageSize},
     totalCount: ${page.totalCount},
@@ -20,10 +20,11 @@ var config = {
     orderBy: '${page.orderBy == null ? "" : page.orderBy}',
     asc: ${page.asc},
     params: {
+        'filter_LIKES_name': '${param.filter_LIKES_name}'
     },
 	selectedItemClass: 'selectedItem',
-	gridFormId: 'processGridForm',
-	exportUrl: 'process-export.do'
+	gridFormId: 'consoleHistoricActivityInstancesGridForm',
+	exportUrl: 'consoleHistoricActivityInstances-export.do'
 };
 
 var table;
@@ -41,41 +42,67 @@ $(function() {
     <%@include file="/header/bpm-console.jsp"%>
 
     <div class="row-fluid">
-	<%@include file="/menu/bpm-console.jsp"%>
+	  <%@include file="/menu/bpm-console.jsp"%>
 
-	<!-- start of main -->
-    <section id="m-main" class="span10" style="float:right">
+	  <!-- start of main -->
+      <section id="m-main" class="col-md-10" style="padding-top:65px;">
+<%--
+<div class="panel panel-default">
+  <div class="panel-heading">
+	<i class="glyphicon glyphicon-list"></i>
+    查询
+	<div class="pull-right ctrl">
+	  <a class="btn btn-default btn-xs"><i id="consoleHistoricActivityInstancesSearchIcon" class="glyphicon glyphicon-chevron-up"></i></a>
+    </div>
+  </div>
+  <div class="panel-body">
 
-	  <article class="m-blank">
-	    <div class="pull-left">
-          &nbsp;
+		  <form name="consoleHistoricActivityInstancesForm" method="post" action="consoleHistoricActivityInstances-list.do" class="form-inline">
+		    <label for="consoleHistoricActivityInstances_name"><spring:message code='consoleHistoricActivityInstances.consoleHistoricActivityInstances.list.search.name' text='名称'/>:</label>
+		    <input type="text" id="consoleHistoricActivityInstances_name" name="filter_LIKES_name" value="${param.filter_LIKES_name}" class="form-control">
+			<button class="btn btn-default a-search" onclick="document.consoleHistoricActivityInstancesForm.submit()">查询</button>&nbsp;
+		  </form>
+
+		</div>
+	  </div>
+--%>
+      <div style="margin-bottom: 20px;">
+	    <div class="pull-left btn-group" role="group">
+		<%--
+		  <button class="btn btn-default a-insert" onclick="location.href='consoleHistoricActivityInstances-input.do'">新建</button>
+		  <button class="btn btn-default a-remove" onclick="table.removeAll()">删除</button>
+		  <button class="btn btn-default a-export" onclick="table.exportExcel()">导出</button>
+		  --%>
 		</div>
 
 		<div class="pull-right">
 		  每页显示
-		  <select class="m-page-size">
+		  <select class="m-page-size form-control" style="display:inline;width:auto;">
 		    <option value="10">10</option>
 		    <option value="20">20</option>
 		    <option value="50">50</option>
 		  </select>
 		  条
+        </div>
+
+	    <div class="clearfix"></div>
+	  </div>
+
+<form id="consoleHistoricActivityInstancesGridForm" name="consoleHistoricActivityInstancesGridForm" method='post' action="consoleHistoricActivityInstances-remove.do" class="m-form-blank">
+      <div class="panel panel-default">
+        <div class="panel-heading">
+		  <i class="glyphicon glyphicon-list"></i>
+		  <spring:message code="scope-info.scope-info.list.title" text="列表"/>
 		</div>
 
-	    <div class="m-clear"></div>
-	  </article>
 
-      <article class="m-widget">
-        <header class="header">
-		  <h4 class="title">列表</h4>
-		</header>
-		<div class="content">
-
-  <table id="demoGrid" class="m-table table-hover">
+  <table id="demoGrid" class="table table-hover">
     <thead>
       <tr>
-        <th class="sorting" name="id">编号</th>
-        <th class="sorting" name="name">名称</th>
-        <th class="sorting" name="name">类型</th>
+        <th class="sorting" name="id">ID</th>
+        <th class="sorting" name="id">节点ID</th>
+        <th class="sorting" name="name">节点名称</th>
+        <th class="sorting" name="name">节点类型</th>
         <th class="sorting" name="name">开始时间</th>
         <th class="sorting" name="name">结束时间</th>
         <th class="sorting" name="name">流程定义</th>
@@ -87,6 +114,7 @@ $(function() {
     <tbody>
       <c:forEach items="${page.result}" var="item">
       <tr>
+	    <td>${item.id}</td>
 	    <td>${item.activityId}</td>
 	    <td>${item.activityName}</td>
 	    <td>${item.activityType}</td>

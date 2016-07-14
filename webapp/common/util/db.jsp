@@ -166,10 +166,12 @@ td {
 %>
 				<tr>
 <%
+				int index = 1;
 				for (String column : columnList) {
 %>
-				  <td><%=rs.getString(column)%></td>
+				  <td><%=rs.getString(index)%></td>
 <%
+					index++;
 				}
 %>
 				</tr>

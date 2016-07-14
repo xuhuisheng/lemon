@@ -14,8 +14,6 @@ import com.mossle.bpm.support.DefaultTaskListener;
 
 import org.activiti.engine.delegate.DelegateTask;
 import org.activiti.engine.impl.context.Context;
-import org.activiti.engine.impl.persistence.entity.HistoricTaskInstanceEntity;
-import org.activiti.engine.impl.persistence.entity.TaskEntity;
 
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
@@ -39,6 +37,10 @@ public class AssigneeAliasTaskListener extends DefaultTaskListener {
     public void onCreate(DelegateTask delegateTask) throws Exception {
         String assignee = delegateTask.getAssignee();
         logger.debug("assignee : {}", assignee);
+
+        if (assignee == null) {
+            return;
+        }
 
         for (Map.Entry<RuleMatcher, AssigneeRule> entry : assigneeRuleMap
                 .entrySet()) {

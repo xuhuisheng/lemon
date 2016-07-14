@@ -11,7 +11,7 @@ public class UserInfoImpl implements UserInfo {
     private String username;
     private String displayName;
     private String password;
-    private String scopeId;
+    private String tenantId;
     private List<String> authorities;
     private List<String> attributes;
     private Map<String, Object> extra = new HashMap<String, Object>();
@@ -48,12 +48,12 @@ public class UserInfoImpl implements UserInfo {
         this.password = password;
     }
 
-    public String getScopeId() {
-        return scopeId;
+    public String getTenantId() {
+        return tenantId;
     }
 
-    public void setScopeId(String scopeId) {
-        this.scopeId = scopeId;
+    public void setTenantId(String tenantId) {
+        this.tenantId = tenantId;
     }
 
     public List<String> getAuthorities() {

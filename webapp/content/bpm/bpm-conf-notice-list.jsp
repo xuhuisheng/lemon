@@ -3,15 +3,15 @@
 <%pageContext.setAttribute("currentHeader", "bpm-console");%>
 <%pageContext.setAttribute("currentMenu", "bpm-category");%>
 <!doctype html>
-<html>
+<html lang="en">
 
   <head>
     <%@include file="/common/meta.jsp"%>
-    <title><spring:message code="auth.bpmCategory.list.title" text="用户库列表"/></title>
-    <%@include file="/common/s.jsp"%>
+    <title><spring:message code="dev.bpm-conf-notice.list.title" text="列表"/></title>
+    <%@include file="/common/s3.jsp"%>
     <script type="text/javascript">
 var config = {
-    id: 'bpmCategoryGrid',
+    id: 'bpm-conf-noticeGrid',
     pageNo: ${page.pageNo},
     pageSize: ${page.pageSize},
     totalCount: ${page.totalCount},
@@ -23,14 +23,14 @@ var config = {
         'filter_LIKES_name': '${param.filter_LIKES_name}'
     },
 	selectedItemClass: 'selectedItem',
-	gridFormId: 'bpmCategoryGridForm',
-	exportUrl: 'bpm-category-export.do'
+	gridFormId: 'bpm-conf-noticeGridForm',
+	exportUrl: 'bpm-conf-notice-export.do'
 };
 
 var table;
 
 $(function() {
-    table = new Table(config);
+	table = new Table(config);
     table.configPagination('.m-pagination');
     table.configPageInfo('.m-page-info');
     table.configPageSize('.m-page-size');
@@ -41,54 +41,76 @@ $(function() {
   <body>
     <%@include file="/header/bpm-console.jsp"%>
 
-	<div class="row-fluid">
-	<%@include file="/menu/bpm-console.jsp"%>
+    <div class="row-fluid">
+	  <%@include file="/menu/bpm-console.jsp"%>
 
-	<!-- start of main -->
-    <section id="m-main" class="span10">
+	  <!-- start of main -->
+      <section id="m-main" class="col-md-10" style="padding-top:65px;">
 
-	  <article class="m-widget">
-        <header class="header">
-		  <h4 class="title">返回</h4>
-		  <div class="ctrl">
-		    <a class="btn"><i id="bpmCategorySearchIcon" class="icon-chevron-up"></i></a>
-		  </div>
-		</header>
-        <div id="bpmCategorySearch" class="content" style="padding:10px;">
 
-			<a class="btn btn-small" href="bpm-conf-node-list.do?bpmConfBaseId=${bpmConfBaseId}">返回</a>
+<div class="panel panel-default">
+  <div class="panel-heading">
+	<i class="glyphicon glyphicon-list"></i>
+    返回
+	<div class="pull-right ctrl">
+	  <a class="btn btn-default btn-xs"><i id="bpm-confenerSearchIcon" class="glyphicon glyphicon-chevron-up"></i></a>
+    </div>
+  </div>
+  <div class="panel-body">
+
+			<a class="btn btn-default" href="bpm-conf-node-list.do?bpmConfBaseId=${bpmConfBaseId}">返回</a>
 
 		</div>
-	  </article>
+	  </div>
 
-	  <article class="m-widget">
-        <header class="header">
-		  <h4 class="title">添加</h4>
-		  <div class="ctrl">
-		    <a class="btn"><i id="bpmCategorySearchIcon" class="icon-chevron-up"></i></a>
-		  </div>
-		</header>
-        <div id="bpmCategorySearch" class="content content-inner">
+<div class="panel panel-default">
+  <div class="panel-heading">
+	<i class="glyphicon glyphicon-list"></i>
+    添加
+	<div class="pull-right ctrl">
+	  <a class="btn btn-default btn-xs"><i id="bpm-conf-noticeSearchIcon" class="glyphicon glyphicon-chevron-up"></i></a>
+    </div>
+  </div>
+  <div class="panel-body">
 
 		  <form name="bpmCategoryForm" method="get" action="bpm-conf-notice-input.do" class="form-inline">
 			<input type="hidden" name="bpmConfNodeId" value="${param.bpmConfNodeId}">
 			<button class="btn btn-small" onclick="document.bpmCategoryForm.submit()">新增</button>
 		  </form>
 
-
-
 		</div>
-	  </article>
+	  </div>
+<%--
+      <div style="margin-bottom: 20px;">
+	    <div class="pull-left btn-group" role="group">
+		  <button class="btn btn-default a-insert" onclick="location.href='bpm-conf-notice-input.do'">新建</button>
+		  <button class="btn btn-default a-remove" onclick="table.removeAll()">删除</button>
+		  <button class="btn btn-default a-export" onclick="table.exportExcel()">导出</button>
+		</div>
 
-      <article class="m-widget">
-        <header class="header">
-		  <h4 class="title">提醒</h4>
-		</header>
-		<div class="content">
+		<div class="pull-right">
+		  每页显示
+		  <select class="m-page-size form-control" style="display:inline;width:auto;">
+		    <option value="10">10</option>
+		    <option value="20">20</option>
+		    <option value="50">50</option>
+		  </select>
+		  条
+        </div>
 
-  <form id="bpmCategoryGridForm" name="bpmCategoryGridForm" method='post' action="bpm-conf-notice-remove.do" style="margin:0px;">
+	    <div class="clearfix"></div>
+	  </div>
+--%>
+<form id="bpm-conf-noticeGridForm" name="bpm-conf-noticeGridForm" method='post' action="bpm-conf-notice-remove.do" class="m-form-blank">
+      <div class="panel panel-default">
+        <div class="panel-heading">
+		  <i class="glyphicon glyphicon-list"></i>
+		  <spring:message code="scope-info.scope-info.list.title" text="列表"/>
+		</div>
+
+
     <input type="hidden" name="bpmTaskDefId" value="${bpmTaskDefId}">
-    <table id="bpmCategoryGrid" class="m-table table-hover">
+    <table id="bpmCategoryGrid" class="table table-hover">
       <thead>
         <tr>
 		  <th width="20%">类型</th>
@@ -104,20 +126,38 @@ $(function() {
 		  <td>${item.type == 0 ? '到达' : item.type == 1 ? '完成' : '超时'}</td>
 		  <td>${item.receiver}</td>
 		  <td>${item.dueDate}</td>
-		  <td>${item.bpmMailTemplate.name}</td>
+		  <td>${item.templateCode}</td>
 		  <td><a class="btn btn-small" href="bpm-conf-notice-remove.do?id=${item.id}">删除</a></td>
         </tr>
         </c:forEach>
       </tbody>
     </table>
-  </form>
-        </div>
-      </article>
 
-    </section>
-	<!-- end of main -->
+
+      </div>
+</form>
+<%--
+	  <div>
+	    <div class="m-page-info pull-left">
+		  共100条记录 显示1到10条记录
+		</div>
+
+		<div class="btn-group m-pagination pull-right">
+		  <button class="btn btn-default">&lt;</button>
+		  <button class="btn btn-default">1</button>
+		  <button class="btn btn-default">&gt;</button>
+		</div>
+
+	    <div class="clearfix"></div>
+      </div>
+--%>
+      <div class="m-spacer"></div>
+
+      </section>
+	  <!-- end of main -->
 	</div>
 
   </body>
 
 </html>
+

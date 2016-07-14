@@ -4,7 +4,6 @@ package com.mossle.bpm.persistence.domain;
 import javax.persistence.Column;
 import javax.persistence.Entity;
 import javax.persistence.FetchType;
-import javax.persistence.GeneratedValue;
 import javax.persistence.Id;
 import javax.persistence.JoinColumn;
 import javax.persistence.ManyToOne;
@@ -41,8 +40,13 @@ public class BpmConfCountersign implements java.io.Serializable {
     public BpmConfCountersign() {
     }
 
-    public BpmConfCountersign(BpmConfNode bpmConfNode, Integer sequential,
-            String participant, Integer type, Integer rate) {
+    public BpmConfCountersign(Long id) {
+        this.id = id;
+    }
+
+    public BpmConfCountersign(Long id, BpmConfNode bpmConfNode,
+            Integer sequential, String participant, Integer type, Integer rate) {
+        this.id = id;
         this.bpmConfNode = bpmConfNode;
         this.sequential = sequential;
         this.participant = participant;
@@ -52,7 +56,6 @@ public class BpmConfCountersign implements java.io.Serializable {
 
     /** @return null. */
     @Id
-    @GeneratedValue
     @Column(name = "ID", unique = true, nullable = false)
     public Long getId() {
         return this.id;

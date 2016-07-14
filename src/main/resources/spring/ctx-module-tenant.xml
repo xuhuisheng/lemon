@@ -1,0 +1,35 @@
+<?xml version="1.0" encoding="UTF-8"?>
+<beans xmlns="http://www.springframework.org/schema/beans"
+	    xmlns:xsi="http://www.w3.org/2001/XMLSchema-instance"
+	    xsi:schemaLocation="http://www.springframework.org/schema/beans http://www.springframework.org/schema/beans/spring-beans.xsd">
+
+	<!-- ================================================== -->
+	
+	<!--
+	<alias name="defaultCacheManager" alias="tenantCacheManager"/>
+	-->
+
+	<!-- 多租户 -->
+	<!--
+	<bean id="tenantCache" class="com.mossle.tenant.support.TenantCacheImpl">
+		<property name="cacheManager" ref="tenantCacheManager"/>
+	</bean>
+
+	<bean id="tenantConnector" class="com.mossle.tenant.support.TenantConnectorFactoryBean">
+		<property name="type" value="${tenant.connector.type}"/>
+		<property name="tenantCache" ref="tenantCache"/>
+		<property name="jdbcTemplate" ref="jdbcTemplate"/>
+	</bean>
+
+	<bean class="com.mossle.tenant.support.TenantPopulator">
+		<property name="debug" value="${tenant.connector.debug}"/>
+	</bean>
+
+	<bean id="tenantHolder" class="${tenant.holder}"/>
+	-->
+
+	<bean id="tenantConnector" class="com.mossle.api.tenant.MockTenantConnector"/>
+
+	<bean id="tenantHolder" class="com.mossle.api.tenant.MockTenantHolder"/>
+
+</beans>

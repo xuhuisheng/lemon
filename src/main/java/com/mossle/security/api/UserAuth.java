@@ -5,7 +5,7 @@ import java.util.List;
 public interface UserAuth {
     String getId();
 
-    String getScopeId();
+    String getTenantId();
 
     String getUsername();
 

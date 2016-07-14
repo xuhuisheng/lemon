@@ -7,7 +7,6 @@ import java.util.Set;
 import javax.persistence.Column;
 import javax.persistence.Entity;
 import javax.persistence.FetchType;
-import javax.persistence.GeneratedValue;
 import javax.persistence.Id;
 import javax.persistence.JoinColumn;
 import javax.persistence.ManyToOne;
@@ -15,7 +14,7 @@ import javax.persistence.OneToMany;
 import javax.persistence.Table;
 
 /**
- * BpmProcess .
+ * BpmProcess 流程定义.
  * 
  * @author Lingo
  */
@@ -24,29 +23,32 @@ import javax.persistence.Table;
 public class BpmProcess implements java.io.Serializable {
     private static final long serialVersionUID = 0L;
 
-    /** null. */
+    /** 主键. */
     private Long id;
 
-    /** null. */
+    /** 外键，流程配置. */
     private BpmConfBase bpmConfBase;
 
-    /** null. */
+    /** 外键，流程分类. */
     private BpmCategory bpmCategory;
 
-    /** null. */
+    /** 名称. */
     private String name;
 
-    /** null. */
+    /** 排序. */
     private Integer priority;
 
-    /** null. */
+    /** 备注. */
     private String descn;
 
-    /** null. */
+    /** 是否配置任务. */
     private Integer useTaskConf;
 
-    /** null. */
+    /** 编码. */
     private String code;
+
+    /** 租户. */
+    private String tenantId;
 
     /** . */
     private Set<BpmTaskDef> bpmTaskDefs = new HashSet<BpmTaskDef>(0);
@@ -55,13 +57,23 @@ public class BpmProcess implements java.io.Serializable {
     private Set<BpmTaskDefNotice> bpmTaskDefNotices = new HashSet<BpmTaskDefNotice>(
             0);
 
+    /** . */
+    private Set<BpmInstance> bpmInstances = new HashSet<BpmInstance>(0);
+
     public BpmProcess() {
     }
 
-    public BpmProcess(BpmConfBase bpmConfBase, BpmCategory bpmCategory,
-            String name, Integer priority, String descn, Integer useTaskConf,
-            String code, Set<BpmTaskDef> bpmTaskDefs,
-            Set<BpmTaskDefNotice> bpmTaskDefNotices) {
+    public BpmProcess(Long id) {
+        this.id = id;
+    }
+
+    public BpmProcess(Long id, BpmConfBase bpmConfBase,
+            BpmCategory bpmCategory, String name, Integer priority,
+            String descn, Integer useTaskConf, String code, String tenantId,
+            Set<BpmTaskDef> bpmTaskDefs,
+            Set<BpmTaskDefNotice> bpmTaskDefNotices,
+            Set<BpmInstance> bpmInstances) {
+        this.id = id;
         this.bpmConfBase = bpmConfBase;
         this.bpmCategory = bpmCategory;
         this.name = name;
@@ -69,13 +81,14 @@ public class BpmProcess implements java.io.Serializable {
         this.descn = descn;
         this.useTaskConf = useTaskConf;
         this.code = code;
+        this.tenantId = tenantId;
         this.bpmTaskDefs = bpmTaskDefs;
         this.bpmTaskDefNotices = bpmTaskDefNotices;
+        this.bpmInstances = bpmInstances;
     }
 
-    /** @return null. */
+    /** @return 主键. */
     @Id
-    @GeneratedValue
     @Column(name = "ID", unique = true, nullable = false)
     public Long getId() {
         return this.id;
@@ -83,13 +96,13 @@ public class BpmProcess implements java.io.Serializable {
 
     /**
      * @param id
-     *            null.
+     *            主键.
      */
     public void setId(Long id) {
         this.id = id;
     }
 
-    /** @return null. */
+    /** @return 外键，流程配置. */
     @ManyToOne(fetch = FetchType.LAZY)
     @JoinColumn(name = "CONF_BASE_ID")
     public BpmConfBase getBpmConfBase() {
@@ -98,13 +111,13 @@ public class BpmProcess implements java.io.Serializable {
 
     /**
      * @param bpmConfBase
-     *            null.
+     *            外键，流程配置.
      */
     public void setBpmConfBase(BpmConfBase bpmConfBase) {
         this.bpmConfBase = bpmConfBase;
     }
 
-    /** @return null. */
+    /** @return 外键，流程分类. */
     @ManyToOne(fetch = FetchType.LAZY)
     @JoinColumn(name = "CATEGORY_ID")
     public BpmCategory getBpmCategory() {
@@ -113,13 +126,13 @@ public class BpmProcess implements java.io.Serializable {
 
     /**
      * @param bpmCategory
-     *            null.
+     *            外键，流程分类.
      */
     public void setBpmCategory(BpmCategory bpmCategory) {
         this.bpmCategory = bpmCategory;
     }
 
-    /** @return null. */
+    /** @return 名称. */
     @Column(name = "NAME", length = 200)
     public String getName() {
         return this.name;
@@ -127,13 +140,13 @@ public class BpmProcess implements java.io.Serializable {
 
     /**
      * @param name
-     *            null.
+     *            名称.
      */
     public void setName(String name) {
         this.name = name;
     }
 
-    /** @return null. */
+    /** @return 排序. */
     @Column(name = "PRIORITY")
     public Integer getPriority() {
         return this.priority;
@@ -141,13 +154,13 @@ public class BpmProcess implements java.io.Serializable {
 
     /**
      * @param priority
-     *            null.
+     *            排序.
      */
     public void setPriority(Integer priority) {
         this.priority = priority;
     }
 
-    /** @return null. */
+    /** @return 备注. */
     @Column(name = "DESCN", length = 200)
     public String getDescn() {
         return this.descn;
@@ -155,13 +168,13 @@ public class BpmProcess implements java.io.Serializable {
 
     /**
      * @param descn
-     *            null.
+     *            备注.
      */
     public void setDescn(String descn) {
         this.descn = descn;
     }
 
-    /** @return null. */
+    /** @return 是否配置任务. */
     @Column(name = "USE_TASK_CONF")
     public Integer getUseTaskConf() {
         return this.useTaskConf;
@@ -169,13 +182,13 @@ public class BpmProcess implements java.io.Serializable {
 
     /**
      * @param useTaskConf
-     *            null.
+     *            是否配置任务.
      */
     public void setUseTaskConf(Integer useTaskConf) {
         this.useTaskConf = useTaskConf;
     }
 
-    /** @return null. */
+    /** @return 编码. */
     @Column(name = "CODE", length = 64)
     public String getCode() {
         return this.code;
@@ -183,10 +196,24 @@ public class BpmProcess implements java.io.Serializable {
 
     /**
      * @param code
-     *            null.
+     *            编码.
      */
     public void setCode(String code) {
         this.code = code;
+    }
+
+    /** @return 租户. */
+    @Column(name = "TENANT_ID", length = 64)
+    public String getTenantId() {
+        return this.tenantId;
+    }
+
+    /**
+     * @param tenantId
+     *            租户.
+     */
+    public void setTenantId(String tenantId) {
+        this.tenantId = tenantId;
     }
 
     /** @return . */
@@ -215,5 +242,19 @@ public class BpmProcess implements java.io.Serializable {
      */
     public void setBpmTaskDefNotices(Set<BpmTaskDefNotice> bpmTaskDefNotices) {
         this.bpmTaskDefNotices = bpmTaskDefNotices;
+    }
+
+    /** @return . */
+    @OneToMany(fetch = FetchType.LAZY, mappedBy = "bpmProcess")
+    public Set<BpmInstance> getBpmInstances() {
+        return this.bpmInstances;
+    }
+
+    /**
+     * @param bpmInstances
+     *            .
+     */
+    public void setBpmInstances(Set<BpmInstance> bpmInstances) {
+        this.bpmInstances = bpmInstances;
     }
 }

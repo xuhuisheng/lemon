@@ -1,0 +1,28 @@
+<?xml version="1.0" encoding="UTF-8"?>
+<beans xmlns="http://www.springframework.org/schema/beans"
+	xmlns:xsi="http://www.w3.org/2001/XMLSchema-instance"
+	xsi:schemaLocation="http://www.springframework.org/schema/beans http://www.springframework.org/schema/beans/spring-beans.xsd">
+
+	<!-- ================================================== -->
+	<!-- 工作日历 -->
+	<bean id="workCalendarConnector" class="${workcal.connector}"/>
+
+	<!-- 模板 -->
+	<bean id="templateConnector" class="${template.connector}"/>
+
+	<!-- 数据字典 -->
+	<bean id="dictConnector" class="${dict.connector}"/>
+
+	<!-- 审计 -->
+	<bean id="auditConnector" class="${audit.connector}"/>
+
+	<!-- 自动委托 -->
+	<bean id="delegateConnector" class="${delegate.connector}"/>
+
+	<!-- 发送短信的占位符 -->
+	<bean id="smsConnector" class="${sms.connector}"/>
+
+	<!-- 附件 -->
+	<bean id="attachmentConnector" class="com.mossle.spi.attachment.LocalAttachmentConnector"/>
+
+</beans>

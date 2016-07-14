@@ -1,0 +1,119 @@
+<?xml version="1.0" encoding="UTF-8"?>
+<beans xmlns="http://www.springframework.org/schema/beans"
+	    xmlns:xsi="http://www.w3.org/2001/XMLSchema-instance"
+	    xsi:schemaLocation="http://www.springframework.org/schema/beans http://www.springframework.org/schema/beans/spring-beans.xsd">
+
+	<!-- 校验权限是否匹配 -->
+	<bean id="accessDecisionManager" class="org.springframework.security.access.vote.AffirmativeBased">
+		<constructor-arg>
+			<list>
+				<bean class="com.mossle.security.client.AuthenticatedVoter"/>
+				<bean class="com.mossle.security.perm.PermissionVoter">
+					<property name="permissionChecker" ref="permissionChecker"/>
+				</bean>
+			</list>
+		</constructor-arg>
+	</bean>
+
+	<!-- 校验权限 -->
+	<bean id="permissionChecker" class="com.mossle.security.perm.PermissionChecker"/>
+
+	<!-- 认证 -->
+	<bean id="authenticationProvider" class="org.springframework.security.authentication.dao.DaoAuthenticationProvider">
+		<property name="userDetailsService" ref="userDetailsService"/>
+		<property name="passwordEncoder" ref="passwordEncoder"/>
+	</bean>
+
+	<!-- 为认证获取用户信息 -->
+	<bean id="userDetailsService" class="com.mossle.security.client.DefaultUserDetailsService">
+		<property name="userAuthConnector" ref="userAuthConnector"/>
+		<property name="accountCredentialConnector" ref="accountCredentialConnector"/>
+		<property name="debug" value="${security.autologin.enabled}"/>
+		<property name="tenantHolder" ref="tenantHolder"/>
+	</bean>
+
+	<!-- 密码加密器 -->
+	<bean id="passwordEncoder" class="com.mossle.security.util.PasswordEncoderFactoryBean">
+		<property name="type" value="${security.passwordencoder.type}"/>
+		<property name="salt" value="${security.passwordencoder.salt}"/>
+	</bean>
+
+	<!-- 获取当前登录用户的工具 -->
+	<bean id="currentUserHolder" class="com.mossle.security.client.SpringSecurityCurrentUserHolder"/>
+
+	<!-- 又一个密码加密器？ -->
+	<bean id="customPasswordEncoder" factory-bean="&amp;passwordEncoder" factory-method="getCustomPasswordEncoder"/>
+
+	<!-- 测试环境下使用的自动登录工具 -->
+    <bean id="autoLoginFilter" class="com.mossle.security.client.AutoLoginFilter">
+		<property name="enabled" value="${security.autologin.enabled}" />
+		<property name="defaultUserName" value="${security.autologin.username}" />
+		<property name="userDetailsService" ref="userDetailsService" />
+    </bean>
+
+	<!-- 验证码 -->
+	<bean id="captchaFilter" class="com.mossle.security.client.CaptchaFilter"/>
+
+	<!-- 切换用户身份 -->
+	<bean id="switchUserFilter" class="org.springframework.security.web.authentication.switchuser.SwitchUserFilter">
+		<property name="userDetailsService" ref="userDetailsService" />
+		<property name="targetUrl" value="/common/util/switchUser.jsp" />
+	</bean>
+
+	<!-- 初始化URL和METHOD权限 -->
+    <bean id="resourceDetailsMonitor" class="com.mossle.security.client.ResourceDetailsMonitor">
+		<property name="debug" value="${security.resource.debug}"/>
+		<property name="filterSecurityInterceptor"
+			ref="org.springframework.security.web.access.intercept.FilterSecurityInterceptor#0"/>
+		<property name="urlSourceFetcher" ref="${security.url.fetcher.type}UrlSourceFetcher"/>
+		<property name="delegatingMethodSecurityMetadataSource"
+			ref="org.springframework.security.access.method.DelegatingMethodSecurityMetadataSource#0"/>
+		<property name="methodSourceFetcher" ref="${security.method.fetcher}MethodSourceFetcher"/>
+    </bean>
+
+	<!-- resource修改后通知其他节点更新权限 -->
+	<bean id="resourcePublisher" class="com.mossle.security.client.ResourcePublisherImpl"/>
+
+	<!-- 日志 -->
+	<bean class="org.springframework.security.authentication.event.LoggerListener"/>
+	<bean class="org.springframework.security.access.event.LoggerListener"/>
+
+	<!-- url fetcher -->
+	<bean id="databaseUrlSourceFetcher" class="com.mossle.security.impl.DatabaseUrlSourceFetcher">
+		<property name="jdbcTemplate" ref="jdbcTemplate"/>
+	</bean>
+
+	<bean id="httpUrlSourceFetcher" class="com.mossle.security.impl.HttpUrlSourceFetcher">
+		<property name="url" value="${security.url.fetcher.url}"/>
+		<property name="appId" value="${security.defaultAppId}"/>
+	</bean>
+
+	<!-- method fetcher -->
+	<bean id="databaseMethodSourceFetcher" class="com.mossle.security.impl.DatabaseMethodSourceFetcher">
+		<property name="jdbcTemplate" ref="jdbcTemplate"/>
+	</bean>
+
+	<!-- 实现用户权限修改后，不用重新登录就刷新权限 -->
+	<bean id="securityContextRepository" class="com.mossle.security.client.CachedSecurityContextRepository">
+		<property name="userAuthConnector" ref="userAuthConnector"/>
+		<property name="debug" value="${security.autologin.enabled}"/>
+	</bean>
+
+	<!-- 认证成功后，记住最后使用的账号 -->
+	<bean id="authenticationSuccessHandler" class="com.mossle.security.util.RememberLastUsernameAuthenticationSuccessHandler"/>
+
+	<!-- 认证失败后，记住最后使用的账号 -->
+	<bean id="authenticationFailureHandler" class="com.mossle.security.util.RememberLastUsernameAuthenticationFailureHandler">
+		<property name="defaultFailureUrl" value="/common/login.jsp?error=true"/>
+	</bean>
+
+	<!-- 注销成功以后发送LogoutEvent -->
+	<bean id="logoutSuccessHandler" class="com.mossle.security.util.LogoutSuccessHandlerImpl"/>
+
+	<!-- 把spring security的event转化成LoginEvent和LogoutEvent -->
+	<bean class="com.mossle.security.util.SpringSecurityListener"/>
+
+	<!-- 提供从session中直接获取UserAuthDTO -->
+	<bean id="internalUserAuthConnector" class="com.mossle.security.util.InternalUserAuthConnectorImpl"/>
+
+</beans>

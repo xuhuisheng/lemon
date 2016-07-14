@@ -7,7 +7,6 @@ import java.util.Set;
 import javax.persistence.Column;
 import javax.persistence.Entity;
 import javax.persistence.FetchType;
-import javax.persistence.GeneratedValue;
 import javax.persistence.Id;
 import javax.persistence.OneToMany;
 import javax.persistence.Table;
@@ -46,8 +45,13 @@ public class UserRepo implements java.io.Serializable {
     public UserRepo() {
     }
 
-    public UserRepo(String code, String name, String ref, String scopeId,
-            Set<UserBase> userBases, Set<UserSchema> userSchemas) {
+    public UserRepo(Long id) {
+        this.id = id;
+    }
+
+    public UserRepo(Long id, String code, String name, String ref,
+            String scopeId, Set<UserBase> userBases, Set<UserSchema> userSchemas) {
+        this.id = id;
         this.code = code;
         this.name = name;
         this.ref = ref;
@@ -58,7 +62,6 @@ public class UserRepo implements java.io.Serializable {
 
     /** @return null. */
     @Id
-    @GeneratedValue
     @Column(name = "ID", unique = true, nullable = false)
     public Long getId() {
         return this.id;

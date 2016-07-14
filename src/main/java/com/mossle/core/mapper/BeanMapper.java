@@ -6,6 +6,7 @@ import ma.glasnost.orika.MapperFacade;
 import ma.glasnost.orika.MapperFactory;
 import ma.glasnost.orika.converter.builtin.PassThroughConverter;
 import ma.glasnost.orika.impl.DefaultMapperFactory;
+import ma.glasnost.orika.metadata.TypeFactory;
 
 /**
  * 复制对象属性的工具类.
@@ -23,6 +24,7 @@ public class BeanMapper {
         // 如果属性是Object，就只复制引用，不复制值，可以避免循环复制
         mapperFactory.getConverterFactory().registerConverter(
                 new PassThroughConverter(Object.class));
+
         mapper = mapperFactory.getMapperFacade();
     }
 
@@ -33,6 +35,18 @@ public class BeanMapper {
         mapper.map(src, dest);
     }
 
+    /**
+     * 指定复制的src和target的class.
+     */
+    public <S, D> void copy(S src, D target, Class<S> srcClass,
+            Class<D> targetClass) {
+        mapper.map(src, target, TypeFactory.valueOf(srcClass),
+                TypeFactory.valueOf(targetClass));
+    }
+
+    /**
+     * 复制list.
+     */
     public <S, D> List<D> copyList(List<S> src, Class<D> clz) {
         return mapper.mapAsList(src, clz);
     }

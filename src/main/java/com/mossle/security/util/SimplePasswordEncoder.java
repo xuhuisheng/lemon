@@ -1,8 +1,10 @@
 package com.mossle.security.util;
 
+import com.mossle.core.auth.CustomPasswordEncoder;
+
 import org.springframework.security.crypto.password.PasswordEncoder;
 
-public class SimplePasswordEncoder {
+public class SimplePasswordEncoder implements CustomPasswordEncoder {
     private PasswordEncoder passwordEncoder;
 
     public SimplePasswordEncoder(PasswordEncoder passwordEncoder) {

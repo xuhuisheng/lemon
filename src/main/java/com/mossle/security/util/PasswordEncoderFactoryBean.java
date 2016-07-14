@@ -1,5 +1,7 @@
 package com.mossle.security.util;
 
+import com.mossle.core.auth.CustomPasswordEncoder;
+
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
 
@@ -43,7 +45,7 @@ public class PasswordEncoderFactoryBean implements FactoryBean,
         this.type = type;
     }
 
-    public SimplePasswordEncoder getSimplePasswordEncoder() {
+    public CustomPasswordEncoder getCustomPasswordEncoder() {
         return new SimplePasswordEncoder(this.passwordEncoder);
     }
 

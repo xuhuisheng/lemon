@@ -75,40 +75,32 @@ $(function() {
 <form id="userForm" method="post" action="profile-save.do" class="form-horizontal">
   <input id="user-base_userRepoId" type="hidden" name="userRepoId" value="1">
   <c:if test="${model != null}">
-  <input id="user-base_id" type="hidden" name="id" value="${model.id}">
+  <input id="user-base_id" type="hidden" name="id" value="${accountInfo.id}">
   </c:if>
   <div class="control-group">
     <label class="control-label" for="user-base_username"><spring:message code="user.user.input.username" text="账号"/></label>
 	<div class="controls">
-	  <div style="padding-top:5px;">${model.username}</div>
+	  <div style="padding-top:5px;">${accountInfo.username}</div>
 	</div>
   </div>
   <div class="control-group">
-    <label class="control-label" for="userBase_nickName">显示名</label>
+    <label class="control-label" for="userBase_displayName">显示名</label>
 	<div class="controls">
-	  <input id="userBase_nickName" type="text" name="nickName" value="${model.nickName}" size="40" class="text required" minlength="2" maxlength="50">
+	  ${accountInfo.displayName}
     </div>
   </div>
   <div class="control-group">
     <label class="control-label" for="userBase_email">邮箱</label>
 	<div class="controls">
-	  <input id="userBase_email" type="text" name="email" value="${model.email}">
+	  <input id="userBase_email" type="text" name="email" value="${personInfo.email}">
     </div>
   </div>
   <div class="control-group">
-    <label class="control-label" for="userBase_mobile">手机</label>
+    <label class="control-label" for="userBase_cellphone">手机</label>
 	<div class="controls">
-	  <input id="userBase_mobile" type="text" name="mobile" value="${model.mobile}">
+	  <input id="userBase_cellphone" type="text" name="cellphone" value="${personInfo.cellphone}">
     </div>
   </div>
-  <c:forEach items="${userBaseWrapper.userAttrWrappers}" var="item">
-  <div class="control-group">
-    <label class="control-label" for="userBase_${item.code}">${item.name}</label>
-	<div class="controls">
-	  <input id="userBase_${item.code}" type="text" name="_user_attr_${item.code}" size="40" class="text" maxlength="50" value="${item.value}">
-    </div>
-  </div>
-  </c:forEach>
   <div class="control-group">
     <div class="controls">
       <button id="submitButton" class="btn a-submit"><spring:message code='core.input.save' text='保存'/></button>

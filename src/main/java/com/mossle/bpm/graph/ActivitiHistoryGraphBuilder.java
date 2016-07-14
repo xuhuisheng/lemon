@@ -6,7 +6,6 @@ import java.util.HashMap;
 import java.util.List;
 import java.util.Map;
 
-import org.activiti.engine.ProcessEngine;
 import org.activiti.engine.history.HistoricActivityInstance;
 import org.activiti.engine.impl.HistoricActivityInstanceQueryImpl;
 import org.activiti.engine.impl.Page;
@@ -20,7 +19,13 @@ import org.activiti.engine.impl.pvm.process.ActivityImpl;
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
 
+/**
+ * 根据历史，生成实时运行阶段的子图.
+ */
 public class ActivitiHistoryGraphBuilder {
+    /**
+     * logger.
+     */
     private static Logger logger = LoggerFactory
             .getLogger(ActivitiHistoryGraphBuilder.class);
     private String processInstanceId;
@@ -73,6 +78,9 @@ public class ActivitiHistoryGraphBuilder {
         return graph;
     }
 
+    /**
+     * 根据流程实例id获取对应的流程定义.
+     */
     public void fetchProcessDefinitionEntity() {
         String processDefinitionId = Context.getCommandContext()
                 .getHistoricProcessInstanceEntityManager()
@@ -100,6 +108,9 @@ public class ActivitiHistoryGraphBuilder {
                         historicActivityInstanceQueryImpl, page);
     }
 
+    /**
+     * 找到这个节点前面的连线.
+     */
     public Edge findPreviousEdge(Node currentNode, long currentStartTime) {
         String activityId = currentNode.getName();
         ActivityImpl activityImpl = processDefinitionEntity
@@ -167,7 +178,7 @@ public class ActivitiHistoryGraphBuilder {
 
         Edge edge = new Edge();
         edge.setName(temporaryPvmTransitionId);
-        previousNode.getEdges().add(edge);
+        previousNode.getOutgoingEdges().add(edge);
         edge.setSrc(previousNode);
         edge.setDest(currentNode);
 

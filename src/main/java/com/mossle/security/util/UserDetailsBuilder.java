@@ -55,7 +55,7 @@ public class UserDetailsBuilder {
         userStatusDetailsImpl.setAttributes(attributes);
         userStatusDetailsImpl.setId(userInfo.getId());
         userStatusDetailsImpl.setDisplayName(displayName);
-        userStatusDetailsImpl.setScopeId(userInfo.getScopeId());
+        userStatusDetailsImpl.setTenantId(userInfo.getTenantId());
 
         return userStatusDetailsImpl;
     }

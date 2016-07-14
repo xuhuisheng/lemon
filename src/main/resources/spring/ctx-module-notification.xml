@@ -1,0 +1,23 @@
+<?xml version="1.0" encoding="UTF-8"?>
+<beans xmlns="http://www.springframework.org/schema/beans"
+	    xmlns:xsi="http://www.w3.org/2001/XMLSchema-instance"
+	    xsi:schemaLocation="http://www.springframework.org/schema/beans http://www.springframework.org/schema/beans/spring-beans.xsd">
+
+	<bean id="notificationConnector" class="com.mossle.api.notification.DefaultNotificationConnector">
+		<property name="templateConnector" ref="templateConnector"/>
+		<property name="templateService" ref="templateService"/>
+		<property name="map">
+			<map>  
+				<entry key="msg" value-ref="msgNotificationHandler"/>
+				<entry key="mail" value-ref="sendmailNotificationHandler"/>
+			</map>
+		</property>
+	</bean>
+
+	<bean id="msgNotificationHandler" class="com.mossle.msg.support.MsgNotificationHandler">
+		<property name="defaultSender" value="${msg.default.sender}"/>
+	</bean>
+
+	<bean id="sendmailNotificationHandler" class="com.mossle.internal.sendmail.support.SendmailNotificationHandler"/>
+
+</beans>

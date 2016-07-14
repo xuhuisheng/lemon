@@ -5,8 +5,6 @@ import java.util.HashMap;
 import java.util.List;
 import java.util.Map;
 
-import com.mossle.api.scope.ScopeHolder;
-
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
 
@@ -15,7 +13,7 @@ import org.springframework.jdbc.core.JdbcTemplate;
 public class Importer {
     private static Logger logger = LoggerFactory.getLogger(Importer.class);
     private JdbcTemplate jdbcTemplate;
-    private Map<String, Object> scopeMap = new HashMap<String, Object>();
+    private Map<String, Object> tenantMap = new HashMap<String, Object>();
     private List<Map<String, Object>> permTypeList = new ArrayList<Map<String, Object>>();
     private List<Map<String, Object>> permList = new ArrayList<Map<String, Object>>();
     private List<Map<String, Object>> methodList = new ArrayList<Map<String, Object>>();
@@ -83,15 +81,15 @@ public class Importer {
             }
 
             if ("ref".equals(step)) {
-                scopeMap.put("ref", line);
+                tenantMap.put("ref", line);
             }
 
             if ("code".equals(step)) {
-                scopeMap.put("code", line);
+                tenantMap.put("code", line);
             }
 
             if ("userRepoRef".equals(step)) {
-                scopeMap.put("userRepoRef", line);
+                tenantMap.put("userRepoRef", line);
             }
 
             if ("permType".equals(step)) {
@@ -131,7 +129,7 @@ public class Importer {
                 Map<String, Object> role = new HashMap<String, Object>();
                 role.put("name", tmp[0]);
                 role.put("perm", tmp[1]);
-                role.put("scope", tmp[2]);
+                role.put("tenant", tmp[2]);
                 roleList.add(role);
             }
 
@@ -147,52 +145,52 @@ public class Importer {
     }
 
     public void executeSql() {
-        String scopeId = createOrGetScopeId();
+        String tenantId = createOrGetTenantId();
 
         for (Map<String, Object> permType : permTypeList) {
             if (jdbcTemplate
                     .queryForObject(
-                            "select count(*) from auth_perm_type where name=? and scope_id=?",
-                            Integer.class, permType.get("name"), scopeId) == 0) {
+                            "select count(*) from auth_perm_type where name=? and tenant_id=?",
+                            Integer.class, permType.get("name"), tenantId) == 0) {
                 jdbcTemplate
-                        .update("insert into auth_perm_type(name,type,scope_id) values(?,?,?)",
+                        .update("insert into auth_perm_type(name,type,tenant_id) values(?,?,?)",
                                 permType.get("name"), permType.get("type"),
-                                scopeId);
+                                tenantId);
             }
         }
 
         for (Map<String, Object> perm : permList) {
             Long permTypeId = jdbcTemplate
                     .queryForObject(
-                            "select id from auth_perm_type where name=? and scope_id=?",
-                            Long.class, perm.get("type"), scopeId);
+                            "select id from auth_perm_type where name=? and tenant_id=?",
+                            Long.class, perm.get("type"), tenantId);
             jdbcTemplate
-                    .update("insert into auth_perm(code,name,perm_type_id,scope_id) values(?,?,?,?)",
+                    .update("insert into auth_perm(code,name,perm_type_id,tenant_id) values(?,?,?,?)",
                             perm.get("code"), perm.get("code"), permTypeId,
-                            scopeId);
+                            tenantId);
         }
 
-        Map<String, Long> permCache = buildPermCache(scopeId);
+        Map<String, Long> permCache = buildPermCache(tenantId);
 
         for (Map<String, Object> method : methodList) {
             jdbcTemplate
-                    .update("insert into auth_access(value,perm_id,type,scope_id) values(?,?,'METHOD',?)",
+                    .update("insert into auth_access(value,perm_id,type,tenant_id) values(?,?,'METHOD',?)",
                             method.get("resc"),
-                            permCache.get(method.get("perm")), scopeId);
+                            permCache.get(method.get("perm")), tenantId);
         }
 
         for (Map<String, Object> url : urlList) {
             jdbcTemplate
-                    .update("insert into auth_access(value,perm_id,type,scope_id) values(?,?,'URL',?)",
+                    .update("insert into auth_access(value,perm_id,type,tenant_id) values(?,?,'URL',?)",
                             url.get("resc"), permCache.get(url.get("perm")),
-                            scopeId);
+                            tenantId);
         }
 
         for (Map<String, Object> role : roleList) {
             Long roleDefId = createOrGetRoleDefId((String) role.get("name"),
-                    (String) role.get("scope"), scopeId);
+                    (String) role.get("tenant"), tenantId);
 
-            if (scopeMap.get("ref").equals(role.get("scope"))) {
+            if (tenantMap.get("ref").equals(role.get("tenant"))) {
                 Long permId = permCache.get(role.get("perm"));
 
                 if (permId == null) {
@@ -205,11 +203,11 @@ public class Importer {
             }
         }
 
-        Map<String, Long> roleCache = buildRoleCache(scopeId);
+        Map<String, Long> roleCache = buildRoleCache(tenantId);
 
         for (Map<String, Object> user : userList) {
             Long userId = createOrGetUserId((String) user.get("username"),
-                    (String) user.get("ref"), scopeId);
+                    (String) user.get("ref"), tenantId);
 
             try {
                 jdbcTemplate
@@ -221,10 +219,10 @@ public class Importer {
         }
     }
 
-    public Map<String, Long> buildPermCache(String scopeId) {
+    public Map<String, Long> buildPermCache(String tenantId) {
         Map<String, Long> permCache = new HashMap<String, Long>();
         List<Map<String, Object>> list = jdbcTemplate.queryForList(
-                "select id,code from auth_perm where scope_id=?", scopeId);
+                "select id,code from auth_perm where tenant_id=?", tenantId);
 
         for (Map<String, Object> map : list) {
             permCache.put((String) map.get("code"), (Long) map.get("id"));
@@ -233,10 +231,10 @@ public class Importer {
         return permCache;
     }
 
-    public Map<String, Long> buildRoleCache(String scopeId) {
+    public Map<String, Long> buildRoleCache(String tenantId) {
         Map<String, Long> permCache = new HashMap<String, Long>();
         List<Map<String, Object>> list = jdbcTemplate.queryForList(
-                "select id,name from auth_role where scope_id=?", scopeId);
+                "select id,name from auth_role where tenant_id=?", tenantId);
 
         for (Map<String, Object> map : list) {
             permCache.put((String) map.get("name"), (Long) map.get("id"));
@@ -245,64 +243,64 @@ public class Importer {
         return permCache;
     }
 
-    public String createOrGetScopeId() {
-        if (this.notExists("select count(*) from scope_info where ref=?",
-                scopeMap.get("ref"))) {
+    public String createOrGetTenantId() {
+        if (this.notExists("select count(*) from tenant_info where ref=?",
+                tenantMap.get("ref"))) {
             jdbcTemplate
-                    .update("insert into scope_info(NAME,CODE,REF,SHARED,USER_REPO_REF) values(?,?,?,0,?)",
-                            scopeMap.get("code"), scopeMap.get("code"),
-                            scopeMap.get("ref"), scopeMap.get("userRepoRef"));
+                    .update("insert into tenant_info(NAME,CODE,REF,SHARED,USER_REPO_REF) values(?,?,?,0,?)",
+                            tenantMap.get("code"), tenantMap.get("code"),
+                            tenantMap.get("ref"), tenantMap.get("userRepoRef"));
         }
 
         return jdbcTemplate.queryForObject(
-                "select id from scope_info where ref=?", String.class,
-                scopeMap.get("ref"));
+                "select id from tenant_info where ref=?", String.class,
+                tenantMap.get("ref"));
     }
 
-    public Long createOrGetRoleDefId(String name, String scopeRef,
-            String scopeId) {
-        String roleDefScopeId = jdbcTemplate
-                .queryForObject("select id from scope_info where ref=?",
-                        String.class, scopeRef);
+    public Long createOrGetRoleDefId(String name, String tenantRef,
+            String tenantId) {
+        String roleDefTenantId = jdbcTemplate.queryForObject(
+                "select id from tenant_info where ref=?", String.class,
+                tenantRef);
         Long roleDefId = null;
 
         if (this.notExists(
-                "select count(*) from auth_role_def where name=? and scope_id=?",
-                name, roleDefScopeId)) {
+                "select count(*) from auth_role_def where name=? and tenant_id=?",
+                name, roleDefTenantId)) {
             jdbcTemplate.update(
-                    "insert into auth_role_def(name,scope_id) values(?,?)",
-                    name, roleDefScopeId);
+                    "insert into auth_role_def(name,tenant_id) values(?,?)",
+                    name, roleDefTenantId);
         }
 
         roleDefId = jdbcTemplate.queryForObject(
-                "select id from auth_role_def where name=? and scope_id=?",
-                Long.class, name, roleDefScopeId);
+                "select id from auth_role_def where name=? and tenant_id=?",
+                Long.class, name, roleDefTenantId);
 
         if (this.notExists(
-                "select count(*) from auth_role where role_def_id=? and scope_id=?",
-                roleDefId, scopeId)) {
+                "select count(*) from auth_role where role_def_id=? and tenant_id=?",
+                roleDefId, tenantId)) {
             jdbcTemplate
-                    .update("insert into auth_role(name,role_def_id,scope_id) values(?,?,?)",
-                            name, roleDefId, scopeId);
+                    .update("insert into auth_role(name,role_def_id,tenant_id) values(?,?,?)",
+                            name, roleDefId, tenantId);
         }
 
         return roleDefId;
     }
 
     public Long createOrGetUserId(String username, String reference,
-            String scopeId) {
+            String tenantId) {
         if (this.notExists(
-                "select count(*) form auth_user_status where reference=? and scope_id=?",
-                reference, scopeId)) {
+                "select count(*) form auth_user_status where reference=? and tenant_id=?",
+                reference, tenantId)) {
             jdbcTemplate
-                    .update("insert into auth_user_status(username,reference,status,scope_id) values(?,?,1,?)",
-                            username, reference, scopeId);
+                    .update("insert into auth_user_status(username,reference,status,tenant_id) values(?,?,1,?)",
+                            username, reference, tenantId);
         }
 
         return jdbcTemplate
                 .queryForObject(
-                        "select id from auth_user_status where reference=? and scope_id=?",
-                        Long.class, reference, scopeId);
+                        "select id from auth_user_status where reference=? and tenant_id=?",
+                        Long.class, reference, tenantId);
     }
 
     public boolean notExists(String sql, Object... values) {

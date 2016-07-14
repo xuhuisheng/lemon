@@ -7,11 +7,11 @@
 
   <head>
     <%@include file="/common/meta.jsp"%>
-    <title>流程列表</title>
-    <%@include file="/common/s.jsp"%>
-	<script type="text/javascript">
+    <title><spring:message code="dev.consoleProcessInstances.list.title" text="列表"/></title>
+    <%@include file="/common/s3.jsp"%>
+    <script type="text/javascript">
 var config = {
-    id: 'processGrid',
+    id: 'consoleProcessInstancesGrid',
     pageNo: ${page.pageNo},
     pageSize: ${page.pageSize},
     totalCount: ${page.totalCount},
@@ -20,10 +20,11 @@ var config = {
     orderBy: '${page.orderBy == null ? "" : page.orderBy}',
     asc: ${page.asc},
     params: {
+        'filter_LIKES_name': '${param.filter_LIKES_name}'
     },
 	selectedItemClass: 'selectedItem',
-	gridFormId: 'processGridForm',
-	exportUrl: 'process-export.do'
+	gridFormId: 'consoleProcessInstancesGridForm',
+	exportUrl: 'consoleProcessInstances-export.do'
 };
 
 var table;
@@ -41,36 +42,61 @@ $(function() {
     <%@include file="/header/bpm-console.jsp"%>
 
     <div class="row-fluid">
-	<%@include file="/menu/bpm-console.jsp"%>
+	  <%@include file="/menu/bpm-console.jsp"%>
 
-	<!-- start of main -->
-    <section id="m-main" class="span10" style="float:right">
+	  <!-- start of main -->
+      <section id="m-main" class="col-md-10" style="padding-top:65px;">
+<%--
+<div class="panel panel-default">
+  <div class="panel-heading">
+	<i class="glyphicon glyphicon-list"></i>
+    查询
+	<div class="pull-right ctrl">
+	  <a class="btn btn-default btn-xs"><i id="consoleProcessInstancesSearchIcon" class="glyphicon glyphicon-chevron-up"></i></a>
+    </div>
+  </div>
+  <div class="panel-body">
 
-	  <article class="m-blank">
-	    <div class="pull-left">
-          &nbsp;
+		  <form name="consoleProcessInstancesForm" method="post" action="consoleProcessInstances-list.do" class="form-inline">
+		    <label for="consoleProcessInstances_name"><spring:message code='consoleProcessInstances.consoleProcessInstances.list.search.name' text='名称'/>:</label>
+		    <input type="text" id="consoleProcessInstances_name" name="filter_LIKES_name" value="${param.filter_LIKES_name}" class="form-control">
+			<button class="btn btn-default a-search" onclick="document.consoleProcessInstancesForm.submit()">查询</button>&nbsp;
+		  </form>
+
+		</div>
+	  </div>
+--%>
+      <div style="margin-bottom: 20px;">
+	    <div class="pull-left btn-group" role="group">
+		<%--
+		  <button class="btn btn-default a-insert" onclick="location.href='consoleProcessInstances-input.do'">新建</button>
+		  <button class="btn btn-default a-remove" onclick="table.removeAll()">删除</button>
+		  <button class="btn btn-default a-export" onclick="table.exportExcel()">导出</button>
+		  --%>
 		</div>
 
 		<div class="pull-right">
 		  每页显示
-		  <select class="m-page-size">
+		  <select class="m-page-size form-control" style="display:inline;width:auto;">
 		    <option value="10">10</option>
 		    <option value="20">20</option>
 		    <option value="50">50</option>
 		  </select>
 		  条
+        </div>
+
+	    <div class="clearfix"></div>
+	  </div>
+
+<form id="consoleProcessInstancesGridForm" name="consoleProcessInstancesGridForm" method='post' action="consoleProcessInstances-remove.do" class="m-form-blank">
+      <div class="panel panel-default">
+        <div class="panel-heading">
+		  <i class="glyphicon glyphicon-list"></i>
+		  <spring:message code="scope-info.scope-info.list.title" text="列表"/>
 		</div>
 
-	    <div class="m-clear"></div>
-	  </article>
 
-      <article class="m-widget">
-        <header class="header">
-		  <h4 class="title">列表</h4>
-		</header>
-		<div class="content">
-
-  <table id="demoGrid" class="m-table table-hover">
+  <table id="demoGrid" class="table table-hover">
     <thead>
       <tr>
         <th class="sorting" name="id">编号</th>
@@ -101,33 +127,39 @@ $(function() {
           <a href="console-removeProcessInstance.do?processInstanceId=${item.id}">删除</a>
           <a href="console-migrateInput.do?processInstanceId=${item.id}">迁移</a>
           <a href="workspace-viewHistory.do?processInstanceId=${item.id}">历史</a>
-          <a href="${scopePrefix}/widgets/diagram-viewer/index.html?processInstanceId=${item.id}&processDefinitionId=${item.processDefinitionId}">diagram-viewer</a>
+          <a href="${tenantPrefix}/widgets/diagram-viewer/index.html?processInstanceId=${item.id}&processDefinitionId=${item.processDefinitionId}">diagram-viewer</a>
+          <a href="console-deleteProcessInstance.do?id=${item.id}">删除（包含历史）</a>
         </td>
       </tr>
       </c:forEach>
     </tbody>
   </table>
-        </div>
-      </article>
 
-	  <article>
+
+      </div>
+</form>
+
+	  <div>
 	    <div class="m-page-info pull-left">
 		  共100条记录 显示1到10条记录
 		</div>
 
 		<div class="btn-group m-pagination pull-right">
-		  <button class="btn btn-small">&lt;</button>
-		  <button class="btn btn-small">1</button>
-		  <button class="btn btn-small">&gt;</button>
+		  <button class="btn btn-default">&lt;</button>
+		  <button class="btn btn-default">1</button>
+		  <button class="btn btn-default">&gt;</button>
 		</div>
 
-	    <div class="m-clear"></div>
-      </article>
+	    <div class="clearfix"></div>
+      </div>
 
-    </section>
-	<!-- end of main -->
+      <div class="m-spacer"></div>
+
+      </section>
+	  <!-- end of main -->
 	</div>
 
   </body>
 
 </html>
+

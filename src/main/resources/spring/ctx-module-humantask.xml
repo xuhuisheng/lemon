@@ -1,0 +1,22 @@
+<?xml version="1.0" encoding="UTF-8"?>
+<beans xmlns="http://www.springframework.org/schema/beans"
+	    xmlns:xsi="http://www.w3.org/2001/XMLSchema-instance"
+	    xsi:schemaLocation="http://www.springframework.org/schema/beans http://www.springframework.org/schema/beans/spring-beans.xsd">
+
+	<bean id="humanTaskConnector" class="com.mossle.humantask.support.HumanTaskConnectorImpl">
+		<property name="humanTaskListeners">
+			<list>
+				<bean class="com.mossle.humantask.listener.TaskDefUserHumanTaskListener"/>
+				<bean class="com.mossle.humantask.listener.TaskConfUserHumanTaskListener"/>
+				<bean class="com.mossle.humantask.listener.AssigneeAliasHumanTaskListener"/>
+				<bean class="com.mossle.humantask.listener.AssignStrategyHumanTaskListener"/>
+				<bean class="com.mossle.humantask.listener.DelegateHumanTaskListener"/>
+				<bean class="com.mossle.humantask.listener.DeadlineHumanTaskListener"/>
+				<bean class="com.mossle.humantask.listener.TaskNotificationHumanTaskListener"/>
+			</list>
+		</property>
+	</bean>
+
+	<bean id="taskDefinitionConnector" class="${taskdefinition.connector}"/>
+
+</beans>

@@ -1,0 +1,14 @@
+
+.note-item {
+	margin: 10px;
+}
+
+.note-yellow {
+	background-color: #fdfb8c;
+}
+
+.note-pre {
+	background-color: unset;
+	border: 0px;
+	padding: 0px;
+}

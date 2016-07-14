@@ -2,20 +2,17 @@ package com.mossle.auth.web;
 
 import java.util.ArrayList;
 import java.util.List;
-import java.util.Map;
 
 import javax.annotation.Resource;
 
-import javax.servlet.http.HttpServletResponse;
-
-import com.mossle.api.scope.ScopeConnector;
-import com.mossle.api.scope.ScopeHolder;
+import com.mossle.api.tenant.TenantConnector;
+import com.mossle.api.tenant.TenantHolder;
 
 import com.mossle.auth.component.UserStatusChecker;
-import com.mossle.auth.domain.Role;
-import com.mossle.auth.domain.UserStatus;
-import com.mossle.auth.manager.RoleManager;
-import com.mossle.auth.manager.UserStatusManager;
+import com.mossle.auth.persistence.domain.Role;
+import com.mossle.auth.persistence.domain.UserStatus;
+import com.mossle.auth.persistence.manager.RoleManager;
+import com.mossle.auth.persistence.manager.UserStatusManager;
 import com.mossle.auth.service.AuthService;
 import com.mossle.auth.support.CheckUserStatusException;
 
@@ -28,10 +25,8 @@ import org.springframework.stereotype.Controller;
 
 import org.springframework.ui.Model;
 
-import org.springframework.web.bind.annotation.ModelAttribute;
 import org.springframework.web.bind.annotation.RequestMapping;
 import org.springframework.web.bind.annotation.RequestParam;
-import org.springframework.web.bind.annotation.ResponseBody;
 import org.springframework.web.servlet.mvc.support.RedirectAttributes;
 
 @Controller
@@ -41,10 +36,11 @@ public class UserStatusBatchController {
             .getLogger(UserStatusBatchController.class);
     private UserStatusManager userStatusManager;
     private RoleManager roleManager;
-    private ScopeConnector scopeConnector;
+    private TenantConnector tenantConnector;
     private UserStatusChecker userStatusChecker;
     private AuthService authService;
     private MessageHelper messageHelper;
+    private TenantHolder tenantHolder;
 
     @RequestMapping("user-status-batch-input")
     public String input(
@@ -62,7 +58,7 @@ public class UserStatusBatchController {
 
                 UserStatus userStatus = userStatusManager.findUnique(
                         "from UserStatus where username=? and userRepoRef=?",
-                        str, ScopeHolder.getUserRepoRef());
+                        str, tenantHolder.getUserRepoRef());
 
                 if (userStatus == null) {
                     messageHelper.addFlashMessage(redirectAttributes, str
@@ -82,8 +78,8 @@ public class UserStatusBatchController {
             model.addAttribute("userStatuses", userStatuses);
         }
 
-        List<Role> roles = roleManager.find("from Role where scopeId=?",
-                ScopeHolder.getScopeId());
+        List<Role> roles = roleManager.find("from Role where tenantId=?",
+                tenantHolder.getTenantId());
 
         model.addAttribute("roles", roles);
 
@@ -97,7 +93,7 @@ public class UserStatusBatchController {
 
         for (Long userId : userIds) {
             authService.configUserRole(userId, roleIds,
-                    ScopeHolder.getUserRepoRef(), ScopeHolder.getScopeId(),
+                    tenantHolder.getUserRepoRef(), tenantHolder.getTenantId(),
                     false);
         }
 
@@ -121,8 +117,8 @@ public class UserStatusBatchController {
     }
 
     @Resource
-    public void setScopeConnector(ScopeConnector scopeConnector) {
-        this.scopeConnector = scopeConnector;
+    public void setTenantConnector(TenantConnector tenantConnector) {
+        this.tenantConnector = tenantConnector;
     }
 
     @Resource
@@ -133,5 +129,10 @@ public class UserStatusBatchController {
     @Resource
     public void setMessageHelper(MessageHelper messageHelper) {
         this.messageHelper = messageHelper;
+    }
+
+    @Resource
+    public void setTenantHolder(TenantHolder tenantHolder) {
+        this.tenantHolder = tenantHolder;
     }
 }

@@ -8,17 +8,36 @@ import org.activiti.engine.impl.context.Context;
 import org.activiti.engine.impl.persistence.entity.ProcessDefinitionEntity;
 import org.activiti.engine.impl.pvm.PvmActivity;
 import org.activiti.engine.impl.pvm.PvmTransition;
-import org.activiti.engine.impl.pvm.process.ActivityImpl;
 
+/**
+ * 根据流程定义，构建设计阶段的图.
+ */
 public class ActivitiGraphBuilder {
+    /**
+     * 流程定义id.
+     */
     private String processDefinitionId;
+
+    /**
+     * 流程定义.
+     */
     private ProcessDefinitionEntity processDefinitionEntity;
+
+    /**
+     * 已访问的节点id.
+     */
     private Set<String> visitedNodeIds = new HashSet<String>();
 
+    /**
+     * 构造方法.
+     */
     public ActivitiGraphBuilder(String processDefinitionId) {
         this.processDefinitionId = processDefinitionId;
     }
 
+    /**
+     * 构建图.
+     */
     public Graph build() {
         this.fetchProcessDefinitionEntity();
 
@@ -30,12 +49,18 @@ public class ActivitiGraphBuilder {
         return graph;
     }
 
+    /**
+     * 获取流程定义.
+     */
     public void fetchProcessDefinitionEntity() {
         GetDeploymentProcessDefinitionCmd cmd = new GetDeploymentProcessDefinitionCmd(
                 processDefinitionId);
         processDefinitionEntity = cmd.execute(Context.getCommandContext());
     }
 
+    /**
+     * 遍历.
+     */
     public Node visitNode(PvmActivity pvmActivity) {
         if (visitedNodeIds.contains(pvmActivity.getId())) {
             return null;
@@ -45,12 +70,12 @@ public class ActivitiGraphBuilder {
 
         Node currentNode = new Node();
         currentNode.setId(pvmActivity.getId());
-        currentNode.setName(getString(pvmActivity.getProperty("name")));
-        currentNode.setType(getString(pvmActivity.getProperty("type")));
+        currentNode.setName(this.getString(pvmActivity.getProperty("name")));
+        currentNode.setType(this.getString(pvmActivity.getProperty("type")));
 
         for (PvmTransition pvmTransition : pvmActivity.getOutgoingTransitions()) {
             PvmActivity destination = pvmTransition.getDestination();
-            Node targetNode = visitNode(destination);
+            Node targetNode = this.visitNode(destination);
 
             if (targetNode == null) {
                 continue;
@@ -60,12 +85,15 @@ public class ActivitiGraphBuilder {
             edge.setId(pvmTransition.getId());
             edge.setSrc(currentNode);
             edge.setDest(targetNode);
-            currentNode.getEdges().add(edge);
+            currentNode.getOutgoingEdges().add(edge);
         }
 
         return currentNode;
     }
 
+    /**
+     * 把object转换为string.
+     */
     public String getString(Object object) {
         if (object == null) {
             return null;

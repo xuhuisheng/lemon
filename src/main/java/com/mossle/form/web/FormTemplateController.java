@@ -1,26 +1,31 @@
 package com.mossle.form.web;
 
-import java.util.ArrayList;
+import java.util.Date;
+import java.util.HashSet;
 import java.util.List;
 import java.util.Map;
 
 import javax.annotation.Resource;
 
+import javax.servlet.http.HttpServletRequest;
 import javax.servlet.http.HttpServletResponse;
 
-import com.mossle.core.hibernate.PropertyFilter;
+import com.mossle.api.tenant.TenantHolder;
+
+import com.mossle.core.auth.CurrentUserHolder;
+import com.mossle.core.export.Exportor;
+import com.mossle.core.export.TableModel;
 import com.mossle.core.mapper.BeanMapper;
+import com.mossle.core.mapper.JsonMapper;
 import com.mossle.core.page.Page;
+import com.mossle.core.query.PropertyFilter;
 import com.mossle.core.spring.MessageHelper;
 
-import com.mossle.ext.export.Exportor;
-import com.mossle.ext.export.TableModel;
+import com.mossle.form.persistence.domain.FormTemplate;
+import com.mossle.form.persistence.manager.FormTemplateManager;
 
-import com.mossle.form.domain.FormTemplate;
-import com.mossle.form.manager.FormTemplateManager;
-
-import org.springframework.context.MessageSource;
-import org.springframework.context.support.MessageSourceAccessor;
+import org.slf4j.Logger;
+import org.slf4j.LoggerFactory;
 
 import org.springframework.stereotype.Controller;
 
@@ -29,22 +34,30 @@ import org.springframework.ui.Model;
 import org.springframework.web.bind.annotation.ModelAttribute;
 import org.springframework.web.bind.annotation.RequestMapping;
 import org.springframework.web.bind.annotation.RequestParam;
-import org.springframework.web.bind.annotation.ResponseBody;
+import org.springframework.web.multipart.MultipartResolver;
 import org.springframework.web.servlet.mvc.support.RedirectAttributes;
 
 @Controller
 @RequestMapping("form")
 public class FormTemplateController {
+    private static Logger logger = LoggerFactory
+            .getLogger(FormTemplateController.class);
     private FormTemplateManager formTemplateManager;
     private Exportor exportor;
     private BeanMapper beanMapper = new BeanMapper();
+    private JsonMapper jsonMapper = new JsonMapper();
     private MessageHelper messageHelper;
+    private MultipartResolver multipartResolver;
+    private TenantHolder tenantHolder;
+    private CurrentUserHolder currentUserHolder;
 
     @RequestMapping("form-template-list")
     public String list(@ModelAttribute Page page,
             @RequestParam Map<String, Object> parameterMap, Model model) {
+        String tenantId = tenantHolder.getTenantId();
         List<PropertyFilter> propertyFilters = PropertyFilter
                 .buildFromMap(parameterMap);
+        propertyFilters.add(new PropertyFilter("EQS_tenantId", tenantId));
         page = formTemplateManager.pagedQuery(page, propertyFilters);
         model.addAttribute("page", page);
 
@@ -66,6 +79,8 @@ public class FormTemplateController {
     public String save(@ModelAttribute FormTemplate formTemplate,
             @RequestParam Map<String, Object> parameterMap,
             RedirectAttributes redirectAttributes) {
+        String userId = currentUserHolder.getUserId();
+        String tenantId = tenantHolder.getTenantId();
         FormTemplate dest = null;
         Long id = formTemplate.getId();
 
@@ -75,6 +90,9 @@ public class FormTemplateController {
         } else {
             dest = formTemplate;
             dest.setType(0);
+            dest.setCreateTime(new Date());
+            dest.setUserId(userId);
+            dest.setTenantId(tenantId);
         }
 
         formTemplateManager.save(dest);
@@ -101,9 +119,12 @@ public class FormTemplateController {
     @RequestMapping("form-template-export")
     public void export(@ModelAttribute Page page,
             @RequestParam Map<String, Object> parameterMap,
-            HttpServletResponse response) throws Exception {
+            HttpServletRequest request, HttpServletResponse response)
+            throws Exception {
+        String tenantId = tenantHolder.getTenantId();
         List<PropertyFilter> propertyFilters = PropertyFilter
                 .buildFromMap(parameterMap);
+        propertyFilters.add(new PropertyFilter("EQS_tenantId", tenantId));
         page = formTemplateManager.pagedQuery(page, propertyFilters);
 
         List<FormTemplate> dynamicModels = (List<FormTemplate>) page
@@ -113,7 +134,47 @@ public class FormTemplateController {
         tableModel.setName("dynamic model");
         tableModel.addHeaders("id", "name");
         tableModel.setData(dynamicModels);
-        exportor.export(response, tableModel);
+        exportor.export(request, response, tableModel);
+    }
+
+    @RequestMapping("form-template-copy")
+    public String copy(@RequestParam("id") Long id,
+            RedirectAttributes redirectAttributes) {
+        String userId = currentUserHolder.getUserId();
+        FormTemplate formTemplate = formTemplateManager.get(id);
+
+        if (formTemplate == null) {
+            return "redirect:/form/form-template.do";
+        }
+
+        int index = 1;
+        String code = formTemplate.getCode();
+        String name = formTemplate.getName();
+
+        while (true) {
+            FormTemplate targetFormTemplate = formTemplateManager.findUniqueBy(
+                    "code", code + "" + index);
+
+            if (targetFormTemplate == null) {
+                code = code + "" + index;
+                name = name + "" + index;
+
+                break;
+            }
+
+            index++;
+        }
+
+        FormTemplate targetFormTemplate = new FormTemplate();
+        beanMapper.copy(formTemplate, targetFormTemplate);
+        targetFormTemplate.setId(null);
+        targetFormTemplate.setCode(code);
+        targetFormTemplate.setName(name);
+        targetFormTemplate.setUserId(userId);
+        targetFormTemplate.setFormSchemas(new HashSet());
+        formTemplateManager.save(targetFormTemplate);
+
+        return "redirect:/form/form-template-list.do";
     }
 
     // ~ ======================================================================
@@ -130,5 +191,20 @@ public class FormTemplateController {
     @Resource
     public void setMessageHelper(MessageHelper messageHelper) {
         this.messageHelper = messageHelper;
+    }
+
+    @Resource
+    public void setMultipartResolver(MultipartResolver multipartResolver) {
+        this.multipartResolver = multipartResolver;
+    }
+
+    @Resource
+    public void setTenantHolder(TenantHolder tenantHolder) {
+        this.tenantHolder = tenantHolder;
+    }
+
+    @Resource
+    public void setCurrentUserHolder(CurrentUserHolder currentUserHolder) {
+        this.currentUserHolder = currentUserHolder;
     }
 }

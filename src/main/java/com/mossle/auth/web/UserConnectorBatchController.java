@@ -2,24 +2,20 @@ package com.mossle.auth.web;
 
 import java.util.ArrayList;
 import java.util.List;
-import java.util.Map;
 
 import javax.annotation.Resource;
 
-import javax.servlet.http.HttpServletResponse;
-
-import com.mossle.api.scope.ScopeConnector;
-import com.mossle.api.scope.ScopeDTO;
-import com.mossle.api.scope.ScopeHolder;
+import com.mossle.api.tenant.TenantConnector;
+import com.mossle.api.tenant.TenantHolder;
 import com.mossle.api.user.UserConnector;
 import com.mossle.api.user.UserDTO;
 
 import com.mossle.auth.component.UserStatusChecker;
 import com.mossle.auth.component.UserStatusConverter;
-import com.mossle.auth.domain.Role;
-import com.mossle.auth.domain.UserStatus;
-import com.mossle.auth.manager.RoleManager;
-import com.mossle.auth.manager.UserStatusManager;
+import com.mossle.auth.persistence.domain.Role;
+import com.mossle.auth.persistence.domain.UserStatus;
+import com.mossle.auth.persistence.manager.RoleManager;
+import com.mossle.auth.persistence.manager.UserStatusManager;
 import com.mossle.auth.service.AuthService;
 import com.mossle.auth.support.CheckUserStatusException;
 import com.mossle.auth.support.RoleDTO;
@@ -33,10 +29,8 @@ import org.springframework.stereotype.Controller;
 
 import org.springframework.ui.Model;
 
-import org.springframework.web.bind.annotation.ModelAttribute;
 import org.springframework.web.bind.annotation.RequestMapping;
 import org.springframework.web.bind.annotation.RequestParam;
-import org.springframework.web.bind.annotation.ResponseBody;
 import org.springframework.web.servlet.mvc.support.RedirectAttributes;
 
 @Controller
@@ -47,11 +41,12 @@ public class UserConnectorBatchController {
     private UserStatusManager userStatusManager;
     private MessageHelper messageHelper;
     private UserStatusConverter userStatusConverter;
-    private ScopeConnector scopeConnector;
+    private TenantConnector tenantConnector;
     private UserStatusChecker userStatusChecker;
     private UserConnector userConnector;
     private RoleManager roleManager;
     private AuthService authService;
+    private TenantHolder tenantHolder;
 
     @RequestMapping("user-connector-batch-list")
     public String list() {
@@ -74,7 +69,7 @@ public class UserConnectorBatchController {
 
                 String username = str;
                 UserDTO userDto = userConnector.findByUsername(username,
-                        ScopeHolder.getUserRepoRef());
+                        tenantHolder.getUserRepoRef());
 
                 if (userDto == null) {
                     messageHelper.addMessage(model, str + " is not exists.");
@@ -82,8 +77,8 @@ public class UserConnectorBatchController {
                 } else {
                     UserStatus userStatus = authService.createOrGetUserStatus(
                             username, userDto.getId(),
-                            ScopeHolder.getUserRepoRef(),
-                            ScopeHolder.getScopeId());
+                            tenantHolder.getUserRepoRef(),
+                            tenantHolder.getTenantId());
 
                     try {
                         userStatusChecker.check(userStatus);
@@ -98,18 +93,18 @@ public class UserConnectorBatchController {
             model.addAttribute("userStatuses", userStatuses);
         }
 
-        List<Role> roles = roleManager.find("from Role where scopeId=?",
-                ScopeHolder.getScopeId());
+        List<Role> roles = roleManager.find("from Role where tenantId=?",
+                tenantHolder.getTenantId());
         List<RoleDTO> roleDtos = new ArrayList<RoleDTO>();
         roleDtos.addAll(convertRoleDtos(roles, false));
         model.addAttribute("roleDtos", roleDtos);
 
-        // List<ScopeInfo> sharedScopeInfos = scopeConnector.findSharedScopes();
+        // List<TenantInfo> sharedTenantInfos = tenantConnector.findSharedTenants();
 
-        // logger.info("{}", sharedScopeInfos);
+        // logger.info("{}", sharedTenantInfos);
 
-        // for (ScopeInfo scopeInfo : sharedScopeInfos) {
-        // List<Role> sharedRoles = authService.findRoles(scopeInfo.getId());
+        // for (TenantInfo tenantInfo : sharedTenantInfos) {
+        // List<Role> sharedRoles = authService.findRoles(tenantInfo.getId());
         // roleDtos.addAll(convertRoleDtos(sharedRoles, true));
         // /}
         return "auth/user-connector-batch-input";
@@ -122,36 +117,36 @@ public class UserConnectorBatchController {
 
         for (Long userId : userIds) {
             authService.configUserRole(userId, roleIds,
-                    ScopeHolder.getUserRepoRef(), ScopeHolder.getScopeId(),
+                    tenantHolder.getUserRepoRef(), tenantHolder.getTenantId(),
                     false);
         }
 
         return "redirect:/auth/user-connector-list.do";
     }
 
-    public List<RoleDTO> convertRoleDtos(List<Role> roles, boolean useScope) {
+    public List<RoleDTO> convertRoleDtos(List<Role> roles, boolean useTenant) {
         List<RoleDTO> roleDtos = new ArrayList<RoleDTO>();
 
         for (Role role : roles) {
-            roleDtos.add(convertRoleDto(role, useScope));
+            roleDtos.add(convertRoleDto(role, useTenant));
         }
 
         return roleDtos;
     }
 
-    public RoleDTO convertRoleDto(Role role, boolean useScope) {
+    public RoleDTO convertRoleDto(Role role, boolean useTenant) {
         RoleDTO roleDto = new RoleDTO();
         roleDto.setId(role.getId());
 
-        if (useScope) {
+        if (useTenant) {
             roleDto.setName(role.getName() + "("
-                    + scopeConnector.findById(role.getScopeId()).getName()
+                    + tenantConnector.findById(role.getTenantId()).getName()
                     + ")");
         } else {
             roleDto.setName(role.getName());
         }
 
-        roleDto.setScopeId(role.getScopeId());
+        roleDto.setTenantId(role.getTenantId());
 
         return roleDto;
     }
@@ -188,12 +183,17 @@ public class UserConnectorBatchController {
     }
 
     @Resource
-    public void setScopeConnector(ScopeConnector scopeConnector) {
-        this.scopeConnector = scopeConnector;
+    public void setTenantConnector(TenantConnector tenantConnector) {
+        this.tenantConnector = tenantConnector;
     }
 
     @Resource
     public void setAuthService(AuthService authService) {
         this.authService = authService;
+    }
+
+    @Resource
+    public void setTenantHolder(TenantHolder tenantHolder) {
+        this.tenantHolder = tenantHolder;
     }
 }

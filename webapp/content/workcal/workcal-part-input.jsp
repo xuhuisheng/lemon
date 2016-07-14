@@ -3,15 +3,15 @@
 <%pageContext.setAttribute("currentHeader", "scope");%>
 <%pageContext.setAttribute("currentMenu", "workcal");%>
 <!doctype html>
-<html lang="en">
+<html>
 
   <head>
     <%@include file="/common/meta.jsp"%>
-    <title>编辑工作日历时间段</title>
-    <%@include file="/common/s.jsp"%>
+    <title>编辑</title>
+    <%@include file="/common/s3.jsp"%>
     <script type="text/javascript">
 $(function() {
-    $("#scope-globalForm").validate({
+    $("#workcal-partForm").validate({
         submitHandler: function(form) {
 			bootbox.animate(false);
 			var box = bootbox.dialog('<div class="progress progress-striped active" style="margin:0px;"><div class="bar" style="width: 100%;"></div></div>');
@@ -24,28 +24,30 @@ $(function() {
   </head>
 
   <body>
-    <%@include file="/header/scope.jsp"%>
+    <%@include file="/header/workcal.jsp"%>
 
     <div class="row-fluid">
 	  <%@include file="/menu/workcal.jsp"%>
 
-	  <!-- start of main -->
-      <section id="m-main" class="span10">
+	<!-- start of main -->
+      <section id="m-main" class="col-md-10" style="padding-top:65px;">
 
-      <article class="m-widget">
-        <header class="header">
-		  <h4 class="title"><spring:message code="scope-global.scope-global.input.title" text="编辑"/></h4>
-		</header>
+      <div class="panel panel-default">
+        <div class="panel-heading">
+		  <i class="glyphicon glyphicon-list"></i>
+		  编辑
+		</div>
 
-		<div class="content content-inner">
+		<div class="panel-body">
+
 
 <form id="scope-globalForm" method="post" action="workcal-part-save.do" class="form-horizontal">
   <c:if test="${model != null}">
   <input id="scope-global_id" type="hidden" name="id" value="${model.id}">
   </c:if>
-  <div class="control-group">
-    <label class="control-label" for="scope-global_name">时间段</label>
-	<div class="controls">
+  <div class="form-group">
+    <label class="control-label col-md-1" for="scope-global_name">时间段</label>
+	<div class="col-sm-5">
 	  <select name="shift">
 	    <option value="0">上午</option>
 	    <option value="1">下午</option>
@@ -54,21 +56,21 @@ $(function() {
 	  </select>
     </div>
   </div>
-  <div class="control-group">
-    <label class="control-label" for="scope-global_name">开始时间</label>
-	<div class="controls">
-	  <input id="scope-global_name" type="text" name="startTime" value="${model.startTime}" size="40" class="text required" minlength="1" maxlength="5">
+  <div class="form-group">
+    <label class="control-label col-md-1" for="scope-global_name">开始时间</label>
+	<div class="col-sm-5">
+	  <input id="scope-global_name" type="text" name="startTime" value="${model.startTime}" size="40" class="form-control required" minlength="1" maxlength="5">
     </div>
   </div>
-  <div class="control-group">
-    <label class="control-label" for="scope-global_name">结束时间</label>
-	<div class="controls">
-	  <input id="scope-global_name" type="text" name="endTime" value="${model.endTime}" size="40" class="text required" minlength="1" maxlength="5">
+  <div class="form-group">
+    <label class="control-label col-md-1" for="scope-global_name">结束时间</label>
+	<div class="col-sm-5">
+	  <input id="scope-global_name" type="text" name="endTime" value="${model.endTime}" size="40" class="form-control required" minlength="1" maxlength="5">
     </div>
   </div>
-  <div class="control-group">
-    <label class="control-label" for="scope-global_name">工作日历类型</label>
-	<div class="controls">
+  <div class="form-group">
+    <label class="control-label col-md-1" for="scope-global_name">工作日历类型</label>
+	<div class="col-sm-5">
 	  <select name="workcalRuleId">
 	    <c:forEach items="${workcalRules}" var="item">
 	    <option value="${item.id}">${item.name}</option>
@@ -76,21 +78,23 @@ $(function() {
 	  </select>
     </div>
   </div>
-  <div class="control-group">
-    <div class="controls">
+  <div class="form-group">
+    <div class="col-sm-5">
       <button id="submitButton" type="submit" class="btn a-submit"><spring:message code='core.input.save' text='保存'/></button>
 	  &nbsp;
       <button type="button" onclick="history.back();" class="btn a-cancel"><spring:message code='core.input.back' text='返回'/></button>
     </div>
   </div>
 </form>
-        </div>
+
+		</div>
       </article>
 
-      </section>
-	  <!-- end of main -->
+    </section>
+	<!-- end of main -->
 	</div>
 
   </body>
 
 </html>
+

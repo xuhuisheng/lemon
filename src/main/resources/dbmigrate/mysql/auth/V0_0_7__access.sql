@@ -4,7 +4,7 @@
 --  access
 -------------------------------------------------------------------------------
 CREATE TABLE AUTH_ACCESS(
-	ID BIGINT auto_increment,
+        ID BIGINT NOT NULL,
 	TYPE VARCHAR(50),
 	VALUE VARCHAR(200),
 	PERM_ID BIGINT,
@@ -14,3 +14,12 @@ CREATE TABLE AUTH_ACCESS(
 	CONSTRAINT PK_AUTH_ACCESS PRIMARY KEY(ID),
 	CONSTRAINT FK_AUTH_ACCESS_PERM FOREIGN KEY(PERM_ID) REFERENCES AUTH_PERM(ID)
 ) ENGINE=INNODB CHARSET=UTF8;
+
+
+
+
+
+
+
+
+

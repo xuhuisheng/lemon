@@ -5,7 +5,7 @@ import java.util.List;
 public interface UserResponse {
     String getId();
 
-    String getScopeId();
+    String getTenantId();
 
     String getUsername();
 

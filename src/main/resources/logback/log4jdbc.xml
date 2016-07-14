@@ -5,7 +5,7 @@
             <Pattern>%d %m%n%n</Pattern>
         </encoder>
         <rollingPolicy class="ch.qos.logback.core.rolling.TimeBasedRollingPolicy">
-            <FileNamePattern>${log.base}.jdbc-sqltiming.%d{yyyy-MM-dd}.zip</FileNamePattern>
+            <FileNamePattern>${log.base}.jdbc-sqltiming.%d{yyyy-MM-dd}.gz</FileNamePattern>
         </rollingPolicy>
     </appender>
 

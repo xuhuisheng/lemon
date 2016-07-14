@@ -22,8 +22,16 @@ public class MapVariableScope implements VariableScope {
         return map.get(variableName);
     }
 
+    public <T> T getVariable(String variableName, Class<T> variableType) {
+        return (T) map.get(variableName);
+    }
+
     public Object getVariableLocal(String variableName) {
         return map.get(variableName);
+    }
+
+    public <T> T getVariableLocal(String variableName, Class<T> variableType) {
+        return (T) map.get(variableName);
     }
 
     public Set<String> getVariableNames() {
@@ -98,5 +106,70 @@ public class MapVariableScope implements VariableScope {
 
     public void removeVariablesLocal() {
         map.clear();
+    }
+
+    // ~
+    public void setVariable(String variableName, Object value,
+            boolean fetchAllVariables) {
+        map.put(variableName, value);
+    }
+
+    public Object setVariableLocal(String variableName, Object value,
+            boolean fetchAllVariables) {
+        map.put(variableName, value);
+
+        return value;
+    }
+
+    public Object getVariable(String variableName, boolean fetchAllVariables) {
+        return map.get(variableName);
+    }
+
+    public Object getVariableLocal(String variableName,
+            boolean fetchAllVariables) {
+        return map.get(variableName);
+    }
+
+    public Map<String, Object> getVariables(Collection<String> variableNames) {
+        Map<String, Object> result = new HashMap<String, Object>();
+
+        for (String variableName : variableNames) {
+            result.put(variableName, map.get(variableName));
+        }
+
+        return result;
+    }
+
+    public Map<String, Object> getVariables(Collection<String> variableNames,
+            boolean fetchAllVariables) {
+        Map<String, Object> result = new HashMap<String, Object>();
+
+        for (String variableName : variableNames) {
+            result.put(variableName, map.get(variableName));
+        }
+
+        return result;
+    }
+
+    public Map<String, Object> getVariablesLocal(
+            Collection<String> variableNames) {
+        Map<String, Object> result = new HashMap<String, Object>();
+
+        for (String variableName : variableNames) {
+            result.put(variableName, map.get(variableName));
+        }
+
+        return result;
+    }
+
+    public Map<String, Object> getVariablesLocal(
+            Collection<String> variableNames, boolean fetchAllVariables) {
+        Map<String, Object> result = new HashMap<String, Object>();
+
+        for (String variableName : variableNames) {
+            result.put(variableName, map.get(variableName));
+        }
+
+        return result;
     }
 }

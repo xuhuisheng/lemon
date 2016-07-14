@@ -6,8 +6,8 @@ import javax.annotation.Resource;
 
 import com.mossle.api.msg.MsgConnector;
 
-import com.mossle.msg.domain.MsgInfo;
-import com.mossle.msg.manager.MsgInfoManager;
+import com.mossle.msg.persistence.domain.MsgInfo;
+import com.mossle.msg.persistence.manager.MsgInfoManager;
 
 import org.springframework.stereotype.Component;
 
