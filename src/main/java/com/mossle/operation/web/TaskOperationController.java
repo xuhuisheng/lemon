@@ -21,6 +21,7 @@ import com.mossle.api.keyvalue.RecordBuilder;
 import com.mossle.api.process.ProcessConnector;
 import com.mossle.api.store.StoreConnector;
 import com.mossle.api.tenant.TenantHolder;
+import com.mossle.api.user.UserConnector;
 
 import com.mossle.button.ButtonDTO;
 import com.mossle.button.ButtonHelper;
@@ -73,6 +74,7 @@ public class TaskOperationController {
     private JsonMapper jsonMapper = new JsonMapper();
     private TenantHolder tenantHolder;
     private BeanMapper beanMapper = new BeanMapper();
+    private UserConnector userConnector;
 
     /**
      * 保存草稿.
@@ -140,6 +142,7 @@ public class TaskOperationController {
             Record record = keyValueConnector.findByRef(processInstanceId);
 
             Xform xform = new XformBuilder().setStoreConnector(storeConnector)
+                    .setUserConnector(userConnector)
                     .setContent(formDto.getContent()).setRecord(record).build();
             model.addAttribute("xform", xform);
         }
@@ -555,5 +558,10 @@ public class TaskOperationController {
     @Resource
     public void setTenantHolder(TenantHolder tenantHolder) {
         this.tenantHolder = tenantHolder;
+    }
+
+    @Resource
+    public void setUserConnector(UserConnector userConnector) {
+        this.userConnector = userConnector;
     }
 }
