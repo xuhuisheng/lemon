@@ -269,12 +269,8 @@ public class RestFilter implements Filter {
             Object result = method.invoke(object, arguments.toArray());
 
             if (result == null) {
-                response.sendError(HttpServletResponse.SC_NOT_FOUND);
-
-                return;
-            }
-
-            if (result instanceof String) {
+				logger.debug("return null");
+            } else if (result instanceof String) {
                 response.setContentType(MediaType.TEXT_HTML);
                 response.getOutputStream().write(
                         ((String) result).getBytes("UTF-8"));
