@@ -18,6 +18,8 @@ import com.mossle.spi.humantask.TaskDefinitionConnector;
 import com.mossle.spi.humantask.TaskNotificationDTO;
 import com.mossle.spi.process.InternalProcessConnector;
 
+import org.apache.commons.lang3.StringUtils;
+
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
 
@@ -90,7 +92,7 @@ public class TaskNotificationHumanTaskListener implements HumanTaskListener {
                 .getProcessInstanceId());
         UserDTO assigneeUser = null;
 
-        if (assignee != null) {
+        if (StringUtils.isNotBlank(assignee)) {
             assigneeUser = userConnector.findById(assignee);
         }
 
