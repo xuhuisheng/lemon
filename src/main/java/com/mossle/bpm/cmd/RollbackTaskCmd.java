@@ -543,8 +543,19 @@ public class RollbackTaskCmd implements Command<Object> {
                                 historicTaskInstanceEntity
                                         .getTaskDefinitionKey());
 
-                this.userId = (String) taskDefinition.getAssigneeExpression()
-                        .getValue(taskEntity);
+                if (taskDefinition == null) {
+                    String message = "cannot find taskDefinition : "
+                            + historicTaskInstanceEntity.getTaskDefinitionKey();
+                    logger.info(message);
+                    throw new IllegalStateException(message);
+                }
+
+                if (taskDefinition.getAssigneeExpression() != null) {
+                    logger.info("assignee expression is null : {}",
+                            taskDefinition.getKey());
+                    this.userId = (String) taskDefinition
+                            .getAssigneeExpression().getValue(taskEntity);
+                }
             }
         }
 
