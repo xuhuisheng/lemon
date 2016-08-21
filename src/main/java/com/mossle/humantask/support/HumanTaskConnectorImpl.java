@@ -394,7 +394,8 @@ public class HumanTaskConnectorImpl implements HumanTaskConnector {
         this.saveHumanTask(humanTaskDto, false);
 
         // 判断加签
-        if ("vote".equals(humanTaskDto.getCatalog())) {
+        if ("vote".equals(humanTaskDto.getCatalog())
+                && (humanTaskDto.getParentId() != null)) {
             HumanTaskDTO parentTask = this.findHumanTask(humanTaskDto
                     .getParentId());
             boolean completed = true;
