@@ -219,6 +219,7 @@ public class TaskOperationController {
         }
 
         Xform xform = new XformBuilder().setStoreConnector(storeConnector)
+                .setUserConnector(userConnector)
                 .setContent(formDto.getContent()).setRecord(record).build();
         Map<String, Object> taskParameters = xform.getMapData();
         logger.info("taskParameters : {}", taskParameters);
