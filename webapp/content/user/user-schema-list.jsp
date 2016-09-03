@@ -34,7 +34,7 @@ $(function() {
     table.configPagination('.m-pagination');
     table.configPageInfo('.m-page-info');
     table.configPageSize('.m-page-size');
-});
+});}
     </script>
   </head>
 
