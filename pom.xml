@@ -1575,17 +1575,4 @@
       </build>
     </profile>
   </profiles>
-
-<repositories>
-    <repository>
-      <id>oschina</id>
-      <name>oschina</name>
-      <url>http://maven.oschina.net/content/groups/public/</url>
-    </repository>
-  </repositories><pluginRepositories>
-    <pluginRepository>
-      <id>oschina</id>
-      <name>oschina</name>
-      <url>http://maven.oschina.net/content/groups/public/</url>
-    </pluginRepository>
-  </pluginRepositories></project>
+</project>
