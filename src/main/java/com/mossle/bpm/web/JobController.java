@@ -1,7 +1,5 @@
 package com.mossle.bpm.web;
 
-import java.util.List;
-
 import javax.annotation.Resource;
 
 import com.mossle.api.process.ProcessConnector;
@@ -10,7 +8,6 @@ import com.mossle.api.tenant.TenantHolder;
 import com.mossle.core.page.Page;
 
 import org.activiti.engine.ProcessEngine;
-import org.activiti.engine.runtime.Job;
 
 import org.springframework.stereotype.Controller;
 
@@ -19,8 +16,6 @@ import org.springframework.ui.Model;
 import org.springframework.web.bind.annotation.ModelAttribute;
 import org.springframework.web.bind.annotation.RequestMapping;
 import org.springframework.web.bind.annotation.RequestParam;
-import org.springframework.web.bind.annotation.ResponseBody;
-import org.springframework.web.servlet.mvc.support.RedirectAttributes;
 
 /**
  * 异步消息管理

@@ -7,24 +7,19 @@ import java.util.Map;
 
 import javax.annotation.Resource;
 
-import javax.ws.rs.FormParam;
 import javax.ws.rs.GET;
-import javax.ws.rs.POST;
 import javax.ws.rs.Path;
 import javax.ws.rs.Produces;
 import javax.ws.rs.QueryParam;
 import javax.ws.rs.core.MediaType;
 
 import com.mossle.core.mapper.JsonMapper;
+import com.mossle.core.page.Page;
 import com.mossle.core.util.BaseDTO;
 import com.mossle.core.util.StringUtils;
 
 import com.mossle.user.persistence.domain.AccountInfo;
-import com.mossle.user.persistence.domain.UserBase;
 import com.mossle.user.persistence.manager.AccountInfoManager;
-import com.mossle.user.persistence.manager.UserBaseManager;
-import com.mossle.user.service.UserService;
-import com.mossle.user.support.UserBaseWrapper;
 
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
@@ -98,8 +93,10 @@ public class UserResource {
     @Produces(MediaType.APPLICATION_JSON)
     public List<Map<String, Object>> search(
             @QueryParam("username") String username) {
-        List<AccountInfo> accountInfos = accountInfoManager.find(
-                "from AccountInfo where username like ?", "%" + username + "%");
+        Page page = accountInfoManager.pagedQuery(
+                "from AccountInfo where username like ?", 1, 5, "%" + username
+                        + "%");
+        List<AccountInfo> accountInfos = (List<AccountInfo>) page.getResult();
         List<Map<String, Object>> list = new ArrayList<Map<String, Object>>();
 
         for (AccountInfo accountInfo : accountInfos) {

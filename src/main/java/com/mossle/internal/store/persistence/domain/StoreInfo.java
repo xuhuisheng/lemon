@@ -5,7 +5,6 @@ import java.util.Date;
 
 import javax.persistence.Column;
 import javax.persistence.Entity;
-import javax.persistence.GeneratedValue;
 import javax.persistence.Id;
 import javax.persistence.Table;
 import javax.persistence.Temporal;
@@ -48,8 +47,13 @@ public class StoreInfo implements java.io.Serializable {
     public StoreInfo() {
     }
 
-    public StoreInfo(String name, String model, String path, String type,
-            Long size, Date createTime, String tenantId) {
+    public StoreInfo(Long id) {
+        this.id = id;
+    }
+
+    public StoreInfo(Long id, String name, String model, String path,
+            String type, Long size, Date createTime, String tenantId) {
+        this.id = id;
         this.name = name;
         this.model = model;
         this.path = path;
@@ -61,7 +65,6 @@ public class StoreInfo implements java.io.Serializable {
 
     /** @return null. */
     @Id
-    @GeneratedValue
     @Column(name = "ID", unique = true, nullable = false)
     public Long getId() {
         return this.id;

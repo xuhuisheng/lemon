@@ -4,7 +4,7 @@
 --  work report info
 -------------------------------------------------------------------------------
 CREATE TABLE WORK_REPORT_INFO(
-        ID BIGINT AUTO_INCREMENT,
+        ID BIGINT NOT NULL,
 	TYPE VARCHAR(50),
 	CONTENT VARCHAR(200),
 	REPORT_DATE DATE,

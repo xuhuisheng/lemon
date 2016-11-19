@@ -73,6 +73,10 @@ public class MockTaskDefinitionConnector implements TaskDefinitionConnector {
             String processDefinitionId, TaskUserDTO taskUser) {
     }
 
+    public void updateTaskUser(String taskDefinitionKey,
+            String processDefinitionId, TaskUserDTO taskUser, String status) {
+    }
+
     public void addTaskNotification(String taskDefinitionKey,
             String processDefinitionId, TaskNotificationDTO taskNotification) {
     }

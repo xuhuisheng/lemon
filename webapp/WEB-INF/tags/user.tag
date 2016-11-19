@@ -14,6 +14,7 @@
     try {
       out.print(userConnector.findById(userId.toString()).getDisplayName());
     } catch(Exception ex) {
+      out.print(userId);
       System.out.println("cannot find user : " + userId);
     }
   }

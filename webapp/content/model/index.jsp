@@ -8,7 +8,7 @@
   <head>
     <%@include file="/common/meta.jsp"%>
     <title><spring:message code="dev.model-info.list.title" text="列表"/></title>
-    <%@include file="/common/s.jsp"%>
+    <%@include file="/common/s3.jsp"%>
     <script type="text/javascript">
 var config = {
     id: 'model-infoGrid',
@@ -43,33 +43,37 @@ $(function() {
 
     <div class="row-fluid">
       <!-- start of sidebar -->
-      <aside id="m-sidebar" class="accordion span2" data-spy="affix" data-offset-top="100">
 
-        <div class="accordion-group">
-          <div class="accordion-heading">
-            <a class="accordion-toggle" data-toggle="collapse" data-parent="#m-sidebar" href="#collapse-model">
-              <i class="icon-user"></i>
-              <span class="title">模型</span>
-            </a>
-          </div>
-          <div id="collapse-model" class="accordion-body collapse in">
-            <ul class="accordion-inner nav nav-list">
-			  <c:forEach items="${modelInfos}" var="item">
-			  <li><a href="${tenantPrefix}/model/list.do?id=${item.id}"><i class="icon-user"></i>${item.name}</a></li>
-			  </c:forEach>
-            </ul>
-          </div>
-		</div>
+<div class="panel-group col-md-2" id="accordion" role="tablist" aria-multiselectable="true" style="padding-top:65px;">
+
+  <div class="panel panel-default">
+    <div class="panel-heading" role="tab" id="collapse-header-model" data-toggle="collapse" data-parent="#accordion" href="#collapse-body-model" aria-expanded="true" aria-controls="collapse-body-model">
+      <h4 class="panel-title">
+	    <i class="glyphicon glyphicon-list"></i>
+	    <span class="title">模型</span>
+      </h4>
+    </div>
+    <div id="collapse-body-model" class="panel-collapse collapse ${currentMenu == 'model' ? 'in' : ''}" role="tabpanel" aria-labelledby="collapse-header-model">
+      <div class="panel-body">
+        <ul class="nav nav-list">
+		  <c:forEach items="${modelInfos}" var="item">
+		  <li><a href="${tenantPrefix}/model/list.do?id=${item.id}"><i class="glyphicon glyphicon-list"></i> ${item.name}</a></li>
+		  </c:forEach>
+        </ul>
+      </div>
+    </div>
+  </div>
 
 		<footer id="m-footer" class="text-center">
 		  <hr>
 		  &copy;Mossle
 		</footer>
-      </aside>
+
+</div>
       <!-- end of sidebar -->
 
 	  <!-- start of main -->
-      <section id="m-main" class="span10">
+      <section id="m-main" class="col-md-10" style="padding-top:65px;">
 
       </section>
 	  <!-- end of main -->

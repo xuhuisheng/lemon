@@ -4,7 +4,7 @@
 --  org company
 -------------------------------------------------------------------------------
 CREATE TABLE ORG_COMPANY(
-        ID BIGINT AUTO_INCREMENT,
+        ID BIGINT NOT NULL,
         CODE VARCHAR(50),
         NAME VARCHAR(200),
 	DESCN VARCHAR(200),

@@ -6,7 +6,6 @@ import java.util.Date;
 import javax.persistence.Column;
 import javax.persistence.Entity;
 import javax.persistence.FetchType;
-import javax.persistence.GeneratedValue;
 import javax.persistence.Id;
 import javax.persistence.JoinColumn;
 import javax.persistence.ManyToOne;
@@ -15,7 +14,7 @@ import javax.persistence.Temporal;
 import javax.persistence.TemporalType;
 
 /**
- * TaskDeadline .
+ * TaskDeadline 任务截止时间.
  * 
  * @author Lingo
  */
@@ -24,46 +23,52 @@ import javax.persistence.TemporalType;
 public class TaskDeadline implements java.io.Serializable {
     private static final long serialVersionUID = 0L;
 
-    /** null. */
+    /** 主键. */
     private Long id;
 
-    /** null. */
+    /** 外键，任务. */
     private TaskInfo taskInfo;
 
-    /** null. */
+    /** 类型. */
     private String type;
 
-    /** null. */
+    /** 截止时间. */
     private Date deadlineTime;
 
-    /** null. */
+    /** 触发时间. */
     private Date triggerTime;
 
-    /** null. */
+    /** 重复次数. */
     private Integer repeatTimes;
 
-    /** null. */
+    /** 提醒类型. */
     private String notificationType;
 
-    /** null. */
+    /** 提醒接收人. */
     private String notificationReceiver;
 
-    /** null. */
+    /** 提醒模板编码. */
     private String notificationTemplateCode;
 
-    /** null. */
+    /** 重分配. */
     private String reassignment;
 
-    /** null. */
+    /** 操作. */
     private String operation;
 
     public TaskDeadline() {
     }
 
-    public TaskDeadline(TaskInfo taskInfo, String type, Date deadlineTime,
-            Date triggerTime, Integer repeatTimes, String notificationType,
-            String notificationReceiver, String notificationTemplateCode,
-            String reassignment, String operation) {
+    public TaskDeadline(Long id) {
+        this.id = id;
+    }
+
+    public TaskDeadline(Long id, TaskInfo taskInfo, String type,
+            Date deadlineTime, Date triggerTime, Integer repeatTimes,
+            String notificationType, String notificationReceiver,
+            String notificationTemplateCode, String reassignment,
+            String operation) {
+        this.id = id;
         this.taskInfo = taskInfo;
         this.type = type;
         this.deadlineTime = deadlineTime;
@@ -76,9 +81,8 @@ public class TaskDeadline implements java.io.Serializable {
         this.operation = operation;
     }
 
-    /** @return null. */
+    /** @return 主键. */
     @Id
-    @GeneratedValue
     @Column(name = "ID", unique = true, nullable = false)
     public Long getId() {
         return this.id;
@@ -86,13 +90,13 @@ public class TaskDeadline implements java.io.Serializable {
 
     /**
      * @param id
-     *            null.
+     *            主键.
      */
     public void setId(Long id) {
         this.id = id;
     }
 
-    /** @return null. */
+    /** @return 外键，任务. */
     @ManyToOne(fetch = FetchType.LAZY)
     @JoinColumn(name = "TASK_ID")
     public TaskInfo getTaskInfo() {
@@ -101,13 +105,13 @@ public class TaskDeadline implements java.io.Serializable {
 
     /**
      * @param taskInfo
-     *            null.
+     *            外键，任务.
      */
     public void setTaskInfo(TaskInfo taskInfo) {
         this.taskInfo = taskInfo;
     }
 
-    /** @return null. */
+    /** @return 类型. */
     @Column(name = "TYPE", length = 100)
     public String getType() {
         return this.type;
@@ -115,13 +119,13 @@ public class TaskDeadline implements java.io.Serializable {
 
     /**
      * @param type
-     *            null.
+     *            类型.
      */
     public void setType(String type) {
         this.type = type;
     }
 
-    /** @return null. */
+    /** @return 截止时间. */
     @Temporal(TemporalType.TIMESTAMP)
     @Column(name = "DEADLINE_TIME", length = 26)
     public Date getDeadlineTime() {
@@ -130,13 +134,13 @@ public class TaskDeadline implements java.io.Serializable {
 
     /**
      * @param deadlineTime
-     *            null.
+     *            截止时间.
      */
     public void setDeadlineTime(Date deadlineTime) {
         this.deadlineTime = deadlineTime;
     }
 
-    /** @return null. */
+    /** @return 触发时间. */
     @Temporal(TemporalType.TIMESTAMP)
     @Column(name = "TRIGGER_TIME", length = 26)
     public Date getTriggerTime() {
@@ -145,13 +149,13 @@ public class TaskDeadline implements java.io.Serializable {
 
     /**
      * @param triggerTime
-     *            null.
+     *            触发时间.
      */
     public void setTriggerTime(Date triggerTime) {
         this.triggerTime = triggerTime;
     }
 
-    /** @return null. */
+    /** @return 重复次数. */
     @Column(name = "REPEAT_TIMES")
     public Integer getRepeatTimes() {
         return this.repeatTimes;
@@ -159,13 +163,13 @@ public class TaskDeadline implements java.io.Serializable {
 
     /**
      * @param repeatTimes
-     *            null.
+     *            重复次数.
      */
     public void setRepeatTimes(Integer repeatTimes) {
         this.repeatTimes = repeatTimes;
     }
 
-    /** @return null. */
+    /** @return 提醒类型. */
     @Column(name = "NOTIFICATION_TYPE", length = 200)
     public String getNotificationType() {
         return this.notificationType;
@@ -173,13 +177,13 @@ public class TaskDeadline implements java.io.Serializable {
 
     /**
      * @param notificationType
-     *            null.
+     *            提醒类型.
      */
     public void setNotificationType(String notificationType) {
         this.notificationType = notificationType;
     }
 
-    /** @return null. */
+    /** @return 提醒接收人. */
     @Column(name = "NOTIFICATION_RECEIVER", length = 200)
     public String getNotificationReceiver() {
         return this.notificationReceiver;
@@ -187,13 +191,13 @@ public class TaskDeadline implements java.io.Serializable {
 
     /**
      * @param notificationReceiver
-     *            null.
+     *            提醒接收人.
      */
     public void setNotificationReceiver(String notificationReceiver) {
         this.notificationReceiver = notificationReceiver;
     }
 
-    /** @return null. */
+    /** @return 提醒模板编码. */
     @Column(name = "NOTIFICATION_TEMPLATE_CODE", length = 200)
     public String getNotificationTemplateCode() {
         return this.notificationTemplateCode;
@@ -201,13 +205,13 @@ public class TaskDeadline implements java.io.Serializable {
 
     /**
      * @param notificationTemplateCode
-     *            null.
+     *            提醒模板编码.
      */
     public void setNotificationTemplateCode(String notificationTemplateCode) {
         this.notificationTemplateCode = notificationTemplateCode;
     }
 
-    /** @return null. */
+    /** @return 重分配. */
     @Column(name = "REASSIGNMENT", length = 200)
     public String getReassignment() {
         return this.reassignment;
@@ -215,13 +219,13 @@ public class TaskDeadline implements java.io.Serializable {
 
     /**
      * @param reassignment
-     *            null.
+     *            重分配.
      */
     public void setReassignment(String reassignment) {
         this.reassignment = reassignment;
     }
 
-    /** @return null. */
+    /** @return 操作. */
     @Column(name = "OPERATION", length = 200)
     public String getOperation() {
         return this.operation;
@@ -229,7 +233,7 @@ public class TaskDeadline implements java.io.Serializable {
 
     /**
      * @param operation
-     *            null.
+     *            操作.
      */
     public void setOperation(String operation) {
         this.operation = operation;

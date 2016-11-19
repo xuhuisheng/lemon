@@ -8,7 +8,7 @@
   <head>
     <%@include file="/common/meta.jsp"%>
     <title>最常用流程</title>
-    <%@include file="/common/s.jsp"%>
+    <%@include file="/common/s3.jsp"%>
 
     <link rel="stylesheet" href="${ctx}/s/jqplot/jquery.jqplot.min.css" type="text/css" media="screen" />
     <!--[if lte IE 8]><script language="javascript" type="text/javascript" src="../s/jqplot/excanvas.min.js"></script><![endif]-->
@@ -56,18 +56,16 @@ $(function () {
 	<%@include file="/menu/report.jsp"%>
 
 	<!-- start of main -->
-    <section id="m-main" class="span10">
+      <section id="m-main" class="col-md-10" style="padding-top:65px;">
 
-      <article class="m-widget">
-        <header class="header">
-		  <h4 class="title">最活跃流程</h4>
-		</header>
-
-		<div class="content content-inner">
+	  <div class="panel panel-default">
+        <div class="panel-heading">
+		  最活跃流程
+		</div>
+		<div class="panel-body">
 		  <div id="pie" style="height:300px;"></div>
 		</div>
-
-      </article>
+	  </div>
 
     </section>
 	<!-- end of main -->

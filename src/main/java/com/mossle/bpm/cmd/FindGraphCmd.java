@@ -3,10 +3,8 @@ package com.mossle.bpm.cmd;
 import com.mossle.bpm.graph.ActivitiGraphBuilder;
 import com.mossle.bpm.graph.Graph;
 
-import org.activiti.engine.impl.context.Context;
 import org.activiti.engine.impl.interceptor.Command;
 import org.activiti.engine.impl.interceptor.CommandContext;
-import org.activiti.engine.impl.persistence.entity.ProcessDefinitionEntity;
 
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;

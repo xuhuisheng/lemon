@@ -7,7 +7,6 @@ import java.util.Set;
 import javax.persistence.Column;
 import javax.persistence.Entity;
 import javax.persistence.FetchType;
-import javax.persistence.GeneratedValue;
 import javax.persistence.Id;
 import javax.persistence.JoinColumn;
 import javax.persistence.JoinTable;
@@ -16,7 +15,7 @@ import javax.persistence.ManyToOne;
 import javax.persistence.Table;
 
 /**
- * Role .
+ * Role 角色.
  * 
  * @author Lingo
  */
@@ -25,19 +24,19 @@ import javax.persistence.Table;
 public class Role implements java.io.Serializable {
     private static final long serialVersionUID = 0L;
 
-    /** null. */
+    /** 主键. */
     private Long id;
 
-    /** null. */
+    /** 外键，角色定义. */
     private RoleDef roleDef;
 
-    /** null. */
+    /** 名称. */
     private String name;
 
-    /** null. */
+    /** 备注. */
     private String descn;
 
-    /** null. */
+    /** 租户. */
     private String tenantId;
 
     /** . */
@@ -46,8 +45,13 @@ public class Role implements java.io.Serializable {
     public Role() {
     }
 
-    public Role(RoleDef roleDef, String name, String descn, String tenantId,
-            Set<UserStatus> userStatuses) {
+    public Role(Long id) {
+        this.id = id;
+    }
+
+    public Role(Long id, RoleDef roleDef, String name, String descn,
+            String tenantId, Set<UserStatus> userStatuses) {
+        this.id = id;
         this.roleDef = roleDef;
         this.name = name;
         this.descn = descn;
@@ -55,9 +59,8 @@ public class Role implements java.io.Serializable {
         this.userStatuses = userStatuses;
     }
 
-    /** @return null. */
+    /** @return 主键. */
     @Id
-    @GeneratedValue
     @Column(name = "ID", unique = true, nullable = false)
     public Long getId() {
         return this.id;
@@ -65,13 +68,13 @@ public class Role implements java.io.Serializable {
 
     /**
      * @param id
-     *            null.
+     *            主键.
      */
     public void setId(Long id) {
         this.id = id;
     }
 
-    /** @return null. */
+    /** @return 外键，角色定义. */
     @ManyToOne(fetch = FetchType.LAZY)
     @JoinColumn(name = "ROLE_DEF_ID")
     public RoleDef getRoleDef() {
@@ -80,13 +83,13 @@ public class Role implements java.io.Serializable {
 
     /**
      * @param roleDef
-     *            null.
+     *            外键，角色定义.
      */
     public void setRoleDef(RoleDef roleDef) {
         this.roleDef = roleDef;
     }
 
-    /** @return null. */
+    /** @return 名称. */
     @Column(name = "NAME", length = 50)
     public String getName() {
         return this.name;
@@ -94,13 +97,13 @@ public class Role implements java.io.Serializable {
 
     /**
      * @param name
-     *            null.
+     *            名称.
      */
     public void setName(String name) {
         this.name = name;
     }
 
-    /** @return null. */
+    /** @return 备注. */
     @Column(name = "DESCN", length = 200)
     public String getDescn() {
         return this.descn;
@@ -108,13 +111,13 @@ public class Role implements java.io.Serializable {
 
     /**
      * @param descn
-     *            null.
+     *            备注.
      */
     public void setDescn(String descn) {
         this.descn = descn;
     }
 
-    /** @return null. */
+    /** @return 租户. */
     @Column(name = "TENANT_ID", length = 50)
     public String getTenantId() {
         return this.tenantId;
@@ -122,7 +125,7 @@ public class Role implements java.io.Serializable {
 
     /**
      * @param tenantId
-     *            null.
+     *            租户.
      */
     public void setTenantId(String tenantId) {
         this.tenantId = tenantId;

@@ -4,7 +4,6 @@ package com.mossle.dict.persistence.domain;
 import javax.persistence.Column;
 import javax.persistence.Entity;
 import javax.persistence.FetchType;
-import javax.persistence.GeneratedValue;
 import javax.persistence.Id;
 import javax.persistence.JoinColumn;
 import javax.persistence.ManyToOne;
@@ -41,8 +40,13 @@ public class DictData implements java.io.Serializable {
     public DictData() {
     }
 
-    public DictData(DictSchema dictSchema, DictInfo dictInfo, String name,
-            String value, String tenantId) {
+    public DictData(Long id) {
+        this.id = id;
+    }
+
+    public DictData(Long id, DictSchema dictSchema, DictInfo dictInfo,
+            String name, String value, String tenantId) {
+        this.id = id;
         this.dictSchema = dictSchema;
         this.dictInfo = dictInfo;
         this.name = name;
@@ -52,7 +56,6 @@ public class DictData implements java.io.Serializable {
 
     /** @return 唯一主键. */
     @Id
-    @GeneratedValue
     @Column(name = "ID", unique = true, nullable = false)
     public Long getId() {
         return this.id;

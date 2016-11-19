@@ -10,7 +10,6 @@ import java.util.Map;
 
 import javax.annotation.Resource;
 
-import com.mossle.api.tenant.TenantHolder;
 import com.mossle.api.user.UserConnector;
 
 import com.mossle.cms.persistence.domain.CmsArticle;
@@ -24,6 +23,8 @@ import org.slf4j.LoggerFactory;
 import org.springframework.beans.factory.annotation.Value;
 
 import org.springframework.stereotype.Service;
+
+import org.springframework.util.Assert;
 
 @Service
 public class RenderService {
@@ -77,6 +78,8 @@ public class RenderService {
     }
 
     public String view(CmsArticle cmsArticle) {
+        Assert.notNull(cmsArticle, "cmsArticle must not null");
+
         Map<String, Object> data = new HashMap<String, Object>();
         CmsCatalog cmsCatalog = cmsArticle.getCmsCatalog();
         data.put("article", cmsArticle);

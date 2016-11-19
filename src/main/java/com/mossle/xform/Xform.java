@@ -52,6 +52,16 @@ public class Xform {
                 data.put("key", xformField.getValue());
                 data.put("label", xformField.getLabel());
                 map.put(xformField.getName(), data);
+            } else if ("userpicker".equals(xformField.getType())) {
+                if (xformField.getValue() == null) {
+                    continue;
+                }
+
+                Map<String, Object> data = new HashMap<String, Object>();
+
+                data.put("key", xformField.getValue());
+                data.put("label", xformField.getLabel());
+                map.put(xformField.getName(), data);
             } else {
                 map.put(xformField.getName(), xformField.getValue());
             }

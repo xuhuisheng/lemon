@@ -4,7 +4,6 @@ package com.mossle.internal.whitelist.persistence.domain;
 import javax.persistence.Column;
 import javax.persistence.Entity;
 import javax.persistence.FetchType;
-import javax.persistence.GeneratedValue;
 import javax.persistence.Id;
 import javax.persistence.JoinColumn;
 import javax.persistence.ManyToOne;
@@ -38,8 +37,13 @@ public class WhitelistIp implements java.io.Serializable {
     public WhitelistIp() {
     }
 
-    public WhitelistIp(WhitelistApp whitelistApp, String value,
+    public WhitelistIp(Long id) {
+        this.id = id;
+    }
+
+    public WhitelistIp(Long id, WhitelistApp whitelistApp, String value,
             Integer priority, String tenantId) {
+        this.id = id;
         this.whitelistApp = whitelistApp;
         this.value = value;
         this.priority = priority;
@@ -48,7 +52,6 @@ public class WhitelistIp implements java.io.Serializable {
 
     /** @return null. */
     @Id
-    @GeneratedValue
     @Column(name = "ID", unique = true, nullable = false)
     public Long getId() {
         return this.id;

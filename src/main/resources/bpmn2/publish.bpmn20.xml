@@ -1,7 +1,8 @@
 <?xml version="1.0" encoding="UTF-8"?>
 <definitions xmlns="http://www.omg.org/spec/BPMN/20100524/MODEL" xmlns:xsi="http://www.w3.org/2001/XMLSchema-instance" xmlns:activiti="http://activiti.org/bpmn" xmlns:bpmndi="http://www.omg.org/spec/BPMN/20100524/DI" xmlns:omgdc="http://www.omg.org/spec/DD/20100524/DC" xmlns:omgdi="http://www.omg.org/spec/DD/20100524/DI" typeLanguage="http://www.w3.org/2001/XMLSchema" expressionLanguage="http://www.w3.org/1999/XPath" targetNamespace="http://www.mossle.com">
-  <process id="publish" name="公文发布">
-    <userTask id="taskuser-1" name="发文" activiti:assignee="${initiator}" activiti:formKey="publish-request"></userTask>
+  <process id="publish" name="公文发布" isExecutable="true">
+    <documentation>公文发布</documentation>
+    <userTask id="taskuser-1" name="发文" activiti:assignee="常用语:流程发起人" activiti:formKey="publish-request"></userTask>
     <userTask id="taskuser-2" name="部门领导审批" activiti:assignee="常用语:直接上级" activiti:formKey="publish-manager"></userTask>
     <userTask id="taskuser-3" name="会签" activiti:formKey="publish-countersign">
     <humanPerformer>
@@ -20,13 +21,13 @@
 	  </completionCondition>
     </multiInstanceLoopCharacteristics>
 	</userTask>
-    <userTask id="taskuser-6" name="归档" activiti:assignee="${initiator}" activiti:formKey="publish-finish"></userTask>
+    <userTask id="taskuser-6" name="归档" activiti:assignee="常用语:流程发起人" activiti:formKey="publish-finish"></userTask>
     <endEvent id="endnone-2" name="endnone-2"></endEvent>
     <sequenceFlow id="transition-2" name="" sourceRef="taskuser-1" targetRef="taskuser-2"></sequenceFlow>
     <sequenceFlow id="transition-14" name="" sourceRef="taskuser-6" targetRef="endnone-2"></sequenceFlow>
     <sequenceFlow id="flow1" name="" sourceRef="taskuser-2" targetRef="taskuser-3"></sequenceFlow>
     <sequenceFlow id="flow2" name="" sourceRef="taskuser-3" targetRef="taskuser-6"></sequenceFlow>
-    <startEvent id="startevent1" name="Start" activiti:initiator='initiator'></startEvent>
+    <startEvent id="startevent1" name="Start"></startEvent>
     <sequenceFlow id="flow3" name="" sourceRef="startevent1" targetRef="taskuser-1"></sequenceFlow>
   </process>
   <bpmndi:BPMNDiagram id="BPMNDiagram_publish">

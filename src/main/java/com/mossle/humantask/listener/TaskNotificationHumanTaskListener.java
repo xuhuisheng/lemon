@@ -13,15 +13,17 @@ import com.mossle.api.user.UserConnector;
 import com.mossle.api.user.UserDTO;
 
 import com.mossle.humantask.persistence.domain.TaskInfo;
-import com.mossle.humantask.persistence.domain.TaskParticipant;
-import com.mossle.humantask.persistence.manager.TaskParticipantManager;
 
 import com.mossle.spi.humantask.TaskDefinitionConnector;
 import com.mossle.spi.humantask.TaskNotificationDTO;
 import com.mossle.spi.process.InternalProcessConnector;
 
+import org.apache.commons.lang3.StringUtils;
+
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
+
+import org.springframework.beans.factory.annotation.Value;
 
 public class TaskNotificationHumanTaskListener implements HumanTaskListener {
     private static Logger logger = LoggerFactory
@@ -30,6 +32,7 @@ public class TaskNotificationHumanTaskListener implements HumanTaskListener {
     private NotificationConnector notificationConnector;
     private UserConnector userConnector;
     private InternalProcessConnector internalProcessConnector;
+    private String baseUrl;
 
     @Override
     public void onCreate(TaskInfo taskInfo) throws Exception {
@@ -67,6 +70,12 @@ public class TaskNotificationHumanTaskListener implements HumanTaskListener {
                 userDto = userConnector.findById(receiver);
             }
 
+            if (userDto == null) {
+                logger.debug("userDto is null : {}", receiver);
+
+                continue;
+            }
+
             NotificationDTO notificationDto = new NotificationDTO();
             notificationDto.setReceiver(userDto.getId());
             notificationDto.setReceiverType("userid");
@@ -81,7 +90,12 @@ public class TaskNotificationHumanTaskListener implements HumanTaskListener {
         String assignee = taskInfo.getAssignee();
         String initiator = internalProcessConnector.findInitiator(taskInfo
                 .getProcessInstanceId());
-        UserDTO assigneeUser = userConnector.findById(assignee);
+        UserDTO assigneeUser = null;
+
+        if (StringUtils.isNotBlank(assignee)) {
+            assigneeUser = userConnector.findById(assignee);
+        }
+
         UserDTO initiatorUser = userConnector.findById(initiator);
 
         Map<String, Object> data = new HashMap<String, Object>();
@@ -89,10 +103,16 @@ public class TaskNotificationHumanTaskListener implements HumanTaskListener {
         Map<String, Object> taskEntity = new HashMap<String, Object>();
         taskEntity.put("id", taskInfo.getId());
         taskEntity.put("name", taskInfo.getName());
-        taskEntity.put("assignee", assigneeUser.getDisplayName());
+
+        if (assigneeUser != null) {
+            taskEntity.put("assignee", assigneeUser.getDisplayName());
+        }
 
         data.put("task", taskEntity);
         data.put("initiator", initiatorUser.getDisplayName());
+        data.put("humanTask", taskInfo);
+        data.put("baseUrl", baseUrl);
+        data.put("humanTaskId", Long.toString(taskInfo.getId()));
 
         return data;
     }
@@ -118,5 +138,10 @@ public class TaskNotificationHumanTaskListener implements HumanTaskListener {
     public void setInternalProcessConnector(
             InternalProcessConnector internalProcessConnector) {
         this.internalProcessConnector = internalProcessConnector;
+    }
+
+    @Value("${application.baseUrl}")
+    public void setBaseUrl(String baseUrl) {
+        this.baseUrl = baseUrl;
     }
 }

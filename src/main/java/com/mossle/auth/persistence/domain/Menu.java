@@ -7,7 +7,6 @@ import java.util.Set;
 import javax.persistence.Column;
 import javax.persistence.Entity;
 import javax.persistence.FetchType;
-import javax.persistence.GeneratedValue;
 import javax.persistence.Id;
 import javax.persistence.JoinColumn;
 import javax.persistence.ManyToOne;
@@ -15,7 +14,7 @@ import javax.persistence.OneToMany;
 import javax.persistence.Table;
 
 /**
- * Menu .
+ * Menu 菜单.
  * 
  * @author Lingo
  */
@@ -24,35 +23,38 @@ import javax.persistence.Table;
 public class Menu implements java.io.Serializable {
     private static final long serialVersionUID = 0L;
 
-    /** null. */
+    /** 主键. */
     private Long id;
 
-    /** null. */
+    /** 外键，上级菜单. */
     private Menu menu;
 
-    /** null. */
+    /** 外键，权限. */
     private Perm perm;
 
-    /** null. */
+    /** 分类. */
     private String type;
 
-    /** null. */
+    /** 编码. */
     private String code;
 
-    /** null. */
+    /** 标题. */
     private String title;
 
-    /** null. */
+    /** 链接. */
     private String url;
 
-    /** null. */
+    /** 排序. */
     private Integer priority;
 
-    /** null. */
+    /** 备注. */
     private String descn;
 
-    /** null. */
+    /** 租户. */
     private String tenantId;
+
+    /** null. */
+    private String display;
 
     /** . */
     private Set<Menu> menus = new HashSet<Menu>(0);
@@ -60,9 +62,14 @@ public class Menu implements java.io.Serializable {
     public Menu() {
     }
 
-    public Menu(Menu menu, Perm perm, String type, String code, String title,
-            String url, Integer priority, String descn, String tenantId,
-            Set<Menu> menus) {
+    public Menu(Long id) {
+        this.id = id;
+    }
+
+    public Menu(Long id, Menu menu, Perm perm, String type, String code,
+            String title, String url, Integer priority, String descn,
+            String tenantId, String display, Set<Menu> menus) {
+        this.id = id;
         this.menu = menu;
         this.perm = perm;
         this.type = type;
@@ -72,12 +79,12 @@ public class Menu implements java.io.Serializable {
         this.priority = priority;
         this.descn = descn;
         this.tenantId = tenantId;
+        this.display = display;
         this.menus = menus;
     }
 
-    /** @return null. */
+    /** @return 主键. */
     @Id
-    @GeneratedValue
     @Column(name = "ID", unique = true, nullable = false)
     public Long getId() {
         return this.id;
@@ -85,13 +92,13 @@ public class Menu implements java.io.Serializable {
 
     /**
      * @param id
-     *            null.
+     *            主键.
      */
     public void setId(Long id) {
         this.id = id;
     }
 
-    /** @return null. */
+    /** @return 外键，上级菜单. */
     @ManyToOne(fetch = FetchType.LAZY)
     @JoinColumn(name = "PARENT_ID")
     public Menu getMenu() {
@@ -100,13 +107,13 @@ public class Menu implements java.io.Serializable {
 
     /**
      * @param menu
-     *            null.
+     *            外键，上级菜单.
      */
     public void setMenu(Menu menu) {
         this.menu = menu;
     }
 
-    /** @return null. */
+    /** @return 外键，权限. */
     @ManyToOne(fetch = FetchType.LAZY)
     @JoinColumn(name = "PERM_ID")
     public Perm getPerm() {
@@ -115,13 +122,13 @@ public class Menu implements java.io.Serializable {
 
     /**
      * @param perm
-     *            null.
+     *            外键，权限.
      */
     public void setPerm(Perm perm) {
         this.perm = perm;
     }
 
-    /** @return null. */
+    /** @return 分类. */
     @Column(name = "TYPE", length = 50)
     public String getType() {
         return this.type;
@@ -129,13 +136,13 @@ public class Menu implements java.io.Serializable {
 
     /**
      * @param type
-     *            null.
+     *            分类.
      */
     public void setType(String type) {
         this.type = type;
     }
 
-    /** @return null. */
+    /** @return 编码. */
     @Column(name = "CODE", length = 50)
     public String getCode() {
         return this.code;
@@ -143,13 +150,13 @@ public class Menu implements java.io.Serializable {
 
     /**
      * @param code
-     *            null.
+     *            编码.
      */
     public void setCode(String code) {
         this.code = code;
     }
 
-    /** @return null. */
+    /** @return 标题. */
     @Column(name = "TITLE", length = 50)
     public String getTitle() {
         return this.title;
@@ -157,13 +164,13 @@ public class Menu implements java.io.Serializable {
 
     /**
      * @param title
-     *            null.
+     *            标题.
      */
     public void setTitle(String title) {
         this.title = title;
     }
 
-    /** @return null. */
+    /** @return 链接. */
     @Column(name = "URL", length = 200)
     public String getUrl() {
         return this.url;
@@ -171,13 +178,13 @@ public class Menu implements java.io.Serializable {
 
     /**
      * @param url
-     *            null.
+     *            链接.
      */
     public void setUrl(String url) {
         this.url = url;
     }
 
-    /** @return null. */
+    /** @return 排序. */
     @Column(name = "PRIORITY")
     public Integer getPriority() {
         return this.priority;
@@ -185,13 +192,13 @@ public class Menu implements java.io.Serializable {
 
     /**
      * @param priority
-     *            null.
+     *            排序.
      */
     public void setPriority(Integer priority) {
         this.priority = priority;
     }
 
-    /** @return null. */
+    /** @return 备注. */
     @Column(name = "DESCN", length = 200)
     public String getDescn() {
         return this.descn;
@@ -199,13 +206,13 @@ public class Menu implements java.io.Serializable {
 
     /**
      * @param descn
-     *            null.
+     *            备注.
      */
     public void setDescn(String descn) {
         this.descn = descn;
     }
 
-    /** @return null. */
+    /** @return 租户. */
     @Column(name = "TENANT_ID", length = 64)
     public String getTenantId() {
         return this.tenantId;
@@ -213,10 +220,24 @@ public class Menu implements java.io.Serializable {
 
     /**
      * @param tenantId
-     *            null.
+     *            租户.
      */
     public void setTenantId(String tenantId) {
         this.tenantId = tenantId;
+    }
+
+    /** @return null. */
+    @Column(name = "DISPLAY", length = 50)
+    public String getDisplay() {
+        return this.display;
+    }
+
+    /**
+     * @param display
+     *            null.
+     */
+    public void setDisplay(String display) {
+        this.display = display;
     }
 
     /** @return . */

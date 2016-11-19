@@ -3,15 +3,13 @@ package com.mossle.internal.store.rs;
 import java.io.ByteArrayOutputStream;
 import java.io.InputStream;
 
-import java.util.ArrayList;
-import java.util.Collections;
-import java.util.List;
-
 import javax.activation.DataSource;
 
 import javax.annotation.Resource;
 
-import javax.ws.rs.Consumes;
+import javax.servlet.http.HttpServletRequest;
+import javax.servlet.http.HttpServletResponse;
+
 import javax.ws.rs.FormParam;
 import javax.ws.rs.GET;
 import javax.ws.rs.POST;
@@ -22,22 +20,20 @@ import javax.ws.rs.core.MediaType;
 
 import com.mossle.api.store.StoreConnector;
 import com.mossle.api.store.StoreDTO;
+import com.mossle.api.tenant.TenantHolder;
 
 import com.mossle.core.store.ByteArrayDataSource;
-import com.mossle.core.store.StoreResult;
 import com.mossle.core.util.BaseDTO;
 import com.mossle.core.util.IoUtils;
+import com.mossle.core.util.ServletUtils;
 
 import com.mossle.internal.store.service.StoreService;
 
 import org.apache.commons.codec.binary.Base64;
+import org.apache.commons.io.IOUtils;
 
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
-
-import org.springframework.core.io.InputStreamResource;
-
-import org.springframework.jdbc.core.JdbcTemplate;
 
 import org.springframework.stereotype.Component;
 
@@ -47,6 +43,7 @@ public class StoreResource {
     private static Logger logger = LoggerFactory.getLogger(StoreResource.class);
     private StoreService storeService;
     private StoreConnector storeConnector;
+    private TenantHolder tenantHolder;
 
     @GET
     @Path("getStore")
@@ -111,12 +108,16 @@ public class StoreResource {
 
     @GET
     @Path("view")
-    public InputStream view(@QueryParam("model") String model,
-            @QueryParam("key") String key,
-            @QueryParam("tenantId") String tenantId) throws Exception {
+    public void view(@QueryParam("model") String model,
+            @QueryParam("key") String key, HttpServletRequest request,
+            HttpServletResponse response) throws Exception {
+        String tenantId = tenantHolder.getTenantId();
         StoreDTO storeDto = storeConnector.getStore(model, key, tenantId);
 
-        return storeDto.getDataSource().getInputStream();
+        InputStream is = storeDto.getDataSource().getInputStream();
+        ServletUtils.setFileDownloadHeader(request, response, storeDto
+                .getDataSource().getName());
+        IOUtils.copy(is, response.getOutputStream());
     }
 
     @Resource
@@ -127,5 +128,10 @@ public class StoreResource {
     @Resource
     public void setStoreService(StoreService storeService) {
         this.storeService = storeService;
+    }
+
+    @Resource
+    public void setTenantHolder(TenantHolder tenantHolder) {
+        this.tenantHolder = tenantHolder;
     }
 }

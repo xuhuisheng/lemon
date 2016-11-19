@@ -1,6 +1,5 @@
 package com.mossle.model.web;
 
-import java.util.ArrayList;
 import java.util.List;
 import java.util.Map;
 
@@ -9,14 +8,14 @@ import javax.annotation.Resource;
 import com.mossle.api.tenant.TenantHolder;
 
 import com.mossle.core.export.Exportor;
-import com.mossle.core.export.TableModel;
-import com.mossle.core.hibernate.PropertyFilter;
 import com.mossle.core.mapper.BeanMapper;
 import com.mossle.core.page.Page;
+import com.mossle.core.query.PropertyFilter;
 import com.mossle.core.spring.MessageHelper;
 
 import com.mossle.model.persistence.domain.ModelField;
 import com.mossle.model.persistence.manager.ModelFieldManager;
+import com.mossle.model.persistence.manager.ModelInfoManager;
 
 import org.springframework.stereotype.Controller;
 
@@ -31,6 +30,7 @@ import org.springframework.web.servlet.mvc.support.RedirectAttributes;
 @RequestMapping("model")
 public class ModelFieldController {
     private ModelFieldManager modelFieldManager;
+    private ModelInfoManager modelInfoManager;
     private MessageHelper messageHelper;
     private Exportor exportor;
     private BeanMapper beanMapper = new BeanMapper();
@@ -60,6 +60,8 @@ public class ModelFieldController {
             modelField = modelFieldManager.get(id);
             model.addAttribute("model", modelField);
         }
+
+        model.addAttribute("modelInfos", modelInfoManager.getAll());
 
         return "model/model-field-input";
     }
@@ -107,6 +109,11 @@ public class ModelFieldController {
     @Resource
     public void setModelFieldManager(ModelFieldManager modelFieldManager) {
         this.modelFieldManager = modelFieldManager;
+    }
+
+    @Resource
+    public void setModelInfoManager(ModelInfoManager modelInfoManager) {
+        this.modelInfoManager = modelInfoManager;
     }
 
     @Resource

@@ -4,7 +4,7 @@
 --  account log
 -------------------------------------------------------------------------------
 CREATE TABLE ACCOUNT_LOG(
-        ID BIGINT AUTO_INCREMENT,
+        ID BIGINT NOT NULL,
 	USERNAME VARCHAR(64),
 	RESULT VARCHAR(64),
 	REASON VARCHAR(200),

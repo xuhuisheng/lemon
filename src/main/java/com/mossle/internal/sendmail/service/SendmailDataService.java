@@ -3,28 +3,20 @@ package com.mossle.internal.sendmail.service;
 import java.io.PrintWriter;
 import java.io.StringWriter;
 
-import java.util.ArrayList;
 import java.util.Date;
 import java.util.List;
 import java.util.Map;
 
 import javax.annotation.Resource;
 
-import javax.servlet.http.HttpServletResponse;
-
 import com.mossle.api.store.StoreConnector;
 import com.mossle.api.store.StoreDTO;
 
-import com.mossle.core.export.Exportor;
-import com.mossle.core.export.TableModel;
-import com.mossle.core.hibernate.PropertyFilter;
 import com.mossle.core.mail.MailDTO;
 import com.mossle.core.mail.MailHelper;
 import com.mossle.core.mail.MailServerInfo;
 import com.mossle.core.mapper.BeanMapper;
 import com.mossle.core.mapper.JsonMapper;
-import com.mossle.core.page.Page;
-import com.mossle.core.spring.MessageHelper;
 import com.mossle.core.store.DataSourceInputStreamSource;
 import com.mossle.core.template.TemplateService;
 import com.mossle.core.util.StringUtils;
@@ -34,26 +26,14 @@ import com.mossle.internal.sendmail.persistence.domain.SendmailConfig;
 import com.mossle.internal.sendmail.persistence.domain.SendmailHistory;
 import com.mossle.internal.sendmail.persistence.domain.SendmailQueue;
 import com.mossle.internal.sendmail.persistence.domain.SendmailTemplate;
-import com.mossle.internal.sendmail.persistence.manager.SendmailAttachmentManager;
 import com.mossle.internal.sendmail.persistence.manager.SendmailConfigManager;
 import com.mossle.internal.sendmail.persistence.manager.SendmailHistoryManager;
 import com.mossle.internal.sendmail.persistence.manager.SendmailQueueManager;
 import com.mossle.internal.sendmail.persistence.manager.SendmailTemplateManager;
 
-import org.springframework.core.io.FileSystemResource;
-
-import org.springframework.stereotype.Controller;
 import org.springframework.stereotype.Service;
 
 import org.springframework.transaction.annotation.Transactional;
-
-import org.springframework.ui.Model;
-
-import org.springframework.web.bind.annotation.ModelAttribute;
-import org.springframework.web.bind.annotation.RequestMapping;
-import org.springframework.web.bind.annotation.RequestParam;
-import org.springframework.web.multipart.MultipartFile;
-import org.springframework.web.servlet.mvc.support.RedirectAttributes;
 
 @Service
 @Transactional
@@ -143,9 +123,11 @@ public class SendmailDataService {
 
             MailServerInfo mailServerInfo = new MailServerInfo();
             mailServerInfo.setHost(sendmailConfig.getHost());
+            mailServerInfo.setPort(sendmailConfig.getPort());
             mailServerInfo.setSmtpAuth(sendmailConfig.getSmtpAuth() == 1);
             mailServerInfo
                     .setSmtpStarttls(sendmailConfig.getSmtpStarttls() == 1);
+            mailServerInfo.setSmtpSsl(sendmailConfig.getSmtpSsl() == 1);
             mailServerInfo.setUsername(sendmailConfig.getUsername());
             mailServerInfo.setPassword(sendmailConfig.getPassword());
             mailServerInfo.setDefaultFrom(sendmailConfig.getDefaultFrom());

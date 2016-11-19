@@ -42,7 +42,7 @@ public class FormConnectorImpl implements FormConnector {
                 tenantId);
 
         if (formTemplate == null) {
-            logger.error("cannot find form : {}", code);
+            logger.error("cannot find form : {}, {}", code, tenantId);
 
             return null;
         }

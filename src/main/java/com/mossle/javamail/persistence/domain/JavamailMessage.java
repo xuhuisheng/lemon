@@ -8,7 +8,6 @@ import java.util.Set;
 import javax.persistence.Column;
 import javax.persistence.Entity;
 import javax.persistence.FetchType;
-import javax.persistence.GeneratedValue;
 import javax.persistence.Id;
 import javax.persistence.JoinColumn;
 import javax.persistence.ManyToOne;
@@ -76,11 +75,16 @@ public class JavamailMessage implements java.io.Serializable {
     public JavamailMessage() {
     }
 
-    public JavamailMessage(JavamailConfig javamailConfig, String sender,
-            String receiver, String cc, String bcc, String subject,
-            String content, Date sendTime, Date receiveTime, String status,
-            String folder, String messageId, Integer messageNumber,
-            Set<JavamailAttachment> javamailAttachments) {
+    public JavamailMessage(Long id) {
+        this.id = id;
+    }
+
+    public JavamailMessage(Long id, JavamailConfig javamailConfig,
+            String sender, String receiver, String cc, String bcc,
+            String subject, String content, Date sendTime, Date receiveTime,
+            String status, String folder, String messageId,
+            Integer messageNumber, Set<JavamailAttachment> javamailAttachments) {
+        this.id = id;
         this.javamailConfig = javamailConfig;
         this.sender = sender;
         this.receiver = receiver;
@@ -99,7 +103,6 @@ public class JavamailMessage implements java.io.Serializable {
 
     /** @return null. */
     @Id
-    @GeneratedValue
     @Column(name = "ID", unique = true, nullable = false)
     public Long getId() {
         return this.id;
@@ -185,7 +188,7 @@ public class JavamailMessage implements java.io.Serializable {
     }
 
     /** @return null. */
-    @Column(name = "SUBJECT", length = 200)
+    @Column(name = "SUBJECT", length = 65535)
     public String getSubject() {
         return this.subject;
     }

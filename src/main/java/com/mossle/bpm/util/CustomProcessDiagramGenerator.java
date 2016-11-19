@@ -47,7 +47,6 @@ import org.activiti.engine.impl.cmd.GetBpmnModelCmd;
 import org.activiti.engine.impl.cmd.GetDeploymentProcessDefinitionCmd;
 import org.activiti.engine.impl.context.Context;
 import org.activiti.engine.impl.persistence.entity.ProcessDefinitionEntity;
-import org.activiti.engine.impl.pvm.PvmTransition;
 import org.activiti.engine.impl.pvm.process.ActivityImpl;
 
 import org.apache.commons.io.FilenameUtils;
@@ -63,7 +62,7 @@ public class CustomProcessDiagramGenerator {
     private static List<String> gatewayType = new ArrayList<String>();
     private static List<String> subProcessType = new ArrayList<String>();
     private static Color RUNNING_COLOR = Color.RED;
-    private static Color HISTORY_COLOR = Color.GREEN;
+    private static Color HISTORY_COLOR = Color.decode("#337ab7");
     private static Color SKIP_COLOR = Color.GRAY;
     private static Stroke THICK_BORDER_STROKE = new BasicStroke(3.0f);
     private int minX = 0;

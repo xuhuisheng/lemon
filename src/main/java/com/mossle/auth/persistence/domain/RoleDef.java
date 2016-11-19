@@ -7,7 +7,6 @@ import java.util.Set;
 import javax.persistence.Column;
 import javax.persistence.Entity;
 import javax.persistence.FetchType;
-import javax.persistence.GeneratedValue;
 import javax.persistence.Id;
 import javax.persistence.JoinColumn;
 import javax.persistence.JoinTable;
@@ -16,7 +15,7 @@ import javax.persistence.OneToMany;
 import javax.persistence.Table;
 
 /**
- * RoleDef .
+ * RoleDef 角色定义.
  * 
  * @author Lingo
  */
@@ -25,16 +24,16 @@ import javax.persistence.Table;
 public class RoleDef implements java.io.Serializable {
     private static final long serialVersionUID = 0L;
 
-    /** null. */
+    /** 主键. */
     private Long id;
 
-    /** null. */
+    /** 名称. */
     private String name;
 
-    /** null. */
+    /** 备注. */
     private String descn;
 
-    /** null. */
+    /** 租户. */
     private String tenantId;
 
     /** . */
@@ -46,8 +45,13 @@ public class RoleDef implements java.io.Serializable {
     public RoleDef() {
     }
 
-    public RoleDef(String name, String descn, String tenantId, Set<Role> roles,
-            Set<Perm> perms) {
+    public RoleDef(Long id) {
+        this.id = id;
+    }
+
+    public RoleDef(Long id, String name, String descn, String tenantId,
+            Set<Role> roles, Set<Perm> perms) {
+        this.id = id;
         this.name = name;
         this.descn = descn;
         this.tenantId = tenantId;
@@ -55,9 +59,8 @@ public class RoleDef implements java.io.Serializable {
         this.perms = perms;
     }
 
-    /** @return null. */
+    /** @return 主键. */
     @Id
-    @GeneratedValue
     @Column(name = "ID", unique = true, nullable = false)
     public Long getId() {
         return this.id;
@@ -65,13 +68,13 @@ public class RoleDef implements java.io.Serializable {
 
     /**
      * @param id
-     *            null.
+     *            主键.
      */
     public void setId(Long id) {
         this.id = id;
     }
 
-    /** @return null. */
+    /** @return 名称. */
     @Column(name = "NAME", length = 50)
     public String getName() {
         return this.name;
@@ -79,13 +82,13 @@ public class RoleDef implements java.io.Serializable {
 
     /**
      * @param name
-     *            null.
+     *            名称.
      */
     public void setName(String name) {
         this.name = name;
     }
 
-    /** @return null. */
+    /** @return 备注. */
     @Column(name = "DESCN", length = 200)
     public String getDescn() {
         return this.descn;
@@ -93,13 +96,13 @@ public class RoleDef implements java.io.Serializable {
 
     /**
      * @param descn
-     *            null.
+     *            备注.
      */
     public void setDescn(String descn) {
         this.descn = descn;
     }
 
-    /** @return null. */
+    /** @return 租户. */
     @Column(name = "TENANT_ID", length = 50)
     public String getTenantId() {
         return this.tenantId;
@@ -107,7 +110,7 @@ public class RoleDef implements java.io.Serializable {
 
     /**
      * @param tenantId
-     *            null.
+     *            租户.
      */
     public void setTenantId(String tenantId) {
         this.tenantId = tenantId;

@@ -1,33 +1,25 @@
 package com.mossle.bpm.web;
 
-import java.util.ArrayList;
 import java.util.List;
-import java.util.Map;
 
 import javax.annotation.Resource;
-
-import javax.servlet.http.HttpServletResponse;
 
 import com.mossle.bpm.persistence.domain.BpmConfAssign;
 import com.mossle.bpm.persistence.domain.BpmConfCountersign;
 import com.mossle.bpm.persistence.domain.BpmConfNode;
 import com.mossle.bpm.persistence.domain.BpmConfUser;
-import com.mossle.bpm.persistence.domain.BpmProcess;
 import com.mossle.bpm.persistence.manager.BpmConfAssignManager;
 import com.mossle.bpm.persistence.manager.BpmConfCountersignManager;
 import com.mossle.bpm.persistence.manager.BpmConfNodeManager;
 import com.mossle.bpm.persistence.manager.BpmConfUserManager;
 import com.mossle.bpm.persistence.manager.BpmProcessManager;
 
-import com.mossle.core.hibernate.PropertyFilter;
 import com.mossle.core.mapper.BeanMapper;
-import com.mossle.core.page.Page;
 
 import com.mossle.spi.humantask.TaskDefinitionConnector;
 import com.mossle.spi.humantask.TaskUserDTO;
 
 import org.activiti.engine.ProcessEngine;
-import org.activiti.engine.repository.ProcessDefinition;
 
 import org.springframework.stereotype.Controller;
 
@@ -36,8 +28,6 @@ import org.springframework.ui.Model;
 import org.springframework.web.bind.annotation.ModelAttribute;
 import org.springframework.web.bind.annotation.RequestMapping;
 import org.springframework.web.bind.annotation.RequestParam;
-import org.springframework.web.bind.annotation.ResponseBody;
-import org.springframework.web.servlet.mvc.support.RedirectAttributes;
 
 @Controller
 @RequestMapping("bpm")
@@ -96,7 +86,7 @@ public class BpmConfUserController {
             taskUser.setCatalog("notification");
         }
 
-        if (type == 1) {
+        if ((type == 0) || (type == 1)) {
             taskUser.setType("user");
         } else if (type == 2) {
             taskUser.setType("group");
@@ -116,11 +106,14 @@ public class BpmConfUserController {
         Long bpmConfNodeId = bpmConfUser.getBpmConfNode().getId();
 
         if (bpmConfUser.getStatus() == 0) {
+            // Ĭ�� -> ����
             bpmConfUser.setStatus(2);
             bpmConfUserManager.save(bpmConfUser);
         } else if (bpmConfUser.getStatus() == 1) {
+            // ɾ�������ӵ�
             bpmConfUserManager.remove(bpmConfUser);
         } else if (bpmConfUser.getStatus() == 2) {
+            // ���� -> Ĭ��
             bpmConfUser.setStatus(0);
             bpmConfUserManager.save(bpmConfUser);
         }
@@ -142,15 +135,27 @@ public class BpmConfUserController {
             taskUser.setCatalog("notification");
         }
 
-        if (type == 1) {
+        if ((type == 0) || (type == 1)) {
             taskUser.setType("user");
         } else if (type == 2) {
             taskUser.setType("group");
         }
 
         taskUser.setValue(value);
-        taskDefinitionConnector.removeTaskUser(taskDefinitionKey,
-                processDefinitionId, taskUser);
+
+        if (bpmConfUser.getStatus() == 0) {
+            // ���� > Ĭ��
+            taskDefinitionConnector.updateTaskUser(taskDefinitionKey,
+                    processDefinitionId, taskUser, "active");
+        } else if (bpmConfUser.getStatus() == 1) {
+            // ��� > ɾ��
+            taskDefinitionConnector.removeTaskUser(taskDefinitionKey,
+                    processDefinitionId, taskUser);
+        } else if (bpmConfUser.getStatus() == 2) {
+            // Ĭ�� > ����
+            taskDefinitionConnector.updateTaskUser(taskDefinitionKey,
+                    processDefinitionId, taskUser, "disable");
+        }
 
         return "redirect:/bpm/bpm-conf-user-list.do?bpmConfNodeId="
                 + bpmConfNodeId;

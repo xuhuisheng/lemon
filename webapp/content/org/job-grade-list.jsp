@@ -7,11 +7,11 @@
 
   <head>
     <%@include file="/common/meta.jsp"%>
-    <title>职等管理</title>
-    <%@include file="/common/s.jsp"%>
+    <title><spring:message code="dev.job-grade.list.title" text="列表"/></title>
+    <%@include file="/common/s3.jsp"%>
     <script type="text/javascript">
 var config = {
-    id: 'orgGrid',
+    id: 'job-gradeGrid',
     pageNo: ${page.pageNo},
     pageSize: ${page.pageSize},
     totalCount: ${page.totalCount},
@@ -20,11 +20,10 @@ var config = {
     orderBy: '${page.orderBy == null ? "" : page.orderBy}',
     asc: ${page.asc},
     params: {
-        'filter_LIKES_orgname': '${param.filter_LIKES_orgname}',
-        'filter_EQI_status': '${param.filter_EQI_status}'
+        'filter_LIKES_name': '${param.filter_LIKES_name}'
     },
 	selectedItemClass: 'selectedItem',
-	gridFormId: 'orgGridForm',
+	gridFormId: 'job-gradeGridForm',
 	exportUrl: 'job-grade-export.do'
 };
 
@@ -43,64 +42,62 @@ $(function() {
     <%@include file="/header/org-sys.jsp"%>
 
     <div class="row-fluid">
-	<%@include file="/menu/org-sys.jsp"%>
+	  <%@include file="/menu/org-sys.jsp"%>
 
-	<!-- start of main -->
-    <section id="m-main" class="span10">
+	  <!-- start of main -->
+      <section id="m-main" class="col-md-10" style="padding-top:65px;">
 
-	  <article class="m-widget">
-        <header class="header">
-		  <h4 class="title">查询</h4>
-		  <div class="ctrl">
-			<a class="btn"><i id="orgSearchIcon" class="icon-chevron-up"></i></a>
-		  </div>
-		</header>
-        <div id="orgSearch" class="content content-inner">
+<div class="panel panel-default">
+  <div class="panel-heading">
+	<i class="glyphicon glyphicon-list"></i>
+    查询
+	<div class="pull-right ctrl">
+	  <a class="btn btn-default btn-xs"><i id="job-gradeSearchIcon" class="glyphicon glyphicon-chevron-up"></i></a>
+    </div>
+  </div>
+  <div class="panel-body">
 
-		  <form name="orgForm" method="post" action="job-grade-list.do" class="form-inline">
-		    <label for="org_orgname"><spring:message code='org.org.list.search.orgname' text='账号'/>:</label>
-		    <input type="text" id="org_orgname" name="filter_LIKES_name" value="${param.filter_LIKES_name}">
-			<button class="btn btn-small" onclick="document.orgForm.submit()">查询</button>
+		  <form name="job-gradeForm" method="post" action="job-grade-list.do" class="form-inline">
+		    <label for="job-grade_name"><spring:message code='job-grade.job-grade.list.search.name' text='名称'/>:</label>
+		    <input type="text" id="job-grade_name" name="filter_LIKES_name" value="${param.filter_LIKES_name}" class="form-control">
+			<button class="btn btn-default a-search" onclick="document.job-gradeForm.submit()">查询</button>&nbsp;
 		  </form>
 
 		</div>
-	  </article>
+	  </div>
 
-	  <article class="m-blank">
-	    <div class="pull-left">
-		  <region:region-permission permission="org:create">
-		  <button class="btn btn-small a-insert" onclick="location.href='job-grade-input.do'">新建</button>
-		  </region:region-permission>
-		  <region:region-permission permission="org:delete">
-		  <button class="btn btn-small a-remove" onclick="table.removeAll()">删除</button>
-		  </region:region-permission>
-		  <button class="btn btn-small a-export" onclick="table.exportExcel()">导出</button>
+      <div style="margin-bottom: 20px;">
+	    <div class="pull-left btn-group" role="group">
+		  <button class="btn btn-default a-insert" onclick="location.href='job-grade-input.do'">新建</button>
+		  <button class="btn btn-default a-remove" onclick="table.removeAll()">删除</button>
+		  <button class="btn btn-default a-export" onclick="table.exportExcel()">导出</button>
 		</div>
 
 		<div class="pull-right">
 		  每页显示
-		  <select class="m-page-size">
+		  <select class="m-page-size form-control" style="display:inline;width:auto;">
 		    <option value="10">10</option>
 		    <option value="20">20</option>
 		    <option value="50">50</option>
 		  </select>
 		  条
+        </div>
+
+	    <div class="clearfix"></div>
+	  </div>
+
+<form id="job-gradeGridForm" name="job-gradeGridForm" method='post' action="job-grade-remove.do" class="m-form-blank">
+      <div class="panel panel-default">
+        <div class="panel-heading">
+		  <i class="glyphicon glyphicon-list"></i>
+		  <spring:message code="scope-info.scope-info.list.title" text="列表"/>
 		</div>
 
-	    <div class="m-clear"></div>
-	  </article>
 
-      <article class="m-widget">
-        <header class="header">
-		  <h4 class="title">职等列表</h4>
-		</header>
-		<div class="content">
-
-<form id="orgGridForm" name="orgGridForm" method='post' action="job-grade-remove.do" class="m-form-blank">
-  <table id="orgGrid" class="m-table table-hover">
+  <table id="orgGrid" class="table table-hover">
     <thead>
       <tr>
-        <th width="10" class="m-table-check"><input type="checkbox" name="checkAll" onchange="toggleSelectedItems(this.checked)"></th>
+        <th width="10" class="table-check"><input type="checkbox" name="checkAll" onchange="toggleSelectedItems(this.checked)"></th>
         <th class="sorting" name="id"><spring:message code="org.org.list.id" text="编号"/></th>
         <th class="sorting" name="name">名称</th>
         <th width="80">&nbsp;</th>
@@ -120,31 +117,32 @@ $(function() {
       </c:forEach>
     </tbody>
   </table>
+
+
+      </div>
 </form>
 
-        </div>
-      </article>
-
-	  <article>
+	  <div>
 	    <div class="m-page-info pull-left">
 		  共100条记录 显示1到10条记录
 		</div>
 
 		<div class="btn-group m-pagination pull-right">
-		  <button class="btn btn-small">&lt;</button>
-		  <button class="btn btn-small">1</button>
-		  <button class="btn btn-small">&gt;</button>
+		  <button class="btn btn-default">&lt;</button>
+		  <button class="btn btn-default">1</button>
+		  <button class="btn btn-default">&gt;</button>
 		</div>
 
-	    <div class="m-clear"></div>
-      </article>
+	    <div class="clearfix"></div>
+      </div>
 
       <div class="m-spacer"></div>
 
-    </section>
-	<!-- end of main -->
+      </section>
+	  <!-- end of main -->
 	</div>
 
   </body>
 
 </html>
+

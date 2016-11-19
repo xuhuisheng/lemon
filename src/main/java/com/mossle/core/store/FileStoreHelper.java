@@ -1,9 +1,7 @@
 package com.mossle.core.store;
 
 import java.io.File;
-import java.io.FileInputStream;
 import java.io.FileOutputStream;
-import java.io.InputStream;
 
 import java.text.SimpleDateFormat;
 
@@ -15,9 +13,6 @@ import javax.activation.FileDataSource;
 
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
-
-import org.springframework.core.io.FileSystemResource;
-import org.springframework.core.io.Resource;
 
 import org.springframework.util.FileCopyUtils;
 
@@ -72,7 +67,14 @@ public class FileStoreHelper implements StoreHelper {
         String suffix = this.getSuffix(dataSource.getName());
         String path = prefix + "/" + UUID.randomUUID() + suffix;
         File dir = new File(baseDir + "/" + model + "/" + prefix);
-        dir.mkdirs();
+
+        if (!dir.exists()) {
+            boolean success = dir.mkdirs();
+
+            if (!success) {
+                logger.error("cannot create directory : {}", dir);
+            }
+        }
 
         File targetFile = new File(baseDir + "/" + model + "/" + path);
         FileOutputStream fos = new FileOutputStream(targetFile);

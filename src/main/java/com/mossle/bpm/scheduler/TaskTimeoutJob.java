@@ -1,23 +1,14 @@
 package com.mossle.bpm.scheduler;
 
-import java.util.Calendar;
-import java.util.Date;
 import java.util.List;
 
 import javax.annotation.Resource;
 
-import javax.xml.datatype.DatatypeFactory;
-import javax.xml.datatype.Duration;
-
 import com.mossle.bpm.cmd.SendNoticeCmd;
-import com.mossle.bpm.persistence.domain.BpmMailTemplate;
-import com.mossle.bpm.persistence.domain.BpmProcess;
-import com.mossle.bpm.persistence.domain.BpmTaskDefNotice;
 import com.mossle.bpm.persistence.manager.BpmProcessManager;
 import com.mossle.bpm.persistence.manager.BpmTaskDefNoticeManager;
 
 import org.activiti.engine.ProcessEngine;
-import org.activiti.engine.repository.ProcessDefinition;
 import org.activiti.engine.task.Task;
 
 import org.slf4j.Logger;

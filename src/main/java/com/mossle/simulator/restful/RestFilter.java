@@ -32,6 +32,7 @@ import javax.ws.rs.POST;
 import javax.ws.rs.PUT;
 import javax.ws.rs.Path;
 import javax.ws.rs.PathParam;
+import javax.ws.rs.Produces;
 import javax.ws.rs.QueryParam;
 import javax.ws.rs.core.MediaType;
 
@@ -86,7 +87,7 @@ public class RestFilter implements Filter {
     public Map<String, String> parseBody(InputStream inputStream)
             throws IOException {
         String body = IoUtils.readString(inputStream);
-        body = URLDecoder.decode(body, "UTF-8");
+        // body = URLDecoder.decode(body, "UTF-8");
         logger.debug("body : {}", body);
 
         Map<String, String> parameters = new HashMap<String, String>();
@@ -101,6 +102,10 @@ public class RestFilter implements Filter {
             int index = text.indexOf("=");
             String key = text.substring(0, index);
             String value = text.substring(index + 1);
+
+            if (value != null) {
+                value = URLDecoder.decode(value, "UTF-8");
+            }
 
             parameters.put(key, value);
         }
@@ -203,18 +208,31 @@ public class RestFilter implements Filter {
                         arguments.add(value);
                     } else if ((parameterTypeArray[i] == Boolean.class)
                             || (parameterTypeArray[i] == boolean.class)) {
-                        arguments.add(Boolean.valueOf(value));
+                        if (value.length() == 0) {
+                            arguments.add(false);
+                        } else {
+                            arguments.add(Boolean.valueOf(value));
+                        }
                     } else if ((parameterTypeArray[i] == Long.class)
                             || (parameterTypeArray[i] == long.class)) {
-                        arguments.add(Long.parseLong(value));
+                        if (value.length() == 0) {
+                            arguments.add(0L);
+                        } else {
+                            arguments.add(Long.parseLong(value));
+                        }
                     } else if ((parameterTypeArray[i] == Integer.class)
                             || (parameterTypeArray[i] == int.class)) {
-                        arguments.add(Integer.parseInt(value));
-                    } else if ((parameterTypeArray[i] == Long.class)
-                            || (parameterTypeArray[i] == long.class)) {
-                        arguments.add(Long.parseLong(value));
+                        if (value.length() == 0) {
+                            arguments.add(0);
+                        } else {
+                            arguments.add(Integer.parseInt(value));
+                        }
                     } else if (parameterTypeArray[i] == Date.class) {
-                        arguments.add(dateConverter.convert(value));
+                        if (value.length() == 0) {
+                            arguments.add(null);
+                        } else {
+                            arguments.add(dateConverter.convert(value));
+                        }
                     } else {
                         throw new IllegalArgumentException("unsupport type : "
                                 + parameterTypeArray[i]);
@@ -250,12 +268,25 @@ public class RestFilter implements Filter {
 
             Object result = method.invoke(object, arguments.toArray());
 
-            if (result instanceof String) {
+            if (result == null) {
+				logger.debug("return null");
+            } else if (result instanceof String) {
                 response.setContentType(MediaType.TEXT_HTML);
                 response.getOutputStream().write(
                         ((String) result).getBytes("UTF-8"));
             } else if (result instanceof InputStream) {
-                response.setContentType(MediaType.APPLICATION_OCTET_STREAM);
+                Produces produces = method.getAnnotation(Produces.class);
+                String contentType = MediaType.APPLICATION_OCTET_STREAM;
+
+                if (produces != null) {
+                    String[] values = produces.value();
+
+                    if ((values != null) && (values.length > 0)) {
+                        contentType = values[0];
+                    }
+                }
+
+                response.setContentType(contentType);
                 IoUtils.copyStream((InputStream) result,
                         response.getOutputStream());
             } else {

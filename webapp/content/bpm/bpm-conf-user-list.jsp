@@ -3,15 +3,16 @@
 <%pageContext.setAttribute("currentHeader", "bpm-console");%>
 <%pageContext.setAttribute("currentMenu", "bpm-category");%>
 <!doctype html>
-<html>
+<html lang="en">
 
   <head>
     <%@include file="/common/meta.jsp"%>
-    <title>配置</title>
-    <%@include file="/common/s.jsp"%>
+    <title><spring:message code="dev.bpm-conf-user.list.title" text="列表"/></title>
+    <%@include file="/common/s3.jsp"%>
     <script type="text/javascript">
+/*
 var config = {
-    id: 'bpmCategoryGrid',
+    id: 'bpm-conf-userGrid',
     pageNo: ${page.pageNo},
     pageSize: ${page.pageSize},
     totalCount: ${page.totalCount},
@@ -23,28 +24,30 @@ var config = {
         'filter_LIKES_name': '${param.filter_LIKES_name}'
     },
 	selectedItemClass: 'selectedItem',
-	gridFormId: 'bpmCategoryGridForm',
-	exportUrl: 'bpm-category-export.do'
+	gridFormId: 'bpm-conf-userGridForm',
+	exportUrl: 'bpm-conf-user-export.do'
 };
-
+*/
+var config = {};
 var table;
 
 $(function() {
-    table = new Table(config);
+	table = new Table(config);
     table.configPagination('.m-pagination');
     table.configPageInfo('.m-page-info');
     table.configPageSize('.m-page-size');
 });
     </script>
-
-    <link type="text/css" rel="stylesheet" href="${tenantPrefix}/widgets/userpicker/userpicker.css">
-    <script type="text/javascript" src="${tenantPrefix}/widgets/userpicker/userpicker.js"></script>
+    <link type="text/css" rel="stylesheet" href="${tenantPrefix}/widgets/userpicker3-v2/userpicker.css">
+    <script type="text/javascript" src="${tenantPrefix}/widgets/userpicker3-v2/userpicker.js"></script>
 	<script type="text/javascript">
 $(function() {
 	createUserPicker({
 		modalId: 'userPicker',
 		showExpression: true,
-		url: '${tenantPrefix}/rs/user/search'
+		searchUrl: '${tenantPrefix}/rs/user/search',
+		treeUrl: '${tenantPrefix}/rs/party/tree?partyStructTypeId=1',
+		childUrl: '${tenantPrefix}/rs/party/searchUser'
 	});
 })
     </script>
@@ -53,17 +56,15 @@ $(function() {
   <body>
     <%@include file="/header/bpm-console.jsp"%>
 
-	<div class="row-fluid">
-	<%@include file="/menu/bpm-console.jsp"%>
+    <div class="row-fluid">
+	  <%@include file="/menu/bpm-console.jsp"%>
 
-	<!-- start of main -->
-    <section id="m-main" class="span10">
+	  <!-- start of main -->
+      <section id="m-main" class="col-md-10" style="padding-top:65px;">
 
 	  <ul class="breadcrumb">
-	    <li><a href="bpm-process-list.do">流程配置</a>
-		<span class="divider">/</span></li>
-	    <li><a href="bpm-conf-node-list.do?bpmConfBaseId=${bpmConfBaseId}">${bpmConfBase.processDefinitionKey}</a>
-		<span class="divider">/</span></li>
+	    <li><a href="bpm-process-list.do">流程配置</a></li>
+	    <li><a href="bpm-conf-node-list.do?bpmConfBaseId=${bpmConfBaseId}">${bpmConfBase.processDefinitionKey}</a></li>
 	    <li class="active">${bpmConfNode.name}</li>
 	  </ul>
 	  
@@ -78,45 +79,68 @@ $(function() {
       <div class="tab-content">
         <div class="tab-pane active" id="tab-user">
 
-	  <article class="m-widget">
-        <header class="header">
-		  <h4 class="title">添加</h4>
-		  <div class="ctrl">
-		    <a class="btn"><i id="bpmCategorySearchIcon" class="icon-chevron-up"></i></a>
-		  </div>
-		</header>
-        <div id="bpmCategorySearch" class="content content-inner">
+<div class="panel panel-default">
+  <div class="panel-heading">
+	<i class="glyphicon glyphicon-list"></i>
+    添加
+	<div class="pull-right ctrl">
+	  <a class="btn btn-default btn-xs"><i id="bpm-conf-userSearchIcon" class="glyphicon glyphicon-chevron-up"></i></a>
+    </div>
+  </div>
+  <div class="panel-body">
 
 		  <form name="bpmCategoryForm" method="post" action="bpm-conf-user-save.do" class="form-inline">
 			<input type="hidden" name="bpmConfNodeId" value="${param.bpmConfNodeId}">
 		    <label for="_task_name_key">参与者:</label>
-		    <div class="input-append userPicker">
+		    <div class="input-group userPicker" style="display:block-inline;">
 			  <input id="_task_name_key" type="hidden" name="value" class="input-medium" value="">
-			  <input type="text" name="taskAssigneeNames" style="width: 175px;" value="">
-			  <span class="add-on"><i class="icon-user"></i></span>
+			  <input type="text" name="taskAssigneeNames" style="width: 175px;" value="" class="form-control">
+			  <div class="input-group-addon"><i class="glyphicon glyphicon-user"></i></div>
 		    </div>
 		    <label for="type">类型</label>
-			<select name="type">
+			<select name="type" class="form-control">
 			  <option value="0">负责人</option>
 			  <option value="1">候选人</option>
 			  <option value="2">候选组</option>
 			  <option value="3">抄送人</option>
 			</select>
-			<button class="btn btn-small" onclick="document.bpmCategoryForm.submit()">提交</button>
+			<button class="btn btn-default" onclick="document.bpmCategoryForm.submit()">提交</button>
 		  </form>
 
 		</div>
-	  </article>
+	  </div>
+<%--
+	  <div style="margin-bottom: 20px;">
+	    <div class="pull-left btn-group" role="group">
+		  <button class="btn btn-default a-insert" onclick="location.href='bpm-conf-user-input.do'">新建</button>
+		  <button class="btn btn-default a-remove" onclick="table.removeAll()">删除</button>
+		  <button class="btn btn-default a-export" onclick="table.exportExcel()">导出</button>
+		</div>
 
-      <article class="m-widget">
-        <header class="header">
-		  <h4 class="title">参与者</h4>
-		</header>
-		<div class="content">
+		<div class="pull-right">
+		  每页显示
+		  <select class="m-page-size form-control" style="display:inline;width:auto;">
+		    <option value="10">10</option>
+		    <option value="20">20</option>
+		    <option value="50">50</option>
+		  </select>
+		  条
+        </div>
 
-  <form id="bpmCategoryGridForm" name="bpmCategoryGridForm" method='post' action="bpm-conf-user-remove.do" style="margin:0px;">
+	    <div class="clearfix"></div>
+	  </div>
+--%>
+
+<form id="bpm-conf-userGridForm" name="bpm-conf-userGridForm" method='post' action="bpm-conf-user-remove.do" class="m-form-blank">
+      <div class="panel panel-default">
+        <div class="panel-heading">
+		  <i class="glyphicon glyphicon-list"></i>
+		  <spring:message code="scope-info.scope-info.list.title" text="列表"/>
+		</div>
+
+
     <input type="hidden" name="bpmConfNodeId" value="${bpmConfNodeId}">
-    <table id="bpmCategoryGrid" class="m-table table-hover">
+    <table id="bpmCategoryGrid" class="table table-hover">
       <thead>
         <tr>
           <th width="10" style="text-indent:0px;text-align:center;"><input type="checkbox" name="checkAll" onchange="toggleSelectedItems(this.checked)"></th>
@@ -134,16 +158,16 @@ $(function() {
           <td>${item.id}</td>
           <td>
 		    <c:if test="${item.type==0}">
-			  ${item.value}
+			  <tags:user userId="${item.value}"/>
 			</c:if>
 		    <c:if test="${item.type==1}">
-			  ${item.value}
+			  <tags:user userId="${item.value}"/>
 			</c:if>
 		    <c:if test="${item.type==2}">
-			  ${item.value}
+			  <tags:user userId="${item.value}"/>
 			</c:if>
 		    <c:if test="${item.type==3}">
-			  ${item.value}
+			  <tags:user userId="${item.value}"/>
 			</c:if>
 		  </td>
           <td>
@@ -178,26 +202,52 @@ $(function() {
         </c:forEach>
       </tbody>
     </table>
-  </form>
-        </div>
-      </article>
+
+
+      </div>
+</form>
+
+<%--
+	  <div>
+	    <div class="m-page-info pull-left">
+		  共100条记录 显示1到10条记录
 		</div>
+
+		<div class="btn-group m-pagination pull-right">
+		  <button class="btn btn-default">&lt;</button>
+		  <button class="btn btn-default">1</button>
+		  <button class="btn btn-default">&gt;</button>
+		</div>
+
+	    <div class="clearfix"></div>
+      </div>
+--%>
+      <div class="m-spacer"></div>
+
+</div>
+
+
+
+
+
         <div class="tab-pane" id="tab-assign">
 
-	  <article class="m-widget">
-        <header class="header">
-		  <h4 class="title">分配策略</h4>
-		  <div class="ctrl">
-		    <a class="btn"><i id="bpmConfAssignSearchIcon" class="icon-chevron-up"></i></a>
-		  </div>
-		</header>
-        <div id="bpmConfAssignSearchIcon" class="content content-inner">
+<div class="panel panel-default">
+  <div class="panel-heading">
+	<i class="glyphicon glyphicon-list"></i>
+    分配策略
+	<div class="pull-right ctrl">
+	  <a class="btn btn-default btn-xs"><i id="bpm-conf-userSearchIcon" class="glyphicon glyphicon-chevron-up"></i></a>
+    </div>
+  </div>
+  <div class="panel-body">
+
 
 		  <form name="bpmConfAssignForm" method="post" action="bpm-conf-assign-save.do" class="form-inline">
 		    <input type="hidden" name="id" value="${bpmConfAssign.id}">
 			<input type="hidden" name="bpmConfNodeId" value="${param.bpmConfNodeId}">
 		    <label for="bpmConfAssignName">分配策略:</label>
-			<select id="bpmConfAssignName" name="name">
+			<select id="bpmConfAssignName" name="name" class="form-control">
 			  <option value="无" ${bpmConfAssign.name=='无' ? 'selected' : ''}>无</option>
 			  <option value="当只有一人时采用独占策略" ${bpmConfAssign.name=='当只有一人时采用独占策略' ? 'selected' : ''}>当只有一人时采用独占策略</option>
 			  <option value="资源中任务最少者" ${bpmConfAssign.name=='资源中任务最少者' ? 'selected' : ''}>资源中任务最少者 </option>
@@ -208,18 +258,22 @@ $(function() {
 		  </form>
 
 		</div>
-	  </article>
+	  </div>
 		</div>
 <c:if test="${not empty bpmConfCountersign}">
         <div class="tab-pane" id="tab-countersign">
-	  <article class="m-widget">
-        <header class="header">
-		  <h4 class="title">会签</h4>
-		  <div class="ctrl">
-		    <a class="btn"><i id="bpmConfCountersignSearchIcon" class="icon-chevron-up"></i></a>
-		  </div>
-		</header>
-        <div id="bpmConfCountersignSearchIcon" class="content content-inner">
+
+
+<div class="panel panel-default">
+  <div class="panel-heading">
+	<i class="glyphicon glyphicon-list"></i>
+    会签
+	<div class="pull-right ctrl">
+	  <a class="btn btn-default btn-xs"><i id="bpm-conf-userSearchIcon" class="glyphicon glyphicon-chevron-up"></i></a>
+    </div>
+  </div>
+  <div class="panel-body">
+
 
 		  <form name="bpmConfCountersignForm" method="post" action="bpm-conf-countersign-save.do" class="form-inline">
 		    <input type="hidden" name="id" value="${bpmConfCountersign.id}">
@@ -239,15 +293,20 @@ $(function() {
 		  </form>
 
 		</div>
-	  </article>
+	  </div>
 		</div>
 </c:if>
       </div>
 
-    </section>
-	<!-- end of main -->
+
+
+
+</div>
+      </section>
+	  <!-- end of main -->
 	</div>
 
   </body>
 
 </html>
+

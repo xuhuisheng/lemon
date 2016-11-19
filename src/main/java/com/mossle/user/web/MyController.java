@@ -5,16 +5,13 @@ import java.awt.image.BufferedImage;
 import java.io.ByteArrayInputStream;
 import java.io.ByteArrayOutputStream;
 import java.io.OutputStream;
-import java.io.OutputStream;
-
-import java.util.ArrayList;
-import java.util.List;
-import java.util.Map;
 
 import javax.annotation.Resource;
 
 import javax.imageio.ImageIO;
 
+import com.mossle.api.avatar.AvatarConnector;
+import com.mossle.api.avatar.AvatarDTO;
 import com.mossle.api.store.StoreConnector;
 import com.mossle.api.store.StoreDTO;
 import com.mossle.api.tenant.TenantHolder;
@@ -26,13 +23,12 @@ import com.mossle.core.spring.MessageHelper;
 import com.mossle.core.store.InputStreamDataSource;
 import com.mossle.core.store.MultipartFileDataSource;
 import com.mossle.core.util.IoUtils;
-import com.mossle.core.util.ServletUtils;
 
 import com.mossle.user.ImageUtils;
-import com.mossle.user.persistence.domain.AccountAvatar;
+import com.mossle.user.persistence.domain.AccountDevice;
 import com.mossle.user.persistence.domain.AccountInfo;
 import com.mossle.user.persistence.domain.PersonInfo;
-import com.mossle.user.persistence.manager.AccountAvatarManager;
+import com.mossle.user.persistence.manager.AccountDeviceManager;
 import com.mossle.user.persistence.manager.AccountInfoManager;
 import com.mossle.user.persistence.manager.PersonInfoManager;
 import com.mossle.user.service.ChangePasswordService;
@@ -57,13 +53,14 @@ import org.springframework.web.servlet.mvc.support.RedirectAttributes;
 public class MyController {
     private AccountInfoManager accountInfoManager;
     private PersonInfoManager personInfoManager;
-    private AccountAvatarManager accountAvatarManager;
+    private AccountDeviceManager accountDeviceManager;
     private MessageHelper messageHelper;
     private BeanMapper beanMapper = new BeanMapper();
     private CurrentUserHolder currentUserHolder;
     private ChangePasswordService changePasswordService;
     private StoreConnector storeConnector;
     private TenantHolder tenantHolder;
+    private AvatarConnector avatarConnector;
 
     /**
      * 显示个人信息.
@@ -149,13 +146,14 @@ public class MyController {
      */
     @RequestMapping("my-avatar-input")
     public String avatarInput(Model model) {
-        Long accountId = Long.parseLong(currentUserHolder.getUserId());
+        String userId = currentUserHolder.getUserId();
+        Long accountId = Long.parseLong(userId);
         AccountInfo accountInfo = accountInfoManager.get(accountId);
-        String hql = "from AccountAvatar where accountInfo=? and type='default'";
-        AccountAvatar accountAvatar = accountAvatarManager.findUnique(hql,
-                accountInfo);
+
+        AvatarDTO avatarDto = avatarConnector.findAvatar(userId);
+
         model.addAttribute("accountInfo", accountInfo);
-        model.addAttribute("accountAvatar", accountAvatar);
+        model.addAttribute("avatarDto", avatarDto);
 
         return "user/my-avatar-input";
     }
@@ -171,22 +169,10 @@ public class MyController {
         StoreDTO storeDto = storeConnector.saveStore("avatar",
                 new MultipartFileDataSource(avatar), tenantId);
 
-        Long accountId = Long.parseLong(currentUserHolder.getUserId());
-        AccountInfo accountInfo = accountInfoManager.get(accountId);
-        String hql = "from AccountAvatar where accountInfo=? and type='default'";
-        AccountAvatar accountAvatar = accountAvatarManager.findUnique(hql,
-                accountInfo);
+        String userId = currentUserHolder.getUserId();
+        avatarConnector.saveAvatar(userId, storeDto.getKey());
 
-        if (accountAvatar == null) {
-            accountAvatar = new AccountAvatar();
-            accountAvatar.setAccountInfo(accountInfo);
-            accountAvatar.setType("default");
-        }
-
-        accountAvatar.setCode(storeDto.getKey());
-        accountAvatarManager.save(accountAvatar);
-
-        return "{\"success\":true,\"id\":\"" + accountId + "\"}";
+        return "{\"success\":true,\"id\":\"" + userId + "\"}";
     }
 
     /**
@@ -196,18 +182,15 @@ public class MyController {
     @ResponseBody
     public void avatarView(OutputStream os) throws Exception {
         String tenantId = tenantHolder.getTenantId();
-        Long accountId = Long.parseLong(currentUserHolder.getUserId());
-        AccountInfo accountInfo = accountInfoManager.get(accountId);
-        String hql = "from AccountAvatar where accountInfo=? and type='default'";
-        AccountAvatar accountAvatar = accountAvatarManager.findUnique(hql,
-                accountInfo);
+        String userId = currentUserHolder.getUserId();
+        AvatarDTO avatarDto = avatarConnector.findAvatar(userId);
 
-        if (accountAvatar == null) {
+        if (avatarDto == null) {
             return;
         }
 
         StoreDTO storeDto = storeConnector.getStore("avatar",
-                accountAvatar.getCode(), tenantId);
+                avatarDto.getCode(), tenantId);
 
         IoUtils.copyStream(storeDto.getDataSource().getInputStream(), os);
     }
@@ -218,20 +201,20 @@ public class MyController {
     @RequestMapping("my-avatar-crop")
     public String avatarCrop(Model model) throws Exception {
         String tenantId = tenantHolder.getTenantId();
-        Long accountId = Long.parseLong(currentUserHolder.getUserId());
-        AccountInfo accountInfo = accountInfoManager.get(accountId);
-        String hql = "from AccountAvatar where accountInfo=? and type='default'";
-        AccountAvatar accountAvatar = accountAvatarManager.findUnique(hql,
-                accountInfo);
-        model.addAttribute("accountInfo", accountInfo);
-        model.addAttribute("accountAvatar", accountAvatar);
+        String userId = currentUserHolder.getUserId();
+        AvatarDTO avatarDto = avatarConnector.findAvatar(userId);
 
-        if (accountAvatar == null) {
+        Long accountId = Long.parseLong(userId);
+        AccountInfo accountInfo = accountInfoManager.get(accountId);
+        model.addAttribute("accountInfo", accountInfo);
+        model.addAttribute("avatarDto", avatarDto);
+
+        if (avatarDto == null) {
             return "user/my-avatar-crop";
         }
 
         StoreDTO storeDto = storeConnector.getStore("avatar",
-                accountAvatar.getCode(), tenantId);
+                avatarDto.getCode(), tenantId);
         BufferedImage bufferedImage = ImageIO.read(storeDto.getDataSource()
                 .getInputStream());
         int height = bufferedImage.getHeight();
@@ -267,17 +250,17 @@ public class MyController {
             @RequestParam("y2") int y2, @RequestParam("w") int w, Model model)
             throws Exception {
         String tenantId = tenantHolder.getTenantId();
-        Long accountId = Long.parseLong(currentUserHolder.getUserId());
+        String userId = currentUserHolder.getUserId();
+        AvatarDTO avatarDto = avatarConnector.findAvatar(userId);
+        Long accountId = Long.parseLong(userId);
         AccountInfo accountInfo = accountInfoManager.get(accountId);
         String hql = "from AccountAvatar where accountInfo=? and type='default'";
-        AccountAvatar accountAvatar = accountAvatarManager.findUnique(hql,
-                accountInfo);
         model.addAttribute("accountInfo", accountInfo);
-        model.addAttribute("accountAvatar", accountAvatar);
+        model.addAttribute("avatarDto", avatarDto);
 
-        if (accountAvatar != null) {
+        if (avatarDto != null) {
             StoreDTO storeDto = storeConnector.getStore("avatar",
-                    accountAvatar.getCode(), tenantId);
+                    avatarDto.getCode(), tenantId);
             ByteArrayOutputStream baos = new ByteArrayOutputStream();
             ImageUtils.zoomImage(storeDto.getDataSource().getInputStream(),
                     baos, x1, y1, x2, y2);
@@ -286,11 +269,58 @@ public class MyController {
                     new InputStreamDataSource(w + ".png",
                             new ByteArrayInputStream(baos.toByteArray())),
                     tenantId);
-            accountAvatar.setCode(storeDto.getKey());
-            accountAvatarManager.save(accountAvatar);
+            avatarConnector.saveAvatar(userId, storeDto.getKey());
         }
 
         return "user/my-avatar-save";
+    }
+
+    /**
+     * 设备列表.
+     */
+    @RequestMapping("my-device-list")
+    public String myDeviceList(@ModelAttribute Page page, Model model) {
+        Long accountId = Long.parseLong(currentUserHolder.getUserId());
+        String hql = "from AccountDevice where accountInfo.id=?";
+        page = accountDeviceManager.pagedQuery(hql, page.getPageNo(),
+                page.getPageSize(), accountId);
+        model.addAttribute("page", page);
+
+        return "user/my-device-list";
+    }
+
+    @RequestMapping("my-device-active")
+    public String active(@RequestParam("id") Long id,
+            RedirectAttributes redirectAttributes) {
+        AccountDevice accountDevice = accountDeviceManager.get(id);
+        accountDevice.setStatus("active");
+        accountDeviceManager.save(accountDevice);
+        messageHelper.addFlashMessage(redirectAttributes,
+                "core.success.update", "操作成功");
+
+        return "redirect:/user/my-device-list.do";
+    }
+
+    @RequestMapping("my-device-disable")
+    public String disable(@RequestParam("id") Long id,
+            RedirectAttributes redirectAttributes) {
+        AccountDevice accountDevice = accountDeviceManager.get(id);
+        accountDevice.setStatus("disabled");
+        accountDeviceManager.save(accountDevice);
+        messageHelper.addFlashMessage(redirectAttributes,
+                "core.success.update", "操作成功");
+
+        return "redirect:/user/my-device-list.do";
+    }
+
+    @RequestMapping("my-device-remove")
+    public String remove(@RequestParam("id") Long id,
+            RedirectAttributes redirectAttributes) {
+        accountDeviceManager.removeById(id);
+        messageHelper.addFlashMessage(redirectAttributes,
+                "core.success.update", "操作成功");
+
+        return "redirect:/user/my-device-list.do";
     }
 
     // ~ ======================================================================
@@ -305,9 +335,9 @@ public class MyController {
     }
 
     @Resource
-    public void setAccountAvatarManager(
-            AccountAvatarManager accountAvatarManager) {
-        this.accountAvatarManager = accountAvatarManager;
+    public void setAccountDeviceManager(
+            AccountDeviceManager accountDeviceManager) {
+        this.accountDeviceManager = accountDeviceManager;
     }
 
     @Resource
@@ -334,5 +364,10 @@ public class MyController {
     @Resource
     public void setTenantHolder(TenantHolder tenantHolder) {
         this.tenantHolder = tenantHolder;
+    }
+
+    @Resource
+    public void setAvatarConnector(AvatarConnector avatarConnector) {
+        this.avatarConnector = avatarConnector;
     }
 }

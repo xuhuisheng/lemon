@@ -1,8 +1,7 @@
 package com.mossle.form.web;
 
-import java.util.ArrayList;
 import java.util.Date;
-import java.util.HashMap;
+import java.util.HashSet;
 import java.util.List;
 import java.util.Map;
 
@@ -13,16 +12,14 @@ import javax.servlet.http.HttpServletResponse;
 
 import com.mossle.api.tenant.TenantHolder;
 
-import com.mossle.core.MultipartHandler;
 import com.mossle.core.auth.CurrentUserHolder;
 import com.mossle.core.export.Exportor;
 import com.mossle.core.export.TableModel;
-import com.mossle.core.hibernate.PropertyFilter;
 import com.mossle.core.mapper.BeanMapper;
 import com.mossle.core.mapper.JsonMapper;
 import com.mossle.core.page.Page;
+import com.mossle.core.query.PropertyFilter;
 import com.mossle.core.spring.MessageHelper;
-import com.mossle.core.store.MultipartFileDataSource;
 
 import com.mossle.form.persistence.domain.FormTemplate;
 import com.mossle.form.persistence.manager.FormTemplateManager;
@@ -30,21 +27,13 @@ import com.mossle.form.persistence.manager.FormTemplateManager;
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
 
-import org.springframework.context.MessageSource;
-import org.springframework.context.support.MessageSourceAccessor;
-
 import org.springframework.stereotype.Controller;
 
 import org.springframework.ui.Model;
 
-import org.springframework.util.MultiValueMap;
-
 import org.springframework.web.bind.annotation.ModelAttribute;
 import org.springframework.web.bind.annotation.RequestMapping;
 import org.springframework.web.bind.annotation.RequestParam;
-import org.springframework.web.bind.annotation.ResponseBody;
-import org.springframework.web.multipart.MultipartFile;
-import org.springframework.web.multipart.MultipartHttpServletRequest;
 import org.springframework.web.multipart.MultipartResolver;
 import org.springframework.web.servlet.mvc.support.RedirectAttributes;
 
@@ -182,6 +171,7 @@ public class FormTemplateController {
         targetFormTemplate.setCode(code);
         targetFormTemplate.setName(name);
         targetFormTemplate.setUserId(userId);
+        targetFormTemplate.setFormSchemas(new HashSet());
         formTemplateManager.save(targetFormTemplate);
 
         return "redirect:/form/form-template-list.do";

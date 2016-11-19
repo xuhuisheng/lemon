@@ -1,8 +1,5 @@
 package com.mossle.api.dict;
 
-import java.util.HashMap;
-import java.util.Map;
-
 public class DictDataDTO {
     private String name;
     private String value;

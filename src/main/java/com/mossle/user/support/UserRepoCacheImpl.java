@@ -1,14 +1,22 @@
 package com.mossle.user.support;
 
+import javax.annotation.PostConstruct;
+import javax.annotation.Resource;
+
+import javax.cache.Cache;
+import javax.cache.CacheManager;
+
 import com.mossle.api.userrepo.UserRepoCache;
 import com.mossle.api.userrepo.UserRepoDTO;
 
-import com.mossle.core.cache.Cache;
-import com.mossle.core.cache.CacheStrategy;
-
 public class UserRepoCacheImpl implements UserRepoCache {
-    private CacheStrategy cacheStrategy;
-    private Cache cache;
+    private CacheManager cacheManager;
+    private Cache<String, UserRepoDTO> cache;
+
+    @PostConstruct
+    public void init() {
+        this.cache = this.cacheManager.getCache("userrepo");
+    }
 
     public UserRepoDTO findById(String id) {
         String key = "userRepoId:" + id;
@@ -23,8 +31,8 @@ public class UserRepoCacheImpl implements UserRepoCache {
     }
 
     public void updateUserRepo(UserRepoDTO userRepoDto) {
-        cache.set("userRepoId:" + userRepoDto.getId(), userRepoDto);
-        cache.set("userRepoCode:" + userRepoDto.getCode(), userRepoDto);
+        cache.put("userRepoId:" + userRepoDto.getId(), userRepoDto);
+        cache.put("userRepoCode:" + userRepoDto.getCode(), userRepoDto);
     }
 
     public void removeUserRepo(UserRepoDTO userRepoDto) {
@@ -32,8 +40,8 @@ public class UserRepoCacheImpl implements UserRepoCache {
         cache.remove("userRepoCode:" + userRepoDto.getCode());
     }
 
-    public void setCacheStrategy(CacheStrategy cacheStrategy) {
-        this.cacheStrategy = cacheStrategy;
-        this.cache = cacheStrategy.getCache("userrepo");
+    @Resource
+    public void setCacheManager(CacheManager cacheManager) {
+        this.cacheManager = cacheManager;
     }
 }

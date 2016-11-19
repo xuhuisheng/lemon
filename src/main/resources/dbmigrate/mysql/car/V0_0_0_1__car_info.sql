@@ -4,7 +4,7 @@
 --  car info
 -------------------------------------------------------------------------------
 CREATE TABLE CAR_INFO(
-        ID BIGINT AUTO_INCREMENT,
+        ID BIGINT NOT NULL,
 	NAME VARCHAR(200),
 	CODE VARCHAR(200),
 	STATUS INTEGER,

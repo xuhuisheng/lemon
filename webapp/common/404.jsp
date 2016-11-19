@@ -1,6 +1,6 @@
 <%@ page contentType="text/html;charset=UTF-8" isErrorPage="true" %>
 <%@include file="/common/taglibs.jsp"%>
-<%response.setStatus(200);%>
+<%response.setStatus(404);%>
 <!doctype html>
 <html lang="en">
 
@@ -49,9 +49,10 @@ $(function() {
 	  <div class="container">
 		<h1>404</h1>
 		<p><spring:message code="core.404.notfound" text="页面不存在"/></p>
+		<div style="color:gray;"><%=request.getAttribute("javax.servlet.forward.request_uri")%></div>
 		<ul>
-		  <li><a class="btn btn-primary" href="javascript:void(0);" onclick="history.back()"><spring:message code="core.404.back" text="返回"/></a></li>
-		  <li><a class="btn" href="${ctx}/j_spring_security_logout"><spring:message code="core.404.logout" text="注销"/></a></li>
+		  <li><a class="btn btn-primary" href="${ctx}/">进入首页</a></li>
+		  <li><a class="btn" href="javascript:void(0);" onclick="history.back()">返回上一个页面</a></li>
 		</ul>
       </div>
 	</div>

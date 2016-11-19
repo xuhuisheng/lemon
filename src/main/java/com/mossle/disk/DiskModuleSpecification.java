@@ -14,26 +14,32 @@ public class DiskModuleSpecification implements ModuleSpecification {
     private boolean enabled;
     private boolean initData;
 
+    @Override
     public boolean isEnabled() {
         return enabled;
     }
 
+    @Override
     public String getSchemaTable() {
         return "SCHEMA_VERSION_" + MODULE_NAME_UPPER;
     }
 
+    @Override
     public String getSchemaLocation() {
         return "dbmigrate." + type + "." + MODULE_NAME;
     }
 
+    @Override
     public boolean isInitData() {
         return initData;
     }
 
+    @Override
     public String getDataTable() {
         return "SCHEMA_VERSION_DATA_" + MODULE_NAME_UPPER;
     }
 
+    @Override
     public String getDataLocation() {
         return "dbmigrate." + type + ".data_" + MODULE_NAME;
     }

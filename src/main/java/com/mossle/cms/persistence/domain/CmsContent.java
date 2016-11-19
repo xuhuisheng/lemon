@@ -7,7 +7,6 @@ import java.util.Set;
 import javax.persistence.Column;
 import javax.persistence.Entity;
 import javax.persistence.FetchType;
-import javax.persistence.GeneratedValue;
 import javax.persistence.Id;
 import javax.persistence.OneToMany;
 import javax.persistence.Table;
@@ -43,8 +42,13 @@ public class CmsContent implements java.io.Serializable {
     public CmsContent() {
     }
 
-    public CmsContent(String name, String code, String content,
+    public CmsContent(Long id) {
+        this.id = id;
+    }
+
+    public CmsContent(Long id, String name, String code, String content,
             String tenantId, Set<CmsVersion> cmsVersions) {
+        this.id = id;
         this.name = name;
         this.code = code;
         this.content = content;
@@ -54,7 +58,6 @@ public class CmsContent implements java.io.Serializable {
 
     /** @return null. */
     @Id
-    @GeneratedValue
     @Column(name = "ID", unique = true, nullable = false)
     public Long getId() {
         return this.id;

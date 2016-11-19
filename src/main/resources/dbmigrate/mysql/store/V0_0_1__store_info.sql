@@ -4,7 +4,7 @@
 --  store info
 -------------------------------------------------------------------------------
 CREATE TABLE STORE_INFO(
-        ID BIGINT AUTO_INCREMENT,
+        ID BIGINT NOT NULL,
         NAME VARCHAR(200),
 	MODEL VARCHAR(50),
 	PATH VARCHAR(200),

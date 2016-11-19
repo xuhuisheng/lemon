@@ -4,7 +4,7 @@
 <%@tag import="org.activiti.engine.ProcessEngine"%>
 <%@attribute name="processDefinitionId" type="java.lang.String" required="true"%>
 <%
-  String userId = (String )jspContext.getAttribute("processDefinitionId");
+  String processDefinitionId = (String) jspContext.getAttribute("processDefinitionId");
   ApplicationContext ctx = WebApplicationContextUtils.getWebApplicationContext(application);
   ProcessEngine processEngine = ctx.getBean(ProcessEngine.class);
   try {
@@ -16,6 +16,6 @@
       .getName();
     out.print(processDefinitionName);
   } catch(Exception ex) {
-    System.out.println("cannot find processDefinition : " + userId);
+    System.out.println("cannot find processDefinition : " + processDefinitionId);
   }
 %>

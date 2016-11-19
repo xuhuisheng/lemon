@@ -1,14 +1,22 @@
 package com.mossle.user.support;
 
+import javax.annotation.PostConstruct;
+import javax.annotation.Resource;
+
+import javax.cache.Cache;
+import javax.cache.CacheManager;
+
 import com.mossle.api.user.UserCache;
 import com.mossle.api.user.UserDTO;
 
-import com.mossle.core.cache.Cache;
-import com.mossle.core.cache.CacheStrategy;
-
 public class UserCacheImpl implements UserCache {
-    private CacheStrategy cacheStrategy;
-    private Cache cache;
+    private CacheManager cacheManager;
+    private Cache<String, UserDTO> cache;
+
+    @PostConstruct
+    public void init() {
+        this.cache = this.cacheManager.getCache("user");
+    }
 
     public UserDTO findById(String id) {
         String key = "userId:" + id;
@@ -56,8 +64,8 @@ public class UserCacheImpl implements UserCache {
         cache.remove("nickName:" + userDto.getDisplayName());
     }
 
-    public void setCacheStrategy(CacheStrategy cacheStrategy) {
-        this.cacheStrategy = cacheStrategy;
-        this.cache = cacheStrategy.getCache("user");
+    @Resource
+    public void setCacheManager(CacheManager cacheManager) {
+        this.cacheManager = cacheManager;
     }
 }

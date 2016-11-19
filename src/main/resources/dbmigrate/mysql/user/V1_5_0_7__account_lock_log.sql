@@ -4,7 +4,7 @@
 --  account lock log
 -------------------------------------------------------------------------------
 CREATE TABLE ACCOUNT_LOCK_LOG(
-        ID BIGINT AUTO_INCREMENT,
+        ID BIGINT NOT NULL,
 	TYPE VARCHAR(200),
 	USERNAME VARCHAR(64),
 	LOCK_TIME DATETIME,

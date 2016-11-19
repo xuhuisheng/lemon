@@ -58,7 +58,7 @@ $(function() {
         <div id="userSearch" class="content content-inner">
 
 		  <form name="userForm" method="post" action="user-base-search.do" class="form-inline">
-		    <c:forEach value="${userSchema.userSchemaInfos}" var="item">
+		    <c:forEach items="${userSchema.userSchemaInfos}" var="item">
 			<label>${item.label}</label>:
 			<input type="text" name="${item.name}">
 		    </c:forEach>
@@ -114,7 +114,7 @@ $(function() {
     </thead>
 
     <tbody>
-      <c:forEach value="${page.result}" var="item">
+      <c:forEach items="${page.result}" var="item">
       <tr>
         <td><input type="checkbox" class="selectedItem" name="selectedItem" value="${item.id}"></td>
         <td>${item.id}</td>

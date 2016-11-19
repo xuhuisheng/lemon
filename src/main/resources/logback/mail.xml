@@ -5,13 +5,13 @@
 			<OnMismatch>DENY</OnMismatch>
 			<OnMatch>ACCEPT</OnMatch>
 		</filter>
-		<smtpHost>smtp.gmail.com</smtpHost>
+		<smtpHost>mail.mossle.com</smtpHost>
 		<smtpPort>465</smtpPort>
 		<SSL>true</SSL>
-		<username>demo.mossle@gmail.com</username>
-		<password>demo4mossle</password>
+		<username>bot@gmail.com</username>
+		<password>bot2mossle</password>
 
-		<to>demo.mossle@gmail.com</to>
+		<to>bot@mossle.com</to>
 		<!--
 		<from>demo.mossle@gmail.com</from>
 		-->

@@ -4,7 +4,6 @@ package com.mossle.bpm.persistence.domain;
 import javax.persistence.Column;
 import javax.persistence.Entity;
 import javax.persistence.FetchType;
-import javax.persistence.GeneratedValue;
 import javax.persistence.Id;
 import javax.persistence.JoinColumn;
 import javax.persistence.ManyToOne;
@@ -32,14 +31,18 @@ public class BpmConfAssign implements java.io.Serializable {
     public BpmConfAssign() {
     }
 
-    public BpmConfAssign(BpmConfNode bpmConfNode, String name) {
+    public BpmConfAssign(Long id) {
+        this.id = id;
+    }
+
+    public BpmConfAssign(Long id, BpmConfNode bpmConfNode, String name) {
+        this.id = id;
         this.bpmConfNode = bpmConfNode;
         this.name = name;
     }
 
     /** @return null. */
     @Id
-    @GeneratedValue
     @Column(name = "ID", unique = true, nullable = false)
     public Long getId() {
         return this.id;

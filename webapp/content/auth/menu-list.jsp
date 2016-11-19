@@ -3,12 +3,12 @@
 <%pageContext.setAttribute("currentHeader", "auth");%>
 <%pageContext.setAttribute("currentMenu", "auth");%>
 <!doctype html>
-<html>
+<html lang="en">
 
   <head>
     <%@include file="/common/meta.jsp"%>
-    <title>菜单列表</title>
-    <%@include file="/common/s.jsp"%>
+    <title><spring:message code="dev.menu.list.title" text="列表"/></title>
+    <%@include file="/common/s3.jsp"%>
     <script type="text/javascript">
 var config = {
     id: 'menuGrid',
@@ -20,7 +20,7 @@ var config = {
     orderBy: '${page.orderBy == null ? "" : page.orderBy}',
     asc: ${page.asc},
     params: {
-        'filter_LIKES_name': '${param.filter_LIKES_name}'
+        'filter_LIKES_title': '${param.filter_LIKES_title}'
     },
 	selectedItemClass: 'selectedItem',
 	gridFormId: 'menuGridForm',
@@ -30,10 +30,10 @@ var config = {
 var table;
 
 $(function() {
-    table = new Table(config);
-    table.configPagination('.m-pagination')
-    table.configPageSize('.m-page-size');;
+	table = new Table(config);
+    table.configPagination('.m-pagination');
     table.configPageInfo('.m-page-info');
+    table.configPageSize('.m-page-size');
 });
     </script>
   </head>
@@ -42,104 +42,124 @@ $(function() {
     <%@include file="/header/auth.jsp"%>
 
     <div class="row-fluid">
-	<%@include file="/menu/auth.jsp"%>
+	  <%@include file="/menu/auth.jsp"%>
 
-	<!-- start of main -->
-    <section id="m-main" class="span10">
+	  <!-- start of main -->
+      <section id="m-main" class="col-md-10" style="padding-top:65px;">
 
-	  <article class="m-widget">
-        <header class="header">
-		  <h4 class="title">查询</h4>
-		  <div class="ctrl">
-			<a class="btn"><i id="menuSearchIcon" class="icon-chevron-up"></i></a>
-		  </div>
-		</header>
-        <div id="menuSearch" class="content content-inner">
+<div class="panel panel-default">
+  <div class="panel-heading">
+	<i class="glyphicon glyphicon-list"></i>
+    查询
+	<div class="pull-right ctrl">
+	  <a class="btn btn-default btn-xs"><i id="menuSearchIcon" class="glyphicon glyphicon-chevron-up"></i></a>
+    </div>
+  </div>
+  <div class="panel-body">
 
 		  <form name="menuForm" method="post" action="menu-list.do" class="form-inline">
-		    <label for="menu_name"><spring:message code="auth.menu.list.search.name" text="名称"/>:</label>
-		    <input type="text" id="menu_name" name="filter_LIKES_name" value="${param.filter_LIKES_name}">
-			<button class="btn btn-small" onclick="document.menuForm.submit()">查询</button>
+		    <label for="menu_title"><spring:message code='menu.menu.list.search.name' text='名称'/>:</label>
+		    <input type="text" id="menu_title" name="filter_LIKES_title" value="${param.filter_LIKES_title}" class="form-control">
+			<button class="btn btn-default a-search" onclick="document.menuForm.submit()">查询</button>&nbsp;
 		  </form>
 
 		</div>
-	  </article>
+	  </div>
 
-	  <article class="m-blank">
-	    <div class="pull-left">
-		  <button class="btn btn-small a-insert" onclick="location.href='menu-input.do'"><spring:message code="core.list.create" text="新建"/></button>
-		  <button class="btn btn-small a-remove" onclick="table.removeAll()"><spring:message code="core.list.delete" text="删除"/></button>
-		  <button class="btn btn-small a-export" onclick="table.exportExcel()"><spring:message code="core.list.export" text="导出"/></button>
+      <div style="margin-bottom: 20px;">
+	    <div class="pull-left btn-group" role="group">
+		  <%--
+		  <button class="btn btn-default a-insert" onclick="location.href='menu-input.do'">新建</button>
+		  <button class="btn btn-default a-remove" onclick="table.removeAll()">删除</button>
+		  <button class="btn btn-default a-export" onclick="table.exportExcel()">导出</button>
+		  --%>
 		</div>
 
 		<div class="pull-right">
 		  每页显示
-		  <select class="m-page-size">
+		  <select class="m-page-size form-control" style="display:inline;width:auto;">
 		    <option value="10">10</option>
 		    <option value="20">20</option>
 		    <option value="50">50</option>
 		  </select>
 		  条
+        </div>
+
+	    <div class="clearfix"></div>
+	  </div>
+
+<form id="menuGridForm" name="menuGridForm" method='post' action="menu-remove.do" class="m-form-blank">
+      <div class="panel panel-default">
+        <div class="panel-heading">
+		  <i class="glyphicon glyphicon-list"></i>
+		  <spring:message code="scope-info.scope-info.list.title" text="列表"/>
 		</div>
 
-	    <div class="m-clear"></div>
-	  </article>
 
-      <article class="m-widget">
-        <header class="header">
-          <h4 class="title">菜单列表</h4>
-		</header>
-		<div class="content">
-
-  <form id="menuGridForm" name="menuGridForm" method='post' action="menu-remove.do" class="m-form-blank">
-    <table id="menuGrid" class="m-table table-hover">
+    <table id="menuGrid" class="table table-hover">
       <thead>
         <tr>
-          <th width="10" class="m-table-check"><input type="checkbox" name="checkAll" onchange="toggleSelectedItems(this.checked)"></th>
+		  <!--
+          <th width="10" class="table-check"><input type="checkbox" name="checkAll" onchange="toggleSelectedItems(this.checked)"></th>
+		  -->
+		  <!--
           <th class="sorting" name="id"><spring:message code="auth.menu.list.id" text="编号"/></th>
+		  -->
+		  <th>编码</th>
           <th class="sorting" name="name"><spring:message code="auth.menu.list.name" text="名称"/></th>
           <th class="sorting" name="name">URL</th>
+		  <th>类型</th>
           <th>&nbsp;</th>
         </tr>
       </thead>
       <tbody>
         <c:forEach items="${page.result}" var="item">
         <tr>
+		  <!--
           <td><input type="checkbox" class="selectedItem a-check" name="selectedItem" value="${item.id}"></td>
+		  -->
+		  <!--
           <td>${item.id}</td>
+		  -->
+          <td>${item.code}</td>
           <td>${item.title}</td>
           <td>${item.url}</td>
+		  <td>${item.type}</td>
           <td>
+		    <%--
             <a href="menu-input.do?id=${item.id}" class="a-update"><spring:message code="core.list.edit" text="编辑"/></a>
+			--%>
           </td>
         </tr>
         </c:forEach>
       </tbody>
     </table>
-  </form>
-        </div>
-      </article>
 
-	  <article>
+
+      </div>
+</form>
+
+	  <div>
 	    <div class="m-page-info pull-left">
 		  共100条记录 显示1到10条记录
 		</div>
 
 		<div class="btn-group m-pagination pull-right">
-		  <button class="btn btn-small">&lt;</button>
-		  <button class="btn btn-small">1</button>
-		  <button class="btn btn-small">&gt;</button>
+		  <button class="btn btn-default">&lt;</button>
+		  <button class="btn btn-default">1</button>
+		  <button class="btn btn-default">&gt;</button>
 		</div>
 
-	    <div class="m-clear"></div>
-      </article>
+	    <div class="clearfix"></div>
+      </div>
 
       <div class="m-spacer"></div>
 
-    </section>
-	<!-- end of main -->
+      </section>
+	  <!-- end of main -->
 	</div>
 
   </body>
 
 </html>
+

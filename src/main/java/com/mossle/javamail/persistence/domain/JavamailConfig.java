@@ -7,7 +7,6 @@ import java.util.Set;
 import javax.persistence.Column;
 import javax.persistence.Entity;
 import javax.persistence.FetchType;
-import javax.persistence.GeneratedValue;
 import javax.persistence.Id;
 import javax.persistence.OneToMany;
 import javax.persistence.Table;
@@ -68,11 +67,16 @@ public class JavamailConfig implements java.io.Serializable {
     public JavamailConfig() {
     }
 
-    public JavamailConfig(String username, String password, String receiveType,
-            String receiveHost, String receivePort, String receiveSecure,
-            String sendType, String sendHost, String sendPort,
-            String sendSecure, Integer priority, String userId,
-            Set<JavamailMessage> javamailMessages) {
+    public JavamailConfig(Long id) {
+        this.id = id;
+    }
+
+    public JavamailConfig(Long id, String username, String password,
+            String receiveType, String receiveHost, String receivePort,
+            String receiveSecure, String sendType, String sendHost,
+            String sendPort, String sendSecure, Integer priority,
+            String userId, Set<JavamailMessage> javamailMessages) {
+        this.id = id;
         this.username = username;
         this.password = password;
         this.receiveType = receiveType;
@@ -90,7 +94,6 @@ public class JavamailConfig implements java.io.Serializable {
 
     /** @return null. */
     @Id
-    @GeneratedValue
     @Column(name = "ID", unique = true, nullable = false)
     public Long getId() {
         return this.id;

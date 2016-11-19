@@ -4,7 +4,7 @@
 --  cms site
 -------------------------------------------------------------------------------
 CREATE TABLE CMS_SITE(
-        ID BIGINT AUTO_INCREMENT,
+        ID BIGINT NOT NULL,
 	TYPE VARCHAR(50),
 	NAME VARCHAR(50),
 	CODE VARCHAR(200),

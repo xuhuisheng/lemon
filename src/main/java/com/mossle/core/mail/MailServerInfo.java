@@ -2,6 +2,8 @@ package com.mossle.core.mail;
 
 import java.util.Properties;
 
+import com.sun.mail.util.MailSSLSocketFactory;
+
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
 
@@ -14,12 +16,17 @@ public class MailServerInfo {
     public static final String MODE_NORMAL = "normal";
     public static final String MODE_TEST = "test";
     public static final String MODE_SKIP = "skip";
+    public static final int DEFAULT_SMTP_PORT = 25;
     private String name;
     private String host;
+    private int port = DEFAULT_SMTP_PORT;
     private String username;
     private String password;
-    private boolean smtpAuth;
-    private boolean smtpStarttls;
+    private boolean smtpAuth = true;
+    private boolean smtpStarttls = false;
+    private boolean smtpSsl = false;
+
+    // private String transportProtocol = "smtp";
     private boolean defaultServer;
     private String mode;
     private String testMail;
@@ -40,6 +47,14 @@ public class MailServerInfo {
 
     public void setHost(String host) {
         this.host = host;
+    }
+
+    public int getPort() {
+        return port;
+    }
+
+    public void setPort(int port) {
+        this.port = port;
     }
 
     public String getUsername() {
@@ -72,6 +87,14 @@ public class MailServerInfo {
 
     public void setSmtpStarttls(boolean smtpStarttls) {
         this.smtpStarttls = smtpStarttls;
+    }
+
+    public boolean isSmtpSsl() {
+        return smtpSsl;
+    }
+
+    public void setSmtpSsl(boolean smtpSsl) {
+        this.smtpSsl = smtpSsl;
     }
 
     public boolean isDefaultServer() {
@@ -111,6 +134,21 @@ public class MailServerInfo {
         properties.put("mail.smtp.auth", smtpAuth);
         properties.put("mail.smtp.starttls.enable", smtpStarttls);
 
+        if (smtpSsl) {
+            properties.put("mail.smtp.ssl.enable", smtpSsl);
+            properties.put("mail.transport.protocol", "smtps");
+            properties.put("mail.smtps.ssl.checkserveridentity", "false");
+            properties.put("mail.smtps.ssl.trust", "*");
+
+            try {
+                MailSSLSocketFactory socketFactory = new MailSSLSocketFactory();
+                socketFactory.setTrustAllHosts(true);
+                properties.put("mail.smtps.ssl.socketFactory", socketFactory);
+            } catch (Exception ex) {
+                logger.error(ex.getMessage(), ex);
+            }
+        }
+
         return properties;
     }
 
@@ -126,6 +164,7 @@ public class MailServerInfo {
         javaMailSender = new JavaMailSenderImpl();
 
         javaMailSender.setHost(host);
+        javaMailSender.setPort(port);
 
         if (smtpAuth) {
             javaMailSender.setUsername(username);
@@ -136,6 +175,7 @@ public class MailServerInfo {
 
         javaMailSender.setJavaMailProperties(this.getProperties());
         logger.debug("host : {}", host);
+        logger.debug("port : {}", port);
         logger.debug("username : {}", username);
         logger.debug("password : {}", password);
         logger.debug("getProperties : {}", getProperties());

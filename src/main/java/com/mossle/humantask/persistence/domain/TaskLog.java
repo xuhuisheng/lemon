@@ -6,7 +6,6 @@ import java.util.Date;
 import javax.persistence.Column;
 import javax.persistence.Entity;
 import javax.persistence.FetchType;
-import javax.persistence.GeneratedValue;
 import javax.persistence.Id;
 import javax.persistence.JoinColumn;
 import javax.persistence.ManyToOne;
@@ -15,7 +14,7 @@ import javax.persistence.Temporal;
 import javax.persistence.TemporalType;
 
 /**
- * TaskLog .
+ * TaskLog 任务日志.
  * 
  * @author Lingo
  */
@@ -24,42 +23,47 @@ import javax.persistence.TemporalType;
 public class TaskLog implements java.io.Serializable {
     private static final long serialVersionUID = 0L;
 
-    /** null. */
+    /** 主键. */
     private Long id;
 
-    /** null. */
+    /** 外键，任务. */
     private TaskInfo taskInfo;
 
-    /** null. */
+    /** 事件类型. */
     private String eventType;
 
-    /** null. */
+    /** 事件事件. */
     private Date eventTime;
 
-    /** null. */
+    /** 操作人. */
     private String creator;
 
-    /** null. */
+    /** 操作之前的负责人. */
     private String startOwner;
 
-    /** null. */
+    /** 操作之后的负责人. */
     private String endOwner;
 
-    /** null. */
+    /** 任务状态. */
     private String taskStatus;
 
-    /** null. */
+    /** 内容. */
     private String content;
 
-    /** null. */
+    /** 排序. */
     private Integer priority;
 
     public TaskLog() {
     }
 
-    public TaskLog(TaskInfo taskInfo, String eventType, Date eventTime,
-            String creator, String startOwner, String endOwner,
+    public TaskLog(Long id) {
+        this.id = id;
+    }
+
+    public TaskLog(Long id, TaskInfo taskInfo, String eventType,
+            Date eventTime, String creator, String startOwner, String endOwner,
             String taskStatus, String content, Integer priority) {
+        this.id = id;
         this.taskInfo = taskInfo;
         this.eventType = eventType;
         this.eventTime = eventTime;
@@ -71,9 +75,8 @@ public class TaskLog implements java.io.Serializable {
         this.priority = priority;
     }
 
-    /** @return null. */
+    /** @return 主键. */
     @Id
-    @GeneratedValue
     @Column(name = "ID", unique = true, nullable = false)
     public Long getId() {
         return this.id;
@@ -81,13 +84,13 @@ public class TaskLog implements java.io.Serializable {
 
     /**
      * @param id
-     *            null.
+     *            主键.
      */
     public void setId(Long id) {
         this.id = id;
     }
 
-    /** @return null. */
+    /** @return 外键，任务. */
     @ManyToOne(fetch = FetchType.LAZY)
     @JoinColumn(name = "TASK_ID")
     public TaskInfo getTaskInfo() {
@@ -96,13 +99,13 @@ public class TaskLog implements java.io.Serializable {
 
     /**
      * @param taskInfo
-     *            null.
+     *            外键，任务.
      */
     public void setTaskInfo(TaskInfo taskInfo) {
         this.taskInfo = taskInfo;
     }
 
-    /** @return null. */
+    /** @return 事件类型. */
     @Column(name = "EVENT_TYPE", length = 100)
     public String getEventType() {
         return this.eventType;
@@ -110,13 +113,13 @@ public class TaskLog implements java.io.Serializable {
 
     /**
      * @param eventType
-     *            null.
+     *            事件类型.
      */
     public void setEventType(String eventType) {
         this.eventType = eventType;
     }
 
-    /** @return null. */
+    /** @return 事件事件. */
     @Temporal(TemporalType.TIMESTAMP)
     @Column(name = "EVENT_TIME", length = 26)
     public Date getEventTime() {
@@ -125,13 +128,13 @@ public class TaskLog implements java.io.Serializable {
 
     /**
      * @param eventTime
-     *            null.
+     *            事件事件.
      */
     public void setEventTime(Date eventTime) {
         this.eventTime = eventTime;
     }
 
-    /** @return null. */
+    /** @return 操作人. */
     @Column(name = "CREATOR", length = 64)
     public String getCreator() {
         return this.creator;
@@ -139,13 +142,13 @@ public class TaskLog implements java.io.Serializable {
 
     /**
      * @param creator
-     *            null.
+     *            操作人.
      */
     public void setCreator(String creator) {
         this.creator = creator;
     }
 
-    /** @return null. */
+    /** @return 操作之前的负责人. */
     @Column(name = "START_OWNER", length = 64)
     public String getStartOwner() {
         return this.startOwner;
@@ -153,13 +156,13 @@ public class TaskLog implements java.io.Serializable {
 
     /**
      * @param startOwner
-     *            null.
+     *            操作之前的负责人.
      */
     public void setStartOwner(String startOwner) {
         this.startOwner = startOwner;
     }
 
-    /** @return null. */
+    /** @return 操作之后的负责人. */
     @Column(name = "END_OWNER", length = 64)
     public String getEndOwner() {
         return this.endOwner;
@@ -167,13 +170,13 @@ public class TaskLog implements java.io.Serializable {
 
     /**
      * @param endOwner
-     *            null.
+     *            操作之后的负责人.
      */
     public void setEndOwner(String endOwner) {
         this.endOwner = endOwner;
     }
 
-    /** @return null. */
+    /** @return 任务状态. */
     @Column(name = "TASK_STATUS", length = 50)
     public String getTaskStatus() {
         return this.taskStatus;
@@ -181,13 +184,13 @@ public class TaskLog implements java.io.Serializable {
 
     /**
      * @param taskStatus
-     *            null.
+     *            任务状态.
      */
     public void setTaskStatus(String taskStatus) {
         this.taskStatus = taskStatus;
     }
 
-    /** @return null. */
+    /** @return 内容. */
     @Column(name = "CONTENT", length = 65535)
     public String getContent() {
         return this.content;
@@ -195,13 +198,13 @@ public class TaskLog implements java.io.Serializable {
 
     /**
      * @param content
-     *            null.
+     *            内容.
      */
     public void setContent(String content) {
         this.content = content;
     }
 
-    /** @return null. */
+    /** @return 排序. */
     @Column(name = "PRIORITY")
     public Integer getPriority() {
         return this.priority;
@@ -209,7 +212,7 @@ public class TaskLog implements java.io.Serializable {
 
     /**
      * @param priority
-     *            null.
+     *            排序.
      */
     public void setPriority(Integer priority) {
         this.priority = priority;

@@ -1,8 +1,5 @@
 package com.mossle.bpm.support;
 
-import java.text.SimpleDateFormat;
-
-import java.util.Date;
 import java.util.List;
 import java.util.Map;
 
@@ -15,7 +12,6 @@ import com.mossle.api.process.ProcessDTO;
 import com.mossle.api.user.UserConnector;
 
 import com.mossle.bpm.cmd.FindFirstTaskFormCmd;
-import com.mossle.bpm.cmd.FindStartFormCmd;
 import com.mossle.bpm.persistence.domain.BpmConfForm;
 import com.mossle.bpm.persistence.domain.BpmProcess;
 import com.mossle.bpm.persistence.manager.BpmConfFormManager;
@@ -36,6 +32,7 @@ import org.activiti.engine.RuntimeService;
 import org.activiti.engine.TaskService;
 import org.activiti.engine.history.HistoricActivityInstance;
 import org.activiti.engine.history.HistoricProcessInstance;
+import org.activiti.engine.history.HistoricProcessInstanceQuery;
 import org.activiti.engine.history.HistoricTaskInstance;
 import org.activiti.engine.impl.identity.Authentication;
 import org.activiti.engine.repository.Deployment;
@@ -47,8 +44,6 @@ import org.activiti.engine.task.Task;
 
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
-
-import org.springframework.util.MultiValueMap;
 
 public class ProcessConnectorImpl implements ProcessConnector {
     private Logger logger = LoggerFactory.getLogger(ProcessConnectorImpl.class);
@@ -69,21 +64,24 @@ public class ProcessConnectorImpl implements ProcessConnector {
                 .startProcessInstanceById(processDefinitionId, businessKey,
                         processParameters);
 
-        // {流程标题:title}-{发起人:startUser}-{发起时间:startTime}
-        String processDefinitionName = processEngine.getRepositoryService()
-                .createProcessDefinitionQuery()
-                .processDefinitionId(processDefinitionId).singleResult()
-                .getName();
-        String processInstanceName = processDefinitionName + "-"
-                + userConnector.findById(userId).getDisplayName() + "-"
-                + new SimpleDateFormat("yyyy-MM-dd HH:mm").format(new Date());
-        processEngine.getRuntimeService().setProcessInstanceName(
-                processInstance.getId(), processInstanceName);
-
+        /*
+         * // {流程标题:title}-{发起人:startUser}-{发起时间:startTime} String processDefinitionName =
+         * processEngine.getRepositoryService() .createProcessDefinitionQuery()
+         * .processDefinitionId(processDefinitionId).singleResult() .getName(); String processInstanceName =
+         * processDefinitionName + "-" + userConnector.findById(userId).getDisplayName() + "-" + new
+         * SimpleDateFormat("yyyy-MM-dd HH:mm").format(new Date());
+         * processEngine.getRuntimeService().setProcessInstanceName( processInstance.getId(), processInstanceName);
+         */
         return processInstance.getId();
     }
 
     public ProcessDTO findProcess(String processId) {
+        if (processId == null) {
+            logger.info("processId is null");
+
+            return null;
+        }
+
         ProcessDTO processDto = new ProcessDTO();
         BpmProcess bpmProcess = bpmProcessManager
                 .get(Long.parseLong(processId));
@@ -107,6 +105,18 @@ public class ProcessConnectorImpl implements ProcessConnector {
                 .processDefinitionId(processDefinitionId).singleResult();
         FirstTaskForm firstTaskForm = processEngine.getManagementService()
                 .executeCommand(new FindFirstTaskFormCmd(processDefinitionId));
+
+        if ((!firstTaskForm.isExists())
+                && (firstTaskForm.getActivityId() != null)) {
+            // 再从数据库里找一遍配置
+            com.mossle.spi.humantask.FormDTO humantaskFormDto = taskDefinitionConnector
+                    .findForm(firstTaskForm.getActivityId(),
+                            processDefinitionId);
+
+            if (humantaskFormDto != null) {
+                firstTaskForm.setFormKey(humantaskFormDto.getKey());
+            }
+        }
 
         if (!firstTaskForm.isExists()) {
             logger.info("cannot find startForm : {}", processDefinitionId);
@@ -164,7 +174,7 @@ public class ProcessConnectorImpl implements ProcessConnector {
                         firstTaskForm.getProcessDefinitionId(),
                         firstTaskForm.getActivityId());
 
-        if (firstTaskForm == null) {
+        if (taskFormDto == null) {
             logger.info("cannot find bpmConfForm : {}, {}",
                     processDefinitionId, firstTaskForm.getActivityId());
 
@@ -250,10 +260,26 @@ public class ProcessConnectorImpl implements ProcessConnector {
         long count = historyService.createHistoricProcessInstanceQuery()
                 .processInstanceTenantId(tenantId).startedBy(userId)
                 .unfinished().count();
-        List<HistoricProcessInstance> historicProcessInstances = historyService
+        HistoricProcessInstanceQuery query = historyService
                 .createHistoricProcessInstanceQuery()
                 .processInstanceTenantId(tenantId).startedBy(userId)
-                .unfinished()
+                .unfinished();
+
+        if (page.getOrderBy() != null) {
+            String orderBy = page.getOrderBy();
+
+            if ("processInstanceStartTime".equals(orderBy)) {
+                query.orderByProcessInstanceStartTime();
+            }
+
+            if (page.isAsc()) {
+                query.asc();
+            } else {
+                query.desc();
+            }
+        }
+
+        List<HistoricProcessInstance> historicProcessInstances = query
                 .listPage((int) page.getStart(), page.getPageSize());
 
         page.setResult(historicProcessInstances);
@@ -367,6 +393,24 @@ public class ProcessConnectorImpl implements ProcessConnector {
                 .count();
         List<Task> tasks = taskService.createTaskQuery().taskTenantId(tenantId)
                 .taskOwner(userId).taskDelegationState(DelegationState.PENDING)
+                .listPage((int) page.getStart(), page.getPageSize());
+        page.setResult(tasks);
+        page.setTotalCount(count);
+
+        return page;
+    }
+
+    /**
+     * 同时返回已领取和未领取的任务.
+     */
+    public Page findCandidateOrAssignedTasks(String userId, String tenantId,
+            Page page) {
+        TaskService taskService = processEngine.getTaskService();
+
+        long count = taskService.createTaskQuery().taskTenantId(tenantId)
+                .taskCandidateOrAssigned(userId).count();
+        List<Task> tasks = taskService.createTaskQuery().taskTenantId(tenantId)
+                .taskCandidateOrAssigned(userId)
                 .listPage((int) page.getStart(), page.getPageSize());
         page.setResult(tasks);
         page.setTotalCount(count);

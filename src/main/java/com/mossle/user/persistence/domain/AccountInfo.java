@@ -8,7 +8,6 @@ import java.util.Set;
 import javax.persistence.Column;
 import javax.persistence.Entity;
 import javax.persistence.FetchType;
-import javax.persistence.GeneratedValue;
 import javax.persistence.Id;
 import javax.persistence.OneToMany;
 import javax.persistence.Table;
@@ -16,7 +15,7 @@ import javax.persistence.Temporal;
 import javax.persistence.TemporalType;
 
 /**
- * AccountInfo .
+ * AccountInfo 账号信息.
  * 
  * @author Lingo
  */
@@ -25,52 +24,52 @@ import javax.persistence.TemporalType;
 public class AccountInfo implements java.io.Serializable {
     private static final long serialVersionUID = 0L;
 
-    /** null. */
+    /** 主键. */
     private Long id;
 
-    /** null. */
+    /** 用户标识. */
     private String code;
 
-    /** null. */
+    /** 账号. */
     private String username;
 
-    /** null. */
+    /** 类型. */
     private String type;
 
-    /** null. */
+    /** 显示名. */
     private String displayName;
 
-    /** null. */
+    /** 状态. */
     private String status;
 
-    /** null. */
+    /** 是否需要密码. */
     private String passwordRequired;
 
-    /** null. */
+    /** 是否被锁定. */
     private String locked;
 
-    /** null. */
+    /** 创建时间. */
     private Date createTime;
 
-    /** null. */
+    /** 关闭时间. */
     private Date closeTime;
 
-    /** null. */
+    /** 登录时间. */
     private Date loginTime;
 
-    /** null. */
+    /** 昵称. */
     private String nickName;
 
-    /** null. */
+    /** 备注. */
     private String description;
 
-    /** null. */
+    /** 语言. */
     private String language;
 
-    /** null. */
+    /** 时区. */
     private String timezone;
 
-    /** null. */
+    /** 租户. */
     private String tenantId;
 
     /** . */
@@ -78,18 +77,26 @@ public class AccountInfo implements java.io.Serializable {
             0);
 
     /** . */
+    private Set<AccountDevice> accountDevices = new HashSet<AccountDevice>(0);
+
+    /** . */
     private Set<AccountAvatar> accountAvatars = new HashSet<AccountAvatar>(0);
 
     public AccountInfo() {
     }
 
-    public AccountInfo(String code, String username, String type,
+    public AccountInfo(Long id) {
+        this.id = id;
+    }
+
+    public AccountInfo(Long id, String code, String username, String type,
             String displayName, String status, String passwordRequired,
             String locked, Date createTime, Date closeTime, Date loginTime,
             String nickName, String description, String language,
             String timezone, String tenantId,
             Set<AccountCredential> accountCredentials,
-            Set<AccountAvatar> accountAvatars) {
+            Set<AccountDevice> accountDevices, Set<AccountAvatar> accountAvatars) {
+        this.id = id;
         this.code = code;
         this.username = username;
         this.type = type;
@@ -106,12 +113,12 @@ public class AccountInfo implements java.io.Serializable {
         this.timezone = timezone;
         this.tenantId = tenantId;
         this.accountCredentials = accountCredentials;
+        this.accountDevices = accountDevices;
         this.accountAvatars = accountAvatars;
     }
 
-    /** @return null. */
+    /** @return 主键. */
     @Id
-    @GeneratedValue
     @Column(name = "ID", unique = true, nullable = false)
     public Long getId() {
         return this.id;
@@ -119,13 +126,13 @@ public class AccountInfo implements java.io.Serializable {
 
     /**
      * @param id
-     *            null.
+     *            主键.
      */
     public void setId(Long id) {
         this.id = id;
     }
 
-    /** @return null. */
+    /** @return 用户标识. */
     @Column(name = "CODE", length = 50)
     public String getCode() {
         return this.code;
@@ -133,13 +140,13 @@ public class AccountInfo implements java.io.Serializable {
 
     /**
      * @param code
-     *            null.
+     *            用户标识.
      */
     public void setCode(String code) {
         this.code = code;
     }
 
-    /** @return null. */
+    /** @return 账号. */
     @Column(name = "USERNAME", length = 50)
     public String getUsername() {
         return this.username;
@@ -147,13 +154,13 @@ public class AccountInfo implements java.io.Serializable {
 
     /**
      * @param username
-     *            null.
+     *            账号.
      */
     public void setUsername(String username) {
         this.username = username;
     }
 
-    /** @return null. */
+    /** @return 类型. */
     @Column(name = "TYPE", length = 50)
     public String getType() {
         return this.type;
@@ -161,13 +168,13 @@ public class AccountInfo implements java.io.Serializable {
 
     /**
      * @param type
-     *            null.
+     *            类型.
      */
     public void setType(String type) {
         this.type = type;
     }
 
-    /** @return null. */
+    /** @return 显示名. */
     @Column(name = "DISPLAY_NAME", length = 200)
     public String getDisplayName() {
         return this.displayName;
@@ -175,13 +182,13 @@ public class AccountInfo implements java.io.Serializable {
 
     /**
      * @param displayName
-     *            null.
+     *            显示名.
      */
     public void setDisplayName(String displayName) {
         this.displayName = displayName;
     }
 
-    /** @return null. */
+    /** @return 状态. */
     @Column(name = "STATUS", length = 50)
     public String getStatus() {
         return this.status;
@@ -189,13 +196,13 @@ public class AccountInfo implements java.io.Serializable {
 
     /**
      * @param status
-     *            null.
+     *            状态.
      */
     public void setStatus(String status) {
         this.status = status;
     }
 
-    /** @return null. */
+    /** @return 是否需要密码. */
     @Column(name = "PASSWORD_REQUIRED", length = 50)
     public String getPasswordRequired() {
         return this.passwordRequired;
@@ -203,13 +210,13 @@ public class AccountInfo implements java.io.Serializable {
 
     /**
      * @param passwordRequired
-     *            null.
+     *            是否需要密码.
      */
     public void setPasswordRequired(String passwordRequired) {
         this.passwordRequired = passwordRequired;
     }
 
-    /** @return null. */
+    /** @return 是否被锁定. */
     @Column(name = "LOCKED", length = 50)
     public String getLocked() {
         return this.locked;
@@ -217,13 +224,13 @@ public class AccountInfo implements java.io.Serializable {
 
     /**
      * @param locked
-     *            null.
+     *            是否被锁定.
      */
     public void setLocked(String locked) {
         this.locked = locked;
     }
 
-    /** @return null. */
+    /** @return 创建时间. */
     @Temporal(TemporalType.TIMESTAMP)
     @Column(name = "CREATE_TIME", length = 26)
     public Date getCreateTime() {
@@ -232,13 +239,13 @@ public class AccountInfo implements java.io.Serializable {
 
     /**
      * @param createTime
-     *            null.
+     *            创建时间.
      */
     public void setCreateTime(Date createTime) {
         this.createTime = createTime;
     }
 
-    /** @return null. */
+    /** @return 关闭时间. */
     @Temporal(TemporalType.TIMESTAMP)
     @Column(name = "CLOSE_TIME", length = 26)
     public Date getCloseTime() {
@@ -247,13 +254,13 @@ public class AccountInfo implements java.io.Serializable {
 
     /**
      * @param closeTime
-     *            null.
+     *            关闭时间.
      */
     public void setCloseTime(Date closeTime) {
         this.closeTime = closeTime;
     }
 
-    /** @return null. */
+    /** @return 登录时间. */
     @Temporal(TemporalType.TIMESTAMP)
     @Column(name = "LOGIN_TIME", length = 26)
     public Date getLoginTime() {
@@ -262,13 +269,13 @@ public class AccountInfo implements java.io.Serializable {
 
     /**
      * @param loginTime
-     *            null.
+     *            登录时间.
      */
     public void setLoginTime(Date loginTime) {
         this.loginTime = loginTime;
     }
 
-    /** @return null. */
+    /** @return 昵称. */
     @Column(name = "NICK_NAME", length = 200)
     public String getNickName() {
         return this.nickName;
@@ -276,13 +283,13 @@ public class AccountInfo implements java.io.Serializable {
 
     /**
      * @param nickName
-     *            null.
+     *            昵称.
      */
     public void setNickName(String nickName) {
         this.nickName = nickName;
     }
 
-    /** @return null. */
+    /** @return 备注. */
     @Column(name = "DESCRIPTION", length = 200)
     public String getDescription() {
         return this.description;
@@ -290,13 +297,13 @@ public class AccountInfo implements java.io.Serializable {
 
     /**
      * @param description
-     *            null.
+     *            备注.
      */
     public void setDescription(String description) {
         this.description = description;
     }
 
-    /** @return null. */
+    /** @return 语言. */
     @Column(name = "LANGUAGE", length = 50)
     public String getLanguage() {
         return this.language;
@@ -304,13 +311,13 @@ public class AccountInfo implements java.io.Serializable {
 
     /**
      * @param language
-     *            null.
+     *            语言.
      */
     public void setLanguage(String language) {
         this.language = language;
     }
 
-    /** @return null. */
+    /** @return 时区. */
     @Column(name = "TIMEZONE", length = 50)
     public String getTimezone() {
         return this.timezone;
@@ -318,13 +325,13 @@ public class AccountInfo implements java.io.Serializable {
 
     /**
      * @param timezone
-     *            null.
+     *            时区.
      */
     public void setTimezone(String timezone) {
         this.timezone = timezone;
     }
 
-    /** @return null. */
+    /** @return 租户. */
     @Column(name = "TENANT_ID", length = 64)
     public String getTenantId() {
         return this.tenantId;
@@ -332,7 +339,7 @@ public class AccountInfo implements java.io.Serializable {
 
     /**
      * @param tenantId
-     *            null.
+     *            租户.
      */
     public void setTenantId(String tenantId) {
         this.tenantId = tenantId;
@@ -350,6 +357,20 @@ public class AccountInfo implements java.io.Serializable {
      */
     public void setAccountCredentials(Set<AccountCredential> accountCredentials) {
         this.accountCredentials = accountCredentials;
+    }
+
+    /** @return . */
+    @OneToMany(fetch = FetchType.LAZY, mappedBy = "accountInfo")
+    public Set<AccountDevice> getAccountDevices() {
+        return this.accountDevices;
+    }
+
+    /**
+     * @param accountDevices
+     *            .
+     */
+    public void setAccountDevices(Set<AccountDevice> accountDevices) {
+        this.accountDevices = accountDevices;
     }
 
     /** @return . */

@@ -7,19 +7,18 @@ import java.util.Map;
 
 import javax.annotation.Resource;
 
-import javax.servlet.http.HttpServletRequest;
-import javax.servlet.http.HttpServletResponse;
+import com.mossle.api.humantask.HumanTaskConnector;
+import com.mossle.api.humantask.HumanTaskConstants;
+import com.mossle.api.humantask.HumanTaskDTO;
+import com.mossle.api.tenant.TenantHolder;
 
-import com.mossle.core.MultipartHandler;
 import com.mossle.core.auth.CurrentUserHolder;
 import com.mossle.core.export.Exportor;
-import com.mossle.core.export.TableModel;
-import com.mossle.core.hibernate.PropertyFilter;
 import com.mossle.core.mapper.BeanMapper;
 import com.mossle.core.mapper.JsonMapper;
 import com.mossle.core.page.Page;
+import com.mossle.core.query.PropertyFilter;
 import com.mossle.core.spring.MessageHelper;
-import com.mossle.core.store.MultipartFileDataSource;
 
 import com.mossle.humantask.persistence.domain.TaskInfo;
 import com.mossle.humantask.persistence.manager.TaskInfoManager;
@@ -27,25 +26,15 @@ import com.mossle.humantask.persistence.manager.TaskInfoManager;
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
 
-import org.springframework.context.MessageSource;
-import org.springframework.context.support.MessageSourceAccessor;
-
 import org.springframework.jdbc.core.JdbcTemplate;
 
 import org.springframework.stereotype.Controller;
 
 import org.springframework.ui.Model;
 
-import org.springframework.util.MultiValueMap;
-
 import org.springframework.web.bind.annotation.ModelAttribute;
 import org.springframework.web.bind.annotation.RequestMapping;
 import org.springframework.web.bind.annotation.RequestParam;
-import org.springframework.web.bind.annotation.ResponseBody;
-import org.springframework.web.multipart.MultipartFile;
-import org.springframework.web.multipart.MultipartHttpServletRequest;
-import org.springframework.web.multipart.MultipartResolver;
-import org.springframework.web.servlet.mvc.support.RedirectAttributes;
 
 @Controller
 @RequestMapping("humantask")
@@ -59,77 +48,77 @@ public class TaskWorkspaceController {
     private MessageHelper messageHelper;
     private CurrentUserHolder currentUserHolder;
     private JdbcTemplate jdbcTemplate;
+    private HumanTaskConnector humanTaskConnector;
+    private TenantHolder tenantHolder;
 
+    /**
+     * 待办任务.
+     */
     @RequestMapping("workspace-personalTasks")
     public String personalTasks(@ModelAttribute Page page,
             @RequestParam Map<String, Object> parameterMap, Model model) {
         String userId = currentUserHolder.getUserId();
-        List<PropertyFilter> propertyFilters = PropertyFilter
-                .buildFromMap(parameterMap);
-        propertyFilters.add(new PropertyFilter("EQS_status", "active"));
-        propertyFilters.add(new PropertyFilter("EQS_assignee", userId));
-        page = taskInfoManager.pagedQuery(page, propertyFilters);
+        String tenantId = tenantHolder.getTenantId();
+        page = humanTaskConnector.findPersonalTasks(userId, tenantId,
+                page.getPageNo(), page.getPageSize());
+        // List<PropertyFilter> propertyFilters = PropertyFilter
+        // .buildFromMap(parameterMap);
+        // propertyFilters.add(new PropertyFilter("EQS_status", "active"));
+        // propertyFilters.add(new PropertyFilter("EQS_assignee", userId));
+        // page = taskInfoManager.pagedQuery(page, propertyFilters);
         model.addAttribute("page", page);
 
         return "humantask/workspace-personalTasks";
     }
 
+    /**
+     * 待领任务.
+     */
     @RequestMapping("workspace-groupTasks")
     public String groupTasks(@ModelAttribute Page page,
             @RequestParam Map<String, Object> parameterMap, Model model) {
         String userId = currentUserHolder.getUserId();
-        String sql = "select ps.PARENT_ENTITY_ID as ID from PARTY_STRUCT ps,PARTY_ENTITY child,PARTY_TYPE type"
-                + " where ps.CHILD_ENTITY_ID=child.ID and child.TYPE_ID=type.ID and type.TYPE='1' and child.REF=?";
-        List<Map<String, Object>> list = jdbcTemplate.queryForList(sql, userId);
-        List<String> partyIds = new ArrayList<String>();
-
-        for (Map<String, Object> map : list) {
-            partyIds.add(map.get("ID").toString());
-        }
-		Map<String, Object> map = new HashMap<String, Object>();
-		map.put("partyIds", partyIds);
-
-        String hql = "from TaskInfo t join t.taskParticipants p with p.ref in (:partyIds)";
-        page = taskInfoManager.pagedQuery(hql, page.getPageNo(),
-                page.getPageSize(), map);
-        // List<PropertyFilter> propertyFilters = PropertyFilter
-        // .buildFromMap(parameterMap);
-        // propertyFilters.add(new PropertyFilter("EQS_status", "active"));
-        // propertyFilters.add(new PropertyFilter("INLS_assignee", null));
-        // page = taskInfoManager.pagedQuery(page, propertyFilters);
+        String tenantId = tenantHolder.getTenantId();
+        page = humanTaskConnector.findGroupTasks(userId, tenantId,
+                page.getPageNo(), page.getPageSize());
         model.addAttribute("page", page);
 
         return "humantask/workspace-groupTasks";
     }
 
+    /**
+     * 已办任务.
+     */
     @RequestMapping("workspace-historyTasks")
     public String historyTasks(@ModelAttribute Page page,
             @RequestParam Map<String, Object> parameterMap, Model model) {
         String userId = currentUserHolder.getUserId();
-        List<PropertyFilter> propertyFilters = PropertyFilter
-                .buildFromMap(parameterMap);
-        propertyFilters.add(new PropertyFilter("EQS_status", "complete"));
-        propertyFilters.add(new PropertyFilter("EQS_assignee", userId));
-        page = taskInfoManager.pagedQuery(page, propertyFilters);
+        String tenantId = tenantHolder.getTenantId();
+        page = humanTaskConnector.findFinishedTasks(userId, tenantId,
+                page.getPageNo(), page.getPageSize());
         model.addAttribute("page", page);
 
         return "humantask/workspace-historyTasks";
     }
 
+    /**
+     * 代理中的任务.
+     */
     @RequestMapping("workspace-delegatedTasks")
     public String delegatedTasks(@ModelAttribute Page page,
             @RequestParam Map<String, Object> parameterMap, Model model) {
         String userId = currentUserHolder.getUserId();
-        List<PropertyFilter> propertyFilters = PropertyFilter
-                .buildFromMap(parameterMap);
-        propertyFilters.add(new PropertyFilter("EQS_status", "active"));
-        propertyFilters.add(new PropertyFilter("EQS_owner", userId));
-        page = taskInfoManager.pagedQuery(page, propertyFilters);
+        String tenantId = tenantHolder.getTenantId();
+        page = humanTaskConnector.findDelegateTasks(userId, tenantId,
+                page.getPageNo(), page.getPageSize());
         model.addAttribute("page", page);
 
         return "humantask/workspace-delegatedTasks";
     }
 
+    /**
+     * 领取.
+     */
     @RequestMapping("workspace-claimTask")
     public String claimTask(@RequestParam("taskId") Long taskId) {
         String userId = currentUserHolder.getUserId();
@@ -138,6 +127,49 @@ public class TaskWorkspaceController {
         taskInfoManager.save(taskInfo);
 
         return "redirect:/humantask/workspace-personalTasks.do";
+    }
+
+    /**
+     * 转发已结流程.
+     */
+    @RequestMapping("workspace-transferTask")
+    public String transferTask(@RequestParam("humanTaskId") String humanTaskId,
+            @RequestParam("assignee") String assignee) {
+        String tenantId = tenantHolder.getTenantId();
+
+        // 1. 找到任务
+        HumanTaskDTO historyHumanTask = humanTaskConnector
+                .findHumanTask(humanTaskId);
+
+        // 2. 创建一个任务，设置为未读，转发状态
+        HumanTaskDTO humanTaskDto = humanTaskConnector.createHumanTask();
+        humanTaskDto.setProcessInstanceId(historyHumanTask
+                .getProcessInstanceId());
+        humanTaskDto.setPresentationSubject(historyHumanTask
+                .getPresentationSubject());
+        humanTaskDto.setAssignee(assignee);
+        humanTaskDto.setTenantId(tenantId);
+        humanTaskDto.setParentId(historyHumanTask.getId());
+        // TODO: 还没有字段
+        // humanTaskDto.setCopyStatus("unread");
+        humanTaskDto.setCatalog(HumanTaskConstants.CATALOG_COPY);
+        humanTaskDto.setAction("unread");
+        humanTaskDto.setBusinessKey(historyHumanTask.getBusinessKey());
+        humanTaskDto.setProcessDefinitionId(historyHumanTask
+                .getProcessDefinitionId());
+
+        try {
+            // TODO: 等到流程支持viewFormKey，才能设置。目前做不到
+            humanTaskDto.setForm(historyHumanTask.getForm());
+            humanTaskDto.setName(historyHumanTask.getName());
+        } catch (Exception ex) {
+            logger.error(ex.getMessage(), ex);
+        }
+
+        humanTaskConnector.saveHumanTask(humanTaskDto);
+
+        // 3. 把任务分配给对应的人员
+        return "redirect:/humantask/workspace-historyTasks.do#";
     }
 
     // ~ ======================================================================
@@ -164,5 +196,15 @@ public class TaskWorkspaceController {
     @Resource
     public void setJdbcTemplate(JdbcTemplate jdbcTemplate) {
         this.jdbcTemplate = jdbcTemplate;
+    }
+
+    @Resource
+    public void setHumanTaskConnector(HumanTaskConnector humanTaskConnector) {
+        this.humanTaskConnector = humanTaskConnector;
+    }
+
+    @Resource
+    public void setTenantHolder(TenantHolder tenantHolder) {
+        this.tenantHolder = tenantHolder;
     }
 }

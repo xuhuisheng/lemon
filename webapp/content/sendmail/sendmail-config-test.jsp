@@ -8,7 +8,7 @@
   <head>
     <%@include file="/common/meta.jsp"%>
     <title>编辑</title>
-    <%@include file="/common/s.jsp"%>
+    <%@include file="/common/s3.jsp"%>
     <script type="text/javascript">
 $(function() {
     $("#mailConfigForm").validate({
@@ -30,14 +30,15 @@ $(function() {
 	  <%@include file="/menu/sendmail.jsp"%>
 
 	  <!-- start of main -->
-      <section id="m-main" class="span10">
+      <section id="m-main" class="col-md-10" style="padding-top:65px;">
 
-      <article class="m-widget">
-        <header class="header">
-		  <h4 class="title">${mailDto.success ? '发送成功' : '发送失败'}</h4>
-		</header>
+      <div class="panel panel-default">
+        <div class="panel-heading">
+		  <i class="glyphicon glyphicon-list"></i>
+		  ${mailDto.success ? '发送成功' : '发送失败'}
+		</div>
 
-		<div class="content content-inner">
+		<div class="panel-body">
 
 <c:if test="${mailDto.success}">
 发送成功
@@ -46,10 +47,9 @@ $(function() {
 <pre>${exception}</pre>
 </c:if>
 
-        </div>
-      </article>
-
-      </section>
+		</div>
+      </div>
+	  </section>
 	  <!-- end of main -->
 	</div>
 

@@ -8,10 +8,10 @@ import java.util.Map;
 
 import javax.annotation.Resource;
 
-import javax.servlet.http.HttpServletResponse;
-
 import com.fasterxml.jackson.databind.JsonNode;
 import com.fasterxml.jackson.databind.ObjectMapper;
+
+import com.mossle.api.tenant.TenantHolder;
 
 import com.mossle.bpm.cmd.SyncProcessCmd;
 
@@ -35,12 +35,10 @@ import org.slf4j.LoggerFactory;
 
 import org.springframework.stereotype.Controller;
 
-import org.springframework.web.bind.annotation.ModelAttribute;
 import org.springframework.web.bind.annotation.PathVariable;
 import org.springframework.web.bind.annotation.RequestMapping;
 import org.springframework.web.bind.annotation.RequestParam;
 import org.springframework.web.bind.annotation.ResponseBody;
-import org.springframework.web.servlet.mvc.support.RedirectAttributes;
 
 /**
  * modeler.
@@ -53,6 +51,7 @@ public class ModelerController {
     private static Logger logger = LoggerFactory
             .getLogger(ModelerController.class);
     private ProcessEngine processEngine;
+    private TenantHolder tenantHolder;
     private JsonMapper jsonMapper = new JsonMapper();
 
     @RequestMapping("modeler-list")
@@ -91,6 +90,7 @@ public class ModelerController {
     @RequestMapping("modeler-deploy")
     public String deploy(@RequestParam("id") String id,
             org.springframework.ui.Model theModel) throws Exception {
+        String tenantId = tenantHolder.getTenantId();
         RepositoryService repositoryService = processEngine
                 .getRepositoryService();
         Model modelData = repositoryService.getModel(id);
@@ -113,7 +113,7 @@ public class ModelerController {
         Deployment deployment = repositoryService.createDeployment()
                 .name(modelData.getName())
                 .addString(processName, new String(bpmnBytes, "UTF-8"))
-                .deploy();
+                .tenantId(tenantId).deploy();
         modelData.setDeploymentId(deployment.getId());
         repositoryService.saveModel(modelData);
 
@@ -216,5 +216,10 @@ public class ModelerController {
     @Resource
     public void setProcessEngine(ProcessEngine processEngine) {
         this.processEngine = processEngine;
+    }
+
+    @Resource
+    public void setTenantHolder(TenantHolder tenantHolder) {
+        this.tenantHolder = tenantHolder;
     }
 }

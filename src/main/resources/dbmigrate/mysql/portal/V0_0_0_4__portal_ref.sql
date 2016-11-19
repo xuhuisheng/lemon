@@ -4,7 +4,7 @@
 --  portal ref
 -------------------------------------------------------------------------------
 CREATE TABLE PORTAL_REF(
-        ID BIGINT AUTO_INCREMENT,
+        ID BIGINT NOT NULL,
 	INFO_ID BIGINT,
 	USER_ID VARCHAR(64),
 	TENANT_ID VARCHAR(64),

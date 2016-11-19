@@ -6,6 +6,7 @@ import java.util.List;
 public class TaskDefinitionDTO {
     public static final String CATALOG_ASSIGNEE = "assignee";
     public static final String CATALOG_CANDIDATE = "candidate";
+    public static final String CATALOG_NOTIFICATION = "notification";
     public static final String TYPE_USER = "user";
     public static final String TYPE_GROUP = "group";
     private String id;
@@ -110,6 +111,7 @@ public class TaskDefinitionDTO {
 
         TaskUserDTO taskUser = new TaskUserDTO();
         taskUser.setCatalog(CATALOG_ASSIGNEE);
+        taskUser.setType(TYPE_USER);
         taskUser.setValue(assignee);
         taskUsers.add(taskUser);
     }

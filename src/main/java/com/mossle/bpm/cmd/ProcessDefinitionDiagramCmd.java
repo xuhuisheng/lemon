@@ -3,8 +3,6 @@ package com.mossle.bpm.cmd;
 import java.io.ByteArrayInputStream;
 import java.io.InputStream;
 
-import java.util.Collections;
-
 import org.activiti.bpmn.model.BpmnModel;
 
 import org.activiti.engine.ProcessEngineConfiguration;
@@ -14,7 +12,6 @@ import org.activiti.engine.impl.context.Context;
 import org.activiti.engine.impl.interceptor.Command;
 import org.activiti.engine.impl.interceptor.CommandContext;
 import org.activiti.engine.impl.persistence.entity.ProcessDefinitionEntity;
-import org.activiti.engine.impl.persistence.entity.ResourceEntity;
 
 import org.activiti.image.impl.DefaultProcessDiagramGenerator;
 

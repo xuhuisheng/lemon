@@ -4,7 +4,7 @@
 --  account info
 -------------------------------------------------------------------------------
 CREATE TABLE ACCOUNT_INFO(
-        ID BIGINT AUTO_INCREMENT,
+        ID BIGINT NOT NULL,
 	CODE VARCHAR(50),
         USERNAME VARCHAR(50),
 	TYPE VARCHAR(50),
@@ -21,3 +21,20 @@ CREATE TABLE ACCOUNT_INFO(
 	TIMEZONE VARCHAR(50),
         CONSTRAINT PK_ACCOUNT_INFO PRIMARY KEY(ID)
 ) ENGINE=INNODB CHARSET=UTF8;
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+

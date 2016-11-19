@@ -46,6 +46,11 @@ TaskOperation.prototype.rollbackStart = function() {
 	$('#' + this.formId).submit();
 };
 
+TaskOperation.prototype.rollbackInitiator = function() {
+	$('#' + this.formId).attr('action', ROOT_URL + '/operation/task-operation-rollbackInitiator.do');
+	$('#' + this.formId).submit();
+};
+
 TaskOperation.prototype.transfer = function() {
 	$('#modal form').attr('action', ROOT_URL + '/operation/task-operation-transfer.do');
 	$('#modal').modal();
@@ -59,4 +64,37 @@ TaskOperation.prototype.delegateTask = function() {
 TaskOperation.prototype.delegateTaskCreate = function() {
 	$('#modal form').attr('action', ROOT_URL + '/operation/task-operation-delegateTaskCreate.do');
 	$('#modal').modal();
+};
+
+TaskOperation.prototype.communicate = function() {
+	$('#modalCommunicate form').attr('action', ROOT_URL + '/operation/task-operation-communicate.do');
+	$('#modalCommunicate').modal();
+};
+
+TaskOperation.prototype.approve = function() {
+	$('#' + this.formId).attr('action', ROOT_URL + '/operation/task-operation-completeTask.do');
+	$('#_humantask_action_').val("同意");
+	$('#' + this.formId).submit();
+};
+
+TaskOperation.prototype.reject = function() {
+	$('#' + this.formId).attr('action', ROOT_URL + '/operation/task-operation-completeTask.do');
+	$('#_humantask_action_').val("反对");
+	$('#' + this.formId).submit();
+};
+
+TaskOperation.prototype.abandon = function() {
+	$('#' + this.formId).attr('action', ROOT_URL + '/operation/task-operation-completeTask.do');
+	$('#_humantask_action_').val("弃权");
+	$('#' + this.formId).submit();
+};
+
+TaskOperation.prototype.callback = function() {
+	$('#modalCallback form').attr('action', ROOT_URL + '/operation/task-operation-callback.do');
+	$('#modalCallback').modal();
+};
+
+TaskOperation.prototype.addCounterSign = function() {
+	$('#modalCreateVote form').attr('action', ROOT_URL + '/operation/task-operation-createVote.do');
+	$('#modalCreateVote').modal();
 };

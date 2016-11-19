@@ -8,7 +8,7 @@
   <head>
     <%@include file="/common/meta.jsp"%>
     <title><spring:message code="user.user.input.title" text="编辑用户"/></title>
-    <%@include file="/common/s.jsp"%>
+    <%@include file="/common/s3.jsp"%>
 
     <link rel="stylesheet" href="${tenantPrefix}/s/jcrop/css/jquery.Jcrop.min.css" type="text/css" media="screen" />
     <script type="text/javascript" src="${tenantPrefix}/s/jcrop/js/jquery.Jcrop.min.js"></script>
@@ -43,13 +43,13 @@ $(function () {
 	  <%@include file="/menu/my.jsp"%>
 
 	<!-- start of main -->
-    <section id="m-main" class="span10">
+      <section id="m-main" class="col-md-10" style="margin-top:65px;">
 
-      <article class="m-widget">
-        <header class="header">
-		  <h4 class="title"><spring:message code="user.user.input.title" text="编辑用户"/></h4>
+      <article class="panel panel-default">
+        <header class="panel-heading">
+		  <spring:message code="user.user.input.title" text="编辑用户"/>
 		</header>
-		<div class="content content-inner">
+		<div class="panel-body">
 
 <form id="userBaseForm" method="post" action="my-avatar-save.do" class="form-horizontal">
   <input id="x1" type="hidden" name="x1" value="">
@@ -70,7 +70,7 @@ $(function () {
 
   <div class="control-group">
     <div class="controls">
-      <button id="submitButton" class="btn a-submit">确认</button>
+      <button id="submitButton" class="btn btn-default a-submit">确认</button>
     </div>
   </div>
 </form>

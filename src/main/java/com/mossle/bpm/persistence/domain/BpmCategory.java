@@ -7,14 +7,13 @@ import java.util.Set;
 import javax.persistence.Column;
 import javax.persistence.Entity;
 import javax.persistence.FetchType;
-import javax.persistence.GeneratedValue;
 import javax.persistence.Id;
 import javax.persistence.OneToMany;
 import javax.persistence.OrderBy;
 import javax.persistence.Table;
 
 /**
- * BpmCategory .
+ * BpmCategory 流程分类.
  * 
  * @author Lingo
  */
@@ -23,16 +22,16 @@ import javax.persistence.Table;
 public class BpmCategory implements java.io.Serializable {
     private static final long serialVersionUID = 0L;
 
-    /** null. */
+    /** 主键. */
     private Long id;
 
-    /** null. */
+    /** 名称. */
     private String name;
 
-    /** null. */
+    /** 排序. */
     private Integer priority;
 
-    /** null. */
+    /** 租户. */
     private String tenantId;
 
     /** . */
@@ -41,17 +40,21 @@ public class BpmCategory implements java.io.Serializable {
     public BpmCategory() {
     }
 
-    public BpmCategory(String name, Integer priority, String tenantId,
+    public BpmCategory(Long id) {
+        this.id = id;
+    }
+
+    public BpmCategory(Long id, String name, Integer priority, String tenantId,
             Set<BpmProcess> bpmProcesses) {
+        this.id = id;
         this.name = name;
         this.priority = priority;
         this.tenantId = tenantId;
         this.bpmProcesses = bpmProcesses;
     }
 
-    /** @return null. */
+    /** @return 主键. */
     @Id
-    @GeneratedValue
     @Column(name = "ID", unique = true, nullable = false)
     public Long getId() {
         return this.id;
@@ -59,13 +62,13 @@ public class BpmCategory implements java.io.Serializable {
 
     /**
      * @param id
-     *            null.
+     *            主键.
      */
     public void setId(Long id) {
         this.id = id;
     }
 
-    /** @return null. */
+    /** @return 名称. */
     @Column(name = "NAME", length = 200)
     public String getName() {
         return this.name;
@@ -73,13 +76,13 @@ public class BpmCategory implements java.io.Serializable {
 
     /**
      * @param name
-     *            null.
+     *            名称.
      */
     public void setName(String name) {
         this.name = name;
     }
 
-    /** @return null. */
+    /** @return 排序. */
     @Column(name = "PRIORITY")
     public Integer getPriority() {
         return this.priority;
@@ -87,13 +90,13 @@ public class BpmCategory implements java.io.Serializable {
 
     /**
      * @param priority
-     *            null.
+     *            排序.
      */
     public void setPriority(Integer priority) {
         this.priority = priority;
     }
 
-    /** @return null. */
+    /** @return 租户. */
     @Column(name = "TENANT_ID", length = 64)
     public String getTenantId() {
         return this.tenantId;
@@ -101,7 +104,7 @@ public class BpmCategory implements java.io.Serializable {
 
     /**
      * @param tenantId
-     *            null.
+     *            租户.
      */
     public void setTenantId(String tenantId) {
         this.tenantId = tenantId;

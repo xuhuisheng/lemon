@@ -8,7 +8,6 @@ import java.util.Set;
 import javax.persistence.Column;
 import javax.persistence.Entity;
 import javax.persistence.FetchType;
-import javax.persistence.GeneratedValue;
 import javax.persistence.Id;
 import javax.persistence.JoinColumn;
 import javax.persistence.ManyToOne;
@@ -129,16 +128,22 @@ public class CmsArticle implements java.io.Serializable {
     public CmsArticle() {
     }
 
-    public CmsArticle(CmsCatalog cmsCatalog, String title, String shortTitle,
-            String subTitle, String content, String summary, String logo,
-            String keyword, String tags, String source, Integer allowComment,
-            Integer status, Date publishTime, Date closeTime, Integer type,
-            Integer top, Integer weight, Date createTime, String template,
-            Integer hitCount, Long recommendId, Integer recommendStatus,
-            String userId, Integer commentCount, String code, String tenantId,
+    public CmsArticle(Long id) {
+        this.id = id;
+    }
+
+    public CmsArticle(Long id, CmsCatalog cmsCatalog, String title,
+            String shortTitle, String subTitle, String content, String summary,
+            String logo, String keyword, String tags, String source,
+            Integer allowComment, Integer status, Date publishTime,
+            Date closeTime, Integer type, Integer top, Integer weight,
+            Date createTime, String template, Integer hitCount,
+            Long recommendId, Integer recommendStatus, String userId,
+            Integer commentCount, String code, String tenantId,
             Set<CmsAttachment> cmsAttachments, Set<CmsFavorite> cmsFavorites,
             Set<CmsTagArticle> cmsTagArticles, Set<CmsComment> cmsComments,
             Set<CmsClick> cmsClicks, Set<CmsSite> cmsSites) {
+        this.id = id;
         this.cmsCatalog = cmsCatalog;
         this.title = title;
         this.shortTitle = shortTitle;
@@ -175,7 +180,6 @@ public class CmsArticle implements java.io.Serializable {
 
     /** @return null. */
     @Id
-    @GeneratedValue
     @Column(name = "ID", unique = true, nullable = false)
     public Long getId() {
         return this.id;

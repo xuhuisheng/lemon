@@ -14,7 +14,9 @@
 		</property>
 	</bean>
 
-	<bean id="msgNotificationHandler" class="com.mossle.msg.support.MsgNotificationHandler"/>
+	<bean id="msgNotificationHandler" class="com.mossle.msg.support.MsgNotificationHandler">
+		<property name="defaultSender" value="${msg.default.sender}"/>
+	</bean>
 
 	<bean id="sendmailNotificationHandler" class="com.mossle.internal.sendmail.support.SendmailNotificationHandler"/>
 

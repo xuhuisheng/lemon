@@ -1,0 +1,16 @@
+
+
+-------------------------------------------------------------------------------
+--  user role
+-------------------------------------------------------------------------------
+CREATE TABLE AUTH_USER_ROLE(
+        USER_STATUS_ID BIGINT NOT NULL,
+        ROLE_ID BIGINT NOT NULL,
+        CONSTRAINT PK_AUTH_USER_ROLE PRIMARY KEY(USER_STATUS_ID,ROLE_ID),
+        CONSTRAINT FK_AUTH_USER_ROLE_USER FOREIGN KEY(USER_STATUS_ID) REFERENCES AUTH_USER_STATUS(ID),
+        CONSTRAINT FK_AUTH_USER_ROLE_ROLE FOREIGN KEY(ROLE_ID) REFERENCES AUTH_ROLE(ID)
+);
+
+COMMENT ON TABLE AUTH_USER_ROLE IS '用户角色关系';
+COMMENT ON COLUMN AUTH_USER_ROLE.USER_STATUS_ID IS '外键，用户';
+COMMENT ON COLUMN AUTH_USER_ROLE.ROLE_ID IS '外键，角色';

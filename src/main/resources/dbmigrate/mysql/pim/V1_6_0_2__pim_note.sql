@@ -4,7 +4,7 @@
 --  pim note
 -------------------------------------------------------------------------------
 CREATE TABLE PIM_NOTE(
-        ID BIGINT AUTO_INCREMENT,
+        ID BIGINT NOT NULL,
 	TITLE VARCHAR(100),
         CONTENT VARCHAR(200),
 	CREATE_TIME DATETIME,

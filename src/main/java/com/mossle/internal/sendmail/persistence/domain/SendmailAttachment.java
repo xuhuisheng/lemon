@@ -4,7 +4,6 @@ package com.mossle.internal.sendmail.persistence.domain;
 import javax.persistence.Column;
 import javax.persistence.Entity;
 import javax.persistence.FetchType;
-import javax.persistence.GeneratedValue;
 import javax.persistence.Id;
 import javax.persistence.JoinColumn;
 import javax.persistence.ManyToOne;
@@ -38,8 +37,13 @@ public class SendmailAttachment implements java.io.Serializable {
     public SendmailAttachment() {
     }
 
-    public SendmailAttachment(SendmailTemplate sendmailTemplate, String name,
-            String path, String tenantId) {
+    public SendmailAttachment(Long id) {
+        this.id = id;
+    }
+
+    public SendmailAttachment(Long id, SendmailTemplate sendmailTemplate,
+            String name, String path, String tenantId) {
+        this.id = id;
         this.sendmailTemplate = sendmailTemplate;
         this.name = name;
         this.path = path;
@@ -48,7 +52,6 @@ public class SendmailAttachment implements java.io.Serializable {
 
     /** @return null. */
     @Id
-    @GeneratedValue
     @Column(name = "ID", unique = true, nullable = false)
     public Long getId() {
         return this.id;

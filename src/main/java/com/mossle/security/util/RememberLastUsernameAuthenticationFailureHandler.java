@@ -32,6 +32,22 @@ public class RememberLastUsernameAuthenticationFailureHandler extends
         session.setAttribute(SecurityConstants.SECURITY_LAST_TENANT,
                 tenantHolder.getTenantCode());
 
+        Integer failureCount = (Integer) session
+                .getAttribute("SECURITY_FAILURE_COUNT");
+
+        if (failureCount == null) {
+            failureCount = 0;
+        }
+
+        failureCount++;
+
+        if (failureCount > 3) {
+            session.removeAttribute("SECURITY_FAILURE_COUNT");
+            session.setAttribute("captchaSessionToken", true);
+        } else {
+            session.setAttribute("SECURITY_FAILURE_COUNT", failureCount);
+        }
+
         super.onAuthenticationFailure(request, response, exception);
     }
 

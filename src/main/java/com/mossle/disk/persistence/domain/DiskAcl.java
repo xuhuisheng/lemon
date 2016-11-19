@@ -4,7 +4,6 @@ package com.mossle.disk.persistence.domain;
 import javax.persistence.Column;
 import javax.persistence.Entity;
 import javax.persistence.FetchType;
-import javax.persistence.GeneratedValue;
 import javax.persistence.Id;
 import javax.persistence.JoinColumn;
 import javax.persistence.ManyToOne;
@@ -35,7 +34,12 @@ public class DiskAcl implements java.io.Serializable {
     public DiskAcl() {
     }
 
-    public DiskAcl(DiskShare diskShare, String type, String ref) {
+    public DiskAcl(Long id) {
+        this.id = id;
+    }
+
+    public DiskAcl(Long id, DiskShare diskShare, String type, String ref) {
+        this.id = id;
         this.diskShare = diskShare;
         this.type = type;
         this.ref = ref;
@@ -43,7 +47,6 @@ public class DiskAcl implements java.io.Serializable {
 
     /** @return null. */
     @Id
-    @GeneratedValue
     @Column(name = "ID", unique = true, nullable = false)
     public Long getId() {
         return this.id;

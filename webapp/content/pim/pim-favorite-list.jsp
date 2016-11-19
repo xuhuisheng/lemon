@@ -8,7 +8,7 @@
   <head>
     <%@include file="/common/meta.jsp"%>
     <title>列表</title>
-    <%@include file="/common/s.jsp"%>
+    <%@include file="/common/s3.jsp"%>
     <script type="text/javascript">
 var config = {
     id: 'pimFavoriteGrid',
@@ -39,59 +39,56 @@ $(function() {
   </head>
 
   <body>
-    <%@include file="/header/pim.jsp"%>
+    <%@include file="/header/pim3.jsp"%>
 
     <div class="row-fluid">
-	  <%@include file="/menu/pim.jsp"%>
+	  <%@include file="/menu/pim3.jsp"%>
 
 	  <!-- start of main -->
-      <section id="m-main" class="span10">
+      <section id="m-main" class="col-md-10" style="padding-top:65px;">
 
-	  <article class="m-widget">
-        <header class="header">
-		  <h4 class="title">查询</h4>
-		  <div class="ctrl">
-		    <a class="btn"><i id="pimFavoriteSearchIcon" class="icon-chevron-up"></i></a>
-		  </div>
-		</header>
-        <div id="pimFavoriteSearch" class="content content-inner">
+<div class="panel panel-default">
+  <div class="panel-heading">
+    查询
+	<div class="pull-right ctrl">
+	  <a class="btn btn-default btn-xs"><i id="pimFavoriteSearchIcon" class="glyphicon glyphicon-chevron-up"></i></a>
+    </div>
+  </div>
+  <div class="panel-body">
+    <form name="pimFavoriteForm" method="post" action="pim-favorite-list.do" class="form-inline">
+	  <label for="pimFavorite_name">名称:</label>
+	  <input type="text" id="pimFavorite_name" name="filter_LIKES_name" value="${param.filter_LIKES_name}" class="form-control">
+	  <button class="btn btn-default a-search" onclick="document.pimFavoriteForm.submit()">查询</button>&nbsp;
+    </form>
+  </div>
+</div>
 
-		  <form name="pimFavoriteForm" method="post" action="pim-favorite-list.do" class="form-inline">
-		    <label for="pimFavorite_name">名称:</label>
-		    <input type="text" id="pimFavorite_name" name="filter_LIKES_name" value="${param.filter_LIKES_name}">
-			<button class="btn btn-small a-search" onclick="document.pimFavoriteForm.submit()">查询</button>&nbsp;
-		  </form>
-
-		</div>
-	  </article>
-
-	  <article class="m-blank">
-	    <div class="pull-left">
-		  <button class="btn btn-small a-insert" onclick="location.href='pim-favorite-input.do'">新建</button>
-		  <button class="btn btn-small a-remove" onclick="table.removeAll()">删除</button>
-		  <button class="btn btn-small a-export" onclick="table.exportExcel()">导出</button>
+      <div style="margin-bottom: 20px;">
+	    <div class="pull-left btn-group" role="group">
+		  <button class="btn btn-default a-insert" onclick="location.href='pim-favorite-input.do'">新建</button>
+		  <button class="btn btn-default a-remove" onclick="table.removeAll()">删除</button>
+		  <button class="btn btn-default a-export" onclick="table.exportExcel()">导出</button>
 		</div>
 
 		<div class="pull-right">
 		  每页显示
-		  <select class="m-page-size">
+		  <select class="m-page-size form-control" style="display:inline;width:auto;">
 		    <option value="10">10</option>
 		    <option value="20">20</option>
 		    <option value="50">50</option>
 		  </select>
 		  条
-		</div>
+        </div>
 
-	    <div class="m-clear"></div>
-	  </article>
-
-      <article class="m-widget">
-        <header class="header">
-		  <h4 class="title">列表</h4>
-		</header>
-        <div class="content">
+	    <div class="clearfix"></div>
+	  </div>
+	  
 <form id="pimFavoriteGridForm" name="pimFavoriteGridForm" method='post' action="pim-favorite-remove.do" class="m-form-blank">
-  <table id="pimFavoriteGrid" class="m-table table-hover">
+      <div class="panel panel-default">
+        <div class="panel-heading">
+		  列表
+		</div>
+  <table id="pimFavoriteGrid" class="table table-hover">
     <thead>
       <tr>
         <th width="10" class="m-table-check"><input type="checkbox" name="checkAll" onchange="toggleSelectedItems(this.checked)"></th>
@@ -106,9 +103,14 @@ $(function() {
       <c:forEach items="${page.result}" var="item">
       <tr>
         <td><input type="checkbox" class="selectedItem a-check" name="selectedItem" value="${item.id}"></td>
-        <td>${item.title}</td>
-        <td>${item.content}</td>
-        <td>${item.createTime}</td>
+        <td>
+		  ${item.title}
+		</td>
+        <td>
+		  ${item.content}
+		  <a href="${item.content}" target="_blank"><i class="glyphicon glyphicon-link"></i></a>
+		</td>
+        <td><fmt:formatDate value="${item.createTime}" type="both"/></td>
         <td>
           <a href="pim-favorite-input.do?id=${item.id}" class="a-update"><spring:message code="core.list.edit" text="编辑"/></a>
         </td>
@@ -116,25 +118,22 @@ $(function() {
       </c:forEach>
     </tbody>
   </table>
+      </div>
 </form>
-        </div>
-      </article>
 
-	  <article>
+	  <div>
 	    <div class="m-page-info pull-left">
 		  共100条记录 显示1到10条记录
 		</div>
 
 		<div class="btn-group m-pagination pull-right">
-		  <button class="btn btn-small">&lt;</button>
-		  <button class="btn btn-small">1</button>
-		  <button class="btn btn-small">&gt;</button>
+		  <button class="btn btn-default">&lt;</button>
+		  <button class="btn btn-default">1</button>
+		  <button class="btn btn-default">&gt;</button>
 		</div>
 
-	    <div class="m-clear"></div>
-      </article>
-
-      <div class="m-spacer"></div>
+	    <div class="clearfix"></div>
+      </div>
 
       </section>
 	  <!-- end of main -->

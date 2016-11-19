@@ -5,7 +5,6 @@ import java.util.Date;
 
 import javax.persistence.Column;
 import javax.persistence.Entity;
-import javax.persistence.GeneratedValue;
 import javax.persistence.Id;
 import javax.persistence.Table;
 import javax.persistence.Temporal;
@@ -48,8 +47,14 @@ public class PimFavorite implements java.io.Serializable {
     public PimFavorite() {
     }
 
-    public PimFavorite(String moduleType, String moduleId, String title,
-            String content, Date createTime, String tags, String userId) {
+    public PimFavorite(Long id) {
+        this.id = id;
+    }
+
+    public PimFavorite(Long id, String moduleType, String moduleId,
+            String title, String content, Date createTime, String tags,
+            String userId) {
+        this.id = id;
         this.moduleType = moduleType;
         this.moduleId = moduleId;
         this.title = title;
@@ -61,7 +66,6 @@ public class PimFavorite implements java.io.Serializable {
 
     /** @return null. */
     @Id
-    @GeneratedValue
     @Column(name = "ID", unique = true, nullable = false)
     public Long getId() {
         return this.id;

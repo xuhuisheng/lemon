@@ -4,7 +4,7 @@
 --  portal info
 -------------------------------------------------------------------------------
 CREATE TABLE PORTAL_INFO(
-        ID BIGINT AUTO_INCREMENT,
+        ID BIGINT NOT NULL,
 	NAME VARCHAR(200),
 	DESCRIPTION VARCHAR(200),
         USER_ID VARCHAR(64),

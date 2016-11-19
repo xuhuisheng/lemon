@@ -1,7 +1,5 @@
 package com.mossle.core.store;
 
-import java.io.InputStream;
-
 import javax.activation.DataSource;
 
 public class StoreResult {

@@ -1,25 +1,6 @@
 package com.mossle.javamail.web;
 
-import java.io.BufferedInputStream;
-import java.io.BufferedOutputStream;
-import java.io.BufferedReader;
-import java.io.File;
-import java.io.FileNotFoundException;
-import java.io.FileOutputStream;
-import java.io.IOException;
-import java.io.InputStream;
-import java.io.InputStreamReader;
-import java.io.UnsupportedEncodingException;
-
-import java.text.SimpleDateFormat;
-
-import java.util.Date;
 import java.util.List;
-import java.util.Properties;
-
-import javax.activation.DataHandler;
-import javax.activation.DataSource;
-import javax.activation.FileDataSource;
 
 import javax.annotation.Resource;
 
@@ -40,9 +21,6 @@ import org.springframework.ui.Model;
 import org.springframework.web.bind.annotation.ModelAttribute;
 import org.springframework.web.bind.annotation.RequestMapping;
 import org.springframework.web.bind.annotation.RequestParam;
-import org.springframework.web.bind.annotation.ResponseBody;
-import org.springframework.web.multipart.MultipartFile;
-import org.springframework.web.servlet.mvc.support.RedirectAttributes;
 
 @RequestMapping("javamail")
 @Controller
@@ -56,6 +34,7 @@ public class JavamailController {
 
     @RequestMapping("index")
     public String index(@RequestParam(value = "id", required = false) Long id,
+            @RequestParam(value = "folder", required = false) String folder,
             Model model) throws Exception {
         String userId = currentUserHolder.getUserId();
         JavamailConfig javamailConfig = javamailConfigManager.findUniqueBy(
@@ -65,9 +44,13 @@ public class JavamailController {
             // javamailService.receive(javamailConfig);
             javamailQueue.receive(userId);
 
-            String hql = "from JavamailMessage where javamailConfig.id=? order by sendTime desc";
+            if (folder == null) {
+                folder = "INBOX";
+            }
+
+            String hql = "from JavamailMessage where javamailConfig.id=? and folder=? order by sendTime desc";
             List<JavamailMessage> javamailMessages = javamailMessageManager
-                    .find(hql, javamailConfig.getId());
+                    .find(hql, javamailConfig.getId(), folder);
             model.addAttribute("javamailMessages", javamailMessages);
         }
 
@@ -86,13 +69,15 @@ public class JavamailController {
 
     @RequestMapping("send")
     public String send(@RequestParam("receiver") String receiver,
+            @RequestParam(value = "cc", required = false) String cc,
+            @RequestParam(value = "bcc", required = false) String bcc,
             @RequestParam("subject") String subject,
             @RequestParam("content") String content) throws Exception {
         String userId = currentUserHolder.getUserId();
         JavamailConfig javamailConfig = javamailConfigManager.findUniqueBy(
                 "userId", userId);
         // this.javamailService.send(receiver, subject, content, javamailConfig);
-        javamailQueue.send(userId, receiver, subject, content);
+        javamailQueue.send(userId, receiver, cc, bcc, subject, content);
 
         return "redirect:/javamail/index.do";
     }

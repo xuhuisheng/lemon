@@ -4,7 +4,7 @@
 --  work report attachment
 -------------------------------------------------------------------------------
 CREATE TABLE WORK_REPORT_ATTACHMENT(
-        ID BIGINT AUTO_INCREMENT,
+        ID BIGINT NOT NULL,
 	NAME VARCHAR(200),
 	FILE_SIZE BIGINT,
 	REF VARCHAR(200),

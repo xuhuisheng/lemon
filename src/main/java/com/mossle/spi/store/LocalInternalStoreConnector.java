@@ -2,8 +2,6 @@ package com.mossle.spi.store;
 
 import javax.activation.DataSource;
 
-import javax.annotation.Resource;
-
 import com.mossle.api.store.StoreDTO;
 
 import com.mossle.core.store.StoreHelper;

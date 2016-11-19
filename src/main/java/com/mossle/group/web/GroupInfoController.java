@@ -1,7 +1,5 @@
 package com.mossle.group.web;
 
-import java.util.ArrayList;
-import java.util.HashMap;
 import java.util.List;
 import java.util.Map;
 
@@ -11,14 +9,12 @@ import javax.servlet.http.HttpServletRequest;
 import javax.servlet.http.HttpServletResponse;
 
 import com.mossle.api.tenant.TenantHolder;
-import com.mossle.api.user.UserConnector;
-import com.mossle.api.user.UserDTO;
 
 import com.mossle.core.export.Exportor;
 import com.mossle.core.export.TableModel;
-import com.mossle.core.hibernate.PropertyFilter;
 import com.mossle.core.mapper.BeanMapper;
 import com.mossle.core.page.Page;
+import com.mossle.core.query.PropertyFilter;
 import com.mossle.core.spring.MessageHelper;
 
 import com.mossle.group.persistence.domain.GroupInfo;
@@ -31,7 +27,6 @@ import org.springframework.ui.Model;
 import org.springframework.web.bind.annotation.ModelAttribute;
 import org.springframework.web.bind.annotation.RequestMapping;
 import org.springframework.web.bind.annotation.RequestParam;
-import org.springframework.web.bind.annotation.ResponseBody;
 import org.springframework.web.servlet.mvc.support.RedirectAttributes;
 
 @Controller
@@ -41,6 +36,7 @@ public class GroupInfoController {
     private MessageHelper messageHelper;
     private BeanMapper beanMapper = new BeanMapper();
     private TenantHolder tenantHolder;
+    private Exportor exportor;
 
     @RequestMapping("group-info-list")
     public String list(@ModelAttribute Page page,
@@ -105,6 +101,23 @@ public class GroupInfoController {
         return "redirect:/group/group-info-list.do";
     }
 
+    @RequestMapping("group-info-export")
+    public void export(@ModelAttribute Page page,
+            @RequestParam Map<String, Object> parameterMap,
+            HttpServletRequest request, HttpServletResponse response)
+            throws Exception {
+        List<PropertyFilter> propertyFilters = PropertyFilter
+                .buildFromMap(parameterMap);
+        page = groupInfoManager.pagedQuery(page, propertyFilters);
+
+        List<GroupInfo> groupInfos = (List<GroupInfo>) page.getResult();
+        TableModel tableModel = new TableModel();
+        tableModel.setName("group info");
+        tableModel.addHeaders("id", "name");
+        tableModel.setData(groupInfos);
+        exportor.export(request, response, tableModel);
+    }
+
     // ~ ======================================================================
     @Resource
     public void setGroupInfoManager(GroupInfoManager groupInfoManager) {
@@ -119,5 +132,10 @@ public class GroupInfoController {
     @Resource
     public void setTenantHolder(TenantHolder tenantHolder) {
         this.tenantHolder = tenantHolder;
+    }
+
+    @Resource
+    public void setExportor(Exportor exportor) {
+        this.exportor = exportor;
     }
 }

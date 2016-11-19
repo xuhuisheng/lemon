@@ -1,15 +1,10 @@
 package com.mossle.internal.sendmail.support;
 
-import java.util.Date;
-
 import javax.annotation.Resource;
 
 import com.mossle.api.notification.NotificationDTO;
 import com.mossle.api.notification.NotificationHandler;
 import com.mossle.api.user.UserConnector;
-import com.mossle.api.user.UserDTO;
-
-import com.mossle.core.mapper.JsonMapper;
 
 import com.mossle.internal.sendmail.service.SendmailDataService;
 

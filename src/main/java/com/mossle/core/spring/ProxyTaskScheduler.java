@@ -1,14 +1,11 @@
 package com.mossle.core.spring;
 
-import java.lang.reflect.Field;
 import java.lang.reflect.Method;
 
 import java.util.Date;
 import java.util.HashMap;
 import java.util.Map;
 import java.util.Properties;
-import java.util.concurrent.Callable;
-import java.util.concurrent.FutureTask;
 import java.util.concurrent.ScheduledFuture;
 
 import org.slf4j.Logger;
@@ -20,7 +17,6 @@ import org.springframework.beans.factory.InitializingBean;
 import org.springframework.scheduling.TaskScheduler;
 import org.springframework.scheduling.Trigger;
 import org.springframework.scheduling.concurrent.ThreadPoolTaskScheduler;
-import org.springframework.scheduling.support.DelegatingErrorHandlingRunnable;
 import org.springframework.scheduling.support.ScheduledMethodRunnable;
 
 public class ProxyTaskScheduler implements TaskScheduler, InitializingBean,
@@ -171,14 +167,15 @@ public class ProxyTaskScheduler implements TaskScheduler, InitializingBean,
     }
 
     public String findRunnableKey(Runnable runnable) {
-        logger.info("{}", runnable);
+        logger.info("findRunnableKey : {}", runnable);
 
         if (runnable instanceof ScheduledMethodRunnable) {
             ScheduledMethodRunnable scheduledMethodRunnable = (ScheduledMethodRunnable) runnable;
             Method method = scheduledMethodRunnable.getMethod();
             Class clz = method.getDeclaringClass();
 
-            // logger.info(clz.getCanonicalName() + "." + method.getName());
+            logger.info("{}.{}", clz.getCanonicalName(), method.getName());
+
             return clz.getCanonicalName() + "." + method.getName();
         } else {
             return runnable.toString();

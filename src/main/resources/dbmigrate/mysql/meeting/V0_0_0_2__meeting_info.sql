@@ -4,7 +4,7 @@
 --  meeting info
 -------------------------------------------------------------------------------
 CREATE TABLE MEETING_INFO(
-        ID BIGINT AUTO_INCREMENT,
+        ID BIGINT NOT NULL,
 	SUBJECT VARCHAR(200),
 	CONTENT VARCHAR(200),
 	CREATE_TIME DATETIME,

@@ -1,7 +1,6 @@
 package com.mossle.humantask.scheduler;
 
 import java.util.Arrays;
-import java.util.Calendar;
 import java.util.Date;
 import java.util.HashMap;
 import java.util.List;
@@ -18,12 +17,12 @@ import com.mossle.humantask.persistence.domain.TaskDeadline;
 import com.mossle.humantask.persistence.domain.TaskInfo;
 import com.mossle.humantask.persistence.manager.TaskDeadlineManager;
 
-import com.mossle.spi.humantask.TaskDefinitionConnector;
-import com.mossle.spi.humantask.TaskNotificationDTO;
 import com.mossle.spi.process.InternalProcessConnector;
 
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
+
+import org.springframework.beans.factory.annotation.Value;
 
 import org.springframework.scheduling.annotation.Scheduled;
 
@@ -39,10 +38,16 @@ public class TaskDeadlineJob {
     private NotificationConnector notificationConnector;
     private UserConnector userConnector;
     private InternalProcessConnector internalProcessConnector;
+    private boolean active;
+    private String baseUrl;
 
     @Scheduled(cron = "0/10 * * * * ?")
     @Transactional
     public void execute() throws Exception {
+        if (!active) {
+            return;
+        }
+
         logger.debug("start");
 
         String hql = "from TaskDeadline";
@@ -111,6 +116,9 @@ public class TaskDeadlineJob {
 
         data.put("task", taskEntity);
         data.put("initiator", initiatorUser.getDisplayName());
+        data.put("humanTask", taskInfo);
+        data.put("baseUrl", baseUrl);
+        data.put("humanTaskId", Long.toString(taskInfo.getId()));
 
         return data;
     }
@@ -135,5 +143,15 @@ public class TaskDeadlineJob {
     public void setInternalProcessConnector(
             InternalProcessConnector internalProcessConnector) {
         this.internalProcessConnector = internalProcessConnector;
+    }
+
+    @Value("${humantask.schedule.deadline.active}")
+    public void setActive(boolean active) {
+        this.active = active;
+    }
+
+    @Value("${application.baseUrl}")
+    public void setBaseUrl(String baseUrl) {
+        this.baseUrl = baseUrl;
     }
 }

@@ -4,7 +4,7 @@
 --  meeting attendee
 -------------------------------------------------------------------------------
 CREATE TABLE MEETING_ATTENDEE(
-        ID BIGINT AUTO_INCREMENT,
+        ID BIGINT NOT NULL,
 	USER_ID VARCHAR(64),
 	PRIORITY INT,
 	TYPE VARCHAR(50),

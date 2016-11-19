@@ -1,24 +1,37 @@
 <%@ page language="java" pageEncoding="UTF-8" %>
-      <!-- start of sidebar -->
-      <aside id="m-sidebar" class="accordion span2" data-spy="affix" data-offset-top="100">
+<style type="text/css">
+#accordion .panel-heading {
+	cursor: pointer;
+}
+#accordion .panel-body {
+	padding:0px;
+}
+</style>
 
-        <div class="accordion-group">
-          <div class="accordion-heading">
-            <a class="accordion-toggle" data-toggle="collapse" data-parent="#m-sidebar" href="#collapse-car">
-              <i class="icon-user"></i>
-              <span class="title">车辆管理</span>
-            </a>
-          </div>
-          <div id="collapse-car" class="accordion-body collapse ${currentMenu == 'car' ? 'in' : ''}">
-            <ul class="accordion-inner nav nav-list">
-			  <li><a href="${tenantPrefix}/car/car-info-list.do"><i class="icon-user"></i>车辆管理</a></li>
-            </ul>
-          </div>
-        </div>
+      <!-- start of sidebar -->
+<div class="panel-group col-md-2" id="accordion" role="tablist" aria-multiselectable="true" style="padding-top:65px;">
+
+  <div class="panel panel-default">
+    <div class="panel-heading" role="tab" id="collapse-header-car" data-toggle="collapse" data-parent="#accordion" href="#collapse-body-car" aria-expanded="true" aria-controls="collapse-body-car">
+      <h4 class="panel-title">
+	    <i class="glyphicon glyphicon-list"></i>
+        车辆管理
+      </h4>
+    </div>
+    <div id="collapse-body-car" class="panel-collapse collapse ${currentMenu == 'car' ? 'in' : ''}" role="tabpanel" aria-labelledby="collapse-header-car">
+      <div class="panel-body">
+        <ul class="nav nav-list">
+		  <li><a href="${tenantPrefix}/car/car-info-list.do"><i class="glyphicon glyphicon-list"></i> 车辆管理</a></li>
+        </ul>
+      </div>
+    </div>
+  </div>
 
 		<footer id="m-footer" class="text-center">
 		  <hr>
 		  &copy;Mossle
 		</footer>
-      </aside>
+
+</div>
       <!-- end of sidebar -->
+

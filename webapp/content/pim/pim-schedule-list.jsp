@@ -7,11 +7,11 @@
 
   <head>
     <%@include file="/common/meta.jsp"%>
-    <title><spring:message code="dev.pimSchedule.list.title" text="列表"/></title>
-    <%@include file="/common/s.jsp"%>
+    <title>列表</title>
+    <%@include file="/common/s3.jsp"%>
     <script type="text/javascript">
 var config = {
-    id: 'pimScheduleGrid',
+    id: 'pimRemindGrid',
     pageNo: ${page.pageNo},
     pageSize: ${page.pageSize},
     totalCount: ${page.totalCount},
@@ -20,10 +20,10 @@ var config = {
     orderBy: '${page.orderBy == null ? "" : page.orderBy}',
     asc: ${page.asc},
     params: {
-        'filter_LIKES_name': '${param.filter_LIKES_name}'
+        'filter_LIKES_content': '${param.filter_LIKES_content}'
     },
 	selectedItemClass: 'selectedItem',
-	gridFormId: 'pimScheduleGridForm',
+	gridFormId: 'pimRemindGridForm',
 	exportUrl: 'pim-schedule-export.do'
 };
 
@@ -39,63 +39,56 @@ $(function() {
   </head>
 
   <body>
-    <%@include file="/header/pim.jsp"%>
+    <%@include file="/header/pim3.jsp"%>
 
     <div class="row-fluid">
-	  <%@include file="/menu/pim.jsp"%>
+	  <%@include file="/menu/pim3.jsp"%>
 
 	  <!-- start of main -->
-      <section id="m-main" class="span10">
+      <section id="m-main" class="col-md-10" style="padding-top:65px;">
 
-	  <article class="m-widget">
-        <header class="header">
-		  <h4 class="title">查询</h4>
-		  <div class="ctrl">
-		    <a class="btn"><i id="pimScheduleSearchIcon" class="icon-chevron-up"></i></a>
-		  </div>
-		</header>
-        <div id="pimScheduleSearch" class="content content-inner">
+<div class="panel panel-default">
+  <div class="panel-heading">
+    查询
+	<div class="pull-right ctrl">
+	  <a class="btn btn-default btn-xs"><i id="pimRemindSearchIcon" class="glyphicon glyphicon-chevron-up"></i></a>
+    </div>
+  </div>
+  <div class="panel-body">
+    <form name="pimRemindForm" method="post" action="pim-schedule-list.do" class="form-inline">
+	  <label for="pimRemind_description">事项:</label>
+	  <input type="text" id="pimRemind_description" name="filter_LIKES_description" value="${param.filter_LIKES_description}" class="form-control">
+	  <button class="btn btn-default a-search" onclick="document.pimRemindForm.submit()">查询</button>&nbsp;
+    </form>
+  </div>
+</div>
 
-		  <form name="pimScheduleForm" method="post" action="pim-schedule-list.do" class="form-inline">
-		    <label for="pimSchedule_name"><spring:message code='pimSchedule.pimSchedule.list.search.name' text='名称'/>:</label>
-		    <input type="text" id="pimSchedule_name" name="filter_LIKES_name" value="${param.filter_LIKES_name}">
-			<button class="btn btn-small a-search" onclick="document.pimScheduleForm.submit()">查询</button>&nbsp;
-		  </form>
-
-		</div>
-	  </article>
-
-	  <article class="m-blank">
-	    <div class="pull-left">
-		  <region:region-permission permission="pimSchedule:create">
-		  <button class="btn btn-small a-insert" onclick="location.href='pim-schedule-input.do'">新建</button>
-		  </region:region-permission>
-		  <region:region-permission permission="pimSchedule:delete">
-		  <button class="btn btn-small a-remove" onclick="table.removeAll()">删除</button>
-		  </region:region-permission>
-		  <button class="btn btn-small a-export" onclick="table.exportExcel()">导出</button>
+      <div style="margin-bottom: 20px;">
+	    <div class="pull-left btn-group" role="group">
+		  <button class="btn btn-default a-insert" onclick="location.href='pim-schedule-input.do'">新建</button>
+		  <button class="btn btn-default a-remove" onclick="table.removeAll()">删除</button>
+		  <button class="btn btn-default a-export" onclick="table.exportExcel()">导出</button>
 		</div>
 
 		<div class="pull-right">
 		  每页显示
-		  <select class="m-page-size">
+		  <select class="m-page-size form-control" style="display:inline;width:auto;">
 		    <option value="10">10</option>
 		    <option value="20">20</option>
 		    <option value="50">50</option>
 		  </select>
 		  条
+        </div>
+
+	    <div class="clearfix"></div>
+	  </div>
+	  
+<form id="pimRemindGridForm" name="pimRemindGridForm" method='post' action="pim-schedule-remove.do" class="m-form-blank">
+      <div class="panel panel-default">
+        <div class="panel-heading">
+		  列表
 		</div>
-
-	    <div class="m-clear"></div>
-	  </article>
-
-      <article class="m-widget">
-        <header class="header">
-		  <h4 class="title"><spring:message code="pimSchedule.pimSchedule.list.title" text="列表"/></h4>
-		</header>
-        <div class="content">
-<form id="pimScheduleGridForm" name="pimScheduleGridForm" method='post' action="pim-schedule-remove.do" class="m-form-blank">
-  <table id="pimScheduleGrid" class="m-table table-hover">
+  <table id="pimRemindGrid" class="table table-hover">
     <thead>
       <tr>
         <th width="10" class="m-table-check"><input type="checkbox" name="checkAll" onchange="toggleSelectedItems(this.checked)"></th>
@@ -122,25 +115,22 @@ $(function() {
       </c:forEach>
     </tbody>
   </table>
+      </div>
 </form>
-        </div>
-      </article>
 
-	  <article>
+	  <div>
 	    <div class="m-page-info pull-left">
 		  共100条记录 显示1到10条记录
 		</div>
 
 		<div class="btn-group m-pagination pull-right">
-		  <button class="btn btn-small">&lt;</button>
-		  <button class="btn btn-small">1</button>
-		  <button class="btn btn-small">&gt;</button>
+		  <button class="btn btn-default">&lt;</button>
+		  <button class="btn btn-default">1</button>
+		  <button class="btn btn-default">&gt;</button>
 		</div>
 
-	    <div class="m-clear"></div>
-      </article>
-
-      <div class="m-spacer"></div>
+	    <div class="clearfix"></div>
+      </div>
 
       </section>
 	  <!-- end of main -->

@@ -1,6 +1,5 @@
 package com.mossle.simulator.jms;
 
-import javax.jms.JMSException;
 import javax.jms.TextMessage;
 
 public class ProxyTextMessage extends ProxyMessage implements TextMessage {

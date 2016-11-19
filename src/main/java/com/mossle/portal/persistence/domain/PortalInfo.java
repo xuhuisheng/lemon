@@ -8,7 +8,6 @@ import java.util.Set;
 import javax.persistence.Column;
 import javax.persistence.Entity;
 import javax.persistence.FetchType;
-import javax.persistence.GeneratedValue;
 import javax.persistence.Id;
 import javax.persistence.OneToMany;
 import javax.persistence.Table;
@@ -61,10 +60,15 @@ public class PortalInfo implements java.io.Serializable {
     public PortalInfo() {
     }
 
-    public PortalInfo(String name, String description, String userId,
+    public PortalInfo(Long id) {
+        this.id = id;
+    }
+
+    public PortalInfo(Long id, String name, String description, String userId,
             Date createTime, String columnLayout, String sharedStatus,
             String globalStatus, String tenantId, Set<PortalItem> portalItems,
             Set<PortalRef> portalRefs) {
+        this.id = id;
         this.name = name;
         this.description = description;
         this.userId = userId;
@@ -79,7 +83,6 @@ public class PortalInfo implements java.io.Serializable {
 
     /** @return null. */
     @Id
-    @GeneratedValue
     @Column(name = "ID", unique = true, nullable = false)
     public Long getId() {
         return this.id;

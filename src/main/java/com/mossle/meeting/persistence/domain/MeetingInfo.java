@@ -8,7 +8,6 @@ import java.util.Set;
 import javax.persistence.Column;
 import javax.persistence.Entity;
 import javax.persistence.FetchType;
-import javax.persistence.GeneratedValue;
 import javax.persistence.Id;
 import javax.persistence.JoinColumn;
 import javax.persistence.ManyToOne;
@@ -76,11 +75,16 @@ public class MeetingInfo implements java.io.Serializable {
     public MeetingInfo() {
     }
 
-    public MeetingInfo(MeetingRoom meetingRoom, String subject, String content,
-            Date createTime, Date startTime, Date endTime, String organizer,
-            String meetingTimezone, String type, String catalog, String status,
-            String tenantId, Set<MeetingItem> meetingItems,
-            Set<MeetingAttendee> meetingAttendees) {
+    public MeetingInfo(Long id) {
+        this.id = id;
+    }
+
+    public MeetingInfo(Long id, MeetingRoom meetingRoom, String subject,
+            String content, Date createTime, Date startTime, Date endTime,
+            String organizer, String meetingTimezone, String type,
+            String catalog, String status, String tenantId,
+            Set<MeetingItem> meetingItems, Set<MeetingAttendee> meetingAttendees) {
+        this.id = id;
         this.meetingRoom = meetingRoom;
         this.subject = subject;
         this.content = content;
@@ -99,7 +103,6 @@ public class MeetingInfo implements java.io.Serializable {
 
     /** @return null. */
     @Id
-    @GeneratedValue
     @Column(name = "ID", unique = true, nullable = false)
     public Long getId() {
         return this.id;

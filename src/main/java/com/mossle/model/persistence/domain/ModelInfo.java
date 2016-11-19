@@ -7,7 +7,6 @@ import java.util.Set;
 import javax.persistence.Column;
 import javax.persistence.Entity;
 import javax.persistence.FetchType;
-import javax.persistence.GeneratedValue;
 import javax.persistence.Id;
 import javax.persistence.OneToMany;
 import javax.persistence.Table;
@@ -43,8 +42,13 @@ public class ModelInfo implements java.io.Serializable {
     public ModelInfo() {
     }
 
-    public ModelInfo(String code, String name, String type, String tenantId,
-            Set<ModelField> modelFields) {
+    public ModelInfo(Long id) {
+        this.id = id;
+    }
+
+    public ModelInfo(Long id, String code, String name, String type,
+            String tenantId, Set<ModelField> modelFields) {
+        this.id = id;
         this.code = code;
         this.name = name;
         this.type = type;
@@ -54,7 +58,6 @@ public class ModelInfo implements java.io.Serializable {
 
     /** @return null. */
     @Id
-    @GeneratedValue
     @Column(name = "ID", unique = true, nullable = false)
     public Long getId() {
         return this.id;

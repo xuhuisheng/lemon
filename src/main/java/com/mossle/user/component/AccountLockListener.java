@@ -1,7 +1,5 @@
 package com.mossle.user.component;
 
-import java.net.InetAddress;
-
 import java.util.Date;
 import java.util.List;
 
@@ -9,7 +7,6 @@ import javax.annotation.Resource;
 
 import com.mossle.core.auth.LoginEvent;
 
-import com.mossle.user.persistence.domain.AccountInfo;
 import com.mossle.user.persistence.domain.AccountLockInfo;
 import com.mossle.user.persistence.domain.AccountLockLog;
 import com.mossle.user.persistence.manager.AccountInfoManager;
@@ -19,12 +16,7 @@ import com.mossle.user.persistence.manager.AccountLockLogManager;
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
 
-import org.springframework.context.ApplicationContext;
-import org.springframework.context.ApplicationContextAware;
-import org.springframework.context.ApplicationEvent;
 import org.springframework.context.ApplicationListener;
-
-import org.springframework.stereotype.Component;
 
 // @Component
 public class AccountLockListener implements ApplicationListener<LoginEvent> {

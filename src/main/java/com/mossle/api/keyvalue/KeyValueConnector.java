@@ -32,6 +32,11 @@ public interface KeyValueConnector {
     List<Record> findByStatus(int status, String userId, String tenantId);
 
     /**
+     * 分页查询.
+     */
+    Page pagedQuery(Page page, int status, String userId, String tenantId);
+
+    /**
      * 查询总数.
      */
     long findTotalCount(String category, String q, String tenantId);
@@ -41,4 +46,9 @@ public interface KeyValueConnector {
      */
     List<Map<String, Object>> findResult(Page page, String category,
             String tenantId, Map<String, String> headers, String q);
+
+    /**
+     * 复制数据.
+     */
+    Record copyRecord(Record original, List<String> fields);
 }

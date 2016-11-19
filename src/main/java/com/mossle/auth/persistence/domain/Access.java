@@ -4,14 +4,13 @@ package com.mossle.auth.persistence.domain;
 import javax.persistence.Column;
 import javax.persistence.Entity;
 import javax.persistence.FetchType;
-import javax.persistence.GeneratedValue;
 import javax.persistence.Id;
 import javax.persistence.JoinColumn;
 import javax.persistence.ManyToOne;
 import javax.persistence.Table;
 
 /**
- * Access .
+ * Access 资源.
  * 
  * @author Lingo
  */
@@ -20,32 +19,37 @@ import javax.persistence.Table;
 public class Access implements java.io.Serializable {
     private static final long serialVersionUID = 0L;
 
-    /** null. */
+    /** 主键. */
     private Long id;
 
-    /** null. */
+    /** 外键，权限. */
     private Perm perm;
 
-    /** null. */
+    /** 类型. */
     private String type;
 
-    /** null. */
+    /** 内容. */
     private String value;
 
-    /** null. */
+    /** 排序. */
     private Integer priority;
 
-    /** null. */
+    /** 备注. */
     private String descn;
 
-    /** null. */
+    /** 租户. */
     private String tenantId;
 
     public Access() {
     }
 
-    public Access(Perm perm, String type, String value, Integer priority,
-            String descn, String tenantId) {
+    public Access(Long id) {
+        this.id = id;
+    }
+
+    public Access(Long id, Perm perm, String type, String value,
+            Integer priority, String descn, String tenantId) {
+        this.id = id;
         this.perm = perm;
         this.type = type;
         this.value = value;
@@ -54,9 +58,8 @@ public class Access implements java.io.Serializable {
         this.tenantId = tenantId;
     }
 
-    /** @return null. */
+    /** @return 主键. */
     @Id
-    @GeneratedValue
     @Column(name = "ID", unique = true, nullable = false)
     public Long getId() {
         return this.id;
@@ -64,13 +67,13 @@ public class Access implements java.io.Serializable {
 
     /**
      * @param id
-     *            null.
+     *            主键.
      */
     public void setId(Long id) {
         this.id = id;
     }
 
-    /** @return null. */
+    /** @return 外键，权限. */
     @ManyToOne(fetch = FetchType.LAZY)
     @JoinColumn(name = "PERM_ID")
     public Perm getPerm() {
@@ -79,13 +82,13 @@ public class Access implements java.io.Serializable {
 
     /**
      * @param perm
-     *            null.
+     *            外键，权限.
      */
     public void setPerm(Perm perm) {
         this.perm = perm;
     }
 
-    /** @return null. */
+    /** @return 类型. */
     @Column(name = "TYPE", length = 50)
     public String getType() {
         return this.type;
@@ -93,13 +96,13 @@ public class Access implements java.io.Serializable {
 
     /**
      * @param type
-     *            null.
+     *            类型.
      */
     public void setType(String type) {
         this.type = type;
     }
 
-    /** @return null. */
+    /** @return 内容. */
     @Column(name = "VALUE", length = 200)
     public String getValue() {
         return this.value;
@@ -107,13 +110,13 @@ public class Access implements java.io.Serializable {
 
     /**
      * @param value
-     *            null.
+     *            内容.
      */
     public void setValue(String value) {
         this.value = value;
     }
 
-    /** @return null. */
+    /** @return 排序. */
     @Column(name = "PRIORITY")
     public Integer getPriority() {
         return this.priority;
@@ -121,13 +124,13 @@ public class Access implements java.io.Serializable {
 
     /**
      * @param priority
-     *            null.
+     *            排序.
      */
     public void setPriority(Integer priority) {
         this.priority = priority;
     }
 
-    /** @return null. */
+    /** @return 备注. */
     @Column(name = "DESCN", length = 200)
     public String getDescn() {
         return this.descn;
@@ -135,13 +138,13 @@ public class Access implements java.io.Serializable {
 
     /**
      * @param descn
-     *            null.
+     *            备注.
      */
     public void setDescn(String descn) {
         this.descn = descn;
     }
 
-    /** @return null. */
+    /** @return 租户. */
     @Column(name = "TENANT_ID", length = 50)
     public String getTenantId() {
         return this.tenantId;
@@ -149,7 +152,7 @@ public class Access implements java.io.Serializable {
 
     /**
      * @param tenantId
-     *            null.
+     *            租户.
      */
     public void setTenantId(String tenantId) {
         this.tenantId = tenantId;

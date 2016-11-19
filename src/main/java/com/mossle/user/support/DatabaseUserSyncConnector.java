@@ -1,23 +1,12 @@
 package com.mossle.user.support;
 
-import java.util.ArrayList;
-import java.util.HashMap;
-import java.util.List;
-import java.util.Map;
-
 import javax.annotation.Resource;
 
 import com.mossle.api.user.UserDTO;
 import com.mossle.api.user.UserSyncConnector;
 
-import com.mossle.core.hibernate.PropertyFilter;
-import com.mossle.core.hibernate.PropertyFilterUtils;
-import com.mossle.core.page.Page;
-
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
-
-import org.springframework.dao.EmptyResultDataAccessException;
 
 import org.springframework.jdbc.core.JdbcTemplate;
 

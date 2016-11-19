@@ -4,7 +4,7 @@
 --  javamail config
 -------------------------------------------------------------------------------
 CREATE TABLE JAVAMAIL_CONFIG(
-        ID BIGINT auto_increment,
+        ID BIGINT NOT NULL,
 	USERNAME VARCHAR(200),
 	PASSWORD VARCHAR(200),
 	RECEIVE_TYPE VARCHAR(50),
@@ -18,5 +18,5 @@ CREATE TABLE JAVAMAIL_CONFIG(
 	PRIORITY INT,
 	USER_ID VARCHAR(64),
         CONSTRAINT PK_JAVAMAIL_CONFIG PRIMARY KEY(ID)
-) engine=innodb;
+) ENGINE=INNODB CHARSET=UTF8;
 

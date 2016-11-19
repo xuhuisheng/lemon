@@ -5,7 +5,7 @@
             <Pattern>${log.pattern.default}</Pattern>
         </encoder>
         <rollingPolicy class="ch.qos.logback.core.rolling.TimeBasedRollingPolicy">
-            <FileNamePattern>${log.base}.%d{yyyy-MM-dd}</FileNamePattern>
+            <FileNamePattern>${log.base}.%d{yyyy-MM-dd}.gz</FileNamePattern>
         </rollingPolicy>
     </appender>
 </included>

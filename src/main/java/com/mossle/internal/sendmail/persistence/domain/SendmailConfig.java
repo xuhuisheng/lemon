@@ -7,7 +7,6 @@ import java.util.Set;
 import javax.persistence.Column;
 import javax.persistence.Entity;
 import javax.persistence.FetchType;
-import javax.persistence.GeneratedValue;
 import javax.persistence.Id;
 import javax.persistence.OneToMany;
 import javax.persistence.Table;
@@ -55,6 +54,12 @@ public class SendmailConfig implements java.io.Serializable {
     /** null. */
     private String tenantId;
 
+    /** null. */
+    private Integer port;
+
+    /** null. */
+    private Integer smtpSsl;
+
     /** . */
     private Set<SendmailQueue> sendmailQueues = new HashSet<SendmailQueue>(0);
 
@@ -65,11 +70,17 @@ public class SendmailConfig implements java.io.Serializable {
     public SendmailConfig() {
     }
 
-    public SendmailConfig(String name, String host, String username,
+    public SendmailConfig(Long id) {
+        this.id = id;
+    }
+
+    public SendmailConfig(Long id, String name, String host, String username,
             String password, Integer smtpAuth, Integer smtpStarttls,
             String status, String defaultFrom, String testMail,
-            String tenantId, Set<SendmailQueue> sendmailQueues,
+            String tenantId, Integer port, Integer smtpSsl,
+            Set<SendmailQueue> sendmailQueues,
             Set<SendmailHistory> sendmailHistories) {
+        this.id = id;
         this.name = name;
         this.host = host;
         this.username = username;
@@ -80,13 +91,14 @@ public class SendmailConfig implements java.io.Serializable {
         this.defaultFrom = defaultFrom;
         this.testMail = testMail;
         this.tenantId = tenantId;
+        this.port = port;
+        this.smtpSsl = smtpSsl;
         this.sendmailQueues = sendmailQueues;
         this.sendmailHistories = sendmailHistories;
     }
 
     /** @return null. */
     @Id
-    @GeneratedValue
     @Column(name = "ID", unique = true, nullable = false)
     public Long getId() {
         return this.id;
@@ -238,6 +250,34 @@ public class SendmailConfig implements java.io.Serializable {
      */
     public void setTenantId(String tenantId) {
         this.tenantId = tenantId;
+    }
+
+    /** @return null. */
+    @Column(name = "PORT")
+    public Integer getPort() {
+        return this.port;
+    }
+
+    /**
+     * @param port
+     *            null.
+     */
+    public void setPort(Integer port) {
+        this.port = port;
+    }
+
+    /** @return null. */
+    @Column(name = "SMTP_SSL")
+    public Integer getSmtpSsl() {
+        return this.smtpSsl;
+    }
+
+    /**
+     * @param smtpSsl
+     *            null.
+     */
+    public void setSmtpSsl(Integer smtpSsl) {
+        this.smtpSsl = smtpSsl;
     }
 
     /** @return . */

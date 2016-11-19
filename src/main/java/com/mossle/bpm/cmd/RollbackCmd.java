@@ -1,15 +1,12 @@
 package com.mossle.bpm.cmd;
 
-import java.sql.Connection;
-import java.sql.SQLException;
-import java.sql.Statement;
-
 import java.util.ArrayList;
 import java.util.Date;
 import java.util.List;
 import java.util.Map;
 
 import com.mossle.api.humantask.HumanTaskConnector;
+import com.mossle.api.humantask.HumanTaskConstants;
 import com.mossle.api.humantask.HumanTaskDTO;
 
 import com.mossle.bpm.graph.ActivitiHistoryGraphBuilder;
@@ -21,9 +18,8 @@ import com.mossle.bpm.support.JumpInfo;
 
 import com.mossle.core.spring.ApplicationContextHelper;
 
-import org.activiti.engine.ActivitiException;
 import org.activiti.engine.delegate.DelegateTask;
-import org.activiti.engine.history.HistoricActivityInstance;
+import org.activiti.engine.history.HistoricProcessInstance;
 import org.activiti.engine.impl.HistoricActivityInstanceQueryImpl;
 import org.activiti.engine.impl.Page;
 import org.activiti.engine.impl.cmd.GetDeploymentProcessDefinitionCmd;
@@ -35,9 +31,7 @@ import org.activiti.engine.impl.persistence.entity.HistoricActivityInstanceEntit
 import org.activiti.engine.impl.persistence.entity.HistoricTaskInstanceEntity;
 import org.activiti.engine.impl.persistence.entity.ProcessDefinitionEntity;
 import org.activiti.engine.impl.persistence.entity.TaskEntity;
-import org.activiti.engine.impl.pvm.PvmTransition;
 import org.activiti.engine.impl.pvm.process.ActivityImpl;
-import org.activiti.engine.impl.pvm.process.TransitionImpl;
 
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
@@ -429,6 +423,7 @@ public class RollbackCmd implements Command<Boolean> {
         task.setExecutionId(historicTaskInstanceEntity.getExecutionId());
         task.setDescriptionWithoutCascade(historicTaskInstanceEntity
                 .getDescription());
+        task.setTenantId(historicTaskInstanceEntity.getTenantId());
 
         Context.getCommandContext().getTaskEntityManager().insert(task);
 
@@ -453,7 +448,7 @@ public class RollbackCmd implements Command<Boolean> {
 
         try {
             // humanTask
-            this.createHumanTask(task);
+            this.createHumanTask(task, historicTaskInstanceEntity);
         } catch (Exception ex) {
             logger.error(ex.getMessage(), ex);
         }
@@ -522,12 +517,25 @@ public class RollbackCmd implements Command<Boolean> {
         return "跳过".equals(deleteReason);
     }
 
-    public HumanTaskDTO createHumanTask(DelegateTask delegateTask)
+    public HumanTaskDTO createHumanTask(DelegateTask delegateTask,
+            HistoricTaskInstanceEntity historicTaskInstanceEntity)
             throws Exception {
         HumanTaskConnector humanTaskConnector = ApplicationContextHelper
                 .getBean(HumanTaskConnector.class);
         HumanTaskDTO humanTaskDto = new HumanTaskBuilder().setDelegateTask(
                 delegateTask).build();
+
+        if ("发起流程".equals(historicTaskInstanceEntity.getDeleteReason())) {
+            humanTaskDto.setCatalog(HumanTaskConstants.CATALOG_START);
+        }
+
+        HistoricProcessInstance historicProcessInstance = Context
+                .getCommandContext()
+                .getHistoricProcessInstanceEntityManager()
+                .findHistoricProcessInstance(
+                        delegateTask.getProcessInstanceId());
+        humanTaskDto
+                .setProcessStarter(historicProcessInstance.getStartUserId());
         humanTaskDto = humanTaskConnector.saveHumanTask(humanTaskDto);
 
         return humanTaskDto;

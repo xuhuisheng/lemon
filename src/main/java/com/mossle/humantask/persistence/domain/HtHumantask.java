@@ -8,7 +8,6 @@ import java.util.Set;
 import javax.persistence.Column;
 import javax.persistence.Entity;
 import javax.persistence.FetchType;
-import javax.persistence.GeneratedValue;
 import javax.persistence.Id;
 import javax.persistence.JoinColumn;
 import javax.persistence.ManyToOne;
@@ -99,7 +98,11 @@ public class HtHumantask implements java.io.Serializable {
     public HtHumantask() {
     }
 
-    public HtHumantask(HtHumantask htHumantask, String name,
+    public HtHumantask(Long id) {
+        this.id = id;
+    }
+
+    public HtHumantask(Long id, HtHumantask htHumantask, String name,
             String description, String assignee, String owner,
             String delegateStatus, Integer priority, Date createTime,
             String duration, String suspendStatus, String category,
@@ -107,6 +110,7 @@ public class HtHumantask implements java.io.Serializable {
             String processInstanceId, String processDefinitionId,
             String tenentId, String status, Date completeTime,
             Set<HtParticipant> htParticipants, Set<HtHumantask> htHumantasks) {
+        this.id = id;
         this.htHumantask = htHumantask;
         this.name = name;
         this.description = description;
@@ -133,7 +137,6 @@ public class HtHumantask implements java.io.Serializable {
 
     /** @return 主键. */
     @Id
-    @GeneratedValue
     @Column(name = "ID", unique = true, nullable = false)
     public Long getId() {
         return this.id;

@@ -5,7 +5,6 @@ import java.util.Date;
 
 import javax.persistence.Column;
 import javax.persistence.Entity;
-import javax.persistence.GeneratedValue;
 import javax.persistence.Id;
 import javax.persistence.Table;
 import javax.persistence.Temporal;
@@ -60,9 +59,15 @@ public class AuditBase implements java.io.Serializable {
     public AuditBase() {
     }
 
-    public AuditBase(String user, String resourceType, String resourceId,
-            String action, String result, String application, Date auditTime,
-            String client, String server, String description, String tenantId) {
+    public AuditBase(Long id) {
+        this.id = id;
+    }
+
+    public AuditBase(Long id, String user, String resourceType,
+            String resourceId, String action, String result,
+            String application, Date auditTime, String client, String server,
+            String description, String tenantId) {
+        this.id = id;
         this.user = user;
         this.resourceType = resourceType;
         this.resourceId = resourceId;
@@ -78,7 +83,6 @@ public class AuditBase implements java.io.Serializable {
 
     /** @return null. */
     @Id
-    @GeneratedValue
     @Column(name = "ID", unique = true, nullable = false)
     public Long getId() {
         return this.id;

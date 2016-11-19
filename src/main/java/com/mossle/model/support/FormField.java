@@ -6,6 +6,7 @@ public class FormField {
     private String type;
     private String items;
     private String value;
+    private boolean readOnly;
 
     public String getName() {
         return name;
@@ -45,5 +46,13 @@ public class FormField {
 
     public void setValue(String value) {
         this.value = value;
+    }
+
+    public boolean isReadOnly() {
+        return readOnly;
+    }
+
+    public void setReadOnly(boolean readOnly) {
+        this.readOnly = readOnly;
     }
 }

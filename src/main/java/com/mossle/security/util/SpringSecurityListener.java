@@ -21,25 +21,14 @@ import org.springframework.context.ApplicationContextAware;
 import org.springframework.context.ApplicationEvent;
 import org.springframework.context.ApplicationListener;
 
-import org.springframework.security.access.event.AuthenticationCredentialsNotFoundEvent;
-import org.springframework.security.access.event.AuthorizationFailureEvent;
-import org.springframework.security.access.event.AuthorizedEvent;
-import org.springframework.security.access.event.PublicInvocationEvent;
-import org.springframework.security.authentication.event.AbstractAuthenticationEvent;
-import org.springframework.security.authentication.event.AbstractAuthenticationFailureEvent;
 import org.springframework.security.authentication.event.AuthenticationFailureBadCredentialsEvent;
 import org.springframework.security.authentication.event.AuthenticationFailureCredentialsExpiredEvent;
 import org.springframework.security.authentication.event.AuthenticationFailureDisabledEvent;
 import org.springframework.security.authentication.event.AuthenticationFailureExpiredEvent;
 import org.springframework.security.authentication.event.AuthenticationFailureLockedEvent;
-import org.springframework.security.authentication.event.AuthenticationSuccessEvent;
 import org.springframework.security.authentication.event.InteractiveAuthenticationSuccessEvent;
 import org.springframework.security.core.Authentication;
 import org.springframework.security.web.authentication.WebAuthenticationDetails;
-
-import org.springframework.stereotype.Component;
-
-import org.springframework.util.ClassUtils;
 
 public class SpringSecurityListener implements ApplicationListener,
         ApplicationContextAware {

@@ -51,6 +51,9 @@
 		<property name="userDetailsService" ref="userDetailsService" />
     </bean>
 
+	<!-- 验证码 -->
+	<bean id="captchaFilter" class="com.mossle.security.client.CaptchaFilter"/>
+
 	<!-- 切换用户身份 -->
 	<bean id="switchUserFilter" class="org.springframework.security.web.authentication.switchuser.SwitchUserFilter">
 		<property name="userDetailsService" ref="userDetailsService" />

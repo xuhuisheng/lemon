@@ -8,7 +8,6 @@ import java.util.Set;
 import javax.persistence.Column;
 import javax.persistence.Entity;
 import javax.persistence.FetchType;
-import javax.persistence.GeneratedValue;
 import javax.persistence.Id;
 import javax.persistence.JoinColumn;
 import javax.persistence.ManyToOne;
@@ -18,7 +17,7 @@ import javax.persistence.Temporal;
 import javax.persistence.TemporalType;
 
 /**
- * AccountCredential .
+ * AccountCredential 账号密码.
  * 
  * @author Lingo
  */
@@ -27,43 +26,43 @@ import javax.persistence.TemporalType;
 public class AccountCredential implements java.io.Serializable {
     private static final long serialVersionUID = 0L;
 
-    /** null. */
+    /** 主键. */
     private Long id;
 
-    /** null. */
+    /** 外键，账号信息. */
     private AccountInfo accountInfo;
 
-    /** null. */
+    /** 密码. */
     private String password;
 
-    /** null. */
+    /** 修改时间. */
     private Date modifyTime;
 
-    /** null. */
+    /** 过期时间. */
     private Date expireTime;
 
-    /** null. */
+    /** 过期状态. */
     private String expireStatus;
 
-    /** null. */
+    /** 是否必须填写密码. */
     private String required;
 
-    /** null. */
+    /** 是否可以修改. */
     private String couldModify;
 
-    /** null. */
+    /** 类型，低级别密码，otp，ssh之类的类型. */
     private String type;
 
-    /** null. */
+    /** 分类，默认密码，专用密码. */
     private String catalog;
 
-    /** null. */
+    /** 额外信息. */
     private String data;
 
-    /** null. */
+    /** 状态，启用，禁用. */
     private String status;
 
-    /** null. */
+    /** 租户. */
     private String tenantId;
 
     /** . */
@@ -73,11 +72,16 @@ public class AccountCredential implements java.io.Serializable {
     public AccountCredential() {
     }
 
-    public AccountCredential(AccountInfo accountInfo, String password,
+    public AccountCredential(Long id) {
+        this.id = id;
+    }
+
+    public AccountCredential(Long id, AccountInfo accountInfo, String password,
             Date modifyTime, Date expireTime, String expireStatus,
             String required, String couldModify, String type, String catalog,
             String data, String status, String tenantId,
             Set<AccountHistoryCredential> accountHistoryCredentials) {
+        this.id = id;
         this.accountInfo = accountInfo;
         this.password = password;
         this.modifyTime = modifyTime;
@@ -93,9 +97,8 @@ public class AccountCredential implements java.io.Serializable {
         this.accountHistoryCredentials = accountHistoryCredentials;
     }
 
-    /** @return null. */
+    /** @return 主键. */
     @Id
-    @GeneratedValue
     @Column(name = "ID", unique = true, nullable = false)
     public Long getId() {
         return this.id;
@@ -103,13 +106,13 @@ public class AccountCredential implements java.io.Serializable {
 
     /**
      * @param id
-     *            null.
+     *            主键.
      */
     public void setId(Long id) {
         this.id = id;
     }
 
-    /** @return null. */
+    /** @return 外键，账号信息. */
     @ManyToOne(fetch = FetchType.LAZY)
     @JoinColumn(name = "ACCOUNT_ID")
     public AccountInfo getAccountInfo() {
@@ -118,13 +121,13 @@ public class AccountCredential implements java.io.Serializable {
 
     /**
      * @param accountInfo
-     *            null.
+     *            外键，账号信息.
      */
     public void setAccountInfo(AccountInfo accountInfo) {
         this.accountInfo = accountInfo;
     }
 
-    /** @return null. */
+    /** @return 密码. */
     @Column(name = "PASSWORD", length = 50)
     public String getPassword() {
         return this.password;
@@ -132,13 +135,13 @@ public class AccountCredential implements java.io.Serializable {
 
     /**
      * @param password
-     *            null.
+     *            密码.
      */
     public void setPassword(String password) {
         this.password = password;
     }
 
-    /** @return null. */
+    /** @return 修改时间. */
     @Temporal(TemporalType.TIMESTAMP)
     @Column(name = "MODIFY_TIME", length = 26)
     public Date getModifyTime() {
@@ -147,13 +150,13 @@ public class AccountCredential implements java.io.Serializable {
 
     /**
      * @param modifyTime
-     *            null.
+     *            修改时间.
      */
     public void setModifyTime(Date modifyTime) {
         this.modifyTime = modifyTime;
     }
 
-    /** @return null. */
+    /** @return 过期时间. */
     @Temporal(TemporalType.TIMESTAMP)
     @Column(name = "EXPIRE_TIME", length = 26)
     public Date getExpireTime() {
@@ -162,13 +165,13 @@ public class AccountCredential implements java.io.Serializable {
 
     /**
      * @param expireTime
-     *            null.
+     *            过期时间.
      */
     public void setExpireTime(Date expireTime) {
         this.expireTime = expireTime;
     }
 
-    /** @return null. */
+    /** @return 过期状态. */
     @Column(name = "EXPIRE_STATUS", length = 50)
     public String getExpireStatus() {
         return this.expireStatus;
@@ -176,13 +179,13 @@ public class AccountCredential implements java.io.Serializable {
 
     /**
      * @param expireStatus
-     *            null.
+     *            过期状态.
      */
     public void setExpireStatus(String expireStatus) {
         this.expireStatus = expireStatus;
     }
 
-    /** @return null. */
+    /** @return 是否必须填写密码. */
     @Column(name = "REQUIRED", length = 50)
     public String getRequired() {
         return this.required;
@@ -190,13 +193,13 @@ public class AccountCredential implements java.io.Serializable {
 
     /**
      * @param required
-     *            null.
+     *            是否必须填写密码.
      */
     public void setRequired(String required) {
         this.required = required;
     }
 
-    /** @return null. */
+    /** @return 是否可以修改. */
     @Column(name = "COULD_MODIFY", length = 50)
     public String getCouldModify() {
         return this.couldModify;
@@ -204,13 +207,13 @@ public class AccountCredential implements java.io.Serializable {
 
     /**
      * @param couldModify
-     *            null.
+     *            是否可以修改.
      */
     public void setCouldModify(String couldModify) {
         this.couldModify = couldModify;
     }
 
-    /** @return null. */
+    /** @return 类型，低级别密码，otp，ssh之类的类型. */
     @Column(name = "TYPE", length = 50)
     public String getType() {
         return this.type;
@@ -218,13 +221,13 @@ public class AccountCredential implements java.io.Serializable {
 
     /**
      * @param type
-     *            null.
+     *            类型，低级别密码，otp，ssh之类的类型.
      */
     public void setType(String type) {
         this.type = type;
     }
 
-    /** @return null. */
+    /** @return 分类，默认密码，专用密码. */
     @Column(name = "CATALOG", length = 50)
     public String getCatalog() {
         return this.catalog;
@@ -232,13 +235,13 @@ public class AccountCredential implements java.io.Serializable {
 
     /**
      * @param catalog
-     *            null.
+     *            分类，默认密码，专用密码.
      */
     public void setCatalog(String catalog) {
         this.catalog = catalog;
     }
 
-    /** @return null. */
+    /** @return 额外信息. */
     @Column(name = "DATA", length = 200)
     public String getData() {
         return this.data;
@@ -246,13 +249,13 @@ public class AccountCredential implements java.io.Serializable {
 
     /**
      * @param data
-     *            null.
+     *            额外信息.
      */
     public void setData(String data) {
         this.data = data;
     }
 
-    /** @return null. */
+    /** @return 状态，启用，禁用. */
     @Column(name = "STATUS", length = 50)
     public String getStatus() {
         return this.status;
@@ -260,13 +263,13 @@ public class AccountCredential implements java.io.Serializable {
 
     /**
      * @param status
-     *            null.
+     *            状态，启用，禁用.
      */
     public void setStatus(String status) {
         this.status = status;
     }
 
-    /** @return null. */
+    /** @return 租户. */
     @Column(name = "TENANT_ID", length = 64)
     public String getTenantId() {
         return this.tenantId;
@@ -274,7 +277,7 @@ public class AccountCredential implements java.io.Serializable {
 
     /**
      * @param tenantId
-     *            null.
+     *            租户.
      */
     public void setTenantId(String tenantId) {
         this.tenantId = tenantId;

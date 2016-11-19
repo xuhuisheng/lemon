@@ -7,22 +7,16 @@ import java.util.Map;
 
 import javax.annotation.Resource;
 
-import javax.servlet.http.HttpServletResponse;
-
 import com.mossle.api.tenant.TenantHolder;
 import com.mossle.api.user.UserConnector;
 
 import com.mossle.core.export.Exportor;
-import com.mossle.core.export.TableModel;
-import com.mossle.core.hibernate.PropertyFilter;
 import com.mossle.core.mapper.BeanMapper;
-import com.mossle.core.page.Page;
 import com.mossle.core.spring.MessageHelper;
 
 import com.mossle.org.persistence.domain.JobGrade;
 import com.mossle.org.persistence.domain.JobInfo;
 import com.mossle.org.persistence.domain.JobLevel;
-import com.mossle.org.persistence.domain.JobTitle;
 import com.mossle.org.persistence.domain.JobType;
 import com.mossle.org.persistence.domain.JobUser;
 import com.mossle.org.persistence.manager.JobGradeManager;
@@ -31,7 +25,6 @@ import com.mossle.org.persistence.manager.JobLevelManager;
 import com.mossle.org.persistence.manager.JobTitleManager;
 import com.mossle.org.persistence.manager.JobTypeManager;
 import com.mossle.org.persistence.manager.JobUserManager;
-import com.mossle.org.support.JobInfoDTO;
 
 import org.springframework.stereotype.Controller;
 
@@ -40,7 +33,6 @@ import org.springframework.ui.Model;
 import org.springframework.web.bind.annotation.ModelAttribute;
 import org.springframework.web.bind.annotation.RequestMapping;
 import org.springframework.web.bind.annotation.RequestParam;
-import org.springframework.web.bind.annotation.ResponseBody;
 import org.springframework.web.servlet.mvc.support.RedirectAttributes;
 
 @Controller("com.mossle.org.web.JobController")

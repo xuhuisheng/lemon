@@ -1,7 +1,5 @@
 package com.mossle.bpm.cmd;
 
-import com.mossle.api.form.FormDTO;
-
 import com.mossle.spi.process.FirstTaskForm;
 
 import org.activiti.engine.delegate.Expression;

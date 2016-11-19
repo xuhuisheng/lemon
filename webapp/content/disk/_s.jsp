@@ -43,6 +43,29 @@ body {
     width: 38px;
 }
     </style>
+	<style type="text/css">
+.navbar-search .search-query {
+  -webkit-border-radius: 15px;
+     -moz-border-radius: 15px;
+          border-radius: 15px;
+}
+
+.navbar-inverse .navbar-search .search-query {
+    background: rgba(35, 43, 48, 0.83) none repeat scroll 0 0;
+    border-color: #111111;
+    border-radius: 15px;
+    box-shadow: 0 1px 2px rgba(0, 0, 0, 0.1) inset, 0 1px 0 rgba(255, 255, 255, 0.15);
+    color: gray;
+    transition: width 0.3s ease 0s;
+    width: 100px;
+}
+
+.navbar-inverse .navbar-search .search-query:focus {
+    background: white none repeat scroll 0 0;
+    transition: width 0.3s ease 0s;
+    width: 150px;
+}
+	</style>
 
     <script type="text/javascript" src="${ctx}/s/jquery/jquery.min.js"></script>
     <script type="text/javascript" src="${ctx}/s/bootstrap/3.3.5/js/bootstrap.js"></script>

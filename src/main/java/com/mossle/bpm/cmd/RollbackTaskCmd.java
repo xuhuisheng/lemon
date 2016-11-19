@@ -1,9 +1,5 @@
 package com.mossle.bpm.cmd;
 
-import java.sql.Connection;
-import java.sql.SQLException;
-import java.sql.Statement;
-
 import java.util.ArrayList;
 import java.util.Date;
 import java.util.HashSet;
@@ -12,19 +8,20 @@ import java.util.Map;
 import java.util.Set;
 
 import com.mossle.api.humantask.HumanTaskConnector;
+import com.mossle.api.humantask.HumanTaskConstants;
 import com.mossle.api.humantask.HumanTaskDTO;
 
 import com.mossle.bpm.graph.ActivitiHistoryGraphBuilder;
 import com.mossle.bpm.graph.Edge;
 import com.mossle.bpm.graph.Graph;
 import com.mossle.bpm.graph.Node;
+import com.mossle.bpm.support.HumanTaskBuilder;
 
 import com.mossle.core.spring.ApplicationContextHelper;
 
-import org.activiti.engine.ActivitiException;
 import org.activiti.engine.delegate.DelegateTask;
 import org.activiti.engine.form.StartFormData;
-import org.activiti.engine.history.HistoricActivityInstance;
+import org.activiti.engine.history.HistoricProcessInstance;
 import org.activiti.engine.impl.HistoricActivityInstanceQueryImpl;
 import org.activiti.engine.impl.HistoricTaskInstanceQueryImpl;
 import org.activiti.engine.impl.Page;
@@ -39,9 +36,7 @@ import org.activiti.engine.impl.persistence.entity.HistoricTaskInstanceEntity;
 import org.activiti.engine.impl.persistence.entity.ProcessDefinitionEntity;
 import org.activiti.engine.impl.persistence.entity.TaskEntity;
 import org.activiti.engine.impl.pvm.PvmActivity;
-import org.activiti.engine.impl.pvm.PvmTransition;
 import org.activiti.engine.impl.pvm.process.ActivityImpl;
-import org.activiti.engine.impl.pvm.process.TransitionImpl;
 import org.activiti.engine.impl.task.TaskDefinition;
 
 import org.slf4j.Logger;
@@ -548,8 +543,19 @@ public class RollbackTaskCmd implements Command<Object> {
                                 historicTaskInstanceEntity
                                         .getTaskDefinitionKey());
 
-                this.userId = (String) taskDefinition.getAssigneeExpression()
-                        .getValue(taskEntity);
+                if (taskDefinition == null) {
+                    String message = "cannot find taskDefinition : "
+                            + historicTaskInstanceEntity.getTaskDefinitionKey();
+                    logger.info(message);
+                    throw new IllegalStateException(message);
+                }
+
+                if (taskDefinition.getAssigneeExpression() != null) {
+                    logger.info("assignee expression is null : {}",
+                            taskDefinition.getKey());
+                    this.userId = (String) taskDefinition
+                            .getAssigneeExpression().getValue(taskEntity);
+                }
             }
         }
 
@@ -576,6 +582,7 @@ public class RollbackTaskCmd implements Command<Object> {
         task.setExecutionId(historicTaskInstanceEntity.getExecutionId());
         task.setDescriptionWithoutCascade(historicTaskInstanceEntity
                 .getDescription());
+        task.setTenantId(historicTaskInstanceEntity.getTenantId());
 
         Context.getCommandContext().getTaskEntityManager().insert(task);
 
@@ -600,7 +607,7 @@ public class RollbackTaskCmd implements Command<Object> {
 
         try {
             // humanTask
-            this.createHumanTask(task);
+            this.createHumanTask(task, historicTaskInstanceEntity);
         } catch (Exception ex) {
             logger.error(ex.getMessage(), ex);
         }
@@ -690,30 +697,25 @@ public class RollbackTaskCmd implements Command<Object> {
     /**
      * 创建humanTask.
      */
-    public HumanTaskDTO createHumanTask(DelegateTask delegateTask)
+    public HumanTaskDTO createHumanTask(DelegateTask delegateTask,
+            HistoricTaskInstanceEntity historicTaskInstanceEntity)
             throws Exception {
         HumanTaskConnector humanTaskConnector = ApplicationContextHelper
                 .getBean(HumanTaskConnector.class);
-        HumanTaskDTO humanTaskDto = humanTaskConnector.createHumanTask();
-        humanTaskDto.setName(delegateTask.getName());
-        humanTaskDto.setDescription(delegateTask.getDescription());
-        humanTaskDto.setCode(delegateTask.getTaskDefinitionKey());
-        humanTaskDto.setAssignee(delegateTask.getAssignee());
-        humanTaskDto.setOwner(delegateTask.getOwner());
-        humanTaskDto.setDelegateStatus("none");
-        humanTaskDto.setPriority(delegateTask.getPriority());
-        humanTaskDto.setCreateTime(new Date());
-        humanTaskDto.setDuration(delegateTask.getDueDate() + "");
-        humanTaskDto.setSuspendStatus("none");
-        humanTaskDto.setCategory(delegateTask.getCategory());
-        humanTaskDto.setForm(delegateTask.getFormKey());
-        humanTaskDto.setTaskId(delegateTask.getId());
-        humanTaskDto.setExecutionId(delegateTask.getExecutionId());
-        humanTaskDto.setProcessInstanceId(delegateTask.getProcessInstanceId());
-        humanTaskDto.setProcessDefinitionId(delegateTask
-                .getProcessDefinitionId());
-        humanTaskDto.setTenantId(delegateTask.getTenantId());
-        humanTaskDto.setStatus("active");
+        HumanTaskDTO humanTaskDto = new HumanTaskBuilder().setDelegateTask(
+                delegateTask).build();
+
+        if ("发起流程".equals(historicTaskInstanceEntity.getDeleteReason())) {
+            humanTaskDto.setCatalog(HumanTaskConstants.CATALOG_START);
+        }
+
+        HistoricProcessInstance historicProcessInstance = Context
+                .getCommandContext()
+                .getHistoricProcessInstanceEntityManager()
+                .findHistoricProcessInstance(
+                        delegateTask.getProcessInstanceId());
+        humanTaskDto
+                .setProcessStarter(historicProcessInstance.getStartUserId());
         humanTaskDto = humanTaskConnector.saveHumanTask(humanTaskDto);
 
         return humanTaskDto;

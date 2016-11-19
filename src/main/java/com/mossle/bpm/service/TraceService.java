@@ -99,7 +99,7 @@ public class TraceService {
 
                 edgeDto.getG().remove(0);
                 edgeDto.getG().remove(edgeDto.getG().size() - 1);
-                logger.info("{}", edgeDto.getG());
+                logger.debug("{}", edgeDto.getG());
                 nodeDto.getOutgoings().add(edgeDto);
             }
         }

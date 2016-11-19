@@ -1,0 +1,14 @@
+<div class="text-center">
+  <a href="../common/lemon.apk">
+  <img src="../s/android.jpg" width="128">
+  </a>
+  <div id="qr-android" style="float:left;"></div>
+  <script type="text/javascript" src="../s/jquery.qrcode.min.js"></script>
+  <script>
+var url = location.href;
+url = url.substring(0, url.indexOf('/portal/index.do'));
+$('#qr-android').qrcode(url + "/common/lemon.apk");
+  </script>
+  <br>
+  <a href="../common/lemon.apk">点击下载</a>
+</div>

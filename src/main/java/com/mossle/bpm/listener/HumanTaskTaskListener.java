@@ -1,37 +1,33 @@
 package com.mossle.bpm.listener;
 
-import java.util.ArrayList;
 import java.util.Date;
-import java.util.HashSet;
 import java.util.List;
-import java.util.Map;
-import java.util.Set;
 
 import javax.annotation.Resource;
 
 import com.mossle.api.humantask.HumanTaskConnector;
+import com.mossle.api.humantask.HumanTaskConstants;
 import com.mossle.api.humantask.HumanTaskDTO;
 import com.mossle.api.humantask.ParticipantDTO;
 
-import com.mossle.bpm.expr.Expr;
-import com.mossle.bpm.expr.ExprProcessor;
 import com.mossle.bpm.persistence.domain.BpmConfUser;
 import com.mossle.bpm.persistence.manager.BpmConfUserManager;
 import com.mossle.bpm.support.DefaultTaskListener;
 import com.mossle.bpm.support.DelegateTaskHolder;
+import com.mossle.bpm.support.HumanTaskBuilder;
 
 import com.mossle.core.mapper.BeanMapper;
 
 import org.activiti.engine.delegate.DelegateTask;
 import org.activiti.engine.impl.context.Context;
 import org.activiti.engine.impl.el.ExpressionManager;
-import org.activiti.engine.impl.persistence.entity.TaskEntity;
+import org.activiti.engine.impl.identity.Authentication;
+import org.activiti.engine.impl.persistence.entity.ExecutionEntity;
+import org.activiti.engine.impl.pvm.process.ActivityImpl;
 import org.activiti.engine.task.IdentityLink;
 
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
-
-import org.springframework.jdbc.core.JdbcTemplate;
 
 public class HumanTaskTaskListener extends DefaultTaskListener {
     public static final int TYPE_COPY = 3;
@@ -63,35 +59,61 @@ public class HumanTaskTaskListener extends DefaultTaskListener {
         }
     }
 
+    /**
+     * 如果直接完成了activiti的task，要同步完成HumanTask.
+     */
     @Override
     public void onComplete(DelegateTask delegateTask) throws Exception {
         HumanTaskDTO humanTaskDto = humanTaskConnector
                 .findHumanTaskByTaskId(delegateTask.getId());
+
+        if ("complete".equals(humanTaskDto.getStatus())) {
+            return;
+        }
+
         humanTaskDto.setStatus("complete");
         humanTaskDto.setCompleteTime(new Date());
-        humanTaskConnector.saveHumanTask(humanTaskDto);
+        humanTaskDto.setAction("提交");
+
+        humanTaskConnector.saveHumanTask(humanTaskDto, false);
+    }
+
+    @Override
+    public void onDelete(DelegateTask delegateTask) throws Exception {
+        HumanTaskDTO humanTaskDto = humanTaskConnector
+                .findHumanTaskByTaskId(delegateTask.getId());
+
+        if (humanTaskDto == null) {
+            return;
+        }
+
+        if (!"complete".equals(humanTaskDto.getStatus())) {
+            humanTaskDto.setStatus("delete");
+            humanTaskDto.setCompleteTime(new Date());
+            humanTaskDto.setAction("人工终止");
+            humanTaskDto.setOwner(humanTaskDto.getAssignee());
+            humanTaskDto.setAssignee(Authentication.getAuthenticatedUserId());
+            humanTaskConnector.saveHumanTask(humanTaskDto, false);
+        }
+    }
+
+    /**
+     * 是否会签任务.
+     */
+    public boolean isVote(DelegateTask delegateTask) {
+        ExecutionEntity executionEntity = (ExecutionEntity) delegateTask
+                .getExecution();
+        ActivityImpl activityImpl = executionEntity.getActivity();
+
+        return activityImpl.getProperty("multiInstance") != null;
     }
 
     public HumanTaskDTO createHumanTask(DelegateTask delegateTask)
             throws Exception {
-        HumanTaskDTO humanTaskDto = humanTaskConnector.createHumanTask();
-        humanTaskDto.setBusinessKey(delegateTask.getExecution()
-                .getProcessBusinessKey());
-        humanTaskDto.setName(delegateTask.getName());
-        humanTaskDto.setDescription(delegateTask.getDescription());
-        humanTaskDto.setCode(delegateTask.getTaskDefinitionKey());
-        humanTaskDto.setAssignee(delegateTask.getAssignee());
-        humanTaskDto.setOwner(delegateTask.getOwner());
-        humanTaskDto.setPriority(delegateTask.getPriority());
-        humanTaskDto.setDuration(delegateTask.getDueDate() + "");
-        humanTaskDto.setCategory(delegateTask.getCategory());
-        humanTaskDto.setForm(delegateTask.getFormKey());
-        humanTaskDto.setTaskId(delegateTask.getId());
-        humanTaskDto.setExecutionId(delegateTask.getExecutionId());
-        humanTaskDto.setProcessInstanceId(delegateTask.getProcessInstanceId());
-        humanTaskDto.setProcessDefinitionId(delegateTask
-                .getProcessDefinitionId());
-        humanTaskDto.setTenantId(delegateTask.getTenantId());
+        HumanTaskDTO humanTaskDto = new HumanTaskBuilder()
+                .setDelegateTask(delegateTask)
+                .setVote(this.isVote(delegateTask)).build();
+
         humanTaskDto = humanTaskConnector.saveHumanTask(humanTaskDto);
         logger.debug("candidates : {}", delegateTask.getCandidates());
 
@@ -154,6 +176,7 @@ public class HumanTaskTaskListener extends DefaultTaskListener {
         target.setId(null);
         target.setCategory("copy");
         target.setAssignee(userId);
+        target.setCatalog(HumanTaskConstants.CATALOG_COPY);
 
         humanTaskConnector.saveHumanTask(target);
     }

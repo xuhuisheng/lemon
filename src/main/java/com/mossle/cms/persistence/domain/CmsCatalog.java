@@ -7,7 +7,6 @@ import java.util.Set;
 import javax.persistence.Column;
 import javax.persistence.Entity;
 import javax.persistence.FetchType;
-import javax.persistence.GeneratedValue;
 import javax.persistence.Id;
 import javax.persistence.JoinColumn;
 import javax.persistence.ManyToOne;
@@ -72,11 +71,16 @@ public class CmsCatalog implements java.io.Serializable {
     public CmsCatalog() {
     }
 
-    public CmsCatalog(CmsSite cmsSite, CmsCatalog cmsCatalog, String name,
-            String code, String logo, Integer type, String templateIndex,
-            String templateList, String templateDetail, String keyword,
-            String description, String tenantId, Set<CmsCatalog> cmsCatalogs,
-            Set<CmsArticle> cmsArticles) {
+    public CmsCatalog(Long id) {
+        this.id = id;
+    }
+
+    public CmsCatalog(Long id, CmsSite cmsSite, CmsCatalog cmsCatalog,
+            String name, String code, String logo, Integer type,
+            String templateIndex, String templateList, String templateDetail,
+            String keyword, String description, String tenantId,
+            Set<CmsCatalog> cmsCatalogs, Set<CmsArticle> cmsArticles) {
+        this.id = id;
         this.cmsSite = cmsSite;
         this.cmsCatalog = cmsCatalog;
         this.name = name;
@@ -95,7 +99,6 @@ public class CmsCatalog implements java.io.Serializable {
 
     /** @return null. */
     @Id
-    @GeneratedValue
     @Column(name = "ID", unique = true, nullable = false)
     public Long getId() {
         return this.id;

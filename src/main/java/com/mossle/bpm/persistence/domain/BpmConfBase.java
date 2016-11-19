@@ -7,13 +7,12 @@ import java.util.Set;
 import javax.persistence.Column;
 import javax.persistence.Entity;
 import javax.persistence.FetchType;
-import javax.persistence.GeneratedValue;
 import javax.persistence.Id;
 import javax.persistence.OneToMany;
 import javax.persistence.Table;
 
 /**
- * BpmConfBase .
+ * BpmConfBase 流程配置.
  * 
  * @author Lingo
  */
@@ -22,16 +21,16 @@ import javax.persistence.Table;
 public class BpmConfBase implements java.io.Serializable {
     private static final long serialVersionUID = 0L;
 
-    /** null. */
+    /** 主键. */
     private Long id;
 
-    /** null. */
+    /** 流程定义ID. */
     private String processDefinitionId;
 
-    /** null. */
+    /** 流程定义KEY. */
     private String processDefinitionKey;
 
-    /** null. */
+    /** 流程定义版本. */
     private Integer processDefinitionVersion;
 
     /** . */
@@ -43,9 +42,14 @@ public class BpmConfBase implements java.io.Serializable {
     public BpmConfBase() {
     }
 
-    public BpmConfBase(String processDefinitionId, String processDefinitionKey,
-            Integer processDefinitionVersion, Set<BpmConfNode> bpmConfNodes,
-            Set<BpmProcess> bpmProcesses) {
+    public BpmConfBase(Long id) {
+        this.id = id;
+    }
+
+    public BpmConfBase(Long id, String processDefinitionId,
+            String processDefinitionKey, Integer processDefinitionVersion,
+            Set<BpmConfNode> bpmConfNodes, Set<BpmProcess> bpmProcesses) {
+        this.id = id;
         this.processDefinitionId = processDefinitionId;
         this.processDefinitionKey = processDefinitionKey;
         this.processDefinitionVersion = processDefinitionVersion;
@@ -53,9 +57,8 @@ public class BpmConfBase implements java.io.Serializable {
         this.bpmProcesses = bpmProcesses;
     }
 
-    /** @return null. */
+    /** @return 主键. */
     @Id
-    @GeneratedValue
     @Column(name = "ID", unique = true, nullable = false)
     public Long getId() {
         return this.id;
@@ -63,13 +66,13 @@ public class BpmConfBase implements java.io.Serializable {
 
     /**
      * @param id
-     *            null.
+     *            主键.
      */
     public void setId(Long id) {
         this.id = id;
     }
 
-    /** @return null. */
+    /** @return 流程定义ID. */
     @Column(name = "PROCESS_DEFINITION_ID", length = 200)
     public String getProcessDefinitionId() {
         return this.processDefinitionId;
@@ -77,13 +80,13 @@ public class BpmConfBase implements java.io.Serializable {
 
     /**
      * @param processDefinitionId
-     *            null.
+     *            流程定义ID.
      */
     public void setProcessDefinitionId(String processDefinitionId) {
         this.processDefinitionId = processDefinitionId;
     }
 
-    /** @return null. */
+    /** @return 流程定义KEY. */
     @Column(name = "PROCESS_DEFINITION_KEY", length = 200)
     public String getProcessDefinitionKey() {
         return this.processDefinitionKey;
@@ -91,13 +94,13 @@ public class BpmConfBase implements java.io.Serializable {
 
     /**
      * @param processDefinitionKey
-     *            null.
+     *            流程定义KEY.
      */
     public void setProcessDefinitionKey(String processDefinitionKey) {
         this.processDefinitionKey = processDefinitionKey;
     }
 
-    /** @return null. */
+    /** @return 流程定义版本. */
     @Column(name = "PROCESS_DEFINITION_VERSION")
     public Integer getProcessDefinitionVersion() {
         return this.processDefinitionVersion;
@@ -105,7 +108,7 @@ public class BpmConfBase implements java.io.Serializable {
 
     /**
      * @param processDefinitionVersion
-     *            null.
+     *            流程定义版本.
      */
     public void setProcessDefinitionVersion(Integer processDefinitionVersion) {
         this.processDefinitionVersion = processDefinitionVersion;

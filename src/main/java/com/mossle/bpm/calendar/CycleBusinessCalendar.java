@@ -5,6 +5,9 @@ import java.util.Date;
 import org.activiti.engine.ActivitiException;
 import org.activiti.engine.impl.calendar.CronExpression;
 
+/**
+ * 循环.
+ */
 public class CycleBusinessCalendar extends AdvancedBusinessCalendar {
     public Date resolveDuedate(String duedate, int maxIterations) {
         String textWithoutBusiness = duedate;

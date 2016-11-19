@@ -7,7 +7,6 @@ import java.util.Set;
 import javax.persistence.Column;
 import javax.persistence.Entity;
 import javax.persistence.FetchType;
-import javax.persistence.GeneratedValue;
 import javax.persistence.Id;
 import javax.persistence.JoinColumn;
 import javax.persistence.ManyToOne;
@@ -15,7 +14,7 @@ import javax.persistence.OneToMany;
 import javax.persistence.Table;
 
 /**
- * PartyEntity .
+ * PartyEntity 组织实体.
  * 
  * @author Lingo
  */
@@ -24,22 +23,22 @@ import javax.persistence.Table;
 public class PartyEntity implements java.io.Serializable {
     private static final long serialVersionUID = 0L;
 
-    /** null. */
+    /** 主键. */
     private Long id;
 
-    /** null. */
+    /** 外键，组织类型. */
     private PartyType partyType;
 
-    /** null. */
+    /** 名称. */
     private String name;
 
-    /** null. */
+    /** 外部引用. */
     private String ref;
 
-    /** null. */
+    /** 租户. */
     private String tenantId;
 
-    /** null. */
+    /** 级别. */
     private Integer level;
 
     /** . */
@@ -51,9 +50,14 @@ public class PartyEntity implements java.io.Serializable {
     public PartyEntity() {
     }
 
-    public PartyEntity(PartyType partyType, String name, String ref,
+    public PartyEntity(Long id) {
+        this.id = id;
+    }
+
+    public PartyEntity(Long id, PartyType partyType, String name, String ref,
             String tenantId, Integer level, Set<PartyStruct> parentStructs,
             Set<PartyStruct> childStructs) {
+        this.id = id;
         this.partyType = partyType;
         this.name = name;
         this.ref = ref;
@@ -63,9 +67,8 @@ public class PartyEntity implements java.io.Serializable {
         this.childStructs = childStructs;
     }
 
-    /** @return null. */
+    /** @return 主键. */
     @Id
-    @GeneratedValue
     @Column(name = "ID", unique = true, nullable = false)
     public Long getId() {
         return this.id;
@@ -73,13 +76,13 @@ public class PartyEntity implements java.io.Serializable {
 
     /**
      * @param id
-     *            null.
+     *            主键.
      */
     public void setId(Long id) {
         this.id = id;
     }
 
-    /** @return null. */
+    /** @return 外键，组织类型. */
     @ManyToOne(fetch = FetchType.LAZY)
     @JoinColumn(name = "TYPE_ID")
     public PartyType getPartyType() {
@@ -88,13 +91,13 @@ public class PartyEntity implements java.io.Serializable {
 
     /**
      * @param partyType
-     *            null.
+     *            外键，组织类型.
      */
     public void setPartyType(PartyType partyType) {
         this.partyType = partyType;
     }
 
-    /** @return null. */
+    /** @return 名称. */
     @Column(name = "NAME", length = 100)
     public String getName() {
         return this.name;
@@ -102,13 +105,13 @@ public class PartyEntity implements java.io.Serializable {
 
     /**
      * @param name
-     *            null.
+     *            名称.
      */
     public void setName(String name) {
         this.name = name;
     }
 
-    /** @return null. */
+    /** @return 外部引用. */
     @Column(name = "REF", length = 100)
     public String getRef() {
         return this.ref;
@@ -116,13 +119,13 @@ public class PartyEntity implements java.io.Serializable {
 
     /**
      * @param ref
-     *            null.
+     *            外部引用.
      */
     public void setRef(String ref) {
         this.ref = ref;
     }
 
-    /** @return null. */
+    /** @return 租户. */
     @Column(name = "TENANT_ID", length = 50)
     public String getTenantId() {
         return this.tenantId;
@@ -130,13 +133,13 @@ public class PartyEntity implements java.io.Serializable {
 
     /**
      * @param tenantId
-     *            null.
+     *            租户.
      */
     public void setTenantId(String tenantId) {
         this.tenantId = tenantId;
     }
 
-    /** @return null. */
+    /** @return 级别. */
     @Column(name = "LEVEL")
     public Integer getLevel() {
         return this.level;
@@ -144,7 +147,7 @@ public class PartyEntity implements java.io.Serializable {
 
     /**
      * @param level
-     *            null.
+     *            级别.
      */
     public void setLevel(Integer level) {
         this.level = level;

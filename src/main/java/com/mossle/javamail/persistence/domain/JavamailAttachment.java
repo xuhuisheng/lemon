@@ -4,7 +4,6 @@ package com.mossle.javamail.persistence.domain;
 import javax.persistence.Column;
 import javax.persistence.Entity;
 import javax.persistence.FetchType;
-import javax.persistence.GeneratedValue;
 import javax.persistence.Id;
 import javax.persistence.JoinColumn;
 import javax.persistence.ManyToOne;
@@ -38,8 +37,13 @@ public class JavamailAttachment implements java.io.Serializable {
     public JavamailAttachment() {
     }
 
-    public JavamailAttachment(JavamailMessage javamailMessage, String name,
-            String ref, String type) {
+    public JavamailAttachment(Long id) {
+        this.id = id;
+    }
+
+    public JavamailAttachment(Long id, JavamailMessage javamailMessage,
+            String name, String ref, String type) {
+        this.id = id;
         this.javamailMessage = javamailMessage;
         this.name = name;
         this.ref = ref;
@@ -48,7 +52,6 @@ public class JavamailAttachment implements java.io.Serializable {
 
     /** @return null. */
     @Id
-    @GeneratedValue
     @Column(name = "ID", unique = true, nullable = false)
     public Long getId() {
         return this.id;

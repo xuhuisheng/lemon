@@ -3,15 +3,15 @@
 <%pageContext.setAttribute("currentHeader", "store");%>
 <%pageContext.setAttribute("currentMenu", "store");%>
 <!doctype html>
-<html lang="en">
+<html>
 
   <head>
     <%@include file="/common/meta.jsp"%>
     <title>编辑</title>
-    <%@include file="/common/s.jsp"%>
+    <%@include file="/common/s3.jsp"%>
     <script type="text/javascript">
 $(function() {
-    $("#storeInfoForm").validate({
+    $("#store-infoForm").validate({
         submitHandler: function(form) {
 			bootbox.animate(false);
 			var box = bootbox.dialog('<div class="progress progress-striped active" style="margin:0px;"><div class="bar" style="width: 100%;"></div></div>');
@@ -29,65 +29,69 @@ $(function() {
     <div class="row-fluid">
 	  <%@include file="/menu/store.jsp"%>
 
-	  <!-- start of main -->
-      <section id="m-main" class="span10">
+	<!-- start of main -->
+      <section id="m-main" class="col-md-10" style="padding-top:65px;">
 
-      <article class="m-widget">
-        <header class="header">
-		  <h4 class="title">编辑</h4>
-		</header>
+      <div class="panel panel-default">
+        <div class="panel-heading">
+		  <i class="glyphicon glyphicon-list"></i>
+		  编辑
+		</div>
 
-		<div class="content content-inner">
+		<div class="panel-body">
+
 
 <form id="storeInfoForm" method="post" action="store-info-save.do" class="form-horizontal">
   <c:if test="${not empty model}">
   <input id="storeInfo_id" type="hidden" name="id" value="${model.id}">
   </c:if>
-  <div class="control-group">
-    <label class="control-label" for="storeInfo_name">名称</label>
-	<div class="controls">
+  <div class="form-group">
+    <label class="control-label col-md-1" for="storeInfo_name">名称</label>
+	<div class="col-sm-5">
 	  <input id="storeInfo_name" type="text" name="name" value="${model.name}" class="required" minlength="2" maxlength="50">
     </div>
   </div>
-  <div class="control-group">
-    <label class="control-label" for="storeInfo_host">服务器</label>
-	<div class="controls">
+  <div class="form-group">
+    <label class="control-label col-md-1" for="storeInfo_host">服务器</label>
+	<div class="col-sm-5">
 	  <input id="storeInfo_host" type="text" name="host" value="${model.host}" class="required" minlength="2" maxlength="50">
     </div>
   </div>
-  <div class="control-group">
-    <label class="control-label" for="storeInfo_username">账号</label>
-	<div class="controls">
+  <div class="form-group">
+    <label class="control-label col-md-1" for="storeInfo_username">账号</label>
+	<div class="col-sm-5">
 	  <input id="storeInfo_username" type="text" name="username" value="${model.username}" maxlength="50">
     </div>
   </div>
-  <div class="control-group">
-    <label class="control-label" for="storeInfo_password">密码</label>
-	<div class="controls">
+  <div class="form-group">
+    <label class="control-label col-md-1" for="storeInfo_password">密码</label>
+	<div class="col-sm-5">
 	  <input id="storeInfo_password" type="password" name="password" value="${model.password}" maxlength="50">
     </div>
   </div>
-  <div class="control-group">
-    <label class="control-label" for="storeInfo_appId">appId</label>
-	<div class="controls">
+  <div class="form-group">
+    <label class="control-label col-md-1" for="storeInfo_appId">appId</label>
+	<div class="col-sm-5">
 	  <input id="storeInfo_appId" type="text" name="appId" value="${model.appId}" maxlength="50">
     </div>
   </div>
-  <div class="control-group">
-    <div class="controls">
+  <div class="form-group">
+    <div class="col-sm-5">
       <button type="submit" class="btn a-submit"><spring:message code='core.input.save' text='保存'/></button>
 	  &nbsp;
       <button type="button" class="btn a-cancel" onclick="history.back();"><spring:message code='core.input.back' text='返回'/></button>
     </div>
   </div>
 </form>
-        </div>
+
+		</div>
       </article>
 
-      </section>
-	  <!-- end of main -->
+    </section>
+	<!-- end of main -->
 	</div>
 
   </body>
 
 </html>
+

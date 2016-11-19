@@ -1,6 +1,10 @@
 package com.mossle.operation.service;
 
-import java.util.*;
+import java.util.Arrays;
+import java.util.Collections;
+import java.util.HashMap;
+import java.util.List;
+import java.util.Map;
 
 import javax.annotation.Resource;
 
@@ -15,10 +19,18 @@ import com.mossle.api.process.ProcessDTO;
 
 import org.apache.commons.lang3.StringUtils;
 
+import org.slf4j.Logger;
+import org.slf4j.LoggerFactory;
+
 import org.springframework.stereotype.Component;
 
+import org.springframework.transaction.annotation.Transactional;
+
 @Component
+@Transactional
 public class OperationService {
+    private static Logger logger = LoggerFactory
+            .getLogger(OperationService.class);
     public static final String OPERATION_BUSINESS_KEY = "businessKey";
     public static final String OPERATION_TASK_ID = "taskId";
     public static final String OPERATION_BPM_PROCESS_ID = "bpmProcessId";
@@ -29,6 +41,9 @@ public class OperationService {
     private HumanTaskConnector humanTaskConnector;
     private ProcessConnector processConnector;
 
+    /**
+     * 保存草稿.
+     */
     public String saveDraft(String userId, String tenantId,
             FormParameter formParameter) {
         String humanTaskId = formParameter.getHumanTaskId();
@@ -61,7 +76,7 @@ public class OperationService {
             record = new RecordBuilder().build(record, STATUS_DRAFT_PROCESS,
                     formParameter);
             keyValueConnector.save(record);
-        } else {
+        } else if (StringUtils.isNotBlank(bpmProcessId)) {
             // 如果是第一次保存草稿，肯定是流程草稿，先初始化record，再保存数据
             Record record = new RecordBuilder().build(bpmProcessId,
                     STATUS_DRAFT_PROCESS, formParameter, userId, tenantId);
@@ -69,9 +84,54 @@ public class OperationService {
             record.setName(processDto.getProcessDefinitionName());
             keyValueConnector.save(record);
             businessKey = record.getCode();
+        } else {
+            logger.error(
+                    "humanTaskId, businessKey, bpmProcessId all null : {}",
+                    formParameter.getMultiValueMap());
+            throw new IllegalArgumentException(
+                    "humanTaskId, businessKey, bpmProcessId all null");
         }
 
         return businessKey;
+    }
+
+    /**
+     * 发起流程.
+     */
+    public void startProcessInstance(String userId, String businessKey,
+            String processDefinitionId, Map<String, Object> processParameters,
+            Record record) {
+        String processInstanceId = processConnector.startProcess(userId,
+                businessKey, processDefinitionId, processParameters);
+
+        record = new RecordBuilder().build(record, STATUS_RUNNING,
+                processInstanceId);
+        keyValueConnector.save(record);
+    }
+
+    /**
+     * 完成任务.
+     */
+    public void completeTask(String humanTaskId, String userId,
+            FormParameter formParameter, Map<String, Object> taskParameters,
+            Record record, String processInstanceId) {
+        // try {
+        humanTaskConnector.completeTask(humanTaskId, userId,
+                formParameter.getAction(), formParameter.getComment(),
+                taskParameters);
+
+        // } catch (IllegalStateException ex) {
+        // logger.error(ex.getMessage(), ex);
+        // messageHelper.addFlashMessage(redirectAttributes, ex.getMessage());
+        // return "redirect:/humantask/workspace-personalTasks.do";
+        // }
+        if (record == null) {
+            record = new Record();
+        }
+
+        record = new RecordBuilder().build(record, STATUS_RUNNING,
+                processInstanceId);
+        keyValueConnector.save(record);
     }
 
     public String getParameter(Map<String, String[]> parameters, String name) {

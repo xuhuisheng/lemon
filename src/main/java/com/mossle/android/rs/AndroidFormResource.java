@@ -1,20 +1,15 @@
 package com.mossle.android.rs;
 
-import java.text.DateFormat;
-import java.text.SimpleDateFormat;
-
-import java.util.*;
+import java.util.ArrayList;
 import java.util.List;
+import java.util.Map;
 
 import javax.annotation.Resource;
 
 import javax.ws.rs.FormParam;
-import javax.ws.rs.GET;
-import javax.ws.rs.HeaderParam;
 import javax.ws.rs.POST;
 import javax.ws.rs.Path;
 import javax.ws.rs.Produces;
-import javax.ws.rs.QueryParam;
 import javax.ws.rs.core.MediaType;
 
 import com.mossle.api.form.FormDTO;
@@ -26,24 +21,19 @@ import com.mossle.api.process.ProcessConnector;
 import com.mossle.api.store.StoreConnector;
 import com.mossle.api.tenant.TenantHolder;
 
-import com.mossle.bpm.persistence.domain.BpmProcess;
 import com.mossle.bpm.persistence.manager.BpmProcessManager;
 
 import com.mossle.core.auth.CurrentUserHolder;
 import com.mossle.core.mapper.JsonMapper;
-import com.mossle.core.page.Page;
-import com.mossle.core.util.BaseDTO;
 
 import com.mossle.model.support.FormField;
 
-import com.mossle.pim.persistence.domain.PimDevice;
 import com.mossle.pim.persistence.manager.PimDeviceManager;
 
 import com.mossle.xform.Xform;
 import com.mossle.xform.XformBuilder;
 
 import org.activiti.engine.ProcessEngine;
-import org.activiti.engine.history.HistoricProcessInstance;
 
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
@@ -99,6 +89,11 @@ public class AndroidFormResource {
                 String name = (String) field.get("name");
                 String items = (String) field.get("items");
                 String label = name;
+                Boolean readOnly = (Boolean) field.get("readOnly");
+
+                if (readOnly == null) {
+                    readOnly = false;
+                }
 
                 if ("label".equals(type)) {
                     continue;
@@ -111,6 +106,7 @@ public class AndroidFormResource {
                 formField.setLabel(label);
                 formField.setType(type);
                 formField.setItems(items);
+                formField.setReadOnly(readOnly);
                 formFields.add(formField);
             }
         }
@@ -129,14 +125,22 @@ public class AndroidFormResource {
             String options = "";
 
             if ("radio".equals(formField.getType())
-                    || "checkbox".equals(formField.getType())) {
+                    || "checkbox".equals(formField.getType())
+                    || "select".equals(formField.getType())) {
                 type = "choice";
                 options = formField.getItems().replaceAll(",", "|");
+            } else if ("datepicker".equals(formField.getType())) {
+                type = "datepicker";
             }
 
-            buff.append("<field name='" + formField.getName() + "' label='"
-                    + formField.getName() + "' type='" + type
-                    + "' required='Y' options='" + options + "'/>");
+            buff.append("<field name='" + formField.getName() + "'");
+            buff.append(" label='" + formField.getName() + "'");
+            buff.append(" type='" + type + "'");
+            buff.append(" required='" + (formField.isReadOnly() ? "N" : "Y")
+                    + "'");
+            buff.append(" readOnly='" + (formField.isReadOnly() ? "Y" : "N")
+                    + "'");
+            buff.append(" options='" + options + "'/>");
         }
 
         buff.append("</form>").append("</xmlgui>");
@@ -182,6 +186,15 @@ public class AndroidFormResource {
                 String name = (String) field.get("name");
                 String items = (String) field.get("items");
                 String label = name;
+                Boolean readOnly = (Boolean) field.get("readOnly");
+
+                if (readOnly == null) {
+                    readOnly = false;
+                }
+
+                if ("complete".equals(humanTaskDto.getStatus())) {
+                    readOnly = true;
+                }
 
                 if ("label".equals(type)) {
                     continue;
@@ -194,6 +207,7 @@ public class AndroidFormResource {
                 formField.setLabel(label);
                 formField.setType(type);
                 formField.setItems(items);
+                formField.setReadOnly(readOnly);
                 formFields.add(formField);
             }
         }
@@ -210,7 +224,10 @@ public class AndroidFormResource {
         StringBuilder buff = new StringBuilder();
 
         buff.append("<xmlgui>")
-                .append("<form id='1' name='form' submitTo='http://192.168.1.106:8080/mossle-app-lemon/rs/android/task/completeTask' >");
+                .append("<form id='1' name='form' submitTo='http://192.168.1.106:8080/mossle-app-lemon/rs/android/task/completeTask'")
+                .append(" readOnly='")
+                .append("complete".equals(humanTaskDto.getStatus()))
+                .append("'").append(" >");
 
         // .append("<field name='fname' label='First Name' type='text' required='Y' options=''/>")
         // .append("<field name='lname' label='Last Name' type='text' required='Y' options=''/>")
@@ -236,10 +253,15 @@ public class AndroidFormResource {
                 options = formField.getItems().replaceAll(",", "|");
             }
 
-            buff.append("<field name='" + formField.getName() + "' label='"
-                    + formField.getName() + "' type='" + type
-                    + "' required='Y' options='" + options + "' value='"
-                    + value + "'/>");
+            buff.append("<field name='" + formField.getName() + "'");
+            buff.append(" label='" + formField.getName() + "'");
+            buff.append(" type='" + type + "'");
+            buff.append(" required='" + (formField.isReadOnly() ? "N" : "Y")
+                    + "'");
+            buff.append(" readOnly='" + (formField.isReadOnly() ? "Y" : "N")
+                    + "'");
+            buff.append(" options='" + options + "'");
+            buff.append(" value='" + value + "'/>");
         }
 
         buff.append("</form>").append("</xmlgui>");

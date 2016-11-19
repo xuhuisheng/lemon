@@ -7,7 +7,6 @@ import java.util.Set;
 import javax.persistence.Column;
 import javax.persistence.Entity;
 import javax.persistence.FetchType;
-import javax.persistence.GeneratedValue;
 import javax.persistence.Id;
 import javax.persistence.OneToMany;
 import javax.persistence.Table;
@@ -37,7 +36,13 @@ public class GroupType implements java.io.Serializable {
     public GroupType() {
     }
 
-    public GroupType(String name, String tenantId, Set<GroupInfo> groupInfos) {
+    public GroupType(Long id) {
+        this.id = id;
+    }
+
+    public GroupType(Long id, String name, String tenantId,
+            Set<GroupInfo> groupInfos) {
+        this.id = id;
         this.name = name;
         this.tenantId = tenantId;
         this.groupInfos = groupInfos;
@@ -45,7 +50,6 @@ public class GroupType implements java.io.Serializable {
 
     /** @return null. */
     @Id
-    @GeneratedValue
     @Column(name = "ID", unique = true, nullable = false)
     public Long getId() {
         return this.id;

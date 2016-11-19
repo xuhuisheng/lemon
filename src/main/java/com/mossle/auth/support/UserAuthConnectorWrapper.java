@@ -1,7 +1,5 @@
 package com.mossle.auth.support;
 
-import java.util.List;
-
 import com.mossle.api.userauth.UserAuthCache;
 import com.mossle.api.userauth.UserAuthConnector;
 import com.mossle.api.userauth.UserAuthDTO;

@@ -8,7 +8,7 @@
   <head>
     <%@include file="/common/meta.jsp"%>
     <title>邮件</title>
-    <%@include file="/common/s.jsp"%>
+    <%@include file="/common/s3.jsp"%>
     <script type="text/javascript">
 var config = {
     id: 'orgGrid',
@@ -44,19 +44,33 @@ $(function() {
   <body>
     <%@include file="/header/javamail.jsp"%>
 
-    <div class="row-fluid" style="display: table; height: 100%; margin-top: -66px; padding-top: 62px; box-sizing: border-box;">
-	<div style="display:table-row;height:100%;">
+    <div class="row-fluid">
+
 	<%@include file="/menu/javamail.jsp"%>
 
-	  <aside id="m-sidebar" class="span3" style="height:100%;">
-        <div class="accordion-group" style="height:100%;">
-          <div class="accordion-heading">
-            <a class="accordion-toggle" data-toggle="collapse" data-parent="#m-sidebar" href="#">
-              <i class="icon-user"></i>
-              <span class="title">邮件</span>
-            </a>
-          </div>
-          <div class="accordion-body collapse in full-height" style="overflow:auto;">
+<div class="panel-group col-md-3" id="accordion2" role="tablist" aria-multiselectable="true" style="padding-top:65px;height:100%;padding-right:10px;">
+
+  <div class="panel panel-default" style="height:100%;">
+    <div class="panel-heading" role="tab" id="collapse-header-javamail" data-toggle="collapse" data-parent="#accordion" href="#collapse-body-javamail" aria-expanded="true" aria-controls="collapse-body-javamail">
+      <h4 class="panel-title">
+	    <i class="glyphicon glyphicon-list"></i>
+        邮件
+      </h4>
+    </div>
+    <div class="panel-body full-height" style="overflow: auto; height: 100px;">
+<c:forEach var="item" items="${javamailMessages}">
+	    <div>
+			    <a href="${tenantPrefix}/javamail/index.do?id=${item.id}"><c:out value="${item.sender}"/></a>
+				<ftm:formatDate value="${item.sendTime}" type="both"/>
+				<br>
+			    <a href="${tenantPrefix}/javamail/index.do?id=${item.id}">${item.subject}</a>
+		</div>
+		<hr>
+</c:forEach>
+	</div>
+<%--
+    <div id="collapse-body-javamail" class="panel-collapse collapse ${currentMenu == 'javamail' ? 'in' : ''}" role="tabpanel" aria-labelledby="collapse-header-javamail">
+      <div class="panel-body full-height" style="overflow: auto; height: 520px;">
 <c:forEach var="item" items="${javamailMessages}">
 		    <blockquote>
 			  <p>
@@ -70,26 +84,35 @@ $(function() {
               </footer>
 			</blockquote>
 </c:forEach>
-          </div>
-        </div>
-      </aside>
+      </div>
+    </div>
+--%>
+  </div>
 
-	  <aside id="m-sidebar" class="span7" style="height:100%;padding-right:10px;">
-        <div class="accordion-group" style="height:100%;">
-          <div class="accordion-heading">
-            <a class="accordion-toggle" data-toggle="collapse" data-parent="#m-sidebar" href="#">
-              <i class="icon-user"></i>
-              <span class="title">${javamailMessage.subject}</span>
-            </a>
-          </div>
-          <div class="accordion-body collapse in full-height" style="overflow:auto;">
+</div>
+
+
+
+
+<div class="panel-group col-md-7" id="accordion3" role="tablist" aria-multiselectable="true" style="padding-top:65px;">
+
+
+  <div class="panel panel-default">
+    <div class="panel-heading" role="tab" id="collapse-header-javamail" data-toggle="collapse" data-parent="#accordion" href="#collapse-body-javamail" aria-expanded="true" aria-controls="collapse-body-javamail">
+      <h4 class="panel-title">
+	    <i class="glyphicon glyphicon-list"></i>
+        ${javamailMessage.subject}
+      </h4>
+    </div>
+    <div id="collapse-body-javamail" class="panel-collapse collapse ${currentMenu == 'javamail' ? 'in' : ''}" role="tabpanel" aria-labelledby="collapse-header-javamail">
+      <div class="panel-body full-height" style="overflow: auto; height: 520px;">
+
 		    <p><c:out value="${javamailMessage.sender}"/><fmt:formatDate value="${javamailMessage.sendTime}" type="both"/></p>
             ${javamailMessage.content}
-          </div>
-        </div>
-      </aside>
-	
-	</div>
+      </div>
+    </div>
+  </div>
+
 	</div>
 
   </body>

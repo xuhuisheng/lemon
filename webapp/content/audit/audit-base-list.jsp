@@ -7,11 +7,11 @@
 
   <head>
     <%@include file="/common/meta.jsp"%>
-    <title>列表</title>
-    <%@include file="/common/s.jsp"%>
+    <title><spring:message code="dev.audit-base.list.title" text="列表"/></title>
+    <%@include file="/common/s3.jsp"%>
     <script type="text/javascript">
 var config = {
-    id: 'auditBaseGrid',
+    id: 'audit-baseGrid',
     pageNo: ${page.pageNo},
     pageSize: ${page.pageSize},
     totalCount: ${page.totalCount},
@@ -23,7 +23,7 @@ var config = {
         'filter_LIKES_name': '${param.filter_LIKES_name}'
     },
 	selectedItemClass: 'selectedItem',
-	gridFormId: 'auditBaseGridForm',
+	gridFormId: 'audit-baseGridForm',
 	exportUrl: 'audit-base-export.do'
 };
 
@@ -45,60 +45,60 @@ $(function() {
 	  <%@include file="/menu/audit.jsp"%>
 
 	  <!-- start of main -->
-      <section id="m-main" class="span10">
+      <section id="m-main" class="col-md-10" style="padding-top:65px;">
 
-	  <article class="m-widget">
-        <header class="header">
-		  <h4 class="title">查询</h4>
-		  <div class="ctrl">
-		    <a class="btn"><i id="auditBaseSearchIcon" class="icon-chevron-up"></i></a>
-		  </div>
-		</header>
-        <div id="auditBaseSearch" class="content content-inner">
+<div class="panel panel-default">
+  <div class="panel-heading">
+	<i class="glyphicon glyphicon-list"></i>
+    查询
+	<div class="pull-right ctrl">
+	  <a class="btn btn-default btn-xs"><i id="audit-baseSearchIcon" class="glyphicon glyphicon-chevron-up"></i></a>
+    </div>
+  </div>
+  <div class="panel-body">
 
-		  <form name="auditBaseForm" method="post" action="audit-base-list.do" class="form-inline">
-		    <label for="auditBase_name"><spring:message code='auditBase.auditBase.list.search.name' text='名称'/>:</label>
-		    <input type="text" id="auditBase_name" name="filter_LIKES_name" value="${param.filter_LIKES_name}">
-			<button class="btn btn-small a-search" onclick="document.auditBaseForm.submit()">查询</button>&nbsp;
+		  <form name="audit-baseForm" method="post" action="audit-base-list.do" class="form-inline">
+		    <label for="audit-base_name"><spring:message code='audit-base.audit-base.list.search.name' text='名称'/>:</label>
+		    <input type="text" id="audit-base_name" name="filter_LIKES_name" value="${param.filter_LIKES_name}" class="form-control">
+			<button class="btn btn-default a-search" onclick="document.audit-baseForm.submit()">查询</button>&nbsp;
 		  </form>
 
 		</div>
-	  </article>
+	  </div>
 
-	  <article class="m-blank">
-	    <div class="pull-left">
-		  <region:region-permission permission="auditBase:create">
-		  <button class="btn btn-small a-insert" onclick="location.href='audit-base-input.do'">新建</button>
-		  </region:region-permission>
-		  <region:region-permission permission="auditBase:delete">
-		  <button class="btn btn-small a-remove" onclick="table.removeAll()">删除</button>
-		  </region:region-permission>
-		  <button class="btn btn-small a-export" onclick="table.exportExcel()">导出</button>
+      <div style="margin-bottom: 20px;">
+	    <div class="pull-left btn-group" role="group">
+		<%--
+		  <button class="btn btn-default a-insert" onclick="location.href='audit-base-input.do'">新建</button>
+		  <button class="btn btn-default a-remove" onclick="table.removeAll()">删除</button>
+		  <button class="btn btn-default a-export" onclick="table.exportExcel()">导出</button>
+		  --%>
 		</div>
 
 		<div class="pull-right">
 		  每页显示
-		  <select class="m-page-size">
+		  <select class="m-page-size form-control" style="display:inline;width:auto;">
 		    <option value="10">10</option>
 		    <option value="20">20</option>
 		    <option value="50">50</option>
 		  </select>
 		  条
+        </div>
+
+	    <div class="clearfix"></div>
+	  </div>
+
+<form id="audit-baseGridForm" name="audit-baseGridForm" method='post' action="audit-base-remove.do" class="m-form-blank">
+      <div class="panel panel-default">
+        <div class="panel-heading">
+		  <i class="glyphicon glyphicon-list"></i>
+		  <spring:message code="scope-info.scope-info.list.title" text="列表"/>
 		</div>
 
-	    <div class="m-clear"></div>
-	  </article>
-
-      <article class="m-widget">
-        <header class="header">
-		  <h4 class="title"><spring:message code="auditBase.auditBase.list.title" text="列表"/></h4>
-		</header>
-        <div class="content">
-<form id="auditBaseGridForm" name="auditBaseGridForm" method='post' action="audit-base-remove.do" class="m-form-blank">
-  <table id="auditBaseGrid" class="m-table table-hover">
+  <table id="auditBaseGrid" class="table table-hover">
     <thead>
       <tr>
-        <th width="10" class="m-table-check"><input type="checkbox" name="checkAll" onchange="toggleSelectedItems(this.checked)"></th>
+        <th width="10" class="table-check"><input type="checkbox" name="checkAll" onchange="toggleSelectedItems(this.checked)"></th>
         <th class="sorting" name="name">用户</th>
         <th class="sorting" name="name">操作</th>
         <th class="sorting" name="name">资源</th>
@@ -124,29 +124,33 @@ $(function() {
         <td>${item.client}</td>
         <td>${item.server}</td>
         <td>
+		  &nbsp;
+		  <!--
           <a href="audit-base-input.do?id=${item.id}" class="a-update"><spring:message code="core.list.edit" text="编辑"/></a>
+		  -->
         </td>
       </tr>
       </c:forEach>
     </tbody>
   </table>
-</form>
-        </div>
-      </article>
 
-	  <article>
+
+      </div>
+</form>
+
+	  <div>
 	    <div class="m-page-info pull-left">
 		  共100条记录 显示1到10条记录
 		</div>
 
 		<div class="btn-group m-pagination pull-right">
-		  <button class="btn btn-small">&lt;</button>
-		  <button class="btn btn-small">1</button>
-		  <button class="btn btn-small">&gt;</button>
+		  <button class="btn btn-default">&lt;</button>
+		  <button class="btn btn-default">1</button>
+		  <button class="btn btn-default">&gt;</button>
 		</div>
 
-	    <div class="m-clear"></div>
-      </article>
+	    <div class="clearfix"></div>
+      </div>
 
       <div class="m-spacer"></div>
 
@@ -157,3 +161,4 @@ $(function() {
   </body>
 
 </html>
+

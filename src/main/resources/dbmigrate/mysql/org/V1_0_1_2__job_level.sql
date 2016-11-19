@@ -4,7 +4,7 @@
 --  job level
 -------------------------------------------------------------------------------
 CREATE TABLE JOB_LEVEL(
-        ID BIGINT AUTO_INCREMENT,
+        ID BIGINT NOT NULL,
 	NAME VARCHAR(50),
 	GRADE_ID BIGINT,
 	SCOPE_ID VARCHAR(50),

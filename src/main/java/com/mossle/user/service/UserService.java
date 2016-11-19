@@ -7,11 +7,8 @@ import java.util.Map;
 
 import javax.annotation.Resource;
 
-import com.mossle.api.tenant.TenantHolder;
 import com.mossle.api.user.UserDTO;
 
-import com.mossle.user.notification.DefaultUserNotification;
-import com.mossle.user.notification.UserNotification;
 import com.mossle.user.persistence.domain.UserAttr;
 import com.mossle.user.persistence.domain.UserBase;
 import com.mossle.user.persistence.domain.UserSchema;
@@ -23,8 +20,6 @@ import com.mossle.user.publish.UserPublisher;
 
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
-
-import org.springframework.beans.factory.annotation.Autowired;
 
 import org.springframework.stereotype.Service;
 

@@ -8,7 +8,6 @@ import java.util.Set;
 import javax.persistence.Column;
 import javax.persistence.Entity;
 import javax.persistence.FetchType;
-import javax.persistence.GeneratedValue;
 import javax.persistence.Id;
 import javax.persistence.JoinColumn;
 import javax.persistence.ManyToOne;
@@ -66,10 +65,15 @@ public class DiskShare implements java.io.Serializable {
     public DiskShare() {
     }
 
-    public DiskShare(DiskInfo diskInfo, String shareType, Date shareTime,
-            String name, String creator, String type, Integer dirType,
-            Integer countView, Integer countSave, Integer countDownload,
-            Set<DiskAcl> diskAcls) {
+    public DiskShare(Long id) {
+        this.id = id;
+    }
+
+    public DiskShare(Long id, DiskInfo diskInfo, String shareType,
+            Date shareTime, String name, String creator, String type,
+            Integer dirType, Integer countView, Integer countSave,
+            Integer countDownload, Set<DiskAcl> diskAcls) {
+        this.id = id;
         this.diskInfo = diskInfo;
         this.shareType = shareType;
         this.shareTime = shareTime;
@@ -85,7 +89,6 @@ public class DiskShare implements java.io.Serializable {
 
     /** @return null. */
     @Id
-    @GeneratedValue
     @Column(name = "ID", unique = true, nullable = false)
     public Long getId() {
         return this.id;

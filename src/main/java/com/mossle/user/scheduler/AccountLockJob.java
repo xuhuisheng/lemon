@@ -1,19 +1,7 @@
 package com.mossle.user.scheduler;
 
-import java.util.Calendar;
-import java.util.Date;
-import java.util.List;
-import java.util.Properties;
-
 import javax.annotation.Resource;
 
-import com.mossle.core.mail.MailHelper;
-import com.mossle.core.mapper.BeanMapper;
-
-import com.mossle.user.persistence.domain.AccountLockInfo;
-import com.mossle.user.persistence.domain.AccountLockLog;
-import com.mossle.user.persistence.manager.AccountLockInfoManager;
-import com.mossle.user.persistence.manager.AccountLockLogManager;
 import com.mossle.user.service.AccountLockService;
 
 import org.slf4j.Logger;

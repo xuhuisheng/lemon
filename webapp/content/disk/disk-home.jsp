@@ -12,11 +12,11 @@
   <body>
     <div id="wrap">&nbsp;
 
-<%@include file="_header.jsp"%>
+<%@include file="/header/_disk.jsp"%>
 
-      <div class="container" style="padding: 0px 15px 0;" id="top">
+      <div class="container-fluid" style="padding: 0px 15px 0;" id="top">
 
-        <div class="row">
+        <div class="row-fluid">
 		  <div class="col-md-12">
 		    <form action="disk-home.do" class="form-inline">
 			  <input type="text" class="form-control" name="username" value="${param.username}"/>

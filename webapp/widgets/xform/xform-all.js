@@ -43,6 +43,9 @@ xf.getTarget = function(e) {
 	var x = ev.clientX;
 	var y = ev.clientY;
 	var target = ev.srcElement ? ev.srcElement : ev.target;
+	if (target.tagName == 'IMG' && target.parentNode.className == 'xf-pallete') {
+		target = target.parentNode;
+	}
 	return target;
 }
 
@@ -151,7 +154,7 @@ xf.Xform.prototype.initEvents = function() {
 xf.Xform.prototype.mouseDown = function(e) {
 	var target = xf.getTarget(e);
 	var handler = xf.getHandler(target);
-	if (handler) {
+	if (handler || target.className == 'xf-pallete') {
 		e.preventDefault();
 	}
 
@@ -1095,7 +1098,10 @@ xf.field.Password.prototype.updateName = function(value) {
 	var parentNode = xf.$(this.parentId);
 	parentNode.innerHTML = 
 		'<div class="xf-handler">'
-		+ '<input type="password" name="' + this.name + '" ' + (this.readOnly ? 'readOnly' : '') + ' style="margin-bottom:0px;" maxlength="200">'
+		+ '<input type="password" name="' + this.name + '" '
+		+ (this.readOnly ? 'readOnly' : '')
+		+ (this.required ? ' required="true" class="required"' : '')
+		+ ' style="margin-bottom:0px;" maxlength="200">'
 		+ '</div>';
 }
 
@@ -1154,7 +1160,9 @@ xf.field.TextArea.prototype.updateName = function(value) {
 	var parentNode = xf.$(this.parentId);
 	parentNode.innerHTML = 
 		'<div class="xf-handler">'
-		+ '<textarea name="' + this.name + '" ' + (this.readOnly ? 'readOnly' : '') + ' style="margin-bottom:0px;" maxlength="200">' + (this.value ? this.value : '') + '</textarea>'
+		+ '<textarea name="' + this.name + '" ' + (this.readOnly ? 'readOnly' : '')
+		+ (this.required ? ' required="true" class="required"' : '')
+		+ ' style="margin-bottom:0px;" maxlength="200">' + (this.value ? this.value : '') + '</textarea>'
 		+ '</div>';
 }
 
@@ -1228,7 +1236,8 @@ xf.field.Select.prototype.updateItems = function(value) {
 	var parentNode = xf.$(this.parentId);
 	var html = 
 		'<div class="xf-handler">'
-		+ '<select name="' + this.name + '" ' + (this.readOnly ? 'disabled' : '') + ' style="margin-bottom:0px;">';
+		+ '<select name="' + this.name + '" ' + (this.readOnly ? 'disabled' : '')
+		+ (this.required ? ' required="true" class="required"' : '') + ' style="margin-bottom:0px;">';
 	var array = this.items.split(',');
 	for (var i = 0; i < array.length; i++) {
 		var item = array[i];
@@ -1312,9 +1321,13 @@ xf.field.Radio.prototype.updateItems = function(value) {
 	for (var i = 0; i < array.length; i++) {
 		var item = array[i];
 		html += '<label class="radio inline">';
-		html += '<input type="radio" name="' + this.name + '" value="' + item + '" ' + (this.readOnly ? 'readOnly' : '') + ' ' + (this.value == item ? 'checked' : '') + ' style="margin:1px;">';
+		html += '<input type="radio" name="' + this.name + '" value="' + item + '" '
+			+ (this.readOnly ? 'readOnly' : '') + ' '
+			+ (this.value == item ? 'checked' : '') + ' '
+			+ (this.required ? ' required="true" class="required"' : '') + ' style="margin:1px;">';
 		html += item;
 		html += '</label>';
+		html += '<label for="' + this.name + '" class="validate-error" generated="true" style="display:none;"></label>';
 	}
 	parentNode.innerHTML = html + '</div>';
 }
@@ -1398,9 +1411,13 @@ xf.field.Checkbox.prototype.updateItems = function(value) {
 	for (var i = 0; i < array.length; i++) {
 		var item = array[i];
 		html += '<label class="checkbox inline">';
-		html += '<input type="checkbox" name="' + this.name + '" value="' + item + '" ' + (this.readOnly ? 'disabled' : '') + ' ' + (valueArray.indexOf(item) != -1 ? 'checked' : '') + ' style="margin:1px;">';
+		html += '<input type="checkbox" name="' + this.name + '" value="' + item + '" '
+			+ (this.readOnly ? 'readOnly' : '') + ' '
+			+ (this.value == item ? 'checked' : '') + ' '
+			+ (this.required ? ' required="true" class="required"' : '') + ' style="margin:1px;">';
 		html += item;
 		html += '</label>';
+		html += '<label for="' + this.name + '" class="validate-error" generated="true" style="display:none;"></label>';
 	}
 	parentNode.innerHTML = html + '</div>';
 }
@@ -1540,8 +1557,11 @@ xf.field.DatePicker.prototype.updateName = function(value) {
 	parentNode.innerHTML = 
 		'<div class="xf-handler">'
 	    + '<div style="padding-left: 0px;margin-bottom:0px;" class="input-append datepicker date">'
-	    + '<input type="text" name="' + this.name + '" style="background-color:white;cursor:default; width: 175px;" ' + (this.readOnly ? 'readOnly' : '') + ' value="' + (this.value ? this.value : '') + '">'
+	    + '<input type="text" name="' + this.name + '" style="background-color:white;cursor:default; width: 175px;" '
+		+ (this.readOnly ? 'readOnly' : '') + ' value="' + (this.value ? this.value : '') + '"'
+		+ (this.required ? ' required="true" class="required"' : '') + '>'
 	    + '<span style="padding-top: 2px; padding-bottom: 2px;" class="add-on"><i class="icon-calendar"></i></span>'
+	    + '<label for="' + this.name + '" class="validate-error" generated="true" style="display:none;"></label>'
 	    + '</div>'
 		+ '</div>';
 }
@@ -1609,7 +1629,8 @@ xf.field.UserPicker.prototype.updateName = function(value) {
 		'<div class="xf-handler">'
 		+'	<div class="input-append userPicker" style="padding:0px;margin:0px;">'
 		+'      <input type="hidden" name="' + this.name + '" class="input-medium" value="">'
-		+'      <input type="text" name="' + this.name + '_name" class="input-medium" value="" style="width:175px;">'
+		+'      <input type="text" name="' + this.name + '_name" class="input-medium" value=""'
+		+ (this.required ? ' required="true" class="required"' : '') + ' style="width:175px;">'
 		+'      <span class="add-on" style="height:20px;padding:2px 5px;"><i class="icon-user"></i></span>'
 		+'	</div>'
 		+ '</div>';

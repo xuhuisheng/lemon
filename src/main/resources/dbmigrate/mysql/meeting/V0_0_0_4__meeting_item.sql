@@ -4,7 +4,7 @@
 --  meeting item
 -------------------------------------------------------------------------------
 CREATE TABLE MEETING_ITEM(
-        ID BIGINT AUTO_INCREMENT,
+        ID BIGINT NOT NULL,
 	NAME VARCHAR(50),
 	TENANT_ID VARCHAR(64),
 	INFO_ID BIGINT,

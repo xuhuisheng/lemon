@@ -4,7 +4,7 @@
 --  dict info
 -------------------------------------------------------------------------------
 CREATE TABLE DICT_INFO(
-        ID BIGINT AUTO_INCREMENT,
+        ID BIGINT NOT NULL,
         NAME VARCHAR(200),
 	VALUE VARCHAR(200),
 	PRIORITY INT,

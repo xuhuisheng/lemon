@@ -57,6 +57,16 @@ public class StaticContentFilter implements Filter {
 
         ContentInfo contentInfo = getContentInfo(contentPath);
 
+        if (contentInfo.getFile().isDirectory()) {
+            if (requestUri.endsWith("/")) {
+                response.sendRedirect(requestUri + "index.html");
+            } else {
+                response.sendRedirect(requestUri + "/index.html");
+            }
+
+            return;
+        }
+
         if (!contentInfo.getFile().exists()) {
             response.sendError(HttpServletResponse.SC_NOT_FOUND);
 

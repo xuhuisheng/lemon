@@ -8,7 +8,7 @@
   <head>
     <%@include file="/common/meta.jsp"%>
     <title>邮件</title>
-    <%@include file="/common/s.jsp"%>
+    <%@include file="/common/s3.jsp"%>
     <script type="text/javascript">
 var config = {
     id: 'orgGrid',
@@ -36,39 +36,33 @@ $(function() {
     table.configPageInfo('.m-page-info');
     table.configPageSize('.m-page-size');
 
-	$('.full-height').height($(window).height() - 100);
+	$('.full-height').height($(window).height() - 150);
 	
 	var editor = CKEDITOR.replace('message_content');
 });
     </script>
 
-	<style>
-fieldset {
-    background: none;
-    border: 0px;
-    border-radius: 0px;
-    margin: 0px;
-    padding: 0px;
-}
-	</style>
   </head>
 
   <body>
     <%@include file="/header/javamail.jsp"%>
 
-    <div class="row-fluid" style="display: table; height: 100%; margin-top: -66px; padding-top: 62px; box-sizing: border-box;">
-	<div style="display:table-row;height:100%;">
+    <div class="row-fluid">
 	<%@include file="/menu/javamail.jsp"%>
 
-	  <aside id="m-sidebar" class="span3" style="height:100%;">
-        <div class="accordion-group" style="height:100%;">
-          <div class="accordion-heading">
-            <a class="accordion-toggle" data-toggle="collapse" data-parent="#m-sidebar" href="#">
-              <i class="icon-user"></i>
-              <span class="title">邮件</span>
-            </a>
-          </div>
-          <div class="accordion-body collapse in full-height" style="overflow:auto;">
+
+
+<div class="panel-group col-md-3" id="accordion2" role="tablist" aria-multiselectable="true" style="padding-top:65px;">
+
+  <div class="panel panel-default">
+    <div class="panel-heading" role="tab" id="collapse-header-javamail" data-toggle="collapse" data-parent="#accordion" href="#collapse-body-javamail" aria-expanded="true" aria-controls="collapse-body-javamail">
+      <h4 class="panel-title">
+	    <i class="glyphicon glyphicon-list"></i>
+        邮件
+      </h4>
+    </div>
+    <div id="collapse-body-javamail" class="panel-collapse collapse ${currentMenu == 'javamail' ? 'in' : ''}" role="tabpanel" aria-labelledby="collapse-header-javamail">
+      <div class="panel-body full-height">
 <c:forEach var="item" items="${javamailMessages}">
 		    <blockquote>
 			  <p>
@@ -80,51 +74,64 @@ fieldset {
 			    &nbsp;
               </footer>
 			</blockquote>
-</c:forEach>
-          </div>
-        </div>
-      </aside>
+</c:forEach>      </div>
+    </div>
+  </div>
 
-	  <aside id="m-sidebar" class="span7" style="height:100%;padding-right:10px;">
-        <div class="accordion-group" style="height:100%;">
-          <div class="accordion-heading">
-            <a class="accordion-toggle" data-toggle="collapse" data-parent="#m-sidebar" href="#">
-              <i class="icon-user"></i>
-              <span class="title">新邮件</span>
-            </a>
-          </div>
-          <div class="accordion-body collapse in full-height" style="overflow:auto;">
+</div>
+
+
+
+
+
+
+<div class="panel-group col-md-7" id="accordion3" role="tablist" aria-multiselectable="true" style="padding-top:65px;">
+
+  <div class="panel panel-default">
+    <div class="panel-heading" role="tab" id="collapse-header-javamail" data-toggle="collapse" data-parent="#accordion" href="#collapse-body-javamail" aria-expanded="true" aria-controls="collapse-body-javamail">
+      <h4 class="panel-title">
+	    <i class="glyphicon glyphicon-list"></i>
+        新邮件
+      </h4>
+    </div>
+    <div id="collapse-body-javamail" class="panel-collapse collapse ${currentMenu == 'javamail' ? 'in' : ''}" role="tabpanel" aria-labelledby="collapse-header-javamail">
+      <div class="panel-body full-height">
 
     <form class="form-horizontal" action="send.do" method="post">
 
-<div>
-<div class="input-prepend">
-<span class="add-on">收件人：</span>
-<input type="text" placeholder="" style="height:20px;" name="receiver">
-</div>
-</div>
-
-<div>
-<div class="input-prepend">
-<span class="add-on">&nbsp;&nbsp;&nbsp;&nbsp;主题：</span>
-<input type="text" placeholder="" style="height:20px;" name="subject">
-</div>
+<div class="form-group">
+    <div class="input-group">
+      <div class="input-group-addon">收件人：</div>
+      <input type="text" class="form-control" placeholder="" name="receiver">
+    </div>
 </div>
 
-<div>
+<div class="form-group">
+    <div class="input-group">
+      <div class="input-group-addon">主题：</div>
+      <input type="text" class="form-control" placeholder="" name="subject">
+    </div>
+</div>
+
+<div class="form-group">
 <textarea id="message_content" name="content"></textarea>
 </div>
 
-<div>
-<button>发送</button>
+<div class="form-group">
+<button class="btn btn-default">发送</button>
 </div>
 
 	</form>
-          </div>
-        </div>
-      </aside>
-	
-	</div>
+
+
+	  
+	  </div>
+
+    </div>
+  </div>
+
+</div>
+
 	</div>
 
   </body>

@@ -1,10 +1,5 @@
 package com.mossle.internal.sendmail.web;
 
-import java.io.InputStream;
-import java.io.PrintWriter;
-import java.io.StringWriter;
-
-import java.util.ArrayList;
 import java.util.List;
 import java.util.Map;
 
@@ -19,12 +14,9 @@ import com.mossle.api.tenant.TenantHolder;
 
 import com.mossle.core.export.Exportor;
 import com.mossle.core.export.TableModel;
-import com.mossle.core.hibernate.PropertyFilter;
-import com.mossle.core.mail.MailDTO;
-import com.mossle.core.mail.MailHelper;
-import com.mossle.core.mail.MailServerInfo;
 import com.mossle.core.mapper.BeanMapper;
 import com.mossle.core.page.Page;
+import com.mossle.core.query.PropertyFilter;
 import com.mossle.core.spring.MessageHelper;
 import com.mossle.core.store.MultipartFileDataSource;
 import com.mossle.core.util.IoUtils;
@@ -32,8 +24,6 @@ import com.mossle.core.util.ServletUtils;
 
 import com.mossle.internal.sendmail.persistence.domain.SendmailAttachment;
 import com.mossle.internal.sendmail.persistence.manager.SendmailAttachmentManager;
-
-import org.springframework.core.io.InputStreamResource;
 
 import org.springframework.stereotype.Controller;
 

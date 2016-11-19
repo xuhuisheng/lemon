@@ -1,27 +1,41 @@
 <%@ page language="java" pageEncoding="UTF-8" %>
-      <!-- start of sidebar -->
-      <aside id="m-sidebar" class="accordion span2" data-spy="affix" data-offset-top="100">
+<style type="text/css">
+#accordion .panel-heading {
+	cursor: pointer;
+}
+#accordion .panel-body {
+	padding:0px;
+}
+</style>
 
-        <div class="accordion-group">
-          <div class="accordion-heading">
-            <a class="accordion-toggle" data-toggle="collapse" data-parent="#m-sidebar" href="#collapse-workcal">
-              <i class="icon-user"></i>
-              <span class="title">工作日历</span>
-            </a>
-          </div>
-          <div id="collapse-workcal" class="accordion-body collapse ${currentMenu == 'workcal' ? 'in' : ''}">
-            <ul class="accordion-inner nav nav-list">
-			  <li class="m-icn-view-users"><a href="${tenantPrefix}/workcal/workcal-type-list.do">工作日历类型</a></li>
-			  <li class="m-icn-view-users"><a href="${tenantPrefix}/workcal/workcal-rule-list.do">工作日历规则</a></li>
-			  <li class="m-icn-view-users"><a href="${tenantPrefix}/workcal/workcal-part-list.do">工作日历时间段</a></li>
-			  <li class="m-icn-view-users"><a href="${tenantPrefix}/workcal/workcal-view.do">工作日历</a></li>
-            </ul>
-          </div>
-        </div>
+      <!-- start of sidebar -->
+<div class="panel-group col-md-2" id="accordion" role="tablist" aria-multiselectable="true" style="padding-top:65px;">
+
+  <div class="panel panel-default">
+    <div class="panel-heading" role="tab" id="collapse-header-workcal" data-toggle="collapse" data-parent="#accordion" href="#collapse-body-workcal" aria-expanded="true" aria-controls="collapse-body-workcal">
+      <h4 class="panel-title">
+	    <i class="glyphicon glyphicon-list"></i>
+        工作日历
+      </h4>
+    </div>
+    <div id="collapse-body-workcal" class="panel-collapse collapse ${currentMenu == 'workcal' ? 'in' : ''}" role="tabpanel" aria-labelledby="collapse-header-workcal">
+      <div class="panel-body">
+        <ul class="nav nav-list">
+		  <li><a href="${tenantPrefix}/workcal/workcal-type-list.do"><i class="glyphicon glyphicon-list"></i> 工作日历类型</a></li>
+		  <li><a href="${tenantPrefix}/workcal/workcal-rule-list.do"><i class="glyphicon glyphicon-list"></i> 工作日历规则</a></li>
+		  <li><a href="${tenantPrefix}/workcal/workcal-part-list.do"><i class="glyphicon glyphicon-list"></i> 工作日历时间段</a></li>
+		  <li><a href="${tenantPrefix}/workcal/workcal-view.do"><i class="glyphicon glyphicon-list"></i> 工作日历</a></li>
+
+        </ul>
+      </div>
+    </div>
+  </div>
 
 		<footer id="m-footer" class="text-center">
 		  <hr>
 		  &copy;Mossle
 		</footer>
-      </aside>
+
+</div>
       <!-- end of sidebar -->
+

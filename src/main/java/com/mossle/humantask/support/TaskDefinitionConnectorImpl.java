@@ -21,7 +21,6 @@ import com.mossle.humantask.persistence.manager.TaskDefUserManager;
 
 import com.mossle.spi.humantask.CounterSignDTO;
 import com.mossle.spi.humantask.DeadlineDTO;
-import com.mossle.spi.humantask.EscalationDTO;
 import com.mossle.spi.humantask.FormDTO;
 import com.mossle.spi.humantask.TaskDefinitionConnector;
 import com.mossle.spi.humantask.TaskDefinitionDTO;
@@ -109,7 +108,7 @@ public class TaskDefinitionConnectorImpl implements TaskDefinitionConnector {
             String processDefinitionId) {
         String hql = "from TaskDefOperation where taskDefBase.code=? and taskDefBase.processDefinitionId=?";
         List<TaskDefOperation> taskDefOperations = taskDefOperationManager
-                .findUnique(hql, taskDefinitionKey, processDefinitionId);
+                .find(hql, taskDefinitionKey, processDefinitionId);
 
         if (taskDefOperations.isEmpty()) {
             return Collections.emptyList();
@@ -140,6 +139,10 @@ public class TaskDefinitionConnectorImpl implements TaskDefinitionConnector {
         List<TaskUserDTO> taskUserDtos = new ArrayList<TaskUserDTO>();
 
         for (TaskDefUser taskDefUser : taskDefUsers) {
+            if ("disable".equals(taskDefUser.getStatus())) {
+                continue;
+            }
+
             TaskUserDTO taskUserDto = new TaskUserDTO();
             taskUserDto.setCatalog(taskDefUser.getCatalog());
             taskUserDto.setType(taskDefUser.getType());
@@ -230,16 +233,24 @@ public class TaskDefinitionConnectorImpl implements TaskDefinitionConnector {
     public void create(TaskDefinitionDTO taskDefinition) {
         logger.info("create task definition : {}", taskDefinition.getCode());
 
-        String hql = "from TaskDefBase where code=? and processDefinitionId=?";
+        String hql = "from TaskDefBase where code=? and processDefinitionKey=? and processDefinitionVersion=?";
+        String processDefinitionId = taskDefinition.getProcessDefinitionId();
+        String processDefinitionKey = processDefinitionId.split("\\:")[0];
+        int processDefinitionVersion = Integer.parseInt(processDefinitionId
+                .split("\\:")[1]);
         TaskDefBase taskDefBase = taskDefBaseManager.findUnique(hql,
-                taskDefinition.getCode(),
-                taskDefinition.getProcessDefinitionId());
+                taskDefinition.getCode(), processDefinitionKey,
+                processDefinitionVersion);
 
         if (taskDefBase == null) {
             taskDefBase = new TaskDefBase();
             taskDefBase.setCode(taskDefinition.getCode());
-            taskDefBase.setProcessDefinitionId(taskDefinition
-                    .getProcessDefinitionId());
+            taskDefBase.setProcessDefinitionKey(processDefinitionKey);
+            taskDefBase.setProcessDefinitionVersion(processDefinitionVersion);
+        }
+
+        if (taskDefBase.getProcessDefinitionId() == null) {
+            taskDefBase.setProcessDefinitionId(processDefinitionId);
         }
 
         taskDefBase.setName(taskDefinition.getName());
@@ -264,10 +275,21 @@ public class TaskDefinitionConnectorImpl implements TaskDefinitionConnector {
         taskDefBaseManager.save(taskDefBase);
 
         for (TaskUserDTO taskUser : taskDefinition.getTaskUsers()) {
-            TaskDefUser taskDefUser = new TaskDefUser();
-            taskDefUser.setType(taskUser.getType());
-            taskDefUser.setCatalog(taskUser.getCatalog());
-            taskDefUser.setValue(taskUser.getValue());
+            String value = taskUser.getValue();
+            String type = taskUser.getType();
+            String catalog = taskUser.getCatalog();
+            String hqlFindTaskDefUser = "from TaskDefUser where taskDefBase=? and value=? and type=? and catalog=?";
+            TaskDefUser taskDefUser = taskDefUserManager.findUnique(
+                    hqlFindTaskDefUser, taskDefBase, value, type, catalog);
+
+            if (taskDefUser != null) {
+                continue;
+            }
+
+            taskDefUser = new TaskDefUser();
+            taskDefUser.setType(type);
+            taskDefUser.setCatalog(catalog);
+            taskDefUser.setValue(value);
             taskDefUser.setTaskDefBase(taskDefBase);
             taskDefUserManager.save(taskDefUser);
         }
@@ -399,6 +421,9 @@ public class TaskDefinitionConnectorImpl implements TaskDefinitionConnector {
                 taskDefinitionKey, processDefinitionId);
 
         if (taskDefBase == null) {
+            logger.info("cannot find taskDefBase {} {}", taskDefinitionKey,
+                    processDefinitionId);
+
             return;
         }
 
@@ -408,6 +433,10 @@ public class TaskDefinitionConnectorImpl implements TaskDefinitionConnector {
                 taskUser.getValue());
 
         if (taskDefUser != null) {
+            logger.info("cannot find taskDefUser {} {} {} {}",
+                    taskDefBase.getId(), taskUser.getCatalog(),
+                    taskUser.getType(), taskUser.getValue());
+
             return;
         }
 
@@ -429,6 +458,9 @@ public class TaskDefinitionConnectorImpl implements TaskDefinitionConnector {
                 taskDefinitionKey, processDefinitionId);
 
         if (taskDefBase == null) {
+            logger.info("cannot find taskDefBase {} {}", taskDefinitionKey,
+                    processDefinitionId);
+
             return;
         }
 
@@ -438,10 +470,47 @@ public class TaskDefinitionConnectorImpl implements TaskDefinitionConnector {
                 taskUser.getValue());
 
         if (taskDefUser == null) {
+            logger.info("cannot find taskDefUser {} {} {} {}",
+                    taskDefBase.getId(), taskUser.getCatalog(),
+                    taskUser.getType(), taskUser.getValue());
+
             return;
         }
 
         taskDefBaseManager.remove(taskDefUser);
+    }
+
+    /**
+     * 更新参与者.
+     */
+    public void updateTaskUser(String taskDefinitionKey,
+            String processDefinitionId, TaskUserDTO taskUser, String status) {
+        String hql = "from TaskDefBase where code=? and processDefinitionId=?";
+        TaskDefBase taskDefBase = taskDefBaseManager.findUnique(hql,
+                taskDefinitionKey, processDefinitionId);
+
+        if (taskDefBase == null) {
+            logger.info("cannot find taskDefBase {} {}", taskDefinitionKey,
+                    processDefinitionId);
+
+            return;
+        }
+
+        String hqlUser = "from TaskDefUser where taskDefBase=? and catalog=? and type=? and value=?";
+        TaskDefUser taskDefUser = taskDefUserManager.findUnique(hqlUser,
+                taskDefBase, taskUser.getCatalog(), taskUser.getType(),
+                taskUser.getValue());
+
+        if (taskDefUser == null) {
+            logger.info("cannot find taskDefUser {} {} {} {}",
+                    taskDefBase.getId(), taskUser.getCatalog(),
+                    taskUser.getType(), taskUser.getValue());
+
+            return;
+        }
+
+        taskDefUser.setStatus(status);
+        taskDefBaseManager.save(taskDefUser);
     }
 
     /**

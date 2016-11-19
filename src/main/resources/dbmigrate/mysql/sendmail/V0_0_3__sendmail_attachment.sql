@@ -4,7 +4,7 @@
 --  sendmail attachment
 -------------------------------------------------------------------------------
 CREATE TABLE SENDMAIL_ATTACHMENT(
-        ID BIGINT AUTO_INCREMENT,
+        ID BIGINT NOT NULL,
         NAME VARCHAR(50),
 	PATH VARCHAR(200),
 	SCOPE_ID VARCHAR(50),

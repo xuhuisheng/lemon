@@ -4,7 +4,7 @@
 --  schedule
 -------------------------------------------------------------------------------
 CREATE TABLE PIM_SCHEDULE(
-        ID BIGINT AUTO_INCREMENT,
+        ID BIGINT NOT NULL,
 	NAME VARCHAR(200),
 	LOCATION VARCHAR(200),
 	CONTENT VARCHAR(200),

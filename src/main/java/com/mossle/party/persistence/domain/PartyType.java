@@ -7,13 +7,12 @@ import java.util.Set;
 import javax.persistence.Column;
 import javax.persistence.Entity;
 import javax.persistence.FetchType;
-import javax.persistence.GeneratedValue;
 import javax.persistence.Id;
 import javax.persistence.OneToMany;
 import javax.persistence.Table;
 
 /**
- * PartyType .
+ * PartyType 组织类型.
  * 
  * @author Lingo
  */
@@ -22,19 +21,19 @@ import javax.persistence.Table;
 public class PartyType implements java.io.Serializable {
     private static final long serialVersionUID = 0L;
 
-    /** null. */
+    /** 主键. */
     private Long id;
 
-    /** null. */
+    /** 名称. */
     private String name;
 
-    /** null. */
+    /** 租户. */
     private String tenantId;
 
-    /** null. */
+    /** 类型. */
     private Integer type;
 
-    /** null. */
+    /** 外部引用. */
     private String ref;
 
     /** . */
@@ -51,10 +50,15 @@ public class PartyType implements java.io.Serializable {
     public PartyType() {
     }
 
-    public PartyType(String name, String tenantId, Integer type, String ref,
-            Set<PartyStructRule> parentStructRules,
+    public PartyType(Long id) {
+        this.id = id;
+    }
+
+    public PartyType(Long id, String name, String tenantId, Integer type,
+            String ref, Set<PartyStructRule> parentStructRules,
             Set<PartyStructRule> childStructRules,
             Set<PartyEntity> partyEntities) {
+        this.id = id;
         this.name = name;
         this.tenantId = tenantId;
         this.type = type;
@@ -64,9 +68,8 @@ public class PartyType implements java.io.Serializable {
         this.partyEntities = partyEntities;
     }
 
-    /** @return null. */
+    /** @return 主键. */
     @Id
-    @GeneratedValue
     @Column(name = "ID", unique = true, nullable = false)
     public Long getId() {
         return this.id;
@@ -74,13 +77,13 @@ public class PartyType implements java.io.Serializable {
 
     /**
      * @param id
-     *            null.
+     *            主键.
      */
     public void setId(Long id) {
         this.id = id;
     }
 
-    /** @return null. */
+    /** @return 名称. */
     @Column(name = "NAME", length = 50)
     public String getName() {
         return this.name;
@@ -88,13 +91,13 @@ public class PartyType implements java.io.Serializable {
 
     /**
      * @param name
-     *            null.
+     *            名称.
      */
     public void setName(String name) {
         this.name = name;
     }
 
-    /** @return null. */
+    /** @return 租户. */
     @Column(name = "TENANT_ID", length = 50)
     public String getTenantId() {
         return this.tenantId;
@@ -102,13 +105,13 @@ public class PartyType implements java.io.Serializable {
 
     /**
      * @param tenantId
-     *            null.
+     *            租户.
      */
     public void setTenantId(String tenantId) {
         this.tenantId = tenantId;
     }
 
-    /** @return null. */
+    /** @return 类型. */
     @Column(name = "TYPE")
     public Integer getType() {
         return this.type;
@@ -116,13 +119,13 @@ public class PartyType implements java.io.Serializable {
 
     /**
      * @param type
-     *            null.
+     *            类型.
      */
     public void setType(Integer type) {
         this.type = type;
     }
 
-    /** @return null. */
+    /** @return 外部引用. */
     @Column(name = "REF", length = 50)
     public String getRef() {
         return this.ref;
@@ -130,7 +133,7 @@ public class PartyType implements java.io.Serializable {
 
     /**
      * @param ref
-     *            null.
+     *            外部引用.
      */
     public void setRef(String ref) {
         this.ref = ref;

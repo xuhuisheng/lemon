@@ -1,11 +1,14 @@
 package com.mossle.api.humantask;
 
+import java.util.ArrayList;
 import java.util.Date;
+import java.util.List;
 
 public class HumanTaskDTO {
     private String id;
     private String businessKey;
     private String name;
+    private String presentationSubject;
     private String description;
     private String assignee;
     private String owner;
@@ -17,6 +20,7 @@ public class HumanTaskDTO {
     private String executionId;
     private String processInstanceId;
     private String processDefinitionId;
+    private String processStarter;
     private String taskDefinitionKey;
     private int priority;
     private String duration;
@@ -26,6 +30,11 @@ public class HumanTaskDTO {
     private String status;
     private Date completeTime;
     private String parentId;
+    private String catalog;
+    private String action;
+    private String comment;
+    private String message;
+    private List<HumanTaskDTO> children = new ArrayList<HumanTaskDTO>();
 
     public String getId() {
         return id;
@@ -49,6 +58,14 @@ public class HumanTaskDTO {
 
     public void setName(String name) {
         this.name = name;
+    }
+
+    public String getPresentationSubject() {
+        return presentationSubject;
+    }
+
+    public void setPresentationSubject(String presentationSubject) {
+        this.presentationSubject = presentationSubject;
     }
 
     public String getDescription() {
@@ -139,6 +156,14 @@ public class HumanTaskDTO {
         this.processDefinitionId = processDefinitionId;
     }
 
+    public String getProcessStarter() {
+        return processStarter;
+    }
+
+    public void setProcessStarter(String processStarter) {
+        this.processStarter = processStarter;
+    }
+
     public String getTaskDefinitionKey() {
         return taskDefinitionKey;
     }
@@ -209,5 +234,45 @@ public class HumanTaskDTO {
 
     public void setParentId(String parentId) {
         this.parentId = parentId;
+    }
+
+    public String getCatalog() {
+        return catalog;
+    }
+
+    public void setCatalog(String catalog) {
+        this.catalog = catalog;
+    }
+
+    public String getAction() {
+        return action;
+    }
+
+    public void setAction(String action) {
+        this.action = action;
+    }
+
+    public String getComment() {
+        return comment;
+    }
+
+    public void setComment(String comment) {
+        this.comment = comment;
+    }
+
+    public String getMessage() {
+        return message;
+    }
+
+    public void setMessage(String message) {
+        this.message = message;
+    }
+
+    public List<HumanTaskDTO> getChildren() {
+        return children;
+    }
+
+    public void setChildren(List<HumanTaskDTO> children) {
+        this.children = children;
     }
 }

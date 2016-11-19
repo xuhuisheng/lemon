@@ -261,7 +261,7 @@ KISBPM.TOOLBAR = {
         },
         
         closeEditor: function(services) {
-        	window.location.href = "./";
+        	window.location.href = "./index.html";
         },
         
         /**
@@ -326,7 +326,7 @@ var SaveModelCtrl = [ '$rootScope', '$scope', '$http', '$route', '$location',
 
     $scope.saveAndClose = function () {
     	$scope.save(function() {
-    		window.location.href = "./";
+    		window.location.href = "./index.html";
     	});
     };
     $scope.save = function (successCallback) {
@@ -376,7 +376,7 @@ var SaveModelCtrl = [ '$rootScope', '$scope', '$http', '$route', '$location',
         };
 
         // Update
-        $http({    method: 'PUT',
+        $http({    method: 'POST',
             data: params,
             ignoreErrors: true,
             headers: {'Accept': 'application/json',

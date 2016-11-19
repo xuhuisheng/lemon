@@ -7,7 +7,6 @@ import java.util.Set;
 import javax.persistence.Column;
 import javax.persistence.Entity;
 import javax.persistence.FetchType;
-import javax.persistence.GeneratedValue;
 import javax.persistence.Id;
 import javax.persistence.OneToMany;
 import javax.persistence.Table;
@@ -40,8 +39,13 @@ public class UserAccountType implements java.io.Serializable {
     public UserAccountType() {
     }
 
-    public UserAccountType(String name, String description, String scopeId,
-            Set<UserAccount> userAccounts) {
+    public UserAccountType(Long id) {
+        this.id = id;
+    }
+
+    public UserAccountType(Long id, String name, String description,
+            String scopeId, Set<UserAccount> userAccounts) {
+        this.id = id;
         this.name = name;
         this.description = description;
         this.scopeId = scopeId;
@@ -50,7 +54,6 @@ public class UserAccountType implements java.io.Serializable {
 
     /** @return null. */
     @Id
-    @GeneratedValue
     @Column(name = "ID", unique = true, nullable = false)
     public Long getId() {
         return this.id;

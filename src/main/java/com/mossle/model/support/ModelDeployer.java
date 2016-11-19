@@ -51,14 +51,18 @@ public class ModelDeployer {
             return;
         }
 
-        TenantDTO tenantDto = tenantConnector.findByCode(defaultTenantCode);
-        Page page = processConnector.findProcessDefinitions(tenantDto.getId(),
-                new Page());
-        List<ProcessDefinition> processDefinitions = (List<ProcessDefinition>) page
-                .getResult();
+        try {
+            TenantDTO tenantDto = tenantConnector.findByCode(defaultTenantCode);
+            Page page = processConnector.findProcessDefinitions(
+                    tenantDto.getId(), new Page());
+            List<ProcessDefinition> processDefinitions = (List<ProcessDefinition>) page
+                    .getResult();
 
-        for (ProcessDefinition processDefinition : processDefinitions) {
-            this.processBusiness(processDefinition);
+            for (ProcessDefinition processDefinition : processDefinitions) {
+                this.processBusiness(processDefinition);
+            }
+        } catch (Exception ex) {
+            logger.error(ex.getMessage(), ex);
         }
     }
 
@@ -80,10 +84,16 @@ public class ModelDeployer {
         Map<String, FormField> formFieldMap = new HashMap<String, FormField>();
 
         for (HumanTaskDefinition humanTaskDefinition : humanTaskDefinitions) {
-            String formKey = taskDefinitionConnector.findForm(
-                    humanTaskDefinition.getKey(), processDefinitionId).getKey();
-
             try {
+                com.mossle.spi.humantask.FormDTO formDto = taskDefinitionConnector
+                        .findForm(humanTaskDefinition.getKey(),
+                                processDefinitionId);
+
+                if (formDto == null) {
+                    continue;
+                }
+
+                String formKey = formDto.getKey();
                 this.processForm(processDefinitionId, formKey,
                         modelInfo.getTenantId(), formFieldMap);
             } catch (IOException ex) {
@@ -118,6 +128,10 @@ public class ModelDeployer {
             String tenantId, Map<String, FormField> formFieldMap)
             throws IOException {
         FormDTO formDto = formConnector.findForm(formKey, tenantId);
+
+        if (formDto == null) {
+            return;
+        }
 
         if (formDto.isRedirect()) {
             return;

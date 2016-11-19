@@ -4,7 +4,7 @@
 --  sendmail template
 -------------------------------------------------------------------------------
 CREATE TABLE SENDMAIL_TEMPLATE(
-        ID BIGINT AUTO_INCREMENT,
+        ID BIGINT NOT NULL,
         NAME VARCHAR(50),
 	RECEIVER VARCHAR(200),
 	SENDER VARCHAR(200),

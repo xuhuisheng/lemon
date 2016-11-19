@@ -1,7 +1,5 @@
 package com.mossle.org.web;
 
-import java.util.ArrayList;
-import java.util.HashMap;
 import java.util.List;
 import java.util.Map;
 
@@ -14,12 +12,11 @@ import com.mossle.api.tenant.TenantHolder;
 
 import com.mossle.core.export.Exportor;
 import com.mossle.core.export.TableModel;
-import com.mossle.core.hibernate.PropertyFilter;
 import com.mossle.core.mapper.BeanMapper;
 import com.mossle.core.page.Page;
+import com.mossle.core.query.PropertyFilter;
 import com.mossle.core.spring.MessageHelper;
 
-import com.mossle.org.persistence.domain.JobGrade;
 import com.mossle.org.persistence.domain.JobLevel;
 import com.mossle.org.persistence.manager.JobGradeManager;
 import com.mossle.org.persistence.manager.JobLevelManager;
@@ -31,7 +28,6 @@ import org.springframework.ui.Model;
 import org.springframework.web.bind.annotation.ModelAttribute;
 import org.springframework.web.bind.annotation.RequestMapping;
 import org.springframework.web.bind.annotation.RequestParam;
-import org.springframework.web.bind.annotation.ResponseBody;
 import org.springframework.web.servlet.mvc.support.RedirectAttributes;
 
 @Controller

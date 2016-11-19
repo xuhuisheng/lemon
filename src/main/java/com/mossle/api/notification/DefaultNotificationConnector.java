@@ -1,15 +1,10 @@
 package com.mossle.api.notification;
 
-import java.util.ArrayList;
 import java.util.Collection;
 import java.util.HashMap;
 import java.util.List;
 import java.util.Map;
 
-import com.mossle.api.notification.NotificationConnector;
-import com.mossle.api.notification.NotificationDTO;
-import com.mossle.api.notification.NotificationHandler;
-import com.mossle.api.notification.NotificationRegistry;
 import com.mossle.api.template.TemplateConnector;
 import com.mossle.api.template.TemplateDTO;
 

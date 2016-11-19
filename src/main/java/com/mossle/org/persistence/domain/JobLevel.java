@@ -7,7 +7,6 @@ import java.util.Set;
 import javax.persistence.Column;
 import javax.persistence.Entity;
 import javax.persistence.FetchType;
-import javax.persistence.GeneratedValue;
 import javax.persistence.Id;
 import javax.persistence.JoinColumn;
 import javax.persistence.ManyToOne;
@@ -45,8 +44,13 @@ public class JobLevel implements java.io.Serializable {
     public JobLevel() {
     }
 
-    public JobLevel(JobGrade jobGrade, String name, String tenantId,
+    public JobLevel(Long id) {
+        this.id = id;
+    }
+
+    public JobLevel(Long id, JobGrade jobGrade, String name, String tenantId,
             Integer priority, Set<JobInfo> jobInfos) {
+        this.id = id;
         this.jobGrade = jobGrade;
         this.name = name;
         this.tenantId = tenantId;
@@ -56,7 +60,6 @@ public class JobLevel implements java.io.Serializable {
 
     /** @return null. */
     @Id
-    @GeneratedValue
     @Column(name = "ID", unique = true, nullable = false)
     public Long getId() {
         return this.id;

@@ -8,7 +8,7 @@
   <head>
     <%@include file="/common/meta.jsp"%>
     <title><spring:message code="user.user.input.title" text="编辑用户"/></title>
-    <%@include file="/common/s.jsp"%>
+    <%@include file="/common/s3.jsp"%>
 
   </head>
 
@@ -19,13 +19,13 @@
 	  <%@include file="/menu/my.jsp"%>
 
 	<!-- start of main -->
-    <section id="m-main" class="span10">
+      <section id="m-main" class="col-md-10" style="margin-top:65px;">
 
-      <article class="m-widget">
-        <header class="header">
-		  <h4 class="title"><spring:message code="user.user.input.title" text="编辑用户"/></h4>
+      <article class="panel panel-default">
+        <header class="panel-heading">
+		  <spring:message code="user.user.input.title" text="编辑用户"/>
 		</header>
-		<div class="content content-inner">
+		<div class="panel-body">
 
   <div class="control-group">
     <label class="control-label" for="userBase_avatar">头像</label>

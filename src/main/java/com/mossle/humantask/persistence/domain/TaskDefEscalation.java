@@ -4,14 +4,13 @@ package com.mossle.humantask.persistence.domain;
 import javax.persistence.Column;
 import javax.persistence.Entity;
 import javax.persistence.FetchType;
-import javax.persistence.GeneratedValue;
 import javax.persistence.Id;
 import javax.persistence.JoinColumn;
 import javax.persistence.ManyToOne;
 import javax.persistence.Table;
 
 /**
- * TaskDefEscalation .
+ * TaskDefEscalation 任务定义升级.
  * 
  * @author Lingo
  */
@@ -20,39 +19,43 @@ import javax.persistence.Table;
 public class TaskDefEscalation implements java.io.Serializable {
     private static final long serialVersionUID = 0L;
 
-    /** null. */
+    /** 主键. */
     private Long id;
 
-    /** null. */
+    /** 外键，截止时间. */
     private TaskDefDeadline taskDefDeadline;
 
-    /** null. */
+    /** 类型. */
     private String type;
 
-    /** null. */
+    /** 状态. */
     private String status;
 
-    /** null. */
-    private String condition;
+    /** 升级条件. */
+    private String escalationCondition;
 
-    /** null. */
+    /** 值. */
     private String value;
 
     public TaskDefEscalation() {
     }
 
-    public TaskDefEscalation(TaskDefDeadline taskDefDeadline, String type,
-            String status, String condition, String value) {
+    public TaskDefEscalation(Long id) {
+        this.id = id;
+    }
+
+    public TaskDefEscalation(Long id, TaskDefDeadline taskDefDeadline,
+            String type, String status, String escalationCondition, String value) {
+        this.id = id;
         this.taskDefDeadline = taskDefDeadline;
         this.type = type;
         this.status = status;
-        this.condition = condition;
+        this.escalationCondition = escalationCondition;
         this.value = value;
     }
 
-    /** @return null. */
+    /** @return 主键. */
     @Id
-    @GeneratedValue
     @Column(name = "ID", unique = true, nullable = false)
     public Long getId() {
         return this.id;
@@ -60,13 +63,13 @@ public class TaskDefEscalation implements java.io.Serializable {
 
     /**
      * @param id
-     *            null.
+     *            主键.
      */
     public void setId(Long id) {
         this.id = id;
     }
 
-    /** @return null. */
+    /** @return 外键，截止时间. */
     @ManyToOne(fetch = FetchType.LAZY)
     @JoinColumn(name = "DEADLINE_ID")
     public TaskDefDeadline getTaskDefDeadline() {
@@ -75,13 +78,13 @@ public class TaskDefEscalation implements java.io.Serializable {
 
     /**
      * @param taskDefDeadline
-     *            null.
+     *            外键，截止时间.
      */
     public void setTaskDefDeadline(TaskDefDeadline taskDefDeadline) {
         this.taskDefDeadline = taskDefDeadline;
     }
 
-    /** @return null. */
+    /** @return 类型. */
     @Column(name = "TYPE", length = 50)
     public String getType() {
         return this.type;
@@ -89,13 +92,13 @@ public class TaskDefEscalation implements java.io.Serializable {
 
     /**
      * @param type
-     *            null.
+     *            类型.
      */
     public void setType(String type) {
         this.type = type;
     }
 
-    /** @return null. */
+    /** @return 状态. */
     @Column(name = "STATUS", length = 50)
     public String getStatus() {
         return this.status;
@@ -103,27 +106,27 @@ public class TaskDefEscalation implements java.io.Serializable {
 
     /**
      * @param status
-     *            null.
+     *            状态.
      */
     public void setStatus(String status) {
         this.status = status;
     }
 
-    /** @return null. */
-    @Column(name = "CONDITION", length = 200)
-    public String getCondition() {
-        return this.condition;
+    /** @return 升级条件. */
+    @Column(name = "ESCALATION_CONDITION", length = 200)
+    public String getEscalationCondition() {
+        return this.escalationCondition;
     }
 
     /**
-     * @param condition
-     *            null.
+     * @param escalationCondition
+     *            升级条件.
      */
-    public void setCondition(String condition) {
-        this.condition = condition;
+    public void setEscalationCondition(String escalationCondition) {
+        this.escalationCondition = escalationCondition;
     }
 
-    /** @return null. */
+    /** @return 值. */
     @Column(name = "VALUE", length = 200)
     public String getValue() {
         return this.value;
@@ -131,7 +134,7 @@ public class TaskDefEscalation implements java.io.Serializable {
 
     /**
      * @param value
-     *            null.
+     *            值.
      */
     public void setValue(String value) {
         this.value = value;

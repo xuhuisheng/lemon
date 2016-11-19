@@ -1,6 +1,6 @@
 package com.mossle.portal.web;
 
-import java.util.ArrayList;
+import java.util.Collections;
 import java.util.HashSet;
 import java.util.LinkedHashMap;
 import java.util.List;
@@ -8,17 +8,10 @@ import java.util.Map;
 
 import javax.annotation.Resource;
 
-import javax.servlet.http.HttpServletRequest;
-import javax.servlet.http.HttpServletResponse;
-
 import com.mossle.api.tenant.TenantHolder;
 
 import com.mossle.core.auth.CurrentUserHolder;
-import com.mossle.core.export.Exportor;
-import com.mossle.core.export.TableModel;
-import com.mossle.core.hibernate.PropertyFilter;
 import com.mossle.core.mapper.BeanMapper;
-import com.mossle.core.page.Page;
 import com.mossle.core.spring.MessageHelper;
 
 import com.mossle.portal.persistence.domain.PortalInfo;
@@ -33,17 +26,12 @@ import com.mossle.portal.persistence.manager.PortalWidgetManager;
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
 
-import org.springframework.context.support.MessageSourceAccessor;
-
 import org.springframework.stereotype.Controller;
 
 import org.springframework.ui.Model;
 
-import org.springframework.web.bind.annotation.ModelAttribute;
 import org.springframework.web.bind.annotation.RequestMapping;
 import org.springframework.web.bind.annotation.RequestParam;
-import org.springframework.web.bind.annotation.ResponseBody;
-import org.springframework.web.servlet.mvc.support.RedirectAttributes;
 
 @Controller
 @RequestMapping("portal")
@@ -75,6 +63,20 @@ public class PortalController {
                         portalInfo);
         logger.debug("columnIndexes : {}", columnIndexes);
 
+        if (!columnIndexes.contains(Integer.valueOf(1))) {
+            columnIndexes.add(Integer.valueOf(1));
+        }
+
+        if (!columnIndexes.contains(Integer.valueOf(2))) {
+            columnIndexes.add(Integer.valueOf(2));
+        }
+
+        if (!columnIndexes.contains(Integer.valueOf(3))) {
+            columnIndexes.add(Integer.valueOf(3));
+        }
+
+        Collections.sort(columnIndexes);
+
         Map<Integer, List<PortalItem>> map = new LinkedHashMap<Integer, List<PortalItem>>();
 
         for (Integer columnIndex : columnIndexes) {
@@ -105,14 +107,24 @@ public class PortalController {
         if (id == null) {
             portalItem = new PortalItem();
 
-            int columnIndex = (Integer) portalItemManager
+            Integer columnIndex = (Integer) portalItemManager
                     .findUnique(
                             "select min(columnIndex) from PortalItem where portalInfo=?",
                             portalInfo);
+
+            if (columnIndex == null) {
+                columnIndex = 0;
+            }
+
             Long rowIndexLong = (Long) portalItemManager
                     .findUnique(
                             "select count(*) from PortalItem where portalInfo=? and columnIndex=?",
                             portalInfo, columnIndex);
+
+            if (rowIndexLong == null) {
+                rowIndexLong = 0L;
+            }
+
             int rowIndex = rowIndexLong.intValue();
             portalItem.setColumnIndex(columnIndex);
             portalItem.setRowIndex(rowIndex);

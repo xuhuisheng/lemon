@@ -41,6 +41,12 @@ public class PartyOrgConnector implements OrgConnector {
         // 找到userId对应的partyEntity
         PartyEntity partyEntity = this.findUser(userId);
 
+        if (partyEntity == null) {
+            logger.info("cannot find user : {}", userId);
+
+            return -1;
+        }
+
         // 如果直接上级是岗位，就返回岗位级别
         for (PartyStruct partyStruct : partyEntity.getParentStructs()) {
             if (partyStruct.getParentEntity().getPartyType().getType() == PartyConstants.TYPE_POSITION) {
@@ -146,11 +152,11 @@ public class PartyOrgConnector implements OrgConnector {
 
                 // 如果叶子是岗位，并且这个职位是管理岗位
                 if ((childPartyEntity.getPartyType().getType() == PartyConstants.TYPE_POSITION)
-                        && (partyStruct.getAdmin() == 1)) {
+                        && this.isAdmin(partyStruct)) {
                     // 就找这个岗位下面的管理者
                     superior = this.findAdministrator(childPartyEntity);
                 } else if ((childPartyEntity.getPartyType().getType() == PartyConstants.TYPE_USER)
-                        && (partyStruct.getAdmin() == 1)) {
+                        && this.isAdmin(partyStruct)) {
                     // 如果是人员，并且人员是管理者，也当做是管理者
                     superior = childPartyEntity;
                 }
@@ -166,6 +172,22 @@ public class PartyOrgConnector implements OrgConnector {
 
         // 找不到上级领导
         return null;
+    }
+
+    public boolean isAdmin(PartyStruct partyStruct) {
+        if (partyStruct == null) {
+            return false;
+        }
+
+        if (partyStruct.getAdmin() == null) {
+            return false;
+        }
+
+        return partyStruct.getAdmin() == 1;
+    }
+
+    public boolean isNotAdmin(PartyStruct partyStruct) {
+        return !this.isAdmin(partyStruct);
     }
 
     /**
@@ -243,18 +265,27 @@ public class PartyOrgConnector implements OrgConnector {
      * 获得上级部门.
      */
     public PartyEntity findUpperDepartment(PartyEntity child) {
+        if (child == null) {
+            logger.info("child is null");
+
+            return null;
+        }
+
         for (PartyStruct partyStruct : child.getParentStructs()) {
             PartyEntity parent = partyStruct.getParentEntity();
+
+            if (parent == null) {
+                logger.info("parent is null, child : {}", child.getName());
+
+                continue;
+            }
+
             logger.debug("parent : {}, child : {}", parent.getName(),
                     child.getName());
             logger.debug("admin : [{}]", partyStruct.getAdmin());
 
-            if (parent == null) {
-                continue;
-            }
-
             if ((parent.getPartyType().getType() == PartyConstants.TYPE_ORG)
-                    && (!Integer.valueOf(1).equals(partyStruct.getAdmin()))) {
+                    && this.isNotAdmin(partyStruct)) {
                 logger.debug("upper department : {}, admin : [{}]",
                         parent.getName(), partyStruct.getAdmin());
 

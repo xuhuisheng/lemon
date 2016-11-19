@@ -3,19 +3,18 @@ package com.mossle.auth.web;
 import java.util.ArrayList;
 import java.util.Collections;
 import java.util.List;
-import java.util.Map;
 
 import javax.annotation.Resource;
 
-import javax.servlet.http.HttpServletResponse;
-
 import com.mossle.api.tenant.TenantHolder;
 
+import com.mossle.auth.component.AuthCache;
 import com.mossle.auth.component.RoleDefChecker;
 import com.mossle.auth.persistence.domain.Perm;
 import com.mossle.auth.persistence.domain.PermType;
 import com.mossle.auth.persistence.domain.Role;
 import com.mossle.auth.persistence.domain.RoleDef;
+import com.mossle.auth.persistence.domain.UserStatus;
 import com.mossle.auth.persistence.manager.PermManager;
 import com.mossle.auth.persistence.manager.PermTypeManager;
 import com.mossle.auth.persistence.manager.RoleDefManager;
@@ -31,10 +30,8 @@ import org.springframework.stereotype.Controller;
 
 import org.springframework.ui.Model;
 
-import org.springframework.web.bind.annotation.ModelAttribute;
 import org.springframework.web.bind.annotation.RequestMapping;
 import org.springframework.web.bind.annotation.RequestParam;
-import org.springframework.web.bind.annotation.ResponseBody;
 import org.springframework.web.servlet.mvc.support.RedirectAttributes;
 
 @Controller
@@ -49,6 +46,7 @@ public class RolePermController {
     private RoleDefChecker roleDefChecker;
     private RoleManager roleManager;
     private TenantHolder tenantHolder;
+    private AuthCache authCache;
 
     @RequestMapping("role-perm-save")
     public String save(
@@ -74,6 +72,12 @@ public class RolePermController {
             roleDefManager.save(roleDef);
             messageHelper.addFlashMessage(redirectAttributes,
                     "core.success.save", "保存成功");
+
+            for (Role roleInstance : roleDef.getRoles()) {
+                for (UserStatus userStatus : roleInstance.getUserStatuses()) {
+                    authCache.evictUserStatus(userStatus);
+                }
+            }
         } catch (CheckRoleException ex) {
             logger.warn(ex.getMessage(), ex);
             messageHelper.addFlashMessage(redirectAttributes, ex.getMessage());
@@ -138,5 +142,10 @@ public class RolePermController {
     @Resource
     public void setTenantHolder(TenantHolder tenantHolder) {
         this.tenantHolder = tenantHolder;
+    }
+
+    @Resource
+    public void setAuthCache(AuthCache authCache) {
+        this.authCache = authCache;
     }
 }

@@ -4,7 +4,6 @@ package com.mossle.pim.persistence.domain;
 import javax.persistence.Column;
 import javax.persistence.Entity;
 import javax.persistence.FetchType;
-import javax.persistence.GeneratedValue;
 import javax.persistence.Id;
 import javax.persistence.JoinColumn;
 import javax.persistence.ManyToOne;
@@ -41,8 +40,13 @@ public class WorkReportAttachment implements java.io.Serializable {
     public WorkReportAttachment() {
     }
 
-    public WorkReportAttachment(WorkReportInfo workReportInfo, String name,
-            Long fileSize, String ref, String tenantId) {
+    public WorkReportAttachment(Long id) {
+        this.id = id;
+    }
+
+    public WorkReportAttachment(Long id, WorkReportInfo workReportInfo,
+            String name, Long fileSize, String ref, String tenantId) {
+        this.id = id;
         this.workReportInfo = workReportInfo;
         this.name = name;
         this.fileSize = fileSize;
@@ -52,7 +56,6 @@ public class WorkReportAttachment implements java.io.Serializable {
 
     /** @return null. */
     @Id
-    @GeneratedValue
     @Column(name = "ID", unique = true, nullable = false)
     public Long getId() {
         return this.id;

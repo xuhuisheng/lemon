@@ -4,14 +4,13 @@ package com.mossle.bpm.persistence.domain;
 import javax.persistence.Column;
 import javax.persistence.Entity;
 import javax.persistence.FetchType;
-import javax.persistence.GeneratedValue;
 import javax.persistence.Id;
 import javax.persistence.JoinColumn;
 import javax.persistence.ManyToOne;
 import javax.persistence.Table;
 
 /**
- * BpmConfForm .
+ * BpmConfForm 配置表单.
  * 
  * @author Lingo
  */
@@ -20,32 +19,37 @@ import javax.persistence.Table;
 public class BpmConfForm implements java.io.Serializable {
     private static final long serialVersionUID = 0L;
 
-    /** null. */
+    /** 主键. */
     private Long id;
 
-    /** null. */
+    /** 外键，配置节点. */
     private BpmConfNode bpmConfNode;
 
-    /** null. */
+    /** 值. */
     private String value;
 
-    /** null. */
+    /** 分类. */
     private Integer type;
 
-    /** null. */
+    /** 原始值. */
     private String originValue;
 
-    /** null. */
+    /** 原始类型. */
     private Integer originType;
 
-    /** null. */
+    /** 状态. */
     private Integer status;
 
     public BpmConfForm() {
     }
 
-    public BpmConfForm(BpmConfNode bpmConfNode, String value, Integer type,
-            String originValue, Integer originType, Integer status) {
+    public BpmConfForm(Long id) {
+        this.id = id;
+    }
+
+    public BpmConfForm(Long id, BpmConfNode bpmConfNode, String value,
+            Integer type, String originValue, Integer originType, Integer status) {
+        this.id = id;
         this.bpmConfNode = bpmConfNode;
         this.value = value;
         this.type = type;
@@ -54,9 +58,8 @@ public class BpmConfForm implements java.io.Serializable {
         this.status = status;
     }
 
-    /** @return null. */
+    /** @return 主键. */
     @Id
-    @GeneratedValue
     @Column(name = "ID", unique = true, nullable = false)
     public Long getId() {
         return this.id;
@@ -64,13 +67,13 @@ public class BpmConfForm implements java.io.Serializable {
 
     /**
      * @param id
-     *            null.
+     *            主键.
      */
     public void setId(Long id) {
         this.id = id;
     }
 
-    /** @return null. */
+    /** @return 外键，配置节点. */
     @ManyToOne(fetch = FetchType.LAZY)
     @JoinColumn(name = "NODE_ID")
     public BpmConfNode getBpmConfNode() {
@@ -79,13 +82,13 @@ public class BpmConfForm implements java.io.Serializable {
 
     /**
      * @param bpmConfNode
-     *            null.
+     *            外键，配置节点.
      */
     public void setBpmConfNode(BpmConfNode bpmConfNode) {
         this.bpmConfNode = bpmConfNode;
     }
 
-    /** @return null. */
+    /** @return 值. */
     @Column(name = "VALUE", length = 200)
     public String getValue() {
         return this.value;
@@ -93,13 +96,13 @@ public class BpmConfForm implements java.io.Serializable {
 
     /**
      * @param value
-     *            null.
+     *            值.
      */
     public void setValue(String value) {
         this.value = value;
     }
 
-    /** @return null. */
+    /** @return 分类. */
     @Column(name = "TYPE")
     public Integer getType() {
         return this.type;
@@ -107,13 +110,13 @@ public class BpmConfForm implements java.io.Serializable {
 
     /**
      * @param type
-     *            null.
+     *            分类.
      */
     public void setType(Integer type) {
         this.type = type;
     }
 
-    /** @return null. */
+    /** @return 原始值. */
     @Column(name = "ORIGIN_VALUE", length = 200)
     public String getOriginValue() {
         return this.originValue;
@@ -121,13 +124,13 @@ public class BpmConfForm implements java.io.Serializable {
 
     /**
      * @param originValue
-     *            null.
+     *            原始值.
      */
     public void setOriginValue(String originValue) {
         this.originValue = originValue;
     }
 
-    /** @return null. */
+    /** @return 原始类型. */
     @Column(name = "ORIGIN_TYPE")
     public Integer getOriginType() {
         return this.originType;
@@ -135,13 +138,13 @@ public class BpmConfForm implements java.io.Serializable {
 
     /**
      * @param originType
-     *            null.
+     *            原始类型.
      */
     public void setOriginType(Integer originType) {
         this.originType = originType;
     }
 
-    /** @return null. */
+    /** @return 状态. */
     @Column(name = "STATUS")
     public Integer getStatus() {
         return this.status;
@@ -149,7 +152,7 @@ public class BpmConfForm implements java.io.Serializable {
 
     /**
      * @param status
-     *            null.
+     *            状态.
      */
     public void setStatus(Integer status) {
         this.status = status;

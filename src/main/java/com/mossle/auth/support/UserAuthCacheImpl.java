@@ -1,10 +1,13 @@
 package com.mossle.auth.support;
 
+import javax.annotation.PostConstruct;
+import javax.annotation.Resource;
+
+import javax.cache.Cache;
+import javax.cache.CacheManager;
+
 import com.mossle.api.userauth.UserAuthCache;
 import com.mossle.api.userauth.UserAuthDTO;
-
-import com.mossle.core.cache.Cache;
-import com.mossle.core.cache.CacheStrategy;
 
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
@@ -12,11 +15,17 @@ import org.slf4j.LoggerFactory;
 public class UserAuthCacheImpl implements UserAuthCache {
     private static Logger logger = LoggerFactory
             .getLogger(UserAuthCacheImpl.class);
-    private CacheStrategy cacheStrategy;
-    private Cache cache;
+    private CacheManager cacheManager;
+    private Cache<String, UserAuthDTO> cache;
+    private boolean skipCache = false;
+
+    @PostConstruct
+    public void init() {
+        this.cache = this.cacheManager.getCache("userauth");
+    }
 
     public UserAuthDTO findByUsername(String username, String tenantId) {
-        if (true) {
+        if (skipCache) {
             // TODO: skip cache
             return null;
         }
@@ -27,7 +36,7 @@ public class UserAuthCacheImpl implements UserAuthCache {
     }
 
     public UserAuthDTO findByRef(String ref, String tenantId) {
-        if (true) {
+        if (skipCache) {
             // TODO: skip cache
             return null;
         }
@@ -38,7 +47,7 @@ public class UserAuthCacheImpl implements UserAuthCache {
     }
 
     public UserAuthDTO findById(String id, String tenantId) {
-        if (true) {
+        if (skipCache) {
             // TODO: skip cache
             return null;
         }
@@ -55,12 +64,12 @@ public class UserAuthCacheImpl implements UserAuthCache {
                 userAuthDto.getTenantId());
         logger.debug("update userAuthId:{}:{}", userAuthDto.getId(),
                 userAuthDto.getTenantId());
-        cache.set("userAuthUsername:" + userAuthDto.getUsername() + ":"
+        cache.put("userAuthUsername:" + userAuthDto.getUsername() + ":"
                 + userAuthDto.getTenantId(), userAuthDto);
-        cache.set(
+        cache.put(
                 "userAuthRef:" + userAuthDto.getRef() + ":"
                         + userAuthDto.getTenantId(), userAuthDto);
-        cache.set(
+        cache.put(
                 "userAuthId:" + userAuthDto.getId() + ":"
                         + userAuthDto.getTenantId(), userAuthDto);
     }
@@ -86,8 +95,8 @@ public class UserAuthCacheImpl implements UserAuthCache {
                 + userAuthDto.getTenantId());
     }
 
-    public void setCacheStrategy(CacheStrategy cacheStrategy) {
-        this.cacheStrategy = cacheStrategy;
-        this.cache = cacheStrategy.getCache("userauth");
+    @Resource
+    public void setCacheManager(CacheManager cacheManager) {
+        this.cacheManager = cacheManager;
     }
 }

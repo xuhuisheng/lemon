@@ -1,17 +1,13 @@
 package com.mossle.humantask.listener;
 
-import java.util.HashMap;
-import java.util.List;
-import java.util.Map;
-
 import javax.annotation.Resource;
 
+import com.mossle.api.humantask.HumanTaskConstants;
+
 import com.mossle.humantask.persistence.domain.TaskInfo;
-import com.mossle.humantask.persistence.domain.TaskParticipant;
 import com.mossle.humantask.persistence.manager.TaskParticipantManager;
 
 import com.mossle.spi.humantask.TaskDefinitionConnector;
-import com.mossle.spi.humantask.TaskUserDTO;
 
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
@@ -24,6 +20,10 @@ public class TaskConfUserHumanTaskListener implements HumanTaskListener {
 
     @Override
     public void onCreate(TaskInfo taskInfo) throws Exception {
+        if (HumanTaskConstants.CATALOG_COPY.equals(taskInfo.getCatalog())) {
+            return;
+        }
+
         String taskDefinitionKey = taskInfo.getCode();
         String businessKey = taskInfo.getBusinessKey();
         String assignee = taskDefinitionConnector.findTaskConfUser(

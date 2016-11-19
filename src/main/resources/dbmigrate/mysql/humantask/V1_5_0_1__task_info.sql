@@ -4,7 +4,7 @@
 --  task info
 -------------------------------------------------------------------------------
 CREATE TABLE TASK_INFO(
-        ID BIGINT AUTO_INCREMENT,
+	ID BIGINT NOT NULL,
 	BUSINESS_KEY VARCHAR(100),
 	CODE VARCHAR(100),
 	NAME VARCHAR(200),
@@ -51,6 +51,50 @@ CREATE TABLE TASK_INFO(
 	CONSTRAINT PK_TASK_INFO PRIMARY KEY(ID),
 	CONSTRAINT FK_TASK_INFO_PARENT FOREIGN KEY(PARENT_ID) REFERENCES TASK_INFO(ID)
 ) ENGINE=INNODB CHARSET=UTF8;
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
 
 
 

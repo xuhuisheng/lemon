@@ -8,7 +8,6 @@ import java.util.Properties;
 
 import javax.annotation.PostConstruct;
 import javax.annotation.PreDestroy;
-import javax.annotation.Resource;
 
 import javax.jms.ConnectionFactory;
 

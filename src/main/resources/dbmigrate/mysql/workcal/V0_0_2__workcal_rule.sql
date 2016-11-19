@@ -4,7 +4,7 @@
 --  workcal rule
 -------------------------------------------------------------------------------
 CREATE TABLE WORKCAL_RULE(
-        ID BIGINT AUTO_INCREMENT,
+        ID BIGINT NOT NULL,
 	YEAR INT,
         WEEK INT,
 	NAME VARCHAR(50),

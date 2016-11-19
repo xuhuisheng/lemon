@@ -1,41 +1,24 @@
 package com.mossle.android.rs;
 
-import java.text.DateFormat;
-import java.text.SimpleDateFormat;
-
-import java.util.*;
+import java.util.ArrayList;
+import java.util.HashMap;
 import java.util.List;
+import java.util.Map;
 
 import javax.annotation.Resource;
 
-import javax.ws.rs.FormParam;
-import javax.ws.rs.GET;
-import javax.ws.rs.GET;
 import javax.ws.rs.POST;
 import javax.ws.rs.Path;
-import javax.ws.rs.Path;
 import javax.ws.rs.Produces;
-import javax.ws.rs.Produces;
-import javax.ws.rs.QueryParam;
-import javax.ws.rs.core.MediaType;
 import javax.ws.rs.core.MediaType;
 
-import com.mossle.api.process.ProcessConnector;
 import com.mossle.api.tenant.TenantHolder;
-
-import com.mossle.bpm.persistence.domain.BpmProcess;
-import com.mossle.bpm.persistence.manager.BpmProcessManager;
 
 import com.mossle.cms.persistence.domain.CmsArticle;
 import com.mossle.cms.persistence.manager.CmsArticleManager;
 
-import com.mossle.core.auth.CurrentUserHolder;
 import com.mossle.core.mapper.JsonMapper;
-import com.mossle.core.page.Page;
 import com.mossle.core.util.BaseDTO;
-
-import org.activiti.engine.ProcessEngine;
-import org.activiti.engine.history.HistoricProcessInstance;
 
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;

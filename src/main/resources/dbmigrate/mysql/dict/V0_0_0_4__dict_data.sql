@@ -4,7 +4,7 @@
 --  dict data
 -------------------------------------------------------------------------------
 CREATE TABLE DICT_DATA(
-        ID BIGINT AUTO_INCREMENT,
+        ID BIGINT NOT NULL,
 	NAME VARCHAR(200),
 	VALUE VARCHAR(200),
 	INFO_ID BIGINT,

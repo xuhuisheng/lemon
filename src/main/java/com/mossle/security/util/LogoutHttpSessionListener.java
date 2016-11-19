@@ -17,9 +17,6 @@ import org.slf4j.LoggerFactory;
 
 import org.springframework.context.ApplicationContext;
 
-import org.springframework.security.core.Authentication;
-import org.springframework.security.core.context.SecurityContext;
-
 import org.springframework.web.context.support.WebApplicationContextUtils;
 
 public class LogoutHttpSessionListener implements HttpSessionListener {

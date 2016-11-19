@@ -61,7 +61,7 @@ public class FirstTaskForm {
         return initiatorName;
     }
 
-    public void setInitiatorName(String intiatorName) {
+    public void setInitiatorName(String initiatorName) {
         this.initiatorName = initiatorName;
     }
 }

@@ -29,7 +29,7 @@
                       'left': '0',
                       'width': '100%',
                       'line-height': settings.size + 'px',
-					  'height:' setting.size + 'px',
+					  'height': setting.size + 'px',
                       'font-size': settings.fontSize
                       });
 

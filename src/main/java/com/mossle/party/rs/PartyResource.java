@@ -14,6 +14,9 @@ import javax.ws.rs.Produces;
 import javax.ws.rs.QueryParam;
 import javax.ws.rs.core.MediaType;
 
+import com.mossle.api.user.UserConnector;
+import com.mossle.api.user.UserDTO;
+
 import com.mossle.party.persistence.domain.PartyEntity;
 import com.mossle.party.persistence.domain.PartyStruct;
 import com.mossle.party.persistence.domain.PartyType;
@@ -35,6 +38,7 @@ public class PartyResource {
     private PartyEntityManager partyEntityManager;
     private PartyStructManager partyStructManager;
     private PartyService partyService;
+    private UserConnector userConnector;
 
     @GET
     @Path("types")
@@ -135,6 +139,12 @@ public class PartyResource {
                 if (partyStruct.getPartyStructType().getId() == partyStructTypeId) {
                     PartyEntity childPartyEntity = partyStruct.getChildEntity();
 
+                    if (childPartyEntity == null) {
+                        logger.info("child party entity is null");
+
+                        continue;
+                    }
+
                     if (childPartyEntity.getPartyType().getType() != 1) {
                         partyEntities.add(childPartyEntity);
                     }
@@ -169,6 +179,29 @@ public class PartyResource {
         return names;
     }
 
+    @GET
+    @Path("searchUser")
+    @Produces(MediaType.APPLICATION_JSON)
+    public List<Map<String, String>> searchUser(
+            @QueryParam("parentId") Long parentId) {
+        String hql = "select child from PartyEntity child join child.parentStructs parent where child.partyType.id=1 and parent.parentEntity.id=?";
+        List<PartyEntity> partyEntities = partyEntityManager
+                .find(hql, parentId);
+
+        List<Map<String, String>> list = new ArrayList<Map<String, String>>();
+
+        for (PartyEntity partyEntity : partyEntities) {
+            Map<String, String> map = new HashMap<String, String>();
+            UserDTO userDto = userConnector.findById(partyEntity.getRef());
+            map.put("id", userDto.getId());
+            map.put("username", userDto.getUsername());
+            map.put("displayName", userDto.getDisplayName());
+            list.add(map);
+        }
+
+        return list;
+    }
+
     // ~ ==================================================
     @Resource
     public void setPartyTypeManager(PartyTypeManager partyTypeManager) {
@@ -188,6 +221,11 @@ public class PartyResource {
     @Resource
     public void setPartyService(PartyService partyService) {
         this.partyService = partyService;
+    }
+
+    @Resource
+    public void setUserConnector(UserConnector userConnector) {
+        this.userConnector = userConnector;
     }
 
     // ~ ==================================================

@@ -1,12 +1,7 @@
 package com.mossle.internal.store.client;
 
-import java.io.*;
-
-import java.net.*;
-
-import java.text.SimpleDateFormat;
-
-import java.util.*;
+import java.io.ByteArrayOutputStream;
+import java.io.InputStream;
 
 import javax.activation.DataSource;
 
@@ -15,26 +10,14 @@ import javax.annotation.Resource;
 import com.mossle.api.store.StoreConnector;
 import com.mossle.api.store.StoreDTO;
 
-import com.mossle.core.mapper.JsonMapper;
 import com.mossle.core.store.ByteArrayDataSource;
-import com.mossle.core.store.StoreHelper;
-import com.mossle.core.store.StoreResult;
-import com.mossle.core.util.IoUtils;
 
 import com.mossle.internal.store.service.StoreService;
-
-import org.apache.commons.codec.binary.Base64;
 
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
 
 import org.springframework.beans.factory.annotation.Value;
-
-import org.springframework.core.io.InputStreamResource;
-
-import org.springframework.stereotype.Component;
-
-import org.springframework.util.FileCopyUtils;
 
 public class LocalStoreClient implements StoreClient {
     private Logger logger = LoggerFactory.getLogger(LocalStoreClient.class);

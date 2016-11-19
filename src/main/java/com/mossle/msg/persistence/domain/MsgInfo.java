@@ -5,7 +5,6 @@ import java.util.Date;
 
 import javax.persistence.Column;
 import javax.persistence.Entity;
-import javax.persistence.GeneratedValue;
 import javax.persistence.Id;
 import javax.persistence.Table;
 import javax.persistence.Temporal;
@@ -48,11 +47,20 @@ public class MsgInfo implements java.io.Serializable {
     /** null. */
     private String tenantId;
 
+    /** null. */
+    private String data;
+
     public MsgInfo() {
     }
 
-    public MsgInfo(String name, String content, Integer type, Date createTime,
-            String senderId, String receiverId, Integer status, String tenantId) {
+    public MsgInfo(Long id) {
+        this.id = id;
+    }
+
+    public MsgInfo(Long id, String name, String content, Integer type,
+            Date createTime, String senderId, String receiverId,
+            Integer status, String tenantId, String data) {
+        this.id = id;
         this.name = name;
         this.content = content;
         this.type = type;
@@ -61,11 +69,11 @@ public class MsgInfo implements java.io.Serializable {
         this.receiverId = receiverId;
         this.status = status;
         this.tenantId = tenantId;
+        this.data = data;
     }
 
     /** @return null. */
     @Id
-    @GeneratedValue
     @Column(name = "ID", unique = true, nullable = false)
     public Long getId() {
         return this.id;
@@ -190,5 +198,19 @@ public class MsgInfo implements java.io.Serializable {
      */
     public void setTenantId(String tenantId) {
         this.tenantId = tenantId;
+    }
+
+    /** @return null. */
+    @Column(name = "DATA")
+    public String getData() {
+        return this.data;
+    }
+
+    /**
+     * @param data
+     *            null.
+     */
+    public void setData(String data) {
+        this.data = data;
     }
 }

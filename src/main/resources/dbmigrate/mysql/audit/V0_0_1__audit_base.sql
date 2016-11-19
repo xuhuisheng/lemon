@@ -4,7 +4,7 @@
 --  audit base
 -------------------------------------------------------------------------------
 CREATE TABLE AUDIT_BASE(
-        ID BIGINT AUTO_INCREMENT,
+        ID BIGINT NOT NULL,
 	USER VARCHAR(200),
 	RESOURCE_TYPE VARCHAR(200),
 	RESOURCE_ID VARCHAR(200),

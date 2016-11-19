@@ -27,16 +27,16 @@
 	jspContext.setAttribute("menu", menuDto);
 %>
   <c:if test="${empty menu.children}">
-        <li class="${currentHeader == menu.code ? 'active' : ''}"><a href="${tenantPrefix}/${menu.url}"><i class="icon-user"></i>${menu.title}</a></li>
+        <li class="${currentHeader == menu.code ? 'active' : ''}"><a href="${tenantPrefix}/${menu.url}"><i class="icon-list"></i>${menu.title}</a></li>
   </c:if>
   <c:if test="${not empty menu.children}">
         <li class="dropdown ${currentHeader == menu.code ? 'active' : ''}">
           <a data-toggle="dropdown" class="dropdown-toggle" href="${tenantPrefix}/${menu.url}">
-            <i class="icon-user"></i>${menu.title} <b class="caret"></b>
+            <i class="icon-list"></i>${menu.title} <b class="caret"></b>
           </a>
           <ul class="dropdown-menu">
     <c:forEach items="${menu.children}" var="child">
-            <li><a href="${tenantPrefix}${child.url}"><i class="icon-user"></i>${child.title}</a></li>
+            <li><a href="${tenantPrefix}/${child.url}"><i class="icon-list"></i>${child.title}</a></li>
     </c:forEach>
           </ul>
         </li>

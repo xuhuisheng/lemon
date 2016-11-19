@@ -7,7 +7,6 @@ import java.util.Set;
 import javax.persistence.Column;
 import javax.persistence.Entity;
 import javax.persistence.FetchType;
-import javax.persistence.GeneratedValue;
 import javax.persistence.Id;
 import javax.persistence.OneToMany;
 import javax.persistence.Table;
@@ -43,8 +42,13 @@ public class PortalWidget implements java.io.Serializable {
     public PortalWidget() {
     }
 
-    public PortalWidget(String name, String url, String data, String tenantId,
-            Set<PortalItem> portalItems) {
+    public PortalWidget(Long id) {
+        this.id = id;
+    }
+
+    public PortalWidget(Long id, String name, String url, String data,
+            String tenantId, Set<PortalItem> portalItems) {
+        this.id = id;
         this.name = name;
         this.url = url;
         this.data = data;
@@ -54,7 +58,6 @@ public class PortalWidget implements java.io.Serializable {
 
     /** @return null. */
     @Id
-    @GeneratedValue
     @Column(name = "ID", unique = true, nullable = false)
     public Long getId() {
         return this.id;

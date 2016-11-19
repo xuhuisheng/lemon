@@ -8,38 +8,39 @@
   <head>
     <%@include file="/common/meta.jsp"%>
     <title>编辑</title>
-    <%@include file="/common/s.jsp"%>
+    <%@include file="/common/s3.jsp"%>
   </head>
 
   <body>
-    <%@include file="/header/bpm-workspace.jsp"%>
+    <%@include file="/header/bpm-workspace3.jsp"%>
 
     <div class="row-fluid">
-	<%@include file="/menu/bpm-workspace.jsp"%>
+	<%@include file="/menu/bpm-workspace3.jsp"%>
 
 	<!-- start of main -->
-    <section id="m-main" class="span10" style="float:right">
+      <section id="m-main" class="col-md-10" style="padding-top:65px;">
 
-      <article class="m-widget">
-        <header class="header">
-		  <h4 class="title">确认发起流程</h4>
-		</header>
+      <div class="panel panel-default">
+        <div class="panel-heading">
+		  确认发起流程
+		</div>
 
-		<div class="content content-inner">
+		<div class="panel-body">
 
 <form id="demoForm" method="post" action="process-operation-startProcessInstance.do" class="form-horizontal">
   <input id="demo_id" type="hidden" name="bpmProcessId" value="${bpmProcessId}">
   <input type="hidden" name="businessKey" value="${businessKey}">
   <div class="control-group">
     <div class="controls">
-      <button id="submitButton" type="submit" class="btn">发起流程</button>
+      <button id="submitButton" type="submit" class="btn btn-default">发起流程</button>
 	  &nbsp;
-      <button type="button" onclick="history.back();" class="btn">返回</button>
+      <button type="button" onclick="history.back();" class="btn btn-link">返回</button>
     </div>
   </div>
 </form>
-        </div>
-      </article>
+
+		</div>
+	  </div>
 
     </section>
 	<!-- end of main -->

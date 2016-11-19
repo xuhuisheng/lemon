@@ -7,7 +7,6 @@ import java.util.Set;
 import javax.persistence.Column;
 import javax.persistence.Entity;
 import javax.persistence.FetchType;
-import javax.persistence.GeneratedValue;
 import javax.persistence.Id;
 import javax.persistence.OneToMany;
 import javax.persistence.Table;
@@ -46,8 +45,14 @@ public class DictType implements java.io.Serializable {
     public DictType() {
     }
 
-    public DictType(String name, String type, String descn, String tenantId,
-            Set<DictSchema> dictSchemas, Set<DictInfo> dictInfos) {
+    public DictType(Long id) {
+        this.id = id;
+    }
+
+    public DictType(Long id, String name, String type, String descn,
+            String tenantId, Set<DictSchema> dictSchemas,
+            Set<DictInfo> dictInfos) {
+        this.id = id;
         this.name = name;
         this.type = type;
         this.descn = descn;
@@ -58,7 +63,6 @@ public class DictType implements java.io.Serializable {
 
     /** @return 唯一主键. */
     @Id
-    @GeneratedValue
     @Column(name = "ID", unique = true, nullable = false)
     public Long getId() {
         return this.id;

@@ -2,6 +2,8 @@ package com.mossle.user.notification;
 
 import javax.annotation.Resource;
 
+import com.mossle.core.id.IdGenerator;
+
 import com.mossle.user.persistence.domain.UserBase;
 
 import org.slf4j.Logger;
@@ -13,9 +15,10 @@ public class PartyUserNotification implements UserNotification {
     private static Logger logger = LoggerFactory
             .getLogger(PartyUserNotification.class);
     private JdbcTemplate jdbcTemplate;
+    private IdGenerator idGenerator;
 
     // insert
-    private String insertPartyEntitySql = "INSERT INTO PARTY_ENTITY(NAME,REF,TYPE_ID) VALUES(?,?,?)";
+    private String insertPartyEntitySql = "INSERT INTO PARTY_ENTITY(ID,NAME,REF,TYPE_ID) VALUES(?,?,?,?)";
     private String selectPartyEntitySql = "SELECT ID FROM PARTY_ENTITY WHERE REF=? AND TYPE_ID=?";
 
     // update
@@ -28,8 +31,8 @@ public class PartyUserNotification implements UserNotification {
     public void insertUser(UserBase userBase) {
         Long typeId = 1L;
 
-        jdbcTemplate.update(insertPartyEntitySql, userBase.getUsername(),
-                userBase.getId(), typeId);
+        jdbcTemplate.update(insertPartyEntitySql, idGenerator.generateId(),
+                userBase.getUsername(), userBase.getId(), typeId);
     }
 
     public void updateUser(UserBase userBase) {
@@ -67,5 +70,10 @@ public class PartyUserNotification implements UserNotification {
     @Resource
     public void setJdbcTemplate(JdbcTemplate jdbcTemplate) {
         this.jdbcTemplate = jdbcTemplate;
+    }
+
+    @Resource
+    public void setIdGenerator(IdGenerator idGenerator) {
+        this.idGenerator = idGenerator;
     }
 }

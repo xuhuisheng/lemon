@@ -35,6 +35,9 @@ import org.activiti.engine.impl.el.ExpressionManager;
 import org.activiti.engine.impl.interceptor.Command;
 import org.activiti.engine.impl.persistence.entity.ProcessDefinitionEntity;
 import org.activiti.engine.impl.persistence.entity.TaskEntity;
+import org.activiti.engine.impl.pvm.PvmActivity;
+import org.activiti.engine.impl.pvm.PvmTransition;
+import org.activiti.engine.impl.pvm.process.ActivityImpl;
 import org.activiti.engine.impl.task.TaskDefinition;
 import org.activiti.engine.task.Task;
 
@@ -62,8 +65,21 @@ public class ActivitiInternalProcessConnector implements
      * 获得任务表单，不包含表单内容.
      */
     public FormDTO findTaskForm(String taskId) {
+        if (taskId == null) {
+            logger.error("taskId cannot be null");
+
+            return null;
+        }
+
         Task task = processEngine.getTaskService().createTaskQuery()
                 .taskId(taskId).singleResult();
+
+        if (task == null) {
+            logger.error("cannot find task for {}", taskId);
+
+            return null;
+        }
+
         String processDefinitionId = task.getProcessDefinitionId();
         String activityId = task.getTaskDefinitionKey();
         FormDTO formDto = new FormDTO();
@@ -275,11 +291,17 @@ public class ActivitiInternalProcessConnector implements
             String hql = "from BpmTaskConf where businessKey=? and taskDefinitionKey=?";
             BpmTaskConf bpmTaskConf = bpmTaskConfManager.findUnique(hql,
                     businessKey, taskDefinitionKey);
-            String assignee = bpmTaskConf.getAssignee();
 
-            if ((assignee != null) && (!"".equals(assignee))) {
-                logger.debug("add assignee : {}", assignee);
-                processTaskDefinition.setAssignee(assignee);
+            if (bpmTaskConf != null) {
+                String assignee = bpmTaskConf.getAssignee();
+
+                if ((assignee != null) && (!"".equals(assignee))) {
+                    logger.debug("add assignee : {}", assignee);
+                    processTaskDefinition.setAssignee(assignee);
+                }
+            } else {
+                logger.info("cannot find BpmTaskConf {} {}", businessKey,
+                        taskDefinitionKey);
             }
         } catch (Exception ex) {
             logger.info(ex.getMessage(), ex);
@@ -341,6 +363,38 @@ public class ActivitiInternalProcessConnector implements
                         getDeploymentProcessDefinitionCmd);
 
         return processDefinition.getInitial().getId();
+    }
+
+    /**
+     * 获得提交节点
+     */
+    public String findFirstUserTaskActivityId(String processDefinitionId,
+            String initiator) {
+        GetDeploymentProcessDefinitionCmd getDeploymentProcessDefinitionCmd = new GetDeploymentProcessDefinitionCmd(
+                processDefinitionId);
+        ProcessDefinitionEntity processDefinitionEntity = processEngine
+                .getManagementService().executeCommand(
+                        getDeploymentProcessDefinitionCmd);
+
+        ActivityImpl startActivity = processDefinitionEntity.getInitial();
+
+        if (startActivity.getOutgoingTransitions().size() != 1) {
+            throw new IllegalStateException(
+                    "start activity outgoing transitions cannot more than 1, now is : "
+                            + startActivity.getOutgoingTransitions().size());
+        }
+
+        PvmTransition pvmTransition = startActivity.getOutgoingTransitions()
+                .get(0);
+        PvmActivity targetActivity = pvmTransition.getDestination();
+
+        if (!"userTask".equals(targetActivity.getProperty("type"))) {
+            logger.info("first activity is not userTask, just skip");
+
+            return null;
+        }
+
+        return targetActivity.getId();
     }
 
     /**

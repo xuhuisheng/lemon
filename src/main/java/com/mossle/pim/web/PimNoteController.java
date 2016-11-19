@@ -1,9 +1,5 @@
 package com.mossle.pim.web;
 
-import java.io.PrintWriter;
-import java.io.StringWriter;
-
-import java.util.ArrayList;
 import java.util.Date;
 import java.util.List;
 import java.util.Map;
@@ -18,11 +14,10 @@ import com.mossle.api.tenant.TenantHolder;
 import com.mossle.core.auth.CurrentUserHolder;
 import com.mossle.core.export.Exportor;
 import com.mossle.core.export.TableModel;
-import com.mossle.core.hibernate.PropertyFilter;
 import com.mossle.core.mapper.BeanMapper;
 import com.mossle.core.page.Page;
+import com.mossle.core.query.PropertyFilter;
 import com.mossle.core.spring.MessageHelper;
-import com.mossle.core.util.ServletUtils;
 
 import com.mossle.pim.persistence.domain.PimNote;
 import com.mossle.pim.persistence.manager.PimNoteManager;
@@ -34,7 +29,7 @@ import org.springframework.ui.Model;
 import org.springframework.web.bind.annotation.ModelAttribute;
 import org.springframework.web.bind.annotation.RequestMapping;
 import org.springframework.web.bind.annotation.RequestParam;
-import org.springframework.web.multipart.MultipartFile;
+import org.springframework.web.bind.annotation.ResponseBody;
 import org.springframework.web.servlet.mvc.support.RedirectAttributes;
 
 @Controller
@@ -86,6 +81,7 @@ public class PimNoteController {
             dest = pimNote;
             dest.setUserId(userId);
             dest.setCreateTime(new Date());
+            dest.setStatus("active");
         }
 
         pimNoteManager.save(dest);
@@ -124,6 +120,56 @@ public class PimNoteController {
         tableModel.addHeaders("id", "name");
         tableModel.setData(pimNotes);
         exportor.export(request, response, tableModel);
+    }
+
+    @RequestMapping("pim-note-view")
+    public String view(Model model) {
+        String userId = currentUserHolder.getUserId();
+        List<PimNote> pimNotes = pimNoteManager.find(
+                "from PimNote where userId=? and status='active'", userId);
+        model.addAttribute("pimNotes", pimNotes);
+
+        return "pim/pim-note-view";
+    }
+
+    @RequestMapping("pim-note-create")
+    @ResponseBody
+    public String create() {
+        String userId = currentUserHolder.getUserId();
+        String tenantId = tenantHolder.getTenantId();
+
+        PimNote pimNote = new PimNote();
+        pimNote.setUserId(userId);
+        pimNote.setCreateTime(new Date());
+        pimNote.setStatus("active");
+
+        pimNoteManager.save(pimNote);
+
+        return Long.toString(pimNote.getId());
+    }
+
+    @RequestMapping("pim-note-update-position")
+    @ResponseBody
+    public String updatePosition(@RequestParam("id") Long id,
+            @RequestParam("clientX") int clientX,
+            @RequestParam("clientY") int clientY) {
+        PimNote pimNote = pimNoteManager.get(id);
+        pimNote.setClientX(clientX);
+        pimNote.setClientY(clientY);
+        pimNoteManager.save(pimNote);
+
+        return "success";
+    }
+
+    @RequestMapping("pim-note-update-content")
+    @ResponseBody
+    public String updateContent(@RequestParam("id") Long id,
+            @RequestParam("content") String content) {
+        PimNote pimNote = pimNoteManager.get(id);
+        pimNote.setContent(content);
+        pimNoteManager.save(pimNote);
+
+        return "success";
     }
 
     // ~ ======================================================================

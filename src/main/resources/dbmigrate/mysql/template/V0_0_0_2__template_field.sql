@@ -4,7 +4,7 @@
 --  template field
 -------------------------------------------------------------------------------
 CREATE TABLE TEMPLATE_FIELD(
-        ID BIGINT AUTO_INCREMENT,
+        ID BIGINT NOT NULL,
 	NAME VARCHAR(50),
 	TYPE VARCHAR(50),
 	CONTENT TEXT,

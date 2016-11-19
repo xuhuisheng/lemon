@@ -1,9 +1,5 @@
 package com.mossle.pim.web;
 
-import java.io.PrintWriter;
-import java.io.StringWriter;
-
-import java.util.ArrayList;
 import java.util.List;
 import java.util.Map;
 
@@ -17,9 +13,9 @@ import com.mossle.api.tenant.TenantHolder;
 import com.mossle.core.auth.CurrentUserHolder;
 import com.mossle.core.export.Exportor;
 import com.mossle.core.export.TableModel;
-import com.mossle.core.hibernate.PropertyFilter;
 import com.mossle.core.mapper.BeanMapper;
 import com.mossle.core.page.Page;
+import com.mossle.core.query.PropertyFilter;
 import com.mossle.core.spring.MessageHelper;
 import com.mossle.core.util.ServletUtils;
 
@@ -33,7 +29,6 @@ import org.springframework.ui.Model;
 import org.springframework.web.bind.annotation.ModelAttribute;
 import org.springframework.web.bind.annotation.RequestMapping;
 import org.springframework.web.bind.annotation.RequestParam;
-import org.springframework.web.multipart.MultipartFile;
 import org.springframework.web.servlet.mvc.support.RedirectAttributes;
 
 @Controller
@@ -132,11 +127,19 @@ public class PimInfoController {
         response.setContentType("text/vcard");
         ServletUtils.setFileDownloadHeader(request, response, "vcard.vcf");
 
-        String text = "BEGIN:VCARD\n" + "VERSION:2.1\n" + "FN:"
-                + pimInfo.getName() + "\n" + "TEL;WORK;VOICE:"
-                + pimInfo.getTel() + "\n" + "EMAIL;PREF;INTERNET:"
-                + pimInfo.getEmail() + "\n" + "END:VCARD";
-        response.getWriter().write(text);
+        StringBuilder buff = new StringBuilder();
+        buff.append("BEGIN:VCARD\n");
+        buff.append("VERSION:2.1\n");
+        buff.append("FN;CHARSET=UTF8:" + pimInfo.getName() + "\n");
+        buff.append("ORG;CHARSET=UTF8:" + pimInfo.getOrg() + ";"
+                + pimInfo.getDepartment() + "\n");
+        buff.append("TITLE;CHARSET=UTF8:" + pimInfo.getTitle() + "\n");
+        buff.append("TEL;WORK;VOICE:" + pimInfo.getTel() + "\n");
+        buff.append("EMAIL;PREF;INTERNET:" + pimInfo.getEmail() + "\n");
+        buff.append("IMPP:" + pimInfo.getImpp() + "\n");
+        buff.append("END:VCARD");
+
+        response.getWriter().write(buff.toString());
     }
 
     // ~ ======================================================================

@@ -8,7 +8,7 @@
   <head>
     <%@include file="/common/meta.jsp"%>
     <title><spring:message code="user.user.input.title" text="编辑用户"/></title>
-    <%@include file="/common/s.jsp"%>
+    <%@include file="/common/s3.jsp"%>
 
 	<link rel="stylesheet" href="${ctx}/s/jquery-file-upload/css/jquery.fileupload.css">
 	<script src="${ctx}/s/jquery-file-upload/js/vendor/jquery.ui.widget.js"></script>
@@ -47,7 +47,7 @@ function generateFileupload(maxLimitedSize) {
         },
         progressall: function (e, data) {
             var progress = parseInt(data.loaded / data.total * 100, 10);
-            $('#progress .bar').css(
+            $('#progress .progress-bar').css(
                 'width',
                 progress + '%'
             ).html(progress + '%');
@@ -68,13 +68,13 @@ $(function () {
 	  <%@include file="/menu/my.jsp"%>
 
 	<!-- start of main -->
-    <section id="m-main" class="span10">
+      <section id="m-main" class="col-md-10" style="margin-top:65px;">
 
-      <article class="m-widget">
-        <header class="header">
-		  <h4 class="title"><spring:message code="user.user.input.title" text="编辑用户"/></h4>
+      <article class="panel panel-default">
+        <header class="panel-heading">
+		  <spring:message code="user.user.input.title" text="编辑用户"/>
 		</header>
-		<div class="content content-inner">
+		<div class="panel-body">
 
 <form id="userBaseForm" method="post" action="my-avatar-crop.do" class="form-horizontal">
   <input id="userBase_id" type="hidden" name="id" value="${userBase.id}">
@@ -95,14 +95,14 @@ $(function () {
 		  data-form-data='{"id":"${userBase.id}","imgId":"avatarImage","btnId":"avatarButton","viewUrl":"my-avatar-view.do"}'>
 	  </div>
 	  <div id="progress" class="progress" style="width:200px;margin-top:5px;height:20px;margin-bottom:0px;">
-        <div class="bar bar-success"></div>
+        <div class="progress-bar bar-success"></div>
       </div>
     </div>
   </div>
 
   <div class="control-group">
     <div class="controls">
-      <button id="submitButton" class="btn a-submit">确认</button>
+      <button id="submitButton" class="btn btn-default a-submit">确认</button>
     </div>
   </div>
 </form>

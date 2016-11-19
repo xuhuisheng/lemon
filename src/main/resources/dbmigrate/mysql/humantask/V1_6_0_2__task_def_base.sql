@@ -4,7 +4,7 @@
 --  task def base
 -------------------------------------------------------------------------------
 CREATE TABLE TASK_DEF_BASE(
-	ID BIGINT AUTO_INCREMENT,
+	ID BIGINT NOT NULL,
 	CODE VARCHAR(100),
 	NAME VARCHAR(200),
 	PROCESS_DEFINITION_ID VARCHAR(200),
@@ -17,5 +17,18 @@ CREATE TABLE TASK_DEF_BASE(
 	ASSIGN_STRATEGY VARCHAR(100),
         CONSTRAINT PK_TASK_DEF_BASE PRIMARY KEY(ID)
 ) ENGINE=INNODB CHARSET=UTF8;
+
+
+
+
+
+
+
+
+
+
+
+
+
 
 

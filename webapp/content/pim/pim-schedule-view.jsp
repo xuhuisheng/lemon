@@ -7,8 +7,8 @@
 
   <head>
     <%@include file="/common/meta.jsp"%>
-    <title><spring:message code="dev.pimSchedule.list.title" text="列表"/></title>
-    <%@include file="/common/s.jsp"%>
+    <title>编辑</title>
+    <%@include file="/common/s3.jsp"%>
 
 	<script type="text/javascript" src="${ctx}/s/jquery-ui/ui/minified/jquery-ui.min.js"></script>
 
@@ -182,56 +182,63 @@ $(function () {
   </head>
 
   <body>
-    <%@include file="/header/pim.jsp"%>
+    <%@include file="/header/pim3.jsp"%>
 
     <div class="row-fluid">
-	  <%@include file="/menu/pim.jsp"%>
+	  <%@include file="/menu/pim3.jsp"%>
 
 	  <!-- start of main -->
-      <section id="m-main" class="span10">
+      <section id="m-main" class="col-md-10" style="margin-top:65px;">
 
-      <article class="m-widget">
-        <header class="header"><h4 class="title">&nbsp;</h4></header>
+      <div class="panel panel-default">
+        <div class="panel-heading">
+		  &nbsp;
+		</div>
 
-        <div id="search" class="content">
+		<div class="panel-body">
 
 		  <div id='calendar'></div>
-		</div>
-	  </article>
+
+        </div>
+      </div>
 
       </section>
 	  <!-- end of main -->
 	</div>
 
-    <div id="calendarModal" class="modal hide fade">
+<div id="calendarModal" class="modal fade">
+  <div class="modal-dialog">
+    <div class="modal-content">
       <div class="modal-header">
-        <button type="button" class="close" data-dismiss="modal" aria-hidden="true">&times;</button>
-        <h3>&nbsp;</h3>
+        <button type="button" class="close" data-dismiss="modal" aria-label="Close"><span aria-hidden="true">&times;</span></button>
+        <h4 class="modal-title">&nbsp;</h4>
       </div>
       <div class="modal-body">
 		<input id="calendarId" type="hidden" name="id" value="">
         <label>
 		  标题：
-		  <input id="calendarTitle" type="text" name="title" value="">
+		  <input id="calendarTitle" type="text" name="title" value="" class="form-control">
 		</label>
         <label>
 		  开始：
-		  <input id="calendarStart" type="text" name="start" value="">
+		  <input id="calendarStart" type="text" name="start" value="" class="form-control">
 		</label>
         <label>
 		  结束：
-		  <input id="calendarEnd" type="text" name="end" value="">
+		  <input id="calendarEnd" type="text" name="end" value="" class="form-control">
 		</label>
         <label>
 		  备注：
-		  <textarea id="calendarContent" name="end"></textarea>
+		  <textarea id="calendarContent" name="end" class="form-control"></textarea>
 		</label>
       </div>
       <div class="modal-footer">
-        <a href="#" class="btn" id="calendarRemove">删除</a>
-        <a href="#" class="btn btn-primary" id="calendarSave">保存</a>
+        <button type="button" class="btn btn-default" data-dismiss="modal" id="calendarRemove">关闭</button>
+        <button type="button" class="btn btn-primary" id="calendarSave">保存</button>
       </div>
-    </div>
+    </div><!-- /.modal-content -->
+  </div><!-- /.modal-dialog -->
+</div><!-- /.modal -->
 
   </body>
 

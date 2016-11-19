@@ -4,7 +4,7 @@
 --  account lock info
 -------------------------------------------------------------------------------
 CREATE TABLE ACCOUNT_LOCK_INFO(
-        ID BIGINT AUTO_INCREMENT,
+        ID BIGINT NOT NULL,
 	TYPE VARCHAR(200),
 	USERNAME VARCHAR(64),
 	LOCK_TIME DATETIME,

@@ -1,6 +1,5 @@
 package com.mossle.api.whitelist;
 
-import java.io.File;
 import java.io.IOException;
 
 import javax.annotation.Resource;
@@ -16,10 +15,6 @@ import javax.servlet.http.HttpServletResponse;
 
 import com.mossle.api.tenant.TenantConnector;
 import com.mossle.api.tenant.TenantDTO;
-import com.mossle.api.whitelist.WhitelistConnector;
-import com.mossle.api.whitelist.WhitelistDTO;
-
-import com.mossle.core.util.IoUtils;
 
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;

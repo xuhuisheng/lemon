@@ -4,7 +4,7 @@
 --  cms tag
 -------------------------------------------------------------------------------
 CREATE TABLE CMS_TAG(
-        ID BIGINT AUTO_INCREMENT,
+        ID BIGINT NOT NULL,
 	NAME VARCHAR(50),
 	COUNT_ARTICLE INT,
 	TENANT_ID VARCHAR(64),

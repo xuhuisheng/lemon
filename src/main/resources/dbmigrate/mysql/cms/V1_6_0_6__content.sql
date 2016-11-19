@@ -4,7 +4,7 @@
 --  cms content
 -------------------------------------------------------------------------------
 CREATE TABLE CMS_CONTENT(
-        ID BIGINT AUTO_INCREMENT,
+        ID BIGINT NOT NULL,
 	NAME VARCHAR(50),
 	CODE VARCHAR(200),
 	CONTENT TEXT,

@@ -4,6 +4,9 @@ import java.util.Date;
 
 import org.activiti.engine.ActivitiException;
 
+/**
+ * 截止日期.
+ */
 public class DueDateBusinessCalendar extends AdvancedBusinessCalendar {
     public Date resolveDuedate(String duedate, int maxIterations) {
         try {
