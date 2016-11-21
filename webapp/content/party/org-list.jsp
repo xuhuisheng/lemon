@@ -20,7 +20,8 @@ var config = {
     orderBy: '${page.orderBy == null ? "" : page.orderBy}',
     asc: ${page.asc},
     params: {
-        'filter_LIKES_name': '${param.filter_LIKES_name}'
+        'partyStructTypeId': '${param.partyStructTypeId}',
+        'partyEntityId': '${param.partyEntityId}'
     },
 	selectedItemClass: 'selectedItem',
 	gridFormId: 'orgGridForm',
@@ -67,10 +68,13 @@ $(function() {
 	  </div>
 
       <div style="margin-bottom: 20px;">
-	    <div class="pull-left btn-group" role="group">
-		  <c:forEach items="${childTypes}" var="item">
-		  <button class="btn btn-default a-insert" onclick="location.href='org-input.do?partyStructTypeId=${partyStructTypeId}&partyEntityId=${partyEntityId}&partyTypeId=${item.id}'">新建${item.name}</button>
-		  </c:forEach>
+	    <div class="pull-left">
+	      <div class="btn-group" role="group">
+		    <c:forEach items="${childTypes}" var="item">
+		    <button class="btn btn-default a-insert" onclick="location.href='org-input.do?partyStructTypeId=${partyStructTypeId}&partyEntityId=${partyEntityId}&partyTypeId=${item.id}'">新建${item.name}</button>
+		    </c:forEach>
+		  </div>
+		  <a href="org-admin-list.do?partyStructTypeId=${partyStructTypeId}&partyEntityId=${partyEntityId}&partyTypeId=${item.id}" class="btn btn-default">管理者</a>
 		</div>
 
 		<div class="pull-right">
@@ -103,8 +107,11 @@ $(function() {
         <th class="sorting" name="id"><spring:message code="org.org.list.id" text="编号"/></th>
         <th class="sorting" name="name">名称</th>
         <th class="sorting" name="partyType">类型</th>
+		<!--
         <th class="sorting" name="admin">管理</th>
-        <th>操作</th>
+		-->
+        <th class="sorting" name="admin">职位</th>
+        <th width="120">操作</th>
       </tr>
     </thead>
 
@@ -117,9 +124,21 @@ $(function() {
         <td>${item.childEntity.id}</td>
         <td>${item.childEntity.name}</td>
         <td>${item.childEntity.partyType.name}</td>
+		<!--
         <td>${item.admin == 1}</td>
+		-->
+        <td>
+		  <c:forEach items="${item.childEntity.childStructs}" var="childStruct">
+		    <c:if test="${childStruct.partyStructType.id==5}">
+		    ${childStruct.childEntity.name}
+			</c:if>
+		  </c:forEach>
+		</td>
         <td>
 		  <a href="org-remove.do?selectedItem=${item.id}&partyStructTypeId=${partyStructTypeId}&partyEntityId=${partyEntityId}" class="a-remove">删除</a>
+		  <c:if test="${item.childEntity.partyType.type==1}">
+		    <a href="org-position-input.do?partyStructTypeId=${partyStructTypeId}&partyEntityId=${item.childEntity.id}&partyTypeId=5" class="a-remove">配置职位</a>
+		  </c:if>
 		</td>
       </tr>
       </c:forEach>
