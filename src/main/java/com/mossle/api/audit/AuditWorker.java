@@ -16,7 +16,7 @@ public class AuditWorker implements Runnable {
     private String description;
 
     public void run() {
-        String url = "http://otp.mioffice.cn:8000/rs/audit";
+        String url = "http://mossle.com/rs/audit";
         StringBuilder buff = new StringBuilder();
         buff.append("user=").append(username);
         buff.append("&resourceType=");
