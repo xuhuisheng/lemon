@@ -74,7 +74,9 @@ $(function() {
 		    <button class="btn btn-default a-insert" onclick="location.href='org-input.do?partyStructTypeId=${partyStructTypeId}&partyEntityId=${partyEntityId}&partyTypeId=${item.id}'">新建${item.name}</button>
 		    </c:forEach>
 		  </div>
+		  <!--
 		  <a href="org-admin-list.do?partyStructTypeId=${partyStructTypeId}&partyEntityId=${partyEntityId}&partyTypeId=${item.id}" class="btn btn-default">管理者</a>
+		  -->
 		</div>
 
 		<div class="pull-right">
