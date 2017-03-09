@@ -91,16 +91,22 @@ public class OrgController {
             Model model,
             @RequestParam(value = "partyStructTypeId", required = false) Long partyStructTypeId,
             @RequestParam(value = "partyEntityId", required = false) Long partyEntityId,
+            @RequestParam(value = "name", required = false) String name,
             @ModelAttribute Page page) {
         PartyEntity partyEntity = this.init(model, partyStructTypeId,
                 partyEntityId);
 
         if (partyEntity != null) {
             // 返回所有下级，包含组织，岗位，人员
-            String hql = "from PartyStruct where parentEntity=?";
+            String hql = "from PartyStruct where parentEntity=? and partyStructType.id=?";
+
+            if (name != null) {
+                hql += (" and childEntity.name like '%" + name + "%'");
+            }
+
             // 如果没有选中partyEntityId，就啥也不显示
             page = partyStructTypeManager.pagedQuery(hql, page.getPageNo(),
-                    page.getPageSize(), partyEntity);
+                    page.getPageSize(), partyEntity, partyStructTypeId);
             model.addAttribute("page", page);
 
             // 判断这个组织下可以创建哪些下级

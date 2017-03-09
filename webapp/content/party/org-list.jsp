@@ -21,7 +21,8 @@ var config = {
     asc: ${page.asc},
     params: {
         'partyStructTypeId': '${param.partyStructTypeId}',
-        'partyEntityId': '${param.partyEntityId}'
+        'partyEntityId': '${param.partyEntityId}',
+        'name': '${param.name}'
     },
 	selectedItemClass: 'selectedItem',
 	gridFormId: 'orgGridForm',
@@ -59,8 +60,10 @@ $(function() {
   <div class="panel-body">
 
 		  <form name="orgForm" method="post" action="org-list.do" class="form-inline">
+		    <input type="hidden" name="partyStructTypeId" value="${param.partyStructTypeId}">
+		    <input type="hidden" name="partyEntityId" value="${param.partyEntityId}">
 		    <label for="org_name"><spring:message code='org.org.list.search.name' text='名称'/>:</label>
-		    <input type="text" id="org_name" name="filter_LIKES_name" value="${param.filter_LIKES_name}" class="form-control">
+		    <input type="text" id="org_name" name="name" value="${param.name}" class="form-control">
 			<button class="btn btn-default a-search" onclick="document.orgForm.submit()">查询</button>&nbsp;
 		  </form>
 
@@ -74,9 +77,7 @@ $(function() {
 		    <button class="btn btn-default a-insert" onclick="location.href='org-input.do?partyStructTypeId=${partyStructTypeId}&partyEntityId=${partyEntityId}&partyTypeId=${item.id}'">新建${item.name}</button>
 		    </c:forEach>
 		  </div>
-		  <!--
 		  <a href="org-admin-list.do?partyStructTypeId=${partyStructTypeId}&partyEntityId=${partyEntityId}&partyTypeId=${item.id}" class="btn btn-default">管理者</a>
-		  -->
 		</div>
 
 		<div class="pull-right">
