@@ -246,7 +246,7 @@
                         "name": "图书管理",
                         "url": "/book/book-info-list.do",
                         "type": "module",
-                        "display": "false",
+                        "display": "true",
                         "perm": "book",
                         "priority": 70003
                     },
@@ -255,7 +255,7 @@
                         "name": "办公用品管理",
                         "url": "/officesupply/officesupply-info-list.do",
                         "type": "module",
-                        "display": "false",
+                        "display": "true",
                         "perm": "officesupply",
                         "priority": 70004
                     },
@@ -264,7 +264,7 @@
                         "name": "访客管理",
                         "url": "/visitor/visitor-info-list.do",
                         "type": "module",
-                        "display": "false",
+                        "display": "true",
                         "perm": "visitor",
                         "priority": 70005
                     },
@@ -273,7 +273,7 @@
                         "name": "工卡管理",
                         "url": "/card/card-info-list.do",
                         "type": "module",
-                        "display": "false",
+                        "display": "true",
                         "perm": "card",
                         "priority": 70006
                     },
@@ -282,7 +282,7 @@
                         "name": "工位管理",
                         "url": "/seat/seat-info-list.do",
                         "type": "module",
-                        "display": "false",
+                        "display": "true",
                         "perm": "seat",
                         "priority": 70007
                     },
@@ -291,7 +291,7 @@
                         "name": "印章管理",
                         "url": "/stamp/stamp-info-list.do",
                         "type": "module",
-                        "display": "false",
+                        "display": "true",
                         "perm": "stamp",
                         "priority": 70008
                     },
@@ -300,7 +300,7 @@
                         "name": "资产管理",
                         "url": "/asset/asset-info-list.do",
                         "type": "module",
-                        "display": "false",
+                        "display": "true",
                         "perm": "asset",
                         "priority": 70009
                     },
@@ -309,7 +309,7 @@
                         "name": "活动管理",
                         "url": "/activity/activity-info-list.do",
                         "type": "module",
-                        "display": "false",
+                        "display": "true",
                         "perm": "activity",
                         "priority": 70010
                     },
@@ -318,7 +318,7 @@
                         "name": "签到管理",
                         "url": "/sign/sign-info-list.do",
                         "type": "module",
-                        "display": "false",
+                        "display": "true",
                         "perm": "sign",
                         "priority": 70011
                     },
@@ -327,7 +327,7 @@
                         "name": "投票管理",
                         "url": "/vote/vote-info-list.do",
                         "type": "module",
-                        "display": "false",
+                        "display": "true",
                         "perm": "vote",
                         "priority": 70012
                     }
@@ -374,7 +374,7 @@
                         "name": "人员管理",
                         "url": "/employee/employee-info-list.do",
                         "type": "module",
-                        "display": "false",
+                        "display": "true",
                         "perm": "employee",
                         "priority": 80004
                     },
@@ -383,7 +383,7 @@
                         "name": "合同管理",
                         "url": "/contract/contract-info-list.do",
                         "type": "module",
-                        "display": "false",
+                        "display": "true",
                         "perm": "contract",
                         "priority": 80005
                     },
@@ -392,7 +392,7 @@
                         "name": "薪酬管理",
                         "url": "/salary/salary-info-list.do",
                         "type": "module",
-                        "display": "false",
+                        "display": "true",
                         "perm": "salary",
                         "priority": 80006
                     },
@@ -401,7 +401,7 @@
                         "name": "社保管理",
                         "url": "/socialsecurity/socialsecurity-info-list.do",
                         "type": "module",
-                        "display": "false",
+                        "display": "true",
                         "perm": "socialsecurity",
                         "priority": 80007
                     },
@@ -410,7 +410,7 @@
                         "name": "招聘管理",
                         "url": "/recruit/recruit-info-list.do",
                         "type": "module",
-                        "display": "false",
+                        "display": "true",
                         "perm": "recruit",
                         "priority": 80008
                     },
@@ -419,7 +419,7 @@
                         "name": "培训管理",
                         "url": "/train/train-info-list.do",
                         "type": "module",
-                        "display": "false",
+                        "display": "true",
                         "perm": "train",
                         "priority": 80009
                     },
@@ -428,7 +428,7 @@
                         "name": "绩效管理",
                         "url": "/performance/performance-info-list.do",
                         "type": "module",
-                        "display": "false",
+                        "display": "true",
                         "perm": "performance",
                         "priority": 80010
                     },
@@ -437,7 +437,7 @@
                         "name": "考勤管理",
                         "url": "/attendance/attendance-info-list.do",
                         "type": "module",
-                        "display": "false",
+                        "display": "true",
                         "perm": "attendance",
                         "priority": 80011
                     },
@@ -446,7 +446,7 @@
                         "name": "休假管理",
                         "url": "/leave/leave-info-list.do",
                         "type": "module",
-                        "display": "false",
+                        "display": "true",
                         "perm": "leave",
                         "priority": 80012
                     }
@@ -457,7 +457,7 @@
                 "name": "财务管理",
                 "url": "/expense/expense-info-list.do",
                 "type": "system",
-                "display": "false",
+                "display": "true",
                 "perm": "finance",
                 "priority": 90000,
                 "children": [
@@ -466,7 +466,7 @@
                         "name": "报销管理",
                         "url": "/expense/expense-info-list.do",
                         "type": "module",
-                        "display": "false",
+                        "display": "true",
                         "perm": "expense",
                         "priority": 90001
                     },
@@ -475,7 +475,7 @@
                         "name": "预算管理",
                         "url": "/budget/budget-info-list.do",
                         "type": "module",
-                        "display": "false",
+                        "display": "true",
                         "perm": "budget",
                         "priority": 90002
                     }
@@ -486,7 +486,7 @@
                 "name": "CRM",
                 "url": "/customer/customer-info-list.do",
                 "type": "system",
-                "display": "false",
+                "display": "true",
                 "perm": "crm",
                 "priority": 100000,
                 "children": [
@@ -495,7 +495,7 @@
                         "name": "客户管理",
                         "url": "/customer/customer-info-list.do",
                         "type": "module",
-                        "display": "false",
+                        "display": "true",
                         "perm": "customer",
                         "priority": 100001
                     },
@@ -504,7 +504,7 @@
                         "name": "产品管理",
                         "url": "/product/product-info-list.do",
                         "type": "module",
-                        "display": "false",
+                        "display": "true",
                         "perm": "product",
                         "priority": 100002
                     },
@@ -513,7 +513,7 @@
                         "name": "业务管理",
                         "url": "/business/business-info-list.do",
                         "type": "module",
-                        "display": "false",
+                        "display": "true",
                         "perm": "business",
                         "priority": 100003
                     }
@@ -524,7 +524,7 @@
                 "name": "进销存",
                 "url": "/sale/sale-info-list.do",
                 "type": "system",
-                "display": "false",
+                "display": "true",
                 "perm": "retail",
                 "priority": 110000,
                 "children": [
@@ -533,7 +533,7 @@
                         "name": "销售管理",
                         "url": "/sale/sale-info-list.do",
                         "type": "module",
-                        "display": "false",
+                        "display": "true",
                         "perm": "sale",
                         "priority": 110001
                     },
@@ -542,7 +542,7 @@
                         "name": "采购管理",
                         "url": "/purchase/purchase-info-list.do",
                         "type": "module",
-                        "display": "false",
+                        "display": "true",
                         "perm": "purchase",
                         "priority": 110002
                     },
@@ -551,7 +551,7 @@
                         "name": "库存管理",
                         "url": "/inventory/inventory-info-list.do",
                         "type": "module",
-                        "display": "false",
+                        "display": "true",
                         "perm": "inventory",
                         "priority": 110003
                     }
