@@ -73,7 +73,7 @@ $(function() {
 	    <%--
         <th width="10" class="m-table-check"><input type="checkbox" name="checkAll" onchange="toggleSelectedItems(this.checked)"></th>
 		--%>
-		<td>单号</th>
+		<td>编号</th>
         <th>标题</th>
         <th>到达时间</th>
         <th>流程</th>

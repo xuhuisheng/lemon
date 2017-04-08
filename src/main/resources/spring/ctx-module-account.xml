@@ -56,6 +56,8 @@
 	<!-- 这个是SPI，仅在spring security认证时获取密码用 -->
 	<bean id="accountCredentialConnector" class="${user.accountCredentialConnector}"/>
 
+	<bean id="accountAliasConnector" class="${user.accountAliasConnector}"/>
+
 	<!-- 管理用户时，同步party的工具（应该是人事模块吗？还没想明白） -->
 	<bean id="userNotification" class="com.mossle.user.notification.PartyUserNotification"/>
 
@@ -73,6 +75,10 @@
 
 	<!-- 认证 -->
 	<bean id="authenticationHandler" class="com.mossle.user.authenticate.NormalAuthenticationHandler"/>
+	<!--
+	<bean id="temporaryPasswordGenerator" class="com.mossle.user.support.TemporaryPasswordGeneratorImpl"/>
+	<bean id="temporaryPasswordAuthenticator" class="com.mossle.user.support.TemporaryPasswordAuthenticatorImpl"/>
+	-->
 
 	<!-- 设备 -->
 	<bean id="deviceConnector" class="${device.connector}"/>
@@ -85,4 +91,8 @@
 	</bean>
 
 	<bean id="avatarConnector" class="com.mossle.user.avatar.AvatarConnectorImpl"/>
+
+	<bean class="com.mossle.auth.support.MenuDeployer">
+		<property name="enable" value="${menu.autoDeploy.enable}"/>
+	</bean>
 </beans>

@@ -9,7 +9,10 @@ import javax.servlet.http.HttpServletRequest;
 import javax.servlet.http.HttpServletResponse;
 
 import com.mossle.auth.persistence.domain.Menu;
+import com.mossle.auth.persistence.domain.Perm;
 import com.mossle.auth.persistence.manager.MenuManager;
+import com.mossle.auth.persistence.manager.PermManager;
+import com.mossle.auth.support.MenuCache;
 
 import com.mossle.core.export.Exportor;
 import com.mossle.core.export.TableModel;
@@ -31,9 +34,11 @@ import org.springframework.web.servlet.mvc.support.RedirectAttributes;
 @RequestMapping("auth")
 public class MenuController {
     private MenuManager menuManager;
+    private PermManager permManager;
     private MessageHelper messageHelper;
     private Exportor exportor;
     private BeanMapper beanMapper = new BeanMapper();
+    private MenuCache menuCache;
 
     @RequestMapping("menu-list")
     public String list(@ModelAttribute Page page,
@@ -53,13 +58,25 @@ public class MenuController {
         if (id != null) {
             Menu menu = menuManager.get(id);
             model.addAttribute("model", menu);
+
+            String hql = "from Menu where menu.id!=?";
+            List<Menu> menus = this.menuManager.find(hql, id);
+            model.addAttribute("menus", menus);
+        } else {
+            List<Menu> menus = this.menuManager.getAll();
+            model.addAttribute("menus", menus);
         }
+
+        List<Perm> perms = this.permManager.getAll();
+        model.addAttribute("perms", perms);
 
         return "auth/menu-input";
     }
 
     @RequestMapping("menu-save")
     public String save(@ModelAttribute Menu menu,
+            @RequestParam(value = "parentId", required = false) Long parentId,
+            @RequestParam(value = "permId", required = false) Long permId,
             RedirectAttributes redirectAttributes) {
         Menu dest = null;
         Long id = menu.getId();
@@ -71,10 +88,23 @@ public class MenuController {
             dest = menu;
         }
 
+        if (parentId != null) {
+            dest.setMenu(menuManager.get(parentId));
+        } else {
+            dest.setMenu(null);
+        }
+
+        if (permId != null) {
+            dest.setPerm(permManager.get(permId));
+        } else {
+            dest.setPerm(null);
+        }
+
         menuManager.save(dest);
 
         messageHelper.addFlashMessage(redirectAttributes, "core.success.save",
                 "保存成功");
+        this.menuCache.clear();
 
         return "redirect:/auth/menu-list.do";
     }
@@ -86,6 +116,7 @@ public class MenuController {
         menuManager.removeAll(menus);
         messageHelper.addFlashMessage(redirectAttributes, "core.delete.save",
                 "删除成功");
+        this.menuCache.clear();
 
         return "redirect:/auth/menu-list.do";
     }
@@ -114,6 +145,11 @@ public class MenuController {
     }
 
     @Resource
+    public void setPermManager(PermManager permManager) {
+        this.permManager = permManager;
+    }
+
+    @Resource
     public void setMessageHelper(MessageHelper messageHelper) {
         this.messageHelper = messageHelper;
     }
@@ -121,5 +157,10 @@ public class MenuController {
     @Resource
     public void setExportor(Exportor exportor) {
         this.exportor = exportor;
+    }
+
+    @Resource
+    public void setMenuCache(MenuCache menuCache) {
+        this.menuCache = menuCache;
     }
 }

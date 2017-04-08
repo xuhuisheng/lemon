@@ -110,7 +110,7 @@ $(function() {
           <td><input type="checkbox" class="selectedItem" name="selectedItem" value="${item.id}"></td>
           <td>${item.id}</td>
           <td>${item.name}</td>
-          <td>${item.type == 0 ? '组织' : item.type == 1 ? '岗位' : '人员'}</td>
+          <td>${item.type == 0 ? '组织' : item.type == 1 ? '人员' : '岗位'}</td>
           <td>
             <a href="party-type-input.do?id=${item.id}"><spring:message code="core.list.edit" text="编辑"/></a>
           </td>

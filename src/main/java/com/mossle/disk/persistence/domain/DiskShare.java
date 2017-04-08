@@ -59,6 +59,12 @@ public class DiskShare implements java.io.Serializable {
     /** null. */
     private Integer countDownload;
 
+    /** null. */
+    private String shareCode;
+
+    /** null. */
+    private String sharePassword;
+
     /** . */
     private Set<DiskAcl> diskAcls = new HashSet<DiskAcl>(0);
 
@@ -72,7 +78,8 @@ public class DiskShare implements java.io.Serializable {
     public DiskShare(Long id, DiskInfo diskInfo, String shareType,
             Date shareTime, String name, String creator, String type,
             Integer dirType, Integer countView, Integer countSave,
-            Integer countDownload, Set<DiskAcl> diskAcls) {
+            Integer countDownload, String shareCode, String sharePassword,
+            Set<DiskAcl> diskAcls) {
         this.id = id;
         this.diskInfo = diskInfo;
         this.shareType = shareType;
@@ -84,6 +91,8 @@ public class DiskShare implements java.io.Serializable {
         this.countView = countView;
         this.countSave = countSave;
         this.countDownload = countDownload;
+        this.shareCode = shareCode;
+        this.sharePassword = sharePassword;
         this.diskAcls = diskAcls;
     }
 
@@ -242,6 +251,34 @@ public class DiskShare implements java.io.Serializable {
      */
     public void setCountDownload(Integer countDownload) {
         this.countDownload = countDownload;
+    }
+
+    /** @return null. */
+    @Column(name = "SHARE_CODE", length = 50)
+    public String getShareCode() {
+        return this.shareCode;
+    }
+
+    /**
+     * @param shareCode
+     *            null.
+     */
+    public void setShareCode(String shareCode) {
+        this.shareCode = shareCode;
+    }
+
+    /** @return null. */
+    @Column(name = "SHARE_PASSWORD", length = 50)
+    public String getSharePassword() {
+        return this.sharePassword;
+    }
+
+    /**
+     * @param sharePassword
+     *            null.
+     */
+    public void setSharePassword(String sharePassword) {
+        this.sharePassword = sharePassword;
     }
 
     /** @return . */

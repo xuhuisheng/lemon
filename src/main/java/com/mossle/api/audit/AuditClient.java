@@ -41,7 +41,7 @@ public class AuditClient {
             AuditDTO auditDto = AuditHolder.getAuditDto();
             AuditWorker auditWorker = new AuditWorker();
             auditWorker.setApp(app);
-            auditWorker.setUsername(auditDto.getUser());
+            auditWorker.setUsername(auditDto.getUserId());
             auditWorker.setClientIp(auditDto.getClient());
             auditWorker.setServerIp(serverIp);
             auditWorker.setResult(result);

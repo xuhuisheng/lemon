@@ -5,8 +5,16 @@
     <input type="file" name="file" class="fileupload" data-no-uniform="true" data-url="disk-info-upload.do" data-form-data='{"path":"${path}"}'>
   </div>
 
-  <button id="createDirButton" class="btn btn-default" data-toggle="modal" data-target="#createDirDialog">新建文件夹</button>
+  &nbsp;
 
+  <button id="createDirButton" class="btn btn-default" data-toggle="modal" data-target="#createDirDialog">新建文件夹</button>
+<!--
+  <a href="${tenantPrefix}/disk/disk-info-list.do" class="btn btn-default"><i class="glyphicon glyphicon-list"></i>&nbsp;我的文件</a>
+
+  <a href="${tenantPrefix}/disk/disk-share-list.do" class="btn btn-default"><i class="glyphicon glyphicon-list"></i>&nbsp;我的分享</a>
+
+  <a href="${tenantPrefix}/disk/disk-home.do" class="btn btn-default"><i class="glyphicon glyphicon-list"></i>&nbsp;分享首页</a>
+-->
   <div class="btn-group pull-right" role="group" aria-label="" data-toggle="buttons">
     <label class="btn btn-default glyphicon glyphicon-th-list ${listType == 'list' ? 'active' : ''}" onclick="location.href='disk-info-list.do?path=${path}'">
       <input type="radio" name="options" id="option1" autocomplete="off" checked>
@@ -17,11 +25,11 @@
   </div>
 </div>
 
-<br>
- 
-<c:if test="${path != ''}">
-<ol class="breadcrumb">
-  <li><a href="disk-info-parentDir.do?path=${path}">返回上一级</a></li>
+<div style="margin-top:10px;margin-bottom:10px;" class="clearfix">
+  <div class="pull-left">
+<c:if test="${not empty path}">
+  <a href="disk-info-parentDir.do?path=${path}">返回上一级</a>
+  |
   <%
     String path = (String) request.getAttribute("path");
 	String currentPath = "";
@@ -33,13 +41,28 @@
       }
 	  pageContext.setAttribute("item", item);
 	  pageContext.setAttribute("currentPath", currentPath);
+	  if (i < array.length - 1) {
   %>
-  <li><a href="?path=${currentPath}">${item == '' ? '根目录' : item}</a></li>
+  <a href="?path=${currentPath}">${item == '' ? '根目录' : item}</a>
+  /
   <%
+	  } else {
+  %>
+	    ${item}
+  <%
+      }
     }
   %>
 </ol>
 </c:if>
+<c:if test="${empty path}">
+  全部文件
+</c:if>
+  </div>
+  <div class="pull-right">
+    共 ${fn:length(diskInfos)} 个
+  </div>
+</div>
 
 <div id="uploadFileProgress" class="modal fade" data-backdrop="static">
   <div class="modal-dialog">
@@ -104,10 +127,10 @@
   </div><!-- /.modal-dialog -->
 </div><!-- /.modal -->
 
-<link rel="stylesheet" href="${ctx}/s/jquery-file-upload/css/jquery.fileupload.css">
-<script src="${ctx}/s/jquery-file-upload/js/vendor/jquery.ui.widget.js"></script>
-<script src="${ctx}/s/jquery-file-upload/js/jquery.iframe-transport.js"></script>
-<script src="${ctx}/s/jquery-file-upload/js/jquery.fileupload.js"></script>
+<link rel="stylesheet" href="${cdnPrefix}/jquery-file-upload/css/jquery.fileupload.css">
+<script src="${cdnPrefix}/jquery-file-upload/js/vendor/jquery.ui.widget.js"></script>
+<script src="${cdnPrefix}/jquery-file-upload/js/jquery.iframe-transport.js"></script>
+<script src="${cdnPrefix}/jquery-file-upload/js/jquery.fileupload.js"></script>
 
 <script type="text/javascript">
 function generateFileupload(maxLimitedSize) {

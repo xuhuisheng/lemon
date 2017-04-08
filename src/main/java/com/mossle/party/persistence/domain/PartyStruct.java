@@ -46,6 +46,9 @@ public class PartyStruct implements java.io.Serializable {
     /** 管理. */
     private Integer admin;
 
+    /** null. */
+    private String type;
+
     public PartyStruct() {
     }
 
@@ -59,7 +62,7 @@ public class PartyStruct implements java.io.Serializable {
     public PartyStruct(Long id, PartyEntity parentEntity,
             PartyEntity childEntity, PartyStructType partyStructType,
             Integer priority, String tenantId, Integer partTime, Integer link,
-            Integer admin) {
+            Integer admin, String type) {
         this.id = id;
         this.parentEntity = parentEntity;
         this.childEntity = childEntity;
@@ -69,6 +72,7 @@ public class PartyStruct implements java.io.Serializable {
         this.partTime = partTime;
         this.link = link;
         this.admin = admin;
+        this.type = type;
     }
 
     /** @return 主键. */
@@ -199,5 +203,19 @@ public class PartyStruct implements java.io.Serializable {
      */
     public void setAdmin(Integer admin) {
         this.admin = admin;
+    }
+
+    /** @return null. */
+    @Column(name = "TYPE", length = 50)
+    public String getType() {
+        return this.type;
+    }
+
+    /**
+     * @param type
+     *            null.
+     */
+    public void setType(String type) {
+        this.type = type;
     }
 }

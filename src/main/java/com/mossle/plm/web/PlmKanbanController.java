@@ -57,25 +57,27 @@ public class PlmKanbanController {
         PlmSprint plmSprint = plmSprintManager.get(sprintId);
         model.addAttribute("plmSprint", plmSprint);
 
-        // 获得迭代对应的步骤
-        String hql = "from PlmStep where plmConfig=? order by priority";
-        List<PlmStep> plmSteps = plmStepManager.find(hql,
-                plmSprint.getPlmConfig());
-        model.addAttribute("plmSteps", plmSteps);
+        if (plmSprint != null) {
+            // 获得迭代对应的步骤
+            String hql = "from PlmStep where plmConfig=? order by priority";
+            List<PlmStep> plmSteps = plmStepManager.find(hql,
+                    plmSprint.getPlmConfig());
+            model.addAttribute("plmSteps", plmSteps);
 
-        // 获得每个步骤下的任务
-        List<Map<String, Object>> list = new ArrayList<Map<String, Object>>();
-        model.addAttribute("list", list);
+            // 获得每个步骤下的任务
+            List<Map<String, Object>> list = new ArrayList<Map<String, Object>>();
+            model.addAttribute("list", list);
 
-        for (PlmStep plmStep : plmSteps) {
-            Map<String, Object> map = new HashMap<String, Object>();
-            list.add(map);
-            map.put("plmStep", plmStep);
+            for (PlmStep plmStep : plmSteps) {
+                Map<String, Object> map = new HashMap<String, Object>();
+                list.add(map);
+                map.put("plmStep", plmStep);
 
-            String hqlSelectIssue = "from PlmIssue where plmSprint=? and step=?";
-            map.put("plmIssues",
-                    plmIssueManager.find(hqlSelectIssue, plmSprint,
-                            plmStep.getCode()));
+                String hqlSelectIssue = "from PlmIssue where plmSprint=? and step=?";
+                map.put("plmIssues",
+                        plmIssueManager.find(hqlSelectIssue, plmSprint,
+                                plmStep.getCode()));
+            }
         }
 
         return "plm/kanban";

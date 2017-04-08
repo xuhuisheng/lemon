@@ -9,92 +9,116 @@
     <%@include file="/common/meta.jsp"%>
     <title>designer</title>
     <%@include file="/common/s3.jsp"%>
-	<link href="${tenantPrefix}/widgets/xform/styles/xform.css" rel="stylesheet">
-    <script type="text/javascript" src="${tenantPrefix}/widgets/xform3/xform-all.js"></script>
-    <script type="text/javascript" src="${tenantPrefix}/widgets/xform3/adaptor.js"></script>
+	<link href="${cdnPrefix}/xform3/styles/xform.css" rel="stylesheet">
+    <script type="text/javascript" src="${cdnPrefix}/xform3/xform-packed.js"></script>
+    <script type="text/javascript" src="${cdnPrefix}/xform3/adaptor.js"></script>
+
+	<style type="text/css">
+.xf-pallete {
+	border: dotted 2px gray;
+	width: 45%;
+	margin: 5px;
+	padding: 5px;
+	padding-left: 10px;
+	text-align: left;
+	background-color: #F8F8F8;
+	float: left;
+}
+
+.xf-pallete img {
+	float: right;
+}
+
+.xf-table td {
+	height: 45px;
+}
+
+.tab-pane {
+	margin-right: 20px;
+}
+	</style>
   </head>
 
   <body>
     <%@include file="/header/form.jsp"%>
 
     <div class="row-fluid">
-	  <%@include file="/menu/form.jsp"%>
 
 	<!-- start of main -->
-      <section id="m-main" class="col-md-10" style="padding-top:65px;">
+      <section id="m-main" class="col-md-12" style="padding-top:65px;">
 
 	  <div id="__gef_container__" style="padding-left:5px;">
 	    <div id="__gef_palette__" style="float:left;width:260px;">
 		  <ul class="nav nav-tabs" id="myTab">
-            <li class="active"><a href="#operation" data-toggle="tab">操作</a></li>
-			<li><a href="#form" data-toggle="tab">表单</a></li>
-			<li><a href="#prop" data-toggle="tab">属性</a></li>
+            <li class="active"><a href="#operation" data-toggle="tab">控件</a></li>
+			<li><a href="#form" data-toggle="tab">控件属性</a></li>
+			<li><a href="#prop" data-toggle="tab">表单属性</a></li>
 		  </ul> 
 		  <div class="tab-content">
 			<div class="tab-pane active" id="operation">
-			  <div>
+			  <div style="padding-top:5px;">
 				<div class="xf-pallete" title="label">
-				  <img src="${tenantPrefix}/widgets/xform/images/xform/new_label.png">
+				  <img src="${cdnPrefix}/xform/images/xform/new_label.png">
 				  label
 				</div>
 				<div class="xf-pallete" title="textfield">
-				  <img src="${tenantPrefix}/widgets/xform/images/xform/new_input.png">
+				  <img src="${cdnPrefix}/xform/images/xform/new_input.png">
 				  textfield
 				</div>
 				<div class="xf-pallete" title="password">
-				  <img src="${tenantPrefix}/widgets/xform/images/xform/new_secret.png">
+				  <img src="${cdnPrefix}/xform/images/xform/new_secret.png">
 				  password
 				</div>
 				<div class="xf-pallete" title="textarea">
-				  <img src="${tenantPrefix}/widgets/xform/images/xform/new_textarea.png">
+				  <img src="${cdnPrefix}/xform/images/xform/new_textarea.png">
 				  textarea
 				</div>
 				<div class="xf-pallete" title="select">
-				  <img src="${tenantPrefix}/widgets/xform/images/xform/new_select.png">
+				  <img src="${cdnPrefix}/xform/images/xform/new_select.png">
 				  select
 				</div>
 				<div class="xf-pallete" title="radio">
-				  <img src="${tenantPrefix}/widgets/xform/images/xform/new_item.png">
+				  <img src="${cdnPrefix}/xform/images/xform/new_item.png">
 				  radio
 				</div>
 				<div class="xf-pallete" title="checkbox">
-				  <img src="${tenantPrefix}/widgets/xform/images/xform/new_itemset.png">
+				  <img src="${cdnPrefix}/xform/images/xform/new_itemset.png">
 				  checkbox
 				</div>
 				<div class="xf-pallete" title="fileupload">
-				  <img src="${tenantPrefix}/widgets/xform/images/xform/new_upload.png">
+				  <img src="${cdnPrefix}/xform/images/xform/new_upload.png">
 				  fileupload
 				</div>
 				<div class="xf-pallete" title="datepicker">
-				  <img src="${tenantPrefix}/widgets/xform/images/xform/new_range.png">
+				  <img src="${cdnPrefix}/xform/images/xform/new_range.png">
 				  datepicker
 				</div>
 				<div class="xf-pallete" title="userpicker">
-				  <img src="${tenantPrefix}/widgets/xform/images/xform/userpicker.png">
+				  <img src="${cdnPrefix}/xform/images/xform/userpicker.png">
 				  userpicker
 				</div>
 			  </div>
 			</div>
 			<div class="tab-pane" id="form">
-			  <div class="popover" style="display:block;position:relative;">
-				<h3 class="popover-title">title</h3>
-				<div class="popover-content">
+			  <div class="panel panel-default" style="display:block;position:relative;">
+				<div class="panel-heading">控件属性</div>
+				<div class="panel-body">
 				  <div id="xf-form-attribute" class="controls"></div>
 				</div>
 			  </div>
 			</div>
 			<div class="tab-pane" id="prop">
-			  <div class="popover" style="display:block;position:relative;">
-				<h3 class="popover-title">属性</h3>
-				<div class="popover-content">
+			  <div class="panel panel-default" style="display:block;position:relative;">
+				<div class="panel-heading">表单属性</div>
+				<div class="panel-body">
 				  <div id="xf-form-attribute" class="controls">
 				    <label>
 					  名称
-				      <input id="xFormName" type="text">
+				      <input id="xFormName" type="text" class="form-control">
 					</label>
 				    <label>
 					  标识
-				      <input id="xFormCode" type="text">
+				      <input id="xFormCode" type="text" class="form-control">
                     </label>
 				  </div>
 				</div>
@@ -105,18 +129,17 @@
 
 		<div class="__gef_center__">
 		<div id="__gef_toolbar__">
-		  <div style="width:50px;float:left;">&nbsp;</div>
 		  <div class="btn-group">
-			<button class="btn" onclick="doSave()">save</button>
+			<button class="btn btn-default" onclick="doSave()">保存</button>
 <!--
-			<button class="btn" onclick="alert(xform.doExport())">export</button>
-			<button class="btn" onclick="doImport()">import</button>
+			<button class="btn btn-default" onclick="alert(xform.doExport())">export</button>
+			<button class="btn btn-default" onclick="doImport()">import</button>
 -->
-			<button class="btn" onclick="xform.addRow()">add row</button>
-			<button class="btn" onclick="xform.removeRow()">remove row</button>
-			<button class="btn" onclick="doChangeMode(this)">change to merge mode</button>
-			<button class="btn" onclick="doMerge()">merge</button>
-			<button class="btn" onclick="doSplit()">split</button>
+			<button class="btn btn-default" onclick="xform.addRow()">添加行</button>
+			<button class="btn btn-default" onclick="xform.removeRow()">删除行</button>
+			<button class="btn btn-default" onclick="doChangeMode(this)">切换为合并模式</button>
+			<button class="btn btn-default" onclick="doMerge()" id="mergeCell" style="display:none;">合并单元格</button>
+			<button class="btn btn-default" onclick="doSplit()" id="splitCell" style="display:none;">拆分单元格</button>
 		  </div>
 		</div>
 

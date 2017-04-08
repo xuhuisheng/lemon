@@ -60,7 +60,7 @@ $(function() {
   <div class="form-group">
     <label class="control-label col-md-1" for="meetingRoom_projector">投影仪</label>
 	<div class="col-sm-5">
-	  <select id="meetingRoom_projector" name="projector">
+	  <select id="meetingRoom_projector" name="projector" class="form-control">
 	    <option value="true" ${model.projector == 'true' ? 'selected' : ''}>有</option>
 	    <option value="false" ${model.projector == 'false' ? 'selected' : ''}>无</option>
 	  </select>
@@ -69,7 +69,7 @@ $(function() {
   <div class="form-group">
     <label class="control-label col-md-1" for="meetingRoom_type">专用会议室</label>
 	<div class="col-sm-5">
-	  <select id="meetingRoom_type" name="type">
+	  <select id="meetingRoom_type" name="type" class="form-control">
 	    <option value="false" ${model.type == 'false' ? 'selected' : ''}>否</option>
 	    <option value="true" ${model.type == 'true' ? 'selected' : ''}>是</option>
 	  </select>
@@ -88,10 +88,10 @@ $(function() {
     </div>
   </div>
   <div class="form-group">
-    <div class="col-sm-5">
-      <button type="submit" class="btn a-submit"><spring:message code='core.input.save' text='保存'/></button>
+    <div class="col-sm-5 col-md-offset-1">
+      <button type="submit" class="btn btn-default a-submit"><spring:message code='core.input.save' text='保存'/></button>
 	  &nbsp;
-      <button type="button" class="btn a-cancel" onclick="history.back();"><spring:message code='core.input.back' text='返回'/></button>
+      <button type="button" class="btn btn-link a-cancel" onclick="history.back();"><spring:message code='core.input.back' text='返回'/></button>
     </div>
   </div>
 </form>

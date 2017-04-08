@@ -45,21 +45,24 @@ $(function() {
   <input type="hidden" name="id" value="${id}">
   <c:forEach items="${permTypes}" var="permType">
   <div class="form-group">
-	<label class="control-label col-md-1"><strong>${permType.name}:</strong></label>
-    <div class="col-sm-5">
-      <c:forEach items="${permType.perms}" var="item">
+	<label class="control-label col-md-2"><strong>${permType.name}:</strong></label>
+    <div class="col-md-10">
+      <c:forEach items="${permType.perms}" var="item" varStatus="status">
         <input id="selectedItem-${item.id}" type="checkbox" name="selectedItem" value="${item.id}" <tags:contains items="${selectedItem}" item="${item.id}">checked</tags:contains>>
-        <label for="selectedItem-${item.id}" style="display:inline;">${item.name}</label>
+        <label for="selectedItem-${item.id}" style="display:inline;font-weight:normal;">${item.name}</label>
 		&nbsp;
+		<c:if test="${status.count % 5 == 0}">
+		<br>
+		</c:if>
       </c:forEach>
     </div>
   </div>
   </c:forEach>
   <div class="form-group">
-    <div class="col-sm-5">
-      <button id="submitButton" class="btn a-submit"><spring:message code='core.input.save' text='保存'/></button>
+    <div class="col-md-5 col-md-offset-2">
+      <button id="submitButton" class="btn btn-default a-submit"><spring:message code='core.input.save' text='保存'/></button>
 	  &nbsp;
-      <button type="button" onclick="history.back();" class="btn"><spring:message code='core.input.back' text='返回'/></button>
+      <button type="button" onclick="history.back();" class="btn btn-link"><spring:message code='core.input.back' text='返回'/></button>
     </div>
   </div>
 </form>

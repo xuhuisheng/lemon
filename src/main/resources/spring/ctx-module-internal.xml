@@ -25,4 +25,7 @@
 	<!-- 附件 -->
 	<bean id="attachmentConnector" class="com.mossle.spi.attachment.LocalAttachmentConnector"/>
 
+	<!-- 流水号 -->
+	<bean id="sequenceConnector" class="${sequence.connector}"/>
+
 </beans>

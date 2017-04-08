@@ -68,11 +68,9 @@ $(function() {
 
       <div style="margin-bottom: 20px;">
 	    <div class="pull-left btn-group" role="group">
-		  <%--
 		  <button class="btn btn-default a-insert" onclick="location.href='menu-input.do'">新建</button>
 		  <button class="btn btn-default a-remove" onclick="table.removeAll()">删除</button>
 		  <button class="btn btn-default a-export" onclick="table.exportExcel()">导出</button>
-		  --%>
 		</div>
 
 		<div class="pull-right">
@@ -109,6 +107,7 @@ $(function() {
           <th class="sorting" name="name"><spring:message code="auth.menu.list.name" text="名称"/></th>
           <th class="sorting" name="name">URL</th>
 		  <th>类型</th>
+		  <th>状态</th>
           <th>&nbsp;</th>
         </tr>
       </thead>
@@ -125,10 +124,9 @@ $(function() {
           <td>${item.title}</td>
           <td>${item.url}</td>
 		  <td>${item.type}</td>
+		  <td>${item.display == 'true' ? '显示' : '隐藏'}</td>
           <td>
-		    <%--
             <a href="menu-input.do?id=${item.id}" class="a-update"><spring:message code="core.list.edit" text="编辑"/></a>
-			--%>
           </td>
         </tr>
         </c:forEach>

@@ -21,7 +21,10 @@
     </bean>
 	
 	<!-- 把jul的日志导入给slf4j -->
-	<bean class="com.mossle.core.logback.JulHandler"/>
+	<!--
+	在内嵌tomcat的环境，会导致tomcat-juli日志与jul, slf4j发生循环依赖，导致java.lang.ClassCircularityError
+	<bean class="com.mossle.core.logback.JulHandler"/>2017/3/16
+	-->
 
 	<!-- 无法IoC时，提供一个单例获得当前的ctx -->
 	<bean id="applicationContextHelper" class="com.mossle.core.spring.ApplicationContextHelper"/>

@@ -21,6 +21,11 @@ import com.mossle.spi.humantask.TaskUserDTO;
 
 import org.activiti.engine.ProcessEngine;
 
+import org.apache.commons.lang3.StringUtils;
+
+import org.slf4j.Logger;
+import org.slf4j.LoggerFactory;
+
 import org.springframework.stereotype.Controller;
 
 import org.springframework.ui.Model;
@@ -32,6 +37,8 @@ import org.springframework.web.bind.annotation.RequestParam;
 @Controller
 @RequestMapping("bpm")
 public class BpmConfUserController {
+    private static Logger logger = LoggerFactory
+            .getLogger(BpmConfUserController.class);
     private BpmConfNodeManager bpmConfNodeManager;
     private BpmConfUserManager bpmConfUserManager;
     private BeanMapper beanMapper = new BeanMapper();
@@ -65,6 +72,37 @@ public class BpmConfUserController {
     @RequestMapping("bpm-conf-user-save")
     public String save(@ModelAttribute BpmConfUser bpmConfUser,
             @RequestParam("bpmConfNodeId") Long bpmConfNodeId) {
+        if (StringUtils.isBlank(bpmConfUser.getValue())) {
+            logger.info("bpmConfUser cannot blank");
+
+            return "redirect:/bpm/bpm-conf-user-list.do?bpmConfNodeId="
+                    + bpmConfNodeId;
+        }
+
+        // 如果存在默认的负责人，要设置成删除状态
+        if (bpmConfUser.getType() == 0) {
+            String hql = "from BpmConfUser where bpmConfNode.id=? and type=0 and status=0";
+            BpmConfUser targetBpmConfUser = bpmConfUserManager.findUnique(hql,
+                    bpmConfNodeId);
+
+            if (targetBpmConfUser != null) {
+                targetBpmConfUser.setStatus(2);
+                bpmConfUserManager.save(targetBpmConfUser);
+            }
+        }
+
+        // 如果存在添加的负责人，直接更新
+        if (bpmConfUser.getType() == 0) {
+            String hql = "from BpmConfUser where bpmConfNode.id=? and type=0 and status=1";
+            BpmConfUser targetBpmConfUser = bpmConfUserManager.findUnique(hql,
+                    bpmConfNodeId);
+
+            if (targetBpmConfUser != null) {
+                targetBpmConfUser.setValue(bpmConfUser.getValue());
+                bpmConfUser = targetBpmConfUser;
+            }
+        }
+
         bpmConfUser.setPriority(0);
         bpmConfUser.setStatus(1);
         bpmConfUser.setBpmConfNode(bpmConfNodeManager.get(bpmConfNodeId));
@@ -106,14 +144,14 @@ public class BpmConfUserController {
         Long bpmConfNodeId = bpmConfUser.getBpmConfNode().getId();
 
         if (bpmConfUser.getStatus() == 0) {
-            // Ĭ�� -> ����
+            // 默认 -> 删除
             bpmConfUser.setStatus(2);
             bpmConfUserManager.save(bpmConfUser);
         } else if (bpmConfUser.getStatus() == 1) {
-            // ɾ�������ӵ�
+            // 删除添加
             bpmConfUserManager.remove(bpmConfUser);
         } else if (bpmConfUser.getStatus() == 2) {
-            // ���� -> Ĭ��
+            // 删除 -> 默认
             bpmConfUser.setStatus(0);
             bpmConfUserManager.save(bpmConfUser);
         }
@@ -144,15 +182,15 @@ public class BpmConfUserController {
         taskUser.setValue(value);
 
         if (bpmConfUser.getStatus() == 0) {
-            // ���� > Ĭ��
+            // 默认 > 删除
             taskDefinitionConnector.updateTaskUser(taskDefinitionKey,
                     processDefinitionId, taskUser, "active");
         } else if (bpmConfUser.getStatus() == 1) {
-            // ��� > ɾ��
+            // 删除添加
             taskDefinitionConnector.removeTaskUser(taskDefinitionKey,
                     processDefinitionId, taskUser);
         } else if (bpmConfUser.getStatus() == 2) {
-            // Ĭ�� > ����
+            // 删除 > 默认
             taskDefinitionConnector.updateTaskUser(taskDefinitionKey,
                     processDefinitionId, taskUser, "disable");
         }

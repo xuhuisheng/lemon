@@ -7,7 +7,7 @@
     <meta charset="utf-8">
     <title>网盘</title>
     <%@include file="_s.jsp"%>
-	<link rel="stylesheet" href="${ctx}/s/disk/sprite_list_icon.css">
+	<link rel="stylesheet" href="${cdnPrefix}/disk/sprite_list_icon.css">
   </head>
   <body>
     <div id="wrap">&nbsp;
@@ -15,8 +15,11 @@
 <%@include file="/header/_disk.jsp"%>
 
       <div class="container-fluid" style="padding: 0px 15px 0;" id="top">
-        <div class="row">
-          <div class="col-md-12">
+
+		<div class="row">
+		  <%@include file="/menu/disk.jsp"%>
+
+          <div class="col-md-10">
             <div class="alert-fixed-top" data-alerts="alerts" data-titles="{}" data-ids="myid" data-fade="1000"></div>
 
     <table id="tablereimburserecord1" class="table table-hover table-bordered">
@@ -34,6 +37,12 @@
             <a href="javascript:void(0);removeFile(${item.id});"><i class="glyphicon glyphicon-remove"></i></a>
           </td>
           <td class="text-left">
+		    <c:if test="${item.shareType == 'public'}">
+			  <i class="glyphicon"></i>
+			</c:if>
+		    <c:if test="${item.shareType == 'private'}">
+			  <i class="glyphicon glyphicon-lock"></i>
+			</c:if>
 		    <i class="icon-16 icon-16-${item.type}"></i>
 			<c:if test="${item.type == 'dir'}">
 			<a href="disk-share-list.do?path=${path}/${item.name}">
@@ -44,6 +53,17 @@
 		    <a href="disk-share-view.do?id=${item.id}">
 			<span class="file-16-name">${item.name}</span>
 			</a>
+			</c:if>
+			链接: <a href="${baseUrl}/disk/disk-view.do?id=${item.id}">${baseUrl}/disk/disk-view.do?id=${item.id}</a>
+		    <c:if test="${item.shareType == 'private'}">
+			  密码: ${item.sharePassword}
+			</c:if>
+			分享类型: 
+		    <c:if test="${item.shareType == 'public'}">
+			  公开
+			</c:if>
+		    <c:if test="${item.shareType == 'private'}">
+			  私密
 			</c:if>
 	      </td>
           <td class="text-left"><fmt:formatDate value="${item.shareTime}" type="both"/></td>

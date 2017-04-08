@@ -152,10 +152,12 @@ public class ProcessConnectorImpl implements ProcessConnector {
         boolean exists = assignee != null;
 
         if ((("${" + firstTaskForm.getInitiatorName() + "}").equals(assignee))
-                || "流程发起人".equals(assignee)
+                || "常用语:流程发起人".equals(assignee)
                 || ((assignee != null) && assignee.equals(Authentication
                         .getAuthenticatedUserId()))) {
             exists = true;
+        } else {
+            exists = false;
         }
 
         if (!exists) {

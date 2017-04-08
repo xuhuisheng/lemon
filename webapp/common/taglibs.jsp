@@ -8,3 +8,4 @@
 <%pageContext.setAttribute("ctx", request.getContextPath());%>
 
 <%request.setAttribute("tenantPrefix", request.getContextPath());%>
+<c:set var="cdnPrefix" value="${ctx}/cdn"/>

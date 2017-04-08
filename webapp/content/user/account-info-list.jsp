@@ -20,8 +20,7 @@ var config = {
     orderBy: '${page.orderBy == null ? "" : page.orderBy}',
     asc: ${page.asc},
     params: {
-        'filter_LIKES_username': '${param.filter_LIKES_username}',
-        'filter_EQS_status': '${param.filter_EQS_status}'
+        'filter_LIKES_username': '${param.filter_LIKES_username}'
     },
 	selectedItemClass: 'selectedItem',
 	gridFormId: 'userGridForm',
@@ -60,12 +59,6 @@ $(function() {
 		  <form name="userForm" method="post" action="account-info-list.do" class="form-inline">
 		    <label for="user_username"><spring:message code='user.user.list.search.username' text='账号'/>:</label>
 		    <input type="text" id="user_username" name="filter_LIKES_username" value="${param.filter_LIKES_username}" class="form-control">
-		    <label for="user_enabled"><spring:message code='user.user.list.search.status' text='状态'/>:</label>
-		    <select id="user_enabled" name="filter_EQS_status" class="form-control">
-			  <option value=""></option>
-			  <option value="active" ${param.filter_EQS_status == 'active' ? 'selected' : ''}><spring:message code='user.user.list.search.enabled.true' text='启用'/></option>
-			  <option value="disabled" ${param.filter_EQS_status == 'disabled' ? 'selected' : ''}><spring:message code='user.user.list.search.enabled.false' text='禁用'/></option>
-		    </select>
 			<button class="btn btn-default" onclick="document.userForm.submit()">查询</button>
 		  </form>
   </div>
@@ -105,6 +98,7 @@ $(function() {
 	    <%--
         <th width="10" class="m-table-check"><input type="checkbox" name="checkAll" onchange="toggleSelectedItems(this.checked)"></th>
 		--%>
+		<th>编号</th>
         <th class="sorting" name="username"><spring:message code="user.user.list.username" text="账号"/></th>
         <th class="sorting" name="displayName">显示名</th>
         <th class="sorting" name="createTime">类型</th>
@@ -120,6 +114,7 @@ $(function() {
 	    <%--
         <td><input type="checkbox" class="selectedItem a-check" name="selectedItem" value="${item.id}"></td>
 		--%>
+		<td>${item.id}</td>
         <td>${item.username}</td>
         <td>${item.displayName}</td>
         <td>${item.type}</td>

@@ -25,6 +25,9 @@ public class PimPhrase implements java.io.Serializable {
     /** 用户. */
     private String userId;
 
+    /** null. */
+    private Integer priority;
+
     public PimPhrase() {
     }
 
@@ -32,10 +35,11 @@ public class PimPhrase implements java.io.Serializable {
         this.id = id;
     }
 
-    public PimPhrase(Long id, String content, String userId) {
+    public PimPhrase(Long id, String content, String userId, Integer priority) {
         this.id = id;
         this.content = content;
         this.userId = userId;
+        this.priority = priority;
     }
 
     /** @return 主键. */
@@ -79,5 +83,19 @@ public class PimPhrase implements java.io.Serializable {
      */
     public void setUserId(String userId) {
         this.userId = userId;
+    }
+
+    /** @return null. */
+    @Column(name = "PRIORITY")
+    public Integer getPriority() {
+        return this.priority;
+    }
+
+    /**
+     * @param priority
+     *            null.
+     */
+    public void setPriority(Integer priority) {
+        this.priority = priority;
     }
 }

@@ -1,9 +1,9 @@
 package com.mossle.core.id;
 
 public interface IdGenerator {
-    long generateId();
+    Long generateId();
 
-    long generateId(String name);
+    Long generateId(String name);
 
-    long generateId(Class<?> clz);
+    Long generateId(Class<?> clz);
 }

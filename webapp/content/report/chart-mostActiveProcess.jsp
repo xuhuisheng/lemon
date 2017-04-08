@@ -7,7 +7,7 @@
 
   <head>
     <%@include file="/common/meta.jsp"%>
-    <title>最常用流程</title>
+    <title>最活跃流程</title>
     <%@include file="/common/s3.jsp"%>
 
     <link rel="stylesheet" href="${ctx}/s/jqplot/jquery.jqplot.min.css" type="text/css" media="screen" />

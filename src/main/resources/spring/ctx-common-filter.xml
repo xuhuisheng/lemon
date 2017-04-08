@@ -32,6 +32,7 @@
 			    <ref bean="staticContentFilterStatic"/>
 			    <ref bean="staticContentFilterWidgets"/>
 			    <ref bean="staticContentFilterDocs"/>
+			    <ref bean="staticContentFilterCdn"/>
 			    <ref bean="whitelistFilter"/>
 				<ref bean="characterEncodingFilter"/>
 				<ref bean="i18nFilter"/>
@@ -68,6 +69,14 @@
 			<bean class="com.mossle.core.servlet.StaticContentFilter"/>
 		</property>
 		<property name="urlPattern" value="/docs/*"/>
+	</bean>
+
+	<bean id="staticContentFilterCdn" class="com.mossle.core.servlet.ProxyFilter">
+		<property name="name" value="staticContent"/>
+		<property name="filter">
+			<bean class="com.mossle.core.servlet.StaticContentFilter"/>
+		</property>
+		<property name="urlPattern" value="/cdn/*"/>
 	</bean>
 
 	<bean id="whitelistFilter" class="com.mossle.core.servlet.ProxyFilter">
@@ -148,7 +157,8 @@
 		<property name="name" value="cms"/>
 		<property name="filter">
 			<bean class="com.mossle.cms.support.CmsFilter">
-				<property name="baseDir" value="${store.baseDir}/cms/html"/>
+				<property name="storeBaseDir" value="${store.baseDir}"/>
+				<property name="cmsBaseDir" value="/cms/html"/>
 			</bean>
 		</property>
 		<property name="enable" value="${filter.cms.enable}"/>

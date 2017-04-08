@@ -98,7 +98,11 @@ public class MenuConnectorImpl implements MenuConnector {
         menuDto.setTitle(menu.getTitle());
         // 为了jsp里使用方便，要去掉url前面的/
         menuDto.setUrl(this.processUrl(menu.getUrl()));
-        menuDto.setPermission(menu.getPerm().getCode());
+
+        if (menu.getPerm() != null) {
+            menuDto.setPermission(menu.getPerm().getCode());
+        }
+
         menuDto.setType(menu.getType());
 
         List<Menu> menus = menuManager.find(

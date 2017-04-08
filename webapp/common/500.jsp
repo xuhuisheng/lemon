@@ -66,9 +66,9 @@ logger.error(requestInfo, ex);
   <head>
     <%@include file="/common/meta.jsp"%>
     <title>500 - <spring:message code="core.500.error" text="系统内部发生错误"/></title>
-	<link href="${ctx}/s/bootstrap/css/bootstrap.min.css" rel="stylesheet">
-	<link href="${ctx}/s/bootstrap/css/bootstrap-responsive.min.css" rel="stylesheet">
-	<script type="text/javascript" src="${ctx}/s/jquery/jquery.min.js"></script>
+	<link href="${cdnPrefix}/bootstrap/css/bootstrap.min.css" rel="stylesheet">
+	<link href="${cdnPrefix}/bootstrap/css/bootstrap-responsive.min.css" rel="stylesheet">
+	<script type="text/javascript" src="${cdnPrefix}/jquery/jquery.min.js"></script>
 	<script type="text/javascript">
 $(function() {
 	$('#targetContentDiv').height($(window).innerHeight() - 150);

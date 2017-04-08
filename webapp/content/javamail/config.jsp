@@ -95,84 +95,73 @@ $(function() {
     <div id="collapse-body-javamail" class="panel-collapse collapse ${currentMenu == 'javamail' ? 'in' : ''}" role="tabpanel" aria-labelledby="collapse-header-javamail">
       <div class="panel-body full-height">
 
-    <form class="form-horizontal" action="configSave.do" method="post">
 
-<div>
-<div class="input-prepend">
-<span class="add-on">账号：</span>
-<input type="text" placeholder="" style="height:20px;" name="username" value="${javamailConfig.username}">
-</div>
-</div>
+<form method="post" action="configSave.do" class="form-horizontal">
+  <div class="form-group">
+	<label class="control-label col-md-2" for="username">账号:</label>
+    <div class="col-sm-5">
+      <input id="username" type="text" name="username" value="${javamailConfig.username}" class="form-control">
+    </div>
+  </div>
+  <div class="form-group">
+	<label class="control-label col-md-2" for="password">密码:</label>
+    <div class="col-sm-5">
+      <input id="password" type="password" name="password" value="" class="form-control">
+    </div>
+  </div>
+  <div class="form-group">
+	<label class="control-label col-md-2" for="receiveType">收信类型:</label>
+    <div class="col-sm-5">
+      <input id="receiveType" type="text" name="receiveType" value="${javamailConfig.receiveType}" class="form-control">
+    </div>
+  </div>
+  <div class="form-group">
+	<label class="control-label col-md-2" for="receiveHost">收信地址:</label>
+    <div class="col-sm-5">
+      <input id="receiveHost" type="text" name="receiveHost" value="${javamailConfig.receiveHost}" class="form-control">
+    </div>
+  </div>
+  <div class="form-group">
+	<label class="control-label col-md-2" for="receivePort">收信端口:</label>
+    <div class="col-sm-5">
+      <input id="receivePort" type="text" name="receivePort" value="${javamailConfig.receivePort}" class="form-control">pop3: 110, 995
+    </div>
+  </div>
+  <div class="form-group">
+	<label class="control-label col-md-2" for="receiveSecure">收信安全:</label>
+    <div class="col-sm-5">
+      <input id="receiveSecure" type="text" name="receiveSecure" value="${javamailConfig.receiveSecure}" class="form-control">ssl, ssl-all, none
+    </div>
+  </div>
+  <div class="form-group">
+	<label class="control-label col-md-2" for="sendType">发信类型:</label>
+    <div class="col-sm-5">
+      <input id="sendType" type="text" name="sendType" value="${javamailConfig.sendType}" class="form-control">
+    </div>
+  </div>
+  <div class="form-group">
+	<label class="control-label col-md-2" for="sendHost">发信地址:</label>
+    <div class="col-sm-5">
+      <input id="sendHost" type="text" name="sendHost" value="${javamailConfig.sendHost}" class="form-control">
+    </div>
+  </div>
+  <div class="form-group">
+	<label class="control-label col-md-2" for="sendPort">发信端口:</label>
+    <div class="col-sm-5">
+      <input id="sendPort" type="text" name="sendPort" value="${javamailConfig.sendPort}" class="form-control">smtp: 25, 465
+    </div>
+  </div>
+  <div class="form-group">
+	<label class="control-label col-md-2" for="sendSecure">发信安全:</label>
+    <div class="col-sm-5">
+      <input id="sendSecure" type="text" name="sendSecure" value="${javamailConfig.sendSecure}" class="form-control">ssl, ssl-all, none
+    </div>
+  </div>
+  <div>
+	<button class="btn btn-default">保存</button>
+  </div>
 
-<div>
-<div class="input-prepend">
-<span class="add-on">密码：</span>
-<input type="password" placeholder="" style="height:20px;" name="password">
-</div>
-</div>
-
-<div>
-<div class="input-prepend">
-<span class="add-on">收信类型：</span>
-<input type="text" placeholder="" style="height:20px;" name="receiveType" value="${javamailConfig.receiveType}">
-</div>
-</div>
-
-<div>
-<div class="input-prepend">
-<span class="add-on">收信地址：</span>
-<input type="text" placeholder="" style="height:20px;" name="receiveHost" value="${javamailConfig.receiveHost}">
-</div>
-</div>
-
-<div>
-<div class="input-prepend">
-<span class="add-on">收信端口：</span>
-<input type="text" placeholder="" style="height:20px;" name="receivePort" value="${javamailConfig.receivePort}">
-</div>
-</div>
-
-<div>
-<div class="input-prepend">
-<span class="add-on">收信安全：</span>
-<input type="text" placeholder="" style="height:20px;" name="receiveSecure" value="${javamailConfig.receiveSecure}">
-</div>
-</div>
-
-<div>
-<div class="input-prepend">
-<span class="add-on">发信类型：</span>
-<input type="text" placeholder="" style="height:20px;" name="sendType" value="${javamailConfig.sendType}">
-</div>
-</div>
-
-<div>
-<div class="input-prepend">
-<span class="add-on">发信地址：</span>
-<input type="text" placeholder="" style="height:20px;" name="sendHost" value="${javamailConfig.sendHost}">
-</div>
-</div>
-
-<div>
-<div class="input-prepend">
-<span class="add-on">发信端口：</span>
-<input type="text" placeholder="" style="height:20px;" name="sendPort" value="${javamailConfig.sendPort}">
-</div>
-</div>
-
-<div>
-<div class="input-prepend">
-<span class="add-on">发信安全：</span>
-<input type="text" placeholder="" style="height:20px;" name="sendSecure" value="${javamailConfig.sendSecure}">
-</div>
-</div>
-
-
-<div>
-<button>保存</button>
-</div>
-
-	</form>
+</form>
 
 
 	  

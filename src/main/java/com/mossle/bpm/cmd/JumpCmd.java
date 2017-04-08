@@ -23,15 +23,16 @@ public class JumpCmd implements Command<Object> {
     }
 
     public Object execute(CommandContext commandContext) {
-        for (TaskEntity taskEntity : commandContext.getTaskEntityManager()
-                .findTasksByExecutionId(executionId)) {
-            taskEntity.setVariableLocal("跳转原因", jumpOrigin);
-            commandContext.getTaskEntityManager().deleteTask(taskEntity,
-                    jumpOrigin, false);
-        }
-
+        // for (TaskEntity taskEntity : commandContext.getTaskEntityManager()
+        // .findTasksByExecutionId(executionId)) {
+        // taskEntity.setVariableLocal("跳转原因", jumpOrigin);
+        // commandContext.getTaskEntityManager().deleteTask(taskEntity,
+        // jumpOrigin, false);
+        // }
         ExecutionEntity executionEntity = commandContext
                 .getExecutionEntityManager().findExecutionById(executionId);
+        executionEntity.destroyScope(jumpOrigin);
+
         ProcessDefinitionImpl processDefinition = executionEntity
                 .getProcessDefinition();
         ActivityImpl activity = processDefinition.findActivity(activityId);

@@ -24,7 +24,7 @@ public class AuditBase implements java.io.Serializable {
     private Long id;
 
     /** null. */
-    private String user;
+    private String userId;
 
     /** null. */
     private String resourceType;
@@ -63,12 +63,12 @@ public class AuditBase implements java.io.Serializable {
         this.id = id;
     }
 
-    public AuditBase(Long id, String user, String resourceType,
+    public AuditBase(Long id, String userId, String resourceType,
             String resourceId, String action, String result,
             String application, Date auditTime, String client, String server,
             String description, String tenantId) {
         this.id = id;
-        this.user = user;
+        this.userId = userId;
         this.resourceType = resourceType;
         this.resourceId = resourceId;
         this.action = action;
@@ -97,17 +97,17 @@ public class AuditBase implements java.io.Serializable {
     }
 
     /** @return null. */
-    @Column(name = "USER", length = 200)
-    public String getUser() {
-        return this.user;
+    @Column(name = "USER_ID", length = 200)
+    public String getUserId() {
+        return this.userId;
     }
 
     /**
-     * @param user
+     * @param userId
      *            null.
      */
-    public void setUser(String user) {
-        this.user = user;
+    public void setUserId(String userId) {
+        this.userId = userId;
     }
 
     /** @return null. */

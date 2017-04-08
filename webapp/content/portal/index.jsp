@@ -10,9 +10,9 @@
     <title>portal</title>
 	<%@include file="/common/s3.jsp"%>
 
-    <script src='${tenantPrefix}/widgets/portal/dashboard.js' type='text/javascript'></script>
-    <link rel='stylesheet' href='${tenantPrefix}/widgets/portal/dashboard.css' type='text/css' media='screen' />
-    <script type="text/javascript" src="${tenantPrefix}/widgets/portal/portal.js"></script>
+    <script src='${cdnPrefix}/portal/dashboard.js' type='text/javascript'></script>
+    <link rel='stylesheet' href='${cdnPrefix}/portal/dashboard.css' type='text/css' media='screen' />
+    <script type="text/javascript" src="${cdnPrefix}/portal/portal.js"></script>
 
   </head>
 

@@ -5,9 +5,9 @@
 <div class="navbar navbar-default navbar-fixed-top">
   <div class="container-fluid">
     <div class="navbar-header">
-      <a class="navbar-brand" href="${tenantPrefix}/">
-	    <img src="${tenantPrefix}/s/logo32.png" class="img-responsive pull-left" style="margin-top:-5px;margin-right:5px;">
-	    Lemon <sub><small>1.7.0</small></sub>
+      <a class="navbar-brand" href="${tenantPrefix}/portal/index.do">
+	    <img src="${cdnPrefix}/logo32.png" class="img-responsive pull-left" style="margin-top:-5px;margin-right:5px;">
+	    Lemon <sub><small>1.8.0</small></sub>
       </a>
     </div>
 
@@ -53,3 +53,68 @@
 
   </div>
 </div>
+
+	  <style>
+.feedback {
+    bottom: 10px;
+    height: 54px;
+    left: 100%;
+    margin-left: -60px;
+    position: fixed;
+    width: 54px;
+    z-index: 998;
+}
+
+.feedback a {
+	display: inline-block;
+	border-radius:50%;
+	height: 48px;
+	width: 48px;
+	background-color:gray;
+	padding: 10px;
+	text-align:center;
+	color: white;
+	line-height: 14px;
+	font-size: 12px;
+}
+	  </style>
+
+	  <div class="feedback" data-toggle="modal" data-target="#feedbackModal">
+	    <a href="javascript:void(0);">
+		  <i class="glyphicon glyphicon-envelope"></i>
+		  <br>
+		  反馈
+		</a>
+	  </div>
+
+<div class="modal fade" tabindex="-1" role="dialog" id="feedbackModal">
+  <div class="modal-dialog">
+    <div class="modal-content">
+      <div class="modal-header">
+        <button type="button" class="close" data-dismiss="modal" aria-label="Close"><span aria-hidden="true">&times;</span></button>
+        <h4 class="modal-title">反馈</h4>
+      </div>
+      <div class="modal-body">
+		<textarea id="feedbackContent" class="form-control"></textarea>
+      </div>
+      <div class="modal-footer">
+        <button type="button" class="btn btn-default" data-dismiss="modal">关闭</button>
+        <button type="button" class="btn btn-primary" onclick="submitFeedback()">提交</button>
+      </div>
+    </div><!-- /.modal-content -->
+  </div><!-- /.modal-dialog -->
+</div><!-- /.modal -->
+
+<script>
+function submitFeedback() {
+	$.post('${tenantPrefix}/feedback/submit.do', {
+		content: $('#feedbackContent').val(),
+		contact: ''
+	}, function() {
+		$('#feedbackContent').val('');
+		$('#feedbackModal').modal("hide");
+	});
+}
+</script>
+
+

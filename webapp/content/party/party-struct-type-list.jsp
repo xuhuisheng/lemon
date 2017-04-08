@@ -100,7 +100,9 @@ $(function() {
           <th width="10" class="table-check"><input type="checkbox" name="checkAll" onchange="toggleSelectedItems(this.checked)"></th>
           <th class="sorting" name="id"><spring:message code="org.structtype.list.id" text="编号"/></th>
           <th class="sorting" name="name"><spring:message code="org.structtype.list.name" text="名称"/></th>
+		  <!--
           <th class="sorting" name="ref">引用</th>
+		  -->
           <th width="50">&nbsp;</th>
         </tr>
       </thead>
@@ -110,7 +112,9 @@ $(function() {
           <td><input type="checkbox" class="selectedItem" name="selectedItem" value="${item.id}"></td>
           <td>${item.id}</td>
           <td>${item.name}</td>
+		  <!--
           <td>${item.ref}</td>
+		  -->
           <td>
             <a href="party-struct-type-input.do?id=${item.id}"><spring:message code="core.list.edit" text="编辑"/></a>
           </td>

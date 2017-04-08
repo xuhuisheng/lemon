@@ -79,11 +79,11 @@ public class CounterSignService {
         // 计算通过的比例，以此决定是否结束会签
         double completeRate = nrOfCompletedInstances.doubleValue()
                 / nrOfInstances;
-        boolean canComlete = (completeRate * 100) >= rate;
-        logger.debug("rate: {}, completeRate: {}, canComlete={}", new Object[] {
-                rate, completeRate, canComlete });
+        boolean canComplete = (completeRate * 100) >= rate;
+        logger.debug("rate: {}, completeRate: {}, canComplete={}",
+                new Object[] { rate, completeRate, canComplete });
 
-        return canComlete;
+        return canComplete;
     }
 
     @Resource

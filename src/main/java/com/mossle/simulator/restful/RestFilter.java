@@ -103,9 +103,9 @@ public class RestFilter implements Filter {
             String key = text.substring(0, index);
             String value = text.substring(index + 1);
 
-            if (value != null) {
-                value = URLDecoder.decode(value, "UTF-8");
-            }
+            // if (value != null) {
+            //    value = URLDecoder.decode(value, "UTF-8");
+            // }
 
             parameters.put(key, value);
         }

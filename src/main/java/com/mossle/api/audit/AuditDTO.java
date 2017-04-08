@@ -3,7 +3,7 @@ package com.mossle.api.audit;
 import java.util.Date;
 
 public class AuditDTO {
-    private String user;
+    private String userId;
     private String resourceType;
     private String resourceId;
     private String action;
@@ -15,12 +15,12 @@ public class AuditDTO {
     private String description;
     private String tenantId;
 
-    public String getUser() {
-        return user;
+    public String getUserId() {
+        return userId;
     }
 
-    public void setUser(String user) {
-        this.user = user;
+    public void setUserId(String userId) {
+        this.userId = userId;
     }
 
     public String getResourceType() {

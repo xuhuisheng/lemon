@@ -7,7 +7,7 @@
     <meta charset="utf-8">
     <title>网盘</title>
     <%@include file="_s.jsp"%>
-	<link rel="stylesheet" href="${ctx}/s/disk/sprite_list_icon.css">
+	<link rel="stylesheet" href="${cdnPrefix}/disk/sprite_list_icon.css">
   </head>
   <body>
     <div id="wrap">&nbsp;
@@ -16,7 +16,9 @@
 
       <div class="container-fluid" style="padding: 0px 15px 0;" id="top">
         <div class="row">
-          <div class="col-md-12">
+		  <%@include file="/menu/disk.jsp"%>
+
+          <div class="col-md-10">
             <div class="alert-fixed-top" data-alerts="alerts" data-titles="{}" data-ids="myid" data-fade="1000"></div>
 
             <%pageContext.setAttribute("listType", "list");%> 
@@ -36,12 +38,12 @@
         <tr>
 		  <td class="text-center">
 			<c:if test="${item.type != 'dir'}">
-            <a href="disk-info-download.do?id=${item.id}"><i class=" glyphicon glyphicon-download-alt"></i></a>
+            <a href="disk-info-download.do?id=${item.id}" title="下载"><i class=" glyphicon glyphicon-download-alt"></i></a>
 			</c:if>
-			<a href="javascript:void(0);renameFile(${item.id}, '${item.name}');"><i class="glyphicon glyphicon-pencil"></i></a>
-			<a href="javascript:void(0);moveFile(${item.id})"><i class="glyphicon glyphicon-move"></i></a>
-            <a href="javascript:void(0);removeFile(${item.id});"><i class="glyphicon glyphicon-remove"></i></a>
-            <a href="javascript:void(0);shareFile(${item.id});"><i class="glyphicon glyphicon-share"></i></a>
+			<a href="javascript:void(0);renameFile(${item.id}, '${item.name}');" title="改名"><i class="glyphicon glyphicon-pencil"></i></a>
+			<a href="javascript:void(0);moveFile(${item.id})" title="移动"><i class="glyphicon glyphicon-move"></i></a>
+            <a href="javascript:void(0);removeFile(${item.id});" title="删除"><i class="glyphicon glyphicon-remove"></i></a>
+            <a href="javascript:void(0);shareFile(${item.id});" title="分享"><i class="glyphicon glyphicon-share"></i></a>
           </td>
           <td class="text-left">
 		    <i class="icon-16 icon-16-${item.type}"></i>
@@ -142,6 +144,28 @@ function renameFile(id, name) {
   </div><!-- /.modal-dialog -->
 </div><!-- /.modal -->
 
+<div id="shareDialog" class="modal fade">
+  <div class="modal-dialog">
+    <div class="modal-content">
+	  <form action="disk-info-share.do" method="post">
+	  <input id="shareId" type="hidden" name="id" value="">
+	  <div class="modal-header">
+        <button type="button" class="close" data-dismiss="modal" aria-label="Close"><span aria-hidden="true">&times;</span></button>
+        <h4 class="modal-title">分享</h4>
+      </div>
+      <div class="modal-body">
+	    <p>
+		  <button class="btn btn-default" name="type" value="public">公开分享</button>
+		</p>
+	    <p>
+		  <button class="btn btn-default" name="type" value="private">私密分享</button>
+		</p>
+      </div>
+	  </form>
+    </div><!-- /.modal-content -->
+  </div><!-- /.modal-dialog -->
+</div><!-- /.modal -->
+
 <script type="text/javascript">
 var setting = {
 	async: {
@@ -165,7 +189,9 @@ function moveFile(id) {
 }
 
 function shareFile(id) {
-	location.href = 'disk-share-sharePublic.do?id=' + id;
+	// location.href = 'disk-share-sharePublic.do?id=' + id;
+	$('#shareId').val(id);
+	$('#shareDialog').modal('show');
 }
 
 </script>

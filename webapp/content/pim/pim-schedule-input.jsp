@@ -66,8 +66,8 @@ $(function() {
   <div class="form-group">
     <label class="control-label col-md-1" for="pimSchedule_startTime">开始时间</label>
 	<div class="col-sm-5">
-	  <div class="input-group datepicker date col-sm-9">
-	    <input id="pimSchedule_startTime" type="text" name="startTime" value="<fmt:formatDate value='${model.startTime}' pattern='yyyy-MM-dd'/>" readonly style="background-color:white;cursor:default;" class="form-control required">
+	  <div class="input-group datetimepicker date">
+	    <input id="pimSchedule_startTime" type="text" name="startTime" value="<fmt:formatDate value='${model.startTime}' pattern='yyyy-MM-dd HH:mm'/>" readonly style="background-color:white;cursor:default;" class="form-control required">
 	    <span class="input-group-addon"><i class="glyphicon glyphicon-calendar"></i></span>
 	  </div>
     </div>
@@ -75,8 +75,8 @@ $(function() {
   <div class="form-group">
     <label class="control-label col-md-1" for="pimSchedule_endTime">结束时间</label>
 	<div class="col-sm-5">
-	  <div class="input-group datepicker date col-sm-9">
-	    <input id="pimSchedule_endTime" type="text" name="endTime" value="<fmt:formatDate value='${model.endTime}' pattern='yyyy-MM-dd'/>" readonly style="background-color:white;cursor:default;" class="form-control required">
+	  <div class="input-group datetimepicker date">
+	    <input id="pimSchedule_endTime" type="text" name="endTime" value="<fmt:formatDate value='${model.endTime}' pattern='yyyy-MM-dd HH:mm'/>" readonly style="background-color:white;cursor:default;" class="form-control required">
 	    <span class="input-group-addon"><i class="glyphicon glyphicon-calendar"></i></span>
 	  </div>
     </div>

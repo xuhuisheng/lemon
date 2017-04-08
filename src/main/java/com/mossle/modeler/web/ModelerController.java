@@ -10,12 +10,14 @@ import javax.annotation.Resource;
 
 import com.fasterxml.jackson.databind.JsonNode;
 import com.fasterxml.jackson.databind.ObjectMapper;
+import com.fasterxml.jackson.databind.node.ObjectNode;
 
 import com.mossle.api.tenant.TenantHolder;
 
 import com.mossle.bpm.cmd.SyncProcessCmd;
 
 import com.mossle.core.mapper.JsonMapper;
+import com.mossle.core.util.StringUtils;
 
 import org.activiti.bpmn.converter.BpmnXMLConverter;
 import org.activiti.bpmn.model.BpmnModel;
@@ -68,7 +70,11 @@ public class ModelerController {
             throws Exception {
         RepositoryService repositoryService = processEngine
                 .getRepositoryService();
-        Model model = repositoryService.getModel(id);
+        Model model = null;
+
+        if (!StringUtils.isEmpty(id)) {
+            model = repositoryService.getModel(id);
+        }
 
         if (model == null) {
             model = repositoryService.newModel();
@@ -76,7 +82,7 @@ public class ModelerController {
             id = model.getId();
         }
 
-        // return "redirect:/widgets/modeler/editor.html?id=" + id;
+        // return "redirect:/cdn/modeler/editor.html?id=" + id;
         return "redirect:/widgets/modeler/modeler.html?modelId=" + id;
     }
 
@@ -210,6 +216,34 @@ public class ModelerController {
                 jsonXml.getBytes("utf-8"));
 
         return "{}";
+    }
+
+    @RequestMapping("xml2json")
+    public String xml2json(
+            @RequestParam("processDefinitionId") String processDefinitionId)
+            throws Exception {
+        RepositoryService repositoryService = processEngine
+                .getRepositoryService();
+
+        ProcessDefinition processDefinition = repositoryService
+                .getProcessDefinition(processDefinitionId);
+
+        Model model = repositoryService.newModel();
+        model.setName(processDefinition.getName());
+        model.setDeploymentId(processDefinition.getDeploymentId());
+        repositoryService.saveModel(model);
+
+        BpmnModel bpmnModel = repositoryService
+                .getBpmnModel(processDefinitionId);
+        ObjectNode objectNode = new BpmnJsonConverter()
+                .convertToJson(bpmnModel);
+
+        String json = objectNode.toString();
+
+        repositoryService.addModelEditorSource(model.getId(),
+                json.getBytes("utf-8"));
+
+        return "redirect:/modeler/modeler-list.do";
     }
 
     // ~ ==================================================

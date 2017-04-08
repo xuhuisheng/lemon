@@ -10,8 +10,11 @@ import javax.servlet.http.HttpServletResponse;
 
 import com.mossle.api.tenant.TenantHolder;
 
+import com.mossle.cms.persistence.domain.CmsArticle;
 import com.mossle.cms.persistence.domain.CmsCatalog;
+import com.mossle.cms.persistence.manager.CmsArticleManager;
 import com.mossle.cms.persistence.manager.CmsCatalogManager;
+import com.mossle.cms.service.RenderService;
 
 import com.mossle.core.export.Exportor;
 import com.mossle.core.export.TableModel;
@@ -31,13 +34,15 @@ import org.springframework.web.bind.annotation.ResponseBody;
 import org.springframework.web.servlet.mvc.support.RedirectAttributes;
 
 @Controller
-@RequestMapping("/cms")
+@RequestMapping("cms")
 public class CmsCatalogController {
     private CmsCatalogManager cmsCatalogManager;
+    private CmsArticleManager cmsArticleManager;
     private Exportor exportor;
     private BeanMapper beanMapper = new BeanMapper();
     private MessageHelper messageHelper;
     private TenantHolder tenantHolder;
+    private RenderService renderService;
 
     @RequestMapping("cms-catalog-list")
     public String list(@ModelAttribute Page page,
@@ -138,10 +143,31 @@ public class CmsCatalogController {
         return result;
     }
 
+    @RequestMapping("cms-catalog-view")
+    public String view(@RequestParam("id") Long id, @ModelAttribute Page page,
+            Model model) {
+        List<CmsCatalog> cmsCatalogs = this.cmsCatalogManager.getAll();
+        CmsCatalog cmsCatalog = cmsCatalogManager.get(id);
+        String hql = "from CmsArticle where cmsCatalog.id=? order by createTime desc";
+        page = this.cmsArticleManager.pagedQuery(hql, page.getPageNo(),
+                page.getPageSize(), id);
+
+        String html = renderService.viewCatalog(cmsCatalog, page, cmsCatalogs);
+
+        model.addAttribute("html", html);
+
+        return "cms/cms-catalog-view";
+    }
+
     // ~ ======================================================================
     @Resource
     public void setCmsCatalogManager(CmsCatalogManager cmsCatalogManager) {
         this.cmsCatalogManager = cmsCatalogManager;
+    }
+
+    @Resource
+    public void setCmsArticleManager(CmsArticleManager cmsArticleManager) {
+        this.cmsArticleManager = cmsArticleManager;
     }
 
     @Resource
@@ -157,5 +183,10 @@ public class CmsCatalogController {
     @Resource
     public void setTenantHolder(TenantHolder tenantHolder) {
         this.tenantHolder = tenantHolder;
+    }
+
+    @Resource
+    public void setRenderService(RenderService renderService) {
+        this.renderService = renderService;
     }
 }

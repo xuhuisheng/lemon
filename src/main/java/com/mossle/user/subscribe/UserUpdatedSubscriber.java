@@ -31,6 +31,7 @@ public class UserUpdatedSubscriber implements Subscribable<String> {
     private TenantConnector tenantConnector;
     private UserAuthConnector userAuthConnector;
 
+    // TODO: userAuthCache的操作应该通过Listener，迁移到auth模块里。
     public void handleMessage(String message) {
         try {
             UserDTO userDto = jsonMapper.fromJson(message, UserDTO.class);

@@ -35,6 +35,10 @@ public class MenuCache {
         cache.put("entry", menuDtos);
     }
 
+    public void clear() {
+        cache.clear();
+    }
+
     @Resource
     public void setCacheManager(CacheManager cacheManager) {
         this.cacheManager = cacheManager;

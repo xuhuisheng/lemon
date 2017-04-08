@@ -73,9 +73,7 @@ $(function() {
 	    <%--
         <th width="10" class="m-table-check"><input type="checkbox" name="checkAll" onchange="toggleSelectedItems(this.checked)"></th>
 		--%>
-		<!--
         <th class="sorting" name="id">编号</th>
-		-->
         <th>标题</th>
         <th>流程定义</th>
         <th>创建时间</th>
@@ -87,9 +85,7 @@ $(function() {
     <tbody>
       <c:forEach items="${page.result}" var="item">
       <tr>
-	    <!--
-	    <td>${item.id}</td>
-		-->
+	    <td>${item.businessKey}</td>
 	    <td><a href="workspace-viewHistory.do?processInstanceId=${item.id}">${item.name}</a></td>
 	    <td><tags:processName processDefinitionId="${item.processDefinitionId}"/></td>
 	    <td><fmt:formatDate value="${item.startTime}" pattern="yyyy-MM-dd HH:mm:ss" /></td>

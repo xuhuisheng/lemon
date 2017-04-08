@@ -13,6 +13,8 @@ import com.mossle.api.user.UserDTO;
 
 import com.mossle.core.mapper.JsonMapper;
 
+import org.apache.commons.lang3.StringUtils;
+
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
 
@@ -79,7 +81,16 @@ public class XformBuilder {
                 StringBuilder buff = new StringBuilder();
 
                 for (String userId : value.split(",")) {
+                    if (StringUtils.isBlank(userId)) {
+                        continue;
+                    }
+
                     UserDTO userDto = userConnector.findById(userId);
+
+                    if (userDto == null) {
+                        continue;
+                    }
+
                     buff.append(userDto.getDisplayName()).append(",");
                 }
 

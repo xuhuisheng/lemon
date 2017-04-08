@@ -9,6 +9,7 @@
     <%@include file="/common/meta.jsp"%>
     <title>编辑</title>
     <%@include file="/common/s3.jsp"%>
+	<script type="text/javascript" src="${cdnPrefix}/ckeditor/ckeditor.js"></script>
     <script type="text/javascript">
 $(function() {
     $("#cms-articleForm").validate({
@@ -19,6 +20,9 @@ $(function() {
         },
         errorClass: 'validate-error'
     });
+	var editor = CKEDITOR.replace('cmsArticle_content');
+	// editorObj.config.filebrowserImageUploadUrl = dir + "core/connector/" + ckfinder.ConnectorLanguage + "/connector." + ckfinder.ConnectorLanguage + "?command=QuickUpload&type=" + ( imageType || 'Images' ) ;
+	editor.config.filebrowserImageUploadUrl = "${tenantPrefix}/cms/cms-article-uploadImage.do";
 })
     </script>
   </head>
@@ -47,7 +51,7 @@ $(function() {
   </c:if>
   <div class="form-group">
     <label class="control-label col-md-1" for="cms-article_cmsArticlename">栏目</label>
-	<div class="col-sm-5">
+	<div class="col-md-11">
       <select id="perm_resc" name="cmsCatalogId" class="form-control">
 	    <c:forEach items="${cmsCatalogs}" var="item">
 	    <option value="${item.id}" ${model.cmsCatalog.id==item.id ? 'selected' : ''}>${item.name}</option>
@@ -57,7 +61,7 @@ $(function() {
   </div>
   <div class="form-group">
     <label class="control-label col-md-1" for="cms-article_cmsArticlename">标题</label>
-	<div class="col-sm-5">
+	<div class="col-md-11">
 	  <input id="cms-article_cmsArticlename" type="text" name="title" value="${model.title}" size="40" class="form-control required" minlength="2" maxlength="50">
     </div>
   </div>
@@ -77,13 +81,13 @@ $(function() {
 -->
   <div class="form-group">
     <label class="control-label col-md-1" for="cmsArticle_summary">摘要</label>
-	<div class="col-sm-5">
+	<div class="col-md-11">
 	  <textarea id="cmsArticle_summary" name="summary" maxlength="200" class="form-control">${model.summary}</textarea>
     </div>
   </div>
   <div class="form-group">
     <label class="control-label col-md-1" for="cms-article_cmsArticlename">内容</label>
-	<div class="col-sm-5">
+	<div class="col-md-11">
 	  <textarea id="cmsArticle_content" name="content" class="form-control required" minlength="2" maxlength="50">${model.content}</textarea>
     </div>
   </div>
@@ -168,12 +172,12 @@ $(function() {
 
   <div class="form-group">
     <label class="control-label col-md-1" for="cmsArticle_file">附件</label>
-	<div class="col-sm-5">
+	<div class="col-md-11">
 	  <input id="cmsArticle_file" type="file" name="file" value="" class="">
     </div>
   </div>
   <div class="form-group">
-    <div class="col-sm-5">
+    <div class="col-md-10 col-md-offset-1">
       <button id="submitButton" class="btn btn-default a-submit"><spring:message code='core.input.save' text='保存'/></button>
       <button type="button" onclick="history.back();" class="btn btn-link a-cancel"><spring:message code='core.input.back' text='返回'/></button>
     </div>

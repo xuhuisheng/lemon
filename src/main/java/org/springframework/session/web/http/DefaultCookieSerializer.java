@@ -30,9 +30,11 @@ import javax.servlet.http.HttpServletResponse;
  * The default implementation of {@link CookieSerializer}.
  *
  * @author Rob Winch
+ * @author Vedran Pavic
  * @since 1.1
  */
 public class DefaultCookieSerializer implements CookieSerializer {
+
 	private String cookieName = "SESSION";
 
 	private Boolean useSecureCookie;
@@ -49,6 +51,10 @@ public class DefaultCookieSerializer implements CookieSerializer {
 
 	private String jvmRoute;
 
+	private boolean useBase64Encoding;
+
+	private String rememberMeRequestAttribute;
+
 	/*
 	 * (non-Javadoc)
 	 *
@@ -61,7 +67,8 @@ public class DefaultCookieSerializer implements CookieSerializer {
 		if (cookies != null) {
 			for (Cookie cookie : cookies) {
 				if (this.cookieName.equals(cookie.getName())) {
-					String sessionId = cookie.getValue();
+					String sessionId = this.useBase64Encoding
+							? base64Decode(cookie.getValue()) : cookie.getValue();
 					if (sessionId == null) {
 						continue;
 					}
@@ -90,7 +97,8 @@ public class DefaultCookieSerializer implements CookieSerializer {
 		String actualCookieValue = this.jvmRoute == null ? requestedCookieValue
 				: requestedCookieValue + this.jvmRoute;
 
-		Cookie sessionCookie = new Cookie(this.cookieName, actualCookieValue);
+		Cookie sessionCookie = new Cookie(this.cookieName, this.useBase64Encoding
+				? base64Encode(actualCookieValue) : actualCookieValue);
 		sessionCookie.setSecure(isSecureCookie(request));
 		sessionCookie.setPath(getCookiePath(request));
 		String domainName = getDomainName(request);
@@ -105,11 +113,44 @@ public class DefaultCookieSerializer implements CookieSerializer {
 		if ("".equals(requestedCookieValue)) {
 			sessionCookie.setMaxAge(0);
 		}
+		else if (this.rememberMeRequestAttribute != null
+				&& request.getAttribute(this.rememberMeRequestAttribute) != null) {
+			// the cookie is only written at time of session creation, so we rely on
+			// session expiration rather than cookie expiration if remember me is enabled
+			sessionCookie.setMaxAge(Integer.MAX_VALUE);
+		}
 		else {
 			sessionCookie.setMaxAge(this.cookieMaxAge);
 		}
 
 		response.addCookie(sessionCookie);
+	}
+
+	/**
+	 * Decode the value using Base64.
+	 * @param base64Value the Base64 String to decode
+	 * @return the Base64 decoded value
+	 * @since 1.2.2
+	 */
+	private String base64Decode(String base64Value) {
+		try {
+			byte[] decodedCookieBytes = Base64.decode(base64Value.getBytes());
+			return new String(decodedCookieBytes);
+		}
+		catch (Exception e) {
+			return null;
+		}
+	}
+
+	/**
+	 * Encode the value using Base64.
+	 * @param value the String to Base64 encode
+	 * @return the Base64 encoded value
+	 * @since 1.2.2
+	 */
+	private String base64Encode(String value) {
+		byte[] encodedCookieBytes = Base64.encode(value.getBytes());
+		return new String(encodedCookieBytes);
 	}
 
 	/**
@@ -247,6 +288,31 @@ public class DefaultCookieSerializer implements CookieSerializer {
 		this.jvmRoute = "." + jvmRoute;
 	}
 
+	/**
+	 * Set if the Base64 encoding of cookie value should be used. This is valuable in
+	 * order to support <a href="https://tools.ietf.org/html/rfc6265">RFC 6265</a> which
+	 * recommends using Base 64 encoding to the cookie value.
+	 *
+	 * @param useBase64Encoding the flag to indicate whether to use Base64 encoding
+	 */
+	public void setUseBase64Encoding(boolean useBase64Encoding) {
+		this.useBase64Encoding = useBase64Encoding;
+	}
+
+	/**
+	 * Set the request attribute name that indicates remember-me login. If specified, the
+	 * cookie will be written as Integer.MAX_VALUE.
+	 * @param rememberMeRequestAttribute the remember-me request attribute name
+	 * @since 1.3.0
+	 */
+	public void setRememberMeRequestAttribute(String rememberMeRequestAttribute) {
+		if (rememberMeRequestAttribute == null) {
+			throw new IllegalArgumentException(
+					"rememberMeRequestAttribute cannot be null");
+		}
+		this.rememberMeRequestAttribute = rememberMeRequestAttribute;
+	}
+
 	private String getDomainName(HttpServletRequest request) {
 		if (this.domainName != null) {
 			return this.domainName;
@@ -281,4 +347,5 @@ public class DefaultCookieSerializer implements CookieSerializer {
 		}
 		return false;
 	}
+
 }

@@ -94,8 +94,8 @@ public class FindFirstTaskFormCmd implements Command<FirstTaskForm> {
             String formKey = formHandler.getFormKey().getExpressionText();
             firstTaskForm.setFormKey(formKey);
         } else {
-            logger.info("cannot formKey : {}, {}", processDefinitionId,
-                    taskDefinitionKey);
+            logger.info("cannot find formKey from xml : {}, {}",
+                    processDefinitionId, taskDefinitionKey);
         }
 
         return firstTaskForm;

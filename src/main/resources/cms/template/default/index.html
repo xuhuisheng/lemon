@@ -3,125 +3,107 @@
   <head>
     <meta charset="utf-8" />
     <meta http-equiv="X-UA-Compatible" content="IE=edge,chrome=1" />
-    <title>index</title>
+    <title>Index</title>
 	<!-- static start -->
-	<link rel="stylesheet" href="../s/bootstrap/3.3.1/css/bootstrap.min.css">
-    <script type="text/javascript" src="../s/jquery/jquery.min.js"></script>
-	<script type="text/javascript" src="../s/bootstrap/3.3.1/js/bootstrap.min.js"></script>
+	<link rel="stylesheet" href="../cdn/bootstrap/3.3.6/css/bootstrap.min.css">
+    <script type="text/javascript" src="../cdn/jquery/jquery.min.js"></script>
+	<script type="text/javascript" src="../cdn/bootstrap/3.3.6/js/bootstrap.min.js"></script>
+	<!-- static end -->
 	<style type="text/css">
-body {
-	padding-top: 70px;
+* {
+	font-size: 16px;
 }
 	</style>
-	<!-- static end -->
   </head>
   <body>
-    <!-- navbar activiti start -->
-    <div class="navbar navbar-fixed-top navbar-inverse" role="navigation">
-      <div class="navbar-inner">
-        <div class="container">
-          <div class="navbar-header">
-            <a class="navbar-brand" href="index.do">Mossle</a>
-            <ul class="nav navbar-nav">
-			<#list catalogs as catalog>
-			  <li><a href="catalog.do?id=${catalog.id}">${catalog.name}</a></li>
-			</#list>
-			</ul>
-          </div>
-        </div><!-- /.container -->
+    <div class="container" style="font-size:12px;">
+	  <div class="row">
+	  <div class="col-md-6">
+	    &nbsp;
 	  </div>
-    </div><!-- /.navbar -->
-    <!-- navbar activiti end -->
+	  <div class="col-md-6 text-right">
+	    <a href='../portal/index.do' style="font-size:12px;">个人中心</a>
+	  </div>
+	  </div>
+	</div>
 
-<#list catalogs as catalog>
-    <div class="container">
-      <h4 style="padding-left:15px;"><a href="catalog.do?id=${catalog.id}">${catalog.name}</a></h4>
-    </div>
+	<div class="container" style="line-height:7rem;margin-bottom:10px;">
+	  <div class="row">
+	  <div class="col-md-2" style="font-size:3rem;">
+	    Mossle
+	  </div>
+	  <div class="col-md-10">
+	    <div class="text-center" style="background-color:#F8F8F8;color:white;">
+	      &nbsp;
+		</div>
+	  </div>
+	  </div>
+	</div>
 
+    <!-- navbar start -->
     <div class="container">
-<#list catalog.cmsArticles as article>
-	  <!-- ==================================================================== -->
-      <div class="panel panel-info">
-        <div class="panel-heading">
-          <h3 class="panel-title">
-		    ${article.title}
-			<small><a href="article.do?id=${article.id}">详情</a></small>
-		  </h3>
+	  <div class="navbar navbar-default" role="navigation" style="margin-bottom:10px;">
+        <div class="navbar-header">
+          <a class="navbar-brand" href="cms-site-view.do">首页</a>
         </div>
+        <div class="collapse navbar-collapse" id="bs-example-navbar-collapse-1">
+          <ul class="nav navbar-nav">
+		    <#list catalogs as catalog>
+            <li class=""><a href="cms-catalog-view.do?id=${catalog.id?string('#')}">${catalog.name}</a></li>
+			</#list>
+          </ul>
+		</div>
+	</div>
+    </div>
+    <!-- navbar end -->
 
-        <div class="panel-body">
-		  <#if article.type == 0>
-		  <p>${article.content}</p>
-		  </#if>
 
-		  <#if article.type == 1>
-<div id="carousel-example-generic-${article.id}" class="carousel slide" data-ride="carousel">
-  <!-- Indicators -->
-  <ol class="carousel-indicators">
-    <#list article.cmsAttachments as attachment>
-    <li class="<#if attachment_index==0>active</#if>" data-target="#carousel-example-generic-${article.id}" data-slide-to="${attachment_index}"></li>
-    </#list>
-  </ol>
+    <div class="container">
+      <div class="row">
 
-  <!-- Wrapper for slides -->
-  <div class="carousel-inner">
-    <#list article.cmsAttachments as attachment>
-    <div class="item <#if attachment_index==0>active</#if>">
-      <img src="../rs/cms/image?key=${attachment.path}" alt="${attachment.name}">
-      <div class="carousel-caption">
-        ${attachment.name}
+
+        <!-- left start -->
+        <div class="col-md-9">
+
+		  <#list catalogs as catalog>
+		    <div class="panel panel-default">
+			  <div class="panel-heading">
+			    <a href="cms-catalog-view.do?id=${catalog.id?string('#')}">${catalog.name}</a>
+			  </div>
+			  <ul class="list-group">
+			  <#list catalog.cmsArticles?sort_by("publishTime")?reverse as article>
+			    <#if article_index < 5>
+				<li class="list-group-item">
+				  <a href="cms-article-view.do?id=${article.id?string('#')}">${article.title!}</a>
+				  <div class="pull-right">
+				    <#if article.publishTime??>${article.publishTime?string("yyyy-MM-dd HH:mm")}</#if>
+				  </div>
+				</li>
+				</#if>
+			  </#list>
+			  </ul>
+			</div>
+
+			<hr>
+		  </#list>
+
+		</div>
+	    <!-- left end -->
+
+		<!-- right start -->
+		<div class="col-md-3">
+
+		  <div class="panel panel-default">
+		    <div class="panel-body">
+		    <div style="font-size:18px;margin-bottom:5px;">热门标签</div>
+			<p style="color:gray;">tags, tags</p>
+			</div>
+		  </div>
+		</div>
+	    <!-- right end -->
+
       </div>
     </div>
-    </#list>
-  </div>
-
-  <!-- Controls -->
-  <a class="left carousel-control" href="#carousel-example-generic-${article.id}" role="button" data-slide="prev">
-    <span class="glyphicon glyphicon-chevron-left"></span>
-  </a>
-  <a class="right carousel-control" href="#carousel-example-generic-${article.id}" role="button" data-slide="next">
-    <span class="glyphicon glyphicon-chevron-right"></span>
-  </a>
-</div>
-		  </#if>
-
-		  <#if article.type == 2>
-		  <p>
-<audio controls>
-    <#list article.cmsAttachments as attachment>
-  <source src="../rs/cms/image?key=${attachment.path}">
-    </#list>
-<!--
-  <source src="../horse.ogg" type="audio/ogg">
-  <source src="../horse.mp3" type="audio/mpeg">
--->
-Your browser does not support the audio element.
-</audio>
-		  </p>
-		  </#if>
-
-		  <#if article.type == 3>
-		  <p>
-<video controls>
-    <#list article.cmsAttachments as attachment>
-  <source src="../rs/cms/image?key=${attachment.path}">
-    </#list>
-<!--
-  <source src="../mov_bbb.ogg" type="video/ogg">
-  <source src="../mov_bbb.mp4" type="video/mpeg">
--->
-Your browser does not support the audio element.
-</video>
-		  </p>
-		  </#if>
-
-        </div>
-      </div>
-</#list>
-
-	  <!-- ==================================================================== -->
-    </div>
-</#list>
 
     <hr>
 

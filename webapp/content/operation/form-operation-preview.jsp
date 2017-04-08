@@ -8,12 +8,12 @@
   <head>
     <%@include file="/common/meta.jsp"%>
     <title><spring:message code="demo.demo.input.title" text="编辑"/></title>
-    <%@include file="/common/s.jsp"%>
-	<link href="${tenantPrefix}/widgets/xform/styles/xform.css" rel="stylesheet">
-    <script type="text/javascript" src="${tenantPrefix}/widgets/xform/xform-packed.js"></script>
+    <%@include file="/common/s3.jsp"%>
+	<link href="${cdnPrefix}/xform3/styles/xform.css" rel="stylesheet">
+    <script type="text/javascript" src="${cdnPrefix}/xform3/xform-packed.js"></script>
 
-    <link type="text/css" rel="stylesheet" href="${tenantPrefix}/widgets/userpicker/userpicker.css">
-    <script type="text/javascript" src="${tenantPrefix}/widgets/userpicker/userpicker.js"></script>
+    <link type="text/css" rel="stylesheet" href="${cdnPrefix}/userpicker3-v2/userpicker.css">
+    <script type="text/javascript" src="${cdnPrefix}/userpicker3-v2/userpicker.js"></script>
 
 	<script type="text/javascript">
 document.onmousedown = function(e) {};
@@ -64,17 +64,15 @@ $(function() {
     <%@include file="/header/form.jsp"%>
 
     <div class="row-fluid">
-	<%@include file="/menu/form.jsp"%>
 
 	<!-- start of main -->
-    <section id="m-main" class="span10" style="float:right">
+      <section id="m-main" class="col-md-12" style="padding-top:65px;">
 
       <form id="xf-form" method="post" action="${tenantPrefix}/operation/form-operation-test.do" class="xf-form" enctype="multipart/form-data">
         <input id="ref" type="hidden" name="ref" value="${record.ref}">
 		<div id="xf-form-table"></div>
 		<br>
 		<div style="text-align:center;">
-		  <button id="button0">保存草稿</button>
 		</div>
 	  </form>
 

@@ -74,16 +74,16 @@ public class SpringSecurityListener implements ApplicationListener,
 
         String tenantId = this.getTenantId(authentication);
         Object principal = authentication.getPrincipal();
-        String user = null;
+        String userId = null;
 
         if (principal instanceof SpringSecurityUserAuth) {
-            user = ((SpringSecurityUserAuth) principal).getId();
+            userId = ((SpringSecurityUserAuth) principal).getId();
         } else {
-            user = authentication.getName();
+            userId = authentication.getName();
         }
 
         AuditDTO auditDto = new AuditDTO();
-        auditDto.setUser(user);
+        auditDto.setUserId(userId);
         auditDto.setAuditTime(new Date());
         auditDto.setAction("login");
         auditDto.setResult("success");
@@ -94,7 +94,7 @@ public class SpringSecurityListener implements ApplicationListener,
         auditConnector.log(auditDto);
 
         // 登录成功，再发送一个消息，以后这里的功能都要改成listener，不用直接写接口了。解耦更好一些。
-        ctx.publishEvent(new LoginEvent(authentication, user, this
+        ctx.publishEvent(new LoginEvent(authentication, userId, this
                 .getSessionId(authentication), "success", "default", tenantId));
     }
 
@@ -106,16 +106,16 @@ public class SpringSecurityListener implements ApplicationListener,
 
         String tenantId = this.getTenantId(authentication);
         Object principal = authentication.getPrincipal();
-        String user = null;
+        String userId = null;
 
         if (principal instanceof SpringSecurityUserAuth) {
-            user = ((SpringSecurityUserAuth) principal).getId();
+            userId = ((SpringSecurityUserAuth) principal).getId();
         } else {
-            user = authentication.getName();
+            userId = authentication.getName();
         }
 
         AuditDTO auditDto = new AuditDTO();
-        auditDto.setUser(user);
+        auditDto.setUserId(userId);
         auditDto.setAuditTime(new Date());
         auditDto.setAction("login");
         auditDto.setResult("failure");
@@ -127,7 +127,7 @@ public class SpringSecurityListener implements ApplicationListener,
         auditDto.setTenantId(tenantId);
         auditConnector.log(auditDto);
 
-        ctx.publishEvent(new LoginEvent(authentication, user, this
+        ctx.publishEvent(new LoginEvent(authentication, userId, this
                 .getSessionId(authentication), "badCredentials", "default",
                 tenantId));
     }
@@ -141,16 +141,16 @@ public class SpringSecurityListener implements ApplicationListener,
         String tenantId = this.getTenantId(authentication);
 
         Object principal = authentication.getPrincipal();
-        String user = null;
+        String userId = null;
 
         if (principal instanceof SpringSecurityUserAuth) {
-            user = ((SpringSecurityUserAuth) principal).getId();
+            userId = ((SpringSecurityUserAuth) principal).getId();
         } else {
-            user = authentication.getName();
+            userId = authentication.getName();
         }
 
         AuditDTO auditDto = new AuditDTO();
-        auditDto.setUser(user);
+        auditDto.setUserId(userId);
         auditDto.setAuditTime(new Date());
         auditDto.setAction("login");
         auditDto.setResult("failure");
@@ -162,7 +162,7 @@ public class SpringSecurityListener implements ApplicationListener,
         auditDto.setTenantId(tenantId);
         auditConnector.log(auditDto);
 
-        ctx.publishEvent(new LoginEvent(authentication, user, this
+        ctx.publishEvent(new LoginEvent(authentication, userId, this
                 .getSessionId(authentication), "locked", "default", tenantId));
     }
 
@@ -175,16 +175,16 @@ public class SpringSecurityListener implements ApplicationListener,
         String tenantId = this.getTenantId(authentication);
 
         Object principal = authentication.getPrincipal();
-        String user = null;
+        String userId = null;
 
         if (principal instanceof SpringSecurityUserAuth) {
-            user = ((SpringSecurityUserAuth) principal).getId();
+            userId = ((SpringSecurityUserAuth) principal).getId();
         } else {
-            user = authentication.getName();
+            userId = authentication.getName();
         }
 
         AuditDTO auditDto = new AuditDTO();
-        auditDto.setUser(user);
+        auditDto.setUserId(userId);
         auditDto.setAuditTime(new Date());
         auditDto.setAction("login");
         auditDto.setResult("failure");
@@ -196,7 +196,7 @@ public class SpringSecurityListener implements ApplicationListener,
         auditDto.setTenantId(tenantId);
         auditConnector.log(auditDto);
 
-        ctx.publishEvent(new LoginEvent(authentication, user, this
+        ctx.publishEvent(new LoginEvent(authentication, userId, this
                 .getSessionId(authentication), "disabled", "default", tenantId));
     }
 
@@ -209,16 +209,16 @@ public class SpringSecurityListener implements ApplicationListener,
         String tenantId = this.getTenantId(authentication);
 
         Object principal = authentication.getPrincipal();
-        String user = null;
+        String userId = null;
 
         if (principal instanceof SpringSecurityUserAuth) {
-            user = ((SpringSecurityUserAuth) principal).getId();
+            userId = ((SpringSecurityUserAuth) principal).getId();
         } else {
-            user = authentication.getName();
+            userId = authentication.getName();
         }
 
         AuditDTO auditDto = new AuditDTO();
-        auditDto.setUser(user);
+        auditDto.setUserId(userId);
         auditDto.setAuditTime(new Date());
         auditDto.setAction("login");
         auditDto.setResult("failure");
@@ -230,7 +230,7 @@ public class SpringSecurityListener implements ApplicationListener,
         auditDto.setTenantId(tenantId);
         auditConnector.log(auditDto);
 
-        ctx.publishEvent(new LoginEvent(authentication, user, this
+        ctx.publishEvent(new LoginEvent(authentication, userId, this
                 .getSessionId(authentication), "credentialExpired", "default",
                 tenantId));
     }
@@ -244,16 +244,16 @@ public class SpringSecurityListener implements ApplicationListener,
         String tenantId = this.getTenantId(authentication);
 
         Object principal = authentication.getPrincipal();
-        String user = null;
+        String userId = null;
 
         if (principal instanceof SpringSecurityUserAuth) {
-            user = ((SpringSecurityUserAuth) principal).getId();
+            userId = ((SpringSecurityUserAuth) principal).getId();
         } else {
-            user = authentication.getName();
+            userId = authentication.getName();
         }
 
         AuditDTO auditDto = new AuditDTO();
-        auditDto.setUser(user);
+        auditDto.setUserId(userId);
         auditDto.setAuditTime(new Date());
         auditDto.setAction("login");
         auditDto.setResult("failure");
@@ -265,7 +265,7 @@ public class SpringSecurityListener implements ApplicationListener,
         auditDto.setTenantId(tenantId);
         auditConnector.log(auditDto);
 
-        ctx.publishEvent(new LoginEvent(authentication, user, this
+        ctx.publishEvent(new LoginEvent(authentication, userId, this
                 .getSessionId(authentication), "accountExpired", "default",
                 tenantId));
     }

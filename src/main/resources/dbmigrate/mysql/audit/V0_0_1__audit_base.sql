@@ -5,7 +5,7 @@
 -------------------------------------------------------------------------------
 CREATE TABLE AUDIT_BASE(
         ID BIGINT NOT NULL,
-	USER VARCHAR(200),
+	USER_ID VARCHAR(200),
 	RESOURCE_TYPE VARCHAR(200),
 	RESOURCE_ID VARCHAR(200),
 	ACTION VARCHAR(200),

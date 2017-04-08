@@ -10,7 +10,7 @@
     <title>工作日历</title>
     <%@include file="/common/s3.jsp"%>
 
-	<script type="text/javascript" src="${ctx}/widgets/workcal3/WorkCalendar.js"></script>
+	<script type="text/javascript" src="${cdnPrefix}/workcal3/WorkCalendar.js"></script>
     <script type="text/javascript">
 $(function() {
 	var workCalendar = new WorkCalendar(${param.year});

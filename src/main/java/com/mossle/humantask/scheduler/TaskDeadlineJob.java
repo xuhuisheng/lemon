@@ -56,6 +56,10 @@ public class TaskDeadlineJob {
         Date now = new Date();
 
         for (TaskDeadline taskDeadline : taskDeadlines) {
+            if (taskDeadline.getTriggerTime() != null) {
+                continue;
+            }
+
             if (now.after(taskDeadline.getDeadlineTime())) {
                 String type = taskDeadline.getNotificationType();
                 String receiver = taskDeadline.getNotificationReceiver();
@@ -64,6 +68,8 @@ public class TaskDeadlineJob {
 
                 this.doNotice(taskDeadline.getTaskInfo(), type, receiver,
                         templateCode);
+                taskDeadline.setTriggerTime(now);
+                taskDeadlineManager.save(taskDeadline);
             }
         }
 

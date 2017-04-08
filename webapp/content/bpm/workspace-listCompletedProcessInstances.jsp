@@ -10,8 +10,8 @@
     <title>流程列表</title>
     <%@include file="/common/s3.jsp"%>
 
-    <link type="text/css" rel="stylesheet" href="../widgets/userpicker3-v2/userpicker.css">
-    <script type="text/javascript" src="../widgets/userpicker3-v2/userpicker.js"></script>
+    <link type="text/css" rel="stylesheet" href="${cdnPrefix}/userpicker3-v2/userpicker.css">
+    <script type="text/javascript" src="${cdnPrefix}/userpicker3-v2/userpicker.js"></script>
     <script type="text/javascript">
 var config = {
     id: 'processGrid',

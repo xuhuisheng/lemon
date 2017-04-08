@@ -10,6 +10,7 @@
 	<!-- 自动扫描且只扫描@Controller -->
 	<context:component-scan base-package="com.mossle" use-default-filters="false">
 		<context:include-filter type="annotation" expression="org.springframework.stereotype.Controller"/>
+		<context:include-filter type="annotation" expression="org.springframework.web.bind.annotation.RestController"/>
 	</context:component-scan>
 
 	<mvc:annotation-driven conversion-service="conversionService" >
@@ -26,7 +27,6 @@
 		<property name="prefix" value="/content/"/>
 		<property name="suffix" value=".jsp"/>
 	</bean>
-
 
 	<!-- 容器默认的DefaultServletHandler处理 所有静态内容与无RequestMapping处理的URL-->
 	<mvc:default-servlet-handler/>

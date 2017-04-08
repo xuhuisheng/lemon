@@ -36,6 +36,12 @@ public class PartyStructType implements java.io.Serializable {
     /** 排序. */
     private Integer priority;
 
+    /** null. */
+    private String display;
+
+    /** null. */
+    private String type;
+
     /** . */
     private Set<PartyStructRule> partyStructRules = new HashSet<PartyStructRule>(
             0);
@@ -51,13 +57,15 @@ public class PartyStructType implements java.io.Serializable {
     }
 
     public PartyStructType(Long id, String name, String ref, String tenantId,
-            Integer priority, Set<PartyStructRule> partyStructRules,
-            Set<PartyStruct> partyStructs) {
+            Integer priority, String display, String type,
+            Set<PartyStructRule> partyStructRules, Set<PartyStruct> partyStructs) {
         this.id = id;
         this.name = name;
         this.ref = ref;
         this.tenantId = tenantId;
         this.priority = priority;
+        this.display = display;
+        this.type = type;
         this.partyStructRules = partyStructRules;
         this.partyStructs = partyStructs;
     }
@@ -131,6 +139,34 @@ public class PartyStructType implements java.io.Serializable {
      */
     public void setPriority(Integer priority) {
         this.priority = priority;
+    }
+
+    /** @return null. */
+    @Column(name = "DISPLAY", length = 200)
+    public String getDisplay() {
+        return this.display;
+    }
+
+    /**
+     * @param display
+     *            null.
+     */
+    public void setDisplay(String display) {
+        this.display = display;
+    }
+
+    /** @return null. */
+    @Column(name = "TYPE", length = 50)
+    public String getType() {
+        return this.type;
+    }
+
+    /**
+     * @param type
+     *            null.
+     */
+    public void setType(String type) {
+        this.type = type;
     }
 
     /** @return . */

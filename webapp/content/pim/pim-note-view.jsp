@@ -10,15 +10,15 @@
     <title>列表</title>
     <%@include file="/common/s3.jsp"%>
 
-
-    <link rel='stylesheet' href='${tenantPrefix}/widgets/note/note.css' type='text/css' media='screen' />
-    <script src='${tenantPrefix}/widgets/note/note.js' type='text/javascript'></script>
+    <link rel='stylesheet' href='${cdnPrefix}/note/note.css' type='text/css' media='screen' />
+    <script src='${cdnPrefix}/note/note.js' type='text/javascript'></script>
     <script type="text/javascript">
 
 $(function() {
 	var note = new Note('note', function(callback) {
-		$.get('${tenantPrefix}/pim/pim-note-create.do', {}, function(data) {
-			callback(data);
+		$.getJSON('${tenantPrefix}/pim/pim-note-create.do', function(data) {
+			var newId = data.id;
+			callback(newId);
 		});
 	}, function(id, content) {
 		$.get('${tenantPrefix}/pim/pim-note-update-content.do', {id:id, content:content});

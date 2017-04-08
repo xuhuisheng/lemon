@@ -30,6 +30,8 @@ public class DatabaseMigrator implements ApplicationContextAware {
             return;
         }
 
+        long startTime = System.currentTimeMillis();
+
         if (clean) {
             logger.info("clean database");
 
@@ -58,6 +60,10 @@ public class DatabaseMigrator implements ApplicationContextAware {
                         moduleSpecification.getDataLocation());
             }
         }
+
+        long endTime = System.currentTimeMillis();
+
+        logger.info("dbmigrate cost : {} ms", (endTime - startTime));
     }
 
     public void doMigrate(String table, String location) {

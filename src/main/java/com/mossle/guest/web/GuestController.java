@@ -31,7 +31,7 @@ public class GuestController {
     @RequestMapping("change-password-input")
     public String changePasswordInput(HttpServletRequest request, Model model) {
         String username = (String) request.getSession().getAttribute(
-                "SPRING_SECURITY_LAST_USERNAME");
+                "SECURITY_LAST_USERNAME");
 
         if (username == null) {
             logger.info("username is null");
@@ -50,7 +50,7 @@ public class GuestController {
             HttpServletRequest request, RedirectAttributes redirectAttributes)
             throws Exception {
         String username = (String) request.getSession().getAttribute(
-                "SPRING_SECURITY_LAST_USERNAME");
+                "SECURITY_LAST_USERNAME");
 
         if (username == null) {
             logger.info("username is null");

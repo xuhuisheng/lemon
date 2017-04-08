@@ -109,10 +109,19 @@ public class AccountInfoController {
 
         if (id != null) {
             dest = accountInfoManager.get(id);
-            dest.setStatus("active");
+
+            if (accountInfo.getStatus() == null) {
+                accountInfo.setStatus("disabled");
+            }
+
             beanMapper.copy(accountInfo, dest);
         } else {
             dest = accountInfo;
+
+            if (accountInfo.getStatus() == null) {
+                accountInfo.setStatus("disabled");
+            }
+
             dest.setCreateTime(new Date());
             dest.setTenantId(tenantId);
         }

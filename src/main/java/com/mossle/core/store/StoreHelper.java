@@ -11,4 +11,6 @@ public interface StoreHelper {
 
     StoreResult saveStore(String model, String key, DataSource dataSource)
             throws Exception;
+
+    void mkdir(String path);
 }

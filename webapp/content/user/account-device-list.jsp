@@ -97,7 +97,9 @@ $(function() {
     <thead>
       <tr>
         <th width="10" class="m-table-check"><input type="checkbox" name="checkAll" onchange="toggleSelectedItems(this.checked)"></th>
+		<!--
         <th class="sorting" name="id"><spring:message code="account-device.account-device.list.id" text="编号"/></th>
+		-->
         <th class="sorting" name="name">类型</th>
         <th class="sorting" name="name">系统</th>
         <th class="sorting" name="name">客户端</th>
@@ -112,12 +114,14 @@ $(function() {
       <c:forEach items="${page.result}" var="item">
       <tr>
         <td><input type="checkbox" class="selectedItem a-check" name="selectedItem" value="${item.id}"></td>
+		<!--
         <td>${item.id}</td>
+		-->
         <td>${item.type}</td>
         <td>${item.os}</td>
         <td>${item.client}</td>
-        <td>${item.createTime}</td>
-        <td>${item.lastLoginTime}</td>
+        <td><fmt:formatDate value="${item.createTime}" type="both"/></td>
+        <td><fmt:formatDate value="${item.lastLoginTime}" type="both"/></td>
         <td>${item.status}</td>
         <td>
           <a href="account-device-input.do?id=${item.id}" class="a-update"><spring:message code="core.list.edit" text="编辑"/></a>

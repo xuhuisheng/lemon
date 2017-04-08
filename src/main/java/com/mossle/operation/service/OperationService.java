@@ -68,6 +68,11 @@ public class OperationService {
                         formParameter);
                 keyValueConnector.save(record);
                 businessKey = record.getCode();
+
+                if (record.getBusinessKey() == null) {
+                    record.setBusinessKey(businessKey);
+                    keyValueConnector.save(record);
+                }
             }
         } else if (StringUtils.isNotBlank(businessKey)) {
             // 如果是流程草稿，直接通过businessKey获得record，更新数据
@@ -84,6 +89,11 @@ public class OperationService {
             record.setName(processDto.getProcessDefinitionName());
             keyValueConnector.save(record);
             businessKey = record.getCode();
+
+            if (record.getBusinessKey() == null) {
+                record.setBusinessKey(businessKey);
+                keyValueConnector.save(record);
+            }
         } else {
             logger.error(
                     "humanTaskId, businessKey, bpmProcessId all null : {}",

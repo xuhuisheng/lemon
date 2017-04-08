@@ -145,7 +145,7 @@ public class PimNoteController {
 
         pimNoteManager.save(pimNote);
 
-        return Long.toString(pimNote.getId());
+        return "{\"id\":" + pimNote.getId() + "}";
     }
 
     @RequestMapping("pim-note-update-position")

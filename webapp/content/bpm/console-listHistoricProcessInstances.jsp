@@ -104,7 +104,7 @@ $(function() {
         <th class="sorting" name="name">开始时间</th>
         <th class="sorting" name="name">结束时间</th>
         <th class="sorting" name="name">发起人</th>
-        <th width="170">&nbsp;</th>
+        <th width="180">&nbsp;</th>
       </tr>
     </thead>
 

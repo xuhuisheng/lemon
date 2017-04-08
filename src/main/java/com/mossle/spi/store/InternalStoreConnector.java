@@ -16,4 +16,6 @@ public interface InternalStoreConnector {
 
     void removeStore(String model, String key, String tenantId)
             throws Exception;
+
+    void mkdir(String path);
 }

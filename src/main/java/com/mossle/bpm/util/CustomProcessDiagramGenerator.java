@@ -5,6 +5,7 @@ import java.awt.Color;
 import java.awt.Graphics2D;
 import java.awt.Point;
 import java.awt.Polygon;
+import java.awt.RenderingHints;
 import java.awt.Stroke;
 import java.awt.geom.AffineTransform;
 import java.awt.geom.Ellipse2D;
@@ -288,6 +289,8 @@ public class CustomProcessDiagramGenerator {
             Graphics2D graphics, Color color, String activityType) {
         graphics.setPaint(color);
         graphics.setStroke(THICK_BORDER_STROKE);
+        graphics.setRenderingHint(RenderingHints.KEY_ANTIALIASING,
+                RenderingHints.VALUE_ANTIALIAS_ON);
 
         if (taskType.contains(activityType)) {
             drawTask(x, y, width, height, graphics);
@@ -566,6 +569,8 @@ public class CustomProcessDiagramGenerator {
         Graphics2D graphics = image.createGraphics();
         graphics.setPaint(HISTORY_COLOR);
         graphics.setStroke(new BasicStroke(2f));
+        graphics.setRenderingHint(RenderingHints.KEY_ANTIALIASING,
+                RenderingHints.VALUE_ANTIALIAS_ON);
 
         try {
             List<GraphicInfo> graphicInfoList = bpmnModel

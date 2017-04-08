@@ -73,7 +73,7 @@ public class HumanTaskTaskListener extends DefaultTaskListener {
 
         humanTaskDto.setStatus("complete");
         humanTaskDto.setCompleteTime(new Date());
-        humanTaskDto.setAction("提交");
+        humanTaskDto.setAction("完成");
 
         humanTaskConnector.saveHumanTask(humanTaskDto, false);
     }

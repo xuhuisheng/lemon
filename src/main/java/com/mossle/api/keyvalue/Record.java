@@ -5,6 +5,7 @@ import java.util.LinkedHashMap;
 import java.util.Map;
 
 public class Record {
+    private String businessKey;
     private String name;
     private String formTemplateCode;
     private String code;
@@ -15,6 +16,14 @@ public class Record {
     private String userId;
     private String tenantId;
     private Map<String, Prop> props = new LinkedHashMap<String, Prop>();
+
+    public String getBusinessKey() {
+        return businessKey;
+    }
+
+    public void setBusinessKey(String businessKey) {
+        this.businessKey = businessKey;
+    }
 
     public String getName() {
         return name;

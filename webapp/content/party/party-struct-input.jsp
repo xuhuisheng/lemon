@@ -48,7 +48,7 @@ $(function() {
   <div class="form-group">
 	<label class="control-label col-md-1" for="orgStruct_partyStructType"><spring:message code="org.struct.input.type" text="类型"/></label>
 	<div class="col-sm-5">
-	  <select id="orgStruct_partyStructType" name="partyStructTypeId">
+	  <select id="orgStruct_partyStructType" name="partyStructTypeId" class="form-control">
 	    <c:forEach items="${partyStructTypes}" var="item">
 	    <option value="${item.id}" ${model.partyStructType.id==item.id ? 'selected' : ''}>${item.name}</option>
 		</c:forEach>
@@ -58,7 +58,8 @@ $(function() {
   <div class="form-group">
     <label class="control-label col-md-1" for="orgStruct_parentEntity"><spring:message code="org.struct.input.parententity" text="上级组织"/></label>
     <div class="col-sm-5">
-      <select id="orgStruct_parentEntity" name="parentEntityId">
+      <select id="orgStruct_parentEntity" name="parentEntityId" class="form-control">
+	    <option value=""></option>
 	    <c:forEach items="${partyEntities}" var="item">
 	    <option value="${item.id}" ${model.parentEntity.id==item.id ? 'selected' : ''}>${item.name}</option>
 		</c:forEach>
@@ -68,7 +69,7 @@ $(function() {
   <div class="form-group">
     <label class="control-label col-md-1" for="orgStruct_childEntity"><spring:message code="org.struct.input.childentity" text="下级组织"/></label>
     <div class="col-sm-5">
-      <select id="orgStruct_childEntity" name="childEntityId">
+      <select id="orgStruct_childEntity" name="childEntityId" class="form-control">
 	    <c:forEach items="${partyEntities}" var="item">
 	    <option value="${item.id}" ${model.childEntity.id==item.id ? 'selected' : ''}>${item.name}</option>
 		</c:forEach>
@@ -78,8 +79,8 @@ $(function() {
   <div class="form-group">
     <label class="control-label col-md-1" for="orgStruct_partTime0">兼职</label>
     <div class="col-sm-5">
-      <label><input id="orgStruct_partTime0" type="radio" name="partTime" value="0" ${model.partTime == 0 ? 'checked' : ''}>全职</label>
-      <label><input id="orgStruct_partTime1" type="radio" name="partTime" value="1" ${model.partTime != 0 ? 'checked' : ''}>兼职</label>
+      <label><input id="orgStruct_partTime0" type="radio" name="partTime" value="0" ${model.partTime == 0 ? 'checked' : ''}> 全职</label>
+      <label><input id="orgStruct_partTime1" type="radio" name="partTime" value="1" ${model.partTime != 0 ? 'checked' : ''}> 兼职</label>
     </div>
   </div>
   <div class="form-group">
@@ -97,8 +98,8 @@ $(function() {
   <div class="form-group">
     <label class="control-label col-md-1" for="orgStruct_admin0">管理</label>
     <div class="col-sm-5">
-      <label><input id="orgStruct_admin0" type="radio" name="admin" value="0" ${model.admin == 0 ? 'checked' : ''}>员工</label>
-      <label><input id="orgStruct_admin0" type="radio" name="admin" value="1" ${model.admin != 0 ? 'checked' : ''}>负责人</label>
+      <label><input id="orgStruct_admin0" type="radio" name="admin" value="0" ${model.admin == 0 ? 'checked' : ''}> 员工</label>
+      <label><input id="orgStruct_admin0" type="radio" name="admin" value="1" ${model.admin != 0 ? 'checked' : ''}> 负责人</label>
     </div>
   </div>
   <div class="form-group">

@@ -87,6 +87,33 @@ public class DatabaseKeyValueConnector implements KeyValueConnector {
     }
 
     /**
+     * 根据businessKey获得记录.
+     */
+    public Record findByBusinessKey(String businessKey) {
+        if (StringUtils.isBlank(businessKey)) {
+            return null;
+        }
+
+        Record record = null;
+
+        try {
+            Map<String, Object> map = jdbcTemplate
+                    .queryForMap(
+                            "select * from KV_RECORD where BUSINESS_KEY=?",
+                            businessKey);
+            record = this.convertRecord(map);
+        } catch (EmptyResultDataAccessException ex) {
+            logger.info("cannot find record by businessKey : {}", businessKey);
+
+            return null;
+        } catch (Exception ex) {
+            logger.error(ex.getMessage(), ex);
+        }
+
+        return record;
+    }
+
+    /**
      * 如果code为null，就执行insert，否则执行update.
      */
     public void save(Record record) {
@@ -103,6 +130,17 @@ public class DatabaseKeyValueConnector implements KeyValueConnector {
     public void removeByCode(String code) {
         jdbcTemplate.update("DELETE FROM KV_PROP WHERE RECORD_ID=?", code);
         jdbcTemplate.update("DELETE FROM KV_RECORD WHERE ID=?", code);
+    }
+
+    /**
+     * 根据businessKey删除记录.
+     */
+    public void removeByBusinessKey(String businessKey) {
+        Long id = jdbcTemplate.queryForObject(
+                "SELECT ID FROM KV_RECORD WHERE BUSINESS_KEY=?", Long.class,
+                businessKey);
+        jdbcTemplate.update("DELETE FROM KV_PROP WHERE RECORD_ID=?", id);
+        jdbcTemplate.update("DELETE FROM KV_RECORD WHERE ID=?", id);
     }
 
     /**
@@ -156,6 +194,7 @@ public class DatabaseKeyValueConnector implements KeyValueConnector {
     public Record convertRecord(Map<String, Object> recordMap) {
         Record record = new Record();
         record.setCode(getStringValue(recordMap, "id"));
+        record.setBusinessKey(getStringValue(recordMap, "BUSINESS_KEY"));
         record.setName(getStringValue(recordMap, "name"));
         record.setFormTemplateCode(getStringValue(recordMap,
                 "form_template_code"));
@@ -235,9 +274,10 @@ public class DatabaseKeyValueConnector implements KeyValueConnector {
      * 新建一条数据.
      */
     public void insert(Record record) {
-        String sqlRecordInsert = "insert into KV_RECORD(id,name,form_template_code,category,status,ref,create_time,user_id,tenant_id)"
-                + " values(?,?,?,?,?,?,?,?,?)";
+        String sqlRecordInsert = "insert into KV_RECORD(id,business_key,name,form_template_code,category,status,ref,create_time,user_id,tenant_id)"
+                + " values(?,?,?,?,?,?,?,?,?,?)";
         Long id = idGenerator.generateId();
+        String businessKey = record.getBusinessKey();
         String name = record.getName();
         String formTemplateCode = record.getFormTemplateCode();
         String originalRef = record.getRef();
@@ -250,9 +290,9 @@ public class DatabaseKeyValueConnector implements KeyValueConnector {
             ref = UUID.randomUUID().toString();
         }
 
-        jdbcTemplate.update(sqlRecordInsert, id, name, formTemplateCode,
-                record.getCategory(), record.getStatus(), ref, createTime,
-                userId, tenantId);
+        jdbcTemplate.update(sqlRecordInsert, id, businessKey, name,
+                formTemplateCode, record.getCategory(), record.getStatus(),
+                ref, createTime, userId, tenantId);
 
         Record resultRecord = this.findByRef(ref);
         String code = resultRecord.getCode();
@@ -277,10 +317,11 @@ public class DatabaseKeyValueConnector implements KeyValueConnector {
      * 更新一条数据.
      */
     public void update(Record record) {
-        String sqlRecord = "update KV_RECORD set name=?,form_template_code=?,category=?,status=?,ref=? where id=?";
-        jdbcTemplate.update(sqlRecord, record.getName(),
-                record.getFormTemplateCode(), record.getCategory(),
-                record.getStatus(), record.getRef(), record.getCode());
+        String sqlRecord = "update KV_RECORD set business_key=?,name=?,form_template_code=?,category=?,status=?,ref=? where id=?";
+        jdbcTemplate.update(sqlRecord, record.getBusinessKey(),
+                record.getName(), record.getFormTemplateCode(),
+                record.getCategory(), record.getStatus(), record.getRef(),
+                record.getCode());
 
         Record resultRecord = findByCode(record.getCode());
         String sqlPropInsert = "insert into KV_PROP(id,code,type,value,record_id) values(?,?,?,?,?)";
@@ -446,6 +487,7 @@ public class DatabaseKeyValueConnector implements KeyValueConnector {
     public Record copyRecord(Record original, List<String> fields) {
         Record record = new Record();
         //
+        record.setBusinessKey(original.getBusinessKey());
         record.setName(original.getName());
         record.setFormTemplateCode(original.getFormTemplateCode());
         // bpmProcessId

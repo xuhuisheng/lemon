@@ -23,8 +23,9 @@ import org.slf4j.LoggerFactory;
 
 public class CmsFilter implements Filter {
     private static Logger logger = LoggerFactory.getLogger(CmsFilter.class);
-    private String baseDir;
     private TenantHolder tenantHolder;
+    private String storeBaseDir = "mossle.store";
+    private String cmsBaseDir = "/cms/html";
 
     public void init(FilterConfig filterConfig) {
     }
@@ -52,7 +53,8 @@ public class CmsFilter implements Filter {
 
         if (tenantDto.getType() != TenantDTO.TYPE_CMS) {
             if (servletPath.startsWith("/cms/r/")) {
-                String path = baseDir + servletPath.substring("/cms".length());
+                String path = storeBaseDir + "/" + tenantDto.getId()
+                        + cmsBaseDir + servletPath.substring("/cms".length());
                 logger.debug("path : {}", path);
                 IoUtils.copyFileToOutputStream(path, response.getOutputStream());
             } else {
@@ -62,21 +64,25 @@ public class CmsFilter implements Filter {
             return;
         }
 
-        if ("/dashboard/dashboard.do".equals(servletPath)) {
+        if ("/portal/index.do".equals(servletPath)) {
             response.sendRedirect(request.getContextPath() + "/index.html");
 
             return;
         }
 
-        IoUtils.copyFileToOutputStream(baseDir + servletPath,
-                response.getOutputStream());
+        IoUtils.copyFileToOutputStream(storeBaseDir + "/" + tenantDto.getId()
+                + cmsBaseDir + servletPath, response.getOutputStream());
     }
 
     public void destroy() {
     }
 
-    public void setBaseDir(String baseDir) {
-        this.baseDir = baseDir;
+    public void setStoreBaseDir(String storeBaseDir) {
+        this.storeBaseDir = storeBaseDir;
+    }
+
+    public void setCmsBaseDir(String cmsBaseDir) {
+        this.cmsBaseDir = cmsBaseDir;
     }
 
     @Resource

@@ -7,14 +7,14 @@
     <meta charset="utf-8">
     <title>网盘</title>
     <%@include file="_s.jsp"%>
-	<link rel="stylesheet" href="${ctx}/s/disk/sprite_list_icon.css">
+	<link rel="stylesheet" href="${cdnPrefix}/disk/sprite_list_icon.css">
   </head>
   <body>
     <div id="wrap">&nbsp;
 
 <%@include file="/header/_disk.jsp"%>
 
-      <div class="container" style="padding: 0px 15px 0;" id="top">
+      <div class="container-fluid" style="padding: 0px 15px 0;" id="top">
         <div class="row">
           <div class="col-md-12">
             <div class="alert-fixed-top" data-alerts="alerts" data-titles="{}" data-ids="myid" data-fade="1000"></div>

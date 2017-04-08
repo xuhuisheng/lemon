@@ -278,6 +278,13 @@ public class TaskDefinitionConnectorImpl implements TaskDefinitionConnector {
             String value = taskUser.getValue();
             String type = taskUser.getType();
             String catalog = taskUser.getCatalog();
+
+            if (value == null) {
+                logger.info("skip : {} {} {}", value, type, catalog);
+
+                continue;
+            }
+
             String hqlFindTaskDefUser = "from TaskDefUser where taskDefBase=? and value=? and type=? and catalog=?";
             TaskDefUser taskDefUser = taskDefUserManager.findUnique(
                     hqlFindTaskDefUser, taskDefBase, value, type, catalog);

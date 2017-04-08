@@ -76,8 +76,10 @@ $(function() {
 		  <form name="bpmCategoryForm" method="post" action="bpm-conf-rule-save.do" class="form-inline">
 			<input type="hidden" name="bpmConfNodeId" value="${param.bpmConfNodeId}">
 		    <label for="value">规则:</label>
-		    <input type="text" id="value" name="value" value="">
-			<button class="btn btn-small" onclick="document.bpmCategoryForm.submit()">提交</button>
+		    <input type="text" id="value" name="value" value="" class="form-control">
+			<button class="btn btn-default" onclick="document.bpmCategoryForm.submit()">提交</button>
+			<a href="javascript:$('#value').val('高级职位自动跳过');void(0);"> 高级职位自动跳过</a>
+			<a href="javascript:$('#value').val('相邻相同人员自动跳过');void(0);"> 相邻相同人员自动跳过</a>
 		  </form>
 
 		</div>
@@ -119,7 +121,9 @@ $(function() {
           <th width="10" style="text-indent:0px;text-align:center;"><input type="checkbox" name="checkAll" onchange="toggleSelectedItems(this.checked)"></th>
           <th class="sorting" name="id"><spring:message code="user.bpmCategory.list.id" text="编号"/></th>
           <th class="sorting" name="name"><spring:message code="user.bpmCategory.list.name" text="名称"/></th>
+		  <!--
           <th class="sorting" name="priority">类型</th>
+		  -->
           <th width="100">&nbsp;</th>
         </tr>
       </thead>

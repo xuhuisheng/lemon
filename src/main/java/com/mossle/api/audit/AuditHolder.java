@@ -5,7 +5,7 @@ public class AuditHolder {
 
     public static void init(String username, String clientIp, String description) {
         AuditDTO auditDto = new AuditDTO();
-        auditDto.setUser(username);
+        auditDto.setUserId(username);
         auditDto.setClient(clientIp);
         auditDto.setDescription(description);
         threadLocal.set(auditDto);

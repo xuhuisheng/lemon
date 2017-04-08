@@ -62,6 +62,9 @@ public class WhitelistApp implements java.io.Serializable {
     /** . */
     private Set<WhitelistIp> whitelistIps = new HashSet<WhitelistIp>(0);
 
+    /** . */
+    private Set<WhitelistInfo> whitelistInfos = new HashSet<WhitelistInfo>(0);
+
     public WhitelistApp() {
     }
 
@@ -73,7 +76,7 @@ public class WhitelistApp implements java.io.Serializable {
             String userId, String description, Integer forceRelogin,
             String code, String username, String password, Integer level,
             String tenantId, Set<WhitelistHost> whitelistHosts,
-            Set<WhitelistIp> whitelistIps) {
+            Set<WhitelistIp> whitelistIps, Set<WhitelistInfo> whitelistInfos) {
         this.id = id;
         this.whitelistType = whitelistType;
         this.name = name;
@@ -87,6 +90,7 @@ public class WhitelistApp implements java.io.Serializable {
         this.tenantId = tenantId;
         this.whitelistHosts = whitelistHosts;
         this.whitelistIps = whitelistIps;
+        this.whitelistInfos = whitelistInfos;
     }
 
     /** @return null. */
@@ -271,5 +275,19 @@ public class WhitelistApp implements java.io.Serializable {
      */
     public void setWhitelistIps(Set<WhitelistIp> whitelistIps) {
         this.whitelistIps = whitelistIps;
+    }
+
+    /** @return . */
+    @OneToMany(fetch = FetchType.LAZY, mappedBy = "whitelistApp")
+    public Set<WhitelistInfo> getWhitelistInfos() {
+        return this.whitelistInfos;
+    }
+
+    /**
+     * @param whitelistInfos
+     *            .
+     */
+    public void setWhitelistInfos(Set<WhitelistInfo> whitelistInfos) {
+        this.whitelistInfos = whitelistInfos;
     }
 }

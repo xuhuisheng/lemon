@@ -49,6 +49,11 @@ public class UpdateProcessInstanceNameEventListener extends
 
         // {流程标题:title}-{发起人:startUser}-{发起时间:startTime}
         String processDefinitionName = processDefinition.getName();
+
+        if (processDefinitionName == null) {
+            processDefinitionName = processDefinition.getKey();
+        }
+
         String userId = Authentication.getAuthenticatedUserId();
         String displayName = userConnector.findById(userId).getDisplayName();
         String processInstanceName = processDefinitionName + "-" + displayName
