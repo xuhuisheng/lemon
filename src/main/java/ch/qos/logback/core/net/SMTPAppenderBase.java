@@ -86,7 +86,7 @@ public abstract class SMTPAppenderBase<E> extends AppenderBase<E> {
     protected Discriminator<E> discriminator = new DefaultDiscriminator<E>();
     protected CyclicBufferTracker<E> cbTracker;
     private int errorCount = 0;
-
+    
     /**
      * return a layout for the subject string as appropriate for the module. If the subjectStr parameter is null, then a
      * default value for subjectStr should be used.

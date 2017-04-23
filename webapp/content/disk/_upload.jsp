@@ -1,4 +1,5 @@
 <%@page contentType="text/html;charset=UTF-8"%>
+<%@include file="/taglibs.jsp"%>
 <div>
   <div id="uploadFileButton" class="btn btn-primary fileinput-button">
     <span>上传文件</span>
