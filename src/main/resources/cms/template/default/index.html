@@ -72,7 +72,7 @@
 			  </div>
 			  <ul class="list-group">
 			  <#list catalog.cmsArticles?sort_by("publishTime")?reverse as article>
-			    <#if article_index < 5>
+			    <#if article_index lt 5>
 				<li class="list-group-item">
 				  <a href="cms-article-view.do?id=${article.id?string('#')}">${article.title!}</a>
 				  <div class="pull-right">

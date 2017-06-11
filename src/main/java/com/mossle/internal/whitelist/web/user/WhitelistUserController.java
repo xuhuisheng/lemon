@@ -1,4 +1,4 @@
-package com.mossle.internal.whitelist.web.admin;
+package com.mossle.internal.whitelist.web.user;
 
 import java.util.List;
 import java.util.Map;

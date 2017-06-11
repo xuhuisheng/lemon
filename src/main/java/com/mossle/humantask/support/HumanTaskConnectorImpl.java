@@ -168,7 +168,7 @@ public class HumanTaskConnectorImpl implements HumanTaskConnector {
     public HumanTaskDTO findHumanTaskByTaskId(String taskId) {
         TaskInfo taskInfo = taskInfoManager.findUniqueBy("taskId", taskId);
         HumanTaskDTO humanTaskDto = new HumanTaskDTO();
-        beanMapper.copy(taskInfo, humanTaskDto);
+        humanTaskDto=convertHumanTaskDto(taskInfo);
 
         return humanTaskDto;
     }

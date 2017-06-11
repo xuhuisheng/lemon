@@ -1,4 +1,4 @@
-package com.mossle.humantask.web.portal;
+package com.mossle.msg.web.portal;
 
 import java.text.DateFormat;
 import java.text.SimpleDateFormat;
