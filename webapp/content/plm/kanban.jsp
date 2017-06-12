@@ -9,11 +9,11 @@
     <meta charset="utf-8">
     <title>kanban</title>
     <meta name="viewport" content="width=device-width, initial-scale=1">
-    <link href="${tenantPrefix}/s/bootstrap/3.3.6/css/bootstrap.min.css" rel="stylesheet" id="bootstrap-css">
+    <link href="${tenantPrefix}/cdn/bootstrap/3.3.6/css/bootstrap.min.css" rel="stylesheet" id="bootstrap-css">
     <link href="${tenantPrefix}/widgets/kanban/kanban.css" rel="stylesheet">
 
-    <script src="${tenantPrefix}/s/jquery/jquery.min.js"></script>
-    <script src="${tenantPrefix}/s/bootstrap/3.3.6/js/bootstrap.min.js"></script>
+    <script src="${tenantPrefix}/cdn/jquery/jquery.min.js"></script>
+    <script src="${tenantPrefix}/cdn/bootstrap/3.3.6/js/bootstrap.min.js"></script>
 
     <link type="text/css" rel="stylesheet" href="${tenantPrefix}/widgets/userpicker/userpicker.css">
     <script type="text/javascript" src="${tenantPrefix}/widgets/userpicker/userpicker3.js"></script>
