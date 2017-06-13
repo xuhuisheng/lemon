@@ -9,7 +9,7 @@
     <%@include file="/common/meta.jsp"%>
     <title>编辑</title>
     <%@include file="/common/s3.jsp"%>
-	<link rel="stylesheet" href="${ctx}/s/jquery-file-upload/css/jquery.fileupload.css">
+	<link rel="stylesheet" href="${cdnPrefix}/jquery-file-upload/css/jquery.fileupload.css">
     <script type="text/javascript">
 $(function() {
     $("#smsQueueForm").validate({

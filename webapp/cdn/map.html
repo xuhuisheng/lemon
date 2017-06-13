@@ -1,6 +1,6 @@
 
-	<script type="text/javascript" src="../s/raphael/raphael-min.js"></script>
-	<script type="text/javascript" src="../s/map/geomap-0.5.4.js"></script>
+	<script type="text/javascript" src="../cdn/raphael/raphael-min.js"></script>
+	<script type="text/javascript" src="../cdn/map/geomap-0.5.4.js"></script>
 
 <div id="map" style="width:100%;height:100%;margin-top:40px;">
 </div>
@@ -34,7 +34,7 @@
 
 	//ajax获取地图数据
 	$.ajax({
-		url: '../s/map/china.geo.json',
+		url: '../cdn/map/china.geo.json',
 		dataType: 'json'
 	}).done(function(json){
 		//地图对象加载数据
