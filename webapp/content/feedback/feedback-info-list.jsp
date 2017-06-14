@@ -68,7 +68,7 @@ $(function() {
 
       <div style="margin-bottom: 20px;">
 	    <div class="pull-left btn-group" role="group">
-		  <button class="btn btn-default a-insert" onclick="location.href='feedback-catalog-input.do'">新建</button>
+		  <button class="btn btn-default a-insert" onclick="location.href='feedback-info-input.do'">新建</button>
 		  <button class="btn btn-default a-remove" onclick="table.removeAll()">删除</button>
 		  <button class="btn btn-default a-export" onclick="table.exportExcel()">导出</button>
 		</div>
