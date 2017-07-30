@@ -49,7 +49,7 @@ $(function() {
 		<div class="panel-body">
 
 
-<form id="cmsArticleForm" method="post" action="cms-article-save.do" class="form-horizontal">
+<form id="cmsArticleForm" method="post" action="cms-article-save.do" enctype="multipart/form-data" class="form-horizontal">
   <c:if test="${model != null}">
   <input id="cms-article_id" type="hidden" name="id" value="${model.id}">
   </c:if>
