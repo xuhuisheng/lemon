@@ -18,6 +18,8 @@ import com.mossle.api.tenant.TenantHolder;
 import com.mossle.cms.CmsConstants;
 import com.mossle.cms.persistence.domain.CmsArticle;
 import com.mossle.cms.persistence.domain.CmsAttachment;
+import com.mossle.cms.persistence.domain.CmsCatalog;
+import com.mossle.cms.persistence.domain.CmsComment;
 import com.mossle.cms.persistence.manager.CmsArticleManager;
 import com.mossle.cms.persistence.manager.CmsAttachmentManager;
 import com.mossle.cms.persistence.manager.CmsCatalogManager;
@@ -223,6 +225,7 @@ public class CmsArticleController {
         cmsArticle.setPublishTime(new Date());
         cmsArticle.setStatus(1);
         renderService.render(cmsArticle);
+        cmsArticleManager.save(cmsArticle);
 
         return "redirect:/cms/cms-article-list.do";
     }
@@ -231,9 +234,15 @@ public class CmsArticleController {
      * 查看.
      */
     @RequestMapping("cms-article-view")
-    public String view(@RequestParam("id") Long id, Model model) {
-        CmsArticle cmsArticle = cmsArticleManager.get(id);
-        String html = renderService.view(cmsArticle);
+    public String view(@RequestParam("id") Long id, @ModelAttribute Page page,
+            Model model) {
+        List<CmsCatalog> cmsCatalogs = this.cmsCatalogManager.getAll();
+        CmsArticle cmsArticle = this.cmsArticleManager.get(id);
+        page = this.cmsCommentManager.pagedQuery(
+                "from CmsComment where cmsArticle=? order by id desc",
+                page.getPageNo(), page.getPageSize(), cmsArticle);
+
+        String html = renderService.view(cmsArticle, cmsCatalogs, page);
 
         model.addAttribute("html", html);
 
@@ -394,6 +403,39 @@ public class CmsArticleController {
                 cmsCatalogManager.findBy("tenantId", tenantId));
 
         return "cms/cms-article-video";
+    }
+
+    /**
+     * 保存文章.
+     */
+    @RequestMapping("cms-article-update")
+    public String update(@ModelAttribute CmsArticle cmsArticle,
+            @RequestParam("cmsCatalogId") Long cmsCatalogId,
+            RedirectAttributes redirectAttributes) throws Exception {
+        String tenantId = tenantHolder.getTenantId();
+        Long id = cmsArticle.getId();
+        CmsArticle dest = null;
+
+        if (id != null) {
+            dest = cmsArticleManager.get(id);
+            beanMapper.copy(cmsArticle, dest);
+        } else {
+            dest = cmsArticle;
+        }
+
+        if (id == null) {
+            dest.setUserId(currentUserHolder.getUserId());
+            dest.setCreateTime(new Date());
+            dest.setTenantId(tenantId);
+        }
+
+        dest.setCmsCatalog(cmsCatalogManager.get(cmsCatalogId));
+        cmsArticleManager.save(dest);
+
+        messageHelper.addFlashMessage(redirectAttributes, "core.success.save",
+                "保存成功");
+
+        return "redirect:/cms/cms-article-list.do";
     }
 
     // ~ ======================================================================

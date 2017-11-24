@@ -28,7 +28,7 @@ public class AuditResource {
     private AuditQueue auditQueue;
 
     @POST
-    public BaseDTO log(@FormParam("user") String user,
+    public BaseDTO log(@FormParam("userId") String userId,
             @FormParam("resourceType") String resourceType,
             @FormParam("resourceId") String resourceId,
             @FormParam("action") String action,
@@ -48,7 +48,7 @@ public class AuditResource {
         }
 
         AuditDTO auditDto = new AuditDTO();
-        auditDto.setUser(user);
+        auditDto.setUserId(userId);
         auditDto.setResourceType(resourceType);
         auditDto.setResourceId(resourceId);
         auditDto.setAction(action);

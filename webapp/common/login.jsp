@@ -37,8 +37,8 @@ function focusUsername() {
   <div class="container-fluid">
     <div class="navbar-header">
       <a class="navbar-brand" href="${tenantPrefix}">
-	    <img src="${tenantPrefix}/s/logo32.png" class="img-responsive pull-left" style="margin-top:-5px;margin-right:5px;">
-	    Lemon <sub><small>1.7.0</small></sub>
+	    <img src="${cdnPrefix}/logo32.png" class="img-responsive pull-left" style="margin-top:-5px;margin-right:5px;">
+	    Lemon <sub><small>1.8.0</small></sub>
       </a>
     </div>
 
@@ -46,10 +46,10 @@ function focusUsername() {
 
       <ul class="nav navbar-nav navbar-right">
 	    <li>
-          <a href="?locale=zh_CN"><img src="${ctx}/s/flags/china.gif" height="20"></a>
+          <a href="?locale=zh_CN"><img src="${cdnPrefix}/flags/china.gif" height="20"></a>
 		</li>
 	    <li>
-          <a href="?locale=en_US"><img src="${ctx}/s/flags/us.gif" height="20"></a>
+          <a href="?locale=en_US"><img src="${cdnPrefix}/flags/us.gif" height="20"></a>
 		</li>
 	  </ul>
 	</div>

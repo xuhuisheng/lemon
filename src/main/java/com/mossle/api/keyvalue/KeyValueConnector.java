@@ -17,6 +17,11 @@ public interface KeyValueConnector {
     Record findByRef(String ref);
 
     /**
+     * 根据businessKey查询.
+     */
+    Record findByBusinessKey(String businessKey);
+
+    /**
      * 保存数据.
      */
     void save(Record record);
@@ -25,6 +30,11 @@ public interface KeyValueConnector {
      * 根据code删除数据.
      */
     void removeByCode(String code);
+
+    /**
+     * 根据businessKey删除.
+     */
+    void removeByBusinessKey(String businessKey);
 
     /**
      * 查询对应状态的，某人发起的数据，主要用来查询草稿.

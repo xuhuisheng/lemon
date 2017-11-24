@@ -9,7 +9,7 @@
     <%@include file="/common/meta.jsp"%>
     <title>通讯录</title>
     <%@include file="/common/s3.jsp"%>
-	<script type="text/javascript" src="${ctx}/s/jquery.qrcode.min.js"></script>
+	<script type="text/javascript" src="${cdnPrefix}/jquery.qrcode.min.js"></script>
 
     <script type="text/javascript">
 function utf16to8(str) {  

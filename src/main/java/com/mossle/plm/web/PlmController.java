@@ -30,6 +30,9 @@ import com.mossle.plm.persistence.manager.PlmSprintManager;
 import com.mossle.plm.persistence.manager.PlmVersionManager;
 import com.mossle.plm.service.PlmLogService;
 
+import org.slf4j.Logger;
+import org.slf4j.LoggerFactory;
+
 import org.springframework.jdbc.core.JdbcTemplate;
 
 import org.springframework.stereotype.Controller;
@@ -43,6 +46,7 @@ import org.springframework.web.bind.annotation.RequestParam;
 @Controller
 @RequestMapping("plm")
 public class PlmController {
+    private static Logger logger = LoggerFactory.getLogger(PlmController.class);
     private PlmProjectManager plmProjectManager;
     private PlmVersionManager plmVersionManager;
     private PlmIssueManager plmIssueManager;
@@ -308,6 +312,13 @@ public class PlmController {
     public String claim(@RequestParam("id") Long id) throws Exception {
         String userId = currentUserHolder.getUserId();
         PlmIssue plmIssue = plmIssueManager.get(id);
+
+        if (plmIssue == null) {
+            logger.info("cannot find issue {}", id);
+
+            return "redirect:/plm/issue.do?id=" + id;
+        }
+
         plmIssue.setAssigneeId(currentUserHolder.getUserId());
         plmIssueManager.save(plmIssue);
         plmLogService.issueClaimed(plmIssue, userId);

@@ -31,6 +31,9 @@ import com.mossle.internal.sendmail.persistence.manager.SendmailHistoryManager;
 import com.mossle.internal.sendmail.persistence.manager.SendmailQueueManager;
 import com.mossle.internal.sendmail.persistence.manager.SendmailTemplateManager;
 
+import org.slf4j.Logger;
+import org.slf4j.LoggerFactory;
+
 import org.springframework.stereotype.Service;
 
 import org.springframework.transaction.annotation.Transactional;
@@ -38,6 +41,8 @@ import org.springframework.transaction.annotation.Transactional;
 @Service
 @Transactional
 public class SendmailDataService {
+    private static Logger logger = LoggerFactory
+            .getLogger(SendmailDataService.class);
     private SendmailConfigManager sendmailConfigManager;
     private SendmailQueueManager sendmailQueueManager;
     private SendmailHistoryManager sendmailHistoryManager;
@@ -205,6 +210,12 @@ public class SendmailDataService {
             resultMailDto = mailHelper.send(mailDto);
         }
 
+        if (resultMailDto == null) {
+            logger.info("result mailDto is null");
+
+            return;
+        }
+
         this.saveMailHistory(sendmailQueue, resultMailDto);
     }
 
@@ -257,6 +268,12 @@ public class SendmailDataService {
     }
 
     public void saveMailHistory(SendmailQueue sendmailQueue, MailDTO mailDto) {
+        if (mailDto == null) {
+            logger.info("mailDto is null");
+
+            return;
+        }
+
         SendmailHistory sendmailHistory = new SendmailHistory();
         beanMapper.copy(mailDto, sendmailHistory);
         sendmailHistory.setSender(mailDto.getFrom());

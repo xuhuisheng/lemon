@@ -5,9 +5,9 @@
 	</script>
     <![endif]-->
 
-    <link rel="shortcut icon" type="image/x-icon" href="${tenantPrefix}/favicon.ico" />
+    <link rel="shortcut icon" type="image/x-icon" href="${cdnPrefix}/favicon.ico" />
     <!-- bootstrap -->
-    <link rel='stylesheet' href='${tenantPrefix}/s/bootstrap/3.3.6/css/bootstrap.min.css' type='text/css' media='screen' />
+    <link rel='stylesheet' href='${cdnPrefix}/bootstrap/3.3.7/css/bootstrap.min.css' type='text/css' media='screen' />
 	<style type="text/css">
 .navbar-search .search-query {
   -webkit-border-radius: 15px;
@@ -31,49 +31,51 @@
 
     <!-- html5 -->
     <!--[if lt IE 9]>
-	<script src="${ctx}/s/respond/1.4.2/respond.min.js"></script>
-    <script type="text/javascript" src="${ctx}/s/html5/html5shiv.js"></script>
+	<script src="${cdnPrefix}/respond/1.4.2/respond.min.js"></script>
+    <script type="text/javascript" src="${cdnPrefix}/html5/html5shiv.js"></script>
     <![endif]-->
 
     <!-- jquery -->
-    <script type='text/javascript' src='${tenantPrefix}/s/jquery/1.11.3/jquery.min.js'></script>
-    <script type="text/javascript" src="${ctx}/s/jquery/jquery-migrate-1.2.1.min.js"></script>
+    <script type='text/javascript' src='${cdnPrefix}/jquery/1.11.3/jquery.min.js'></script>
+    <script type="text/javascript" src="${cdnPrefix}/jquery/jquery-migrate-1.2.1.min.js"></script>
 	<!-- bootstrap -->
-    <script type='text/javascript' src='${tenantPrefix}/s/bootstrap/3.3.6/js/bootstrap.min.js'></script>
+    <script type='text/javascript' src='${cdnPrefix}/bootstrap/3.3.6/js/bootstrap.min.js'></script>
+	<!-- bootbox -->
+    <script type="text/javascript" src="${cdnPrefix}/bootbox/bootbox.min.js"></script>
 
     <!-- message -->
-    <script type="text/javascript" src="${ctx}/s/jquery-sliding-message/jquery.slidingmessage.min.js"></script>
-    <script type="text/javascript" src="${ctx}/s/mossle/js/table.js"></script>
+    <script type="text/javascript" src="${cdnPrefix}/jquery-sliding-message/jquery.slidingmessage.min.js"></script>
+    <script type="text/javascript" src="${cdnPrefix}/mossle/js/table.js"></script>
 
     <!-- table and pager -->
-    <script type="text/javascript" src="${ctx}/s/pagination/pagination.js"></script>
-    <script type="text/javascript" src="${ctx}/s/table/table.js"></script>
-    <script type="text/javascript" src="${ctx}/s/table/messages_${locale}.js"></script>
+    <script type="text/javascript" src="${cdnPrefix}/pagination/pagination.js"></script>
+    <script type="text/javascript" src="${cdnPrefix}/table/table.js"></script>
+    <script type="text/javascript" src="${cdnPrefix}/table/messages_${locale}.js"></script>
 
     <!-- validater -->
-    <script type="text/javascript" src="${ctx}/s/jquery-validation/jquery.validate.min.js"></script>
-    <script type="text/javascript" src="${ctx}/s/jquery-validation/additional-methods.min.js"></script>
-    <script type="text/javascript" src="${ctx}/s/jquery-validation/localization/messages_${locale}.js"></script>
-    <link type="text/css" rel="stylesheet" href="${ctx}/s/jquery-validation/jquery.validate.css" />
+    <script type="text/javascript" src="${cdnPrefix}/jquery-validation/jquery.validate.min.js"></script>
+    <script type="text/javascript" src="${cdnPrefix}/jquery-validation/additional-methods.min.js"></script>
+    <script type="text/javascript" src="${cdnPrefix}/jquery-validation/localization/messages_${locale}.js"></script>
+    <link type="text/css" rel="stylesheet" href="${cdnPrefix}/jquery-validation/jquery.validate.css" />
 
     <!-- datepicker -->
-    <link type="text/css" rel="stylesheet" href="${ctx}/s/bootstrap-datepicker/datepicker.css">
-    <script type="text/javascript" src="${ctx}/s/bootstrap-datepicker/bootstrap-datepicker.js"></script>
-    <script type="text/javascript" src="${ctx}/s/bootstrap-datepicker/locales/bootstrap-datepicker.${locale}.js"></script>
-    <link href="${ctx}/s/bootstrap-datetimepicker/css/datetimepicker.css" rel="stylesheet">
-    <script type="text/javascript" src="${ctx}/s/bootstrap-datetimepicker/js/bootstrap-datetimepicker.js"></script>
-    <script type="text/javascript" src="${ctx}/s/bootstrap-datetimepicker/js/locales/bootstrap-datetimepicker.${locale}.js"></script>
+    <link type="text/css" rel="stylesheet" href="${cdnPrefix}/bootstrap-datepicker/datepicker.css">
+    <script type="text/javascript" src="${cdnPrefix}/bootstrap-datepicker/bootstrap-datepicker.js"></script>
+    <script type="text/javascript" src="${cdnPrefix}/bootstrap-datepicker/locales/bootstrap-datepicker.${locale}.js"></script>
+    <link href="${cdnPrefix}/bootstrap-datetimepicker/css/bootstrap-datetimepicker.css" rel="stylesheet">
+    <script type="text/javascript" src="${cdnPrefix}/bootstrap-datetimepicker/js/bootstrap-datetimepicker.js"></script>
+    <script type="text/javascript" src="${cdnPrefix}/bootstrap-datetimepicker/js/locales/bootstrap-datetimepicker.${locale}.js"></script>
 
 	<!-- tree -->
-    <link rel="stylesheet" href="${ctx}/s/ztree/zTreeStyle/zTreeStyle.css" type="text/css" />
-    <script type="text/javascript" src="${ctx}/s/ztree/jquery.ztree.all-3.5.min.js"></script>
+    <link rel="stylesheet" href="${cdnPrefix}/ztree/zTreeStyle/zTreeStyle.css" type="text/css" />
+    <script type="text/javascript" src="${cdnPrefix}/ztree/jquery.ztree.all-3.5.min.js"></script>
 
     <!-- ckeditor -->
-    <script type="text/javascript" src="${ctx}/s/ckeditor/ckeditor.js"></script>
-    <script type="text/javascript" src="${ctx}/s/ckfinder/ckfinder.js"></script>
+    <script type="text/javascript" src="${cdnPrefix}/ckeditor/ckeditor.js"></script>
+    <script type="text/javascript" src="${cdnPrefix}/ckfinder/ckfinder.js"></script>
 
 	<!-- tablednd -->
-    <script type="text/javascript" src="${ctx}/s/jquery-tablednd/jquery.tablednd.min.js"></script>
+    <script type="text/javascript" src="${cdnPrefix}/jquery-tablednd/jquery.tablednd.min.js"></script>
 
     <style type="text/css">
 #accordion .panel-heading {

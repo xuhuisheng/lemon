@@ -11,12 +11,12 @@
     <%@include file="/common/s3.jsp"%>
 
 	<!-- bootbox -->
-    <script type="text/javascript" src="${ctx}/s/bootbox/bootbox.min.js"></script>
-	<link href="${tenantPrefix}/widgets/xform3/styles/xform.css" rel="stylesheet">
-    <script type="text/javascript" src="${tenantPrefix}/widgets/xform3/xform-all.js"></script>
+    <script type="text/javascript" src="${cdnPrefix}/bootbox/bootbox.min.js"></script>
+	<link href="${cdnPrefix}/xform3/styles/xform.css" rel="stylesheet">
+    <script type="text/javascript" src="${cdnPrefix}/xform3/xform-packed.js"></script>
 
-    <link type="text/css" rel="stylesheet" href="../widgets/userpicker3-v2/userpicker.css">
-    <script type="text/javascript" src="../widgets/userpicker3-v2/userpicker.js"></script>
+    <link type="text/css" rel="stylesheet" href="${cdnPrefix}/userpicker3-v2/userpicker.css">
+    <script type="text/javascript" src="${cdnPrefix}/userpicker3-v2/userpicker.js"></script>
 
 	<style type="text/css">
 .xf-handler {
@@ -70,7 +70,7 @@ $(function() {
 })
     </script>
 
-	<script type="text/javascript" src="${tenantPrefix}/widgets/operation/TaskOperation.js"></script>
+	<script type="text/javascript" src="${cdnPrefix}/operation/TaskOperation.js"></script>
 	<script type="text/javascript">
 ROOT_URL = '${tenantPrefix}';
 var taskOperation = new TaskOperation();
@@ -81,17 +81,34 @@ var taskOperation = new TaskOperation();
   <body>
     <%@include file="/header/bpm-workspace3.jsp"%>
 
-    <div class="row-fluid">
-	<%@include file="/menu/bpm-workspace3.jsp"%>
+    <div class="container">
 
 	<!-- start of main -->
-      <section id="m-main" class="col-md-10" style="padding-top:65px;">
+      <section id="m-main" class="col-md-12" style="padding-top:65px;">
 
-      <div id="xformToolbar">
-	    <c:forEach var="item" items="${buttons}">
-		<button id="${item.name}" type="button" class="btn btn-default" onclick="taskOperation.${item.name}()">${item.label}</button>
-		</c:forEach>
-      </div>
+<table width="100%" cellspacing="0" cellpadding="0" border="0" align="center" class="xf-table">
+  <tbody>
+    <tr>
+	  <td width="25%" class="xf-cell xf-cell-right xf-cell-bottom xf-cell-top xf-cell-left">
+	    <label style="display:block;text-align:right;margin-bottom:0px;padding-top:10px;padding-bottom:10px;">下个环节&nbsp;</label>
+	  </td>
+	  <td width="75%" class="xf-cell xf-cell-right xf-cell-bottom xf-cell-top" colspan="3" rowspan="1">
+	    <div id="nextStep"></div>
+	  </td>
+	</td>
+  </tbody>
+</table>
+		  <script>
+		  $.getJSON('${tenantPrefix}/rs/bpm/next', {
+			  processDefinitionId: '${formDto.processDefinitionId}',
+			  activityId: '${formDto.activityId}'
+		  }, function(data) {
+			  $('#nextStep').append('&nbsp;');
+			  for (var i = 0; i < data.length; i++) {
+				  $('#nextStep').append(data[i].name);
+			  }
+		  });
+		  </script>
 
       <form id="xform" method="post" action="${tenantPrefix}/operation/process-operation-startProcessInstance.do" class="xf-form" enctype="multipart/form-data">
 <input id="processDefinitionId" type="hidden" name="processDefinitionId" value="${formDto.processDefinitionId}">
@@ -103,19 +120,9 @@ var taskOperation = new TaskOperation();
 -->
 		<div id="xf-form-table"></div>
 		<br>
-		<div id="nextStep">
-		</div>
-		  <script>
-		  $.getJSON('${tenantPrefix}/rs/bpm/next', {
-			  processDefinitionId: '${formDto.processDefinitionId}',
-			  activityId: '${formDto.activityId}'
-		  }, function(data) {
-			  $('#nextStep').append('下个环节：');
-			  for (var i = 0; i < data.length; i++) {
-				  $('#nextStep').append(data[i].name);
-			  }
-		  });
-		  </script>
+		<br>
+		<br>
+		<br>
 	  </form>
 
     </section>
@@ -124,6 +131,20 @@ var taskOperation = new TaskOperation();
     <form id="f" action="form-template-save.do" method="post" style="display:none;">
 	  <textarea id="__gef_content__" name="content">${xform.content}</textarea>
 	</form>
+
+
+<div class="navbar navbar-default navbar-fixed-bottom">
+  <div class="container-fluid">
+    <div class="text-center" style="padding-top:8px;">
+
+	    <c:forEach var="item" items="${buttons}">
+		<button id="${item.name}" type="button" class="btn btn-default" onclick="taskOperation.${item.name}()">${item.label}</button>
+		</c:forEach>
+	
+	</div>
+  </div>
+</div>
+
 
   </body>
 

@@ -7,7 +7,7 @@
     <meta charset="utf-8">
     <title>网盘</title>
     <%@include file="_s.jsp"%>
-	<link rel="stylesheet" href="${ctx}/s/disk/sprite_list_icon.css">
+	<link rel="stylesheet" href="${cdnPrefix}/disk/sprite_list_icon.css">
   </head>
   <body>
     <div id="wrap">&nbsp;

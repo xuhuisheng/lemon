@@ -9,6 +9,7 @@ import java.util.Map;
 
 import javax.annotation.Resource;
 
+import javax.servlet.http.Cookie;
 import javax.servlet.http.HttpServletRequest;
 import javax.servlet.http.HttpServletResponse;
 
@@ -33,6 +34,7 @@ import org.springframework.stereotype.Controller;
 
 import org.springframework.ui.Model;
 
+import org.springframework.web.bind.annotation.CookieValue;
 import org.springframework.web.bind.annotation.RequestMapping;
 import org.springframework.web.bind.annotation.RequestParam;
 
@@ -108,8 +110,18 @@ public class DiskController {
      * 详情.
      */
     @RequestMapping("disk-view")
-    public String view(@RequestParam("id") Long id, Model model) {
+    public String view(
+            @RequestParam("id") Long id,
+            @CookieValue(value = "share", required = false) String sharePassword,
+            Model model) {
         DiskShare diskShare = diskShareManager.get(id);
+
+        if ("private".equals(diskShare.getShareType())) {
+            if (!diskShare.getSharePassword().equals(sharePassword)) {
+                return "disk/disk-code";
+            }
+        }
+
         model.addAttribute("diskShare", diskShare);
 
         return "disk/disk-view";
@@ -130,16 +142,26 @@ public class DiskController {
         try {
             ServletUtils.setFileDownloadHeader(request, response,
                     diskInfo.getName());
-            is = storeConnector
-                    .getStore("default/user/" + diskInfo.getCreator(),
-                            diskInfo.getRef(), tenantId).getDataSource()
-                    .getInputStream();
+
+            String modelName = "disk/user/" + diskInfo.getCreator();
+            String keyName = diskInfo.getRef();
+
+            is = storeConnector.getStore(modelName, keyName, tenantId)
+                    .getDataSource().getInputStream();
             IoUtils.copyStream(is, response.getOutputStream());
         } finally {
             if (is != null) {
                 is.close();
             }
         }
+    }
+
+    @RequestMapping("disk-code")
+    public String diskCode(@RequestParam("id") Long id,
+            @RequestParam("code") String code, HttpServletResponse response) {
+        response.addCookie(new Cookie("share", code));
+
+        return "redirect:/disk/disk-view.do?id=" + id;
     }
 
     // ~ ======================================================================

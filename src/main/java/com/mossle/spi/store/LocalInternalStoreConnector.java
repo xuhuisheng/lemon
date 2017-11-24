@@ -43,6 +43,11 @@ public class LocalInternalStoreConnector implements InternalStoreConnector {
         storeHelper.removeStore(tenantId + "/" + model, key);
     }
 
+    public void mkdir(String path) {
+        storeHelper.mkdir(path);
+    }
+
+    // ~
     public StoreDTO convertStoreDto(StoreResult storeResult) {
         StoreDTO storeDto = new StoreDTO();
         storeDto.setModel(storeResult.getModel());

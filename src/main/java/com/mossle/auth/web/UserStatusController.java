@@ -84,8 +84,9 @@ public class UserStatusController {
     }
 
     @RequestMapping("user-status-save")
-    public String save(@ModelAttribute UserStatus userStatus,
-            @RequestParam("confirmPassword") String confirmPassword,
+    public String save(
+            @ModelAttribute UserStatus userStatus,
+            @RequestParam(value = "confirmPassword", required = false) String confirmPassword,
             RedirectAttributes redirectAttributes) {
         try {
             userStatusChecker.check(userStatus);

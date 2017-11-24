@@ -22,8 +22,8 @@ $(function() {
 })
     </script>
 
-    <link type="text/css" rel="stylesheet" href="${tenantPrefix}/widgets/userpicker3/userpicker.css">
-    <script type="text/javascript" src="${tenantPrefix}/widgets/userpicker3/userpicker.js"></script>
+    <link type="text/css" rel="stylesheet" href="${cdnPrefix}/userpicker3/userpicker.css">
+    <script type="text/javascript" src="${cdnPrefix}/userpicker3/userpicker.js"></script>
 	<script type="text/javascript">
 $(function() {
 	createUserPicker({
@@ -192,6 +192,7 @@ $(function() {
 	  <input id="orgInputUser_priority" type="text" name="priority" value="" size="40" class="form-control required number" minlength="1" maxlength="50" autocomplete="off">
     </div>
   </div>
+  <!--
   <div class="form-group">
     <label class="control-label col-md-1" for="orgInputUser_admin0">管理</label>
 	<div class="col-sm-5">
@@ -206,6 +207,7 @@ $(function() {
 	  <label for="orgInputUser_status2" class="validate-error" generated="true" style="display:none;"></label>
     </div>
   </div>
+  -->
 </c:if>
 <c:if test="${partyType.type == 2}">
   <div class="form-group">
@@ -229,6 +231,7 @@ $(function() {
 	  <input id="orgInputUser_priority" type="text" name="priority" value="" size="40" class="form-control required number" minlength="1" maxlength="50" autocomplete="off">
     </div>
   </div>
+  <!--
   <div class="form-group">
     <label class="control-label col-md-1" for="orgInputUser_admin0">管理</label>
 	<div class="col-sm-5">
@@ -243,6 +246,7 @@ $(function() {
 	  <label for="orgInputUser_status2" class="validate-error" generated="true" style="display:none;"></label>
     </div>
   </div>
+  -->
 </c:if>
 <c:if test="${partyType.type == 0}">
   <div class="form-group">

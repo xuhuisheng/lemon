@@ -47,7 +47,7 @@ public class AndroidDeviceResource {
             @FormParam("name") String name) {
         logger.info(
                 "username : {}, password : {}, code : {}, type : {}, name : {}",
-                username, password, code, type, name);
+                username, "***", code, type, name);
 
         if (username == null) {
             BaseDTO result = new BaseDTO();

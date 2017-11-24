@@ -2,6 +2,7 @@ package com.mossle.disk.web;
 
 import java.io.InputStream;
 
+import java.util.Date;
 import java.util.List;
 
 import javax.annotation.Resource;
@@ -18,7 +19,9 @@ import com.mossle.core.util.IoUtils;
 import com.mossle.core.util.ServletUtils;
 
 import com.mossle.disk.persistence.domain.DiskInfo;
+import com.mossle.disk.persistence.domain.DiskShare;
 import com.mossle.disk.persistence.manager.DiskInfoManager;
+import com.mossle.disk.persistence.manager.DiskShareManager;
 import com.mossle.disk.service.DiskService;
 
 import org.slf4j.Logger;
@@ -39,6 +42,7 @@ public class DiskInfoController {
     private static Logger logger = LoggerFactory
             .getLogger(DiskInfoController.class);
     private DiskInfoManager diskInfoManager;
+    private DiskShareManager diskShareManager;
     private CurrentUserHolder currentUserHolder;
     private StoreConnector storeConnector;
     private DiskService diskService;
@@ -277,10 +281,65 @@ public class DiskInfoController {
         return buff.toString();
     }
 
+    /**
+     * 分享.
+     */
+    @RequestMapping("disk-info-share")
+    public String share(@RequestParam("id") Long id,
+            @RequestParam("type") String type) {
+        DiskInfo diskInfo = diskInfoManager.get(id);
+        DiskShare diskShare = diskShareManager.findUniqueBy("diskInfo",
+                diskInfo);
+
+        if (diskShare != null) {
+            return "redirect:/disk/disk-share-list.do";
+        }
+
+        diskShare = new DiskShare();
+        diskShare.setShareType(type);
+        diskShare.setShareTime(new Date());
+        diskShare.setDiskInfo(diskInfo);
+        diskShare.setName(diskInfo.getName());
+        diskShare.setCreator(diskInfo.getCreator());
+        diskShare.setType(diskInfo.getType());
+        diskShare.setDirType(diskInfo.getDirType());
+        diskShare.setCountView(0);
+        diskShare.setCountSave(0);
+        diskShare.setCountDownload(0);
+
+        if ("private".equals(type)) {
+            diskShare.setSharePassword(this.generatePassword());
+        }
+
+        diskShareManager.save(diskShare);
+
+        return "redirect:/disk/disk-share-list.do";
+    }
+
+    public String generatePassword() {
+        int value = (int) (((Math.random() * 9) + 1) * 1679616);
+        char[] c = { '0', '1', '2', '3', '4', '5', '6', '7', '8', '9', '0',
+                'a', 'b', 'c', 'd', 'e', 'f', 'g', 'h', 'i', 'j', 'k', 'l',
+                'm', 'n', 'o', 'p', 'q', 'r', 's', 't', 'u', 'v', 'w', 'x',
+                'y', 'z' };
+        StringBuilder buff = new StringBuilder();
+        buff.append(c[(value / 36 / 36 / 36) % 36]);
+        buff.append(c[(value / 36 / 36) % 36]);
+        buff.append(c[(value / 36) % 36]);
+        buff.append(c[value % 36]);
+
+        return buff.toString();
+    }
+
     // ~ ======================================================================
     @Resource
     public void setDiskInfoManager(DiskInfoManager diskInfoManager) {
         this.diskInfoManager = diskInfoManager;
+    }
+
+    @Resource
+    public void setDiskShareManager(DiskShareManager diskShareManager) {
+        this.diskShareManager = diskShareManager;
     }
 
     @Resource

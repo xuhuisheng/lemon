@@ -52,27 +52,25 @@ $(function() {
     </div>
   </div>
   <div class="form-group">
-    <label class="control-label col-md-1" for="cal-info_startTIme">开始时间</label>
-	<div class="col-sm-5">
-      <div class="input-append datetimepicker date" style="padding-left: 0px;">
-	    <input id="cal-info_startTIme" type="text" name="startTime" value="<fmt:formatDate value='${model.startTime}' pattern='yyyy-MM-dd HH:mm'/>" size="40" class="form-control required" readonly style="background-color:white;cursor:default; width: 175px;">
-	    <span class="add-on" style="padding-top: 2px; padding-bottom: 2px;"><i class="icon-calendar"></i></span>
-	  </div>
+    <label class="control-label col-md-1" for="cal-info_startTime">开始时间</label>
+	<div class="input-group date datetimepicker col-md-5" style="padding-left:15px;padding-right:15px;">
+	  <input id="cal-info_startTime" name="startTime" size="16" type="text" value="<fmt:formatDate value='${model.startTime}' pattern='yyyy-MM-dd HH:mm'/>" readonly style="background-color:white;cursor:default;" class="form-control required">
+      <span class="input-group-addon"><span class="glyphicon glyphicon-remove"></span></span>
+      <span class="input-group-addon"><span class="glyphicon glyphicon-th"></span></span>
     </div>
   </div>
   <div class="form-group">
     <label class="control-label col-md-1" for="cal-info_endTime">结束时间</label>
-	<div class="col-sm-5">
-      <div class="input-append datetimepicker date" style="padding-left: 0px;">
-	    <input id="cal-info_endTime" type="text" name="endTime" value="<fmt:formatDate value='${model.endTime}' pattern='yyyy-MM-dd HH:mm'/>" size="40" class="form-control required" readonly style="background-color:white;cursor:default; width: 175px;">
-	    <span class="add-on" style="padding-top: 2px; padding-bottom: 2px;"><i class="icon-calendar"></i></span>
-	  </div>
+	<div class="input-group date datetimepicker col-md-5" style="padding-left:15px;padding-right:15px;">
+	  <input id="cal-info_endTime" name="endTime" size="16" type="text" value="<fmt:formatDate value='${model.endTime}' pattern='yyyy-MM-dd HH:mm'/>" readonly style="background-color:white;cursor:default;" class="form-control required">
+      <span class="input-group-addon"><span class="glyphicon glyphicon-remove"></span></span>
+      <span class="input-group-addon"><span class="glyphicon glyphicon-th"></span></span>
     </div>
   </div>
   <div class="form-group">
 	<label class="control-label col-md-1" for="perm_resc">会议室</label>
     <div class="col-sm-5">
-      <select id="perm_resc" name="meetingRoomId">
+      <select id="perm_resc" name="meetingRoomId" class="form-control">
 	    <c:forEach items="${meetingRooms}" var="item">
 	    <option value="${item.id}" ${model.meetingRoom.id==item.id ? 'selected' : ''}>${item.name}</option>
 		</c:forEach>
@@ -115,10 +113,10 @@ $(function() {
     </div>
   </div>
   <div class="form-group">
-    <div class="col-sm-5">
-      <button type="submit" class="btn a-submit"><spring:message code='core.input.save' text='保存'/></button>
+    <div class="col-sm-5 col-md-offset-1">
+      <button type="submit" class="btn btn-default a-submit"><spring:message code='core.input.save' text='保存'/></button>
 	  &nbsp;
-      <button type="button" class="btn a-cancel" onclick="history.back();"><spring:message code='core.input.back' text='返回'/></button>
+      <button type="button" class="btn btn-link a-cancel" onclick="history.back();"><spring:message code='core.input.back' text='返回'/></button>
     </div>
   </div>
 </form>

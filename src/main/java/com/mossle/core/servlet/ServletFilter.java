@@ -90,4 +90,10 @@ public class ServletFilter extends ProxyFilter {
             servletMap.put(urlPatternMatcher, entry.getValue());
         }
     }
+
+    public void addServlet(String urlPattern, Servlet servlet) {
+        UrlPatternMatcher urlPatternMatcher = UrlPatternMatcher
+                .create(urlPattern);
+        servletMap.put(urlPatternMatcher, servlet);
+    }
 }

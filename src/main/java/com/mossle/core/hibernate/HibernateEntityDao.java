@@ -173,7 +173,11 @@ public class HibernateEntityDao<T> extends HibernatePagingDao {
                 if (isCreated) {
                     String idFieldName = getIdName(entity.getClass());
                     Serializable id = getIdGenerator().generateId();
-                    setId(entity.getClass(), entity, id);
+
+                    if (id != null) {
+                        setId(entity.getClass(), entity, id);
+                    }
+
                     super.insert(entity);
                 } else {
                     super.update(entity);

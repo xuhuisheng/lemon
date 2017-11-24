@@ -1,5 +1,6 @@
 package com.mossle.cms.web;
 
+import java.util.Date;
 import java.util.List;
 import java.util.Map;
 
@@ -8,9 +9,12 @@ import javax.annotation.Resource;
 import javax.servlet.http.HttpServletRequest;
 import javax.servlet.http.HttpServletResponse;
 
+import com.mossle.cms.persistence.domain.CmsArticle;
 import com.mossle.cms.persistence.domain.CmsComment;
+import com.mossle.cms.persistence.manager.CmsArticleManager;
 import com.mossle.cms.persistence.manager.CmsCommentManager;
 
+import com.mossle.core.auth.CurrentUserHolder;
 import com.mossle.core.export.Exportor;
 import com.mossle.core.export.TableModel;
 import com.mossle.core.mapper.BeanMapper;
@@ -32,9 +36,11 @@ import org.springframework.web.servlet.mvc.support.RedirectAttributes;
 @RequestMapping("/cms")
 public class CmsCommentController {
     private CmsCommentManager cmsCommentManager;
+    private CmsArticleManager cmsArticleManager;
     private Exportor exportor;
     private BeanMapper beanMapper = new BeanMapper();
     private MessageHelper messageHelper;
+    private CurrentUserHolder currentUserHolder;
 
     @RequestMapping("cms-comment-list")
     public String list(@ModelAttribute Page page,
@@ -128,10 +134,28 @@ public class CmsCommentController {
         return result;
     }
 
+    @RequestMapping("cms-comment-submit")
+    public String submit(@ModelAttribute CmsComment cmsComment,
+            @RequestParam("articleId") Long articleId,
+            RedirectAttributes redirectAttributes) {
+        String userId = currentUserHolder.getUserId();
+        cmsComment.setCmsArticle(cmsArticleManager.get(articleId));
+        cmsComment.setCreateTime(new Date());
+        cmsComment.setUserId(userId);
+        cmsCommentManager.save(cmsComment);
+
+        return "redirect:/cms/cms-article-view.do?id=" + articleId;
+    }
+
     // ~ ======================================================================
     @Resource
     public void setCmsCommentManager(CmsCommentManager cmsCommentManager) {
         this.cmsCommentManager = cmsCommentManager;
+    }
+
+    @Resource
+    public void setCmsArticleManager(CmsArticleManager cmsArticleManager) {
+        this.cmsArticleManager = cmsArticleManager;
     }
 
     @Resource
@@ -142,5 +166,10 @@ public class CmsCommentController {
     @Resource
     public void setMessageHelper(MessageHelper messageHelper) {
         this.messageHelper = messageHelper;
+    }
+
+    @Resource
+    public void setCurrentUserHolder(CurrentUserHolder currentUserHolder) {
+        this.currentUserHolder = currentUserHolder;
     }
 }

@@ -1,32 +1,28 @@
 package com.mossle.api.userauth;
 
+import java.util.Collections;
+
 public class MockUserAuthConnector implements UserAuthConnector {
     public UserAuthDTO findByUsername(String username, String tenantId) {
-        UserAuthDTO userAuthDto = new UserAuthDTO();
-        userAuthDto.setId(username);
-        userAuthDto.setUsername(username);
-        userAuthDto.setDisplayName(username);
-        userAuthDto.setEnabled(true);
-
-        return userAuthDto;
+        return this.findByKey(username);
     }
 
     public UserAuthDTO findByRef(String ref, String tenantId) {
-        UserAuthDTO userAuthDto = new UserAuthDTO();
-        userAuthDto.setId(ref);
-        userAuthDto.setUsername(ref);
-        userAuthDto.setDisplayName(ref);
-        userAuthDto.setEnabled(true);
-
-        return userAuthDto;
+        return this.findByKey(ref);
     }
 
     public UserAuthDTO findById(String id, String tenantId) {
+        return this.findByKey(id);
+    }
+
+    public UserAuthDTO findByKey(String key) {
         UserAuthDTO userAuthDto = new UserAuthDTO();
-        userAuthDto.setId(id);
-        userAuthDto.setUsername(id);
-        userAuthDto.setDisplayName(id);
+        userAuthDto.setId(key);
+        userAuthDto.setUsername(key);
+        userAuthDto.setDisplayName(key);
         userAuthDto.setEnabled(true);
+        userAuthDto.setPermissions(Collections.singletonList("*"));
+        userAuthDto.setRoles(Collections.singletonList("ROLE_USER"));
 
         return userAuthDto;
     }

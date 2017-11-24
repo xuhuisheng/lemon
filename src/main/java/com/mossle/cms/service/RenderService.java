@@ -15,6 +15,7 @@ import com.mossle.api.user.UserConnector;
 import com.mossle.cms.persistence.domain.CmsArticle;
 import com.mossle.cms.persistence.domain.CmsCatalog;
 
+import com.mossle.core.page.Page;
 import com.mossle.core.template.TemplateService;
 
 import org.slf4j.Logger;
@@ -77,7 +78,8 @@ public class RenderService {
         }
     }
 
-    public String view(CmsArticle cmsArticle) {
+    public String view(CmsArticle cmsArticle, List<CmsCatalog> cmsCatalogs,
+            Page page) {
         Assert.notNull(cmsArticle, "cmsArticle must not null");
 
         Map<String, Object> data = new HashMap<String, Object>();
@@ -85,6 +87,8 @@ public class RenderService {
         data.put("article", cmsArticle);
         data.put("catalog", cmsCatalog);
         data.put("userConnector", userConnector);
+        data.put("catalogs", cmsCatalogs);
+        data.put("page", page);
 
         return templateService.render(cmsCatalog.getTemplateDetail(), data);
     }
@@ -99,10 +103,13 @@ public class RenderService {
         return html;
     }
 
-    public String viewCatalog(CmsCatalog cmsCatalog) {
+    public String viewCatalog(CmsCatalog cmsCatalog, Page page,
+            List<CmsCatalog> cmsCatalogs) {
         Map<String, Object> data = new HashMap<String, Object>();
         data.put("catalog", cmsCatalog);
-        data.put("articles", cmsCatalog.getCmsArticles());
+        data.put("userConnector", userConnector);
+        data.put("page", page);
+        data.put("catalogs", cmsCatalogs);
 
         String html = templateService
                 .render(cmsCatalog.getTemplateList(), data);
@@ -118,6 +125,16 @@ public class RenderService {
         data.put("userConnector", userConnector);
 
         return templateService.render(cmsCatalog.getTemplateDetail(), data);
+    }
+
+    public String viewSite(List<CmsCatalog> cmsCatalogs) {
+        Map<String, Object> data = new HashMap<String, Object>();
+        data.put("catalogs", cmsCatalogs);
+        data.put("userConnector", userConnector);
+
+        String html = templateService.render("/default/index.html", data);
+
+        return html;
     }
 
     // ~ ==================================================

@@ -14,6 +14,8 @@ import com.mossle.disk.persistence.domain.DiskInfo;
 import com.mossle.disk.persistence.manager.DiskInfoManager;
 import com.mossle.disk.util.FileUtils;
 
+import com.mossle.spi.store.InternalStoreConnector;
+
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
 
@@ -24,6 +26,7 @@ public class DiskService {
     private static Logger logger = LoggerFactory.getLogger(DiskService.class);
     private DiskInfoManager diskInfoManager;
     private StoreConnector storeConnector;
+    private InternalStoreConnector internalStoreConnector;
 
     /**
      * 显示对应用户，对应目录下的所有文件.
@@ -40,7 +43,9 @@ public class DiskService {
     public DiskInfo createFile(String userId, DataSource dataSource,
             String name, long size, String parentPath, String tenantId)
             throws Exception {
-        StoreDTO storeDto = storeConnector.saveStore("default/user/" + userId,
+        String modelName = "disk/user/" + userId;
+        String keyName = parentPath + "/" + name;
+        StoreDTO storeDto = storeConnector.saveStore(modelName, keyName,
                 dataSource, tenantId);
         String type = FileUtils.getSuffix(name);
 
@@ -52,6 +57,9 @@ public class DiskService {
      * 新建文件夹.
      */
     public DiskInfo createDir(String userId, String name, String parentPath) {
+        internalStoreConnector.mkdir("1/disk/user/" + userId + "/" + parentPath
+                + "/" + name);
+
         return this.createDiskInfo(userId, name, 0, null, "dir", 0, parentPath);
     }
 
@@ -229,5 +237,11 @@ public class DiskService {
     @Resource
     public void setStoreConnector(StoreConnector storeConnector) {
         this.storeConnector = storeConnector;
+    }
+
+    @Resource
+    public void setInternalStoreConnector(
+            InternalStoreConnector internalStoreConnector) {
+        this.internalStoreConnector = internalStoreConnector;
     }
 }

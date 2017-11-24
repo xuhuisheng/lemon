@@ -7,6 +7,8 @@ import java.util.Map;
 import javax.annotation.Resource;
 
 import com.mossle.humantask.persistence.domain.TaskInfo;
+import com.mossle.humantask.persistence.domain.TaskParticipant;
+import com.mossle.humantask.persistence.manager.TaskParticipantManager;
 import com.mossle.humantask.rule.ActivityAssigneeRule;
 import com.mossle.humantask.rule.AssigneeRule;
 import com.mossle.humantask.rule.EqualsRuleMatcher;
@@ -28,6 +30,7 @@ public class AssigneeAliasHumanTaskListener implements HumanTaskListener {
     private static Logger logger = LoggerFactory
             .getLogger(AssigneeAliasHumanTaskListener.class);
     private InternalProcessConnector internalProcessConnector;
+    private TaskParticipantManager taskParticipantManager;
     private Map<RuleMatcher, AssigneeRule> assigneeRuleMap = new HashMap<RuleMatcher, AssigneeRule>();
 
     public AssigneeAliasHumanTaskListener() {
@@ -129,8 +132,19 @@ public class AssigneeAliasHumanTaskListener implements HumanTaskListener {
         List<String> userIds = assigneeRule.process(value, startUserId);
         logger.debug("userIds : {}", userIds);
 
-        if (!userIds.isEmpty()) {
+        if (userIds.isEmpty()) {
+            logger.info("{} userIds is empty", taskInfo.getCode());
+        } else if (userIds.size() == 1) {
             taskInfo.setAssignee(userIds.get(0));
+        } else {
+            for (String userId : userIds) {
+                TaskParticipant taskParticipant = new TaskParticipant();
+                taskParticipant.setTaskInfo(taskInfo);
+                taskParticipant.setCategory("candidate");
+                taskParticipant.setType("user");
+                taskParticipant.setRef(userId);
+                taskParticipantManager.save(taskParticipant);
+            }
         }
     }
 
@@ -138,5 +152,11 @@ public class AssigneeAliasHumanTaskListener implements HumanTaskListener {
     public void setInternalProcessConnector(
             InternalProcessConnector internalProcessConnector) {
         this.internalProcessConnector = internalProcessConnector;
+    }
+
+    @Resource
+    public void setTaskParticipantManager(
+            TaskParticipantManager taskParticipantMaanger) {
+        this.taskParticipantManager = taskParticipantManager;
     }
 }

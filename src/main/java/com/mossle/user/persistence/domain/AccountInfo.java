@@ -77,6 +77,9 @@ public class AccountInfo implements java.io.Serializable {
             0);
 
     /** . */
+    private Set<AccountAlias> accountAliases = new HashSet<AccountAlias>(0);
+
+    /** . */
     private Set<AccountDevice> accountDevices = new HashSet<AccountDevice>(0);
 
     /** . */
@@ -95,6 +98,7 @@ public class AccountInfo implements java.io.Serializable {
             String nickName, String description, String language,
             String timezone, String tenantId,
             Set<AccountCredential> accountCredentials,
+            Set<AccountAlias> accountAliases,
             Set<AccountDevice> accountDevices, Set<AccountAvatar> accountAvatars) {
         this.id = id;
         this.code = code;
@@ -113,6 +117,7 @@ public class AccountInfo implements java.io.Serializable {
         this.timezone = timezone;
         this.tenantId = tenantId;
         this.accountCredentials = accountCredentials;
+        this.accountAliases = accountAliases;
         this.accountDevices = accountDevices;
         this.accountAvatars = accountAvatars;
     }
@@ -357,6 +362,20 @@ public class AccountInfo implements java.io.Serializable {
      */
     public void setAccountCredentials(Set<AccountCredential> accountCredentials) {
         this.accountCredentials = accountCredentials;
+    }
+
+    /** @return . */
+    @OneToMany(fetch = FetchType.LAZY, mappedBy = "accountInfo")
+    public Set<AccountAlias> getAccountAliases() {
+        return this.accountAliases;
+    }
+
+    /**
+     * @param accountAliases
+     *            .
+     */
+    public void setAccountAliases(Set<AccountAlias> accountAliases) {
+        this.accountAliases = accountAliases;
     }
 
     /** @return . */

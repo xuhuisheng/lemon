@@ -28,6 +28,7 @@
 	<bean id="userDetailsService" class="com.mossle.security.client.DefaultUserDetailsService">
 		<property name="userAuthConnector" ref="userAuthConnector"/>
 		<property name="accountCredentialConnector" ref="accountCredentialConnector"/>
+		<property name="accountAliasConnector" ref="accountAliasConnector"/>
 		<property name="debug" value="${security.autologin.enabled}"/>
 		<property name="tenantHolder" ref="tenantHolder"/>
 	</bean>

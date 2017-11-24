@@ -5,6 +5,8 @@
 
 	<bean id="formConnector" class="${form.connector}"/>
 
+	<bean id="internalFormConnector" class="${form.internal.connector}"/>
+
 	<bean id="keyValueConnector" class="${keyvalue.connector}"/>
 
 	<!-- 自动部署form -->

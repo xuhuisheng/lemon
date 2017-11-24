@@ -2,8 +2,10 @@ package com.mossle.party.rs;
 
 import java.util.ArrayList;
 import java.util.HashMap;
+import java.util.HashSet;
 import java.util.List;
 import java.util.Map;
+import java.util.Set;
 
 import javax.annotation.Resource;
 
@@ -87,6 +89,28 @@ public class PartyResource {
             partyEntityDto.setRef(partyEntity.getRef());
             partyEntityDtos.add(partyEntityDto);
         }
+
+        PartyType partyType = partyTypeManager.get(typeId);
+
+        if (partyType.getType() != 2) {
+            return partyEntityDtos;
+        }
+
+        // 如果是岗位，按名称去重
+        Set<String> names = new HashSet<String>();
+        List<PartyEntityDTO> list = new ArrayList<PartyEntityDTO>();
+
+        for (PartyEntityDTO partyEntityDto : partyEntityDtos) {
+            if (names.contains(partyEntityDto.getName())) {
+                list.add(partyEntityDto);
+
+                continue;
+            }
+
+            names.add(partyEntityDto.getName());
+        }
+
+        partyEntityDtos.removeAll(list);
 
         return partyEntityDtos;
     }

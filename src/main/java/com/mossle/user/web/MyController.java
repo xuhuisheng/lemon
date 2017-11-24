@@ -34,6 +34,9 @@ import com.mossle.user.persistence.manager.PersonInfoManager;
 import com.mossle.user.service.ChangePasswordService;
 import com.mossle.user.support.ChangePasswordResult;
 
+import org.slf4j.Logger;
+import org.slf4j.LoggerFactory;
+
 import org.springframework.stereotype.Controller;
 
 import org.springframework.ui.Model;
@@ -51,6 +54,7 @@ import org.springframework.web.servlet.mvc.support.RedirectAttributes;
 @Controller
 @RequestMapping("user")
 public class MyController {
+    private static Logger logger = LoggerFactory.getLogger(MyController.class);
     private AccountInfoManager accountInfoManager;
     private PersonInfoManager personInfoManager;
     private AccountDeviceManager accountDeviceManager;
@@ -85,8 +89,15 @@ public class MyController {
             RedirectAttributes redirectAttributes) throws Exception {
         Long accountId = Long.parseLong(currentUserHolder.getUserId());
         AccountInfo accountInfo = accountInfoManager.get(accountId);
+
+        if (accountInfo.getCode() == null) {
+            accountInfo.setCode(Long.toString(accountInfo.getId()));
+            accountInfoManager.save(accountInfo);
+        }
+
         PersonInfo dest = personInfoManager.findUniqueBy("code",
                 accountInfo.getCode());
+        logger.debug("code : {}", accountInfo.getCode());
 
         if (dest != null) {
             beanMapper.copy(personInfo, dest);
@@ -96,7 +107,7 @@ public class MyController {
             beanMapper.copy(personInfo, dest);
         }
 
-        personInfoManager.save(personInfo);
+        personInfoManager.save(dest);
 
         messageHelper.addFlashMessage(redirectAttributes, "core.success.save",
                 "保存成功");

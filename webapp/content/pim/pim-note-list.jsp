@@ -56,8 +56,8 @@ $(function() {
   </div>
   <div class="panel-body">
     <form name="pimRemindForm" method="post" action="pim-note-list.do" class="form-inline">
-	  <label for="pimRemind_description">事项:</label>
-	  <input type="text" id="pimRemind_description" name="filter_LIKES_description" value="${param.filter_LIKES_description}" class="form-control">
+	  <label for="pimNote_content">内容:</label>
+	  <input type="text" id="pimNote_content" name="filter_LIKES_content" value="${param.filter_LIKES_content}" class="form-control">
 	  <button class="btn btn-default a-search" onclick="document.pimRemindForm.submit()">查询</button>&nbsp;
     </form>
   </div>

@@ -23,7 +23,13 @@ import org.apache.commons.io.FileUtils;
 import org.apache.commons.lang3.ArrayUtils;
 import org.apache.commons.lang3.StringUtils;
 
+import org.slf4j.Logger;
+import org.slf4j.LoggerFactory;
+
 public class StaticContentFilter implements Filter {
+    private static Logger logger = LoggerFactory
+            .getLogger(StaticContentFilter.class);
+
     /** 需要被Gzip压缩的Mime类型. */
     public static final String[] GZIP_MIME_TYPES = { "text/html",
             "application/xhtml+xml", "text/plain", "text/css",
@@ -140,8 +146,9 @@ public class StaticContentFilter implements Filter {
     private ContentInfo getContentInfo(String contentPath) {
         ContentInfo contentInfo = new ContentInfo();
 
-        String realFilePath = filterConfig.getServletContext().getRealPath(
-                contentPath);
+        String realFilePath = this.findRealFilePath(contentPath);
+        logger.debug("realFilePath {}", realFilePath);
+
         File file = new File(realFilePath);
 
         contentInfo.setFile(file);
@@ -164,6 +171,13 @@ public class StaticContentFilter implements Filter {
         }
 
         return contentInfo;
+    }
+
+    public String findRealFilePath(String contentPath) {
+        String realFilePath = filterConfig.getServletContext().getRealPath(
+                contentPath);
+
+        return realFilePath;
     }
 
     public void setExpiresSeconds(long expiresSeconds) {

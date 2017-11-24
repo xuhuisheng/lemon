@@ -42,7 +42,7 @@ public class AvatarResource {
         }
 
         if (id.indexOf("_") != -1) {
-			String text = id;
+            String text = id;
             logger.info("process : {}", text);
 
             int index = text.indexOf("_");

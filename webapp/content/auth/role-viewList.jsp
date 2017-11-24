@@ -86,7 +86,7 @@ $(function() {
 	    <div class="clearfix"></div>
 	  </div>
 
-<form id="role-viewListGridForm" name="role-viewListGridForm" method='post' action="role-viewList-remove.do" class="m-form-blank">
+<form id="role-viewListGridForm" name="role-viewListGridForm" method='post' action="role-viewRemove.do" class="m-form-blank">
       <div class="panel panel-default">
         <div class="panel-heading">
 		  <i class="glyphicon glyphicon-list"></i>

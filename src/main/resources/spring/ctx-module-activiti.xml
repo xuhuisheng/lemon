@@ -17,19 +17,9 @@
 		<property name="jobExecutorActivate" value="false" />
 		<!-- 历史级别 -->
 		<property name="history" value="audit" />
-		
-		<property name="typedEventListeners">
-			<map>
-				<entry key="ENTITY_INITIALIZED" >
-					<list>
-						<bean class="com.mossle.bpm.listener.UpdateProcessInstanceNameEventListener" />
-					</list>
-				</entry>
-			</map>
-		</property>
-
 
 		<!-- 添加的自定义监听器 -->
+		<!--
  		<property name="customDefaultBpmnParseHandlers">
     	 	<list>
 				<bean class="com.mossle.bpm.listener.ProxyUserTaskBpmnParseHandler">
@@ -38,6 +28,8 @@
 				</bean>
     	 	</list>
 		</property>
+		-->
+		<!--
  		<property name="postBpmnParseHandlers">
     	 	<list>
 				<bean class="com.mossle.bpm.listener.ProxyUserTaskBpmnParseHandler">
@@ -45,10 +37,7 @@
 				</bean>
     	 	</list>
 		</property>
-
-		<property name="bpmnParser">
-			<bean class="com.mossle.bpm.parser.CustomBpmnParser" />
-		</property>
+		-->
 
 		<!-- (databaseType 不用修改,即使连接其他类型数据库)  act引擎会自动替换成相应的type,这里加上是因为act不识别hsqldb类型,故直接映射成H2-->
 		<property name="databaseType" value="${application.database.type}"/>
@@ -78,9 +67,27 @@
 		-->
 
 		<property name="eventListeners">
-		  <list>
-			 <bean class="com.mossle.bpm.listener.FunctionEventListener" />
-		  </list>
+			<list>
+				<bean class="com.mossle.bpm.listener.FunctionEventListener" />
+				<bean class="com.mossle.bpm.listener.HumanTaskEventListener" />
+				<bean class="com.mossle.bpm.listener.AutoCompleteFirstTaskEventListener" />
+				<bean class="com.mossle.bpm.listener.SkipEventListener" />
+			</list>
+		</property>
+		
+		<property name="typedEventListeners">
+			<map>
+				<entry key="ENTITY_INITIALIZED" >
+					<list>
+						<bean class="com.mossle.bpm.listener.UpdateProcessInstanceNameEventListener" />
+					</list>
+				</entry>
+				<entry key="SEQUENCEFLOW_TAKEN">
+					<list>
+						<bean class="com.mossle.bpm.listener.SequenceFlowEventListener"/>
+					</list>
+				</entry>
+			</map>
 		</property>
 	</bean>
 
@@ -104,6 +111,7 @@
 	</bean>
 
 	<!-- 在记录history之前执行的TaskListener -->
+	<!--
 	<bean id="customTaskListener" class="com.mossle.bpm.listener.ProxyTaskListener">
 		<property name="taskListeners">
 			<list>
@@ -111,8 +119,10 @@
 			</list>
 		</property>
 	</bean>
+	-->
 
 	<!-- 在记录history之后执行的TaskListener -->
+	<!--
 	<bean id="postTaskListener" class="com.mossle.bpm.listener.ProxyTaskListener">
 		<property name="taskListeners">
 			<list>
@@ -121,6 +131,7 @@
 			</list>
 		</property>
 	</bean>
+	-->
 
 	<!-- 工作日历 -->
 	<bean id="businessCalendarManager" class="com.mossle.bpm.calendar.AdvancedBusinessCalendarManagerFactoryBean">

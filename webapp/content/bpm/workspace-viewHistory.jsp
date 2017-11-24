@@ -19,12 +19,12 @@ $(function () {
 });
 	</script>
 
-    <script type="text/javascript" src="${tenantPrefix}/widgets/replay/scripts/JobExecutor.js"></script>
-    <script type="text/javascript" src="${tenantPrefix}/widgets/replay/scripts/Node.js"></script>
-    <script type="text/javascript" src="${tenantPrefix}/widgets/replay/scripts/Token.js"></script>
-    <script type="text/javascript" src="${tenantPrefix}/widgets/replay/scripts/Replay.js"></script>
+    <script type="text/javascript" src="${tenantPrefix}/cdn/replay/scripts/JobExecutor.js"></script>
+    <script type="text/javascript" src="${tenantPrefix}/cdn/replay/scripts/Node.js"></script>
+    <script type="text/javascript" src="${tenantPrefix}/cdn/replay/scripts/Token.js"></script>
+    <script type="text/javascript" src="${tenantPrefix}/cdn/replay/scripts/Replay.js"></script>
     <script type="text/javascript">
-REPLAY_TOKEN_IMAGE = '${tenantPrefix}/widgets/replay/images/user.png';
+REPLAY_TOKEN_IMAGE = '${tenantPrefix}/cdn/replay/images/user.png';
 REPLAY_TOKEN_IMAGE = '${tenantPrefix}/rs/avatar?id=${1}&width=64';
 REPLAY_TOKEN_WIDTH = 32;
     </script>

@@ -43,7 +43,7 @@ $(function() {
     <div class="row-fluid">
 	<%@include file="/menu/bpm-workspace3.jsp"%>
 
-	  <!-- start of main -->
+	<!-- start of main -->
       <section id="m-main" class="col-md-10" style="padding-top:65px;">
 <!--
 <div class="panel panel-default">
@@ -93,6 +93,7 @@ $(function() {
 	    <%--
         <th width="10" class="m-table-check"><input type="checkbox" name="checkAll" onchange="toggleSelectedItems(this.checked)"></th>
 		--%>
+        <th class="sorting" name="name">业务流水号</th>
         <th class="sorting" name="name">名称</th>
         <th class="sorting" name="name">创建时间</th>
         <th class="sorting" name="status">状态</th>
@@ -106,6 +107,7 @@ $(function() {
 	    <%--
         <td><input type="checkbox" class="selectedItem" name="selectedItem" value="${item.code}"></td>
 		--%>
+        <td>${item.businessKey}</td>
         <td>${item.name}</td>
         <td><fmt:formatDate value="${item.createTime}" type="both"/></td>
         <td>${item.status == 0 ? '流程草稿' : '任务草稿'}</td>

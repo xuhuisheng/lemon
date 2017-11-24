@@ -31,6 +31,7 @@ public class UserCreatedSubscriber implements Subscribable<String> {
     private TenantConnector tenantConnector;
     private UserAuthConnector userAuthConnector;
 
+    // TODO: userAuthCache�Ĳ���Ӧ��ͨ��Listener��Ǩ�Ƶ�authģ���
     public void handleMessage(String message) {
         try {
             UserDTO userDto = jsonMapper.fromJson(message, UserDTO.class);

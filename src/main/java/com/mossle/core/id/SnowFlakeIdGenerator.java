@@ -37,15 +37,15 @@ public class SnowFlakeIdGenerator implements IdGenerator {
         this.workerId = workerId;
     }
 
-    public long generateId() {
+    public Long generateId() {
         return this.nextId();
     }
 
-    public long generateId(String name) {
+    public Long generateId(String name) {
         return this.generateId();
     }
 
-    public long generateId(Class<?> clz) {
+    public Long generateId(Class<?> clz) {
         return this.generateId();
     }
 

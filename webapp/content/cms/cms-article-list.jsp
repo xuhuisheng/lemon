@@ -20,7 +20,7 @@ var config = {
     orderBy: '${page.orderBy == null ? "" : page.orderBy}',
     asc: ${page.asc},
     params: {
-        'filter_LIKES_name': '${param.filter_LIKES_name}'
+        'filter_LIKES_title': '${param.filter_LIKES_title}'
     },
 	selectedItemClass: 'selectedItem',
 	gridFormId: 'cms-articleGridForm',
@@ -59,7 +59,7 @@ $(function() {
 
 		  <form name="cms-articleForm" method="post" action="cms-article-list.do" class="form-inline">
 		    <label for="cms-article_name"><spring:message code='cms-article.cms-article.list.search.name' text='名称'/>:</label>
-		    <input type="text" id="cms-article_name" name="filter_LIKES_name" value="${param.filter_LIKES_name}" class="form-control">
+		    <input type="text" id="cms-article_name" name="filter_LIKES_title" value="${param.filter_LIKES_title}" class="form-control">
 			<button class="btn btn-default a-search" onclick="document.cms-articleForm.submit()">查询</button>&nbsp;
 		  </form>
 
@@ -107,7 +107,8 @@ $(function() {
         <th class="sorting" name="status">状态</th>
         <th class="sorting" name="userId">作者</th>
         <th class="sorting" name="createTime">创建时间</th>
-        <th width="100">&nbsp;</th>
+        <th class="sorting" name="publishTime">发布时间</th>
+        <th width="110">&nbsp;</th>
       </tr>
     </thead>
 
@@ -118,7 +119,8 @@ $(function() {
         <td>${item.title}</td>
         <td>${item.status}</td>
         <td><tags:user userId="${item.userId}"/></td>
-        <td>${item.createTime}</td>
+        <td><fmt:formatDate value="${item.createTime}" type="both"/></td>
+        <td><fmt:formatDate value="${item.publishTime}" type="both"/></td>
         <td>
           <a href="cms-article-view.do?id=${item.id}">预览</a>
           <a href="cms-article-publish.do?id=${item.id}">发布</a>

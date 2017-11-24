@@ -1,0 +1,85 @@
+
+#xf-pallete {
+	float:left;
+	width: 20%;
+}
+
+#xf-form {
+	float:left;
+	width: 100%;
+}
+
+.xf-button {
+	width: 80%;
+	border: 1px dotted gray;
+	margin: 2px;
+	text-align: center;
+	cursor: pointer;
+	-moz-user-select: none;
+}
+
+.xf-pallete {
+	width: 80%;
+	border: 1px dotted gray;
+	margin: 2px;
+	text-align: center;
+	cursor: move;
+	-moz-user-select: none;
+}
+
+table.xf-table {
+}
+
+td.xf-cell {
+	-moz-user-select: none;
+}
+
+td.xf-cell div {
+}
+
+td.xf-cell-top {
+	border-top: #CCCCCC 1px solid;
+}
+
+td.xf-cell-bottom {
+	border-bottom: #CCCCCC 1px solid;
+}
+
+td.xf-cell-left {
+	border-left: #CCCCCC 1px solid;
+}
+
+td.xf-cell-right {
+	border-right: #CCCCCC 1px solid;
+}
+
+td.xf-cell.active {
+	background-color: #EEEEEE;
+}
+
+td.xf-cell-top.active {
+	border-top: #CCCCCC 1px dotted;
+}
+
+td.xf-cell-bottom.active {
+	border-bottom: #CCCCCC 1px dotted;
+}
+
+td.xf-cell-left.active {
+	border-left: #CCCCCC 1px dotted;
+}
+
+td.xf-cell-right.active {
+	border-right: #CCCCCC 1px dotted;
+}
+
+.xf-handler {
+	cursor: move;
+	height: auto;
+	margin: 5px;
+}
+
+.xf-handler .radio,
+.xf-handler .checkbox {
+	padding-left: 5px;
+}

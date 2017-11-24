@@ -93,7 +93,7 @@ $(function() {
       <tr>
         <th width="10" class="m-table-check"><input type="checkbox" name="checkAll" onchange="toggleSelectedItems(this.checked)"></th>
         <th>标题</th>
-        <th>网站</th>
+        <th>网址</th>
         <th>时间</th>
         <th width="80">&nbsp;</th>
       </tr>

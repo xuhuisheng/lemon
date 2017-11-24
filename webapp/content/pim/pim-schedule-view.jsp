@@ -10,13 +10,11 @@
     <title>编辑</title>
     <%@include file="/common/s3.jsp"%>
 
-	<script type="text/javascript" src="${ctx}/s/jquery-ui/ui/minified/jquery-ui.min.js"></script>
-
-	<link rel='stylesheet' type='text/css' href='${ctx}/s/fullcalendar/fullcalendar.css' />
-	<link rel='stylesheet' type='text/css' href='${ctx}/s/fullcalendar/fullcalendar.print.css' media='print' />
-	<script type="text/javascript" src="${ctx}/s/fullcalendar/moment.min.js"></script>
-	<script type='text/javascript' src='${ctx}/s/fullcalendar/fullcalendar.js'></script>
-	<script type="text/javascript" src="${ctx}/s/fullcalendar/zh-CN.js"></script>
+	<link rel='stylesheet' type='text/css' href='${cdnPrefix}/fullcalendar/fullcalendar.css' />
+	<link rel='stylesheet' type='text/css' href='${cdnPrefix}/fullcalendar/fullcalendar.print.css' media='print' />
+	<script type="text/javascript" src="${cdnPrefix}/fullcalendar/moment.min.js"></script>
+	<script type='text/javascript' src='${cdnPrefix}/fullcalendar/fullcalendar.js'></script>
+	<script type="text/javascript" src="${cdnPrefix}/fullcalendar/zh-CN.js"></script>
 
 	<script type="text/javascript">
 var Schedule = function() {
@@ -100,6 +98,11 @@ Schedule.prototype = {
 var schedule = new Schedule();
 
 $(function () {
+	$('#datepickerInline').datepicker({
+		language: 'zh_CN',
+		format: 'yyyy-mm-dd',
+		todayHighlight: true
+	});
 
 		$('#calendar').fullCalendar({
 			header: {
@@ -139,6 +142,7 @@ $(function () {
 		            }
 		        });
 		    },
+			height: window.screen.height - 220
 		});
 
 
@@ -184,22 +188,14 @@ $(function () {
   <body>
     <%@include file="/header/pim3.jsp"%>
 
-    <div class="row-fluid">
-	  <%@include file="/menu/pim3.jsp"%>
+    <div class="row-fluid" style="margin-top:65px;">
+	  <div class="col-md-2">
+	    <div id="datepickerInline" class="datepicker-inline" style="border:1px solid #ddd;"></div>
+	  </div>
 
 	  <!-- start of main -->
-      <section id="m-main" class="col-md-10" style="margin-top:65px;">
-
-      <div class="panel panel-default">
-        <div class="panel-heading">
-		  &nbsp;
-		</div>
-
-		<div class="panel-body">
-
-		  <div id='calendar'></div>
-
-        </div>
+      <section id="m-main" class="col-md-10">
+	    <div id='calendar'></div>
       </div>
 
       </section>
@@ -214,28 +210,38 @@ $(function () {
         <h4 class="modal-title">&nbsp;</h4>
       </div>
       <div class="modal-body">
+	    <form class="form-horizontal">
 		<input id="calendarId" type="hidden" name="id" value="">
-        <label>
-		  标题：
-		  <input id="calendarTitle" type="text" name="title" value="" class="form-control">
-		</label>
-        <label>
-		  开始：
-		  <input id="calendarStart" type="text" name="start" value="" class="form-control">
-		</label>
-        <label>
-		  结束：
-		  <input id="calendarEnd" type="text" name="end" value="" class="form-control">
-		</label>
-        <label>
-		  备注：
-		  <textarea id="calendarContent" name="end" class="form-control"></textarea>
-		</label>
+		<div class="form-group">
+          <label class="col-sm-2 control-label">标题：</label>
+		  <div class="col-sm-10">
+		    <input id="calendarTitle" type="text" name="calendarTitle" value="" class="form-control">
+		  </div>
+		</div>
+		<div class="form-group">
+          <label class="col-sm-2 control-label">开始：</label>
+		  <div class="col-sm-10">
+		    <input id="calendarStart" type="text" name="calendarStart" value="" class="form-control">
+		  </div>
+		</div>
+		<div class="form-group">
+          <label class="col-sm-2 control-label">结束：</label>
+		  <div class="col-sm-10">
+		    <input id="calendarEnd" type="text" name="calendarEnd" value="" class="form-control">
+		  </div>
+		</div>
+		<div class="form-group">
+          <label class="col-sm-2 control-label">备注：</label>
+		  <div class="col-sm-10">
+		    <textarea id="calendarContent" type="text" name="calendarContent" class="form-control"></textarea>
+		  </div>
+		</div>
       </div>
       <div class="modal-footer">
         <button type="button" class="btn btn-default" data-dismiss="modal" id="calendarRemove">关闭</button>
         <button type="button" class="btn btn-primary" id="calendarSave">保存</button>
       </div>
+	  </form>
     </div><!-- /.modal-content -->
   </div><!-- /.modal-dialog -->
 </div><!-- /.modal -->

@@ -177,6 +177,16 @@ public class FormTemplateController {
         return "redirect:/form/form-template-list.do";
     }
 
+    @RequestMapping("form-template-preview")
+    public String preview(@RequestParam("id") Long id, Model model)
+            throws Exception {
+        String tenantId = tenantHolder.getTenantId();
+        FormTemplate formTemplate = this.formTemplateManager.get(id);
+        model.addAttribute("formTemplate", formTemplate);
+
+        return "form/form-template-preview";
+    }
+
     // ~ ======================================================================
     @Resource
     public void setFormTemplateManager(FormTemplateManager formTemplateManager) {

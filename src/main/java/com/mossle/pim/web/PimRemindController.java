@@ -80,6 +80,7 @@ public class PimRemindController {
             dest = pimRemind;
             dest.setUserId(userId);
             dest.setCreateTime(new Date());
+            dest.setStatus("active");
         }
 
         pimRemindManager.save(dest);

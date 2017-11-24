@@ -9,16 +9,16 @@
     <meta charset="utf-8">
     <title>kanban</title>
     <meta name="viewport" content="width=device-width, initial-scale=1">
-    <link href="${tenantPrefix}/s/bootstrap/3.3.6/css/bootstrap.min.css" rel="stylesheet" id="bootstrap-css">
-    <link href="${tenantPrefix}/widgets/kanban/kanban.css" rel="stylesheet">
+    <link href="${cdnPrefix}/bootstrap/3.3.6/css/bootstrap.min.css" rel="stylesheet" id="bootstrap-css">
+    <link href="${cdnPrefix}/kanban/kanban.css" rel="stylesheet">
 
-    <script src="${tenantPrefix}/s/jquery/jquery.min.js"></script>
-    <script src="${tenantPrefix}/s/bootstrap/3.3.6/js/bootstrap.min.js"></script>
+    <script src="${cdnPrefix}/jquery/jquery.min.js"></script>
+    <script src="${cdnPrefix}/bootstrap/3.3.6/js/bootstrap.min.js"></script>
 
-    <link type="text/css" rel="stylesheet" href="${tenantPrefix}/widgets/userpicker/userpicker.css">
-    <script type="text/javascript" src="${tenantPrefix}/widgets/userpicker/userpicker3.js"></script>
+    <link type="text/css" rel="stylesheet" href="${cdnPrefix}/userpicker/userpicker.css">
+    <script type="text/javascript" src="${cdnPrefix}/userpicker/userpicker3.js"></script>
 
-	<script src="${tenantPrefix}/widgets/kanban/kanban.js"></script>
+	<script src="${cdnPrefix}/kanban/kanban.js"></script>
 
 	<script type="text/javascript">
 var logined = <tags:isUser>true</tags:isUser><tags:isGuest>false</tags:isGuest>;

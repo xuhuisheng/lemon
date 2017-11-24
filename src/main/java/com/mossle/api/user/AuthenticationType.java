@@ -13,4 +13,7 @@ public class AuthenticationType {
     public static final String LDAP = "ldap";
     public static final String LDAP_OTP = "ldap-otp";
     public static final String SPECIAL_OR_LDAP = "special-or-ldap";
+
+    // temporary
+    public static final String TEMPORARY = "temporary";
 }

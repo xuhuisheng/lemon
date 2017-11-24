@@ -5,4 +5,6 @@
 	
 	<bean id="orgConnector" class="${org.connector}"/>
 
+	<bean id="partyConnector" class="${party.connector}"/>
+
 </beans>

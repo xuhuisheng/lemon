@@ -19,6 +19,10 @@ public class BeforeInvocationFilter implements Filter {
         this.filters = new ArrayList<Filter>(filters);
     }
 
+    public void addFirstFilter(Filter filter) {
+        this.filters.add(0, filter);
+    }
+
     public void destroy() {
         for (int i = filters.size(); i-- > 0;) {
             Filter filter = filters.get(i);

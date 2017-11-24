@@ -59,8 +59,8 @@ $(function() {
 
 		  <form name="mailHistoryForm" method="post" action="sendmail-history-list.do" class="form-inline">
 		    <label for="mailHistory_receiver">收信人:</label>
-		    <input type="text" id="mailHistory_receiver" name="mailHistory_receiver" value="${param.mailHistory_receiver}">
-			<button class="btn btn-small a-search" onclick="document.mailHistoryForm.submit()">查询</button>&nbsp;
+		    <input type="text" id="mailHistory_receiver" class="form-control" name="mailHistory_receiver" value="${param.mailHistory_receiver}">
+			<button class="btn btn-default a-search" onclick="document.mailHistoryForm.submit()">查询</button>&nbsp;
 		  </form>
 
 		</div>

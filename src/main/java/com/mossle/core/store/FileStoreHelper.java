@@ -118,6 +118,12 @@ public class FileStoreHelper implements StoreHelper {
         return storeResult;
     }
 
+    public void mkdir(String path) {
+        File dir = new File(baseDir + "/" + path);
+        boolean result = dir.mkdirs();
+        logger.info("mkdir : {}", result);
+    }
+
     public String getSuffix(String name) {
         int lastIndex = name.lastIndexOf(".");
 

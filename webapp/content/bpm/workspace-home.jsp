@@ -21,7 +21,7 @@
       <section id="m-main" class="col-md-10" style="padding-top:65px;">
 
 <c:forEach items="${bpmCategories}" var="bpmCategory">
-        <div class="row">
+        <div>
 
 		    <div class="panel panel-default">
 		      <div class="panel-heading">

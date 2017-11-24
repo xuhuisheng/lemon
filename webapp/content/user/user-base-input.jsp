@@ -41,10 +41,10 @@ $(function() {
 })
     </script>
 
-	<link rel="stylesheet" href="${ctx}/s/jquery-file-upload/css/jquery.fileupload.css">
-	<script src="${ctx}/s/jquery-file-upload/js/vendor/jquery.ui.widget.js"></script>
-	<script src="${ctx}/s/jquery-file-upload/js/jquery.iframe-transport.js"></script>
-	<script src="${ctx}/s/jquery-file-upload/js/jquery.fileupload.js"></script>
+	<link rel="stylesheet" href="${cdnPrefix}/jquery-file-upload/css/jquery.fileupload.css">
+	<script src="${cdnPrefix}/jquery-file-upload/js/vendor/jquery.ui.widget.js"></script>
+	<script src="${cdnPrefix}/jquery-file-upload/js/jquery.iframe-transport.js"></script>
+	<script src="${cdnPrefix}/jquery-file-upload/js/jquery.fileupload.js"></script>
 
     <script type="text/javascript">
 function generateFileupload(maxLimitedSize) {

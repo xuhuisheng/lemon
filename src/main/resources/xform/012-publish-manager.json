@@ -7,7 +7,7 @@
 		"text":"经理审批"
 	},{
 		"type":"grid",
-		"row":"3",
+		"row":"4",
 		"col":"4",
 		"merge":[{
 			"startId":"0-1",
@@ -26,6 +26,12 @@
 			"minRow":2,
 			"minCol":1,
 			"maxRow":2,
+			"maxCol":3
+		},{
+			"startId":"3-1",
+			"minRow":3,
+			"minCol":1,
+			"maxRow":3,
 			"maxCol":3
 		}],
 		"fields":[{
@@ -55,10 +61,22 @@
 			"type":"label",
 			"row":2,
 			"col":0,
+			"text":"拟稿审批"
+		},{
+			"type":"userpicker",
+			"row":2,
+			"col":1,
+			"name":"countersignUsers",
+			"required":false,
+			"readOnly":true
+		},{
+			"type":"label",
+			"row":3,
+			"col":0,
 			"text":"部门经理意见"
 		},{
 			"type":"radio",
-			"row":2,
+			"row":3,
 			"col":1,
 			"name":"leaderComment",
 			"items":"同意,不同意",

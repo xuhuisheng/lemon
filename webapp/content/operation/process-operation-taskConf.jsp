@@ -9,16 +9,28 @@
     <%@include file="/common/meta.jsp"%>
     <title>编辑</title>
     <%@include file="/common/s3.jsp"%>
+    <link type="text/css" rel="stylesheet" href="${cdnPrefix}/userpicker3-v2/userpicker.css">
+    <script type="text/javascript" src="${cdnPrefix}/userpicker3-v2/userpicker.js"></script>
+	<script type="text/javascript">
+$(function() {
+	createUserPicker({
+		modalId: 'userPicker',
+		showExpression: true,
+		searchUrl: '${tenantPrefix}/rs/user/search',
+		treeUrl: '${tenantPrefix}/rs/party/tree?partyStructTypeId=1',
+		childUrl: '${tenantPrefix}/rs/party/searchUser'
+	});
+})
+    </script>
   </head>
 
   <body>
     <%@include file="/header/bpm-workspace3.jsp"%>
 
-    <div class="row-fluid">
-	<%@include file="/menu/bpm-workspace3.jsp"%>
+    <div class="container">
 
-	  <!-- start of main -->
-      <section id="m-main" class="col-md-10" style="margin-top:65px;">
+	<!-- start of main -->
+      <section id="m-main" class="col-md-12" style="padding-top:65px;">
 
       <div class="panel panel-default">
         <div class="panel-heading">
@@ -43,7 +55,14 @@
   <c:forEach items="${humanTaskDefinitions}" var="item">
       <tr>
 	    <td><input type="hidden" name="taskDefinitionKeys" value="${item.key}">${item.name}</td>
-	    <td><input type="text" name="taskAssignees" value="${item.assignee}" class="form-control"></td>
+	    <td>
+		    <div class="input-group userPicker" style="width: 175px;">
+			  <input id="_task_name_key" type="hidden" name="value" class="input-medium" value="${item.assignee}">
+			  <input type="text" name="taskAssignees" style="width: 175px;background-color:white;" value="<tags:user userId='${item.assignee}'/>" class="form-control" readonly>
+			  <div class="input-group-addon"><i class="glyphicon glyphicon-user"></i></div>
+		    </div>
+
+		</td>
 	  </tr>
   </c:forEach>
     </tbody>

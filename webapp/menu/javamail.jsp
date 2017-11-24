@@ -10,9 +10,9 @@
 </style>
 
 
-<div class="panel-group col-md-2" id="accordion" role="tablist" aria-multiselectable="true" style="padding-top:65px;">
+<div class="panel-group col-md-2 full-height" id="accordion" role="tablist" aria-multiselectable="true" style="padding-top:65px;">
 
-  <div class="panel panel-default">
+  <div class="panel panel-default" style="height:100%">
     <div class="panel-heading" role="tab" id="collapse-header-javamail" data-toggle="collapse" data-parent="#accordion" href="#collapse-body-javamail" aria-expanded="true" aria-controls="collapse-body-javamail">
       <h4 class="panel-title">
 	    <i class="glyphicon glyphicon-list"></i>
@@ -20,7 +20,7 @@
       </h4>
     </div>
     <div id="collapse-body-javamail" class="panel-collapse collapse ${currentMenu == 'javamail' ? 'in' : ''}" role="tabpanel" aria-labelledby="collapse-header-javamail">
-      <div class="panel-body full-height">
+      <div class="panel-body">
 		<button onclick="location.href='create.do'" class="btn btn-default">新邮件</button>
 		<button onclick="location.href='config.do'" class="btn btn-default">配置</button>
 		<ul id="treeMenu" class="ztree"></ul>

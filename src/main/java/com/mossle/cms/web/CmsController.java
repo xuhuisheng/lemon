@@ -49,7 +49,7 @@ public class CmsController {
     @RequestMapping("catalog")
     public String catalog(@RequestParam("id") Long id, Model model) {
         CmsCatalog cmsCatalog = cmsCatalogManager.get(id);
-        String html = renderService.viewCatalog(cmsCatalog);
+        String html = renderService.viewCatalog(cmsCatalog, null, null);
         model.addAttribute("html", html);
 
         return "cms/catalog";

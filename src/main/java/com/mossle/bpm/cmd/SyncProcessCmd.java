@@ -318,6 +318,7 @@ public class SyncProcessCmd implements Command<Void> {
                 bpmConfListener = new BpmConfListener();
                 bpmConfListener.setValue(value);
                 bpmConfListener.setType(type);
+                bpmConfListener.setBpmConfNode(bpmConfNode);
                 bpmConfListenerManager.save(bpmConfListener);
             }
         }

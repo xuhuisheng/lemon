@@ -29,6 +29,8 @@ public class RecoverableSessionFactoryBean implements FactoryBean,
     private LocalSessionFactoryBean localSessionFactoryBean;
 
     public void afterPropertiesSet() throws IOException {
+        long startTime = System.currentTimeMillis();
+
         // init SessionFactoryWrapper
         sessionFactoryWrapper = new SessionFactoryWrapper();
 
@@ -44,8 +46,11 @@ public class RecoverableSessionFactoryBean implements FactoryBean,
             SessionFactory sessionFactory = localSessionFactoryBean.getObject();
             sessionFactoryWrapper.setSessionFactory(sessionFactory);
         } catch (Exception ex) {
-            logger.error("", ex);
+            logger.error(ex.getMessage(), ex);
         }
+
+        long endTime = System.currentTimeMillis();
+        logger.info("hibernate init cost {} ms", (endTime - startTime));
     }
 
     public void destroy() {

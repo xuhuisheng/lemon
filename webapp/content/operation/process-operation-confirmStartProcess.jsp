@@ -14,11 +14,10 @@
   <body>
     <%@include file="/header/bpm-workspace3.jsp"%>
 
-    <div class="row-fluid">
-	<%@include file="/menu/bpm-workspace3.jsp"%>
+    <div class="container">
 
 	<!-- start of main -->
-      <section id="m-main" class="col-md-10" style="padding-top:65px;">
+      <section id="m-main" class="col-md-12" style="padding-top:65px;">
 
       <div class="panel panel-default">
         <div class="panel-heading">

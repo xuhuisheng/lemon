@@ -15,7 +15,12 @@ import org.activiti.engine.impl.persistence.entity.ProcessDefinitionEntity;
 import org.activiti.engine.impl.pvm.process.ActivityImpl;
 import org.activiti.engine.impl.pvm.runtime.InterpretableExecution;
 
+import org.slf4j.Logger;
+import org.slf4j.LoggerFactory;
+
 public class ReOpenProcessCmd implements Command<Void> {
+    private static Logger logger = LoggerFactory
+            .getLogger(ReOpenProcessCmd.class);
     private String historicProcessInstanceId;
 
     public ReOpenProcessCmd(String historicProcessInstanceId) {
@@ -26,6 +31,13 @@ public class ReOpenProcessCmd implements Command<Void> {
         HistoricProcessInstanceEntity historicProcessInstanceEntity = commandContext
                 .getHistoricProcessInstanceEntityManager()
                 .findHistoricProcessInstance(historicProcessInstanceId);
+
+        if (historicProcessInstanceEntity.getEndTime() == null) {
+            logger.info("historicProcessInstanceId is running");
+
+            return null;
+        }
+
         historicProcessInstanceEntity.setEndActivityId(null);
         historicProcessInstanceEntity.setEndTime(null);
 

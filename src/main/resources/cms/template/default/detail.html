@@ -5,40 +5,95 @@
     <meta http-equiv="X-UA-Compatible" content="IE=edge,chrome=1" />
     <title>${article.title}</title>
 	<!-- static start -->
-	<link rel="stylesheet" href="../s/bootstrap/3.3.6/css/bootstrap.min.css">
-    <script type="text/javascript" src="../s/jquery/jquery.min.js"></script>
-	<script type="text/javascript" src="../s/bootstrap/3.3.6/js/bootstrap.min.js"></script>
+	<link rel="stylesheet" href="../cdn/bootstrap/3.3.6/css/bootstrap.min.css">
+    <script type="text/javascript" src="../cdn/jquery/jquery.min.js"></script>
+	<script type="text/javascript" src="../cdn/bootstrap/3.3.6/js/bootstrap.min.js"></script>
 	<!-- static end -->
+	<style type="text/css">
+* {
+	font-size: 16px;
+}
+	</style>
   </head>
   <body>
-    <!-- navbar start -->
-    <div class="navbar navbar-default" role="navigation">
-      <div class="navbar-inner">
-        <div class="container-fluid"><!-- .container -->
-          <div class="navbar-header">
-            <a class="navbar-brand" href="../">Mossle</a>
-          </div>
-        </div><!-- /.container -->
+    <div class="container" style="font-size:12px;">
+	  <div class="row">
+	  <div class="col-md-6">
+	    &nbsp;
 	  </div>
+	  <div class="col-md-6 text-right">
+	    <a href='../portal/index.do' style="font-size:12px;">个人中心</a>
+	  </div>
+	  </div>
+	</div>
+
+	<div class="container" style="line-height:7rem;margin-bottom:10px;">
+	  <div class="row">
+	  <div class="col-md-2" style="font-size:3rem;">
+	    Mossle
+	  </div>
+	  <div class="col-md-10">
+	    <div class="text-center" style="background-color:#F8F8F8;color:white;">
+	      &nbsp;
+		</div>
+	  </div>
+	  </div>
+	</div>
+
+    <!-- navbar start -->
+    <div class="container">
+	  <div class="navbar navbar-default" role="navigation" style="margin-bottom:10px;">
+        <div class="navbar-header">
+          <a class="navbar-brand" href="cms-site-view.do">首页</a>
+        </div>
+        <div class="collapse navbar-collapse" id="bs-example-navbar-collapse-1">
+          <ul class="nav navbar-nav">
+		    <#list catalogs as catalog>
+            <li class=""><a href="cms-catalog-view.do?id=${catalog.id?string('#')}">${catalog.name}</a></li>
+			</#list>
+          </ul>
+		</div>
+	</div>
     </div>
     <!-- navbar end -->
 
+
     <div class="container">
       <div class="row">
-        <div class="col-md-12">
-          <h3>${article.title}</h3>
-	      <p>
+
+
+        <!-- left start -->
+        <div class="col-md-9">
+
+
+		  <div class="panel panel-default">
+		  <div class="panel-body">
+		    <span style="color:gray;">
+			  首页
+			  /
+			  <a href="cms-catalog-view.do?id=${article.cmsCatalog.id?string('#')}">${article.cmsCatalog.name}</a>
+			</span>
+
+          <h3 style="margin-top:10px;">${article.title}</h3>
+		  <p>
 	        <span style="color:gray;">${userConnector.findById(article.userId).displayName}</span>
-		    <span style="color:gray;">${article.publishTime!}</span>
+			|
+		    <span style="color:gray;"><#if article.publishTime??>${article.publishTime?string("yyyy-MM-dd HH:mm")}</#if></span>
+			<span style="color:gray;"><i class="glyphicon glyphicon-eye-open"></i> ${article.hitCount!}</span>
+
+			<span style="color:gray;">tags</span>
+		    <span style="color:gray;">tags</span>
 	      </p>
 
 	    <#if article.logo??>
 	      <img src="${article.logo}">
 	    </#if>
 
+        <#--
 	    <#if article.summary??>
-	      <p style="color:gray;">${article.summary}</p>
+	      <p style="color:gray;">${article.summary!}</p>
 	    </#if>
+		--#>
 	
 	      <hr>
 	      <!-- ==================================================================== -->
@@ -52,7 +107,80 @@
 		  </#list>
 	    </#if>
         
+		    </div>
+		  </div>
+
+		  <div class="panel panel-default">
+		    <div class="panel-body">
+			  <form method="POST" action="cms-comment-submit.do">
+			    <input type="hidden" name="articleId" value="${article.id?string('#')}">
+			    <div class="form-group">
+				  <textarea name="content" class="form-control" placeholder="评论"></textarea>
+			    </div>
+			    <div class="form-group">
+				  <button class="btn btn-default">发布</button>
+			    </div>
+			  </form>
+			  <hr>
+			  <#list page.result as comment>
+			    <div>
+				  <p>${comment.content}</p>
+				  <p>
+					<span style="color:gray;">${userConnector.findById(comment.userId).displayName}</span>
+					|
+					<span style="color:gray;"><#if comment.createTime??>${comment.createTime?string("yyyy-MM-dd HH:mm")}</#if></span>
+				  </p>
+				</div>
+			  </#list>
+
+
+			<hr>
+
+<#if (page.pageCount > 1)>
+<nav aria-label="Page navigation">
+  <ul class="pagination">
+    <li>
+	  <#if page.previousEnabled>
+      <a href="?id=${article.id?string('#')}&pageNo=${page.pageNo - 1}" aria-label="Previous">
+      <#else>
+      <a href="javascript:void(0);" aria-label="Previous">
+	  </#if>
+        <span aria-hidden="true">&laquo;</span>
+      </a>
+    </li>
+	<#list 1..page.pageCount as i>
+    <li><a href="?id=${article.id?string('#')}&pageNo=${i}">${i}</a></li>
+	</#list>
+    <li>
+	  <#if page.nextEnabled>
+      <a href="?id=${article.id?string('#')}&pageNo=${page.pageNo + 1}" aria-label="Next">
+      <#else>
+      <a href="javascript:void(0);" aria-label="Previous">
+	  </#if>
+        <span aria-hidden="true">&raquo;</span>
+      </a>
+    </li>
+  </ul>
+</nav>
+</#if>
+
+			</div>
+		  </div>
 		</div>
+	    <!-- left end -->
+
+		<!-- right start -->
+		<div class="col-md-3">
+
+		  <div class="panel panel-default">
+		    <div class="panel-body">
+		    <div style="font-size:18px;margin-bottom:5px;">热门标签</div>
+			<p style="color:gray;">tags, tags</p>
+			</div>
+		  </div>
+		</div>
+	    <!-- right end -->
+
       </div>
     </div>
 

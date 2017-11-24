@@ -14,10 +14,17 @@ public class MockKeyValueConnector implements KeyValueConnector {
         return null;
     }
 
+    public Record findByBusinessKey(String businessKey) {
+        return null;
+    }
+
     public void save(Record record) {
     }
 
     public void removeByCode(String code) {
+    }
+
+    public void removeByBusinessKey(String businessKey) {
     }
 
     public List<Record> findByStatus(int status, String userId, String tenantId) {
