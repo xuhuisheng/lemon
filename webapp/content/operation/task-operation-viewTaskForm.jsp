@@ -116,7 +116,7 @@ var taskOperation = new TaskOperation();
 	  <td width="25%" class="xf-cell xf-cell-right xf-cell-bottom xf-cell-top" colspan="1" rowspan="1">
 	    <div id="nextStep"></div>
 	  </td>
-	</td>
+	</tr>
   </tbody>
 </table>
 	  <script>
