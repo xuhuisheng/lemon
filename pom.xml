@@ -30,6 +30,21 @@
     <maven>3.0</maven>
   </prerequisites>
   <dependencies>
+  	<dependency>
+ 	 <groupId>com.google.zxing</groupId>
+  	 <artifactId>javase</artifactId>
+  	 <version>2.2</version>
+	</dependency>
+  	<dependency>
+  	   <groupId>com.google.zxing</groupId>
+ 	   <artifactId>core</artifactId>
+ 	   <version>2.2</version>
+	</dependency>
+	<dependency>
+		<groupId>net.glxn</groupId>
+		<artifactId>qrgen</artifactId>
+		<version>1.2</version>
+	</dependency>
     <dependency>
       <groupId>junit</groupId>
       <artifactId>junit</artifactId>
