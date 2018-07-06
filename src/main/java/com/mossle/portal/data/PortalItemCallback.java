@@ -27,6 +27,8 @@ public class PortalItemCallback implements CsvCallback {
         String columnIndex = list.get(1);
         String rowIndex = list.get(2);
 
+		name = name.toLowerCase();
+
         PortalInfo portalInfo = this.createOrGetPortalInfo();
 
         PortalWidget portalWidget = portalWidgetManager.findUniqueBy("name",
