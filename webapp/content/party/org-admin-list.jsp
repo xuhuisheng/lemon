@@ -69,8 +69,8 @@ $(function() {
       <div style="margin-bottom: 20px;">
 	    <div class="pull-left">
 	      <div class="btn-group" role="group">
-		    <button class="btn btn-default a-insert" onclick="location.href='org-admin-input.do?partyStructTypeId=2&partyEntityId=${partyEntityId}&partyTypeId=5'">新建岗位</button>
-		    <button class="btn btn-default a-insert" onclick="location.href='org-admin-input.do?partyStructTypeId=2&partyEntityId=${partyEntityId}&partyTypeId=1'">新建人员</button>
+		    <button class="btn btn-default a-insert" onclick="location.href='org-admin-input.do?partyStructTypeId=2&partyEntityId=${partyEntityId}&partyTypeId=5'">添加负责岗位</button>
+		    <button class="btn btn-default a-insert" onclick="location.href='org-admin-input.do?partyStructTypeId=2&partyEntityId=${partyEntityId}&partyTypeId=1'">添加负责人</button>
 		  </div>
 		  <a href="org-list.do?partyStructTypeId=${partyStructTypeId}&partyEntityId=${partyEntityId}&partyTypeId=${item.id}" class="btn btn-default">返回</a>
 		</div>
@@ -102,9 +102,10 @@ $(function() {
 	    <!--
         <th width="10" class="table-check"><input type="checkbox" name="checkAll" onchange="toggleSelectedItems(this.checked)"></th>
 		-->
-        <th class="sorting" name="id"><spring:message code="org.org.list.id" text="编号"/></th>
+        <th class="sorting" name="id">编码</th>
         <th class="sorting" name="name">名称</th>
         <th class="sorting" name="partyType">类型</th>
+        <th class="sorting" name="admin">次序</th>
 		<!--
         <th class="sorting" name="admin">管理</th>
 		-->
@@ -118,9 +119,10 @@ $(function() {
 	    <!--
         <td><input type="checkbox" class="selectedItem" name="selectedItem" value="${item.childEntity.id}"></td>
 		-->
-        <td>${item.childEntity.id}</td>
+        <td>${item.childEntity.code}</td>
         <td>${item.childEntity.name}</td>
         <td>${item.childEntity.partyType.name}</td>
+        <td>${item.priority}</td>
 		<!--
         <td>${item.admin == 1}</td>
 		-->

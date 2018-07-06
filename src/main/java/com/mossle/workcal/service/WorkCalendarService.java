@@ -80,24 +80,28 @@ public class WorkCalendarService implements WorkCalendarConnector {
 
             for (WorkcalPart workcalPart : workcalPartManager.findBy(
                     "workcalRule", workcalRule)) {
-                DayPart dayPart = new DayPart();
-                dayPart.setWorkDay(day);
-                dayPart.setIndex(dayPartIndex);
+                try {
+                    DayPart dayPart = new DayPart();
+                    dayPart.setWorkDay(day);
+                    dayPart.setIndex(dayPartIndex);
 
-                Date startDate = new SimpleDateFormat(hourFormatText)
-                        .parse(workcalPart.getStartTime());
-                Date endDate = new SimpleDateFormat(hourFormatText)
-                        .parse(workcalPart.getEndTime());
-                Calendar startCalendar = Calendar.getInstance();
-                startCalendar.setTime(startDate);
+                    Date startDate = new SimpleDateFormat(hourFormatText)
+                            .parse(workcalPart.getStartTime());
+                    Date endDate = new SimpleDateFormat(hourFormatText)
+                            .parse(workcalPart.getEndTime());
+                    Calendar startCalendar = Calendar.getInstance();
+                    startCalendar.setTime(startDate);
 
-                Calendar endCalendar = Calendar.getInstance();
-                endCalendar.setTime(endDate);
-                dayPart.setFromHour(startCalendar.get(Calendar.HOUR));
-                dayPart.setFromMinute(startCalendar.get(Calendar.MINUTE));
-                dayPart.setToHour(endCalendar.get(Calendar.HOUR));
-                dayPart.setToMinute(endCalendar.get(Calendar.MINUTE));
-                dayParts.add(dayPart);
+                    Calendar endCalendar = Calendar.getInstance();
+                    endCalendar.setTime(endDate);
+                    dayPart.setFromHour(startCalendar.get(Calendar.HOUR));
+                    dayPart.setFromMinute(startCalendar.get(Calendar.MINUTE));
+                    dayPart.setToHour(endCalendar.get(Calendar.HOUR));
+                    dayPart.setToMinute(endCalendar.get(Calendar.MINUTE));
+                    dayParts.add(dayPart);
+                } catch (Exception ex) {
+                    logger.error(ex.getMessage(), ex);
+                }
             }
 
             days.set(workcalRule.getWeek(), day);

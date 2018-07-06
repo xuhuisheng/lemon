@@ -7,6 +7,7 @@ import java.util.List;
 
 import javax.annotation.Resource;
 
+import com.mossle.api.auth.CurrentUserHolder;
 import com.mossle.api.humantask.HumanTaskConnector;
 import com.mossle.api.humantask.HumanTaskDTO;
 import com.mossle.api.tenant.TenantHolder;
@@ -14,7 +15,6 @@ import com.mossle.api.tenant.TenantHolder;
 import com.mossle.bpm.persistence.domain.BpmProcess;
 import com.mossle.bpm.persistence.manager.BpmProcessManager;
 
-import com.mossle.core.auth.CurrentUserHolder;
 import com.mossle.core.page.Page;
 
 import org.activiti.engine.ProcessEngine;
@@ -45,7 +45,7 @@ public class BpmPortalController {
         List<HistoricProcessInstance> historicProcessInstances = processEngine
                 .getHistoryService().createHistoricProcessInstanceQuery()
                 .processInstanceTenantId(tenantId).startedBy(userId)
-                .unfinished().list();
+                .unfinished().orderByProcessInstanceStartTime().desc().list();
 
         StringBuilder buff = new StringBuilder();
         buff.append("<table class='table table-hover'>");

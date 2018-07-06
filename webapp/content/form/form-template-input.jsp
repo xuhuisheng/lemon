@@ -10,8 +10,9 @@
     <title>designer</title>
     <%@include file="/common/s3.jsp"%>
 	<link href="${cdnPrefix}/xform3/styles/xform.css" rel="stylesheet">
-    <script type="text/javascript" src="${cdnPrefix}/xform3/xform-packed.js"></script>
-    <script type="text/javascript" src="${cdnPrefix}/xform3/adaptor.js"></script>
+	<link href="${cdnPrefix}/public/mossle-xform/0.0.11/styles/xform.css" rel="stylesheet">
+    <script type="text/javascript" src="${cdnPrefix}/public/mossle-xform/0.0.11/xform-packed.js"></script>
+    <script type="text/javascript" src="${cdnPrefix}/public/mossle-xform/0.0.11/adaptor.js"></script>
 
 	<style type="text/css">
 .xf-pallete {
@@ -58,43 +59,43 @@
 			<div class="tab-pane active" id="operation">
 			  <div style="padding-top:5px;">
 				<div class="xf-pallete" title="label">
-				  <img src="${cdnPrefix}/xform/images/xform/new_label.png">
+				  <img src="${cdnPrefix}/public/mossle-xform/0.0.11/images/xform/new_label.png">
 				  label
 				</div>
 				<div class="xf-pallete" title="textfield">
-				  <img src="${cdnPrefix}/xform/images/xform/new_input.png">
+				  <img src="${cdnPrefix}/public/mossle-xform/0.0.11/images/xform/new_input.png">
 				  textfield
 				</div>
 				<div class="xf-pallete" title="password">
-				  <img src="${cdnPrefix}/xform/images/xform/new_secret.png">
+				  <img src="${cdnPrefix}/public/mossle-xform/0.0.11/images/xform/new_secret.png">
 				  password
 				</div>
 				<div class="xf-pallete" title="textarea">
-				  <img src="${cdnPrefix}/xform/images/xform/new_textarea.png">
+				  <img src="${cdnPrefix}/public/mossle-xform/0.0.11/images/xform/new_textarea.png">
 				  textarea
 				</div>
 				<div class="xf-pallete" title="select">
-				  <img src="${cdnPrefix}/xform/images/xform/new_select.png">
+				  <img src="${cdnPrefix}/public/mossle-xform/0.0.11/images/xform/new_select.png">
 				  select
 				</div>
 				<div class="xf-pallete" title="radio">
-				  <img src="${cdnPrefix}/xform/images/xform/new_item.png">
+				  <img src="${cdnPrefix}/public/mossle-xform/0.0.11/images/xform/new_item.png">
 				  radio
 				</div>
 				<div class="xf-pallete" title="checkbox">
-				  <img src="${cdnPrefix}/xform/images/xform/new_itemset.png">
+				  <img src="${cdnPrefix}/public/mossle-xform/0.0.11/images/xform/new_itemset.png">
 				  checkbox
 				</div>
 				<div class="xf-pallete" title="fileupload">
-				  <img src="${cdnPrefix}/xform/images/xform/new_upload.png">
+				  <img src="${cdnPrefix}/public/mossle-xform/0.0.11/images/xform/new_upload.png">
 				  fileupload
 				</div>
 				<div class="xf-pallete" title="datepicker">
-				  <img src="${cdnPrefix}/xform/images/xform/new_range.png">
+				  <img src="${cdnPrefix}/public/mossle-xform/0.0.11/images/xform/new_range.png">
 				  datepicker
 				</div>
 				<div class="xf-pallete" title="userpicker">
-				  <img src="${cdnPrefix}/xform/images/xform/userpicker.png">
+				  <img src="${cdnPrefix}/public/mossle-xform/0.0.11/images/xform/userpicker.png">
 				  userpicker
 				</div>
 			  </div>

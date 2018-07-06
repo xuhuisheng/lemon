@@ -17,7 +17,7 @@ import javax.ws.rs.core.MediaType;
 import com.mossle.api.user.UserConnector;
 import com.mossle.api.user.UserDTO;
 
-import com.mossle.core.auth.CurrentUserHolder;
+import com.mossle.api.auth.CurrentUserHolder;
 import com.mossle.core.mapper.BeanMapper;
 import com.mossle.core.util.BaseDTO;
 

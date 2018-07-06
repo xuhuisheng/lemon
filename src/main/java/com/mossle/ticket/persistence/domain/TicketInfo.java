@@ -59,6 +59,16 @@ public class TicketInfo implements java.io.Serializable {
     /** null. */
     private Date updateTime;
 
+    /** null. */
+    private String survey;
+
+    /** null. */
+    private String surveyMessage;
+
+    /** . */
+    private Set<TicketAttachment> ticketAttachments = new HashSet<TicketAttachment>(
+            0);
+
     /** . */
     private Set<TicketComment> ticketComments = new HashSet<TicketComment>(0);
 
@@ -72,7 +82,9 @@ public class TicketInfo implements java.io.Serializable {
     public TicketInfo(Long id, TicketGroup ticketGroup,
             TicketCatalog ticketCatalog, String code, String name,
             String content, String creator, String status, Date createTime,
-            String assignee, Date updateTime, Set<TicketComment> ticketComments) {
+            String assignee, Date updateTime, String survey,
+            String surveyMessage, Set<TicketAttachment> ticketAttachments,
+            Set<TicketComment> ticketComments) {
         this.id = id;
         this.ticketGroup = ticketGroup;
         this.ticketCatalog = ticketCatalog;
@@ -84,6 +96,9 @@ public class TicketInfo implements java.io.Serializable {
         this.createTime = createTime;
         this.assignee = assignee;
         this.updateTime = updateTime;
+        this.survey = survey;
+        this.surveyMessage = surveyMessage;
+        this.ticketAttachments = ticketAttachments;
         this.ticketComments = ticketComments;
     }
 
@@ -244,6 +259,48 @@ public class TicketInfo implements java.io.Serializable {
      */
     public void setUpdateTime(Date updateTime) {
         this.updateTime = updateTime;
+    }
+
+    /** @return null. */
+    @Column(name = "SURVEY", length = 50)
+    public String getSurvey() {
+        return this.survey;
+    }
+
+    /**
+     * @param survey
+     *            null.
+     */
+    public void setSurvey(String survey) {
+        this.survey = survey;
+    }
+
+    /** @return null. */
+    @Column(name = "SURVEY_MESSAGE", length = 200)
+    public String getSurveyMessage() {
+        return this.surveyMessage;
+    }
+
+    /**
+     * @param surveyMessage
+     *            null.
+     */
+    public void setSurveyMessage(String surveyMessage) {
+        this.surveyMessage = surveyMessage;
+    }
+
+    /** @return . */
+    @OneToMany(fetch = FetchType.LAZY, mappedBy = "ticketInfo")
+    public Set<TicketAttachment> getTicketAttachments() {
+        return this.ticketAttachments;
+    }
+
+    /**
+     * @param ticketAttachments
+     *            .
+     */
+    public void setTicketAttachments(Set<TicketAttachment> ticketAttachments) {
+        this.ticketAttachments = ticketAttachments;
     }
 
     /** @return . */

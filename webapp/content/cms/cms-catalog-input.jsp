@@ -66,14 +66,20 @@ $(function() {
   <div class="form-group">
     <label class="control-label col-md-1" for="cmsCatalog_type">类型</label>
 	<div class="col-sm-5">
-	  <select id="cmsCatalog_type" name="type">
+	  <select id="cmsCatalog_type" name="type" class="form-control">
 	    <option value="0" ${model.type == 0 ? 'selected' : ''}>文字</option>
 	    <option value="1" ${model.type == 1 ? 'selected' : ''}>图片</option>
 	    <option value="2" ${model.type == 2 ? 'selected' : ''}>音乐</option>
 	    <option value="3" ${model.type == 3 ? 'selected' : ''}>视频</option>
 	    <option value="4" ${model.type == 4 ? 'selected' : ''}>文档</option>
-	    <option value="5" ${model.type == 5 ? 'selected' : ''}>文档</option>
+	    <option value="5" ${model.type == 5 ? 'selected' : ''}>附件</option>
 	  </select>
+    </div>
+  </div>
+  <div class="form-group">
+    <label class="control-label col-md-1" for="cmsCatalog_priority">优先级</label>
+	<div class="col-sm-5">
+	  <input id="cmsCatalog_priority" type="text" name="priority" value="${model.priority}" size="40" class="form-control required numbere" minlength="1" maxlength="10">
     </div>
   </div>
   <div class="form-group">
@@ -83,13 +89,13 @@ $(function() {
     </div>
   </div>
   <div class="form-group">
-    <label class="control-label col-md-1" for="cmsCatalog_templateList">列表页模板</label>
+    <label class="control-label col-md-1" for="cmsCatalog_templateList">列表模板</label>
 	<div class="col-sm-5">
 	  <input id="cmsCatalog_templateList" type="text" name="templateList" value="${model.templateList}" size="40" class="form-control required" minlength="2" maxlength="50">
     </div>
   </div>
   <div class="form-group">
-    <label class="control-label col-md-1" for="cmsCatalog_temlateDetail">详情页模板</label>
+    <label class="control-label col-md-1" for="cmsCatalog_temlateDetail">详情模板</label>
 	<div class="col-sm-5">
 	  <input id="cmsCatalog_temlateDetail" type="text" name="templateDetail" value="${model.templateDetail}" size="40" class="form-control required" minlength="2" maxlength="50">
     </div>
@@ -107,9 +113,9 @@ $(function() {
     </div>
   </div>
   <div class="form-group">
-    <div class="col-sm-5">
-      <button id="submitButton" class="btn a-submit"><spring:message code='core.input.save' text='保存'/></button>
-      <button type="button" onclick="history.back();" class="btn a-cancel"><spring:message code='core.input.back' text='返回'/></button>
+    <div class="col-md-5 col-md-offset-1">
+      <button id="submitButton" class="btn btn-default a-submit"><spring:message code='core.input.save' text='保存'/></button>
+      <button type="button" onclick="history.back();" class="btn btn-link a-cancel"><spring:message code='core.input.back' text='返回'/></button>
     </div>
   </div>
 </form>

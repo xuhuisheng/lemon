@@ -1,0 +1,6 @@
+<p>bugfix:</p>
+
+<ul>
+	<li>源码地址： <a href="https://github.com/xuhuisheng/lemon/tree/lemon-1.6.1" target="_blank">https://github.com/xuhuisheng/lemon/tree/lemon-1.6.1</a></li>
+	<li>独立运行包： <a href="http://pan.baidu.com/s/1jGqAoYE" target="_blank">http://pan.baidu.com/s/1jGqAoYE</a></li>
+</ul>

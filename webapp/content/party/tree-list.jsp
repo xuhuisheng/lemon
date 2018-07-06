@@ -86,7 +86,7 @@ $(function() {
 			  <option value="${item.id}" ${param.partyStructTypeId == item.id ? 'selected' : ''}>${item.name}</option>
 			  </c:forEach>
 			</select>
-			<button class="btn"><spring:message code='org.tree.list.view' text='查看'/></button>
+			<button class="btn btn-default"><spring:message code='org.tree.list.view' text='查看'/></button>
 		  </form>
 		  </div>
 		  </div>

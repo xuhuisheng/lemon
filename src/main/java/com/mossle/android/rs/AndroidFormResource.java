@@ -23,7 +23,7 @@ import com.mossle.api.tenant.TenantHolder;
 
 import com.mossle.bpm.persistence.manager.BpmProcessManager;
 
-import com.mossle.core.auth.CurrentUserHolder;
+import com.mossle.api.auth.CurrentUserHolder;
 import com.mossle.core.mapper.JsonMapper;
 
 import com.mossle.model.support.FormField;

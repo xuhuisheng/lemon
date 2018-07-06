@@ -48,7 +48,7 @@ $(function() {
   <div class="form-group">
     <label class="control-label col-md-1" for="scope-global_name">时间段</label>
 	<div class="col-sm-5">
-	  <select name="shift">
+	  <select name="shift" class="form-control">
 	    <option value="0">上午</option>
 	    <option value="1">下午</option>
 	    <option value="2">前半夜</option>
@@ -71,7 +71,7 @@ $(function() {
   <div class="form-group">
     <label class="control-label col-md-1" for="scope-global_name">工作日历类型</label>
 	<div class="col-sm-5">
-	  <select name="workcalRuleId">
+	  <select name="workcalRuleId" class="form-control">
 	    <c:forEach items="${workcalRules}" var="item">
 	    <option value="${item.id}">${item.name}</option>
 		</c:forEach>
@@ -79,10 +79,10 @@ $(function() {
     </div>
   </div>
   <div class="form-group">
-    <div class="col-sm-5">
-      <button id="submitButton" type="submit" class="btn a-submit"><spring:message code='core.input.save' text='保存'/></button>
+    <div class="col-sm-5 col-md-offset-1">
+      <button type="submit" class="btn btn-default a-submit"><spring:message code='core.input.save' text='保存'/></button>
 	  &nbsp;
-      <button type="button" onclick="history.back();" class="btn a-cancel"><spring:message code='core.input.back' text='返回'/></button>
+      <button type="button" class="btn btn-link a-cancel" onclick="history.back();"><spring:message code='core.input.back' text='返回'/></button>
     </div>
   </div>
 </form>

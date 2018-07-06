@@ -1,0 +1,7 @@
+<p>bugfix:</p>
+
+<ul>
+	<li>详细修订列表： <a href="https://github.com/xuhuisheng/lemon/issues?q=milestone%3A1.5.1" target="_blank">https://github.com/xuhuisheng/lemon/issues?q=milestone%3A1.5.1</a></li>
+	<li>源码地址： <a href="https://github.com/xuhuisheng/lemon/tree/lemon-1.5.1" target="_blank">https://github.com/xuhuisheng/lemon/tree/lemon-1.5.1</a></li>
+	<li>独立运行包： <a href="http://pan.baidu.com/s/1eQ0duwU" target="_blank">http://pan.baidu.com/s/1eQ0duwU</a></li>
+</ul>

@@ -32,6 +32,13 @@ public class ServletFilter extends ProxyFilter {
         String path = requestUri.substring(contextPath.length());
         logger.trace("path : {}", path);
 
+        // 如果在黑名单中，直接略过
+        if (isExcluded(path)) {
+            filterChain.doFilter(request, response);
+
+            return;
+        }
+
         for (Map.Entry<UrlPatternMatcher, Servlet> entry : servletMap
                 .entrySet()) {
             UrlPatternMatcher urlPatternMatcher = entry.getKey();

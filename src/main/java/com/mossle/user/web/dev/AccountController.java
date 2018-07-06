@@ -8,12 +8,13 @@ import java.util.Map;
 
 import javax.annotation.Resource;
 
+import com.mossle.api.auth.CustomPasswordEncoder;
 import com.mossle.api.store.StoreConnector;
 import com.mossle.api.tenant.TenantHolder;
 import com.mossle.api.user.UserCache;
+import com.mossle.api.user.UserConnector;
 import com.mossle.api.user.UserDTO;
 
-import com.mossle.core.auth.CustomPasswordEncoder;
 import com.mossle.core.export.Exportor;
 import com.mossle.core.mapper.BeanMapper;
 import com.mossle.core.page.Page;
@@ -57,6 +58,7 @@ public class AccountController {
     private StoreConnector storeConnector;
     private UserPublisher userPublisher;
     private TenantHolder tenantHolder;
+    private UserConnector userConnector;
 
     @RequestMapping("list")
     public String list(@ModelAttribute Page page,
@@ -103,7 +105,7 @@ public class AccountController {
         messageHelper.addFlashMessage(redirectAttributes,
                 "core.success.delete", "删除成功");
 
-        return "redirect:/user/dev/list.do";
+        return "redirect:/user/account-info-list.do";
     }
 
     @RequestMapping("account-info-checkUsername")
@@ -209,6 +211,24 @@ public class AccountController {
         return "user/dev/import-result";
     }
 
+    @RequestMapping("export-view")
+    public String exportView(Model model) throws Exception {
+        List<AccountInfo> accountInfos = this.accountInfoManager.getAll("id",
+                true);
+        List<UserDTO> userDtos = new ArrayList<UserDTO>();
+
+        for (AccountInfo accountInfo : accountInfos) {
+            UserDTO userDto = userConnector.findById(Long.toString(accountInfo
+                    .getId()));
+            userDtos.add(userDto);
+        }
+
+        model.addAttribute("userDtos", userDtos);
+
+        return "user/dev/export-view";
+    }
+
+    //
     public UserDTO convertUserDto(AccountInfo accountInfo) {
         String hql = "from PersonInfo where code=? and tenantId=?";
         PersonInfo personInfo = personInfoManager.findUnique(hql,
@@ -286,5 +306,10 @@ public class AccountController {
     @Resource
     public void setTenantHolder(TenantHolder tenantHolder) {
         this.tenantHolder = tenantHolder;
+    }
+
+    @Resource
+    public void setUserConnector(UserConnector userConnector) {
+        this.userConnector = userConnector;
     }
 }

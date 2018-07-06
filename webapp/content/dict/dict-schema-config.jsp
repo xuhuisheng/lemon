@@ -68,7 +68,7 @@ $(function() {
 
       <div style="margin-bottom: 20px;">
 	    <div class="pull-left btn-group" role="group">
-		  <button class="btn btn-default a-insert" onclick="location.href='dict-schema-input.do'">新建</button>
+		  <button class="btn btn-default a-insert" onclick="location.href='dict-schema-input.do?typeId=${param.typeId}'">新建</button>
 		  <button class="btn btn-default a-remove" onclick="table.removeAll()">删除</button>
 		  <button class="btn btn-default a-export" onclick="table.exportExcel()">导出</button>
 		</div>
@@ -114,7 +114,7 @@ $(function() {
         <td>${item.type}</td>
         <td>${item.priority}</td>
         <td>
-          <a href="dict-schema-input.do?id=${item.id}" class="a-update"><spring:message code="core.list.edit" text="编辑"/></a>
+          <a href="dict-schema-input.do?id=${item.id}&typeId=${param.typeId}" class="a-update"><spring:message code="core.list.edit" text="编辑"/></a>
         </td>
       </tr>
       </c:forEach>

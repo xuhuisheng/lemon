@@ -1,0 +1,15 @@
+<p>features:</p>
+
+<ul>
+	<li>使用接口把form与bpm完全分离</li>
+	<li>简化dbmigrate的配置</li>
+	<li>提供notification接口，支持多种提醒方式</li>
+</ul>
+
+<p>resources:</p>
+
+<ul>
+	<li>详细修订列表： <a href="https://github.com/xuhuisheng/lemon/issues?q=milestone%3A1.4.0" target="_blank">https://github.com/xuhuisheng/lemon/issues?q=milestone%3A1.4.0</a></li>
+	<li>源码地址： <a href="https://github.com/xuhuisheng/lemon/tree/lemon-1.4.0" target="_blank">https://github.com/xuhuisheng/lemon/tree/lemon-1.4.0</a></li>
+	<li>独立运行包： <a href="http://pan.baidu.com/s/1sjug013" target="_blank">http://pan.baidu.com/s/1sjug013</a></li>
+</ul>

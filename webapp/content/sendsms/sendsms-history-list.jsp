@@ -58,8 +58,8 @@ $(function() {
   <div class="panel-body">
 
 		  <form name="sendsms-configForm" method="post" action="sendsms-history-list.do" class="form-inline">
-		    <label for="sendsms-config_name"><spring:message code='sendsms-config.sendsms-config.list.search.name' text='名称'/>:</label>
-		    <input type="text" id="sendsms-config_name" name="filter_LIKES_name" value="${param.filter_LIKES_name}" class="form-control">
+		    <label for="sendsms-config_mobile">手机:</label>
+		    <input type="text" id="sendsms-config_mobile" name="filter_LIKES_mobile" value="${param.filter_LIKES_mobile}" class="form-control">
 			<button class="btn btn-default a-search" onclick="document.sendsms-configForm.submit()">查询</button>&nbsp;
 		  </form>
 
@@ -100,7 +100,6 @@ $(function() {
     <thead>
       <tr>
         <th width="10" class="m-table-check"><input type="checkbox" name="checkAll" onchange="toggleSelectedItems(this.checked)"></th>
-        <th>编号</th>
         <th>创建时间</th>
         <th>手机</th>
         <th>信息</th>
@@ -113,8 +112,7 @@ $(function() {
       <c:forEach items="${page.result}" var="item">
       <tr>
         <td><input type="checkbox" class="selectedItem a-check" name="selectedItem" value="${item.id}"></td>
-        <td>${item.id}</td>
-        <td>${item.createTime}</td>
+        <td><fmt:formatDate value="${item.createTime}" type="both"/></td>
         <td>${item.mobile}</td>
         <td>${item.message}</td>
         <td>${item.status}</td>

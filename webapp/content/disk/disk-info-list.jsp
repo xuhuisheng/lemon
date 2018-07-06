@@ -6,8 +6,22 @@
     <meta http-equiv="content-type" content="text/html; charset=UTF-8">
     <meta charset="utf-8">
     <title>网盘</title>
-    <%@include file="_s.jsp"%>
-	<link rel="stylesheet" href="${cdnPrefix}/disk/sprite_list_icon.css">
+    <%@include file="/common/s3.jsp"%>
+	<link rel="stylesheet" href="${cdnPrefix}/public/mossle-disk/0.0.3/sprite_list_icon.css">
+	<style type="text/css">
+.text-left .disk-tool {
+	display: none;
+	float: right;
+}
+.text-left.active .disk-tool {
+	display: inline-block;
+}
+	</style>
+	<style type="text/css">
+body {
+    padding-top: 50px;
+}
+	</style>
   </head>
   <body>
     <div id="wrap">&nbsp;
@@ -26,8 +40,8 @@
 
     <table id="tablereimburserecord1" class="table table-hover table-bordered">
       <thead>
-        <tr class="active">
-          <th class="col-md-1 text-left"></th>
+        <tr>
+          <th class="m-table-check"><input type="checkbox" name="checkAll" onchange="toggleSelectedItems(this.checked)"></th>
           <th class="col-md-7 text-left">文件名</th>
           <th class="col-md-2 text-left">大小</th>
           <th class="col-md-2 text-left">修改时间</th>
@@ -36,26 +50,27 @@
       <tbody id="tbodyFileInfo">
 	    <c:forEach items="${diskInfos}" var="item">
         <tr>
-		  <td class="text-center">
-			<c:if test="${item.type != 'dir'}">
-            <a href="disk-info-download.do?id=${item.id}" title="下载"><i class=" glyphicon glyphicon-download-alt"></i></a>
-			</c:if>
-			<a href="javascript:void(0);renameFile(${item.id}, '${item.name}');" title="改名"><i class="glyphicon glyphicon-pencil"></i></a>
-			<a href="javascript:void(0);moveFile(${item.id})" title="移动"><i class="glyphicon glyphicon-move"></i></a>
-            <a href="javascript:void(0);removeFile(${item.id});" title="删除"><i class="glyphicon glyphicon-remove"></i></a>
-            <a href="javascript:void(0);shareFile(${item.id});" title="分享"><i class="glyphicon glyphicon-share"></i></a>
-          </td>
-          <td class="text-left">
+          <td><input type="checkbox" class="selectedItem a-check" name="selectedItem" value="${item.id}"></td>
+          <td class="text-left" onmouseover="this.className='text-left active'" onmouseout="this.className='text-left'">
 		    <i class="icon-16 icon-16-${item.type}"></i>
 			<c:if test="${item.type == 'dir'}">
 			<a href="disk-info-list.do?path=${path}/${item.name}">
-		    <span class="file-16-name">${item.name}</span>
+		      <span class="file-16-name">${item.name}</span>
 			</a>
 			</c:if>
 			<c:if test="${item.type != 'dir'}">
 		    <a href="disk-info-view.do?id=${item.id}">
-			<span class="file-16-name">${item.name}</span>
+			  <span class="file-16-name">${item.name}</span>
 			</a>
+			<span class="disk-tool" class="">
+			  <c:if test="${item.type != 'dir'}">
+              <a href="disk-info-download.do?id=${item.id}" title="下载"><i class=" glyphicon glyphicon-download-alt"></i></a>
+			  </c:if>
+			  <a href="javascript:void(0);renameFile(${item.id}, '${item.name}');" title="改名"><i class="glyphicon glyphicon-pencil"></i></a>
+			  <a href="javascript:void(0);moveFile(${item.id})" title="移动"><i class="glyphicon glyphicon-move"></i></a>
+              <a href="javascript:void(0);removeFile(${item.id});" title="删除"><i class="glyphicon glyphicon-remove"></i></a>
+              <a href="javascript:void(0);shareFile(${item.id});" title="分享"><i class="glyphicon glyphicon-share"></i></a>
+			</span>
 			</c:if>
 	      </td>
           <td class="text-left"><tags:fileSize fileSize="${item.fileSize}"/></td>

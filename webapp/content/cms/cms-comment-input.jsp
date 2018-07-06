@@ -54,13 +54,13 @@ $(function() {
   <div class="form-group">
     <label class="control-label col-md-1" for="cms-comment_cmsCommentname">内容</label>
 	<div class="col-sm-5">
-	  <input id="cms-comment_cmsCommentname" type="text" name="content" value="${model.content}" size="40" class="form-control required" minlength="2" maxlength="50">
+	  <textarea id="cms-comment_cmsCommentname" name="content" class="form-control required" minlength="2" maxlength="50">${model.content}</textarea>
     </div>
   </div>
   <div class="form-group">
-    <div class="col-sm-5">
-      <button id="submitButton" class="btn a-submit"><spring:message code='core.input.save' text='保存'/></button>
-      <button type="button" onclick="history.back();" class="btn a-cancel"><spring:message code='core.input.back' text='返回'/></button>
+    <div class="col-md-5 col-md-offset-1">
+      <button id="submitButton" class="btn btn-default a-submit"><spring:message code='core.input.save' text='保存'/></button>
+      <button type="button" onclick="history.back();" class="btn btn-link a-cancel"><spring:message code='core.input.back' text='返回'/></button>
     </div>
   </div>
 </form>

@@ -9,7 +9,7 @@ import com.mossle.api.process.ProcessConnector;
 import com.mossle.api.tenant.TenantHolder;
 import com.mossle.api.user.UserConnector;
 
-import com.mossle.core.auth.CurrentUserHolder;
+import com.mossle.api.auth.CurrentUserHolder;
 import com.mossle.core.page.Page;
 
 import com.mossle.internal.delegate.persistence.domain.DelegateHistory;

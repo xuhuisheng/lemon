@@ -48,43 +48,43 @@ $(function() {
   <div class="form-group">
     <label class="control-label col-md-1" for="mailQueue_sender">发件人</label>
 	<div class="col-sm-5">
-	  <input id="mailQueue_sender" type="text" name="sender" value="${model.sender}" maxlength="50">
+	  <input id="mailQueue_sender" type="text" name="sender" value="${model.sender}" maxlength="50" class="form-control">
     </div>
   </div>
   <div class="form-group">
     <label class="control-label col-md-1" for="mailQueue_receiver">收件人</label>
 	<div class="col-sm-5">
-	  <textarea id="mailQueue_receiver" name="receiver" maxlength="200">${model.receiver}</textarea>
+	  <textarea id="mailQueue_receiver" name="receiver" maxlength="200" class="form-control">${model.receiver}</textarea>
     </div>
   </div>
   <div class="form-group">
     <label class="control-label col-md-1" for="mailQueue_cc">抄送</label>
 	<div class="col-sm-5">
-	  <textarea id="mailQueue_cc" name="cc" maxlength="200">${model.cc}</textarea>
+	  <textarea id="mailQueue_cc" name="cc" maxlength="200" class="form-control">${model.cc}</textarea>
     </div>
   </div>
   <div class="form-group">
     <label class="control-label col-md-1" for="mailQueue_bcc">暗送</label>
 	<div class="col-sm-5">
-	  <textarea id="mailQueue_bcc" name="bcc" maxlength="200">${model.bcc}</textarea>
+	  <textarea id="mailQueue_bcc" name="bcc" maxlength="200" class="form-control">${model.bcc}</textarea>
     </div>
   </div>
   <div class="form-group">
     <label class="control-label col-md-1" for="mailQueue_subject">标题</label>
 	<div class="col-sm-5">
-	  <input id="mailQueue_subject" type="text" name="subject" value="${model.subject}" maxlength="50">
+	  <input id="mailQueue_subject" type="text" name="subject" value="${model.subject}" maxlength="50" class="form-control">
     </div>
   </div>
   <div class="form-group">
     <label class="control-label col-md-1" for="mailQueue_data">数据</label>
 	<div class="col-sm-5">
-	  <textarea id="mailQueue_data" name="data" maxlength="65535">${model.data}</textarea>
+	  <textarea id="mailQueue_data" name="data" maxlength="65535" class="form-control">${model.data}</textarea>
     </div>
   </div>
   <div class="form-group">
     <label class="control-label col-md-1" for="mailQueue_mailConfigId">SMTP服务器</label>
 	<div class="col-sm-5">
-	  <select id="mailQueue_mailConfigId" name="sendmailConfigId">
+	  <select id="mailQueue_mailConfigId" name="sendmailConfigId" class="form-control">
 	  <c:forEach items="${sendmailConfigs}" var="item">
 	    <option value="${item.id}">${item.name}</option>
 	  </c:forEach>
@@ -94,7 +94,7 @@ $(function() {
   <div class="form-group">
     <label class="control-label col-md-1" for="mailQueue_mailTemplateId">模板</label>
 	<div class="col-sm-5">
-	  <select id="mailQueue_mailTemplateId" name="sendmailTemplateId">
+	  <select id="mailQueue_mailTemplateId" name="sendmailTemplateId" class="form-control">
 	  <c:forEach items="${sendmailTemplates}" var="item">
 	    <option value="${item.id}">${item.name}</option>
 	  </c:forEach>
@@ -102,10 +102,10 @@ $(function() {
     </div>
   </div>
   <div class="form-group">
-    <div class="col-sm-5">
-      <button type="submit" class="btn a-submit"><spring:message code='core.input.save' text='保存'/></button>
+    <div class="col-sm-5 col-md-offset-1">
+      <button type="submit" class="btn btn-default a-submit"><spring:message code='core.input.save' text='保存'/></button>
 	  &nbsp;
-      <button type="button" class="btn a-cancel" onclick="history.back();"><spring:message code='core.input.back' text='返回'/></button>
+      <button type="button" class="btn btn-link a-cancel" onclick="history.back();"><spring:message code='core.input.back' text='返回'/></button>
     </div>
   </div>
 </form>

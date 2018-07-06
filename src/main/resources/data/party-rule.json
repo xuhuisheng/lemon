@@ -1,0 +1,71 @@
+[{
+    "code": "struct",
+    "name": "行政组织",
+    "rules": [{
+        "code": "company",
+        "name": "公司",
+        "children": [{
+            "code": "company",
+            "name": "公司"
+        }, {
+            "code": "department",
+            "name": "部门"]
+        }, {
+	    "code": "group",
+	    "name": "群组"
+	}, {
+	    "code": "user",
+	    "name": "人员"
+	}]
+    }, {
+        "code": "department",
+        "name": "部门",
+        "children": [{
+            "code": "department",
+            "name": "部门"
+        }, {
+	    "code": "group",
+	    "name": "群组"
+	}, {
+	    "code": "user",
+	    "name": "人员"
+	}]
+    }, {
+        "code": "group",
+        "name": "群组",
+        "children": [{
+	    "code": "group",
+	    "name": "群组"
+	}, {
+	    "code": "user",
+	    "name": "人员"
+	}]
+    }]
+}, {
+    "code": "manage",
+    "name": "负责人",
+    "display": false,
+    "rules": [{
+        "code": "department",
+        "name": "部门",
+        "children": [{
+            "code": "position",
+            "name": "岗位"
+        }, {
+            "code": "user",
+            "name": "人员"
+        }]
+    }]
+}, {
+    "code": "user-position",
+    "name": "人员岗位",
+    "display": false,
+    "rules": [{
+        "code": "position",
+        "name": "岗位",
+        "children": [{
+            "code": "user",
+            "name": "人员"
+        }]
+    }]
+}]

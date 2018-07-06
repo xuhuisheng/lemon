@@ -48,7 +48,7 @@ $(function() {
     <label class="control-label col-md-1" for="dictInfo_typeId">类型</label>
 	<div class="col-sm-5">
 	  <input type="hidden" name="typeId" value="${dictType.id}">
-	  ${dictType.name}
+	  <p class="form-control-static">${dictType.name}</p>
     </div>
   </div>
   <div class="form-group">
@@ -78,7 +78,7 @@ $(function() {
   </div>
   </c:forEach>
   <div class="form-group">
-    <div class="col-sm-5">
+    <div class="col-sm-5 col-md-offset-1">
       <button type="submit" class="btn btn-default a-submit"><spring:message code='core.input.save' text='保存'/></button>
 	  &nbsp;
       <button type="button" class="btn btn-link a-cancel" onclick="history.back();"><spring:message code='core.input.back' text='返回'/></button>

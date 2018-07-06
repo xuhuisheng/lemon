@@ -20,7 +20,9 @@ var config = {
     orderBy: '${page.orderBy == null ? "" : page.orderBy}',
     asc: ${page.asc},
     params: {
-        'filter_LIKES_name': '${param.filter_LIKES_name}'
+        'filter_EQL_id': '${param.filter_EQL_id}',
+        'filter_LIKES_name': '${param.filter_LIKES_name}',
+        'filter_EQS_ref': '${param.filter_EQS_ref}'
     },
 	selectedItemClass: 'selectedItem',
 	gridFormId: 'party-entityGridForm',
@@ -58,8 +60,12 @@ $(function() {
   <div class="panel-body">
 
 		  <form name="party-entityForm" method="post" action="party-entity-list.do" class="form-inline">
+		    <label for="partyEntity_id">ID:</label>
+		    <input type="text" id="partyEntity_id" name="filter_EQL_id" value="${param.filter_EQL_id}" class="form-control">
 		    <label for="party-entity_name"><spring:message code='party-entity.party-entity.list.search.name' text='名称'/>:</label>
 		    <input type="text" id="party-entity_name" name="filter_LIKES_name" value="${param.filter_LIKES_name}" class="form-control">
+		    <label for="partyEntity_ref">引用:</label>
+		    <input type="text" id="partyEntity_ref" name="filter_EQS_ref" value="${param.filter_EQS_ref}" class="form-control">
 			<button class="btn btn-default a-search" onclick="document.party-entityForm.submit()">查询</button>&nbsp;
 		  </form>
 
@@ -100,6 +106,7 @@ $(function() {
           <th width="10" class="table-check"><input type="checkbox" name="checkAll" onchange="toggleSelectedItems(this.checked)"></th>
           <th class="sorting" name="id"><spring:message code="org.org.list.id" text="编号"/></th>
           <th class="sorting" name="type"><spring:message code="org.org.list.type" text="类型"/></th>
+          <th class="sorting" name="type">编码</th>
           <th class="sorting" name="name"><spring:message code="org.org.list.name" text="名称"/></th>
           <th class="sorting" name="level">级别</th>
           <th class="sorting" name="ref">引用</th>
@@ -112,6 +119,7 @@ $(function() {
           <td><input type="checkbox" class="selectedItem" name="selectedItem" value="${item.id}"></td>
           <td>${item.id}</td>
           <td>${item.partyType.name}</td>
+          <td>${item.code}</td>
           <td>${item.name}</td>
           <td>${item.level}</td>
           <td>${item.ref}</td>

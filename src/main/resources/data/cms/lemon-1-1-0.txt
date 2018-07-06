@@ -1,0 +1,17 @@
+<p>features:</p>
+
+<ul>
+	<li>使用springmvc替换struts2</li>
+	<li>去除第三方依赖，减少war的大小，减低permgen的使用量</li>
+	<li>跳过节点</li>
+	<li>流程实例迁移</li>
+	<li>会签的配置界面</li>
+</ul>
+
+<p>resources:</p>
+
+<ul>
+	<li>详细修订列表： <a href="https://github.com/xuhuisheng/lemon/issues?q=milestone%3A1.1.0" target="_blank">https://github.com/xuhuisheng/lemon/issues?q=milestone%3A1.1.0</a></li>
+	<li>源码地址： <a href="https://github.com/xuhuisheng/lemon/tree/lemon-1.1.0" target="_blank">https://github.com/xuhuisheng/lemon/tree/lemon-1.1.0</a></li>
+	<li>独立运行包： <a href="http://pan.baidu.com/s/1eQIc0NK" target="_blank">http://pan.baidu.com/s/1eQIc0NK</a></li>
+</ul>

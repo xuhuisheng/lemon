@@ -1,6 +1,7 @@
 <configuration debug="false">
-	<contextListener class="ch.qos.logback.classic.jul.LevelChangePropagator"/>
-
+	<contextListener class="ch.qos.logback.classic.jul.LevelChangePropagator">
+		<resetJUL>true</resetJUL>
+	</contextListener>
 
    <define name="LOCAL_PROP_EXISTS" class="com.mossle.core.logback.ResourceExistsPropertyDefiner">
       <path>application.local.properties</path>
@@ -86,7 +87,6 @@
 	<logger name="com.sun.jersey.server.impl.managedbeans.ManagedBeanComponentProviderFactoryInitilizer" level="warn"/>
 	<logger name="org.hibernate.engine.internal.StatisticalLoggingSessionEventListener" level="warn"/>
 	<logger name="org.hibernate.hql.internal.ast.HqlSqlWalker" level="error"/>
-	<logger name="org.springframework.context.support.ResourceBundleMessageSource" level="error"/>
 	<logger name="org.springframework.security.access.event.LoggerListener" level="error"/>
 	<logger name="org.springframework.security.authentication.event.LoggerListener" level="error"/>
 	<logger name="org.springframework.web.servlet.mvc.method.annotation.RequestMappingHandlerMapping" level="warn"/>

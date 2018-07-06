@@ -102,6 +102,7 @@ $(function() {
           <th class="sorting" name="bpmCategory.id">分类</th>
           <th class="sorting" name="priority">排序</th>
           <th class="sorting" name="useTaskConf">是否配置任务负责人</th>
+          <th class="sorting" name="useTaskConf">绑定</th>
           <th width="100">&nbsp;</th>
         </tr>
       </thead>
@@ -113,6 +114,7 @@ $(function() {
           <td>${item.bpmCategory.name}</td>
           <td>${item.priority}</td>
           <td>${item.useTaskConf == 1 ? '是' : '否'}</td>
+          <td>${item.bpmConfBase.processDefinitionId}</td>
           <td>
 			<region:region-permission permission="bpmProcess:write">
             <a href="bpm-process-input.do?id=${item.id}" class="a-update"><spring:message code="core.list.edit" text="编辑"/></a>&nbsp;

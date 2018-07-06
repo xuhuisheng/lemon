@@ -9,6 +9,7 @@ import javax.annotation.Resource;
 
 import javax.servlet.http.HttpServletRequest;
 
+import com.mossle.api.auth.CurrentUserHolder;
 import com.mossle.api.form.FormDTO;
 import com.mossle.api.humantask.HumanTaskConnector;
 import com.mossle.api.humantask.HumanTaskConstants;
@@ -27,10 +28,10 @@ import com.mossle.button.ButtonDTO;
 import com.mossle.button.ButtonHelper;
 
 import com.mossle.core.MultipartHandler;
-import com.mossle.core.auth.CurrentUserHolder;
 import com.mossle.core.mapper.BeanMapper;
 import com.mossle.core.mapper.JsonMapper;
 import com.mossle.core.spring.MessageHelper;
+import com.mossle.core.util.BaseDTO;
 
 import com.mossle.operation.service.OperationService;
 
@@ -46,6 +47,7 @@ import org.springframework.ui.Model;
 
 import org.springframework.web.bind.annotation.RequestMapping;
 import org.springframework.web.bind.annotation.RequestParam;
+import org.springframework.web.bind.annotation.ResponseBody;
 import org.springframework.web.multipart.MultipartResolver;
 import org.springframework.web.servlet.mvc.support.RedirectAttributes;
 
@@ -422,6 +424,21 @@ public class TaskOperationController {
         }
 
         return "redirect:/humantask/workspace-personalTasks.do";
+    }
+
+    @RequestMapping("task-operation-removeAttachment")
+    @ResponseBody
+    public BaseDTO removeAttachment(@RequestParam("name") String name,
+            @RequestParam("humanTaskId") String humanTaskId) {
+        HumanTaskDTO humanTaskDto = humanTaskConnector
+                .findHumanTask(humanTaskId);
+        String businessKey = humanTaskDto.getBusinessKey();
+        operationService.removeAttachment(businessKey, name);
+
+        BaseDTO baseDto = new BaseDTO();
+        baseDto.setCode(200);
+
+        return baseDto;
     }
 
     // ~ ======================================================================

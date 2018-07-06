@@ -2,11 +2,10 @@ package com.mossle.user.authenticate;
 
 import javax.annotation.Resource;
 
+import com.mossle.api.auth.CustomPasswordEncoder;
 import com.mossle.api.user.AccountStatus;
 import com.mossle.api.user.AuthenticationHandler;
 import com.mossle.api.user.AuthenticationType;
-
-import com.mossle.core.auth.CustomPasswordEncoder;
 
 import com.mossle.user.persistence.domain.AccountCredential;
 import com.mossle.user.persistence.domain.AccountInfo;

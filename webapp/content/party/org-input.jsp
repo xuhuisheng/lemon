@@ -22,13 +22,13 @@ $(function() {
 })
     </script>
 
-    <link type="text/css" rel="stylesheet" href="${cdnPrefix}/userpicker3/userpicker.css">
-    <script type="text/javascript" src="${cdnPrefix}/userpicker3/userpicker.js"></script>
+    <link type="text/css" rel="stylesheet" href="${cdnPrefix}/public/mossle-userpicker/3.1/userpicker.css">
+    <script type="text/javascript" src="${cdnPrefix}/public/mossle-userpicker/3.1/userpicker.js"></script>
 	<script type="text/javascript">
 $(function() {
 	createUserPicker({
 		modalId: 'userPicker',
-		url: '${tenantPrefix}/rs/user/search'
+		url: '${tenantPrefix}/user/rs/search'
 	});
 })
     </script>
@@ -38,7 +38,7 @@ var createOrgPicker = function(conf) {
 		conf = {
 			modalId: 'orgPickerModel',
 			multiple: false,
-			url: '${tenantPrefix}/rs/party/entities?typeId=${partyType.id}'
+			url: '${tenantPrefix}/party/rs/entities?typeId=${partyType.id}'
 		};
 	}
 
@@ -175,14 +175,14 @@ $(function() {
   <div class="form-group">
     <label class="control-label col-md-1" for="orgInputUser_status">是否兼职</label>
 	<div class="col-sm-5">
-	  <label for="orgInputUser_status1" class="radio inline">
-	    <input id="orgInputUser_status1" type="radio" name="status" value="1" class="required" checked>
+	  <label class="radio-inline" for="orgInputUser_status1">
+        <input type="radio" name="status" id="orgInputUser_status1" value="1" class="required" checked>
 		主职
-	  </label>
-	  <label for="orgInputUser_status2" class="radio inline">
-	    <input id="orgInputUser_status2" type="radio" name="status" value="2" class="required">
+      </label>
+	  <label class="radio-inline" for="orgInputUser_status2">
+        <input type="radio" name="status" id="orgInputUser_status2" value="2" class="required">
 		兼职
-	  </label>
+      </label>
 	  <label for="orgInputUser_status2" class="validate-error" generated="true" style="display:none;"></label>
     </div>
   </div>

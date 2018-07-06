@@ -6,12 +6,12 @@ import java.util.Map;
 
 import javax.annotation.Resource;
 
+import com.mossle.api.auth.CustomPasswordEncoder;
 import com.mossle.api.store.StoreConnector;
 import com.mossle.api.tenant.TenantHolder;
 import com.mossle.api.user.UserCache;
 import com.mossle.api.user.UserDTO;
 
-import com.mossle.core.auth.CustomPasswordEncoder;
 import com.mossle.core.export.Exportor;
 import com.mossle.core.mapper.BeanMapper;
 import com.mossle.core.page.Page;
@@ -27,6 +27,8 @@ import com.mossle.user.persistence.manager.AccountCredentialManager;
 import com.mossle.user.persistence.manager.AccountInfoManager;
 import com.mossle.user.persistence.manager.PersonInfoManager;
 import com.mossle.user.publish.UserPublisher;
+
+import org.apache.commons.lang3.StringUtils;
 
 import org.springframework.stereotype.Controller;
 
@@ -55,15 +57,24 @@ public class AccountInfoController {
     private TenantHolder tenantHolder;
 
     @RequestMapping("account-info-list")
-    public String list(@ModelAttribute Page page,
+    public String list(
+            @ModelAttribute Page page,
+            @RequestParam(value = "username", required = false) List<String> username,
             @RequestParam Map<String, Object> parameterMap, Model model) {
         String tenantId = tenantHolder.getTenantId();
         List<PropertyFilter> propertyFilters = PropertyFilter
                 .buildFromMap(parameterMap);
+
+        if (username != null) {
+            String text = StringUtils.join(username, ',');
+            propertyFilters.add(new PropertyFilter("INS_username", text));
+        }
+
         propertyFilters.add(new PropertyFilter("EQS_tenantId", tenantId));
         page = accountInfoManager.pagedQuery(page, propertyFilters);
 
         model.addAttribute("page", page);
+        model.addAttribute("now", new Date());
 
         return "user/account-info-list";
     }
@@ -114,6 +125,10 @@ public class AccountInfoController {
                 accountInfo.setStatus("disabled");
             }
 
+            if (accountInfo.getLocked() == null) {
+                accountInfo.setLocked("unlocked");
+            }
+
             beanMapper.copy(accountInfo, dest);
         } else {
             dest = accountInfo;
@@ -122,8 +137,16 @@ public class AccountInfoController {
                 accountInfo.setStatus("disabled");
             }
 
+            if (accountInfo.getLocked() == null) {
+                accountInfo.setLocked("unlocked");
+            }
+
             dest.setCreateTime(new Date());
             dest.setTenantId(tenantId);
+        }
+
+        if (dest.getUsername() != null) {
+            dest.setUsername(dest.getUsername().trim().toLowerCase());
         }
 
         accountInfoManager.save(dest);
@@ -234,25 +257,6 @@ public class AccountInfoController {
         userPublisher.notifyUserUpdated(this.convertUserDto(accountInfo));
 
         return "redirect:/user/account-info-list.do";
-    }
-
-    @RequestMapping("account-info-checkUsername")
-    @ResponseBody
-    public boolean checkUsername(@RequestParam("username") String username,
-            @RequestParam(value = "id", required = false) Long id)
-            throws Exception {
-        String tenantId = tenantHolder.getTenantId();
-        String hql = "from AccountInfo where username=? and tenantId=?";
-        Object[] params = { username, tenantId };
-
-        if (id != null) {
-            hql = "from AccountInfo where username=? and tenantId=? and id<>?";
-            params = new Object[] { username, tenantId, id };
-        }
-
-        boolean result = accountInfoManager.findUnique(hql, params) == null;
-
-        return result;
     }
 
     public UserDTO convertUserDto(AccountInfo accountInfo) {

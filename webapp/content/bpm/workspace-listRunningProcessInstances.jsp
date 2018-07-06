@@ -75,7 +75,7 @@ $(function() {
 		--%>
         <th class="sorting" name="id">编号</th>
         <th>标题</th>
-        <th>流程定义</th>
+        <th>业务流程</th>
         <th>创建时间</th>
         <th>状态</th>
         <th width="140">&nbsp;</th>

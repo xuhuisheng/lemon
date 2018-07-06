@@ -30,4 +30,24 @@ public interface OrgConnector {
      * 根据userId获得所有最近的部门或公司.
      */
     List<OrgDTO> getOrgsByUserId(String userId);
+
+    OrgDTO findById(String orgId);
+
+    List<String> findUserByPositionName(String positionName, String companyName);
+
+    List<String> findUserByNearestPositionName(String userId,
+            String positionName);
+
+    /**
+     * 
+     * @Title: findPositionByUserId
+     * @Description: TODO(根据用户查询用所主职所在的岗位。)
+     * @param @param userId
+     * @param @return 参数
+     * @return OrgDTO 返回类型
+     * @throws
+     */
+    OrgDTO findPositionByUserId(String userId);
+
+    OrgDTO findCompany(String userCode);
 }

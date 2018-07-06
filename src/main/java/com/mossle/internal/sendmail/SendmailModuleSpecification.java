@@ -19,7 +19,7 @@ public class SendmailModuleSpecification implements ModuleSpecification {
     }
 
     public String getSchemaTable() {
-        return "SCHEMA_VERSION_" + MODULE_NAME_UPPER;
+        return PREFIX + MODULE_NAME_UPPER;
     }
 
     public String getSchemaLocation() {
@@ -31,7 +31,7 @@ public class SendmailModuleSpecification implements ModuleSpecification {
     }
 
     public String getDataTable() {
-        return "SCHEMA_VERSION_DATA_" + MODULE_NAME_UPPER;
+        return PREFIX + "DATA_" + MODULE_NAME_UPPER;
     }
 
     public String getDataLocation() {
@@ -43,12 +43,12 @@ public class SendmailModuleSpecification implements ModuleSpecification {
         this.type = type;
     }
 
-    @Value("${" + MODULE_NAME + ".dbmigrate.enabled}")
+    @Value("${" + MODULE_NAME + ".dbmigrate.enabled:false}")
     public void setEnabled(boolean enabled) {
         this.enabled = enabled;
     }
 
-    @Value("${" + MODULE_NAME + ".dbmigrate.initData}")
+    @Value("${" + MODULE_NAME + ".dbmigrate.initData:false}")
     public void setInitData(boolean initData) {
         this.initData = initData;
     }

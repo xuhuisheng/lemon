@@ -39,6 +39,7 @@ import org.activiti.engine.impl.pvm.PvmActivity;
 import org.activiti.engine.impl.pvm.PvmTransition;
 import org.activiti.engine.impl.pvm.process.ActivityImpl;
 import org.activiti.engine.impl.task.TaskDefinition;
+import org.activiti.engine.repository.ProcessDefinition;
 import org.activiti.engine.task.Task;
 
 import org.slf4j.Logger;
@@ -404,6 +405,15 @@ public class ActivitiInternalProcessConnector implements
         // processEngine.getRuntimeService().signal(executionId);
         processEngine.getManagementService().executeCommand(
                 new SignalStartEventCmd(executionId));
+    }
+
+    public String findProcessDefinitionId(String processDefinitionKey) {
+        ProcessDefinition processDefinition = processEngine
+                .getRepositoryService().createProcessDefinitionQuery()
+                .processDefinitionKey(processDefinitionKey).latestVersion()
+                .singleResult();
+
+        return processDefinition.getId();
     }
 
     // ~ ==================================================

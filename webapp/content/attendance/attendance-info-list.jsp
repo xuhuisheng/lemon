@@ -73,6 +73,8 @@ $(function() {
 		  <button class="btn btn-default a-export" onclick="table.exportExcel()">导出</button>
 		</div>
 
+		<a href="attendance-add-record.do" class="btn btn-default" style="margin-left:10px;">打卡</a>
+
 		<div class="pull-right">
 		  每页显示
 		  <select class="m-page-size form-control" style="display:inline;width:auto;">
@@ -97,9 +99,11 @@ $(function() {
     <thead>
       <tr>
         <th width="10" class="table-check"><input type="checkbox" name="checkAll" onchange="toggleSelectedItems(this.checked)"></th>
-        <th class="sorting" name="id"><spring:message code="attendance-info.attendance-info.list.id" text="编号"/></th>
-        <th class="sorting" name="name"><spring:message code="attendance-info.attendance-info.list.name" text="名称"/></th>
-        <th width="80">&nbsp;</th>
+        <th class="sorting" name="id">用户</th>
+        <th class="sorting" name="name">考勤时间</th>
+        <th class="sorting" name="name">类型</th>
+        <th class="sorting" name="name">状态</th>
+        <th>&nbsp;</th>
       </tr>
     </thead>
 
@@ -107,8 +111,10 @@ $(function() {
       <c:forEach items="${page.result}" var="item">
       <tr>
         <td><input type="checkbox" class="selectedItem a-check" name="selectedItem" value="${item.id}"></td>
-        <td>${item.id}</td>
-        <td>${item.name}</td>
+        <td>${item.userId}</td>
+        <td><fmt:formatDate value="${item.createTime}" type="both"/></td>
+        <td>${item.type}</td>
+        <td>${item.status}</td>
         <td>
           <a href="attendance-info-input.do?id=${item.id}" class="a-update"><spring:message code="core.list.edit" text="编辑"/></a>
         </td>

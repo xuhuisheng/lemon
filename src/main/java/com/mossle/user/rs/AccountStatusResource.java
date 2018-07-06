@@ -8,10 +8,9 @@ import javax.ws.rs.POST;
 import javax.ws.rs.Path;
 import javax.ws.rs.QueryParam;
 
-import com.mossle.api.user.AccountAliasConverter;
-import com.mossle.api.user.AccountStatusHelper;
-
 import com.mossle.core.util.BaseDTO;
+
+import com.mossle.spi.user.InternalUserConnector;
 
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
@@ -25,8 +24,7 @@ import org.springframework.stereotype.Component;
 public class AccountStatusResource {
     private static Logger logger = LoggerFactory
             .getLogger(AccountStatusResource.class);
-    private AccountStatusHelper accountStatusHelper;
-    private AccountAliasConverter accountAliasConverter;
+    private InternalUserConnector internalUserConnector;
 
     @GET
     @Path("islocked")
@@ -36,7 +34,8 @@ public class AccountStatusResource {
 
         try {
             baseDto.setCode(200);
-            baseDto.setData(accountStatusHelper.isLocked(username, application));
+            baseDto.setData(internalUserConnector.isLocked(username,
+                    application));
         } catch (Exception ex) {
             logger.error(ex.getMessage(), ex);
             baseDto.setCode(500);
@@ -54,7 +53,7 @@ public class AccountStatusResource {
 
         try {
             baseDto.setCode(200);
-            baseDto.setData(accountStatusHelper.getAccountStatus(username,
+            baseDto.setData(internalUserConnector.getAccountStatus(username,
                     application));
         } catch (Exception ex) {
             logger.error(ex.getMessage(), ex);
@@ -72,7 +71,7 @@ public class AccountStatusResource {
 
         try {
             baseDto.setCode(200);
-            baseDto.setData(accountAliasConverter.convertAlias(username));
+            baseDto.setData(internalUserConnector.findUsernameByAlias(username));
         } catch (Exception ex) {
             logger.error(ex.getMessage(), ex);
             baseDto.setCode(500);
@@ -83,13 +82,8 @@ public class AccountStatusResource {
     }
 
     @Resource
-    public void setAccountStatusHelper(AccountStatusHelper accountStatusHelper) {
-        this.accountStatusHelper = accountStatusHelper;
-    }
-
-    @Autowired(required = false)
-    public void setAccountAliasConverter(
-            AccountAliasConverter accountAliasConverter) {
-        this.accountAliasConverter = accountAliasConverter;
+    public void setInternalUserConnector(
+            InternalUserConnector internalUserConnector) {
+        this.internalUserConnector = internalUserConnector;
     }
 }

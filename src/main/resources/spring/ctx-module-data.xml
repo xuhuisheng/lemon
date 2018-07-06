@@ -1,0 +1,82 @@
+<?xml version="1.0" encoding="UTF-8"?>
+<beans xmlns="http://www.springframework.org/schema/beans"
+        xmlns:xsi="http://www.w3.org/2001/XMLSchema-instance"
+        xsi:schemaLocation="http://www.springframework.org/schema/beans http://www.springframework.org/schema/beans/spring-beans.xsd">
+<!--
+    <bean id="tenantDeployer" class="com.mossle.tenant.data.TenantDeployer"/>
+-->
+
+    <!-- 账号 -->
+    <bean id="userDeployer" class="com.mossle.user.data.UserDeployer"/>
+
+    <!-- 组织 -->
+    <bean class="com.mossle.party.data.PartyDeployer" depends-on="userDeployer">
+        <property name="partyRuleDeployer">
+            <bean class="com.mossle.party.data.PartyRuleDeployer"/>
+        </property>
+        <property name="partyDataDeployer">
+            <bean class="com.mossle.party.data.PartyDataDeployer"/>
+        </property>
+    </bean>
+
+    <!-- 权限 -->
+    <bean id="authDeployer" class="com.mossle.auth.data.AuthDeployer" depends-on="userDeployer"/>
+
+	<!-- 菜单 -->
+    <bean class="com.mossle.auth.data.MenuDeployer" depends-on="authDeployer">
+        <property name="enable" value="${menu.autoDeploy.enable}"/>
+    </bean>
+
+    <!-- 流程 -->
+    <bean id="autoDeployer" class="com.mossle.bpm.support.AutoDeployer" depends-on="applicationContextHelper">
+        <property name="enable" value="${bpm.auto.deploy}"/>
+        <property name="processEngine" ref="processEngine"/>
+        <property name="defaultTenantCode" value="${tenant.default.code}"/>
+        <property name="tenantConnector" ref="tenantConnector"/>
+        <property name="deploymentResources">
+            <list>
+                <value>classpath*:/bpmn2/*</value>
+            </list>
+        </property>
+    </bean>
+	
+	<!-- 导入流程分类 -->
+	<bean id="processCategoryDeployer" class="com.mossle.bpm.data.ProcessCategoryDeployer"/>
+
+	<!-- 自动部署form -->
+	<bean class="com.mossle.form.support.XFormDeployer">
+		<property name="autoDeploy" value="${form.autoDeploy}"/>
+	</bean>
+
+	<!-- 自动解析model -->
+	<bean class="com.mossle.model.support.ModelDeployer">
+		<property name="autoDeploy" value="${model.autoDeploy}"/>
+		<property name="defaultTenantCode" value="${tenant.default.code}"/>
+		<property name="tenantConnector" ref="tenantConnector"/>
+	</bean>
+
+	<!-- 字典 -->
+    <bean id="dictDeployer" class="com.mossle.dict.data.DictDeployer"/>
+
+	<!-- 模板 -->
+    <bean id="templateDeployer" class="com.mossle.internal.template.data.TemplateDeployer"/>
+
+	<!-- 邮件提醒 -->
+    <bean id="sendmailDeployer" class="com.mossle.internal.sendmail.data.SendmailDeployer"/>
+
+	<!-- 门户 -->
+    <bean id="portalDeployer" class="com.mossle.portal.data.PortalDeployer"/>
+
+	<!-- 文章分类 -->
+	<bean id="cmsCatalogDeployer" class="com.mossle.cms.data.CmsCatalogDeployer"/>
+
+	<!-- 文章 -->
+	<bean id="cmsArticleDeployer" class="com.mossle.cms.data.CmsArticleDeployer" depends-on="cmsCatalogDeployer"/>
+
+	<!-- 评论 -->
+	<bean id="cmsCommentDeployer" class="com.mossle.cms.data.CmsCommentDeployer" depends-on="cmsArticleDeployer"/>
+
+	<!-- 报表 -->
+	<bean id="reportDeployer" class="com.mossle.report.data.ReportDeployer"/>
+
+</beans>

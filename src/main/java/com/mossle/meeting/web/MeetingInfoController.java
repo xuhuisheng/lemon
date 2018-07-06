@@ -82,18 +82,22 @@ public class MeetingInfoController {
             model.addAttribute("model", meetingInfo);
 
             // organizerName
-            UserDTO userDto = userConnector
-                    .findById(meetingInfo.getOrganizer());
-            model.addAttribute("organizerName", userDto.getDisplayName());
+            if (meetingInfo.getOrganizer() != null) {
+                UserDTO userDto = userConnector.findById(meetingInfo
+                        .getOrganizer());
+                model.addAttribute("organizerName", userDto.getDisplayName());
+            }
 
             // attendees
             List<String> attendees = new ArrayList<String>();
 
             for (MeetingAttendee meetingAttendee : meetingInfo
                     .getMeetingAttendees()) {
-                UserDTO user = userConnector.findById(meetingAttendee
-                        .getUserId());
-                attendees.add(user.getUsername());
+                if (meetingAttendee.getUserId() != null) {
+                    UserDTO user = userConnector.findById(meetingAttendee
+                            .getUserId());
+                    attendees.add(user.getUsername());
+                }
             }
 
             model.addAttribute("attendeeNames",

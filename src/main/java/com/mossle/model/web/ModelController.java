@@ -21,6 +21,8 @@ import com.mossle.model.persistence.domain.ModelInfo;
 import com.mossle.model.persistence.manager.ModelFieldManager;
 import com.mossle.model.persistence.manager.ModelInfoManager;
 
+import com.mossle.spi.process.InternalProcessConnector;
+
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
 
@@ -45,6 +47,7 @@ public class ModelController {
     private KeyValueConnector keyValueConnector;
     private Exportor exportor;
     private TenantHolder tenantHolder;
+    private InternalProcessConnector internalProcessConnector;
 
     @RequestMapping("index")
     public String index(Model model) {
@@ -79,6 +82,26 @@ public class ModelController {
         model.addAttribute("page", page);
 
         return "model/list";
+    }
+
+    @RequestMapping("redirectByKey")
+    public String redirectByKey(
+            @RequestParam("processDefinitionKey") String processDefinitionKey) {
+        String processDefinitionId = internalProcessConnector
+                .findProcessDefinitionId(processDefinitionKey);
+        ModelInfo modelInfo = modelInfoManager.findUniqueBy("code",
+                processDefinitionId);
+
+        return "redirect:/model/list.do?id=" + modelInfo.getId();
+    }
+
+    @RequestMapping("redirectById")
+    public String redirectById(
+            @RequestParam("processDefinitionId") String processDefinitionId) {
+        ModelInfo modelInfo = modelInfoManager.findUniqueBy("code",
+                processDefinitionId);
+
+        return "redirect:/model/list.do?id=" + modelInfo.getId();
     }
 
     @RequestMapping("export")
@@ -172,5 +195,11 @@ public class ModelController {
     @Resource
     public void setTenantHolder(TenantHolder tenantHolder) {
         this.tenantHolder = tenantHolder;
+    }
+
+    @Resource
+    public void setInternalProcessConnector(
+            InternalProcessConnector internalProcessConnector) {
+        this.internalProcessConnector = internalProcessConnector;
     }
 }

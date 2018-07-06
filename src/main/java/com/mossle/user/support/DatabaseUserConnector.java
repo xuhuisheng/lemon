@@ -32,32 +32,25 @@ public class DatabaseUserConnector implements UserConnector {
     private Map<String, String> aliasMap = new HashMap<String, String>();
 
     // ~
-    // private String sqlFindById = "select id as id,username as username,status as status,"
-    // + "nick_name as nick_name,email as email,mobile as mobile,user_repo_id as user_repo_ref"
-    // + " from USER_BASE where id=?";
-    private String sqlFindById = "SELECT AI.ID AS ID,AI.USERNAME AS USERNAME,AI.STATUS AS STATUS,"
+    private String sqlFindById = "SELECT AI.CODE AS CODE,AI.USERNAME AS USERNAME,AI.STATUS AS STATUS,"
             + "AI.NICK_NAME AS NICK_NAME,AI.DISPLAY_NAME AS DISPLAY_NAME,PI.EMAIL AS EMAIL,"
             + "PI.CELLPHONE AS MOBILE,1 AS USER_REPO_REF"
             + " FROM ACCOUNT_INFO AI LEFT JOIN PERSON_INFO PI ON AI.CODE=PI.CODE"
-            + " WHERE AI.ID=?";
-
-    // private String sqlFindByUsername = "select ub.id as id,ub.username as username,ub.status as status,"
-    // + "nick_name as nick_name,email as email,mobile as mobile,user_repo_id as user_repo_ref"
-    // + " from USER_BASE ub where ub.username=? and ub.user_repo_id=?";
-    private String sqlFindByUsername = "SELECT AI.ID AS ID,AI.USERNAME AS USERNAME,AI.STATUS AS STATUS,"
+            + " WHERE AI.CODE=?";
+    private String sqlFindByUsername = "SELECT AI.CODE AS CODE,AI.USERNAME AS USERNAME,AI.STATUS AS STATUS,"
             + "AI.NICK_NAME AS NICK_NAME,AI.DISPLAY_NAME AS DISPLAY_NAME,PI.EMAIL AS EMAIL,"
             + "PI.CELLPHONE AS MOBILE,AI.TENANT_ID AS USER_REPO_REF"
             + " FROM ACCOUNT_INFO AI LEFT JOIN PERSON_INFO PI ON AI.CODE=PI.CODE"
             + " WHERE AI.USERNAME=? AND AI.TENANT_ID=?";
-    private String sqlFindByRef = "SELECT UB.ID AS ID,UB.USERNAME AS USERNAME,UB.STATUS AS STATUS,"
+    private String sqlFindByRef = "SELECT UB.CODE AS CODE,UB.USERNAME AS USERNAME,UB.STATUS AS STATUS,"
             + "NICK_NAME AS NICK_NAME,EMAIL AS EMAIL,MOBILE AS MOBILE,USER_REPO_ID AS USER_REPO_REF"
             + " FROM ACCOUNT_INFO UB WHERE UB.REF=? AND UB.USER_REPO_ID=?";
     private String sqlPagedQueryCount = "SELECT COUNT(*) FROM ACCOUNT_INFO";
-    private String sqlPagedQuerySelect = "SELECT AI.ID AS ID,AI.USERNAME AS USERNAME,AI.STATUS AS STATUS,"
+    private String sqlPagedQuerySelect = "SELECT AI.CODE AS CODE,AI.USERNAME AS USERNAME,AI.STATUS AS STATUS,"
             + "AI.NICK_NAME AS NICK_NAME,AI.DISPLAY_NAME AS DISPLAY_NAME,PI.EMAIL AS EMAIL,"
             + "PI.CELLPHONE AS MOBILE,1 AS USER_REPO_REF"
             + " FROM ACCOUNT_INFO AI LEFT JOIN PERSON_INFO PI ON AI.CODE=PI.CODE";
-    private String sqlFindByNickName = "SELECT ID AS ID,USERNAME AS USERNAME,STATUS AS STATUS,"
+    private String sqlFindByNickName = "SELECT CODE AS CODE,USERNAME AS USERNAME,STATUS AS STATUS,"
             + "NICK_NAME AS NICK_NAME,EMAIL AS EMAIL,MOBILE AS MOBILE,USER_REPO_ID AS USER_REPO_REF"
             + " FROM ACCOUNT_INFO WHERE NICK_NAME=?";
 
@@ -177,6 +170,10 @@ public class DatabaseUserConnector implements UserConnector {
         }
     }
 
+    public String findUsernameByAlias(String alias) {
+        return alias;
+    }
+
     protected UserDTO convertUserDTO(Map<String, Object> map) {
         if ((map == null) || map.isEmpty()) {
             logger.info("user[{}] is null.", map);
@@ -187,7 +184,7 @@ public class DatabaseUserConnector implements UserConnector {
         logger.debug("{}", map);
 
         UserDTO userDTO = new UserDTO();
-        userDTO.setId(convertString(map.get("id")));
+        userDTO.setId(convertString(map.get("code")));
         userDTO.setUsername(convertString(map.get("username")));
         userDTO.setNickName(convertString(map.get("nick_name")));
         userDTO.setDisplayName(convertString(map.get("display_name")));

@@ -100,15 +100,15 @@ $(function() {
     <thead>
       <tr>
         <th width="10" class="table-check"><input type="checkbox" name="checkAll" onchange="toggleSelectedItems(this.checked)"></th>
-        <th class="sorting" name="id">id</th>
-        <th class="sorting" name="name">key</th>
-        <th class="sorting" name="name">name</th>
-        <th class="sorting" name="name">version</th>
-        <th class="sorting" name="name">category</th>
-        <th class="sorting" name="name">createTime</th>
-        <th class="sorting" name="name">lastUpdateTime</th>
-        <th class="sorting" name="name">deploymentId</th>
-        <th class="sorting" name="name">metaInfo</th>
+        <th class="sorting" name="id">标识</th>
+        <th class="sorting" name="name">编码</th>
+        <th class="sorting" name="name">名称</th>
+        <th class="sorting" name="name">版本</th>
+        <th class="sorting" name="name">分类</th>
+        <th class="sorting" name="name">创建时间</th>
+        <th class="sorting" name="name">更新时间</th>
+        <th class="sorting" name="name">部署标识</th>
+        <th class="sorting" name="name">元数据</th>
         <th>&nbsp;</th>
       </tr>
     </thead>
@@ -122,8 +122,8 @@ $(function() {
 	    <td>${item.name}</td>
 	    <td>${item.version}</td>
 	    <td>${item.category}</td>
-	    <td>${item.createTime}</td>
-	    <td>${item.lastUpdateTime}</td>
+	    <td><fmt:formatDate value="${item.createTime}" type="both"/></td>
+	    <td><fmt:formatDate value="${item.lastUpdateTime}" type="both"/></td>
 	    <td>${item.deploymentId}</td>
 	    <td>${item.metaInfo}</td>
         <td>

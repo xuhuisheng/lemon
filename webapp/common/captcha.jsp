@@ -36,7 +36,7 @@ g.setColor(getRandColor(200,250));
 g.fillRect(0, 0, width, height);
 
 //Éè¶¨×ÖÌå
-g.setFont(new Font("Times New Roman", Font.PLAIN, 18));
+g.setFont(new Font(Font.DIALOG, Font.PLAIN, 18));
 
 //»­±ß¿ò
 //g.setColor(new Color());

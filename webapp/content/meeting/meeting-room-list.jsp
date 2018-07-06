@@ -97,10 +97,13 @@ $(function() {
     <thead>
       <tr>
         <th width="10" class="table-check"><input type="checkbox" name="checkAll" onchange="toggleSelectedItems(this.checked)"></th>
+		<!--
         <th class="sorting" name="id"><spring:message code="meeting-room.meeting-room.list.id" text="编号"/></th>
+		-->
+        <th class="sorting" name="name">编号</th>
         <th class="sorting" name="name"><spring:message code="meeting-room.meeting-room.list.name" text="名称"/></th>
         <th class="sorting" name="num">人数</th>
-        <th class="sorting" name="projector">投影仪</th>
+        <th class="sorting" name="device">设备</th>
         <th class="sorting" name="type">专用会议室</th>
         <th class="sorting" name="building">办公地点</th>
         <th class="sorting" name="floor">楼层</th>
@@ -112,10 +115,13 @@ $(function() {
       <c:forEach items="${page.result}" var="item">
       <tr>
         <td><input type="checkbox" class="selectedItem a-check" name="selectedItem" value="${item.id}"></td>
+		<!--
         <td>${item.id}</td>
+		-->
+        <td>${item.code}</td>
         <td>${item.name}</td>
         <td>${item.num}</td>
-        <td>${item.projector}</td>
+        <td>${item.device}</td>
         <td>${item.type}</td>
         <td>${item.building}</td>
         <td>${item.floor}</td>

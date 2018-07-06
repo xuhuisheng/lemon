@@ -33,7 +33,11 @@ public class TenantDTO {
     }
 
     public void setId(String id) {
-        this.id = id;
+        if (id == null) {
+            id = "";
+        } else {
+            this.id = id.trim().toLowerCase();
+        }
     }
 
     public String getName() {

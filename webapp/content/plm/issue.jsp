@@ -95,10 +95,7 @@ $(function() {
 <div class="panel panel-default">
   <div class="panel-heading">
 	<i class="glyphicon glyphicon-list"></i>
-    详情
-	<div class="pull-right ctrl">
-	  <a class="btn btn-default btn-xs"><i id="audit-baseSearchIcon" class="glyphicon glyphicon-chevron-up"></i></a>
-    </div>
+    <a href="view.do?id=${plmIssue.id}">详情</a>
   </div>
         <div class="panel-content">
 		  <div class="pull-right">

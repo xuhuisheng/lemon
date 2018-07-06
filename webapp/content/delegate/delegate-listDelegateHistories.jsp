@@ -122,16 +122,6 @@ $(function() {
       </c:forEach>
     </tbody>
   </table>
-        </div>
-      </article>
-
-    </section>
-	<!-- end of main -->
-	</div>
-
-  </body>
-
-</html>
 
 
       </div>

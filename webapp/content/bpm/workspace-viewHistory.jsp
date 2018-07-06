@@ -19,12 +19,12 @@ $(function () {
 });
 	</script>
 
-    <script type="text/javascript" src="${tenantPrefix}/cdn/replay/scripts/JobExecutor.js"></script>
-    <script type="text/javascript" src="${tenantPrefix}/cdn/replay/scripts/Node.js"></script>
-    <script type="text/javascript" src="${tenantPrefix}/cdn/replay/scripts/Token.js"></script>
-    <script type="text/javascript" src="${tenantPrefix}/cdn/replay/scripts/Replay.js"></script>
+    <script type="text/javascript" src="${cdnPrefix}/public/mossle-replay/0.0.11/scripts/JobExecutor.js"></script>
+    <script type="text/javascript" src="${cdnPrefix}/public/mossle-replay/0.0.11/scripts/Node.js"></script>
+    <script type="text/javascript" src="${cdnPrefix}/public/mossle-replay/0.0.11/scripts/Token.js"></script>
+    <script type="text/javascript" src="${cdnPrefix}/public/mossle-replay/0.0.11/scripts/Replay.js"></script>
     <script type="text/javascript">
-REPLAY_TOKEN_IMAGE = '${tenantPrefix}/cdn/replay/images/user.png';
+REPLAY_TOKEN_IMAGE = '${cdnPrefix}/public/mossle-replay/0.0.11/scripts/images/user.png';
 REPLAY_TOKEN_IMAGE = '${tenantPrefix}/rs/avatar?id=${1}&width=64';
 REPLAY_TOKEN_WIDTH = 32;
     </script>

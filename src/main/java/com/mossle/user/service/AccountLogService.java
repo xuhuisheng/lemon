@@ -16,6 +16,8 @@ import com.mossle.core.mapper.BeanMapper;
 import com.mossle.user.persistence.domain.AccountLog;
 import com.mossle.user.persistence.manager.AccountLogManager;
 
+import org.apache.commons.lang3.StringUtils;
+
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
 
@@ -53,7 +55,7 @@ public class AccountLogService {
 
             String username = accountLog.getUsername();
 
-            if (username.length() > 64) {
+            if (StringUtils.isNotBlank(username) && (username.length() > 64)) {
                 logger.info("username : {}", username);
                 username = username.substring(0, 64);
                 accountLog.setUsername(username);
@@ -61,7 +63,7 @@ public class AccountLogService {
 
             String reason = accountLog.getReason();
 
-            if (reason.length() > 200) {
+            if (StringUtils.isNotBlank(reason) && (reason.length() > 200)) {
                 logger.info("reason : {}", reason);
                 reason = reason.substring(0, 200);
                 accountLog.setReason(reason);
@@ -75,22 +77,26 @@ public class AccountLogService {
      * 记录一条日志.
      */
     public void log(AccountLog accountLog) {
-        accountLogManager.save(accountLog);
+        try {
+            accountLogManager.save(accountLog);
 
-        // if ("success".equals(accountLog.getResult())) {
-        // accountLockService.unlock(accountLog.getUsername(),
-        // accountLog.getApplication());
-        // } else
-        if (AccountStatus.BAD_CREDENTIALS.equals(accountLog.getReason())) {
-            String application = accountLog.getApplication();
+            // if ("success".equals(accountLog.getResult())) {
+            // accountLockService.unlock(accountLog.getUsername(),
+            // accountLog.getApplication());
+            // } else
+            if (AccountStatus.BAD_CREDENTIALS.equals(accountLog.getReason())) {
+                String application = accountLog.getApplication();
 
-            if (applicationAliasConverter != null) {
-                application = applicationAliasConverter.convertAlias(
-                        application, accountLog.getClient());
+                if (applicationAliasConverter != null) {
+                    application = applicationAliasConverter.convertAlias(
+                            application, accountLog.getClient());
+                }
+
+                accountLockService.addLockLog(accountLog.getUsername(),
+                        application, accountLog.getLogTime());
             }
-
-            accountLockService.addLockLog(accountLog.getUsername(),
-                    application, accountLog.getLogTime());
+        } catch (Exception ex) {
+            logger.error(ex.getMessage(), ex);
         }
     }
 

@@ -65,6 +65,10 @@ $(function() {
 			  <option value="${item.id}" ${param['filter_EQL_partyStructType.id'] == item.id ? 'selected' : ''}>${item.name}</option>
 			  </c:forEach>
 		    </select>
+		    <label for="partyStruct_parent">上级组织:</label>
+			<input id="partyStruct_parent" name="filter_EQL_parentEntity.id" class="form-control" value="${param['filter_EQL_parentEntity.id']}">
+		    <label for="partyStruct_child">下级组织:</label>
+			<input id="partyStruct_child" name="filter_EQL_childEntity.id" class="form-control" value="${param['filter_EQL_childEntity.id']}">
 			<button class="btn btn-default a-search" onclick="document.party-structForm.submit()">查询</button>&nbsp;
 		  </form>
 

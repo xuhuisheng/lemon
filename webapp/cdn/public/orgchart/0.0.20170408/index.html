@@ -1,0 +1,119 @@
+<!DOCTYPE HTML>
+
+<html>
+  <head>
+    <title>Org Chart</title>
+    <link rel="stylesheet" href="jquery.orgchart.css"/>
+    <style>
+    body {
+      font-family      : Ubuntu, SansSerif
+    }
+
+    h1 {
+      padding-bottom   : 10px;
+      text-align       : center;
+    }
+
+    h2 {
+      margin-top       : 0px;
+      margin-bottom    : 8px;
+    }
+
+    p {
+      margin           : 0px;
+      padding          : 0px;
+      line-height      : 1.5em;
+    }
+
+    div#text {
+      padding          : 10px;
+    }
+    </style>
+    <script src="../jquery/jquery.min.js"></script>
+    <script src="jquery.textchildren.js"></script>
+    <script src="jquery.orgchart.js"></script>
+    <script>
+    $(function() {
+      $("#showList").click(function() {
+        $("#org").toggle();
+        return false;
+      });
+
+      $("#org").orgChart({
+        levels : -1,
+        stack  : false,
+        nodeText : function($node) {return $node.textChildren();}},
+      $("#main"));
+    });
+    </script>
+  </head>
+
+  <body>
+
+    <h1>JQuery/CSS Organisation Chart</h1>
+
+    <div id="main">
+    </div>
+
+    <div id="text">
+      <h2>Description</h2>
+      <p>
+        Use JQuery to transform a hidden nested unordered list into an organisation chart. Click on the nodes to show/hide child nodes.
+      </p>
+      <p>
+        <a id="showList" href="#">Show</a> the underlying unordered list.
+      </p>
+    </div>
+
+    <ul id="org" style="display: none;">
+      <li>
+        Complex
+        <ul>
+          <li>One</li>
+          <li>Two
+            <ul>
+              <li>Two - A</li>
+              <li>Two - B</li>
+            </ul>
+          </li>
+          <li>Three
+            <ul>
+              <li>Three - A
+                <ul>
+                  <li>Three - A1</li>
+                </ul>
+              </li>
+              <li>Three - B
+                <ul>
+                  <li>Three - B1</li>
+                  <li>Three - B2</li>
+                  <li>Three - B3
+                    <ul>
+                      <li>ThreeB3A</li>
+                    </ul>
+                  </li>
+                </ul>
+              </li>
+              <li>Three - C
+                <ul>
+                  <li>Three - C1</li>
+                  <li>Three - C2</li>
+                </ul>
+              </li>
+              <li>Three - D</li>
+            </ul>
+          </li>
+          <li>Four</li>
+          <li>Five
+            <ul>
+              <li>Five - A</li>
+              <li>Five - B</li>
+            </ul>
+          </li>
+        </ul>
+      </li>
+    </ul>
+
+  </body>
+
+</html>

@@ -36,6 +36,15 @@ $(function() {
     table.configPageSize('.m-page-size');
 });
     </script>
+
+	<script type="text/javascript" src="${ctx}/s/ckeditor/ckeditor.js"></script>
+
+    <script type="text/javascript">
+$(function() {
+	var editor = CKEDITOR.replace('plmIssueContent');
+	editor.config.filebrowserImageUploadUrl = "plm-upload-image.do";
+})
+	</script>
   </head>
 
   <body>
@@ -78,23 +87,20 @@ $(function() {
   <div class="panel-heading">
 	<i class="glyphicon glyphicon-list"></i>
     详情
-	<div class="pull-right ctrl">
-	  <a class="btn btn-default btn-xs"><i id="audit-baseSearchIcon" class="glyphicon glyphicon-chevron-up"></i></a>
-    </div>
   </div>
         <div class="panel-content">
 <form id="car-infoForm" method="post" action="update.do" class="form-horizontal">
   <input type="hidden" name="id" value="${plmIssue.id}">
   <div class="form-group">
     <label class="control-label col-md-1" for="pimIssueProject">项目</label>
-	<div class="col-md-5">
-	  ${plmProject.name}
+	<div class="col-md-10">
+	  <p class="form-control-static">${plmProject.name}</p>
     </div>
   </div>
   <div class="form-group">
     <label class="control-label col-md-1" for="pimIssueProject">类型</label>
-	<div class="col-md-5">
-	  <select name="type" class="required">
+	<div class="col-md-10">
+	  <select name="type" class="form-control required">
 	    <option value=""></option>
 	    <option value="story" ${plmIssue.type == 'story' ? 'selected' : ''}>需求</option>
 	    <option value="task" ${plmIssue.type == 'task' ? 'selected' : ''}>任务</option>
@@ -104,21 +110,21 @@ $(function() {
   </div>
   <div class="form-group">
     <label class="control-label col-md-1" for="car-info_name"><spring:message code="car-info.car-info.input.name" text="名称"/></label>
-	<div class="col-md-5">
-	  <input id="car-info_name" type="text" name="name" value="${plmIssue.name}" size="40" class="text required" minlength="2" maxlength="10">
+	<div class="col-md-10">
+	  <input id="car-info_name" type="text" name="name" value="${plmIssue.name}" size="40" class="form-control required" minlength="2" maxlength="10">
     </div>
   </div>
   <div class="form-group">
     <label class="control-label col-md-1" for="plmIssueContent">描述</label>
-	<div class="col-md-5">
-	  <textarea id="plmIssueContent" name="content" class="required" rows="6">${plmIssue.name}</textarea>
+	<div class="col-md-10">
+	  <textarea id="plmIssueContent" name="content" class="form-control required" rows="6">${plmIssue.content}</textarea>
     </div>
   </div>
   <div class="form-group">
-    <div class="col-md-12">
-      <button type="submit" class="btn a-submit"><spring:message code='core.input.save' text='保存'/></button>
+    <div class="col-md-11 col-md-offset-1">
+      <button type="submit" class="btn btn-default a-submit"><spring:message code='core.input.save' text='保存'/></button>
 	  &nbsp;
-      <button type="button" class="btn a-cancel" onclick="history.back();"><spring:message code='core.input.back' text='返回'/></button>
+      <button type="button" class="btn btn-link a-cancel" onclick="history.back();"><spring:message code='core.input.back' text='返回'/></button>
     </div>
   </div>
 </form>

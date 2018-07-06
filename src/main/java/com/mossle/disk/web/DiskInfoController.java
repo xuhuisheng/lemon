@@ -10,10 +10,10 @@ import javax.annotation.Resource;
 import javax.servlet.http.HttpServletRequest;
 import javax.servlet.http.HttpServletResponse;
 
+import com.mossle.api.auth.CurrentUserHolder;
 import com.mossle.api.store.StoreConnector;
 import com.mossle.api.tenant.TenantHolder;
 
-import com.mossle.core.auth.CurrentUserHolder;
 import com.mossle.core.store.MultipartFileDataSource;
 import com.mossle.core.util.IoUtils;
 import com.mossle.core.util.ServletUtils;
@@ -92,7 +92,11 @@ public class DiskInfoController {
     @RequestMapping("disk-info-upload")
     @ResponseBody
     public String upload(@RequestParam("file") MultipartFile file,
-            @RequestParam("path") String path) throws Exception {
+            @RequestParam("path") String path,
+            @RequestParam("lastModified") long lastModified)
+            throws Exception {
+        logger.info("lastModified : {}", lastModified);
+
         String userId = currentUserHolder.getUserId();
         String tenantId = tenantHolder.getTenantId();
         diskService.createFile(userId, new MultipartFileDataSource(file),
@@ -157,7 +161,7 @@ public class DiskInfoController {
             ServletUtils.setFileDownloadHeader(request, response,
                     diskInfo.getName());
             is = storeConnector
-                    .getStore("default/user/" + userId, diskInfo.getRef(),
+                    .getStore("disk/user/" + userId, diskInfo.getRef(),
                             tenantId).getDataSource().getInputStream();
             IoUtils.copyStream(is, response.getOutputStream());
         } finally {

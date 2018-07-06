@@ -62,6 +62,12 @@ public class CmsCatalog implements java.io.Serializable {
     /** null. */
     private String tenantId;
 
+    /** null. */
+    private Integer priority;
+
+    /** null. */
+    private String status;
+
     /** . */
     private Set<CmsCatalog> cmsCatalogs = new HashSet<CmsCatalog>(0);
 
@@ -79,7 +85,8 @@ public class CmsCatalog implements java.io.Serializable {
             String name, String code, String logo, Integer type,
             String templateIndex, String templateList, String templateDetail,
             String keyword, String description, String tenantId,
-            Set<CmsCatalog> cmsCatalogs, Set<CmsArticle> cmsArticles) {
+            Integer priority, String status, Set<CmsCatalog> cmsCatalogs,
+            Set<CmsArticle> cmsArticles) {
         this.id = id;
         this.cmsSite = cmsSite;
         this.cmsCatalog = cmsCatalog;
@@ -93,6 +100,8 @@ public class CmsCatalog implements java.io.Serializable {
         this.keyword = keyword;
         this.description = description;
         this.tenantId = tenantId;
+        this.priority = priority;
+        this.status = status;
         this.cmsCatalogs = cmsCatalogs;
         this.cmsArticles = cmsArticles;
     }
@@ -280,6 +289,34 @@ public class CmsCatalog implements java.io.Serializable {
      */
     public void setTenantId(String tenantId) {
         this.tenantId = tenantId;
+    }
+
+    /** @return null. */
+    @Column(name = "PRIORITY")
+    public Integer getPriority() {
+        return this.priority;
+    }
+
+    /**
+     * @param priority
+     *            null.
+     */
+    public void setPriority(Integer priority) {
+        this.priority = priority;
+    }
+
+    /** @return null. */
+    @Column(name = "STATUS", length = 50)
+    public String getStatus() {
+        return this.status;
+    }
+
+    /**
+     * @param status
+     *            null.
+     */
+    public void setStatus(String status) {
+        this.status = status;
     }
 
     /** @return . */

@@ -5,15 +5,30 @@
     <meta http-equiv="X-UA-Compatible" content="IE=edge,chrome=1" />
     <title>${article.title}</title>
 	<!-- static start -->
-	<link rel="stylesheet" href="../cdn/bootstrap/3.3.6/css/bootstrap.min.css">
-    <script type="text/javascript" src="../cdn/jquery/jquery.min.js"></script>
-	<script type="text/javascript" src="../cdn/bootstrap/3.3.6/js/bootstrap.min.js"></script>
+	<link rel="stylesheet" href="../cdn/public/bootstrap/3.3.7/css/bootstrap.min.css">
+    <script type="text/javascript" src="../cdn/public/jquery/1.12.4/jquery.min.js"></script>
+	<script type="text/javascript" src="../cdn/public/bootstrap/3.3.7/js/bootstrap.min.js"></script>
 	<!-- static end -->
 	<style type="text/css">
 * {
 	font-size: 16px;
 }
 	</style>
+	<script type="text/javascript">
+function doReply(el) {
+	var parentNode = $(el).parent();
+	var commentId = parentNode.children('input[type=hidden]').val();
+	var content = parentNode.children('textarea').val();
+	
+	$.post('cms-comment-reply.do', {
+		articleId: '${article.id}',
+		commentId: commentId,
+		content: content
+	}, function() {
+		location.reload();
+	});
+}
+	</script>
   </head>
   <body>
     <div class="container" style="font-size:12px;">
@@ -76,7 +91,7 @@
 
           <h3 style="margin-top:10px;">${article.title}</h3>
 		  <p>
-	        <span style="color:gray;">${userConnector.findById(article.userId).displayName}</span>
+	        <span style="color:gray;">${(userConnector.findById(article.userId).displayName)!}</span>
 			|
 		    <span style="color:gray;"><#if article.publishTime??>${article.publishTime?string("yyyy-MM-dd HH:mm")}</#if></span>
 			<span style="color:gray;"><i class="glyphicon glyphicon-eye-open"></i> ${article.hitCount!}</span>
@@ -117,20 +132,74 @@
 			    <div class="form-group">
 				  <textarea name="content" class="form-control" placeholder="评论"></textarea>
 			    </div>
-			    <div class="form-group">
+			    <div class="form-group text-right">
 				  <button class="btn btn-default">发布</button>
 			    </div>
 			  </form>
 			  <hr>
-			  <#list page.result as comment>
-			    <div>
-				  <p>${comment.content}</p>
-				  <p>
-					<span style="color:gray;">${userConnector.findById(comment.userId).displayName}</span>
-					|
-					<span style="color:gray;"><#if comment.createTime??>${comment.createTime?string("yyyy-MM-dd HH:mm")}</#if></span>
-				  </p>
+			  <#list page.result as commentDto>
+			  <#assign comment=commentDto.cmsComment/>
+			  <div style="clear:both;margin-bottom:10px;">
+				<div style="float:left;width:50px;position:relative;">
+				  <img src="../rs/avatar?id=1" width="40" height="40" class="img-circle">
 				</div>
+				<div style="padding-left: 50px;">
+				  <div style="color:silver;float:right;font-size:12px;line-height:12px;padding-top:5px;"><#if comment.createTime??>${comment.createTime?string("yyyy-MM-dd HH:mm")}</#if></div>
+				  <div style="color:gray;font-size:12px;line-height:12px;padding-top:5px;">${(userConnector.findById(comment.userId).displayName)!} username</div>
+				  <div style="font-size:14px;padding-top:12px;">${comment.content}</div>
+				  <div class="text-right" style="font-size:12px;color:silver;">
+				    <span style="color:white;font-size:12px;cursor:pointer;" onmouseover="this.style.color='gray'" onmouseout="this.style.color='white'">
+					  <i class="glyphicon glyphicon-flag"></i>举报&nbsp;
+					</span>
+					<span style="cursor:pointer;font-size:12px;" onclick="$(this).parent().parent().children('.comment-reply').toggle()">
+					  回复
+					</span>
+					&nbsp;
+					<i class="glyphicon glyphicon-thumbs-up"></i>&nbsp;
+					<i class="glyphicon glyphicon-thumbs-down"></i>&nbsp;
+				  </div>
+				  <div class="comment-reply text-right" style="display:none;">
+				    <input type="hidden" name="id" value="${comment.id?c}">
+				    <textarea class="form-control" style="margin-top:5px;"></textarea>
+					<button class="btn btn-default btn-xs" style="margin-top:5px;" onclick="doReply(this)">回复</button>
+				  </div>
+				</div>
+		      </div>
+			  <div style="padding-left:50px;">
+<#list commentDto.children as child>
+			  <div style="clear:both;margin-bottom:10px;">
+				<div style="float:left;width:50px;position:relative;">
+				  <img src="../rs/avatar?id=1" width="40" height="40" class="img-circle">
+				</div>
+				<div style="padding-left: 50px;">
+				  <div style="color:silver;float:right;font-size:12px;line-height:12px;padding-top:5px;"><#if child.createTime??>${child.createTime?string("yyyy-MM-dd HH:mm")}</#if></div>
+				  <div style="color:gray;font-size:12px;line-height:12px;padding-top:5px;">${(userConnector.findById(child.userId).displayName)!} username</div>
+				  <div style="font-size:14px;padding-top:12px;">
+				    <#if child.cmsComment != comment>
+					  @${child.cmsComment.userId!}
+					</#if>
+				    ${child.content}
+				  </div>
+				  <div class="text-right" style="font-size:12px;color:silver;">
+				    <span style="color:white;font-size:12px;cursor:pointer;" onmouseover="this.style.color='gray'" onmouseout="this.style.color='white'">
+					  <i class="glyphicon glyphicon-flag"></i>举报&nbsp;
+					</span>
+					<span style="cursor:pointer;font-size:12px;" onclick="$(this).parent().parent().children('.comment-reply').toggle()">
+					  回复
+					</span>
+					&nbsp;
+					<i class="glyphicon glyphicon-thumbs-up"></i>&nbsp;
+					<i class="glyphicon glyphicon-thumbs-down"></i>&nbsp;
+				  </div>
+				  <div class="comment-reply text-right" style="display:none;">
+				    <input type="hidden" name="id" value="${child.id?c}">
+				    <textarea class="form-control" style="margin-top:5px;"></textarea>
+					<button class="btn btn-default btn-xs" style="margin-top:5px;" onclick="doReply(this)">回复</button>
+				  </div>
+				</div>
+		      </div>
+</#list>
+			  </div>
 			  </#list>
 
 

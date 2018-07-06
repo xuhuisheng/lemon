@@ -65,6 +65,7 @@ $(function() {
 	<label class="control-label col-md-1" for="bpm-process_bpmConfBaseId">绑定流程</label>
     <div class="col-sm-5">
       <select id="bpm-process_bpmConfBaseId" name="bpmConfBaseId" class="form-control">
+	    <option value=""></option>
       <c:forEach items="${bpmConfBases}" var="item">
 	    <option value="${item.id}" ${item.id==model.bpmConfBase.id ? 'selected' : ''}>${item.processDefinitionId}</option>
 	  </c:forEach>
@@ -80,21 +81,27 @@ $(function() {
   <div class="form-group">
 	<label class="control-label col-md-1" for="bpm-process_useTaskConf">配置任务负责人</label>
     <div class="col-sm-5">
-      <label><input id="bpm-process_useTaskConf_0" type="radio" name="useTaskConf" value="1" ${model.useTaskConf == 1 ? 'checked' : ''}>开启</label>
-      <label><input id="bpm-process_useTaskConf_1" type="radio" name="useTaskConf" value="0" ${model.useTaskConf != 1 ? 'checked' : ''}>关闭</label>
+      <label class="radio-inline">
+	    <input id="bpm-process_useTaskConf_0" type="radio" name="useTaskConf" value="1" ${model.useTaskConf == 1 ? 'checked' : ''}>
+		开启
+	  </label>
+      <label class="radio-inline">
+	    <input id="bpm-process_useTaskConf_1" type="radio" name="useTaskConf" value="0" ${model.useTaskConf != 1 ? 'checked' : ''}>
+		关闭
+	  </label>
     </div>
   </div>
   <div class="form-group">
 	<label class="control-label col-md-1" for="bpm-process_descn">描述</label>
     <div class="col-sm-5">
-      <input id="bpm-process_descn" type="text" name="descn" value="${model.descn}" size="40" class="form-control" maxlength="50">
+      <textarea id="bpm-process_descn" name="descn" class="form-control" maxlength="200">${model.descn}</textarea>
     </div>
   </div>
   <div class="form-group">
-    <div class="col-sm-5">
-      <button id="submitButton" class="btn a-submit"><spring:message code='core.input.save' text='保存'/></button>
+    <div class="col-sm-5 col-md-offset-1">
+      <button id="submitButton" class="btn btn-default a-submit"><spring:message code='core.input.save' text='保存'/></button>
 	  &nbsp;
-      <button type="button" onclick="history.back();" class="btn a-cancel"><spring:message code='core.input.back' text='返回'/></button>
+      <button type="button" onclick="history.back();" class="btn btn-link a-cancel"><spring:message code='core.input.back' text='返回'/></button>
     </div>
   </div>
 </form>

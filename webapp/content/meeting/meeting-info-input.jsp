@@ -21,6 +21,20 @@ $(function() {
     });
 })
     </script>
+
+    <link type="text/css" rel="stylesheet" href="${cdnPrefix}/public/mossle-userpicker/3.0/userpicker.css">
+    <script type="text/javascript" src="${cdnPrefix}/public/mossle-userpicker/3.0/userpicker.js"></script>
+	<script type="text/javascript">
+$(function() {
+	createUserPicker({
+		modalId: 'userPicker',
+		showExpression: true,
+		searchUrl: '${tenantPrefix}/rs/user/search',
+		treeUrl: '${tenantPrefix}/rs/party/tree?partyStructTypeId=1',
+		childUrl: '${tenantPrefix}/rs/party/searchUser'
+	});
+})
+    </script>
   </head>
 
   <body>
@@ -80,11 +94,11 @@ $(function() {
   <div class="form-group">
     <label class="control-label col-md-1" for="meetingInfo_organizer">发起人</label>
 	<div class="col-sm-5">
-	  <div class="input-append userPicker">
-	    <input id="_task_name_key" type="hidden" name="organizer" class="input-medium" value="${model.organizer}">
-	    <input type="text" name="organizerName" style="width: 175px;" value="${organizerName}">
-	    <span class="add-on"><i class="icon-user"></i></span>
-	  </div>
+		<div class="input-group userPicker" style="display:block-inline;">
+		  <input id="_task_name_key" type="hidden" name="organizer" class="input-medium" value="">
+		  <input type="text" name="taskAssigneeNames" style="background-color:white;" value="" class="form-control" readonly>
+		  <div class="input-group-addon"><i class="glyphicon glyphicon-user"></i></div>
+		</div>
     </div>
   </div>
   <div class="form-group">
@@ -96,13 +110,13 @@ $(function() {
   <div class="form-group">
     <label class="control-label col-md-1" for="meetingInfo_items">配套资源</label>
 	<div class="col-sm-5">
-	  <label>
+	  <label class="checkbox-inline">
 	    <input id="meetingInfo_items0" type="checkbox" name="items" value="polycom" <tags:contains items="${items}" item="polycom">checked</tags:contains>>
 		八爪鱼
 	  </label>
-	  <label>
-	    <input id="meetingInfo_items1" type="checkbox" name="items" value="ipphone" <tags:contains items="${items}" item="ipphone">checked</tags:contains>>
-		IP电话
+	  <label class="checkbox-inline">
+	    <input id="meetingInfo_items1" type="checkbox" name="items" value="projector" <tags:contains items="${items}" item="projector">checked</tags:contains>>
+		投影仪
 	  </label>
     </div>
   </div>

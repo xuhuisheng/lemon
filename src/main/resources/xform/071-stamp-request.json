@@ -1,0 +1,146 @@
+{
+    "name": "印章申请",
+    "code": "stamp-request",
+    "sections": [
+        {
+            "type": "text",
+            "tag": "h1",
+            "text": "发起申请"
+        },
+        {
+            "type": "grid",
+            "row": "6",
+            "col": "4",
+            "merge": [
+                {
+                    "startId": "0-1",
+                    "minRow": 0,
+                    "minCol": 1,
+                    "maxRow": 0,
+                    "maxCol": 3
+                },
+                {
+                    "startId": "1-1",
+                    "minRow": 1,
+                    "minCol": 1,
+                    "maxRow": 1,
+                    "maxCol": 3
+                },
+                {
+                    "startId": "2-1",
+                    "minRow": 2,
+                    "minCol": 1,
+                    "maxRow": 2,
+                    "maxCol": 3
+                },
+                {
+                    "startId": "3-1",
+                    "minRow": 3,
+                    "minCol": 1,
+                    "maxRow": 3,
+                    "maxCol": 3
+                },
+                {
+                    "startId": "4-1",
+                    "minRow": 4,
+                    "minCol": 1,
+                    "maxRow": 4,
+                    "maxCol": 3
+                },
+                {
+                    "startId": "5-1",
+                    "minRow": 5,
+                    "minCol": 1,
+                    "maxRow": 5,
+                    "maxCol": 3
+                }
+            ],
+            "fields": [
+                {
+                    "type": "label",
+                    "row": 0,
+                    "col": 0,
+                    "text": "日期"
+                },
+                {
+                    "type": "datepicker",
+                    "row": 0,
+                    "col": 1,
+                    "name": "date",
+                    "required": false,
+                    "readOnly": false
+                },
+                {
+                    "type": "label",
+                    "row": 1,
+                    "col": 0,
+                    "text": "文件名称"
+                },
+                {
+                    "type": "textfield",
+                    "row": 1,
+                    "col": 1,
+                    "name": "filename",
+                    "required": false,
+                    "readOnly": false
+                },
+                {
+                    "type": "label",
+                    "row": 2,
+                    "col": 0,
+                    "text": "文件份数"
+                },
+                {
+                    "type": "textfield",
+                    "row": 2,
+                    "col": 1,
+                    "name": "fileNum",
+                    "required": false,
+                    "readOnly": false
+                },
+                {
+                    "type": "label",
+                    "row": 3,
+                    "col": 0,
+                    "text": "文件类别"
+                },
+                {
+                    "type": "textfield",
+                    "row": 3,
+                    "col": 1,
+                    "name": "fileType",
+                    "required": false,
+                    "readOnly": false
+                },
+                {
+                    "type": "label",
+                    "row": 4,
+                    "col": 0,
+                    "text": "印章类型"
+                },
+                {
+                    "type": "textfield",
+                    "row": 4,
+                    "col": 1,
+                    "name": "type",
+                    "required": false,
+                    "readOnly": false
+                },
+                {
+                    "type": "label",
+                    "row": 5,
+                    "col": 0,
+                    "text": "备注"
+                },
+                {
+                    "type": "textarea",
+                    "row": 5,
+                    "col": 1,
+                    "name": "description",
+                    "required": false,
+                    "readOnly": false
+                }
+            ]
+        }
+    ]
+}

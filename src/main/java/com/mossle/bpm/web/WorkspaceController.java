@@ -11,6 +11,7 @@ import javax.annotation.Resource;
 
 import javax.servlet.http.HttpServletResponse;
 
+import com.mossle.api.auth.CurrentUserHolder;
 import com.mossle.api.form.FormDTO;
 import com.mossle.api.humantask.HumanTaskConnector;
 import com.mossle.api.humantask.HumanTaskConstants;
@@ -35,7 +36,6 @@ import com.mossle.bpm.persistence.manager.BpmCategoryManager;
 import com.mossle.bpm.persistence.manager.BpmProcessManager;
 import com.mossle.bpm.service.TraceService;
 
-import com.mossle.core.auth.CurrentUserHolder;
 import com.mossle.core.mapper.JsonMapper;
 import com.mossle.core.page.Page;
 
@@ -212,7 +212,8 @@ public class WorkspaceController {
                 .getRepositoryService();
         List<ProcessDefinition> processDefinitions = repositoryService
                 .createProcessDefinitionQuery()
-                .processDefinitionTenantId(tenantId).active().list();
+                .processDefinitionTenantId(tenantId).active()
+                .orderByProcessDefinitionId().list();
         model.addAttribute("processDefinitions", processDefinitions);
 
         return "bpm/workspace-listProcessDefinitions";

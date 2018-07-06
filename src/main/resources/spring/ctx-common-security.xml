@@ -13,8 +13,15 @@
 	<http security="none" pattern="/**/*.jpg"/>
 	<http security="none" pattern="/**/*.gif"/>
 	<http security="none" pattern="/**/*.png"/>
+	<http security="none" pattern="/avatar/api/**"/>
+	<!--
+	<http security="none" pattern="/common/login.jsp"/>
+	-->
 
     <http auto-config='true' access-decision-manager-ref='accessDecisionManager' security-context-repository-ref="securityContextRepository">
+		<!--
+		<intercept-url pattern="/**" access="ROLE_ADMIN"/>
+		-->
 		<form-login login-page="/common/login.jsp"
                     default-target-url="/"
 					authentication-success-handler-ref="authenticationSuccessHandler"

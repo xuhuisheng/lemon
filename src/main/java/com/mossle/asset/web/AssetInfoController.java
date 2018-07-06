@@ -10,7 +10,9 @@ import javax.servlet.http.HttpServletResponse;
 
 import com.mossle.api.user.UserConnector;
 
+import com.mossle.asset.persistence.domain.AssetCategory;
 import com.mossle.asset.persistence.domain.AssetInfo;
+import com.mossle.asset.persistence.manager.AssetCategoryManager;
 import com.mossle.asset.persistence.manager.AssetInfoManager;
 
 import com.mossle.core.export.Exportor;
@@ -33,6 +35,7 @@ import org.springframework.web.servlet.mvc.support.RedirectAttributes;
 @RequestMapping("asset")
 public class AssetInfoController {
     private AssetInfoManager assetInfoManager;
+    private AssetCategoryManager assetCategoryManager;
     private Exportor exportor;
     private BeanMapper beanMapper = new BeanMapper();
     private UserConnector userConnector;
@@ -58,12 +61,18 @@ public class AssetInfoController {
             model.addAttribute("model", assetInfo);
         }
 
+        List<AssetCategory> assetCategories = this.assetCategoryManager
+                .find("from AssetCategory where assetCategory=null");
+        model.addAttribute("assetCategories", assetCategories);
+
         return "asset/asset-info-input";
     }
 
     @RequestMapping("asset-info-save")
     public String save(@ModelAttribute AssetInfo assetInfo,
             @RequestParam Map<String, Object> parameterMap,
+            @RequestParam("categoryId") Long categoryId,
+            @RequestParam("subCategoryId") Long subCategoryId,
             RedirectAttributes redirectAttributes) {
         AssetInfo dest = null;
 
@@ -74,6 +83,20 @@ public class AssetInfoController {
             beanMapper.copy(assetInfo, dest);
         } else {
             dest = assetInfo;
+        }
+
+        if (categoryId != null) {
+            dest.setAssetCategoryByCategoryId(this.assetCategoryManager
+                    .get(categoryId));
+        } else {
+            dest.setAssetCategoryByCategoryId(null);
+        }
+
+        if (subCategoryId != null) {
+            dest.setAssetCategoryBySubCategoryId(this.assetCategoryManager
+                    .get(subCategoryId));
+        } else {
+            dest.setAssetCategoryBySubCategoryId(null);
         }
 
         assetInfoManager.save(dest);
@@ -119,6 +142,12 @@ public class AssetInfoController {
     @Resource
     public void setAssetInfoManager(AssetInfoManager assetInfoManager) {
         this.assetInfoManager = assetInfoManager;
+    }
+
+    @Resource
+    public void setAssetCategoryManager(
+            AssetCategoryManager assetCategoryManager) {
+        this.assetCategoryManager = assetCategoryManager;
     }
 
     @Resource

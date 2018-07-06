@@ -6,8 +6,13 @@
     <meta http-equiv="content-type" content="text/html; charset=UTF-8">
     <meta charset="utf-8">
     <title>网盘</title>
-    <%@include file="_s.jsp"%>
-	<link rel="stylesheet" href="${cdnPrefix}/disk/sprite_list_icon.css">
+    <%@include file="/common/s3.jsp"%>
+	<link rel="stylesheet" href="${cdnPrefix}/public/mossle-disk/0.0.3/sprite_list_icon.css">
+	<style type="text/css">
+body {
+    padding-top: 50px;
+}
+	</style>
   </head>
   <body>
     <div id="wrap">&nbsp;
@@ -32,10 +37,10 @@
     </div>
   </div>
   <div class="form-group">
-    <div class="col-sm-5">
-      <button type="submit" class="btn a-submit"><spring:message code='core.input.save' text='保存'/></button>
+    <div class="col-sm-5 col-md-offset-1">
+      <button type="submit" class="btn btn-default a-submit"><spring:message code='core.input.save' text='保存'/></button>
 	  &nbsp;
-      <button type="button" class="btn a-cancel" onclick="history.back();"><spring:message code='core.input.back' text='返回'/></button>
+      <button type="button" class="btn btn-link a-cancel" onclick="history.back();"><spring:message code='core.input.back' text='返回'/></button>
     </div>
   </div>
 </form>

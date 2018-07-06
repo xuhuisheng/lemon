@@ -69,18 +69,24 @@ $(function() {
   <div class="form-group">
     <label class="control-label col-md-1" for="template-info_code">类型</label>
 	<div class="col-sm-5">
-	  <label><input id="mailTemplate_manual0" type="radio" name="type" value="manual" ${model.type == 'manual' ? 'checked' : ''}>手工</label>
-	  <label><input id="mailTemplate_manual0" type="radio" name="type" value="ckeditor" ${empty model.type || model.type == 'ckeditor' ? 'checked' : ''}>ckeditor</label>
+	  <label class="radio-inline">
+	    <input id="mailTemplate_manual0" type="radio" name="type" value="manual" ${model.type == 'manual' ? 'checked' : ''}>
+		手工
+	  </label>
+	  <label class="radio-inline">
+	    <input id="mailTemplate_manual0" type="radio" name="type" value="ckeditor" ${empty model.type || model.type == 'ckeditor' ? 'checked' : ''}>
+		ckeditor
+      </label>
     </div>
   </div>
   <div class="form-group">
     <label class="control-label col-md-1" for="templateField_content">内容</label>
-	<div class="col-sm-5">
+	<div class="col-sm-11">
 	  <textarea id="templateField_content" name="content">${model.content}</textarea>
     </div>
   </div>
   <div class="form-group">
-    <div class="col-sm-5">
+    <div class="col-sm-5 col-md-offset-1">
       <button type="submit" class="btn btn-default a-submit"><spring:message code='core.input.save' text='保存'/></button>
 	  &nbsp;
       <button type="button" class="btn btn-link a-cancel" onclick="history.back();"><spring:message code='core.input.back' text='返回'/></button>

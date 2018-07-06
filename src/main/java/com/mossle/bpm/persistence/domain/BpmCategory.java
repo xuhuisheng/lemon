@@ -8,6 +8,8 @@ import javax.persistence.Column;
 import javax.persistence.Entity;
 import javax.persistence.FetchType;
 import javax.persistence.Id;
+import javax.persistence.JoinColumn;
+import javax.persistence.ManyToOne;
 import javax.persistence.OneToMany;
 import javax.persistence.OrderBy;
 import javax.persistence.Table;
@@ -25,6 +27,9 @@ public class BpmCategory implements java.io.Serializable {
     /** 主键. */
     private Long id;
 
+    /** null. */
+    private BpmCategory bpmCategory;
+
     /** 名称. */
     private String name;
 
@@ -34,8 +39,17 @@ public class BpmCategory implements java.io.Serializable {
     /** 租户. */
     private String tenantId;
 
+    /** null. */
+    private String code;
+
+    /** null. */
+    private String status;
+
     /** . */
     private Set<BpmProcess> bpmProcesses = new HashSet<BpmProcess>(0);
+
+    /** . */
+    private Set<BpmCategory> bpmCategories = new HashSet<BpmCategory>(0);
 
     public BpmCategory() {
     }
@@ -44,13 +58,18 @@ public class BpmCategory implements java.io.Serializable {
         this.id = id;
     }
 
-    public BpmCategory(Long id, String name, Integer priority, String tenantId,
-            Set<BpmProcess> bpmProcesses) {
+    public BpmCategory(Long id, BpmCategory bpmCategory, String name,
+            Integer priority, String tenantId, String code, String status,
+            Set<BpmProcess> bpmProcesses, Set<BpmCategory> bpmCategories) {
         this.id = id;
+        this.bpmCategory = bpmCategory;
         this.name = name;
         this.priority = priority;
         this.tenantId = tenantId;
+        this.code = code;
+        this.status = status;
         this.bpmProcesses = bpmProcesses;
+        this.bpmCategories = bpmCategories;
     }
 
     /** @return 主键. */
@@ -66,6 +85,21 @@ public class BpmCategory implements java.io.Serializable {
      */
     public void setId(Long id) {
         this.id = id;
+    }
+
+    /** @return null. */
+    @ManyToOne(fetch = FetchType.LAZY)
+    @JoinColumn(name = "PARENT_ID")
+    public BpmCategory getBpmCategory() {
+        return this.bpmCategory;
+    }
+
+    /**
+     * @param bpmCategory
+     *            null.
+     */
+    public void setBpmCategory(BpmCategory bpmCategory) {
+        this.bpmCategory = bpmCategory;
     }
 
     /** @return 名称. */
@@ -110,6 +144,34 @@ public class BpmCategory implements java.io.Serializable {
         this.tenantId = tenantId;
     }
 
+    /** @return null. */
+    @Column(name = "CODE", length = 200)
+    public String getCode() {
+        return this.code;
+    }
+
+    /**
+     * @param code
+     *            null.
+     */
+    public void setCode(String code) {
+        this.code = code;
+    }
+
+    /** @return null. */
+    @Column(name = "STATUS", length = 50)
+    public String getStatus() {
+        return this.status;
+    }
+
+    /**
+     * @param status
+     *            null.
+     */
+    public void setStatus(String status) {
+        this.status = status;
+    }
+
     /** @return . */
     @OneToMany(fetch = FetchType.LAZY, mappedBy = "bpmCategory")
     @OrderBy("priority")
@@ -123,5 +185,19 @@ public class BpmCategory implements java.io.Serializable {
      */
     public void setBpmProcesses(Set<BpmProcess> bpmProcesses) {
         this.bpmProcesses = bpmProcesses;
+    }
+
+    /** @return . */
+    @OneToMany(fetch = FetchType.LAZY, mappedBy = "bpmCategory")
+    public Set<BpmCategory> getBpmCategories() {
+        return this.bpmCategories;
+    }
+
+    /**
+     * @param bpmCategories
+     *            .
+     */
+    public void setBpmCategories(Set<BpmCategory> bpmCategories) {
+        this.bpmCategories = bpmCategories;
     }
 }

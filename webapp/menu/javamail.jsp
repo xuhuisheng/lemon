@@ -10,21 +10,17 @@
 </style>
 
 
-<div class="panel-group col-md-2 full-height" id="accordion" role="tablist" aria-multiselectable="true" style="padding-top:65px;">
+<div class="col-md-2 full-height" style="padding-top:65px;">
 
   <div class="panel panel-default" style="height:100%">
-    <div class="panel-heading" role="tab" id="collapse-header-javamail" data-toggle="collapse" data-parent="#accordion" href="#collapse-body-javamail" aria-expanded="true" aria-controls="collapse-body-javamail">
-      <h4 class="panel-title">
-	    <i class="glyphicon glyphicon-list"></i>
-        邮箱
-      </h4>
+    <div class="panel-heading" style="padding:2px 15px;">
+	  <div class="btn-group" style="width:100%;">
+		<button onclick="location.href='create.do'" class="btn btn-default" style="width:50%;">新邮件</button>
+		<button onclick="location.href='config.do'" class="btn btn-default" style="width:50%;">配置</button>
+	  </div>
     </div>
-    <div id="collapse-body-javamail" class="panel-collapse collapse ${currentMenu == 'javamail' ? 'in' : ''}" role="tabpanel" aria-labelledby="collapse-header-javamail">
-      <div class="panel-body">
-		<button onclick="location.href='create.do'" class="btn btn-default">新邮件</button>
-		<button onclick="location.href='config.do'" class="btn btn-default">配置</button>
-		<ul id="treeMenu" class="ztree"></ul>
-      </div>
+    <div class="panel-body" style="padding:0px;">
+	  <ul id="treeMenu" class="ztree"></ul>
     </div>
   </div>
 

@@ -8,7 +8,7 @@
   <head>
     <%@include file="/common/meta.jsp"%>
     <title><spring:message code="dev.msg-info.list.title" text="列表"/></title>
-    <%@include file="/common/s.jsp"%>
+    <%@include file="/common/s3.jsp"%>
     <script type="text/javascript">
 var config = {
     id: 'msg-infoGrid',

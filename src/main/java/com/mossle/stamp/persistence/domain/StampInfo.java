@@ -7,7 +7,7 @@ import javax.persistence.Id;
 import javax.persistence.Table;
 
 /**
- * StampInfo .
+ * StampInfo 印章.
  * 
  * @author Lingo
  */
@@ -16,19 +16,28 @@ import javax.persistence.Table;
 public class StampInfo implements java.io.Serializable {
     private static final long serialVersionUID = 0L;
 
-    /** null. */
+    /** 主键. */
     private Long id;
 
-    /** null. */
+    /** 公司. */
+    private String companyName;
+
+    /** 名称. */
     private String name;
 
-    /** null. */
+    /** 类型. */
     private String type;
 
-    /** null. */
+    /** 保管人. */
+    private String userId;
+
+    /** 状态. */
+    private String status;
+
+    /** 备注. */
     private String description;
 
-    /** null. */
+    /** 租户. */
     private String tenantId;
 
     public StampInfo() {
@@ -38,16 +47,19 @@ public class StampInfo implements java.io.Serializable {
         this.id = id;
     }
 
-    public StampInfo(Long id, String name, String type, String description,
-            String tenantId) {
+    public StampInfo(Long id, String companyName, String name, String type,
+            String userId, String status, String description, String tenantId) {
         this.id = id;
+        this.companyName = companyName;
         this.name = name;
         this.type = type;
+        this.userId = userId;
+        this.status = status;
         this.description = description;
         this.tenantId = tenantId;
     }
 
-    /** @return null. */
+    /** @return 主键. */
     @Id
     @Column(name = "ID", unique = true, nullable = false)
     public Long getId() {
@@ -56,13 +68,27 @@ public class StampInfo implements java.io.Serializable {
 
     /**
      * @param id
-     *            null.
+     *            主键.
      */
     public void setId(Long id) {
         this.id = id;
     }
 
-    /** @return null. */
+    /** @return 公司. */
+    @Column(name = "COMPANY_NAME", length = 100)
+    public String getCompanyName() {
+        return this.companyName;
+    }
+
+    /**
+     * @param companyName
+     *            公司.
+     */
+    public void setCompanyName(String companyName) {
+        this.companyName = companyName;
+    }
+
+    /** @return 名称. */
     @Column(name = "NAME", length = 200)
     public String getName() {
         return this.name;
@@ -70,13 +96,13 @@ public class StampInfo implements java.io.Serializable {
 
     /**
      * @param name
-     *            null.
+     *            名称.
      */
     public void setName(String name) {
         this.name = name;
     }
 
-    /** @return null. */
+    /** @return 类型. */
     @Column(name = "TYPE", length = 50)
     public String getType() {
         return this.type;
@@ -84,13 +110,41 @@ public class StampInfo implements java.io.Serializable {
 
     /**
      * @param type
-     *            null.
+     *            类型.
      */
     public void setType(String type) {
         this.type = type;
     }
 
-    /** @return null. */
+    /** @return 保管人. */
+    @Column(name = "USER_ID", length = 64)
+    public String getUserId() {
+        return this.userId;
+    }
+
+    /**
+     * @param userId
+     *            保管人.
+     */
+    public void setUserId(String userId) {
+        this.userId = userId;
+    }
+
+    /** @return 状态. */
+    @Column(name = "STATUS", length = 50)
+    public String getStatus() {
+        return this.status;
+    }
+
+    /**
+     * @param status
+     *            状态.
+     */
+    public void setStatus(String status) {
+        this.status = status;
+    }
+
+    /** @return 备注. */
     @Column(name = "DESCRIPTION", length = 200)
     public String getDescription() {
         return this.description;
@@ -98,13 +152,13 @@ public class StampInfo implements java.io.Serializable {
 
     /**
      * @param description
-     *            null.
+     *            备注.
      */
     public void setDescription(String description) {
         this.description = description;
     }
 
-    /** @return null. */
+    /** @return 租户. */
     @Column(name = "TENANT_ID", length = 64)
     public String getTenantId() {
         return this.tenantId;
@@ -112,7 +166,7 @@ public class StampInfo implements java.io.Serializable {
 
     /**
      * @param tenantId
-     *            null.
+     *            租户.
      */
     public void setTenantId(String tenantId) {
         this.tenantId = tenantId;

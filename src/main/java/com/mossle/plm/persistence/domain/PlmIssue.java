@@ -70,6 +70,12 @@ public class PlmIssue implements java.io.Serializable {
     /** null. */
     private String step;
 
+    /** null. */
+    private String resolution;
+
+    /** null. */
+    private Date updateTime;
+
     /** . */
     private Set<PlmLog> plmLogs = new HashSet<PlmLog>(0);
 
@@ -82,6 +88,9 @@ public class PlmIssue implements java.io.Serializable {
     /** . */
     private Set<PlmComponent> plmComponents = new HashSet<PlmComponent>(0);
 
+    /** . */
+    private Set<PlmRequirement> plmRequirements = new HashSet<PlmRequirement>(0);
+
     public PlmIssue() {
     }
 
@@ -93,8 +102,9 @@ public class PlmIssue implements java.io.Serializable {
             String type, String name, String content, Integer severity,
             Date createTime, Date startTime, Date completeTime,
             String reporterId, String assigneeId, String status, String step,
-            Set<PlmLog> plmLogs, Set<PlmComment> plmComments,
-            Set<PlmVersion> plmVersions, Set<PlmComponent> plmComponents) {
+            String resolution, Date updateTime, Set<PlmLog> plmLogs,
+            Set<PlmComment> plmComments, Set<PlmVersion> plmVersions,
+            Set<PlmComponent> plmComponents, Set<PlmRequirement> plmRequirements) {
         this.id = id;
         this.plmProject = plmProject;
         this.plmSprint = plmSprint;
@@ -109,10 +119,13 @@ public class PlmIssue implements java.io.Serializable {
         this.assigneeId = assigneeId;
         this.status = status;
         this.step = step;
+        this.resolution = resolution;
+        this.updateTime = updateTime;
         this.plmLogs = plmLogs;
         this.plmComments = plmComments;
         this.plmVersions = plmVersions;
         this.plmComponents = plmComponents;
+        this.plmRequirements = plmRequirements;
     }
 
     /** @return null. */
@@ -317,6 +330,35 @@ public class PlmIssue implements java.io.Serializable {
         this.step = step;
     }
 
+    /** @return null. */
+    @Column(name = "RESOLUTION", length = 50)
+    public String getResolution() {
+        return this.resolution;
+    }
+
+    /**
+     * @param resolution
+     *            null.
+     */
+    public void setResolution(String resolution) {
+        this.resolution = resolution;
+    }
+
+    /** @return null. */
+    @Temporal(TemporalType.TIMESTAMP)
+    @Column(name = "UPDATE_TIME", length = 26)
+    public Date getUpdateTime() {
+        return this.updateTime;
+    }
+
+    /**
+     * @param updateTime
+     *            null.
+     */
+    public void setUpdateTime(Date updateTime) {
+        this.updateTime = updateTime;
+    }
+
     /** @return . */
     @OneToMany(fetch = FetchType.LAZY, mappedBy = "plmIssue")
     public Set<PlmLog> getPlmLogs() {
@@ -373,5 +415,19 @@ public class PlmIssue implements java.io.Serializable {
      */
     public void setPlmComponents(Set<PlmComponent> plmComponents) {
         this.plmComponents = plmComponents;
+    }
+
+    /** @return . */
+    @OneToMany(fetch = FetchType.LAZY, mappedBy = "plmIssue")
+    public Set<PlmRequirement> getPlmRequirements() {
+        return this.plmRequirements;
+    }
+
+    /**
+     * @param plmRequirements
+     *            .
+     */
+    public void setPlmRequirements(Set<PlmRequirement> plmRequirements) {
+        this.plmRequirements = plmRequirements;
     }
 }

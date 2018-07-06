@@ -83,7 +83,7 @@ public class ModelerController {
         }
 
         // return "redirect:/cdn/modeler/editor.html?id=" + id;
-        return "redirect:/cdn/modeler/modeler.html?modelId=" + id;
+        return "redirect:/cdn/public/modeler/5.18.0/modeler.html?modelId=" + id;
     }
 
     @RequestMapping("modeler-remove")

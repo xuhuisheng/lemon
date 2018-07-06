@@ -109,9 +109,14 @@ public class BpmProcessController {
     @RequestMapping("bpm-process-remove")
     public String remove(@RequestParam("selectedItem") List<Long> selectedItem,
             RedirectAttributes redirectAttributes) {
-        List<BpmProcess> bpmCategories = bpmProcessManager
+        List<BpmProcess> bpmProcesses = bpmProcessManager
                 .findByIds(selectedItem);
-        bpmProcessManager.removeAll(bpmCategories);
+
+        for (BpmProcess bpmProcess : bpmProcesses) {
+            bpmProcessManager.removeAll(bpmProcess.getBpmTaskDefNotices());
+        }
+
+        bpmProcessManager.removeAll(bpmProcesses);
         messageHelper.addFlashMessage(redirectAttributes,
                 "core.success.delete", "删除成功");
 

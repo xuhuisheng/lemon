@@ -9,6 +9,7 @@ import javax.annotation.Resource;
 
 import javax.servlet.http.HttpServletRequest;
 
+import com.mossle.api.auth.CurrentUserHolder;
 import com.mossle.api.form.FormConnector;
 import com.mossle.api.form.FormDTO;
 import com.mossle.api.humantask.HumanTaskConnector;
@@ -28,7 +29,6 @@ import com.mossle.button.ButtonDTO;
 import com.mossle.button.ButtonHelper;
 
 import com.mossle.core.MultipartHandler;
-import com.mossle.core.auth.CurrentUserHolder;
 import com.mossle.core.mapper.JsonMapper;
 import com.mossle.core.page.Page;
 import com.mossle.core.spring.MessageHelper;

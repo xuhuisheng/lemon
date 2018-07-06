@@ -1,0 +1,17 @@
+<p>features:</p>
+
+<ul>
+	<li>界面全面升级Bootstrap3。好看多了</li>
+	<li>可以切换语言了。不过没精力翻译，所以没啥作用</li>
+	<li>使用snowflake生成id。目前没啥好处，为以后兼容oracle打基础</li>
+	<li>使用jcache统一缓存。</li>
+	<li>启动android移动端。</li>
+</ul>
+
+<p>resources:</p>
+
+<ul>
+	<li>详细修订列表： <a href="https://github.com/xuhuisheng/lemon/issues?q=milestone%3A1.7.0" target="_blank">https://github.com/xuhuisheng/lemon/issues?q=milestone%3A1.7.0</a></li>
+	<li>源码地址： <a href="https://github.com/xuhuisheng/lemon/tree/lemon-1.7.0" target="_blank">https://github.com/xuhuisheng/lemon/tree/lemon-1.7.0</a></li>
+	<li>独立运行包： <a href="http://pan.baidu.com/s/1sj52GpR" target="_blank">http://pan.baidu.com/s/1sj52GpR</a></li>
+</ul>

@@ -19,28 +19,37 @@
 	<bean id="permissionChecker" class="com.mossle.security.perm.PermissionChecker"/>
 
 	<!-- 认证 -->
+	<!--
 	<bean id="authenticationProvider" class="org.springframework.security.authentication.dao.DaoAuthenticationProvider">
 		<property name="userDetailsService" ref="userDetailsService"/>
 		<property name="passwordEncoder" ref="passwordEncoder"/>
+	</bean>
+	-->
+	<bean id="authenticationProvider" class="com.mossle.security.client.SimpleAuthenticationProvider">
+		<property name="userDetailsService" ref="userDetailsService"/>
+		<property name="passwordEncoder" ref="passwordEncoder"/>
+		<property name="remoteUserConnector" ref="remoteUserConnector"/>
 	</bean>
 
 	<!-- 为认证获取用户信息 -->
 	<bean id="userDetailsService" class="com.mossle.security.client.DefaultUserDetailsService">
 		<property name="userAuthConnector" ref="userAuthConnector"/>
-		<property name="accountCredentialConnector" ref="accountCredentialConnector"/>
-		<property name="accountAliasConnector" ref="accountAliasConnector"/>
+		<property name="internalUserConnector" ref="internalUserConnector"/>
 		<property name="debug" value="${security.autologin.enabled}"/>
 		<property name="tenantHolder" ref="tenantHolder"/>
 	</bean>
 
 	<!-- 密码加密器 -->
-	<bean id="passwordEncoder" class="com.mossle.security.util.PasswordEncoderFactoryBean">
+	<bean id="passwordEncoder" class="com.mossle.security.support.PasswordEncoderFactoryBean">
 		<property name="type" value="${security.passwordencoder.type}"/>
 		<property name="salt" value="${security.passwordencoder.salt}"/>
 	</bean>
 
 	<!-- 获取当前登录用户的工具 -->
+	<!--
 	<bean id="currentUserHolder" class="com.mossle.security.client.SpringSecurityCurrentUserHolder"/>
+	-->
+	<bean id="currentUserHolder" class="com.mossle.security.support.SpringSecurityCurrentUserHolder"/>
 
 	<!-- 又一个密码加密器？ -->
 	<bean id="customPasswordEncoder" factory-bean="&amp;passwordEncoder" factory-method="getCustomPasswordEncoder"/>
@@ -116,5 +125,11 @@
 
 	<!-- 提供从session中直接获取UserAuthDTO -->
 	<bean id="internalUserAuthConnector" class="com.mossle.security.util.InternalUserAuthConnectorImpl"/>
+
+	<!-- 为测试环境提供权限控制 -->
+	<bean id="testUrlResourcePopulator" class="com.mossle.security.client.TestUrlResourcePopulator">
+		<property name="filterSecurityInterceptor" ref="org.springframework.security.web.access.intercept.FilterSecurityInterceptor#0"/>
+		<property name="enable" value="${security.url.test.enable}"/>
+	</bean>
 
 </beans>

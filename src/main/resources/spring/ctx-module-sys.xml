@@ -1,0 +1,17 @@
+<?xml version="1.0" encoding="UTF-8"?>
+<beans xmlns="http://www.springframework.org/schema/beans"
+	    xmlns:xsi="http://www.w3.org/2001/XMLSchema-instance"
+	    xsi:schemaLocation="http://www.springframework.org/schema/beans http://www.springframework.org/schema/beans/spring-beans.xsd">
+
+	<!-- 本地stub？ -->
+
+	<!-- 本地缓存的用户信息 -->
+	<bean id="localUserConnector" class="${user.localUserConnector}"/>
+
+	<!-- 远程用户信息接口 -->
+	<bean id="remoteUserConnector" class="${user.remoteUserConnector}"/>
+
+	<!-- 测试的情况，直接通过local透传信息 -->
+	<bean id="userAuthConnector" class="${user.userAuthConnector}"/>
+
+</beans>

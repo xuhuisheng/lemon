@@ -24,10 +24,10 @@ $(function() {
   </head>
 
   <body>
-    <%@include file="/header/sendmail.jsp"%>
+    <%@include file="/header/sendsms.jsp"%>
 
     <div class="row-fluid">
-	  <%@include file="/menu/sendmail.jsp"%>
+	  <%@include file="/menu/sendsms.jsp"%>
 
 	<!-- start of main -->
       <section id="m-main" class="col-md-10" style="padding-top:65px;">
@@ -35,7 +35,7 @@ $(function() {
       <div class="panel panel-default">
         <div class="panel-heading">
 		  <i class="glyphicon glyphicon-list"></i>
-		  编辑
+		  查看
 		</div>
 
 		<div class="panel-body">

@@ -4,7 +4,7 @@ import java.util.List;
 
 import javax.annotation.Resource;
 
-import com.mossle.core.auth.CurrentUserHolder;
+import com.mossle.api.auth.CurrentUserHolder;
 import com.mossle.core.mapper.BeanMapper;
 
 import com.mossle.javamail.persistence.domain.JavamailConfig;

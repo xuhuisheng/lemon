@@ -43,6 +43,10 @@ public class MockUserConnector implements UserConnector {
         return userDto;
     }
 
+    public String findUsernameByAlias(String alias) {
+        return alias;
+    }
+
     public Page pagedQuery(String userRepoRef, Page page,
             Map<String, Object> parameters) {
         page.setTotalCount(1);

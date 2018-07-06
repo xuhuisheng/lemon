@@ -6,8 +6,13 @@
     <meta http-equiv="content-type" content="text/html; charset=UTF-8">
     <meta charset="utf-8">
     <title>网盘</title>
-    <%@include file="_s.jsp"%>
-	<link rel="stylesheet" href="${cdnPrefix}/disk/sprite_list_icon.css">
+    <%@include file="/common/s3.jsp"%>
+	<link rel="stylesheet" href="${cdnPrefix}/public/mossle-disk/0.0.3/sprite_list_icon.css">
+	<style type="text/css">
+body {
+    padding-top: 50px;
+}
+	</style>
   </head>
   <body>
     <div id="wrap">&nbsp;
@@ -24,7 +29,7 @@
 
     <table id="tablereimburserecord1" class="table table-hover table-bordered">
       <thead>
-        <tr class="active">
+        <tr>
           <th class="col-md-1 text-left"></th>
           <th class="col-md-7 text-left">文件名</th>
           <th class="col-md-2 text-left">分享时间</th>

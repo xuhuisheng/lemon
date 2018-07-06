@@ -1,0 +1,2 @@
+"NAME"   ,"HOST"           ,"POST","USERNAME"      ,"PASSWORD"  ,"SMTP_AUTH","SMTP_STARTTLS","SMTP_SSL","STATUS","DEFAULT_FROM"
+"default","mail.mossle.com","465" ,"bot@mossle.com","bot2mossle","true"     ,"false"        ,"true"    ,"normal","bot@mossle.com"

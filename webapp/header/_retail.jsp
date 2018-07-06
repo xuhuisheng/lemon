@@ -11,9 +11,9 @@
             <span class="icon-bar"></span>
             <span class="icon-bar"></span>
           </a>
-          <a href="${tenantPrefix}/portal/index.do" class="brand">
-	        <img src="${cdnPrefix}/logo32.png" class="img-responsive pull-left" style="margin-top:-12px;margin-right:5px;">
-		    Lemon <sub><small>1.8.0</small></sub>
+          <a href="${tenantPrefix}/" class="brand">
+			<img src="${cdnPrefix}/public/mossle/0.0.11/logo32.png" class="img-responsive pull-left" style="margin-top:-5px;margin-right:5px;">
+			Lemon <sub><small>1.9.0-SNAPSHOT</small></sub>
 		  </a>
           <div class="nav-collapse collapse navbar-responsive-collapse">
             <ul class="nav">

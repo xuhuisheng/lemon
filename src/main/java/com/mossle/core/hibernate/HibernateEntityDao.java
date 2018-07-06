@@ -171,12 +171,7 @@ public class HibernateEntityDao<T> extends HibernatePagingDao {
 
             if (idGenerator != null) {
                 if (isCreated) {
-                    String idFieldName = getIdName(entity.getClass());
-                    Serializable id = getIdGenerator().generateId();
-
-                    if (id != null) {
-                        setId(entity.getClass(), entity, id);
-                    }
+                    this.tryToSetId(entity, idGenerator);
 
                     super.insert(entity);
                 } else {
@@ -200,6 +195,15 @@ public class HibernateEntityDao<T> extends HibernatePagingDao {
         } catch (InvocationTargetException ex) {
             logger.warn(ex.getMessage(), ex);
             super.save(entity);
+        }
+    }
+
+    public void tryToSetId(Object entity, IdGenerator idGenerator) {
+        String idFieldName = this.getIdName(entity.getClass());
+        Serializable id = idGenerator.generateId();
+
+        if (id != null) {
+            this.setId(entity.getClass(), entity, id);
         }
     }
 

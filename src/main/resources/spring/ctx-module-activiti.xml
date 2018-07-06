@@ -97,19 +97,6 @@
 		<property name="enabled" value="${bpm.enabled}"/>
 	</bean>
 
-	<!-- 自动部署 -->
-	<bean id="autoDeployer" class="com.mossle.bpm.support.AutoDeployer" depends-on="applicationContextHelper">
-		<property name="enable" value="${bpm.auto.deploy}"/>
-		<property name="processEngine" ref="processEngine"/>
-		<property name="defaultTenantCode" value="${tenant.default.code}"/>
-		<property name="tenantConnector" ref="tenantConnector"/>
-        <property name="deploymentResources">
-            <list>
-                <value>classpath*:/bpmn2/*</value>
-            </list>
-        </property>
-	</bean>
-
 	<!-- 在记录history之前执行的TaskListener -->
 	<!--
 	<bean id="customTaskListener" class="com.mossle.bpm.listener.ProxyTaskListener">

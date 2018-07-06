@@ -52,11 +52,26 @@ $(function() {
   <div class="form-group">
     <label class="control-label col-md-1" for="cms-article_cmsArticlename">栏目</label>
 	<div class="col-md-11">
-      <select id="perm_resc" name="cmsCatalogId" class="form-control">
-	    <c:forEach items="${cmsCatalogs}" var="item">
-	    <option value="${item.id}" ${model.cmsCatalog.id==item.id ? 'selected' : ''}>${item.name}</option>
-		</c:forEach>
-	  </select>
+	  <c:if test="${empty model}">
+	    <c:if test="${not empty param.catalogId}">
+		  <input type="hidden" name="cmsCatalogId" value="${cmsCatalog.id}">
+		  <p class="form-control-static">${cmsCatalog.name}</p>
+		</c:if>
+	    <c:if test="${empty param.catalogId}">
+        <select id="perm_resc" name="cmsCatalogId" class="form-control">
+	      <c:forEach items="${cmsCatalogs}" var="item">
+	      <option value="${item.id}" ${model.cmsCatalog.id==item.id ? 'selected' : ''}>${item.name}</option>
+		  </c:forEach>
+	    </select>
+		</c:if>
+	  </c:if>
+	  <c:if test="${not empty model}">
+        <select id="perm_resc" name="cmsCatalogId" class="form-control">
+	      <c:forEach items="${cmsCatalogs}" var="item">
+	      <option value="${item.id}" ${model.cmsCatalog.id==item.id ? 'selected' : ''}>${item.name}</option>
+		  </c:forEach>
+	    </select>
+	  </c:if>
     </div>
   </div>
   <div class="form-group">
@@ -91,13 +106,16 @@ $(function() {
 	  <textarea id="cmsArticle_content" name="content" class="form-control required" minlength="2" maxlength="50">${model.content}</textarea>
     </div>
   </div>
-<!--
   <div class="form-group">
     <label class="control-label col-md-1" for="cms-article_cmsArticlename">图标</label>
-	<div class="col-sm-5">
-	  <input id="cms-article_cmsArticlename" type="text" name="logo" value="${model.logo}" size="40" class="text" minlength="2" maxlength="50">
+	<div class="col-md-11">
+	  <input id="cmsArticle_logo" type="file" name="logoFile" value="" class="form-control-static">
+	  <c:if test="${not empty model.logo}">
+	    <img src="r/attachments/${model.logo}" width="80">
+	  </c:if>
     </div>
   </div>
+  <!--
   <div class="form-group">
     <label class="control-label col-md-1" for="cms-article_cmsArticlename">关键字</label>
 	<div class="col-sm-5">
@@ -110,12 +128,14 @@ $(function() {
 	  <input id="cms-article_cmsArticlename" type="text" name="tags" value="${model.tags}" size="40" class="text" minlength="2" maxlength="50">
     </div>
   </div>
+  -->
   <div class="form-group">
     <label class="control-label col-md-1" for="cms-article_cmsArticlename">来源</label>
-	<div class="col-sm-5">
-	  <input id="cms-article_cmsArticlename" type="text" name="source" value="${model.source}" size="40" class="text" minlength="2" maxlength="50">
+	<div class="col-md-11">
+	  <input id="cms-article_cmsArticlename" type="text" name="source" value="${model.source}" size="40" class="form-control" minlength="2" maxlength="50">
     </div>
   </div>
+  <!--
   <div class="form-group">
     <label class="control-label col-md-1" for="cms-article_cmsArticlename">允许评论</label>
 	<div class="col-sm-5">
@@ -129,17 +149,19 @@ $(function() {
     </div>
   </div>
 -->
+  <div class="form-group">
+    <label class="control-label col-md-1" for="cms-article_cmsArticlename">发布时间</label>
+	<div class="input-group date datetimepicker col-md-5" style="padding-left:15px;padding-right:15px;">
+	  <input id="cal-info_startTime" name="publishTime" size="16" type="text" value="<fmt:formatDate value='${model.publishTime}' pattern='yyyy-MM-dd HH:mm'/>" readonly style="background-color:white;cursor:default;" class="form-control required">
+      <span class="input-group-addon"><span class="glyphicon glyphicon-remove"></span></span>
+      <span class="input-group-addon"><span class="glyphicon glyphicon-th"></span></span>
+    </div>
+  </div>
 <!--
   <div class="form-group">
     <label class="control-label col-md-1" for="cms-article_cmsArticlename">创建时间</label>
 	<div class="col-sm-5">
 	  <input id="cms-article_cmsArticlename" type="text" name="createTime" value="${model.createTime}" class="text">
-    </div>
-  </div>
-  <div class="form-group">
-    <label class="control-label col-md-1" for="cms-article_cmsArticlename">发布时间</label>
-	<div class="col-sm-5">
-	  <input id="cms-article_cmsArticlename" type="text" name="publishTime" value="${model.publishTime}" class="text">
     </div>
   </div>
   <div class="form-group">
@@ -173,7 +195,7 @@ $(function() {
   <div class="form-group">
     <label class="control-label col-md-1" for="cmsArticle_file">附件</label>
 	<div class="col-md-11">
-	  <input id="cmsArticle_file" type="file" name="file" value="" class="">
+	  <input id="cmsArticle_file" type="file" name="file" value="" class="form-control-static">
     </div>
   </div>
   <div class="form-group">

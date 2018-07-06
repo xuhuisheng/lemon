@@ -168,7 +168,7 @@ public class HumanTaskConnectorImpl implements HumanTaskConnector {
     public HumanTaskDTO findHumanTaskByTaskId(String taskId) {
         TaskInfo taskInfo = taskInfoManager.findUniqueBy("taskId", taskId);
         HumanTaskDTO humanTaskDto = new HumanTaskDTO();
-        humanTaskDto=convertHumanTaskDto(taskInfo);
+        humanTaskDto = convertHumanTaskDto(taskInfo);
 
         return humanTaskDto;
     }
@@ -464,10 +464,9 @@ public class HumanTaskConnectorImpl implements HumanTaskConnector {
      */
     public Page findPersonalTasks(String userId, String tenantId, int pageNo,
             int pageSize) {
-        Page page = taskInfoManager
-                .pagedQuery(
-                        "from TaskInfo where assignee=? and tenantId=? and status='active'",
-                        pageNo, pageSize, userId, tenantId);
+        String hql = "from TaskInfo where assignee=? and tenantId=? and status='active' order by id desc";
+        Page page = taskInfoManager.pagedQuery(hql, pageNo, pageSize, userId,
+                tenantId);
         List<TaskInfo> taskInfos = (List<TaskInfo>) page.getResult();
         List<HumanTaskDTO> humanTaskDtos = this.convertHumanTaskDtos(taskInfos);
         page.setResult(humanTaskDtos);
@@ -480,10 +479,9 @@ public class HumanTaskConnectorImpl implements HumanTaskConnector {
      */
     public Page findFinishedTasks(String userId, String tenantId, int pageNo,
             int pageSize) {
-        Page page = taskInfoManager
-                .pagedQuery(
-                        "from TaskInfo where assignee=? and tenantId=? and status='complete'",
-                        pageNo, pageSize, userId, tenantId);
+        String hql = "from TaskInfo where assignee=? and tenantId=? and status='complete' order by id desc";
+        Page page = taskInfoManager.pagedQuery(hql, pageNo, pageSize, userId,
+                tenantId);
         List<TaskInfo> taskInfos = (List<TaskInfo>) page.getResult();
         List<HumanTaskDTO> humanTaskDtos = this.convertHumanTaskDtos(taskInfos);
         page.setResult(humanTaskDtos);
@@ -502,15 +500,17 @@ public class HumanTaskConnectorImpl implements HumanTaskConnector {
 
         logger.debug("party ids : {}", partyIds);
 
-		if (partyIds.isEmpty()) {
-			return new Page();
-		}
+        if (partyIds.isEmpty()) {
+            return new Page();
+        }
 
         Map<String, Object> map = new HashMap<String, Object>();
         map.put("partyIds", partyIds);
         map.put("tenantId", tenantId);
 
-        String hql = "select distinct t from TaskInfo t join t.taskParticipants p with p.ref in (:partyIds) where t.tenantId=:tenantId and t.assignee=null and t.status='active'";
+        String hql = "select distinct t from TaskInfo t join t.taskParticipants p "
+                + "with p.ref in (:partyIds) where t.tenantId=:tenantId and t.assignee=null and t.status='active' "
+                + "order by id desc";
         Page page = taskInfoManager.pagedQuery(hql, pageNo, pageSize, map);
 
         // List<PropertyFilter> propertyFilters = PropertyFilter
@@ -529,10 +529,9 @@ public class HumanTaskConnectorImpl implements HumanTaskConnector {
      */
     public Page findDelegateTasks(String userId, String tenantId, int pageNo,
             int pageSize) {
-        Page page = taskInfoManager
-                .pagedQuery(
-                        "from TaskInfo where owner=? and tenantId=? and status='active'",
-                        pageNo, pageSize, userId, tenantId);
+        String hql = "from TaskInfo where owner=? and tenantId=? and status='active' order by id desc";
+        Page page = taskInfoManager.pagedQuery(hql, pageNo, pageSize, userId,
+                tenantId);
         List<TaskInfo> taskInfos = (List<TaskInfo>) page.getResult();
         List<HumanTaskDTO> humanTaskDtos = this.convertHumanTaskDtos(taskInfos);
         page.setResult(humanTaskDtos);

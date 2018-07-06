@@ -29,15 +29,16 @@ $(function() {
     <div class="row-fluid">
 	  <%@include file="/menu/sendsms.jsp"%>
 
-	  <!-- start of main -->
-      <section id="m-main" class="span10">
+	<!-- start of main -->
+      <section id="m-main" class="col-md-10" style="padding-top:65px;">
 
-      <article class="m-widget">
-        <header class="header">
-		  <h4 class="title">${smsDto.success ? '发送成功' : '发送失败'}</h4>
-		</header>
+      <div class="panel panel-default">
+        <div class="panel-heading">
+		  <i class="glyphicon glyphicon-list"></i>
+		  测试
+		</div>
 
-		<div class="content content-inner">
+		<div class="panel-body">
 
 <c:if test="${smsDto.success}">
 <p>发送成功</p>
@@ -49,13 +50,14 @@ $(function() {
 <pre>${exception}</pre>
 </c:if>
 
-        </div>
+		</div>
       </article>
 
-      </section>
-	  <!-- end of main -->
+    </section>
+	<!-- end of main -->
 	</div>
 
   </body>
 
 </html>
+

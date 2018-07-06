@@ -36,7 +36,7 @@ $(function() {
     table.configPageInfo('.m-page-info');
     table.configPageSize('.m-page-size');
 
-	$('.full-height').height($(window).height() - 150);
+	$('.full-height').height($(window).height() - 85);
 	
 	var editor = CKEDITOR.replace('message_content');
 });
@@ -52,17 +52,16 @@ $(function() {
 
 
 
-<div class="panel-group col-md-3" id="accordion2" role="tablist" aria-multiselectable="true" style="padding-top:65px;">
+<div class="col-md-3 full-height" id="accordion2" style="padding-top:65px;">
 
-  <div class="panel panel-default">
-    <div class="panel-heading" role="tab" id="collapse-header-javamail" data-toggle="collapse" data-parent="#accordion" href="#collapse-body-javamail" aria-expanded="true" aria-controls="collapse-body-javamail">
+  <div class="panel panel-default" style="height:100%">
+    <div class="panel-heading">
       <h4 class="panel-title">
 	    <i class="glyphicon glyphicon-list"></i>
         邮件
       </h4>
     </div>
-    <div id="collapse-body-javamail" class="panel-collapse collapse ${currentMenu == 'javamail' ? 'in' : ''}" role="tabpanel" aria-labelledby="collapse-header-javamail">
-      <div class="panel-body full-height">
+    <div class="panel-body">
 <c:forEach var="item" items="${javamailMessages}">
 		    <blockquote>
 			  <p>
@@ -74,7 +73,7 @@ $(function() {
 			    &nbsp;
               </footer>
 			</blockquote>
-</c:forEach>      </div>
+</c:forEach>
     </div>
   </div>
 
@@ -85,17 +84,16 @@ $(function() {
 
 
 
-<div class="panel-group col-md-7" id="accordion3" role="tablist" aria-multiselectable="true" style="padding-top:65px;">
+<div class="col-md-7 full-height" id="accordion3" style="padding-top:65px;">
 
-  <div class="panel panel-default">
-    <div class="panel-heading" role="tab" id="collapse-header-javamail" data-toggle="collapse" data-parent="#accordion" href="#collapse-body-javamail" aria-expanded="true" aria-controls="collapse-body-javamail">
+  <div class="panel panel-default" style="height:100%">
+    <div class="panel-heading">
       <h4 class="panel-title">
 	    <i class="glyphicon glyphicon-list"></i>
         新邮件
       </h4>
     </div>
-    <div id="collapse-body-javamail" class="panel-collapse collapse ${currentMenu == 'javamail' ? 'in' : ''}" role="tabpanel" aria-labelledby="collapse-header-javamail">
-      <div class="panel-body full-height">
+    <div class="panel-body">
 
     <form class="form-horizontal" action="send.do" method="post">
 

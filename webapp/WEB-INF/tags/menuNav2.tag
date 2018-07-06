@@ -4,7 +4,7 @@
 <%@tag import="org.springframework.web.context.support.WebApplicationContextUtils"%>
 <%@tag import="com.mossle.api.menu.MenuConnector"%>
 <%@tag import="com.mossle.api.menu.MenuDTO"%>
-<%@tag import="com.mossle.core.auth.CurrentUserHolder"%>
+<%@tag import="com.mossle.api.auth.CurrentUserHolder"%>
 <%@taglib prefix="c" uri="http://java.sun.com/jsp/jstl/core" %>
 <%@attribute name="systemCode" type="java.lang.Object" required="true"%>
 <%

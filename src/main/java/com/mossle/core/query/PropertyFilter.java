@@ -10,7 +10,8 @@ import javax.servlet.http.HttpServletRequest;
 
 import com.mossle.core.util.ConvertUtils;
 import com.mossle.core.util.ServletUtils;
-import com.mossle.core.util.StringUtils;
+
+import org.apache.commons.lang3.StringUtils;
 
 import org.springframework.util.Assert;
 
@@ -89,7 +90,7 @@ public class PropertyFilter {
             Class<T> propertyClass) {
         List<T> list = new ArrayList<T>();
 
-        for (String value : text.split(",")) {
+        for (String value : StringUtils.split(text, " ,;")) {
             list.add((T) ConvertUtils.convertStringToObject(value,
                     propertyClass));
         }

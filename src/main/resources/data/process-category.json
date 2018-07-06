@@ -1,0 +1,42 @@
+[
+    {
+        "name": "行政",
+	"children": [{
+	    "code": "asset",
+	    "name": "资产申请"
+	}, {
+	    "code": "stamp",
+	    "name": "印章申请"
+	}]
+    },
+    {
+        "name": "人事",
+	"children": [{
+	    "code": "vacation",
+	    "name": "休假申请"
+	}, {
+	    "code": "travel",
+	    "name": "差旅申请"
+	}]
+    },
+    {
+        "name": "财务",
+	"children": [{
+	    "code": "expense",
+	    "name": "个人报销"
+	}, {
+	    "code": "fee",
+	    "name": "费用申请"
+	}]
+    },
+    {
+        "name": "其他",
+	"children": [{
+	    "code": "publish",
+	    "name": "发文申请"
+	}, {
+	    "code": "permission",
+	    "name": "权限申请"
+	}]
+    }
+]

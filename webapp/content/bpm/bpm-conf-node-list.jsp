@@ -101,7 +101,7 @@ $(function() {
 	<table class="table">
       <thead>
         <tr>
-          <th>编号</th>
+          <th>编码</th>
           <th>类型</th>
           <th>节点</th>
           <th>人员</th>
@@ -115,7 +115,7 @@ $(function() {
       <tbody>
         <c:forEach items="${bpmConfNodes}" var="item">
         <tr>
-          <td>${item.id}</td>
+          <td>${item.code}</td>
 		  <td>${item.type}</td>
           <td>${item.name}</td>
           <td>

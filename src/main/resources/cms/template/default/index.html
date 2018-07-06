@@ -5,9 +5,9 @@
     <meta http-equiv="X-UA-Compatible" content="IE=edge,chrome=1" />
     <title>Index</title>
 	<!-- static start -->
-	<link rel="stylesheet" href="../cdn/bootstrap/3.3.6/css/bootstrap.min.css">
-    <script type="text/javascript" src="../cdn/jquery/jquery.min.js"></script>
-	<script type="text/javascript" src="../cdn/bootstrap/3.3.6/js/bootstrap.min.js"></script>
+	<link rel="stylesheet" href="../cdn/public/bootstrap/3.3.7/css/bootstrap.min.css">
+    <script type="text/javascript" src="../cdn/public/jquery/1.12.4/jquery.min.js"></script>
+	<script type="text/javascript" src="../cdn/public/bootstrap/3.3.7/js/bootstrap.min.js"></script>
 	<!-- static end -->
 	<style type="text/css">
 * {
@@ -72,7 +72,7 @@
 			  </div>
 			  <ul class="list-group">
 			  <#list catalog.cmsArticles?sort_by("publishTime")?reverse as article>
-			    <#if article_index lt 5>
+			    <#if article_index < 5>
 				<li class="list-group-item">
 				  <a href="cms-article-view.do?id=${article.id?string('#')}">${article.title!}</a>
 				  <div class="pull-right">

@@ -182,6 +182,12 @@ public class OperationService {
         return variables;
     }
 
+    public void removeAttachment(String businessKey, String name) {
+        Record record = keyValueConnector.findByBusinessKey(businessKey);
+        record.getProps().get(name).setValue("");
+        keyValueConnector.save(record);
+    }
+
     @Resource
     public void setKeyValueConnector(KeyValueConnector keyValueConnector) {
         this.keyValueConnector = keyValueConnector;

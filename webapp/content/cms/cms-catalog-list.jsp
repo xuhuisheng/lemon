@@ -98,10 +98,11 @@ $(function() {
     <thead>
       <tr>
         <th width="10" class="table-check"><input type="checkbox" name="checkAll" onchange="toggleSelectedItems(this.checked)"></th>
-        <th class="sorting" name="id"><spring:message code="cmsCatalog.cmsCatalog.list.id" text="编号"/></th>
+        <th class="sorting" name="code">别名</th>
         <th class="sorting" name="cmsCatalogname">名称</th>
         <th class="sorting" name="type">类型</th>
-        <th width="80">&nbsp;</th>
+        <th class="sorting" name="priority">优先级</th>
+        <th width="100">&nbsp;</th>
       </tr>
     </thead>
 
@@ -109,7 +110,7 @@ $(function() {
       <c:forEach items="${page.result}" var="item">
       <tr>
         <td><input type="checkbox" class="selectedItem a-check" name="selectedItem" value="${item.id}"></td>
-        <td>${item.id}</td>
+        <td>${item.code}</td>
         <td>${item.name}</td>
         <td>
 		  <c:if test="${item.type == 0}">文字</c:if>
@@ -119,8 +120,11 @@ $(function() {
 		  <c:if test="${item.type == 4}">文档</c:if>
 		  <c:if test="${item.type == 5}">文字</c:if>
 		</td>
+        <td>${item.priority}</td>
         <td>
           <a href="cms-catalog-input.do?id=${item.id}" class="a-update"><spring:message code="core.list.edit" text="编辑"/></a>
+		  &nbsp;
+		  <a href="admin/one-catalog/${item.code}/list">管理</a>
         </td>
       </tr>
       </c:forEach>

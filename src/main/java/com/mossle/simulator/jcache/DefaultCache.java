@@ -191,6 +191,6 @@ public class DefaultCache<K, V> implements Cache<K, V> {
     }
 
     public Iterator<Cache.Entry<K, V>> iterator() {
-        return null;
+        return new DefaultCacheIterator(this.data);
     }
 }

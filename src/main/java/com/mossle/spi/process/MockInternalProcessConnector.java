@@ -67,4 +67,8 @@ public class MockInternalProcessConnector implements InternalProcessConnector {
 
     public void signalExecution(String executionId) {
     }
+
+    public String findProcessDefinitionId(String processDefinitionKey) {
+        return null;
+    }
 }

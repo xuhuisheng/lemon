@@ -10,8 +10,7 @@ import com.mossle.core.mapper.BeanMapper;
 
 import com.mossle.security.impl.SpringSecurityUserAuth;
 
-import com.mossle.spi.user.AccountAliasConnector;
-import com.mossle.spi.user.AccountCredentialConnector;
+import com.mossle.spi.user.InternalUserConnector;
 
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
@@ -24,8 +23,7 @@ public class DefaultUserDetailsService implements UserDetailsService {
     private static Logger logger = LoggerFactory
             .getLogger(DefaultUserDetailsService.class);
     private UserAuthConnector userAuthConnector;
-    private AccountCredentialConnector accountCredentialConnector;
-    private AccountAliasConnector accountAliasConnector;
+    private InternalUserConnector internalUserConnector;
     private String defaultPassword;
     private BeanMapper beanMapper = new BeanMapper();
     private boolean debug;
@@ -43,6 +41,8 @@ public class DefaultUserDetailsService implements UserDetailsService {
         String tenantId = tenantHolder.getTenantId();
 
         if (debug) {
+            logger.info("debug");
+
             SpringSecurityUserAuth userAuth = new SpringSecurityUserAuth();
             userAuth.setId("1");
             userAuth.setUsername(username);
@@ -62,7 +62,7 @@ public class DefaultUserDetailsService implements UserDetailsService {
         username = username.toLowerCase();
 
         try {
-            username = accountAliasConnector.findUsernameByAlias(username);
+            username = internalUserConnector.findUsernameByAlias(username);
 
             UserAuthDTO userAuthDto = userAuthConnector.findByUsername(
                     username, tenantId);
@@ -73,7 +73,7 @@ public class DefaultUserDetailsService implements UserDetailsService {
                 throw new UsernameNotFoundException(username + "," + tenantId);
             }
 
-            String password = accountCredentialConnector.findPassword(username,
+            String password = internalUserConnector.findPassword(username,
                     tenantId);
 
             SpringSecurityUserAuth userAuthResult = new SpringSecurityUserAuth();
@@ -97,14 +97,9 @@ public class DefaultUserDetailsService implements UserDetailsService {
         this.userAuthConnector = userAuthConnector;
     }
 
-    public void setAccountCredentialConnector(
-            AccountCredentialConnector accountCredentialConnector) {
-        this.accountCredentialConnector = accountCredentialConnector;
-    }
-
-    public void setAccountAliasConnector(
-            AccountAliasConnector accountAliasConnector) {
-        this.accountAliasConnector = accountAliasConnector;
+    public void setInternalUserConnector(
+            InternalUserConnector internalUserConnector) {
+        this.internalUserConnector = internalUserConnector;
     }
 
     public void setDefaultPassword(String defaultPassword) {

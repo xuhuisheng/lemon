@@ -42,6 +42,9 @@ public class MeetingInfo implements java.io.Serializable {
     private Date createTime;
 
     /** null. */
+    private Date calendarDate;
+
+    /** null. */
     private Date startTime;
 
     /** null. */
@@ -63,6 +66,9 @@ public class MeetingInfo implements java.io.Serializable {
     private String status;
 
     /** null. */
+    private String userId;
+
+    /** null. */
     private String tenantId;
 
     /** . */
@@ -80,15 +86,17 @@ public class MeetingInfo implements java.io.Serializable {
     }
 
     public MeetingInfo(Long id, MeetingRoom meetingRoom, String subject,
-            String content, Date createTime, Date startTime, Date endTime,
-            String organizer, String meetingTimezone, String type,
-            String catalog, String status, String tenantId,
-            Set<MeetingItem> meetingItems, Set<MeetingAttendee> meetingAttendees) {
+            String content, Date createTime, Date calendarDate, Date startTime,
+            Date endTime, String organizer, String meetingTimezone,
+            String type, String catalog, String status, String userId,
+            String tenantId, Set<MeetingItem> meetingItems,
+            Set<MeetingAttendee> meetingAttendees) {
         this.id = id;
         this.meetingRoom = meetingRoom;
         this.subject = subject;
         this.content = content;
         this.createTime = createTime;
+        this.calendarDate = calendarDate;
         this.startTime = startTime;
         this.endTime = endTime;
         this.organizer = organizer;
@@ -96,6 +104,7 @@ public class MeetingInfo implements java.io.Serializable {
         this.type = type;
         this.catalog = catalog;
         this.status = status;
+        this.userId = userId;
         this.tenantId = tenantId;
         this.meetingItems = meetingItems;
         this.meetingAttendees = meetingAttendees;
@@ -172,6 +181,21 @@ public class MeetingInfo implements java.io.Serializable {
      */
     public void setCreateTime(Date createTime) {
         this.createTime = createTime;
+    }
+
+    /** @return null. */
+    @Temporal(TemporalType.DATE)
+    @Column(name = "CALENDAR_DATE", length = 10)
+    public Date getCalendarDate() {
+        return this.calendarDate;
+    }
+
+    /**
+     * @param calendarDate
+     *            null.
+     */
+    public void setCalendarDate(Date calendarDate) {
+        this.calendarDate = calendarDate;
     }
 
     /** @return null. */
@@ -272,6 +296,20 @@ public class MeetingInfo implements java.io.Serializable {
      */
     public void setStatus(String status) {
         this.status = status;
+    }
+
+    /** @return null. */
+    @Column(name = "USER_ID", length = 64)
+    public String getUserId() {
+        return this.userId;
+    }
+
+    /**
+     * @param userId
+     *            null.
+     */
+    public void setUserId(String userId) {
+        this.userId = userId;
     }
 
     /** @return null. */

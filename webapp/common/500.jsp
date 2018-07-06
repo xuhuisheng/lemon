@@ -66,9 +66,9 @@ logger.error(requestInfo, ex);
   <head>
     <%@include file="/common/meta.jsp"%>
     <title>500 - <spring:message code="core.500.error" text="系统内部发生错误"/></title>
-	<link href="${cdnPrefix}/bootstrap/css/bootstrap.min.css" rel="stylesheet">
-	<link href="${cdnPrefix}/bootstrap/css/bootstrap-responsive.min.css" rel="stylesheet">
-	<script type="text/javascript" src="${cdnPrefix}/jquery/jquery.min.js"></script>
+	<link href="${cdnPrefix}/public/bootstrap/3.3.7/css/bootstrap.min.css" rel="stylesheet">
+	<link href="${cdnPrefix}/public/bootstrap/3.3.7/css/bootstrap-responsive.min.css" rel="stylesheet">
+	<script type="text/javascript" src="${cdnPrefix}/public/jquery/1.12.4/jquery.min.js"></script>
 	<script type="text/javascript">
 $(function() {
 	$('#targetContentDiv').height($(window).innerHeight() - 150);
@@ -109,9 +109,9 @@ $(function() {
 		<h1>500</h1>
 		<p><spring:message code="core.500.error" text="系统内部发生错误"/></p>
 		<ul>
-		  <li><a class="btn btn-primary" href="${ctx}/"><spring:message code="core.500.back" text="返回首页"/></a></li>
-		  <li><a class="btn" href="javascript:void(0);" onclick="">联系管理员</a></li>
-		  <li><a class="btn" href="javascript:void(0);" onclick="$('#output').show();$('#targetContentDiv').hide();">显示详情</a></li>
+		  <li><a class="btn btn-default btn-primary" href="${ctx}/"><spring:message code="core.500.back" text="返回首页"/></a></li>
+		  <li><a class="btn btn-default" href="javascript:void(0);" onclick="">联系管理员</a></li>
+		  <li><a class="btn btn-default" href="javascript:void(0);" onclick="$('#output').show();$('#targetContentDiv').hide();">显示详情</a></li>
 		</ul>
       </div>
 	</div>

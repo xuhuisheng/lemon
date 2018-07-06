@@ -4,7 +4,8 @@ import java.util.Date;
 
 import javax.annotation.Resource;
 
-import com.mossle.core.auth.CustomPasswordEncoder;
+import com.mossle.api.auth.CustomPasswordEncoder;
+
 import com.mossle.core.id.IdGenerator;
 import com.mossle.core.spring.MessageHelper;
 

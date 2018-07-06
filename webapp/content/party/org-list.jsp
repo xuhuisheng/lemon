@@ -77,7 +77,7 @@ $(function() {
 		    <button class="btn btn-default a-insert" onclick="location.href='org-input.do?partyStructTypeId=${partyStructTypeId}&partyEntityId=${partyEntityId}&partyTypeId=${item.id}'">新建${item.name}</button>
 		    </c:forEach>
 		  </div>
-		  <a href="org-admin-list.do?partyStructTypeId=${partyStructTypeId}&partyEntityId=${partyEntityId}&partyTypeId=${item.id}" class="btn btn-default">管理者</a>
+		  <a href="org-admin-list.do?partyStructTypeId=${partyStructTypeId}&partyEntityId=${partyEntityId}&partyTypeId=${item.id}" class="btn btn-default">设置负责人</a>
 		</div>
 
 		<div class="pull-right">
@@ -105,9 +105,10 @@ $(function() {
     <thead>
       <tr>
 	    <!--
-        <th width="10" class="table-check"><input type="checkbox" name="checkAll" onchange="toggleSelectedItems(this.checked)"></th>
-		-->
+	    <th>STRUCT ID</th>
         <th class="sorting" name="id"><spring:message code="org.org.list.id" text="编号"/></th>
+		-->
+		<th>编码</th>
         <th class="sorting" name="name">名称</th>
         <th class="sorting" name="partyType">类型</th>
 		<!--
@@ -122,9 +123,10 @@ $(function() {
       <c:forEach items="${page.result}" var="item">
       <tr>
 	    <!--
-        <td><input type="checkbox" class="selectedItem" name="selectedItem" value="${item.childEntity.id}"></td>
-		-->
+        <td>${item.id}</td>
         <td>${item.childEntity.id}</td>
+		-->
+		<td>${item.childEntity.code}</td>
         <td>${item.childEntity.name}</td>
         <td>${item.childEntity.partyType.name}</td>
 		<!--
@@ -132,8 +134,8 @@ $(function() {
 		-->
         <td>
 		  <c:forEach items="${item.childEntity.childStructs}" var="childStruct">
-		    <c:if test="${childStruct.partyStructType.id==5}">
-		    ${childStruct.childEntity.name}
+		    <c:if test="${childStruct.partyStructType.type=='user-position'}">
+		    ${childStruct.childEntity.name}&nbsp;
 			</c:if>
 		  </c:forEach>
 		</td>

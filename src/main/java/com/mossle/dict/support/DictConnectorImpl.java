@@ -1,5 +1,6 @@
 package com.mossle.dict.support;
 
+import java.util.ArrayList;
 import java.util.List;
 
 import javax.annotation.Resource;
@@ -64,6 +65,39 @@ public class DictConnectorImpl implements DictConnector {
             dictDataDto.setType(dictSchema.getType());
             dictDto.addData(dictSchema.getName(), dictDataDto);
         }
+
+        return dictDto;
+    }
+
+    public List<DictDTO> findDictsByType(String typeCode, String tenantId) {
+        DictType dictType = dictTypeManager
+                .findUnique("from DictType where code=? and tenantId=?",
+                        typeCode, tenantId);
+        List<DictInfo> dictInfos = dictInfoManager.findBy(
+                "from DictInfo where dictType=? order by priority", dictType);
+
+        List<DictDTO> dictDtos = new ArrayList<DictDTO>();
+
+        for (DictInfo dictInfo : dictInfos) {
+            DictDTO dictDto = new DictDTO();
+            dictDto.setName(dictInfo.getName());
+            dictDto.setValue(dictInfo.getValue());
+            dictDtos.add(dictDto);
+        }
+
+        return dictDtos;
+    }
+
+    public DictDTO findDictByCodeAndName(String typeCode, String name,
+            String tenantId) {
+        DictType dictType = dictTypeManager
+                .findUnique("from DictType where code=? and tenantId=?",
+                        typeCode, tenantId);
+        DictInfo dictInfo = dictInfoManager.findUnique(
+                "from DictInfo where dictType=? and name=?", dictType, name);
+        DictDTO dictDto = new DictDTO();
+        dictDto.setName(dictInfo.getName());
+        dictDto.setValue(dictInfo.getValue());
 
         return dictDto;
     }

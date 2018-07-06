@@ -10,11 +10,11 @@
     <title>编辑</title>
     <%@include file="/common/s3.jsp"%>
 
-	<link rel='stylesheet' type='text/css' href='${cdnPrefix}/fullcalendar/fullcalendar.css' />
-	<link rel='stylesheet' type='text/css' href='${cdnPrefix}/fullcalendar/fullcalendar.print.css' media='print' />
-	<script type="text/javascript" src="${cdnPrefix}/fullcalendar/moment.min.js"></script>
-	<script type='text/javascript' src='${cdnPrefix}/fullcalendar/fullcalendar.js'></script>
-	<script type="text/javascript" src="${cdnPrefix}/fullcalendar/zh-CN.js"></script>
+	<link rel='stylesheet' type='text/css' href='${cdnPrefix}/public/fullcalendar/3.2.0/fullcalendar.css' />
+	<link rel='stylesheet' type='text/css' href='${cdnPrefix}/public/fullcalendar/3.2.0/fullcalendar.print.css' media='print' />
+	<script type="text/javascript" src="${cdnPrefix}/public/fullcalendar/3.2.0/moment.min.js"></script>
+	<script type='text/javascript' src='${cdnPrefix}/public/fullcalendar/3.2.0/fullcalendar.js'></script>
+	<script type="text/javascript" src="${cdnPrefix}/public/fullcalendar/3.2.0/zh-CN.js"></script>
 
 	<script type="text/javascript">
 var Schedule = function() {
@@ -110,6 +110,7 @@ $(function () {
 				center: 'title',
 				right: 'month,agendaWeek,agendaDay'
 			},
+			businessHours: true,
 			selectable: true,
 			selectHelper: true,
 			select: function(start, end) {

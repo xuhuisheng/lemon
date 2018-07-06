@@ -1,0 +1,17 @@
+<p>features:</p>
+
+<ul>
+	<li>Activiti升级到5.18.0。</li>
+	<li>添加Portal。</li>
+	<li>添加网盘。</li>
+	<li>美化form，修复bug。</li>
+	<li>调整bpm的跟踪页面。</li>
+</ul>
+
+<p>resources:</p>
+
+<ul>
+	<li>详细修订列表： <a href="https://github.com/xuhuisheng/lemon/issues?q=milestone%3A1.6.0" target="_blank">https://github.com/xuhuisheng/lemon/issues?q=milestone%3A1.6.0</a></li>
+	<li>源码地址： <a href="https://github.com/xuhuisheng/lemon/tree/lemon-1.6.0" target="_blank">https://github.com/xuhuisheng/lemon/tree/lemon-1.6.0</a></li>
+	<li>独立运行包： <a href="http://pan.baidu.com/s/1o6OptTS" target="_blank">http://pan.baidu.com/s/1o6OptTS</a></li>
+</ul>

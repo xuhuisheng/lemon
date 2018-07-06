@@ -30,7 +30,9 @@ import com.mossle.bpm.persistence.domain.BpmConfNotice;
 import com.mossle.bpm.persistence.domain.BpmConfOperation;
 import com.mossle.bpm.persistence.domain.BpmConfRule;
 import com.mossle.bpm.persistence.domain.BpmConfUser;
+import com.mossle.bpm.persistence.domain.BpmProcess;
 import com.mossle.bpm.persistence.manager.BpmConfBaseManager;
+import com.mossle.bpm.persistence.manager.BpmProcessManager;
 
 import com.mossle.core.page.Page;
 import com.mossle.core.util.IoUtils;
@@ -63,6 +65,7 @@ public class ConsoleController {
     private ProcessEngine processEngine;
     private ProcessConnector processConnector;
     private BpmConfBaseManager bpmConfBaseManager;
+    private BpmProcessManager bpmProcessManager;
     private TenantHolder tenantHolder;
 
     /**
@@ -148,6 +151,10 @@ public class ConsoleController {
                     }
 
                     bpmConfBaseManager.remove(bpmConfNode);
+                }
+
+                for (BpmProcess bpmProcess : bpmConfBase.getBpmProcesses()) {
+                    bpmProcessManager.remove(bpmProcess);
                 }
 
                 bpmConfBaseManager.remove(bpmConfBase);
@@ -559,6 +566,11 @@ public class ConsoleController {
     @Resource
     public void setBpmConfBaseManager(BpmConfBaseManager bpmConfBaseManager) {
         this.bpmConfBaseManager = bpmConfBaseManager;
+    }
+
+    @Resource
+    public void setBpmProcessManager(BpmProcessManager bpmProcessManager) {
+        this.bpmProcessManager = bpmProcessManager;
     }
 
     @Resource

@@ -49,6 +49,10 @@ $(function() {
 
       <div style="margin-bottom: 20px;">
 
+	    <div class="pull-left btn-group" role="group">
+		  <a class="btn btn-default a-insert" href="msg-info-input.do">新建消息</a>
+		</div>
+
 		<div class="pull-right">
 		  每页显示
 		  <select class="m-page-size form-control" style="display:inline;width:auto;">

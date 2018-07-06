@@ -1,7 +1,7 @@
 <%@page contentType="text/html;charset=UTF-8"%>
 <div>
   <div id="uploadFileButton" class="btn btn-primary fileinput-button">
-    <span>上传文件</span>
+    <span><i class=" glyphicon glyphicon-cloud-upload"></i> 上传文件</span>
     <input type="file" name="file" class="fileupload" data-no-uniform="true" data-url="disk-info-upload.do" data-form-data='{"path":"${path}"}'>
   </div>
 
@@ -127,10 +127,10 @@
   </div><!-- /.modal-dialog -->
 </div><!-- /.modal -->
 
-<link rel="stylesheet" href="${cdnPrefix}/jquery-file-upload/css/jquery.fileupload.css">
-<script src="${cdnPrefix}/jquery-file-upload/js/vendor/jquery.ui.widget.js"></script>
-<script src="${cdnPrefix}/jquery-file-upload/js/jquery.iframe-transport.js"></script>
-<script src="${cdnPrefix}/jquery-file-upload/js/jquery.fileupload.js"></script>
+<link rel="stylesheet" href="${cdnPrefix}/public/jquery-file-upload/5.42.0/css/jquery.fileupload.css">
+<script src="${cdnPrefix}/public/jquery-file-upload/5.42.0/js/vendor/jquery.ui.widget.js"></script>
+<script src="${cdnPrefix}/public/jquery-file-upload/5.42.0/js/jquery.iframe-transport.js"></script>
+<script src="${cdnPrefix}/public/jquery-file-upload/5.42.0/js/jquery.fileupload.js"></script>
 
 <script type="text/javascript">
 function generateFileupload(maxLimitedSize) {
@@ -146,6 +146,10 @@ function generateFileupload(maxLimitedSize) {
         },
 		submit: function (e, data) {
 			var $this = $(this);
+			data.formData = {
+				lastModified: data.files[0].lastModified,
+				path: '${path}'
+			};
 			data.jqXHR = $this.fileupload('send', data);
 			$('.progress-bar').css(
                 'width',

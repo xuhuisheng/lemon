@@ -120,7 +120,7 @@ $(function() {
 	    <td><fmt:formatDate value="${item.claimTime}" pattern="yyyy-MM-dd HH:mm:ss"/></td>
 		<td>
           <a href="workspace-viewHistory.do?processInstanceId=${item.processInstanceId}">历史</a>
-          <a href="${tenantPrefix}/widgets/diagram-viewer/index.html?processInstanceId=${item.id}&processDefinitionId=${item.processDefinitionId}">diagram-viewer</a>
+          <a href="${tenantPrefix}/cdn/diagram-viewer/index.html?processInstanceId=${item.id}&processDefinitionId=${item.processDefinitionId}">diagram-viewer</a>
         </td>
       </tr>
       </c:forEach>

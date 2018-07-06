@@ -82,7 +82,7 @@ $(function() {
 	  <a class="btn btn-default btn-xs"><i id="audit-baseSearchIcon" class="glyphicon glyphicon-chevron-up"></i></a>
     </div>
   </div>
-        <div class="panel-content">
+        <div class="panel-body">
 <form id="car-infoForm" method="post" action="sprint-save.do" class="form-horizontal">
   <c:if test="${model != null}">
   <input id="car-info_id" type="hidden" name="id" value="${model.id}">
@@ -90,13 +90,13 @@ $(function() {
   <div class="form-group">
     <label class="control-label col-md-1" for="car-info_name"><spring:message code="car-info.car-info.input.name" text="名称"/></label>
 	<div class="col-md-5">
-	  <input id="car-info_name" type="text" name="name" value="${model.name}" size="40" class="text required" minlength="2" maxlength="20">
+	  <input id="car-info_name" type="text" name="name" value="${model.name}" size="40" class="form-control required" minlength="2" maxlength="20">
     </div>
   </div>
   <div class="form-group">
     <label class="control-label col-md-1" for="car-info_name">项目</label>
 	<div class="col-md-5">
-	  <select name="projectId">
+	  <select name="projectId" class="form-control">
 	  <c:forEach var="item" items="${plmProjects}">
 	  <option value="${item.id}">${item.name}</option>
 	  </c:forEach>
@@ -106,7 +106,7 @@ $(function() {
   <div class="form-group">
     <label class="control-label col-md-1" for="car-info_name">配置</label>
 	<div class="col-md-5">
-	  <select name="configId">
+	  <select name="configId" class="form-control">
 	  <c:forEach var="item" items="${plmConfigs}">
 	  <option value="${item.id}">${item.name}</option>
 	  </c:forEach>
@@ -132,10 +132,10 @@ $(function() {
     </div>
   </div>
   <div class="form-group">
-    <div class="col-md-5">
-      <button type="submit" class="btn a-submit"><spring:message code='core.input.save' text='保存'/></button>
+    <div class="col-md-5 col-md-offset-1">
+      <button type="submit" class="btn btn-default a-submit"><spring:message code='core.input.save' text='保存'/></button>
 	  &nbsp;
-      <button type="button" class="btn a-cancel" onclick="history.back();"><spring:message code='core.input.back' text='返回'/></button>
+      <button type="button" class="btn btn-link a-cancel" onclick="history.back();"><spring:message code='core.input.back' text='返回'/></button>
     </div>
   </div>
 </form>

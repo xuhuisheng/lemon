@@ -7,9 +7,9 @@
   <head>
     <%@include file="/common/meta.jsp"%>
     <title>404 - <spring:message code="core.404.notfound" text="页面不存在"/></title>
-	<link href="${cdnPrefix}/bootstrap/css/bootstrap.min.css" rel="stylesheet">
-	<link href="${cdnPrefix}/bootstrap/css/bootstrap-responsive.min.css" rel="stylesheet">
-	<script type="text/javascript" src="${cdnPrefix}/jquery/jquery.min.js"></script>
+	<link href="${cdnPrefix}/public/bootstrap/3.3.7/css/bootstrap.min.css" rel="stylesheet">
+	<link href="${cdnPrefix}/public/bootstrap/3.3.7/css/bootstrap-responsive.min.css" rel="stylesheet">
+	<script type="text/javascript" src="${cdnPrefix}/public/jquery/1.12.4/jquery.min.js"></script>
 	<script type="text/javascript">
 $(function() {
 	$('#targetContentDiv').height($(window).innerHeight() - 150);
@@ -36,6 +36,10 @@ $(function() {
 	padding: 10px;
 }
 
+#targetContentDiv ul {
+	padding-left: 0px;
+}
+
 #targetContentDiv li {
 	display: inline;
 	list-style: none outside none;
@@ -51,8 +55,8 @@ $(function() {
 		<p><spring:message code="core.404.notfound" text="页面不存在"/></p>
 		<div style="color:gray;"><%=request.getAttribute("javax.servlet.forward.request_uri")%></div>
 		<ul>
-		  <li><a class="btn btn-primary" href="${ctx}/">进入首页</a></li>
-		  <li><a class="btn" href="javascript:void(0);" onclick="history.back()">返回上一个页面</a></li>
+		  <li><a class="btn btn-default btn-primary" href="${ctx}/">进入首页</a></li>
+		  <li><a class="btn btn-default" href="javascript:void(0);" onclick="history.back()">返回上一个页面</a></li>
 		</ul>
       </div>
 	</div>

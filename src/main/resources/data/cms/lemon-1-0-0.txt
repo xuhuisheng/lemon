@@ -1,0 +1,15 @@
+<p>features:</p>
+
+<ul>
+	<li>配置流程定义的负责人，表单，操作和提醒。参考配置流程</li>
+	<li>初步回退与撤销。参考回退</li>
+	<li>任务协办委托。参考任务协办委托</li>
+</ul>
+
+<p>resources:</p>
+
+<ul>
+	<li>详细修订列表： <a href="https://github.com/xuhuisheng/lemon/issues?q=milestone%3A1.0.0" target="_blank">https://github.com/xuhuisheng/lemon/issues?q=milestone%3A1.0.0</a></li>
+	<li>源码地址： <a href="https://github.com/xuhuisheng/lemon/tree/lemon-1.0.0" target="_blank">https://github.com/xuhuisheng/lemon/tree/lemon-1.0.0</a></li>
+	<li>独立运行包： <a href="http://pan.baidu.com/s/1eQef8aA" target="_blank">http://pan.baidu.com/s/1eQef8aA</a></li>
+</ul>

@@ -15,7 +15,7 @@
     <div class="navbar navbar-inverse">
       <div class="navbar-inner">
         <div class="container">
-          <a href="${tenantPrefix}/" class="brand">Mossle</a>
+          <a href="${scopePrefix}/" class="brand">Mossle</a>
         </div>
       </div><!-- /navbar-inner -->
     </div>
@@ -27,7 +27,7 @@
 	<!-- start of main -->
     <section class="span6">
 	  <div class="alert m-alert-success">
-        <strong>密码修改成功，请<a href="${tenantPrefix}/common/util/login.jsp">重新登录</a>。</strong>
+        <strong>密码修改成功，请<a href="${scopePrefix}/common/util/login.jsp">重新登录</a>。</strong>
       </div>
 
 	  <div class="span3"></div>

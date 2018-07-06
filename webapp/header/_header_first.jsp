@@ -11,13 +11,15 @@
 	</c:if>
 	<script type="text/javascript">
 function unreadCount() {
-	$.getJSON('${tenantPrefix}/rs/msg/unreadCount?_sed=' + new Date().getTime(), {}, function(data) {
+	/*
+	$.getJSON('${ctx}/rs/msg/unreadCount', {}, function(data) {
 		if (data.data == 0) {
 			$('#unreadMsg').html('');
 		} else {
 			$('#unreadMsg').html(data.data);
 		}
 	});
+	*/
 }
 
 unreadCount();

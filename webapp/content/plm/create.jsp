@@ -36,6 +36,15 @@ $(function() {
     table.configPageSize('.m-page-size');
 });
     </script>
+
+	<script type="text/javascript" src="${ctx}/s/ckeditor/ckeditor.js"></script>
+
+    <script type="text/javascript">
+$(function() {
+	var editor = CKEDITOR.replace('plmIssueContent');
+	editor.config.filebrowserImageUploadUrl = "${tenantPrefix}/cms/cms-article-uploadImage.do";
+})
+	</script>
   </head>
 
   <body>
@@ -87,15 +96,15 @@ $(function() {
 <form id="car-infoForm" method="post" action="save.do" class="form-horizontal">
   <div class="form-group">
     <label class="control-label col-md-1" for="pimIssueProject">项目</label>
-	<div class="col-md-5">
-	  ${plmProject.name}
+	<div class="col-md-10">
+	  <p class="form-control-static">${plmProject.name}</p>
 	  <input id="pimIssueProject" type="hidden" name="projectId" value="${plmProject.id}">
     </div>
   </div>
   <div class="form-group">
     <label class="control-label col-md-1" for="pimIssueProject">类型</label>
-	<div class="col-md-5">
-	  <select name="type" class="required">
+	<div class="col-md-10">
+	  <select name="type" class="form-control required">
 	    <option value=""></option>
 	    <option value="story">需求</option>
 	    <option value="task">任务</option>
@@ -105,14 +114,14 @@ $(function() {
   </div>
   <div class="form-group">
     <label class="control-label col-md-1" for="car-info_name"><spring:message code="car-info.car-info.input.name" text="名称"/></label>
-	<div class="col-md-5">
+	<div class="col-md-10">
 	  <input id="car-info_name" type="text" name="name" value="${model.name}" size="40" class="form-control  required" minlength="2" maxlength="10">
     </div>
   </div>
   <div class="form-group">
     <label class="control-label col-md-1" for="plmIssue_version">修复版本</label>
-    <div class="col-md-5">
-	  <select id="plmIssue_version" name="versionIds" class="chzn-select required" multiple data-placeholder="选择版本">
+    <div class="col-md-10">
+	  <select id="plmIssue_version" name="versionIds" class="form-control required" multiple data-placeholder="选择版本">
 	    <c:forEach var="item" items="${plmVersions}">
 	    <option value="${item.id}">${item.name}</option>
 		</c:forEach>
@@ -122,15 +131,15 @@ $(function() {
   </div>
   <div class="form-group">
     <label class="control-label col-md-1" for="plmIssueContent">描述</label>
-	<div class="col-md-5">
-	  <textarea id="plmIssueContent" name="content" class="required" rows="6"></textarea>
+	<div class="col-md-10">
+	  <textarea id="plmIssueContent" name="content" class="form-control required" rows="6"></textarea>
     </div>
   </div>
   <div class="form-group">
-    <div class="col-md-5">
-      <button type="submit" class="btn a-submit"><spring:message code='core.input.save' text='保存'/></button>
+    <div class="col-md-5 col-md-offset-1">
+      <button type="submit" class="btn btn-default a-submit"><spring:message code='core.input.save' text='保存'/></button>
 	  &nbsp;
-      <button type="button" class="btn a-cancel" onclick="history.back();"><spring:message code='core.input.back' text='返回'/></button>
+      <button type="button" class="btn btn-link a-cancel" onclick="history.back();"><spring:message code='core.input.back' text='返回'/></button>
     </div>
   </div>
 </form>

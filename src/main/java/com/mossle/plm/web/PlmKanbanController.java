@@ -7,7 +7,7 @@ import java.util.Map;
 
 import javax.annotation.Resource;
 
-import com.mossle.core.auth.CurrentUserHolder;
+import com.mossle.api.auth.CurrentUserHolder;
 import com.mossle.core.mapper.BeanMapper;
 
 import com.mossle.plm.persistence.domain.PlmSprint;

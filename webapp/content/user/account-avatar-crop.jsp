@@ -10,8 +10,8 @@
     <title><spring:message code="user.user.input.title" text="编辑用户"/></title>
     <%@include file="/common/s.jsp"%>
 
-    <link rel="stylesheet" href="${cdnPrefix}/jcrop/css/jquery.Jcrop.min.css" type="text/css" media="screen" />
-    <script type="text/javascript" src="${cdnPrefix}/jcrop/js/jquery.Jcrop.min.js"></script>
+    <link rel="stylesheet" href="${tenantPrefix}/s/jcrop/css/jquery.Jcrop.min.css" type="text/css" media="screen" />
+    <script type="text/javascript" src="${tenantPrefix}/s/jcrop/js/jquery.Jcrop.min.js"></script>
 
     <script type="text/javascript">
 $(function () {

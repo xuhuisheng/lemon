@@ -125,7 +125,7 @@ $(function() {
     <div class="navbar navbar-inverse">
       <div class="navbar-inner">
         <div class="container">
-          <a href="${tenantPrefix}/" class="brand">Mossle</a>
+          <a href="${scopePrefix}/" class="brand">Mossle</a>
         </div>
       </div><!-- /navbar-inner -->
     </div>

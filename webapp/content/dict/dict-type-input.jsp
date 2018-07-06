@@ -46,28 +46,34 @@ $(function() {
   <input id="dictType_id" type="hidden" name="id" value="${model.id}">
   </c:if>
   <div class="form-group">
+    <label class="control-label col-md-1" for="dictType_type">编码</label>
+	<div class="col-sm-5">
+	  <input id="dictType_type" type="text" name="code" value="${model.code}" size="40" class="form-control">
+    </div>
+  </div>
+  <div class="form-group">
     <label class="control-label col-md-1" for="dictType_name">名称</label>
 	<div class="col-sm-5">
-	  <input id="dictType_name" type="text" name="name" value="${model.name}" size="40" class="text">
+	  <input id="dictType_name" type="text" name="name" value="${model.name}" size="40" class="form-control">
     </div>
   </div>
   <div class="form-group">
     <label class="control-label col-md-1" for="dictType_type">类型</label>
 	<div class="col-sm-5">
-	  <input id="dictType_type" type="text" name="type" value="${model.type}" size="40" class="text">
+	  <input id="dictType_type" type="text" name="type" value="${model.type}" size="40" class="form-control">
     </div>
   </div>
   <div class="form-group">
     <label class="control-label col-md-1" for="docInfo_descn">备注</label>
 	<div class="col-sm-5">
-	  <input id="docInfo_descn" type="text" name="descn" value="${model.descn}" size="40" class="text">
+	  <input id="docInfo_descn" type="text" name="descn" value="${model.descn}" size="40" class="form-control">
     </div>
   </div>
   <div class="form-group">
-    <div class="col-sm-5">
-      <button type="submit" class="btn a-submit"><spring:message code='core.input.save' text='保存'/></button>
+    <div class="col-sm-5 col-md-offset-1">
+      <button type="submit" class="btn btn-default a-submit"><spring:message code='core.input.save' text='保存'/></button>
 	  &nbsp;
-      <button type="button" class="btn a-cancel" onclick="history.back();"><spring:message code='core.input.back' text='返回'/></button>
+      <button type="button" class="btn btn-link a-cancel" onclick="history.back();"><spring:message code='core.input.back' text='返回'/></button>
     </div>
   </div>
 </form>

@@ -1,0 +1,3 @@
+"NAME"    ,"SENDER"                ,"RECEIVER"                                         ,"SUBJECT" ,"CONTENT"                                   ,"MANUAL"
+"test"    ,"≤‚ ‘<lingo@mossle.com>","lingo<lingo@mossle.com>,vivian<vivian@mossle.com>","test"    ,"test"                                      ,"manual"
+"template","≤‚ ‘<lingo@mossle.com>","—› æ<lingo@mossle.com>"                           ,"template","${name}<#list list as item>${item}</#list>","manual"

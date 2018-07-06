@@ -14,8 +14,10 @@ import javax.servlet.http.Cookie;
 import javax.servlet.http.HttpServletRequest;
 import javax.servlet.http.HttpServletResponse;
 
+import com.mossle.spi.user.InternalUserConnector;
+
 public class DeviceFilter implements Filter {
-    private DeviceConnector deviceConnector;
+    private InternalUserConnector internalUserConnector;
 
     public void init(FilterConfig filterConfig) throws ServletException {
     }
@@ -34,7 +36,7 @@ public class DeviceFilter implements Filter {
             return;
         }
 
-        DeviceDTO deviceDto = deviceConnector.findDevice(deviceId);
+        DeviceDTO deviceDto = internalUserConnector.findDevice(deviceId);
 
         if ((deviceDto != null) && "disabled".equals(deviceDto.getStatus())) {
             HttpServletResponse res = (HttpServletResponse) response;
@@ -68,7 +70,8 @@ public class DeviceFilter implements Filter {
     }
 
     @Resource
-    public void setDeviceConnector(DeviceConnector deviceConnector) {
-        this.deviceConnector = deviceConnector;
+    public void setInternalUserConnector(
+            InternalUserConnector internalUserConnector) {
+        this.internalUserConnector = internalUserConnector;
     }
 }

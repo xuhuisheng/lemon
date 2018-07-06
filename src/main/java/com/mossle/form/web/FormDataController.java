@@ -24,7 +24,7 @@ import com.mossle.api.tenant.TenantHolder;
 import com.mossle.api.user.UserConnector;
 
 import com.mossle.core.MultipartHandler;
-import com.mossle.core.auth.CurrentUserHolder;
+import com.mossle.api.auth.CurrentUserHolder;
 import com.mossle.core.export.Exportor;
 import com.mossle.core.export.TableModel;
 import com.mossle.core.mapper.BeanMapper;

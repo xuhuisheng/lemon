@@ -6,9 +6,14 @@
     <meta http-equiv="content-type" content="text/html; charset=UTF-8">
     <meta charset="utf-8">
     <title>网盘</title>
-    <%@include file="_s.jsp"%>
-	<link rel="stylesheet" href="${cdnPrefix}/disk/sprite_list_icon.css">
-	<script type="text/javascript" src="${cdnPrefix}/jquery.qrcode.min.js"></script>
+    <%@include file="/common/s3.jsp"%>
+	<link rel="stylesheet" href="${cdnPrefix}/public/mossle-disk/0.0.3/sprite_list_icon.css">
+	<script type="text/javascript" src="${cdnPrefix}/public/jquery-qrcode/1.0/jquery.qrcode.min.js"></script>
+	<style type="text/css">
+body {
+    padding-top: 50px;
+}
+	</style>
   </head>
   <body>
     <div id="wrap">&nbsp;

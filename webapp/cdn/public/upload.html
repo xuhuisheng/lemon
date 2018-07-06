@@ -1,0 +1,39 @@
+<!doctype html>
+<html>
+
+  <head>
+	<meta charset="UTF-8">
+	<meta http-equiv="Content-Type" content="text/html;charset=utf-8" />
+	<meta name="viewport" content="width=device-width, initial-scale=1">
+	<meta http-equiv="X-UA-Compatible" content="IE=edge">
+	<meta http-equiv="Cache-Control" content="no-store" />
+	<meta http-equiv="Pragma" content="no-cache" />
+	<meta http-equiv="Expires" content="0" />
+    <title>index</title>
+    <link rel='stylesheet' href='bootstrap/3.3.7/css/bootstrap.min.css' type='text/css' media='screen' />
+  </head>
+
+  <body>
+    <div class="row-fluid">
+      <section id="m-main" class="col-md-12">
+
+		<div class="page-header">
+		  <h1>upload <small>API</small></h1>
+		</div>
+
+		<form method="POST" enctype="multipart/form-data" action="../api/upload.do">
+		  <input type="hidden" name="spaceName" value="public">
+		  <div class="form-group">
+			<label for="file">file</label>
+		    <input type="file" name="file" placeholder="file" id="file">
+		  </div>
+		  <button type="submit" class="btn btn-default">Submit</button>
+		</form>
+
+      </section>
+	</div>
+
+  </body>
+
+</html>
+

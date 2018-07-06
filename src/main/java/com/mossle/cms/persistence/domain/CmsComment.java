@@ -53,6 +53,18 @@ public class CmsComment implements java.io.Serializable {
     /** null. */
     private String tenantId;
 
+    /** null. */
+    private String ip;
+
+    /** null. */
+    private Integer priority;
+
+    /** null. */
+    private Long conversation;
+
+    /** null. */
+    private String type;
+
     /** . */
     private Set<CmsFavorite> cmsFavorites = new HashSet<CmsFavorite>(0);
 
@@ -68,7 +80,8 @@ public class CmsComment implements java.io.Serializable {
 
     public CmsComment(Long id, CmsComment cmsComment, CmsArticle cmsArticle,
             String title, String content, Integer status, Date createTime,
-            String userId, String tenantId, Set<CmsFavorite> cmsFavorites,
+            String userId, String tenantId, String ip, Integer priority,
+            Long conversation, String type, Set<CmsFavorite> cmsFavorites,
             Set<CmsComment> cmsComments) {
         this.id = id;
         this.cmsComment = cmsComment;
@@ -79,6 +92,10 @@ public class CmsComment implements java.io.Serializable {
         this.createTime = createTime;
         this.userId = userId;
         this.tenantId = tenantId;
+        this.ip = ip;
+        this.priority = priority;
+        this.conversation = conversation;
+        this.type = type;
         this.cmsFavorites = cmsFavorites;
         this.cmsComments = cmsComments;
     }
@@ -211,6 +228,62 @@ public class CmsComment implements java.io.Serializable {
      */
     public void setTenantId(String tenantId) {
         this.tenantId = tenantId;
+    }
+
+    /** @return null. */
+    @Column(name = "IP", length = 50)
+    public String getIp() {
+        return this.ip;
+    }
+
+    /**
+     * @param ip
+     *            null.
+     */
+    public void setIp(String ip) {
+        this.ip = ip;
+    }
+
+    /** @return null. */
+    @Column(name = "PRIORITY")
+    public Integer getPriority() {
+        return this.priority;
+    }
+
+    /**
+     * @param priority
+     *            null.
+     */
+    public void setPriority(Integer priority) {
+        this.priority = priority;
+    }
+
+    /** @return null. */
+    @Column(name = "CONVERSATION")
+    public Long getConversation() {
+        return this.conversation;
+    }
+
+    /**
+     * @param conversation
+     *            null.
+     */
+    public void setConversation(Long conversation) {
+        this.conversation = conversation;
+    }
+
+    /** @return null. */
+    @Column(name = "TYPE", length = 50)
+    public String getType() {
+        return this.type;
+    }
+
+    /**
+     * @param type
+     *            null.
+     */
+    public void setType(String type) {
+        this.type = type;
     }
 
     /** @return . */

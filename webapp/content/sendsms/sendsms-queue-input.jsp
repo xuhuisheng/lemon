@@ -25,10 +25,10 @@ $(function() {
   </head>
 
   <body>
-    <%@include file="/header/sendmail.jsp"%>
+    <%@include file="/header/sendsms.jsp"%>
 
     <div class="row-fluid">
-	  <%@include file="/menu/sendmail.jsp"%>
+	  <%@include file="/menu/sendsms.jsp"%>
 
 	<!-- start of main -->
       <section id="m-main" class="col-md-10" style="padding-top:65px;">
@@ -48,19 +48,19 @@ $(function() {
   <div class="form-group">
     <label class="control-label col-md-1" for="smsQueue_sender">手机</label>
 	<div class="col-sm-5">
-	  <input id="smsQueue_sender" type="text" name="mobile" value="${model.mobile}" minlength="11" maxlength="11">
+	  <input id="smsQueue_sender" type="text" name="mobile" value="${model.mobile}" minlength="11" maxlength="11" class="form-control">
     </div>
   </div>
   <div class="form-group">
     <label class="control-label col-md-1" for="smsQueue_data">信息</label>
 	<div class="col-sm-5">
-	  <textarea id="smsQueue_data" name="message" maxlength="70">${model.message}</textarea>
+	  <textarea id="smsQueue_data" name="message" maxlength="70" class="form-control">${model.message}</textarea>
     </div>
   </div>
   <div class="form-group">
     <label class="control-label col-md-1" for="smsQueue_smsConfigId">短信服务器</label>
 	<div class="col-sm-5">
-	  <select id="smsQueue_smsConfigId" name="sendsmsConfigId">
+	  <select id="smsQueue_smsConfigId" name="sendsmsConfigId" class="form-control">
 	  <c:forEach items="${sendsmsConfigs}" var="item">
 	    <option value="${item.id}">${item.name}</option>
 	  </c:forEach>
@@ -68,10 +68,10 @@ $(function() {
     </div>
   </div>
   <div class="form-group">
-    <div class="col-sm-5">
-      <button type="submit" class="btn a-submit"><spring:message code='core.input.save' text='保存'/></button>
+    <div class="col-sm-5 col-md-offset-1">
+      <button type="submit" class="btn btn-default a-submit"><spring:message code='core.input.save' text='保存'/></button>
 	  &nbsp;
-      <button type="button" class="btn a-cancel" onclick="history.back();"><spring:message code='core.input.back' text='返回'/></button>
+      <button type="button" class="btn btn-link a-cancel" onclick="history.back();"><spring:message code='core.input.back' text='返回'/></button>
     </div>
   </div>
 </form>

@@ -68,7 +68,7 @@ $(function() {
 
       <div style="margin-bottom: 20px;">
 	    <div class="pull-left btn-group" role="group">
-		  <button class="btn btn-default a-insert" onclick="location.href='dict-type-input.do'">新建</button>
+		  <button class="btn btn-default a-insert" onclick="location.href='dict-type-input.do?typeId=${param.typeId}'">新建</button>
 		  <button class="btn btn-default a-remove" onclick="table.removeAll()">删除</button>
 		  <button class="btn btn-default a-export" onclick="table.exportExcel()">导出</button>
 		</div>
@@ -97,9 +97,9 @@ $(function() {
     <thead>
       <tr>
         <th width="10" class="m-table-check"><input type="checkbox" name="checkAll" onchange="toggleSelectedItems(this.checked)"></th>
-        <th class="sorting" name="id"><spring:message code="dict-info.dict-info.list.id" text="编号"/></th>
         <th class="sorting" name="name"><spring:message code="dict-info.dict-info.list.name" text="名称"/></th>
         <th class="sorting" name="value">数据</th>
+		<th>排序</th>
         <th width="80">&nbsp;</th>
       </tr>
     </thead>
@@ -108,9 +108,9 @@ $(function() {
       <c:forEach items="${dictInfos}" var="item">
       <tr>
         <td><input type="checkbox" class="selectedItem a-check" name="selectedItem" value="${item.id}"></td>
-        <td>${item.id}</td>
         <td>${item.name}</td>
         <td>${item.value}</td>
+        <td>${item.priority}</td>
         <td>
           <a href="dict-info-input.do?id=${item.id}&typeId=${param.typeId}" class="a-update"><spring:message code="core.list.edit" text="编辑"/></a>
         </td>

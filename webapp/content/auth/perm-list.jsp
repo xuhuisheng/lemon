@@ -98,10 +98,10 @@ $(function() {
       <thead>
         <tr>
           <th width="10" class="table-check"><input type="checkbox" name="checkAll" onchange="toggleSelectedItems(this.checked)"></th>
-          <th class="sorting" name="id"><spring:message code="auth.perm.list.id" text="编号"/></th>
           <th class="sorting" name="id">代码</th>
           <th class="sorting" name="name"><spring:message code="auth.perm.list.name" text="名称"/></th>
           <th class="sorting" name="id">分类</th>
+          <th class="sorting" name="id">排序</th>
           <th>&nbsp;</th>
         </tr>
       </thead>
@@ -109,10 +109,10 @@ $(function() {
         <c:forEach items="${page.result}" var="item">
         <tr>
           <td><input type="checkbox" class="selectedItem a-check" name="selectedItem" value="${item.id}"></td>
-          <td>${item.id}</td>
           <td>${item.code}</td>
           <td>${item.name}</td>
           <td>${item.permType.name}</td>
+          <td>${item.priority}</td>
           <td>
 			<region:region-permission permission="perm:write">
             <a href="perm-input.do?id=${item.id}" class="a-update"><spring:message code="core.list.edit" text="编辑"/></a>

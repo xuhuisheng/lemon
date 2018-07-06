@@ -24,6 +24,8 @@ public class BeanUtils /* extends org.apache.commons.beanutils.BeanUtils */{
 
     /** getter prefix length. */
     public static final int LENGTH_GETTER_PREFIX = "get".length();
+    public static final String PREFIX_GET = "get";
+    public static final String PREFIX_IS = "is";
 
     /** 保护的构造方法. */
     protected BeanUtils() {
@@ -368,7 +370,17 @@ public class BeanUtils /* extends org.apache.commons.beanutils.BeanUtils */{
     }
 
     public static String getFieldName(String methodName) {
-        String fieldName = methodName.substring(LENGTH_GETTER_PREFIX);
+        String fieldName = null;
+
+        if (methodName.startsWith(PREFIX_GET)) {
+            fieldName = methodName.substring(PREFIX_GET.length());
+        } else if (methodName.startsWith(PREFIX_IS)) {
+            fieldName = methodName.substring(PREFIX_IS.length());
+        } else {
+            logger.warn("invalid getter : {}", methodName);
+
+            return methodName;
+        }
 
         return fieldName.substring(0, 1).toLowerCase() + fieldName.substring(1);
     }

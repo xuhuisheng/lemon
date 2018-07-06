@@ -7,7 +7,8 @@ import java.util.List;
 
 import javax.annotation.Resource;
 
-import com.mossle.core.auth.CustomPasswordEncoder;
+import com.mossle.api.auth.CustomPasswordEncoder;
+
 import com.mossle.core.util.StringUtils;
 
 import com.mossle.user.persistence.domain.AccountCredential;

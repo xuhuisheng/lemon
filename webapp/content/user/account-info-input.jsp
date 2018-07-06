@@ -21,9 +21,9 @@ $(function() {
         rules: {
             username: {
                 remote: {
-                    url: 'account-info-checkUsername.do',
+                    url: 'rs/checkUsername.do',
                     data: {
-                        <c:if test="${model != null}">
+                        <c:if test="${not empty model.id}">
                         id: function() {
                             return $('#userBase_id').val();
                         }
@@ -39,56 +39,6 @@ $(function() {
         }
     });
 })
-    </script>
-
-	<link rel="stylesheet" href="${cdnPrefix}/jquery-file-upload/css/jquery.fileupload.css">
-	<script src="${cdnPrefix}/jquery-file-upload/js/vendor/jquery.ui.widget.js"></script>
-	<script src="${cdnPrefix}/jquery-file-upload/js/jquery.iframe-transport.js"></script>
-	<script src="${cdnPrefix}/jquery-file-upload/js/jquery.fileupload.js"></script>
-
-    <script type="text/javascript">
-function generateFileupload(maxLimitedSize) {
-    $('.fileupload').fileupload({
-        dataType: 'json',
-        add: function (e, data) {
-			var file = data.files[0];
-			if (file.size > maxLimitedSize) {
-				alert("图片过大");
-			} else {
-				data.submit();
-			}
-        },
-		submit: function (e, data) {
-			var $this = $(this);
-			data.jqXHR = $this.fileupload('send', data);
-			$(this).parent('.btn').attr('disabled', true);
-			$(this).parent('.btn').removeClass('btn-success');
-			return false;
-		},
-        done: function (e, data) {
-			var id = data.result.id;
-
-			var imgId = data.formData.imgId;
-			var btnId = data.formData.btnId;
-			var viewUrl = data.formData.viewUrl + id + '&_=' + new Date().getTime();
-
-			$("#" + imgId).html('<img src="' + viewUrl + '" style="width:50px;">');
-			$('#' + btnId).attr('disabled', false);
-			$('#' + btnId).addClass('btn-success');
-        },
-        progressall: function (e, data) {
-            var progress = parseInt(data.loaded / data.total * 100, 10);
-            $('#progress .bar').css(
-                'width',
-                progress + '%'
-            ).html(progress + '%');
-        }
-    });
-}
-
-$(function () {
-	generateFileupload(1024 * 1024);
-});
     </script>
   </head>
 
@@ -140,7 +90,9 @@ $(function () {
   <div class="form-group">
     <label class="control-label col-md-1" for="userBase_status"><spring:message code="user.user.input.enabled" text="启用"/></label>
 	<div class="col-sm-5">
-	  <input id="userBase_status" type="checkbox" name="status" value="active" ${model.status == 'active' ? 'checked' : ''} >
+	  <label class="checkbox checkbox-inline">
+	    <input id="userBase_status" type="checkbox" name="status" value="active" ${model.status == 'active' ? 'checked' : ''} >
+	  </label>
     </div>
   </div>
 
@@ -166,6 +118,62 @@ $(function () {
     </div>
   </div>
   --%>
+
+  <c:if test="${not empty model}">
+  <div class="form-group">
+    <label class="control-label col-md-1" for="accountInfo_code">标识</label>
+	<div class="col-sm-5">
+	  <input id="accountInfo_code" type="text" name="code" value="${model.code}" class="form-control">
+    </div>
+  </div>
+
+  <div class="form-group">
+    <label class="control-label col-md-1" for="accountInfo_status">关闭时间</label>
+	<div class="col-sm-5">
+	  <div class="input-group datepicker date" style="padding:0;">
+	    <input id="accountInfo_closeTime" type="text" name="closeTime" value="<fmt:formatDate value='${model.closeTime}' pattern='yyyy-MM-dd'/>" readonly style="background-color:white;cursor:default;" class="form-control">
+	    <span class="input-group-addon"><i class="glyphicon glyphicon-calendar"></i></span>
+	  </div>
+    </div>
+  </div>
+
+  <div class="form-group">
+    <label class="control-label col-md-1" for="accountInfo_locked">锁定</label>
+	<div class="col-sm-5">
+	  <label class="checkbox checkbox-inline">
+	    <input id="accountInfo_locked" type="checkbox" name="locked" value="locked" ${model.locked == 'locked' ? 'checked' : ''}>
+	  </label>
+    </div>
+  </div>
+
+  <div class="form-group">
+    <label class="control-label col-md-1" for="accountInfo_nickName">昵称</label>
+	<div class="col-sm-5">
+	  <input id="accountInfo_nickName" type="text" name="nickName" value="${model.nickName}" class="form-control">
+    </div>
+  </div>
+
+  <div class="form-group">
+    <label class="control-label col-md-1" for="accountInfo_description">备注</label>
+	<div class="col-sm-5">
+	  <input id="accountInfo_description" type="text" name="description" value="${model.description}" class="form-control">
+    </div>
+  </div>
+
+  <div class="form-group">
+    <label class="control-label col-md-1" for="accountInfo_language">语言</label>
+	<div class="col-sm-5">
+	  <input id="accountInfo_language" type="text" name="language" value="${model.language}" class="form-control">
+    </div>
+  </div>
+
+  <div class="form-group">
+    <label class="control-label col-md-1" for="accountInfo_timezone">时区</label>
+	<div class="col-sm-5">
+	  <input id="accountInfo_timezone" type="text" name="timezone" value="${model.timezone}" class="form-control">
+    </div>
+  </div>
+  </c:if>
 
   <div class="form-group">
     <div class="col-md-offset-1 col-md-11">

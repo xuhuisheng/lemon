@@ -1,0 +1,16 @@
+[{
+    "code": "mostActiveProcess",
+    "name": "最活跃流程",
+    "query": "SELECT PD.NAME_ AS NAME,COUNT(PD.NAME_) AS C FROM ACT_HI_PROCINST PI,ACT_RE_PROCDEF PD WHERE PI.PROC_DEF_ID_=PD.ID_ AND PD.TENANT_ID_=? GROUP BY PD.NAME_",
+    "dimensions": [{
+        "code": "NAME",
+        "name": "流程名称"
+    }, {
+        "code": "C",
+        "name": "数量"
+    }],
+    "chart": {
+        "type": "pie",
+	"config": "{\"name\":\"name\",\"count\":\"c\"}"
+    }
+}]

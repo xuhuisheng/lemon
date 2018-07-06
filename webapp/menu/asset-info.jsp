@@ -21,7 +21,10 @@
     <div id="collapse-body-asset" class="panel-collapse collapse ${currentMenu == 'asset' ? 'in' : ''}" role="tabpanel" aria-labelledby="collapse-header-asset">
       <div class="panel-body">
         <ul class="nav nav-list">
+		  <li><a href="${tenantPrefix}/asset/asset-category-list.do"><i class="glyphicon glyphicon-list"></i> 资产分类</a></li>
 		  <li><a href="${tenantPrefix}/asset/asset-info-list.do"><i class="glyphicon glyphicon-list"></i> 资产管理</a></li>
+		  <li><a href="${tenantPrefix}/asset/asset-lend-list.do"><i class="glyphicon glyphicon-list"></i> 资产领用记录</a></li>
+		  <li><a href="${tenantPrefix}/asset/asset-history-list.do"><i class="glyphicon glyphicon-list"></i> 历史记录</a></li>
         </ul>
       </div>
     </div>

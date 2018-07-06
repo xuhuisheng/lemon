@@ -113,7 +113,7 @@ $(function() {
         <td>${item.id}</td>
         <td>${item.jobTitle.name}</td>
         <td>${item.jobType.name}</td>
-        <td>${item.jobLevel.name}</td>
+        <td>${item.jobLevel.jobGrade.name} ${item.jobLevel.name}</td>
         <td>
           <a href="job-info-input.do?id=${item.id}" class="a-update"><spring:message code="core.list.edit" text="编辑"/></a>
         </td>

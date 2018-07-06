@@ -54,7 +54,7 @@ $(function() {
   <div class="form-group">
     <label class="control-label col-md-1" for="scope-global_name">周</label>
 	<div class="col-sm-5">
-	  <select name="week">
+	  <select name="week" class="form-control">
 	    <option value="2">周一</option>
 	    <option value="3">周二</option>
 	    <option value="4">周三</option>
@@ -68,19 +68,19 @@ $(function() {
   <div class="form-group">
     <label class="control-label col-md-1" for="scope-global_name">名称</label>
 	<div class="col-sm-5">
-	  <input id="scope-global_name" type="text" name="name" value="${model.name}" size="40" class="text">
+	  <input id="scope-global_name" type="text" name="name" value="${model.name}" size="40" class="form-control">
     </div>
   </div>
   <div class="form-group">
     <label class="control-label col-md-1" for="scope-global_name">日期</label>
 	<div class="col-sm-5">
-	  <input id="scope-global_name" type="text" name="workDate" value="${model.workDate}" size="40" class="text">
+	  <input id="scope-global_name" type="text" name="workDate" value="${model.workDate}" size="40" class="form-control">
     </div>
   </div>
   <div class="form-group">
     <label class="control-label col-md-1" for="scope-global_name">状态</label>
 	<div class="col-sm-5">
-	  <select name="status">
+	  <select name="status" class="form-control">
 	    <option value="0">规则</option>
 	    <option value="1">节假日</option>
 	    <option value="2">调休</option>
@@ -91,7 +91,7 @@ $(function() {
   <div class="form-group">
     <label class="control-label col-md-1" for="scope-global_name">工作日历类型</label>
 	<div class="col-sm-5">
-	  <select name="workcalTypeId">
+	  <select name="workcalTypeId" class="form-control">
 	    <c:forEach items="${workcalTypes}" var="item">
 	    <option value="${item.id}">${item.name}</option>
 		</c:forEach>
@@ -99,10 +99,10 @@ $(function() {
     </div>
   </div>
   <div class="form-group">
-    <div class="col-sm-5">
-      <button id="submitButton" type="submit" class="btn a-submit"><spring:message code='core.input.save' text='保存'/></button>
+    <div class="col-sm-5 col-md-offset-1">
+      <button type="submit" class="btn btn-default a-submit"><spring:message code='core.input.save' text='保存'/></button>
 	  &nbsp;
-      <button type="button" onclick="history.back();" class="btn a-cancel"><spring:message code='core.input.back' text='返回'/></button>
+      <button type="button" class="btn btn-link a-cancel" onclick="history.back();"><spring:message code='core.input.back' text='返回'/></button>
     </div>
   </div>
 </form>

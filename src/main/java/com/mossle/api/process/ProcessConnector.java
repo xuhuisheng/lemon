@@ -17,6 +17,8 @@ public interface ProcessConnector {
      */
     ProcessDTO findProcess(String processId);
 
+    ProcessDTO findProcessByProcessDefinitionId(String processDefinitionId);
+
     /**
      * 发起流程.
      */
@@ -102,4 +104,9 @@ public interface ProcessConnector {
      * 作业.
      */
     Page findJobs(String tenantId, Page page);
+
+    /**
+     * 根据processInstanceId获取businessKey.
+     */
+    String findBusinessKeyByProcessInstanceId(String processInstanceId);
 }

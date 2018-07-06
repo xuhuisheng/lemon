@@ -1,0 +1,8 @@
+<p>第一个版本</p>
+
+<ul>
+	<li>源码地址： <a href="https://github.com/xuhuisheng/lemon/tree/lemon-0.8.0" target="_blank">https://github.com/xuhuisheng/lemon/tree/lemon-0.8.0</a></li>
+	<li>独立运行包： <a href="http://pan.baidu.com/s/1ePwRI" target="_blank">http://pan.baidu.com/s/1ePwRI</a></li>
+</ul>
+
+<p>&nbsp;</p>

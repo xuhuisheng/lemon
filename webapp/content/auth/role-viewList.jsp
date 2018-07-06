@@ -98,7 +98,6 @@ $(function() {
       <thead>
         <tr>
           <th width="10" class="table-check"><input type="checkbox" name="checkAll" onchange="toggleSelectedItems(this.checked)"></th>
-          <th class="sorting" name="id"><spring:message code="auth.role.list.id" text="编号"/></th>
           <th class="sorting" name="name"><spring:message code="auth.role.list.name" text="名称"/></th>
           <th width="150">&nbsp;</th>
         </tr>
@@ -107,15 +106,18 @@ $(function() {
         <c:forEach items="${page.result}" var="item">
         <tr>
           <td><input type="checkbox" class="selectedItem a-check" name="selectedItem" value="${item.id}"></td>
-          <td>${item.id}</td>
           <td>${item.name}</td>
           <td>
 			<tags:hasPerm value="role:write">
             <a href="role-viewInput.do?id=${item.id}" class="a-update"><spring:message code="core.list.edit" text="编辑"/></a>&nbsp;
 			</tags:hasPerm>
+			<%--
 			<tags:hasPerm value="role:auth">
+			--%>
             <a href="role-perm-input.do?id=${item.id}" class="a-config"><spring:message code="auth.roleDef.list.perm" text="设置权限"/></a>
+			<%--
 			</tags:hasPerm>
+			--%>
           </td>
         </tr>
         </c:forEach>

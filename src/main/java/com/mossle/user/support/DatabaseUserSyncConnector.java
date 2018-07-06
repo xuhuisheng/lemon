@@ -20,7 +20,7 @@ public class DatabaseUserSyncConnector implements UserSyncConnector {
     private JdbcTemplate jdbcTemplate;
     private String sqlFindByCode = "select count(*) from ACCOUNT_INFO where code=?";
     private String sqlUpdate = "update ACCOUNT_INFO set username=?,nick_name=?,display_name=?,status='active' where code=?";
-    private String sqlInsert = "insert into ACCOUNT_INFO(code,username,nick_name,display_name,status) values(?,?,?,?,'active')";
+    private String sqlInsert = "insert into ACCOUNT_INFO(code,username,nick_name,display_name,status,tenant_id) values(?,?,?,?,'active','1')";
 
     @Transactional
     public void updateUser(UserDTO userDto) {

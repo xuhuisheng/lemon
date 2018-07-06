@@ -98,7 +98,6 @@ $(function() {
       <thead>
         <tr>
           <th width="10" style="text-indent:0px;text-align:center;"><input type="checkbox" name="checkAll" onchange="toggleSelectedItems(this.checked)"></th>
-          <th class="sorting" name="id"><spring:message code="user.bpmCategory.list.id" text="编号"/></th>
           <th class="sorting" name="name"><spring:message code="user.bpmCategory.list.name" text="名称"/></th>
           <th class="sorting" name="priority">排序</th>
           <th width="100">&nbsp;</th>
@@ -108,7 +107,6 @@ $(function() {
         <c:forEach items="${page.result}" var="item">
         <tr>
           <td><input type="checkbox" class="selectedItem a-check" name="selectedItem" value="${item.id}"></td>
-          <td>${item.id}</td>
           <td>${item.name}</td>
           <td>${item.priority}</td>
           <td>

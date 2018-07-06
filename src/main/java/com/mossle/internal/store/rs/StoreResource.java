@@ -111,7 +111,8 @@ public class StoreResource {
     public void view(@QueryParam("model") String model,
             @QueryParam("key") String key, HttpServletRequest request,
             HttpServletResponse response) throws Exception {
-		logger.info("model : {}, key : {}", model, key);
+        logger.info("model : {}, key : {}", model, key);
+
         String tenantId = tenantHolder.getTenantId();
         StoreDTO storeDto = storeConnector.getStore(model, key, tenantId);
 

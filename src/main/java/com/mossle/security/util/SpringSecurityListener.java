@@ -102,7 +102,7 @@ public class SpringSecurityListener implements ApplicationListener,
         AuthenticationFailureBadCredentialsEvent authenticationFailureBadCredentialsEvent = (AuthenticationFailureBadCredentialsEvent) event;
         Authentication authentication = authenticationFailureBadCredentialsEvent
                 .getAuthentication();
-        logger.info("{}", authentication);
+        logger.info("logBadCredential : {}", authentication);
 
         String tenantId = this.getTenantId(authentication);
         Object principal = authentication.getPrincipal();
@@ -136,7 +136,7 @@ public class SpringSecurityListener implements ApplicationListener,
         AuthenticationFailureLockedEvent authenticationFailureLockedEvent = (AuthenticationFailureLockedEvent) event;
         Authentication authentication = authenticationFailureLockedEvent
                 .getAuthentication();
-        logger.info("{}", authentication);
+        logger.info("logLocked : {}", authentication);
 
         String tenantId = this.getTenantId(authentication);
 
@@ -170,7 +170,7 @@ public class SpringSecurityListener implements ApplicationListener,
         AuthenticationFailureDisabledEvent authenticationFailureDisabledEvent = (AuthenticationFailureDisabledEvent) event;
         Authentication authentication = authenticationFailureDisabledEvent
                 .getAuthentication();
-        logger.info("{}", authentication);
+        logger.info("logDisabled : {}", authentication);
 
         String tenantId = this.getTenantId(authentication);
 
@@ -204,7 +204,7 @@ public class SpringSecurityListener implements ApplicationListener,
         AuthenticationFailureCredentialsExpiredEvent authenticationFailureCredentialsExpiredEvent = (AuthenticationFailureCredentialsExpiredEvent) event;
         Authentication authentication = authenticationFailureCredentialsExpiredEvent
                 .getAuthentication();
-        logger.info("{}", authentication);
+        logger.info("logCredentialExpired : {}", authentication);
 
         String tenantId = this.getTenantId(authentication);
 
@@ -239,7 +239,7 @@ public class SpringSecurityListener implements ApplicationListener,
         AuthenticationFailureExpiredEvent authenticationFailureExpiredEvent = (AuthenticationFailureExpiredEvent) event;
         Authentication authentication = authenticationFailureExpiredEvent
                 .getAuthentication();
-        logger.info("{}", authentication);
+        logger.info("logAccountExpired : {}", authentication);
 
         String tenantId = this.getTenantId(authentication);
 

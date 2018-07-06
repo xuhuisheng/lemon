@@ -26,4 +26,26 @@ public class MockOrgConnector implements OrgConnector {
     public List<OrgDTO> getOrgsByUserId(String userId) {
         return null;
     }
+
+    public OrgDTO findById(String orgId) {
+        return null;
+    }
+
+    public List<String> findUserByPositionName(String positionName,
+            String companyName) {
+        return null;
+    }
+
+    public List<String> findUserByNearestPositionName(String userId,
+            String positionName) {
+        return null;
+    }
+
+    public OrgDTO findPositionByUserId(String userId) {
+        return null;
+    }
+
+    public OrgDTO findCompany(String userCode) {
+        return null;
+    }
 }

@@ -8,6 +8,7 @@ import javax.annotation.Resource;
 import javax.servlet.http.HttpServletRequest;
 import javax.servlet.http.HttpServletResponse;
 
+import com.mossle.api.auth.CustomPasswordEncoder;
 import com.mossle.api.tenant.TenantHolder;
 
 import com.mossle.auth.component.UserStatusChecker;
@@ -17,7 +18,6 @@ import com.mossle.auth.persistence.manager.UserStatusManager;
 import com.mossle.auth.support.CheckUserStatusException;
 import com.mossle.auth.support.UserStatusDTO;
 
-import com.mossle.core.auth.CustomPasswordEncoder;
 import com.mossle.core.export.Exportor;
 import com.mossle.core.export.TableModel;
 import com.mossle.core.mapper.BeanMapper;

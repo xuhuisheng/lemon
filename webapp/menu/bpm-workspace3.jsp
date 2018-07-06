@@ -63,7 +63,9 @@
       <div class="panel-body">
         <ul class="nav nav-list">
 		  <li><a href="${tenantPrefix}/delegate/delegate-listMyDelegateInfos.do"><i class="glyphicon glyphicon-list"></i> 代理规则</a></li>
-		  <li><a href="${tenantPrefix}/pim/pim-phrase-my-list.do"><i class="glyphicon glyphicon-list"></i> 常用语</a></li>
+		  <!--
+		  <li><a href="#"><i class="glyphicon glyphicon-list"></i> 常用语</a></li>
+		  -->
         </ul>
       </div>
     </div>

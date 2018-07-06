@@ -98,7 +98,6 @@ $(function() {
       <thead>
         <tr>
           <th width="10" class="table-check"><input type="checkbox" name="checkAll" onchange="toggleSelectedItems(this.checked)"></th>
-          <th class="sorting" name="id"><spring:message code="auth.access.list.id" text="编号"/></th>
           <th class="sorting" name="type"><spring:message code="auth.access.list.type" text="类型"/></th>
           <th class="sorting" name="value"><spring:message code="auth.access.list.value" text="资源"/></th>
           <th class="sorting" name="perm"><spring:message code="auth.access.list.perm" text="权限"/></th>
@@ -111,7 +110,6 @@ $(function() {
         <c:forEach items="${page.result}" var="item">
         <tr>
           <td><input type="checkbox" class="selectedItem a-check" name="selectedItem" value="${item.id}"></td>
-          <td>${item.id}</td>
           <td>${item.type}</td>
           <td>${item.value}</td>
           <td>${item.perm.name}</td>

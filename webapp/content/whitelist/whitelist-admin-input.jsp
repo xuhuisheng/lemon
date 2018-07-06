@@ -49,11 +49,11 @@ $(function() {
     <label class="control-label col-md-1" for="whitelistApp_type">申请服务类型</label>
 	<div class="col-sm-5">
 	  <c:if test="${not empty whitelistType}">
-	    ${whitelistType.name}
+	    <p class="form-control-static">${whitelistType.name}</p>
 		<input type="hidden" name="typeId" value="${whitelistType.id}">
 	  </c:if>
 	  <c:if test="${empty whitelistType}">
-	    <select name="typeId">
+	    <select name="typeId" class="form-control">
 	      <c:forEach items="${whitelistTypes}" var="item">
 		  <option value="${item.id}">${item.name}</option>
 		  </c:forEach>
@@ -70,27 +70,27 @@ $(function() {
   <div class="form-group">
     <label class="control-label col-md-1" for="whitelistApp_description">系统说明</label>
 	<div class="col-sm-5">
-	  <textarea id="whitelistApp_description" name="description" class="required">${model.description}</textarea>
+	  <textarea id="whitelistApp_description" name="description" class="form-control required">${model.description}</textarea>
     </div>
   </div>
   <div class="form-group">
     <label class="control-label col-md-1" for="whitelistApp_host">域名</label>
 	<div class="col-sm-5" id="hostContent">
-	  <textarea id="whitelistApp_host" name="host" class="required"><c:forEach items="${model.whitelistHosts}" var="item">${item.value}
+	  <textarea id="whitelistApp_host" name="host" class="form-control required"><c:forEach items="${model.whitelistHosts}" var="item">${item.value}
 </c:forEach></textarea>
     </div>
   </div>
   <div class="form-group">
     <label class="control-label col-md-1" for="whitelistApp_ip">IP</label>
 	<div class="col-sm-5" id="ipContent">
-	  <textarea id="whitelistApp_ip" name="ip" class="required"><c:forEach items="${model.whitelistIps}" var="item">${item.value}
+	  <textarea id="whitelistApp_ip" name="ip" class="form-control required"><c:forEach items="${model.whitelistIps}" var="item">${item.value}
 </c:forEach></textarea>
     </div>
   </div>
   <div class="form-group">
     <label class="control-label col-md-1" for="whitelistApp_level">等级</label>
 	<div class="col-sm-5">
-	  <select id="whitelistApp_level" name="level">
+	  <select id="whitelistApp_level" name="level" class="form-control">
 	    <option value="0" ${model.level == 0 ? 'selected' : ''}>低安全级别</option>
 	    <option value="1" ${model.level == 1 || empty model ? 'selected' : ''}>中安全级别</option>
 	    <option value="2" ${model.level == 2 ? 'selected' : ''}>高安全级别</option>
@@ -104,10 +104,10 @@ $(function() {
     </div>
   </div>
   <div class="form-group">
-    <div class="col-sm-5">
-      <button type="submit" class="btn a-submit"><spring:message code='core.input.save' text='保存'/></button>
+    <div class="col-sm-5 col-md-offset-1">
+      <button type="submit" class="btn btn-default a-submit"><spring:message code='core.input.save' text='保存'/></button>
 	  &nbsp;
-      <button type="button" class="btn a-cancel" onclick="history.back();"><spring:message code='core.input.back' text='返回'/></button>
+      <button type="button" class="btn btn-link a-cancel" onclick="history.back();"><spring:message code='core.input.back' text='返回'/></button>
     </div>
   </div>
 </form>

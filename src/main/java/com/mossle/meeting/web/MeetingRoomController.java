@@ -75,10 +75,12 @@ public class MeetingRoomController {
 
         if (id != null) {
             dest = meetingRoomManager.get(id);
+            dest.setDevice("");
             beanMapper.copy(meetingRoom, dest);
         } else {
             dest = meetingRoom;
             dest.setTenantId(tenantId);
+            dest.setStatus("0");
         }
 
         meetingRoomManager.save(dest);

@@ -5,6 +5,8 @@ import java.util.Map;
 import com.mossle.security.api.MethodSourceFetcher;
 import com.mossle.security.api.UrlSourceFetcher;
 
+import com.mossle.spi.security.ResourceDetailsRefresher;
+
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
 
@@ -15,7 +17,8 @@ import org.springframework.security.web.access.intercept.FilterSecurityIntercept
 
 import org.springframework.util.Assert;
 
-public class ResourceDetailsMonitor implements InitializingBean {
+public class ResourceDetailsMonitor implements InitializingBean,
+        ResourceDetailsRefresher {
     private static Logger logger = LoggerFactory
             .getLogger(ResourceDetailsMonitor.class);
     private UrlSourceFetcher urlSourceFetcher;

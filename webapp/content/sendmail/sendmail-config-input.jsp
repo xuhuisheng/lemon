@@ -66,22 +66,40 @@ $(function() {
   <div class="form-group">
     <label class="control-label col-md-1" for="mailConfig_smtpAuth0">需要认证</label>
 	<div class="col-sm-5">
-	  <label class="pull-left"><input id="mailConfig_smtpAuth0" type="radio" name="smtpAuth" value="1" ${empty model || model.smtpAuth == 1 ? 'checked' : ''}>是</label>
-	  <label><input id="mailConfig_smtpAuth1" type="radio" name="smtpAuth" value="0" ${model.smtpAuth == 0 ? 'checked' : ''}>否</label>
+	  <label class="radio-inline">
+	    <input id="mailConfig_smtpAuth0" type="radio" name="smtpAuth" value="1" ${empty model || model.smtpAuth == 1 ? 'checked' : ''}>
+		是
+	  </label>
+	  <label class="radio-inline">
+	    <input id="mailConfig_smtpAuth1" type="radio" name="smtpAuth" value="0" ${model.smtpAuth == 0 ? 'checked' : ''}>
+		否
+	  </label>
     </div>
   </div>
   <div class="form-group">
     <label class="control-label col-md-1" for="mailConfig_smtpStarttls0">使用TLS</label>
 	<div class="col-sm-5">
-	  <label class="pull-left"><input id="mailConfig_smtpStarttls0" type="radio" name="smtpStarttls" value="1" ${empty model || model.smtpStarttls == 1 ? 'checked' : ''}>是</label>
-	  <label><input id="mailConfig_smtpStarttls1" type="radio" name="smtpStarttls" value="0" ${model.smtpStarttls == 0 ? 'checked' : ''}>否</label>
+	  <label class="radio-inline">
+	    <input id="mailConfig_smtpStarttls0" type="radio" name="smtpStarttls" value="1" ${empty model || model.smtpStarttls == 1 ? 'checked' : ''}>
+		是
+	  </label>
+	  <label class="radio-inline">
+	    <input id="mailConfig_smtpStarttls1" type="radio" name="smtpStarttls" value="0" ${model.smtpStarttls == 0 ? 'checked' : ''}>
+		否
+	  </label>
     </div>
   </div>
   <div class="form-group">
     <label class="control-label col-md-1" for="mailConfig_smtpSsl0">使用SSL</label>
 	<div class="col-sm-5">
-	  <label class="pull-left"><input id="mailConfig_smtpSsl0" type="radio" name="smtpSsl" value="1" ${model.smtpSsl == 1 ? 'checked' : ''}>是</label>
-	  <label><input id="mailConfig_smtpSsl1" type="radio" name="smtpSsl" value="0" ${empty model || model.smtpSsl == 0 ? 'checked' : ''}>否</label>
+	  <label class="radio-inline">
+	    <input id="mailConfig_smtpSsl0" type="radio" name="smtpSsl" value="1" ${model.smtpSsl == 1 ? 'checked' : ''}>
+		是
+	  </label>
+	  <label class="radio-inline">
+	    <input id="mailConfig_smtpSsl1" type="radio" name="smtpSsl" value="0" ${empty model || model.smtpSsl == 0 ? 'checked' : ''}>
+		否
+	  </label>
     </div>
   </div>
   <div class="form-group">
@@ -105,9 +123,18 @@ $(function() {
   <div class="form-group">
     <label class="control-label col-md-1" for="mailConfig_status">状态</label>
 	<div class="col-sm-5">
-	  <label class="pull-left"><input id="mailConfig_status0" type="radio" name="status" value="normal" ${empty model || model.status == 'normal' ? 'checked' : ''}>正常</label>
-	  <label class="pull-left"><input id="mailConfig_status1" type="radio" name="status" value="test" ${model.status == 'test' ? 'checked' : ''}>测试</label>
-	  <label class="pull-left"><input id="mailConfig_status2" type="radio" name="status" value="skip" ${model.status == 'skip' ? 'checked' : ''}>忽略</label>
+	  <label class="radio-inline">
+	    <input id="mailConfig_status0" type="radio" name="status" value="normal" ${empty model || model.status == 'normal' ? 'checked' : ''}>
+		正常
+	  </label>
+	  <label class="radio-inline">
+	    <input id="mailConfig_status1" type="radio" name="status" value="test" ${model.status == 'test' ? 'checked' : ''}>
+	    测试
+	  </label>
+	  <label class="radio-inline">
+	    <input id="mailConfig_status2" type="radio" name="status" value="skip" ${model.status == 'skip' ? 'checked' : ''}>
+		忽略
+	  </label>
     </div>
   </div>
   <div class="form-group">
@@ -117,7 +144,7 @@ $(function() {
     </div>
   </div>
   <div class="form-group">
-    <div class="col-sm-5">
+    <div class="col-sm-5 col-md-offset-1">
       <button type="submit" class="btn btn-default a-submit"><spring:message code='core.input.save' text='保存'/></button>
 	  &nbsp;
       <button type="button" class="btn btn-link a-cancel" onclick="history.back();"><spring:message code='core.input.back' text='返回'/></button>

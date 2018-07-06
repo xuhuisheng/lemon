@@ -9,16 +9,16 @@
     <meta charset="utf-8">
     <title>kanban</title>
     <meta name="viewport" content="width=device-width, initial-scale=1">
-    <link href="${cdnPrefix}/bootstrap/3.3.6/css/bootstrap.min.css" rel="stylesheet" id="bootstrap-css">
-    <link href="${cdnPrefix}/kanban/kanban.css" rel="stylesheet">
+    <link href="${cdnPrefix}/public/bootstrap/3.3.7/css/bootstrap.min.css" rel="stylesheet" id="bootstrap-css">
+    <link href="${cdnPrefix}/public/mossle-kanban/0.0.2/kanban.css" rel="stylesheet">
 
-    <script src="${cdnPrefix}/jquery/jquery.min.js"></script>
-    <script src="${cdnPrefix}/bootstrap/3.3.6/js/bootstrap.min.js"></script>
+    <script src="${cdnPrefix}/public/jquery/1.12.4/jquery.min.js"></script>
+    <script src="${cdnPrefix}/public/bootstrap/3.3.7/js/bootstrap.min.js"></script>
 
-    <link type="text/css" rel="stylesheet" href="${cdnPrefix}/userpicker/userpicker.css">
-    <script type="text/javascript" src="${cdnPrefix}/userpicker/userpicker3.js"></script>
+    <link type="text/css" rel="stylesheet" href="${cdnPrefix}/public/userpicker/userpicker.css">
+    <script type="text/javascript" src="${cdnPrefix}/public/userpicker/userpicker3.js"></script>
 
-	<script src="${cdnPrefix}/kanban/kanban.js"></script>
+	<script src="${tenantPrefix}/public/mossle-kanban/0.0.2/kanban.js"></script>
 
 	<script type="text/javascript">
 var logined = <tags:isUser>true</tags:isUser><tags:isGuest>false</tags:isGuest>;
@@ -30,7 +30,7 @@ $(function() {
 
 	createUserPicker({
 		multiple: false,
-		url: '${tenantPrefix}/rs/user/search'
+		url: '${cdnPrefix}/rs/user/search'
 	});
 
 	$(document).delegate('.plmIssueEdit', 'click', function() {
@@ -93,10 +93,10 @@ function prepareToUpdateIssue(issueId) {
 	</script>
   </head>
   <body>
-    <div class="container-fluid" style="padding-top:10px;">
+    <div class="container-fluid" style="padding-top:65px;">
 
       <div id="sortableKanbanBoards" class="row">
-
+<!--
 	    <div class="col-md-2">
 		  <div>
 		    <tags:isGuest>
@@ -125,11 +125,11 @@ function prepareToUpdateIssue(issueId) {
             </a>
 		  </div>
 		</div>
-
+-->
 <c:forEach var="map" items="${list}">
 
 		<!-- doing start -->
-		<div class="panel panel-primary kanban-col kanban-col-1">
+		<div class="panel panel-primary kanban-col kanban-col-1" style="width:${92.0/fn:length(list)}%">
 		  <div class="panel-heading text-center">
 		    ${map.plmStep.name}
 		    <i class="fa fa-2x fa-plus-circle pull-right"></i>
@@ -143,7 +143,7 @@ function prepareToUpdateIssue(issueId) {
 
 		          <div class="kanban-label">
 		            <h2>
-					  <a id="${item.id}" href="#" class="plmIssueEdit" data="{name:'${item.name}',content:'${item.content}',assigneeId:'${item.assigneeId}'}"># ${item.id}</a>
+					  <a id="${item.id}" href="#" class="plmIssueEdit" data="{name:'${item.name}',assigneeId:'${item.assigneeId}'}"># ${item.id}</a>
 					  <div class="pull-right">
 					    <img id="${item.id}" src="${tenantPrefix}/rs/avatar?id=${item.assigneeId}&width=32" style="width:32px;">
 					  </div>
@@ -156,9 +156,11 @@ function prepareToUpdateIssue(issueId) {
 
 		    </div>
 		  </div>
+		  <!--
 		  <div class="panel-footer">
 		    <a href="#">&nbsp;</a>
 		  </div>
+		  -->
 		</div>
 		<!-- doing end -->
 </c:forEach>

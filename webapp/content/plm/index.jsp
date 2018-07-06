@@ -41,10 +41,10 @@ $(function() {
   <body>
     <%@include file="/header/plm.jsp"%>
 
-    <div class="row-fluid">
+    <div class="row-fluid" style="padding-top:65px;">
 
       <!-- start of sidebar -->
-<div class="panel-group col-md-2" id="accordion" role="tablist" aria-multiselectable="true" style="padding-top:65px;">
+<div class="panel-group col-md-2" id="accordion" role="tablist" aria-multiselectable="true">
 
   <div class="panel panel-default">
     <div class="panel-heading" role="tab" id="collapse-header-user" data-toggle="collapse" data-parent="#accordion" href="#collapse-body-auth" aria-expanded="true" aria-controls="collapse-body-auth">
@@ -89,17 +89,11 @@ $(function() {
 
 </div>
 
-	  <!-- start of main -->
-      <section id="m-main" class="col-md-10" style="padding-top:65px;">
-
-<form id="plmGridForm" name="plmGridForm" method='post' action="plm-project-remove.do" class="m-form-blank">
+      <div class="col-md-5">
 <div class="panel panel-default">
   <div class="panel-heading">
 	<i class="glyphicon glyphicon-list"></i>
     需要处理的任务
-	<div class="pull-right ctrl">
-	  <a class="btn btn-default btn-xs"><i id="audit-baseSearchIcon" class="glyphicon glyphicon-chevron-up"></i></a>
-    </div>
   </div>
   <table id="plmGrid" class="table table-hover">
     <thead>
@@ -121,58 +115,25 @@ $(function() {
     </tbody>
   </table>
 </div>
-</form>
-        <div class="m-spacer"></div>
+	  </div>
 
-<form id="plmGridForm" name="plmGridForm" method='post' action="plm-project-remove.do" class="m-form-blank">
-<div class="panel panel-default">
-  <div class="panel-heading">
-	<i class="glyphicon glyphicon-list"></i>
-    发起的任务
-	<div class="pull-right ctrl">
-	  <a class="btn btn-default btn-xs"><i id="audit-baseSearchIcon" class="glyphicon glyphicon-chevron-up"></i></a>
-    </div>
-  </div>
-  <table id="plmGrid" class="table table-hover">
-    <thead>
-      <tr>
-        <th width="33%">名称</th>
-        <th width="33%">类型</th>
-        <th width="33%">项目</th>
-      </tr>
-    </thead>
-
-    <tbody>
-      <c:forEach var="item" items="${myIssues}">
-      <tr>
-        <td><a href="issue.do?id=${item.id}">${item.name}</a></td>
-        <td>${item.type}</td>
-        <td><a href="project.do?projectId=${item.plmProject.id}">${item.plmProject.name}</a></td>
-      </tr>
-      </c:forEach>
-    </tbody>
-  </table>
-</div>
-</form>
-        <div class="m-spacer"></div>
+	  <!-- start of main -->
+      <section id="m-main" class="col-md-5">
 
 <form id="plmGridForm" name="plmGridForm" method='post' action="plm-project-remove.do" class="m-form-blank">
 <div class="panel panel-default">
   <div class="panel-heading">
 	<i class="glyphicon glyphicon-list"></i>
     迭代
-	<div class="pull-right ctrl">
-	  <a class="btn btn-default btn-xs"><i id="audit-baseSearchIcon" class="glyphicon glyphicon-chevron-up"></i></a>
-    </div>
   </div>
   <table id="plmGrid" class="table table-hover">
     <thead>
       <tr>
-        <th width="18%">名称</th>
-        <th width="18%">项目</th>
-        <th width="18%">开始</th>
-        <th width="18%">结束</th>
-        <th width="18%">状态</th>
+        <th>名称</th>
+        <th>项目</th>
+        <th>开始</th>
+        <th>结束</th>
+        <th>状态</th>
 		<th>&nbsp;</th>
       </tr>
     </thead>
@@ -189,6 +150,37 @@ $(function() {
 		  <a href="kanban.do?sprintId=${item.id}">看板</a>
 		  <a href="sprint.do?sprintId=${item.id}">列表</a>
 		</td>
+      </tr>
+      </c:forEach>
+    </tbody>
+  </table>
+</div>
+</form>
+        <div class="m-spacer"></div>
+
+<form id="plmGridForm" name="plmGridForm" method='post' action="plm-project-remove.do" class="m-form-blank">
+<div class="panel panel-default">
+  <div class="panel-heading">
+	<i class="glyphicon glyphicon-list"></i>
+    项目
+  </div>
+  <table id="plmGrid" class="table table-hover">
+    <thead>
+      <tr>
+        <th>标识</th>
+        <th>名称</th>
+        <th>&nbsp;</th>
+        <th>&nbsp;</th>
+      </tr>
+    </thead>
+
+    <tbody>
+      <c:forEach var="item" items="${plmProjects}">
+      <tr>
+        <td>${item.code}</td>
+        <td><a href="project.do?projectId=${item.id}">${item.name}</a></td>
+        <td><a href="project.do?projectId=${item.id}">需求池</a></td>
+        <td><a href="product.do?id=${item.id}">产品设计</a></td>
       </tr>
       </c:forEach>
     </tbody>

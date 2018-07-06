@@ -117,14 +117,17 @@ function showModal(displayName, mobile, email) {
 	</div>
 
 <div class="modal fade" id="modal">
-  <div class="modal-dialog">
+  <div class="modal-dialog" style="width:400px;">
     <div class="modal-content">
       <div class="modal-header">
+	    扫描二维码
         <button type="button" class="close" data-dismiss="modal" aria-label="Close"><span aria-hidden="true">&times;</span></button>
       </div>
       <div class="modal-body text-center">
         <div id="qr"></div>
       </div>
+	  <div class="modal-footer">
+	  </div>
     </div><!-- /.modal-content -->
   </div><!-- /.modal-dialog -->
 </div><!-- /.modal -->

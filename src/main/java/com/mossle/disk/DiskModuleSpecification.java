@@ -21,7 +21,7 @@ public class DiskModuleSpecification implements ModuleSpecification {
 
     @Override
     public String getSchemaTable() {
-        return "SCHEMA_VERSION_" + MODULE_NAME_UPPER;
+        return PREFIX + MODULE_NAME_UPPER;
     }
 
     @Override
@@ -36,7 +36,7 @@ public class DiskModuleSpecification implements ModuleSpecification {
 
     @Override
     public String getDataTable() {
-        return "SCHEMA_VERSION_DATA_" + MODULE_NAME_UPPER;
+        return PREFIX + "DATA_" + MODULE_NAME_UPPER;
     }
 
     @Override
@@ -49,12 +49,12 @@ public class DiskModuleSpecification implements ModuleSpecification {
         this.type = type;
     }
 
-    @Value("${" + MODULE_NAME + ".dbmigrate.enabled}")
+    @Value("${" + MODULE_NAME + ".dbmigrate.enabled:false}")
     public void setEnabled(boolean enabled) {
         this.enabled = enabled;
     }
 
-    @Value("${" + MODULE_NAME + ".dbmigrate.initData}")
+    @Value("${" + MODULE_NAME + ".dbmigrate.initData:false}")
     public void setInitData(boolean initData) {
         this.initData = initData;
     }

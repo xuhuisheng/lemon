@@ -91,4 +91,6 @@ public interface InternalProcessConnector {
      * 触发execution继续执行.
      */
     void signalExecution(String executionId);
+
+    String findProcessDefinitionId(String processDefinitionKey);
 }

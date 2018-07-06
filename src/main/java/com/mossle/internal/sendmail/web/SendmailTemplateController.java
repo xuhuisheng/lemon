@@ -164,6 +164,7 @@ public class SendmailTemplateController {
 
         MailServerInfo mailServerInfo = new MailServerInfo();
         mailServerInfo.setHost(sendmailConfig.getHost());
+        mailServerInfo.setPort(sendmailConfig.getPort());
         mailServerInfo.setSmtpAuth(sendmailConfig.getSmtpAuth() == 1);
         mailServerInfo.setSmtpStarttls(sendmailConfig.getSmtpStarttls() == 1);
         mailServerInfo.setUsername(sendmailConfig.getUsername());

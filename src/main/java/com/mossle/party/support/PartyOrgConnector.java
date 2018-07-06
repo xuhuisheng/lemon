@@ -2,7 +2,9 @@ package com.mossle.party.support;
 
 import java.util.ArrayList;
 import java.util.Collections;
+import java.util.HashSet;
 import java.util.List;
+import java.util.Set;
 
 import javax.annotation.Resource;
 
@@ -13,6 +15,8 @@ import com.mossle.party.PartyConstants;
 import com.mossle.party.persistence.domain.PartyEntity;
 import com.mossle.party.persistence.domain.PartyStruct;
 import com.mossle.party.persistence.manager.PartyEntityManager;
+
+import org.apache.commons.lang3.StringUtils;
 
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
@@ -51,15 +55,10 @@ public class PartyOrgConnector implements OrgConnector {
         }
 
         // 如果直接上级是岗位，就返回岗位级别
-        // for (PartyStruct partyStruct : partyEntity.getParentStructs()) {
-        // if (partyStruct.getParentEntity().getPartyType().getType() == PartyConstants.TYPE_POSITION) {
-        // return partyStruct.getParentEntity().getLevel();
-        // }
-        // }
-        for (PartyStruct partyStruct : partyEntity.getChildStructs()) {
-            if ("user-position".equals(partyStruct.getPartyStructType()
-                    .getType())) {
-                return partyStruct.getChildEntity().getLevel();
+        for (PartyStruct partyStruct : this.sortPartyStructs(partyEntity
+                .getParentStructs())) {
+            if (partyStruct.getParentEntity().getPartyType().getType() == PartyConstants.TYPE_POSITION) {
+                return partyStruct.getParentEntity().getLevel();
             }
         }
 
@@ -69,8 +68,6 @@ public class PartyOrgConnector implements OrgConnector {
 
     /**
      * 根据人员和对应的岗位名称，获得离这个人员最近的岗位的级别.
-     * 
-     * TODO: 这里目前肯定有问题，以后记得研究 2016-07-06
      */
     public int getJobLevelByInitiatorAndPosition(String userId,
             String positionName) {
@@ -90,6 +87,13 @@ public class PartyOrgConnector implements OrgConnector {
         logger.debug("user id : {}", userId);
 
         PartyEntity partyEntity = this.findUser(userId);
+
+        if (partyEntity == null) {
+            logger.info("cannot find partyEntity : {}", userId);
+
+            return null;
+        }
+
         logger.debug("party entity : {}, {}", partyEntity.getId(),
                 partyEntity.getName());
 
@@ -107,13 +111,17 @@ public class PartyOrgConnector implements OrgConnector {
 
     /**
      * 获得人员对应的最近的岗位下的所有用户.
-     * 
-     * TODO: 这里目前肯定有问题，以后记得研究 2016-07-06
      */
     public List<String> getPositionUserIds(String userId, String positionName) {
+        logger.info("getPositionUserIds : userId : {}, positionName : {}",
+                userId, positionName);
+
         PartyEntity partyEntity = this.findUser(userId);
 
-        return this.findPositionUserIds(partyEntity, positionName);
+        List<String> list = this.findPositionUserIds(partyEntity, positionName);
+        Set<String> set = new HashSet<String>(list);
+
+        return new ArrayList<String>(set);
     }
 
     /**
@@ -126,19 +134,64 @@ public class PartyOrgConnector implements OrgConnector {
             return Collections.emptyList();
         }
 
+        List<OrgDTO> orgDtos = this.getParentOrgsByPartyEntity(partyEntity);
+
+        return orgDtos;
+    }
+
+    public List<OrgDTO> getParentOrgsByPartyEntity(PartyEntity partyEntity) {
+        boolean isPartTime = false; // 是否有主职，默认没有
+
+        if (partyEntity == null) {
+            return Collections.emptyList();
+        }
+
         List<OrgDTO> orgDtos = new ArrayList<OrgDTO>();
 
-        for (PartyStruct partyStruct : partyEntity.getParentStructs()) {
+        for (PartyStruct partyStruct : this.sortPartyStructs(partyEntity
+                .getParentStructs())) {
+            // sven dazer
+            if ((partyStruct.getPartTime() != null)
+                    && (partyStruct.getPartTime() == 1)) { // 判断用户有没有在部门下面担任主职
+                isPartTime = true; // 有主职
+            }
+
             PartyEntity parent = partyStruct.getParentEntity();
 
-            if (parent.getPartyType().getType() == PartyConstants.TYPE_ORG) {
-                OrgDTO orgDto = new OrgDTO();
-                orgDto.setId(Long.toString(parent.getId()));
-                orgDto.setName(parent.getName());
-                orgDto.setTypeName(parent.getPartyType().getName());
-                orgDto.setType(parent.getPartyType().getType());
-                orgDto.setRef(parent.getRef());
-                orgDtos.add(orgDto);
+            if (parent.getPartyType().getType() != PartyConstants.TYPE_ORG) {
+                continue;
+            }
+
+            if (parent.getName().endsWith("~")) {
+                continue;
+            }
+
+            OrgDTO orgDto = new OrgDTO();
+            orgDto.setId(Long.toString(parent.getId()));
+            orgDto.setName(parent.getName());
+            orgDto.setTypeName(parent.getPartyType().getName());
+            orgDto.setType(parent.getPartyType().getType());
+            orgDto.setRef(parent.getRef());
+            orgDtos.add(orgDto);
+        }
+
+        if (!orgDtos.isEmpty()) {
+            return orgDtos;
+        }
+
+        for (PartyStruct partyStruct : this.sortPartyStructs(partyEntity
+                .getParentStructs())) {
+            PartyEntity parent = partyStruct.getParentEntity();
+
+            // sven dazer
+            if ((partyStruct.getPartTime() == null)
+                    || (partyStruct.getPartTime() == 1)) { // 判断这个人是不是主职，是主职就进去找他的所在的部门. sven
+                orgDtos.addAll(this.getParentOrgsByPartyEntity(parent));
+            }
+
+            // sven dazer
+            if (!isPartTime) { // 如果没有就去查所有的兼职
+                orgDtos.addAll(this.getParentOrgsByPartyEntity(parent));
             }
         }
 
@@ -151,45 +204,116 @@ public class PartyOrgConnector implements OrgConnector {
      */
     public PartyEntity findSuperior(PartyEntity child) {
         // 得到上级部门
-        PartyEntity partyEntity = this.findUpperDepartment(child, true);
+        PartyEntity partyEntity = this.findUpperDepartment(child);
+
+        // 找不到上级部门，直接返回null
+        if (partyEntity == null) {
+            logger.info("cannot find upper department : {}", child.getId());
+
+            return null;
+        }
+
+        // 如果是部门的负责人
+        // 如果是员工
 
         // 如果存在上级部门
         while (partyEntity != null) {
             logger.debug("partyEntity : {}, {}", partyEntity.getId(),
                     partyEntity.getName());
 
-            // 遍历上级部门的每个叶子
-            for (PartyStruct partyStruct : partyEntity.getChildStructs()) {
-                if (!"manage"
-                        .equals(partyStruct.getPartyStructType().getType())) {
-                    continue;
+            if (this.isManagerOfDepartment(child, partyEntity)) {
+                // 本部门负责人
+                List<String> managers = this.findNearestManagers(partyEntity,
+                        child);
+
+                if (!managers.isEmpty()) {
+                    return findUser(managers.get(0));
                 }
+            } else {
+                // 员工
+                List<String> managers = this.findNearestManagers(partyEntity,
+                        null);
 
-                // 遍历管理关系
-                PartyEntity childPartyEntity = partyStruct.getChildEntity();
-                logger.debug("child : {}, {}", childPartyEntity.getId(),
-                        childPartyEntity.getName());
-
-                if (childPartyEntity.getPartyType().getType() == PartyConstants.TYPE_USER) {
-                    // 如果是人员，直接返回
-                    return childPartyEntity;
-                } else if (childPartyEntity.getPartyType().getType() == PartyConstants.TYPE_POSITION) {
-                    // 如果是岗位，继续查找部门下所有岗位对应的人员，返回
-                    List<PartyEntity> users = this.findByPosition(partyEntity,
-                            childPartyEntity.getName());
-
-                    if (!users.isEmpty()) {
-                        return users.get(0);
-                    }
+                if (!managers.isEmpty()) {
+                    return findUser(managers.get(0));
                 }
             }
 
             // 递归获取上级部门
-            partyEntity = this.findUpperDepartment(partyEntity, true);
+            PartyEntity childDepartment = partyEntity;
+            partyEntity = this.findUpperDepartment(partyEntity);
+
+            // 找不到上级部门，直接返回null
+            if (partyEntity == null) {
+                logger.info("cannot find upper department : {}",
+                        childDepartment.getId());
+
+                return null;
+            }
         }
+
+        logger.info("cannot find upper department : {}", partyEntity.getId());
 
         // 找不到上级领导
         return null;
+    }
+
+    public boolean isManagerOfDepartment(PartyEntity person,
+            PartyEntity department) {
+        ManagerPool managerPool = this.findManagersOfDepartment(department);
+
+        return managerPool.containsUserId(person.getRef());
+    }
+
+    public ManagerPool findManagersOfDepartment(PartyEntity department) {
+        ManagerPool managerPool = new ManagerPool();
+
+        // 遍历上级部门的每个叶子
+        for (PartyStruct partyStruct : department.getChildStructs()) {
+            // 如果不是负责人，直接跳过
+            if (!"manage".equals(partyStruct.getPartyStructType().getType())) {
+                continue;
+            }
+
+            // 遍历管理关系
+            PartyEntity childPartyEntity = partyStruct.getChildEntity();
+            logger.debug("child : {}, {}", childPartyEntity.getId(),
+                    childPartyEntity.getName());
+
+            if (childPartyEntity.getPartyType().getType() == PartyConstants.TYPE_USER) {
+                // 人员
+                managerPool.addUserId(childPartyEntity.getRef(),
+                        partyStruct.getPriority());
+            } else if (childPartyEntity.getPartyType().getType() == PartyConstants.TYPE_POSITION) {
+                // 如果是岗位，继续查找部门下所有岗位对应的人员，返回
+                List<PartyEntity> users = this.findByPosition(department,
+                        childPartyEntity.getName());
+
+                for (PartyEntity user : users) {
+                    managerPool.addUserId(user.getRef(),
+                            partyStruct.getPriority());
+                }
+            }
+        }
+
+        return managerPool;
+    }
+
+    public List<String> findNearestManagers(PartyEntity department,
+            PartyEntity person) {
+        ManagerPool managerPool = this.findManagersOfDepartment(department);
+
+        if (!managerPool.isExists()) {
+            return Collections.emptyList();
+        }
+
+        if ((person == null) || (!managerPool.containsUserId(person.getRef()))) {
+            // 员工
+            return managerPool.findNearestManagers(null);
+        } else {
+            // 负责人
+            return managerPool.findNearestManagers(person.getRef());
+        }
     }
 
     /**
@@ -242,54 +366,24 @@ public class PartyOrgConnector implements OrgConnector {
         return false;
     }
 
+    /**
+     * 是否负责人.
+     */
     public boolean isAdmin(PartyStruct partyStruct) {
         if (partyStruct == null) {
             return false;
         }
 
-        // if (partyStruct.getAdmin() == null) {
-        // return false;
-        // }
-        // return partyStruct.getAdmin() == 1;
-        PartyEntity department = partyStruct.getParentEntity();
-        PartyEntity user = partyStruct.getChildEntity();
-
-        logger.info("department : {} {}", department.getName(),
-                department.getId());
-
-        // 遍历上级部门的每个叶子
-        for (PartyStruct childPartyStruct : department.getChildStructs()) {
-            if (!"manage".equals(childPartyStruct.getPartyStructType()
-                    .getType())) {
-                continue;
-            }
-
-            // 遍历管理关系
-            PartyEntity childPartyEntity = childPartyStruct.getChildEntity();
-            logger.debug("child : {}, {}", childPartyEntity.getId(),
-                    childPartyEntity.getName());
-
-            if (childPartyEntity.getPartyType().getType() == PartyConstants.TYPE_USER) {
-                // 如果是人员，直接返回
-                if (childPartyEntity.getId().equals(user.getId())) {
-                    return true;
-                }
-            } else if (childPartyEntity.getPartyType().getType() == PartyConstants.TYPE_POSITION) {
-                // 如果是岗位，继续查找部门下所有岗位对应的人员，返回
-                List<PartyEntity> users = this.findByPosition(department,
-                        childPartyEntity.getName());
-
-                for (PartyEntity userPartyEntity : users) {
-                    if (userPartyEntity.getId().equals(user.getId())) {
-                        return true;
-                    }
-                }
-            }
+        if (partyStruct.getAdmin() == null) {
+            return false;
         }
 
-        return false;
+        return partyStruct.getAdmin() == 1;
     }
 
+    /**
+     * 是否员工.
+     */
     public boolean isNotAdmin(PartyStruct partyStruct) {
         return !this.isAdmin(partyStruct);
     }
@@ -298,10 +392,11 @@ public class PartyOrgConnector implements OrgConnector {
      * 获取岗位的管理者.
      */
     public PartyEntity findAdministrator(PartyEntity parent) {
-        for (PartyStruct partyStruct : parent.getChildStructs()) {
+        for (PartyStruct partyStruct : this.sortPartyStructs(parent
+                .getChildStructs())) {
             PartyEntity partyEntity = null;
             PartyEntity child = partyStruct.getChildEntity();
-            logger.debug("child : {}, {}", child.getId(), child.getName());
+            logger.info("child : {}, {}", child.getId(), child.getName());
 
             // 完全不考虑岗位下面有其他组织或者岗位的情况
             // 认为岗位下直接就是人员
@@ -317,54 +412,123 @@ public class PartyOrgConnector implements OrgConnector {
     }
 
     /**
-     * 找到离parent最近的岗位下的人员.
+     * 寻找距离parent最近的岗位下的人员，默认不包含兄弟部门.
      */
     public List<String> findPositionUserIds(PartyEntity parent,
             String positionName) {
+        return this.findPositionUserIds(parent, positionName, false);
+    }
+
+    /**
+     * 找到离parent最近的岗位下的人员.
+     */
+    public List<String> findPositionUserIds(PartyEntity parent,
+            String positionName, boolean includeNeighboor) {
         List<String> userIds = new ArrayList<String>();
 
         // 获得上级部门
-        PartyEntity partyEntity = this.findUpperDepartment(parent, false);
+        PartyEntity partyEntity = this.findUpperDepartment(parent);
 
         while (partyEntity != null) {
-            // 如果是组织，部门或公司
-            if (partyEntity.getPartyType().getType() == PartyConstants.TYPE_ORG) {
-                for (PartyStruct partyStruct : partyEntity.getChildStructs()) {
-                    PartyEntity child = partyStruct.getChildEntity();
+            Set<Long> visitedIds = new HashSet<Long>();
+            userIds = this.findPositionUserIdsByParent(partyEntity,
+                    positionName, visitedIds);
 
-                    // 遍历组织下属所有员工
-                    if (child.getPartyType().getType() != PartyConstants.TYPE_USER) {
-                        continue;
-                    }
+            if (userIds.isEmpty()) {
+                // 如果没找到userIds，递归到更上一级的部门，继续找
+                partyEntity = this.findUpperDepartment(partyEntity);
+            } else {
+                break;
+            }
+        }
 
-                    // 如果员工拥有对应的岗位，就放到userIds里
-                    for (PartyStruct ps : child.getChildStructs()) {
-                        // 只搜索人员岗位关系
-                        if (ps.getPartyStructType().getId() != 5) {
+        /*
+         * //dazer Sven 部门岗位查找最近的岗位有问题，后面修改了把这段去掉。 if(userIds.isEmpty()){//如果没有找到就直接找岗位。
+         * userIds=this.findUserByPositionName(positionName); }
+         */
+        return userIds;
+    }
+
+    /**
+     * 递归查找部门，子部门下的所有岗位.
+     */
+    public List<String> findPositionUserIdsByParent(PartyEntity partyEntity,
+            String positionName, Set<Long> visitedIds) {
+        if (partyEntity == null) {
+            return Collections.emptyList();
+        }
+
+        if (visitedIds.contains(partyEntity.getId())) {
+            logger.info("already visit : {}, just skip", partyEntity.getId());
+
+            return Collections.emptyList();
+        }
+
+        visitedIds.add(partyEntity.getId());
+
+        List<String> userIds = new ArrayList<String>();
+
+        // 如果是组织，部门或公司
+        if (partyEntity.getPartyType().getType() == PartyConstants.TYPE_ORG) {
+            for (PartyStruct partyStruct : this.sortPartyStructs(partyEntity
+                    .getChildStructs())) {
+                PartyEntity child = partyStruct.getChildEntity();
+
+                // 遍历组织下级岗位Sven 就近岗位
+                if (child.getPartyType().getType() == PartyConstants.TYPE_USER) {
+                    // 如果下级是用户，判断用户包含对应职位，就可以返回
+                    for (PartyStruct childPartyStruct : this
+                            .sortPartyStructs(child.getChildStructs())) {
+                        if (!"user-position".equals(childPartyStruct
+                                .getPartyStructType().getType())) {
                             continue;
                         }
 
-                        if (ps.getChildEntity().getName().equals(positionName)) {
-                            // 拥有对应的岗位，就放到userIds里
+                        if (childPartyStruct.getChildEntity().getPartyType()
+                                .getType() != PartyConstants.TYPE_POSITION) {
+                            continue;
+                        }
+
+                        // 这是个循环，不知道是哪个字段没值还是这个部门或组织下没值
+                        logger.info("positionName : " + positionName
+                                + " childPartyStruct : "
+                                + childPartyStruct.getId() + " entity : "
+                                + childPartyStruct.getChildEntity()
+                                + " name : "
+                                + childPartyStruct.getChildEntity().getName());
+
+                        if (positionName.trim().equals(
+                                childPartyStruct.getChildEntity().getName()
+                                        .trim())) {
+                            logger.info(
+                                    "matched : child : {}, struct : {}, position : {}",
+                                    child.getName(), childPartyStruct.getId(),
+                                    positionName);
                             userIds.add(child.getRef());
                         }
                     }
                 }
             }
+        } else if ((partyEntity.getPartyType().getType() == PartyConstants.TYPE_POSITION)
+                && partyEntity.getName().trim().equals(positionName.trim())) {
+            // 如果parent已经是岗位了，而且名字与期望的positionName一致
+            for (PartyStruct partyStruct : this.sortPartyStructs(partyEntity
+                    .getChildStructs())) {
+                PartyEntity child = partyStruct.getChildEntity();
 
-            /*
-             * else if ((parent.getPartyType().getType() == PartyConstants.TYPE_POSITION) &&
-             * parent.getName().equals(positionName)) { // 如果parent已经是岗位了，而且名字与期望的positionName一致 for (PartyStruct
-             * partyStruct : parent.getChildStructs()) { PartyEntity child = partyStruct.getChildEntity();
-             * 
-             * // 就把岗位下的人直接附加到userIds里 if (child.getPartyType().getType() == PartyConstants.TYPE_USER) {
-             * userIds.add(child.getRef()); } } }
-             */
-            if (userIds.isEmpty()) {
-                // 如果没找到userIds，递归到更上一级的部门，继续找
-                partyEntity = this.findUpperDepartment(partyEntity, false);
-            } else {
-                break;
+                // 就把岗位下的人直接附加到userIds里
+                if (child.getPartyType().getType() == PartyConstants.TYPE_USER) {
+                    userIds.add(child.getRef());
+                }
+            }
+        }
+
+        // 如果本部门内没找到岗位，继续搜索下级部门
+        if (userIds.isEmpty()) {
+            for (PartyStruct partyStruct : partyEntity.getChildStructs()) {
+                userIds.addAll(this.findPositionUserIdsByParent(
+                        partyStruct.getChildEntity(), positionName,
+                        new HashSet<Long>(visitedIds)));
             }
         }
 
@@ -374,46 +538,291 @@ public class PartyOrgConnector implements OrgConnector {
     /**
      * 获得上级部门.
      */
-    public PartyEntity findUpperDepartment(PartyEntity child,
-            boolean skipAdminDepartment) {
+    public PartyEntity findUpperDepartment(PartyEntity child) {
+        boolean isPartTime2 = false; // 是否有主职，默认没有
+
         if (child == null) {
             logger.info("child is null");
 
             return null;
         }
 
-        for (PartyStruct partyStruct : child.getParentStructs()) {
+        for (PartyStruct partyStruct : this.sortPartyStructs(child
+                .getParentStructs())) {
+            logger.info("child.getParentStructs() size(){}", child
+                    .getParentStructs().size());
+
+            if ((partyStruct.getPartTime() != null)
+                    && (partyStruct.getPartTime() == 1)) { // 判断用户有没有在部门下面担任主职
+                isPartTime2 = true; // 有主职
+            }
+
             PartyEntity parent = partyStruct.getParentEntity();
 
             if (parent == null) {
-                logger.info("parent is null, child : {} {}", child.getName(),
-                        child.getId());
+                logger.info("parent is null, child : {}", child.getName());
 
                 continue;
             }
 
-            logger.debug("parent : {}, child : {}", parent.getName(),
+            logger.info("parent : {}, child : {}", parent.getName(),
                     child.getName());
-            logger.debug("admin : [{}]", partyStruct.getAdmin());
+            logger.info("admin : [{}]", partyStruct.getAdmin());
 
-            if (parent.getPartyType().getType() == PartyConstants.TYPE_ORG) {
-                if (skipAdminDepartment && this.isAdmin(partyStruct)) {
-                    return this
-                            .findUpperDepartment(parent, skipAdminDepartment);
-                } else {
-                    // 不是当前部门负责人才会返回这个部门实体，否则返回再上一级部门
-                    logger.debug("upper department : {}, admin : [{}]",
-                            parent.getName(), partyStruct.getAdmin());
+            if ((parent.getPartyType().getType() == PartyConstants.TYPE_ORG)
+                    && this.isNotAdmin(partyStruct)) {
+                logger.info("upper department : {}, admin : [{}]",
+                        parent.getName(), partyStruct.getAdmin());
 
-                    return parent;
+                return parent;
+            }
+        }
+
+        for (PartyStruct partyStruct : this.sortPartyStructs(child
+                .getParentStructs())) {
+            PartyEntity parent = partyStruct.getParentEntity();
+
+            if (parent == null) {
+                continue;
+            }
+
+            if (parent.getParentStructs().size() <= 0) { // 如果父节点(孤儿节点)为空循环下次查找
+
+                continue;
+            }
+
+            // sven dazer
+            if ((partyStruct.getPartTime() == null)
+                    || (partyStruct.getPartTime() == 1)) { // 判断这个人是不是主职，是主职就进去找他的所在的部门. sven
+
+                return this.findUpperDepartment(parent);
+            }
+
+            // sven dazer
+            if (!isPartTime2) { // 如果没有就去查所有的兼职
+
+                return this.findUpperDepartment(parent);
+            }
+        }
+
+        return null;
+    }
+
+    /**
+     * 根据id获取组织信息.
+     */
+    public OrgDTO findById(String orgId) {
+        if (StringUtils.isBlank(orgId)) {
+            logger.info("数据不存在 orgId cannot be blank");
+
+            return null;
+        }
+
+        PartyEntity partyEntity = this.partyEntityManager.get(Long
+                .parseLong(orgId));
+
+        if (partyEntity == null) {
+            logger.info("数据不存在   cannot find partyEntity : {}", orgId);
+
+            return null;
+        }
+
+        OrgDTO orgDto = new OrgDTO();
+        orgDto.setId(Long.toString(partyEntity.getId()));
+        orgDto.setName(partyEntity.getName());
+        orgDto.setTypeName(partyEntity.getPartyType().getName());
+        orgDto.setType(partyEntity.getPartyType().getType());
+        orgDto.setRef(partyEntity.getRef());
+
+        return orgDto;
+    }
+
+    /**
+     * 根据岗位返回用户.
+     */
+    @SuppressWarnings("unchecked")
+    public List<String> findUserByPositionName(String positionName,
+            String companyName) {
+        logger.info("findUserByPositionName : positionName : {}", positionName);
+
+        String hql = "from PartyEntity where name=? and partyType.type=?";
+
+        // Sven dazer 查找所有公司岗位下面的人员
+        List<String> userIds = new ArrayList<String>();
+        List<PartyEntity> partyEntitys = this.partyEntityManager.find(hql,
+                positionName, PartyConstants.TYPE_POSITION);
+
+        for (PartyEntity partyEntity2 : partyEntitys) {
+            // @author Sven
+            // 判断这个岗位所在公司和创建流程的用户是不是在用一个公司下面。在同一个公司下面就去找这个岗位的用户并返回
+            if (!companyName.equals(this.findCompany(partyEntity2).getName())) {
+                continue;
+            }
+
+            if (partyEntity2.getChildStructs().size() > 0) {
+                logger.info("partyEntity2 : {}", partyEntity2.getId());
+
+                for (PartyStruct partyStruct : this
+                        .sortPartyStructs(partyEntity2.getChildStructs())) {
+                    PartyEntity child = partyStruct.getChildEntity();
+
+                    // 就把岗位下的人直接附加到userIds里
+                    if (child.getPartyType().getType() == PartyConstants.TYPE_USER) {
+                        userIds.add(child.getRef());
+                    }
+                }
+
+                break;
+            }
+        }
+
+        // 如果他所在公司下面没有这个岗位就去找全局的随便一个
+        if (userIds.isEmpty()) {
+            for (PartyEntity partyEntity2 : partyEntitys) {
+                if (partyEntity2.getChildStructs().size() > 0) {
+                    logger.info("partyEntity2 : {}", partyEntity2.getId());
+
+                    for (PartyStruct partyStruct : this
+                            .sortPartyStructs(partyEntity2.getChildStructs())) {
+                        PartyEntity child = partyStruct.getChildEntity();
+
+                        // 就把岗位下的人直接附加到userIds里
+                        if (child.getPartyType().getType() == PartyConstants.TYPE_USER) {
+                            userIds.add(child.getRef());
+                        }
+                    }
+
+                    break;
                 }
             }
         }
 
-        logger.info("cannot find parent department : {} {}", child.getName(),
-                child.getId());
+        return userIds;
+    }
+
+    /**
+     * 排序.
+     */
+    public List<PartyStruct> sortPartyStructs(Set<PartyStruct> partyStructSet) {
+        List<PartyStruct> partyStructList = new ArrayList<PartyStruct>(
+                partyStructSet);
+        Collections.sort(partyStructList, new PartyStructComparator());
+
+        return partyStructList;
+    }
+
+    /**
+     * 查找距离最近的岗位，包含兄弟部门下的岗位.
+     */
+    public List<String> findUserByNearestPositionName(String userId,
+            String positionName) {
+        logger.info(
+                "findUserByNearestPositionName : userId : {}, positionName : {}",
+                userId, positionName);
+
+        PartyEntity partyEntity = this.findUser(userId);
+
+        return this.findPositionUserIds(partyEntity, positionName, true);
+    }
+
+    /**
+     * 查找这个/部门/岗位/人员所在的公司
+     * 
+     * @author Sven
+     * @param partyEntity
+     * @return
+     */
+    public PartyEntity findCompany(PartyEntity partyEntity, Set<Long> visitedIds) {
+        if (visitedIds.contains(partyEntity.getId())) {
+            return null;
+        }
+
+        visitedIds.add(partyEntity.getId());
+
+        for (PartyStruct partyStruct : partyEntity.getParentStructs()) {
+            PartyEntity parentEntity = partyStruct.getParentEntity();
+
+            if ("公司".equals(parentEntity.getPartyType().getName())) {
+                return parentEntity;
+            }
+
+            PartyEntity companyEntity = this.findCompany(parentEntity,
+                    visitedIds);
+
+            if (companyEntity != null) {
+                return companyEntity;
+            }
+        }
 
         return null;
+    }
+
+    public PartyEntity findCompany(PartyEntity partyEntity) {
+        return this.findCompany(partyEntity, new HashSet<Long>());
+    }
+
+    /**
+     * 根据用户查询用所主职所在的岗位。
+     */
+    @Override
+    public OrgDTO findPositionByUserId(String userId) {
+        PartyEntity partyEntity = this.findUser(userId);
+
+        if (partyEntity == null) {
+            return null;
+        }
+
+        List<PartyStruct> partyStructs = sortPartyStructs(partyEntity
+                .getChildStructs());
+
+        if (partyStructs.isEmpty()) {
+            return null;
+        }
+
+        for (PartyStruct partyStruct : partyStructs) {
+            PartyEntity partyEntity2 = partyStruct.getChildEntity();
+
+            if (partyEntity2.getPartyType().getType() != PartyConstants.TYPE_POSITION) {
+                continue;
+            }
+
+            OrgDTO orgDto = new OrgDTO();
+            orgDto.setId(Long.toString(partyEntity2.getId()));
+            orgDto.setName(partyEntity2.getName());
+            orgDto.setTypeName(partyEntity2.getPartyType().getName());
+            orgDto.setType(partyEntity2.getPartyType().getType());
+            orgDto.setRef(partyEntity2.getRef());
+
+            return orgDto;
+        }
+
+        return null;
+    }
+
+    public OrgDTO findCompany(String userCode) {
+        PartyEntity partyEntity = this.findUser(userCode);
+
+        if (partyEntity == null) {
+            return null;
+        }
+
+        Set<Long> visitedIds = new HashSet<Long>();
+
+        PartyEntity company = this.findCompany(partyEntity, visitedIds);
+
+        if (company == null) {
+            return null;
+        }
+
+        PartyEntity partyEntity2 = company;
+        OrgDTO orgDto = new OrgDTO();
+        orgDto.setId(Long.toString(partyEntity2.getId()));
+        orgDto.setName(partyEntity2.getName());
+        orgDto.setTypeName(partyEntity2.getPartyType().getName());
+        orgDto.setType(partyEntity2.getPartyType().getType());
+        orgDto.setRef(partyEntity2.getRef());
+
+        return orgDto;
     }
 
     // ~ ==================================================

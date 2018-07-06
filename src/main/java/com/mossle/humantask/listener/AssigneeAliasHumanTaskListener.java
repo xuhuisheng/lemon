@@ -156,7 +156,7 @@ public class AssigneeAliasHumanTaskListener implements HumanTaskListener {
 
     @Resource
     public void setTaskParticipantManager(
-            TaskParticipantManager taskParticipantMaanger) {
+            TaskParticipantManager taskParticipantManager) {
         this.taskParticipantManager = taskParticipantManager;
     }
 }

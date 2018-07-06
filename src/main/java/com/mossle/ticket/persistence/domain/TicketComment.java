@@ -41,6 +41,9 @@ public class TicketComment implements java.io.Serializable {
     /** null. */
     private Date createTime;
 
+    /** null. */
+    private String type;
+
     public TicketComment() {
     }
 
@@ -49,13 +52,14 @@ public class TicketComment implements java.io.Serializable {
     }
 
     public TicketComment(Long id, TicketInfo ticketInfo, String content,
-            String creator, String status, Date createTime) {
+            String creator, String status, Date createTime, String type) {
         this.id = id;
         this.ticketInfo = ticketInfo;
         this.content = content;
         this.creator = creator;
         this.status = status;
         this.createTime = createTime;
+        this.type = type;
     }
 
     /** @return null. */
@@ -143,5 +147,19 @@ public class TicketComment implements java.io.Serializable {
      */
     public void setCreateTime(Date createTime) {
         this.createTime = createTime;
+    }
+
+    /** @return null. */
+    @Column(name = "TYPE", length = 50)
+    public String getType() {
+        return this.type;
+    }
+
+    /**
+     * @param type
+     *            null.
+     */
+    public void setType(String type) {
+        this.type = type;
     }
 }

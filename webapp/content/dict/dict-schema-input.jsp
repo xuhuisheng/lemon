@@ -54,7 +54,7 @@ $(function() {
   <div class="form-group">
     <label class="control-label col-md-1" for="dictSchema_type">类型</label>
 	<div class="col-sm-5">
-	  <input id="dictSchema_type" type="text" name="type" value="${model.type}" size="40" class="form-control">
+	  <input id="dictSchema_type" type="text" name="type" value="${empty model ? param.typeId : model.type}" size="40" class="form-control">
     </div>
   </div>
   <div class="form-group">
@@ -70,7 +70,7 @@ $(function() {
     </div>
   </div>
   <div class="form-group">
-    <div class="col-sm-5">
+    <div class="col-sm-5 col-md-offset-1">
       <button type="submit" class="btn btn-default a-submit"><spring:message code='core.input.save' text='保存'/></button>
 	  &nbsp;
       <button type="button" class="btn btn-link a-cancel" onclick="history.back();"><spring:message code='core.input.back' text='返回'/></button>

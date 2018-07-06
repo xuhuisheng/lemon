@@ -10,8 +10,10 @@
 				<ref bean="metricsFilter"/>
 			    <ref bean="beforeInvocationFilter"/>
 			    <ref bean="springSessionFilter"/>
+				<ref bean="i18nFilter"/>
 				<!--
 				<ref bean="tenantFilter"/>
+				<ref bean="cmsFilter"/>
 				-->
 				<ref bean="cmsFilter"/>
 				<ref bean="springSecurityFilterChainProxy"/>
@@ -35,7 +37,6 @@
 			    <ref bean="staticContentFilterCdn"/>
 			    <ref bean="whitelistFilter"/>
 				<ref bean="characterEncodingFilter"/>
-				<ref bean="i18nFilter"/>
 			</list>
 		</property>
 	</bean>
@@ -133,13 +134,12 @@
 	</bean>
 
 	<bean id="metricsFilter" class="com.mossle.core.servlet.ProxyFilter">
-		<property name="name" value="javasimon"/>
+		<property name="name" value="metrics"/>
 		<property name="filter">
 			<bean class="com.codahale.metrics.servlet.InstrumentedFilter"/>
 		</property>
 	</bean>
-
-	<!--
+<!--
 	<bean id="tenantFilter" class="com.mossle.core.servlet.ProxyFilter">
 		<property name="name" value="tenant"/>
 		<property name="filter">
@@ -211,11 +211,12 @@
 				<entry key="/healthCheck/*">
 					<ref bean="healthCheckServlet"/>
 				</entry>
-				<entry key="*.do">
+				<entry key="/*">
 					<ref bean="springmvc"/>
 				</entry>
 			</map>
 		</property>
+		<property name="excludePatterns" value="/,*.jsp"/>
 	</bean>
 
 	<bean id="jolokia" class="com.mossle.core.servlet.ProxyServlet">

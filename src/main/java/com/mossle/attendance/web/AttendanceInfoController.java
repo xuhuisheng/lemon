@@ -8,11 +8,13 @@ import javax.annotation.Resource;
 import javax.servlet.http.HttpServletRequest;
 import javax.servlet.http.HttpServletResponse;
 
+import com.mossle.api.auth.CurrentUserHolder;
 import com.mossle.api.tenant.TenantHolder;
 import com.mossle.api.user.UserConnector;
 
 import com.mossle.attendance.persistence.domain.AttendanceInfo;
 import com.mossle.attendance.persistence.manager.AttendanceInfoManager;
+import com.mossle.attendance.service.AttendanceService;
 
 import com.mossle.core.export.Exportor;
 import com.mossle.core.export.TableModel;
@@ -39,6 +41,8 @@ public class AttendanceInfoController {
     private UserConnector userConnector;
     private MessageHelper messageHelper;
     private TenantHolder tenantHolder;
+    private CurrentUserHolder currentUserHolder;
+    private AttendanceService attendanceService;
 
     @RequestMapping("attendance-info-list")
     public String list(@ModelAttribute Page page,
@@ -125,6 +129,15 @@ public class AttendanceInfoController {
         exportor.export(request, response, tableModel);
     }
 
+    @RequestMapping("attendance-add-record")
+    public String addRecord() {
+        String tenantId = tenantHolder.getTenantId();
+        String userId = currentUserHolder.getUserId();
+        attendanceService.saveRecord(userId, tenantId);
+
+        return "redirect:/attendance/attendance-info-list.do";
+    }
+
     // ~ ======================================================================
     @Resource
     public void setAttendanceInfoManager(
@@ -150,5 +163,15 @@ public class AttendanceInfoController {
     @Resource
     public void setTenantHolder(TenantHolder tenantHolder) {
         this.tenantHolder = tenantHolder;
+    }
+
+    @Resource
+    public void setCurrentUserHolder(CurrentUserHolder currentUserHolder) {
+        this.currentUserHolder = currentUserHolder;
+    }
+
+    @Resource
+    public void setAttendanceService(AttendanceService attendanceService) {
+        this.attendanceService = attendanceService;
     }
 }

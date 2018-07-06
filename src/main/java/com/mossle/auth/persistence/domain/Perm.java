@@ -28,6 +28,9 @@ public class Perm implements java.io.Serializable {
     /** 主键. */
     private Long id;
 
+    /** null. */
+    private Perm perm;
+
     /** 外键，权限类型. */
     private PermType permType;
 
@@ -43,11 +46,26 @@ public class Perm implements java.io.Serializable {
     /** 排序. */
     private Integer priority;
 
+    /** null. */
+    private String type;
+
+    /** null. */
+    private String title;
+
+    /** null. */
+    private String url;
+
+    /** null. */
+    private String icon;
+
     /** . */
     private Set<RoleDef> roleDefs = new HashSet<RoleDef>(0);
 
     /** . */
     private Set<Access> accesses = new HashSet<Access>(0);
+
+    /** . */
+    private Set<Perm> perms = new HashSet<Perm>(0);
 
     /** . */
     private Set<Menu> menus = new HashSet<Menu>(0);
@@ -60,17 +78,24 @@ public class Perm implements java.io.Serializable {
         this.permType = permType;
     }
 
-    public Perm(Long id, PermType permType, String code, String name,
-            String tenantId, Integer priority, Set<RoleDef> roleDefs,
-            Set<Access> accesses, Set<Menu> menus) {
+    public Perm(Long id, Perm perm, PermType permType, String code,
+            String name, String tenantId, Integer priority, String type,
+            String title, String url, String icon, Set<RoleDef> roleDefs,
+            Set<Access> accesses, Set<Perm> perms, Set<Menu> menus) {
         this.id = id;
+        this.perm = perm;
         this.permType = permType;
         this.code = code;
         this.name = name;
         this.tenantId = tenantId;
         this.priority = priority;
+        this.type = type;
+        this.title = title;
+        this.url = url;
+        this.icon = icon;
         this.roleDefs = roleDefs;
         this.accesses = accesses;
+        this.perms = perms;
         this.menus = menus;
     }
 
@@ -87,6 +112,21 @@ public class Perm implements java.io.Serializable {
      */
     public void setId(Long id) {
         this.id = id;
+    }
+
+    /** @return null. */
+    @ManyToOne(fetch = FetchType.LAZY)
+    @JoinColumn(name = "PARENT_ID")
+    public Perm getPerm() {
+        return this.perm;
+    }
+
+    /**
+     * @param perm
+     *            null.
+     */
+    public void setPerm(Perm perm) {
+        this.perm = perm;
     }
 
     /** @return 外键，权限类型. */
@@ -160,6 +200,62 @@ public class Perm implements java.io.Serializable {
         this.priority = priority;
     }
 
+    /** @return null. */
+    @Column(name = "TYPE", length = 50)
+    public String getType() {
+        return this.type;
+    }
+
+    /**
+     * @param type
+     *            null.
+     */
+    public void setType(String type) {
+        this.type = type;
+    }
+
+    /** @return null. */
+    @Column(name = "TITLE", length = 50)
+    public String getTitle() {
+        return this.title;
+    }
+
+    /**
+     * @param title
+     *            null.
+     */
+    public void setTitle(String title) {
+        this.title = title;
+    }
+
+    /** @return null. */
+    @Column(name = "URL", length = 200)
+    public String getUrl() {
+        return this.url;
+    }
+
+    /**
+     * @param url
+     *            null.
+     */
+    public void setUrl(String url) {
+        this.url = url;
+    }
+
+    /** @return null. */
+    @Column(name = "ICON", length = 50)
+    public String getIcon() {
+        return this.icon;
+    }
+
+    /**
+     * @param icon
+     *            null.
+     */
+    public void setIcon(String icon) {
+        this.icon = icon;
+    }
+
     /** @return . */
     @ManyToMany(fetch = FetchType.LAZY)
     @JoinTable(name = "AUTH_PERM_ROLE_DEF", joinColumns = { @JoinColumn(name = "PERM_ID", nullable = false, updatable = false) }, inverseJoinColumns = { @JoinColumn(name = "ROLE_DEF_ID", nullable = false, updatable = false) })
@@ -187,6 +283,20 @@ public class Perm implements java.io.Serializable {
      */
     public void setAccesses(Set<Access> accesses) {
         this.accesses = accesses;
+    }
+
+    /** @return . */
+    @OneToMany(fetch = FetchType.LAZY, mappedBy = "perm")
+    public Set<Perm> getPerms() {
+        return this.perms;
+    }
+
+    /**
+     * @param perms
+     *            .
+     */
+    public void setPerms(Set<Perm> perms) {
+        this.perms = perms;
     }
 
     /** @return . */

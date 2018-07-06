@@ -8,10 +8,11 @@ import java.util.Map;
 
 import javax.annotation.Resource;
 
-import com.mossle.core.auth.CurrentUserHolder;
+import com.mossle.api.auth.CurrentUserHolder;
 import com.mossle.core.mapper.BeanMapper;
 import com.mossle.core.page.Page;
 
+import com.mossle.plm.persistence.domain.*;
 import com.mossle.plm.persistence.domain.PlmCategory;
 import com.mossle.plm.persistence.domain.PlmComment;
 import com.mossle.plm.persistence.domain.PlmConfig;
@@ -20,6 +21,7 @@ import com.mossle.plm.persistence.domain.PlmLog;
 import com.mossle.plm.persistence.domain.PlmProject;
 import com.mossle.plm.persistence.domain.PlmSprint;
 import com.mossle.plm.persistence.domain.PlmVersion;
+import com.mossle.plm.persistence.manager.*;
 import com.mossle.plm.persistence.manager.PlmCategoryManager;
 import com.mossle.plm.persistence.manager.PlmCommentManager;
 import com.mossle.plm.persistence.manager.PlmConfigManager;
@@ -55,6 +57,8 @@ public class PlmController {
     private PlmLogManager plmLogManager;
     private PlmSprintManager plmSprintManager;
     private PlmConfigManager plmConfigManager;
+    private PlmRequirementManager plmRequirementManager;
+	private PlmComponentManager plmComponentManager;
     private PlmLogService plmLogService;
     private CurrentUserHolder currentUserHolder;
     private JdbcTemplate jdbcTemplate;
@@ -82,6 +86,10 @@ public class PlmController {
         // sprint
         List<PlmSprint> plmSprints = plmSprintManager.find("from PlmSprint");
         model.addAttribute("plmSprints", plmSprints);
+
+        // project
+        List<PlmProject> plmProjects = plmProjectManager.getAll();
+        model.addAttribute("plmProjects", plmProjects);
 
         return "plm/index";
     }
@@ -121,6 +129,14 @@ public class PlmController {
         List<PlmVersion> plmVersions = plmVersionManager.findBy("plmProject",
                 plmProject);
         model.addAttribute("plmVersions", plmVersions);
+
+		List<PlmComponent> plmComponents = plmComponentManager.findBy("plmProject",
+			plmProject);
+		model.addAttribute("plmComponents", plmComponents);
+
+		List<PlmSprint> plmSprints = plmSprintManager.findBy("plmProject",
+			plmProject);
+		model.addAttribute("plmSprints", plmSprints);
 
         String hql = "from PlmIssue where plmProject=?";
         Page page = plmIssueManager.pagedQuery(hql, 1, 10, plmProject);
@@ -232,6 +248,31 @@ public class PlmController {
     }
 
     /**
+     * 任务详情.
+     */
+    @RequestMapping("view")
+    public String view(@RequestParam("id") Long id, Model model)
+            throws Exception {
+        String userId = currentUserHolder.getUserId();
+        model.addAttribute("currentUserId", userId);
+
+        PlmIssue plmIssue = plmIssueManager.get(id);
+        model.addAttribute("plmIssue", plmIssue);
+        model.addAttribute("plmProject", plmIssue.getPlmProject());
+
+        List<PlmComment> plmComments = plmCommentManager.find(
+                "from PlmComment where plmIssue=? order by createTime desc",
+                plmIssue);
+        model.addAttribute("plmComments", plmComments);
+
+        List<PlmLog> plmLogs = plmLogManager.find(
+                "from PlmLog where plmIssue=? order by logTime desc", plmIssue);
+        model.addAttribute("plmLogs", plmLogs);
+
+        return "plm/view";
+    }
+
+    /**
      * 保存评论.
      */
     @RequestMapping("saveComment")
@@ -257,6 +298,10 @@ public class PlmController {
         plmComment.setPriority(priority);
         plmCommentManager.save(plmComment);
         plmLogService.commentCreated(plmComment);
+
+        // update
+        plmIssue.setUpdateTime(new Date());
+        plmIssueManager.save(plmIssue);
 
         return "redirect:/plm/issue.do?id=" + plmIssue.getId();
     }
@@ -488,6 +533,17 @@ public class PlmController {
     public void setPlmConfigManager(PlmConfigManager plmConfigManager) {
         this.plmConfigManager = plmConfigManager;
     }
+
+    @Resource
+    public void setPlmRequirementManager(
+            PlmRequirementManager plmRequirementManager) {
+        this.plmRequirementManager = plmRequirementManager;
+    }
+
+	@Resource
+	public void setPlmComponentManager(PlmComponentManager plmComponentManager) {
+		this.plmComponentManager = plmComponentManager;
+	}
 
     @Resource
     public void setPlmLogService(PlmLogService plmLogService) {

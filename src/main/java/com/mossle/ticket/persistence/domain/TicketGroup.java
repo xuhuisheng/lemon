@@ -31,10 +31,10 @@ public class TicketGroup implements java.io.Serializable {
     private String description;
 
     /** . */
-    private Set<TicketInfo> ticketInfos = new HashSet<TicketInfo>(0);
+    private Set<TicketMember> ticketMembers = new HashSet<TicketMember>(0);
 
     /** . */
-    private Set<TicketMember> ticketMembers = new HashSet<TicketMember>(0);
+    private Set<TicketInfo> ticketInfos = new HashSet<TicketInfo>(0);
 
     public TicketGroup() {
     }
@@ -44,12 +44,12 @@ public class TicketGroup implements java.io.Serializable {
     }
 
     public TicketGroup(Long id, String name, String description,
-            Set<TicketInfo> ticketInfos, Set<TicketMember> ticketMembers) {
+            Set<TicketMember> ticketMembers, Set<TicketInfo> ticketInfos) {
         this.id = id;
         this.name = name;
         this.description = description;
-        this.ticketInfos = ticketInfos;
         this.ticketMembers = ticketMembers;
+        this.ticketInfos = ticketInfos;
     }
 
     /** @return null. */
@@ -97,20 +97,6 @@ public class TicketGroup implements java.io.Serializable {
 
     /** @return . */
     @OneToMany(fetch = FetchType.LAZY, mappedBy = "ticketGroup")
-    public Set<TicketInfo> getTicketInfos() {
-        return this.ticketInfos;
-    }
-
-    /**
-     * @param ticketInfos
-     *            .
-     */
-    public void setTicketInfos(Set<TicketInfo> ticketInfos) {
-        this.ticketInfos = ticketInfos;
-    }
-
-    /** @return . */
-    @OneToMany(fetch = FetchType.LAZY, mappedBy = "ticketGroup")
     public Set<TicketMember> getTicketMembers() {
         return this.ticketMembers;
     }
@@ -121,5 +107,19 @@ public class TicketGroup implements java.io.Serializable {
      */
     public void setTicketMembers(Set<TicketMember> ticketMembers) {
         this.ticketMembers = ticketMembers;
+    }
+
+    /** @return . */
+    @OneToMany(fetch = FetchType.LAZY, mappedBy = "ticketGroup")
+    public Set<TicketInfo> getTicketInfos() {
+        return this.ticketInfos;
+    }
+
+    /**
+     * @param ticketInfos
+     *            .
+     */
+    public void setTicketInfos(Set<TicketInfo> ticketInfos) {
+        this.ticketInfos = ticketInfos;
     }
 }

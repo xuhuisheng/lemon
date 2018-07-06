@@ -4,12 +4,11 @@ import java.util.List;
 
 import javax.annotation.Resource;
 
+import com.mossle.api.auth.CustomPasswordEncoder;
 import com.mossle.api.user.AccountStatus;
 import com.mossle.api.user.AccountStatusHelper;
 import com.mossle.api.user.AuthenticationClient;
 import com.mossle.api.user.AuthenticationHandler;
-
-import com.mossle.core.auth.CustomPasswordEncoder;
 
 import com.mossle.user.persistence.manager.AccountCredentialManager;
 import com.mossle.user.persistence.manager.AccountInfoManager;

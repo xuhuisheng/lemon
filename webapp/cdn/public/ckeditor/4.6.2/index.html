@@ -1,0 +1,34 @@
+<html>
+  <head>
+	<script type="text/javascript" src="../../jquery/1.12.4/jquery.min.js"></script>
+	<script type="text/javascript" src="./ckeditor.js"></script>
+    <script type="text/javascript">
+$(function() {
+	/*
+	var validator = $("#userForm").submit(function() {
+        for (instance in CKEDITOR.instances) {
+            CKEDITOR.instances[instance].updateElement();
+		}
+    }).validate({
+        //debug: true,
+        ignore: false,
+        errorClass: 'validate-error',
+        errorPlacement: function(label, element) {
+            if (element.is("textarea")) {
+                label.insertAfter(element.next());
+            } else {
+                label.insertAfter(element)
+            }
+        }
+    });
+	*/
+
+	var editor = CKEDITOR.replace('jillarticle_content');
+	// CKFinder.setupCKEditor( editor, 's/ckfinder/' );
+});
+    </script>
+  </head>
+  <body>
+    <textarea id="jillarticle_content"></textarea>
+  </body>
+</html>

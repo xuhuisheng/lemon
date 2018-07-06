@@ -97,8 +97,20 @@ $(function() {
     <thead>
       <tr>
         <th width="10" class="table-check"><input type="checkbox" name="checkAll" onchange="toggleSelectedItems(this.checked)"></th>
+		<!--
         <th class="sorting" name="id"><spring:message code="asset-info.asset-info.list.id" text="编号"/></th>
+		-->
         <th class="sorting" name="name">名称</th>
+        <th class="sorting" name="name">编码</th>
+        <th class="sorting" name="name">所属大类</th>
+        <th class="sorting" name="name">所属小类</th>
+        <th class="sorting" name="name">样式</th>
+        <th class="sorting" name="name">价格</th>
+        <th class="sorting" name="name">购入时间</th>
+        <th class="sorting" name="name">状态</th>
+		<!--
+        <th class="sorting" name="name">经手人</th>
+		-->
         <th width="80">&nbsp;</th>
       </tr>
     </thead>
@@ -107,8 +119,29 @@ $(function() {
       <c:forEach items="${page.result}" var="item">
       <tr>
         <td><input type="checkbox" class="selectedItem a-check" name="selectedItem" value="${item.id}"></td>
+		<!--
         <td>${item.id}</td>
+		-->
         <td>${item.name}</td>
+        <td>${item.code}</td>
+        <td>${item.assetCategoryByCategoryId.name}</td>
+        <td>${item.assetCategoryBySubCategoryId.name}</td>
+        <td>${item.model}</td>
+        <td>${item.price}</td>
+        <td>${item.buyDate}</td>
+        <td>${item.location}</td>
+        <td>
+		  <c:choose>
+            <c:when test="${item.status == 0}">在库</c:when>
+            <c:when test="${item.status == 1}">使用中</c:when>
+            <c:when test="${item.status == 2}">维修中</c:when>
+            <c:when test="${item.status == 3}">已报废</c:when>
+            <c:otherwise>异常</c:otherwise>
+		  </c:choose>
+		</td>
+		<!--
+        <td>${item.userId}</td>
+		-->
         <td>
           <a href="asset-info-input.do?id=${item.id}" class="a-update"><spring:message code="core.list.edit" text="编辑"/></a>
         </td>

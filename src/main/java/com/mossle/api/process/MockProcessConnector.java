@@ -21,6 +21,11 @@ public class MockProcessConnector implements ProcessConnector {
         return null;
     }
 
+    public ProcessDTO findProcessByProcessDefinitionId(
+            String processDefinitionId) {
+        return null;
+    }
+
     /**
      * 发起流程.
      */
@@ -142,6 +147,13 @@ public class MockProcessConnector implements ProcessConnector {
      * 作业.
      */
     public Page findJobs(String tenantId, Page page) {
+        return null;
+    }
+
+    /**
+     * 根据processInstanceId获取businessKey.
+     */
+    public String findBusinessKeyByProcessInstanceId(String processInstanceId) {
         return null;
     }
 }

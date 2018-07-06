@@ -28,4 +28,7 @@
 	<!-- 流水号 -->
 	<bean id="sequenceConnector" class="${sequence.connector}"/>
 
+	<!-- 员工 -->
+	<bean id="employeeConnector" class="com.mossle.party.support.PartyEmployeeConnector"/>
+
 </beans>

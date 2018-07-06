@@ -1,0 +1,15 @@
+<p>features:</p>
+
+<ul>
+	<li>简化组织机构</li>
+	<li>电子表单支持删除行</li>
+	<li>流程提醒支持站内信</li>
+</ul>
+
+<p>resources:</p>
+
+<ul>
+	<li>详细修订列表： <a href="https://github.com/xuhuisheng/lemon/issues?q=milestone%3A1.3.0" target="_blank">https://github.com/xuhuisheng/lemon/issues?q=milestone%3A1.3.0</a></li>
+	<li>源码地址： <a href="https://github.com/xuhuisheng/lemon/tree/lemon-1.3.0" target="_blank">https://github.com/xuhuisheng/lemon/tree/lemon-1.3.0</a></li>
+	<li>独立运行包： <a href="http://pan.baidu.com/s/1c0w6Guc" target="_blank">http://pan.baidu.com/s/1c0w6Guc</a></li>
+</ul>

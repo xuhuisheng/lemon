@@ -39,7 +39,7 @@ public class AttendanceInfo implements java.io.Serializable {
     private String catalog;
 
     /** null. */
-    private String employeeId;
+    private String userId;
 
     /** null. */
     private String tenantId;
@@ -52,14 +52,14 @@ public class AttendanceInfo implements java.io.Serializable {
     }
 
     public AttendanceInfo(Long id, String name, Date createTime, String status,
-            String type, String catalog, String employeeId, String tenantId) {
+            String type, String catalog, String userId, String tenantId) {
         this.id = id;
         this.name = name;
         this.createTime = createTime;
         this.status = status;
         this.type = type;
         this.catalog = catalog;
-        this.employeeId = employeeId;
+        this.userId = userId;
         this.tenantId = tenantId;
     }
 
@@ -150,17 +150,17 @@ public class AttendanceInfo implements java.io.Serializable {
     }
 
     /** @return null. */
-    @Column(name = "EMPLOYEE_ID", length = 64)
-    public String getEmployeeId() {
-        return this.employeeId;
+    @Column(name = "USER_ID", length = 50)
+    public String getUserId() {
+        return this.userId;
     }
 
     /**
-     * @param employeeId
+     * @param userId
      *            null.
      */
-    public void setEmployeeId(String employeeId) {
-        this.employeeId = employeeId;
+    public void setUserId(String userId) {
+        this.userId = userId;
     }
 
     /** @return null. */

@@ -12,7 +12,7 @@ import com.mossle.api.humantask.HumanTaskDTO;
 import com.mossle.api.tenant.TenantHolder;
 import com.mossle.api.tenant.TenantHolder;
 
-import com.mossle.core.auth.CurrentUserHolder;
+import com.mossle.api.auth.CurrentUserHolder;
 import com.mossle.core.page.Page;
 
 import org.slf4j.Logger;

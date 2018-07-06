@@ -13,6 +13,7 @@ import javax.persistence.JoinColumn;
 import javax.persistence.JoinTable;
 import javax.persistence.ManyToMany;
 import javax.persistence.ManyToOne;
+import javax.persistence.OneToMany;
 import javax.persistence.Table;
 import javax.persistence.Temporal;
 import javax.persistence.TemporalType;
@@ -51,6 +52,9 @@ public class PlmVersion implements java.io.Serializable {
     /** . */
     private Set<PlmIssue> plmIssues = new HashSet<PlmIssue>(0);
 
+    /** . */
+    private Set<PlmRequirement> plmRequirements = new HashSet<PlmRequirement>(0);
+
     public PlmVersion() {
     }
 
@@ -60,7 +64,7 @@ public class PlmVersion implements java.io.Serializable {
 
     public PlmVersion(Long id, PlmProject plmProject, String name,
             String status, Date createTime, String userId, Integer priority,
-            Set<PlmIssue> plmIssues) {
+            Set<PlmIssue> plmIssues, Set<PlmRequirement> plmRequirements) {
         this.id = id;
         this.plmProject = plmProject;
         this.name = name;
@@ -69,6 +73,7 @@ public class PlmVersion implements java.io.Serializable {
         this.userId = userId;
         this.priority = priority;
         this.plmIssues = plmIssues;
+        this.plmRequirements = plmRequirements;
     }
 
     /** @return null. */
@@ -185,5 +190,19 @@ public class PlmVersion implements java.io.Serializable {
      */
     public void setPlmIssues(Set<PlmIssue> plmIssues) {
         this.plmIssues = plmIssues;
+    }
+
+    /** @return . */
+    @OneToMany(fetch = FetchType.LAZY, mappedBy = "plmVersion")
+    public Set<PlmRequirement> getPlmRequirements() {
+        return this.plmRequirements;
+    }
+
+    /**
+     * @param plmRequirements
+     *            .
+     */
+    public void setPlmRequirements(Set<PlmRequirement> plmRequirements) {
+        this.plmRequirements = plmRequirements;
     }
 }

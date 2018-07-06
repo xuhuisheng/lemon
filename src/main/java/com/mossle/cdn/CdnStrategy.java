@@ -24,7 +24,11 @@ public class CdnStrategy {
     @PostConstruct
     public void init() throws Exception {
         if (copyDir) {
+            long startTime = System.currentTimeMillis();
             this.copyResources();
+
+            long endTime = System.currentTimeMillis();
+            logger.info("cdn init cost {} ms", (endTime - startTime));
         }
     }
 
@@ -38,7 +42,7 @@ public class CdnStrategy {
         }
 
         logger.info("CDN copy from {} to {}", srcDir, destDir);
-        FileUtils.copyDirectory(srcDir, destDir);
+        FileUtils.copyDirectory(srcDir, destDir, true);
     }
 
     @Value("${cdn.baseDir}")

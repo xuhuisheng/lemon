@@ -97,7 +97,9 @@ $(function() {
     <thead>
       <tr>
         <th width="10" class="table-check"><input type="checkbox" name="checkAll" onchange="toggleSelectedItems(this.checked)"></th>
+		<!--
         <th class="sorting" name="id"><spring:message code="meeting-info.meeting-info.list.id" text="编号"/></th>
+		-->
         <th class="sorting" name="name">主题</th>
         <th class="sorting" name="name">开始时间</th>
         <th class="sorting" name="name">结束时间</th>
@@ -111,10 +113,12 @@ $(function() {
       <c:forEach items="${page.result}" var="item">
       <tr>
         <td><input type="checkbox" class="selectedItem a-check" name="selectedItem" value="${item.id}"></td>
+		<!--
         <td>${item.id}</td>
+		-->
         <td>${item.subject}</td>
-        <td>${item.startTime}</td>
-        <td>${item.endTime}</td>
+        <td><fmt:formatDate value="${item.startTime}" pattern="yyyy-MM-dd HH:mm"/></td>
+        <td><fmt:formatDate value="${item.endTime}" pattern="yyyy-MM-dd HH:mm"/></td>
         <td><tags:user userId="${item.organizer}"/></td>
         <td>${item.meetingRoom.name}</td>
         <td>

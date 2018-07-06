@@ -80,6 +80,9 @@ public class PlmProject implements java.io.Serializable {
     /** . */
     private Set<PlmSprint> plmSprints = new HashSet<PlmSprint>(0);
 
+    /** . */
+    private Set<PlmRequirement> plmRequirements = new HashSet<PlmRequirement>(0);
+
     public PlmProject() {
     }
 
@@ -92,7 +95,8 @@ public class PlmProject implements java.io.Serializable {
             String sourceUrl, String url, String leaderId, Integer priority,
             String status, Date createTime, String userId,
             Set<PlmVersion> plmVersions, Set<PlmComponent> plmComponents,
-            Set<PlmIssue> plmIssues, Set<PlmSprint> plmSprints) {
+            Set<PlmIssue> plmIssues, Set<PlmSprint> plmSprints,
+            Set<PlmRequirement> plmRequirements) {
         this.id = id;
         this.plmCategory = plmCategory;
         this.code = code;
@@ -111,6 +115,7 @@ public class PlmProject implements java.io.Serializable {
         this.plmComponents = plmComponents;
         this.plmIssues = plmIssues;
         this.plmSprints = plmSprints;
+        this.plmRequirements = plmRequirements;
     }
 
     /** @return null. */
@@ -366,5 +371,19 @@ public class PlmProject implements java.io.Serializable {
      */
     public void setPlmSprints(Set<PlmSprint> plmSprints) {
         this.plmSprints = plmSprints;
+    }
+
+    /** @return . */
+    @OneToMany(fetch = FetchType.LAZY, mappedBy = "plmProject")
+    public Set<PlmRequirement> getPlmRequirements() {
+        return this.plmRequirements;
+    }
+
+    /**
+     * @param plmRequirements
+     *            .
+     */
+    public void setPlmRequirements(Set<PlmRequirement> plmRequirements) {
+        this.plmRequirements = plmRequirements;
     }
 }

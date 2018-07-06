@@ -54,7 +54,7 @@ $(function() {
   <div class="form-group">
     <label class="control-label col-md-1" for="modelField_infoId">模板</label>
 	<div class="col-sm-5">
-	  <select id="modelField_infoId" name="infoId">
+	  <select id="modelField_infoId" name="infoId" class="form-control">
 	    <c:forEach items="${modelInfos}" var="item">
 		<option value="${item.id}">${item.name}</option>
 		</c:forEach>
@@ -74,10 +74,10 @@ $(function() {
     </div>
   </div>
   <div class="form-group">
-    <div class="col-sm-5">
-      <button type="submit" class="btn a-submit"><spring:message code='core.input.save' text='保存'/></button>
+    <div class="col-sm-5 col-md-offset-1">
+      <button type="submit" class="btn btn-default a-submit"><spring:message code='core.input.save' text='保存'/></button>
 	  &nbsp;
-      <button type="button" class="btn a-cancel" onclick="history.back();"><spring:message code='core.input.back' text='返回'/></button>
+      <button type="button" class="btn btn-link a-cancel" onclick="history.back();"><spring:message code='core.input.back' text='返回'/></button>
     </div>
   </div>
 </form>

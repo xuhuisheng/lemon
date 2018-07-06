@@ -52,8 +52,16 @@ public class DatabaseMigrator implements ApplicationContextAware {
                 continue;
             }
 
-            this.doMigrate(moduleSpecification.getSchemaTable(),
-                    moduleSpecification.getSchemaLocation());
+            String schemaTable = moduleSpecification.getSchemaTable();
+
+            if (schemaTable.length() > 30) {
+                logger.warn("table name cannot larger then 30 : {} {}",
+                        schemaTable.length(), schemaTable);
+
+                continue;
+            }
+
+            this.doMigrate(schemaTable, moduleSpecification.getSchemaLocation());
 
             if (moduleSpecification.isInitData()) {
                 this.doMigrate(moduleSpecification.getDataTable(),

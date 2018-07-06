@@ -80,7 +80,10 @@ public class DiskController {
 
             Page page = userConnector.pagedQuery(tenantHolder.getTenantId(),
                     new Page(), parameters);
-            model.addAttribute("userDtos", page.getResult());
+
+            if (page != null) {
+                model.addAttribute("userDtos", page.getResult());
+            }
         }
 
         return "disk/disk-home";

@@ -46,16 +46,37 @@ $(function() {
   <input id="attendance-info_id" type="hidden" name="id" value="${model.id}">
   </c:if>
   <div class="form-group">
-    <label class="control-label col-md-1" for="attendance-info_name"><spring:message code="attendance-info.attendance-info.input.name" text="名称"/></label>
+    <label class="control-label col-md-1" for="attendance-info_name">用户</label>
 	<div class="col-sm-5">
-	  <input id="attendance-info_name" type="text" name="name" value="${model.name}" size="40" class="form-control required" minlength="2" maxlength="10">
+	  <input id="attendance-info_name" type="text" name="userId" value="${model.userId}" size="40" class="form-control required" minlength="2" maxlength="10">
     </div>
   </div>
   <div class="form-group">
-    <div class="col-sm-5">
-      <button type="submit" class="btn a-submit"><spring:message code='core.input.save' text='保存'/></button>
+    <label class="control-label col-md-1" for="attendance-info_name">考勤时间</label>
+	<div class="col-sm-5">
+	  <div class="input-group datepicker date" style="padding:0;">
+	    <input id="visitorInfo_visitTime" type="text" name="createTime" value="<fmt:formatDate value='${model.createTime}' pattern='yyyy-MM-dd'/>" readonly style="background-color:white;cursor:default;" class="form-control">
+	    <span class="input-group-addon"><i class="glyphicon glyphicon-calendar"></i></span>
+	  </div>
+    </div>
+  </div>
+  <div class="form-group">
+    <label class="control-label col-md-1" for="attendance-info_name">类型</label>
+	<div class="col-sm-5">
+	  <input id="attendance-info_name" type="text" name="type" value="${model.type}" size="40" class="form-control required" minlength="2" maxlength="10">
+    </div>
+  </div>
+  <div class="form-group">
+    <label class="control-label col-md-1" for="attendance-info_name">状态</label>
+	<div class="col-sm-5">
+	  <input id="attendance-info_name" type="text" name="status" value="${model.status}" size="40" class="form-control required" minlength="2" maxlength="10">
+    </div>
+  </div>
+  <div class="form-group">
+    <div class="col-sm-5 col-md-offset-1">
+      <button type="submit" class="btn btn-default a-submit"><spring:message code='core.input.save' text='保存'/></button>
 	  &nbsp;
-      <button type="button" class="btn a-cancel" onclick="history.back();"><spring:message code='core.input.back' text='返回'/></button>
+      <button type="button" class="btn btn-link a-cancel" onclick="history.back();"><spring:message code='core.input.back' text='返回'/></button>
     </div>
   </div>
 </form>

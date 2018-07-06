@@ -64,7 +64,12 @@ public class UserAvatarService {
         // String key = "username:" + username + ":" + width;
         AccountInfo accountInfo = accountInfoManager.findUniqueBy("username",
                 username);
-        String userId = Long.toString(accountInfo.getId());
+
+        if (accountInfo == null) {
+            throw new IllegalStateException("cannot find user : " + username);
+        }
+
+        String userId = accountInfo.getCode();
         DataSource dataSource = this.avatarCache.getDataSource(userId, width);
 
         if (dataSource != null) {

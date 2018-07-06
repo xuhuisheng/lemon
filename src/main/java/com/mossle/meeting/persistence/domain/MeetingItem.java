@@ -26,6 +26,12 @@ public class MeetingItem implements java.io.Serializable {
     private MeetingInfo meetingInfo;
 
     /** null. */
+    private MeetingRoom meetingRoom;
+
+    /** null. */
+    private String icon;
+
+    /** null. */
     private String name;
 
     /** null. */
@@ -38,10 +44,12 @@ public class MeetingItem implements java.io.Serializable {
         this.id = id;
     }
 
-    public MeetingItem(Long id, MeetingInfo meetingInfo, String name,
-            String tenantId) {
+    public MeetingItem(Long id, MeetingInfo meetingInfo,
+            MeetingRoom meetingRoom, String icon, String name, String tenantId) {
         this.id = id;
         this.meetingInfo = meetingInfo;
+        this.meetingRoom = meetingRoom;
+        this.icon = icon;
         this.name = name;
         this.tenantId = tenantId;
     }
@@ -74,6 +82,35 @@ public class MeetingItem implements java.io.Serializable {
      */
     public void setMeetingInfo(MeetingInfo meetingInfo) {
         this.meetingInfo = meetingInfo;
+    }
+
+    /** @return null. */
+    @ManyToOne(fetch = FetchType.LAZY)
+    @JoinColumn(name = "ROOM_ID")
+    public MeetingRoom getMeetingRoom() {
+        return this.meetingRoom;
+    }
+
+    /**
+     * @param meetingRoom
+     *            null.
+     */
+    public void setMeetingRoom(MeetingRoom meetingRoom) {
+        this.meetingRoom = meetingRoom;
+    }
+
+    /** @return null. */
+    @Column(name = "ICON", length = 50)
+    public String getIcon() {
+        return this.icon;
+    }
+
+    /**
+     * @param icon
+     *            null.
+     */
+    public void setIcon(String icon) {
+        this.icon = icon;
     }
 
     /** @return null. */

@@ -28,6 +28,9 @@ public class MeetingRoom implements java.io.Serializable {
     private Long id;
 
     /** null. */
+    private String code;
+
+    /** null. */
     private String name;
 
     /** null. */
@@ -37,10 +40,16 @@ public class MeetingRoom implements java.io.Serializable {
     private Integer num;
 
     /** null. */
-    private String projector;
+    private String device;
 
     /** null. */
     private String type;
+
+    /** null. */
+    private String notice;
+
+    /** null. */
+    private String timezone;
 
     /** null. */
     private Date startTime;
@@ -55,7 +64,13 @@ public class MeetingRoom implements java.io.Serializable {
     private String floor;
 
     /** null. */
+    private String status;
+
+    /** null. */
     private String tenantId;
+
+    /** . */
+    private Set<MeetingItem> meetingItems = new HashSet<MeetingItem>(0);
 
     /** . */
     private Set<MeetingInfo> meetingInfos = new HashSet<MeetingInfo>(0);
@@ -67,21 +82,27 @@ public class MeetingRoom implements java.io.Serializable {
         this.id = id;
     }
 
-    public MeetingRoom(Long id, String name, String mapRef, Integer num,
-            String projector, String type, Date startTime, Date endTime,
-            String building, String floor, String tenantId,
-            Set<MeetingInfo> meetingInfos) {
+    public MeetingRoom(Long id, String code, String name, String mapRef,
+            Integer num, String device, String type, String notice,
+            String timezone, Date startTime, Date endTime, String building,
+            String floor, String status, String tenantId,
+            Set<MeetingItem> meetingItems, Set<MeetingInfo> meetingInfos) {
         this.id = id;
+        this.code = code;
         this.name = name;
         this.mapRef = mapRef;
         this.num = num;
-        this.projector = projector;
+        this.device = device;
         this.type = type;
+        this.notice = notice;
+        this.timezone = timezone;
         this.startTime = startTime;
         this.endTime = endTime;
         this.building = building;
         this.floor = floor;
+        this.status = status;
         this.tenantId = tenantId;
+        this.meetingItems = meetingItems;
         this.meetingInfos = meetingInfos;
     }
 
@@ -98,6 +119,20 @@ public class MeetingRoom implements java.io.Serializable {
      */
     public void setId(Long id) {
         this.id = id;
+    }
+
+    /** @return null. */
+    @Column(name = "CODE", length = 50)
+    public String getCode() {
+        return this.code;
+    }
+
+    /**
+     * @param code
+     *            null.
+     */
+    public void setCode(String code) {
+        this.code = code;
     }
 
     /** @return null. */
@@ -143,17 +178,17 @@ public class MeetingRoom implements java.io.Serializable {
     }
 
     /** @return null. */
-    @Column(name = "PROJECTOR", length = 50)
-    public String getProjector() {
-        return this.projector;
+    @Column(name = "DEVICE", length = 200)
+    public String getDevice() {
+        return this.device;
     }
 
     /**
-     * @param projector
+     * @param device
      *            null.
      */
-    public void setProjector(String projector) {
-        this.projector = projector;
+    public void setDevice(String device) {
+        this.device = device;
     }
 
     /** @return null. */
@@ -168,6 +203,34 @@ public class MeetingRoom implements java.io.Serializable {
      */
     public void setType(String type) {
         this.type = type;
+    }
+
+    /** @return null. */
+    @Column(name = "NOTICE", length = 50)
+    public String getNotice() {
+        return this.notice;
+    }
+
+    /**
+     * @param notice
+     *            null.
+     */
+    public void setNotice(String notice) {
+        this.notice = notice;
+    }
+
+    /** @return null. */
+    @Column(name = "TIMEZONE", length = 50)
+    public String getTimezone() {
+        return this.timezone;
+    }
+
+    /**
+     * @param timezone
+     *            null.
+     */
+    public void setTimezone(String timezone) {
+        this.timezone = timezone;
     }
 
     /** @return null. */
@@ -229,6 +292,20 @@ public class MeetingRoom implements java.io.Serializable {
     }
 
     /** @return null. */
+    @Column(name = "STATUS", length = 50)
+    public String getStatus() {
+        return this.status;
+    }
+
+    /**
+     * @param status
+     *            null.
+     */
+    public void setStatus(String status) {
+        this.status = status;
+    }
+
+    /** @return null. */
     @Column(name = "TENANT_ID", length = 64)
     public String getTenantId() {
         return this.tenantId;
@@ -240,6 +317,20 @@ public class MeetingRoom implements java.io.Serializable {
      */
     public void setTenantId(String tenantId) {
         this.tenantId = tenantId;
+    }
+
+    /** @return . */
+    @OneToMany(fetch = FetchType.LAZY, mappedBy = "meetingRoom")
+    public Set<MeetingItem> getMeetingItems() {
+        return this.meetingItems;
+    }
+
+    /**
+     * @param meetingItems
+     *            .
+     */
+    public void setMeetingItems(Set<MeetingItem> meetingItems) {
+        this.meetingItems = meetingItems;
     }
 
     /** @return . */

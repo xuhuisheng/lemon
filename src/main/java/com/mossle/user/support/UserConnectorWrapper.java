@@ -99,6 +99,10 @@ public class UserConnectorWrapper implements UserConnector {
         return userDto;
     }
 
+    public String findUsernameByAlias(String alias) {
+        return alias;
+    }
+
     public void setUserConnector(UserConnector userConnector) {
         this.userConnector = userConnector;
     }

@@ -12,7 +12,7 @@
 <div class="panel-group col-md-2" id="accordion" role="tablist" aria-multiselectable="true" style="padding-top:65px;">
 
   <div class="panel panel-default">
-    <div class="panel-heading" role="tab" id="collapse-header-user" data-toggle="collapse" data-parent="#accordion" href="#collapse-body-user" aria-expanded="true" aria-controls="collapse-body-user">
+    <div class="panel-heading">
       <h4 class="panel-title">
 	    <i class="glyphicon glyphicon-list"></i>
         账号管理
@@ -23,6 +23,23 @@
         <ul class="nav nav-list">
 		  <li><a href="${tenantPrefix}/user/account-info-list.do"><i class="glyphicon glyphicon-list"></i> 账号列表</a></li>
 		  <li><a href="${tenantPrefix}/user/account-info-input.do"><i class="glyphicon glyphicon-list"></i> 添加账号</a></li>
+	    </ul>
+	  </div>
+    </div>
+  </div>
+
+  <div class="panel panel-default" style="margin-top:20px;">
+    <div class="panel-heading" role="tab" id="collapse-header-user-import" data-toggle="collapse" data-parent="#accordion" href="#collapse-body-user-import" aria-expanded="true" aria-controls="collapse-body-user">
+      <h4 class="panel-title">
+	    <i class="glyphicon glyphicon-list"></i>
+        导入导出
+      </h4>
+    </div>
+    <div id="collapse-body-user" class="panel-collapse collapse ${currentMenu == 'user' ? 'in' : ''}" role="tabpanel" aria-labelledby="collapse-header-user">
+      <div class="panel-body">
+        <ul class="nav nav-list">
+		  <li><a href="${tenantPrefix}/user/dev/import-view.do"><i class="glyphicon glyphicon-list"></i> 批量导入</a></li>
+		  <li><a href="${tenantPrefix}/user/dev/export-view.do"><i class="glyphicon glyphicon-list"></i> 批量导出</a></li>
         </ul>
       </div>
     </div>

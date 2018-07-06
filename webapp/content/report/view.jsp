@@ -10,13 +10,13 @@
     <title>${reportInfo.name}</title>
     <%@include file="/common/s3.jsp"%>
 
-    <link rel="stylesheet" href="${cdnPrefix}/jqplot/jquery.jqplot.min.css" type="text/css" media="screen" />
-    <!--[if lte IE 8]><script language="javascript" type="text/javascript" src="${cdnPrefix}/jqplot/excanvas.min.js"></script><![endif]-->
-	<script type="text/javascript" src="${cdnPrefix}/jqplot/jquery.jqplot.min.js"></script>
-    <script type="text/javascript" src="${cdnPrefix}/jqplot/plugins/jqplot.barRenderer.min.js"></script>
-    <script type="text/javascript" src="${cdnPrefix}/jqplot/plugins/jqplot.categoryAxisRenderer.min.js"></script>
-    <script type="text/javascript" src="${cdnPrefix}/jqplot/plugins/jqplot.pointLabels.min.js"></script>
-	<script type="text/javascript" src="${cdnPrefix}/jqplot/plugins/jqplot.pieRenderer.min.js"></script>
+    <link rel="stylesheet" href="${cdnPrefix}/public/jqplot/1.0.9/jquery.jqplot.min.css" type="text/css" media="screen" />
+    <!--[if lte IE 8]><script language="javascript" type="text/javascript" src="${cdnPrefix}/public/jqplot/1.0.9/excanvas.min.js"></script><![endif]-->
+	<script type="text/javascript" src="${cdnPrefix}/public/jqplot/1.0.9/jquery.jqplot.min.js"></script>
+    <script type="text/javascript" src="${cdnPrefix}/public/jqplot/1.0.9/plugins/jqplot.barRenderer.js"></script>
+    <script type="text/javascript" src="${cdnPrefix}/public/jqplot/1.0.9/plugins/jqplot.categoryAxisRenderer.js"></script>
+    <script type="text/javascript" src="${cdnPrefix}/public/jqplot/1.0.9/plugins/jqplot.pointLabels.js"></script>
+	<script type="text/javascript" src="${cdnPrefix}/public/jqplot/1.0.9/plugins/jqplot.pieRenderer.js"></script>
   </head>
 
   <body>

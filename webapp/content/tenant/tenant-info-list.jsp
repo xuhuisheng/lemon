@@ -8,7 +8,7 @@
   <head>
     <%@include file="/common/meta.jsp"%>
     <title><spring:message code="dev.tenant-info.list.title" text="列表"/></title>
-    <%@include file="/common/s.jsp"%>
+    <%@include file="/common/s3.jsp"%>
     <script type="text/javascript">
 var config = {
     id: 'tenant-infoGrid',
@@ -45,54 +45,55 @@ $(function() {
 	  <%@include file="/menu/tenant.jsp"%>
 
 	  <!-- start of main -->
-      <section id="m-main" class="span10">
+      <section id="m-main" class="col-md-10" style="padding-top:65px;">
 
-	  <article class="m-widget">
-        <header class="header">
-		  <h4 class="title">查询</h4>
-		  <div class="ctrl">
-		    <a class="btn"><i id="tenant-infoSearchIcon" class="icon-chevron-up"></i></a>
-		  </div>
-		</header>
-        <div id="tenant-infoSearch" class="content content-inner">
+<div class="panel panel-default">
+  <div class="panel-heading">
+	<i class="glyphicon glyphicon-list"></i>
+    查询
+	<div class="pull-right ctrl">
+	  <a class="btn btn-default btn-xs"><i id="pimRemindSearchIcon" class="glyphicon glyphicon-chevron-up"></i></a>
+    </div>
+  </div>
+  <div class="panel-body">
 
 		  <form name="tenant-infoForm" method="post" action="tenant-info-list.do" class="form-inline">
 		    <label for="tenant-info_name"><spring:message code='tenant-info.tenant-info.list.search.name' text='名称'/>:</label>
-		    <input type="text" id="tenant-info_name" name="filter_LIKES_name" value="${param.filter_LIKES_name}">
-			<button class="btn btn-small a-search" onclick="document.tenant-infoForm.submit()">查询</button>&nbsp;
+		    <input type="text" id="tenant-info_name" name="filter_LIKES_name" value="${param.filter_LIKES_name}" class="form-control">
+			<button class="btn btn-default a-search" onclick="document.tenant-infoForm.submit()">查询</button>&nbsp;
 		  </form>
 
 		</div>
-	  </article>
+	  </div>
 
-	  <article class="m-blank">
-	    <div class="pull-left">
-		  <button class="btn btn-small a-insert" onclick="location.href='tenant-info-input.do'">新建</button>
-		  <button class="btn btn-small a-remove" onclick="table.removeAll()">删除</button>
-		  <button class="btn btn-small a-export" onclick="table.exportExcel()">导出</button>
-		  <button class="btn btn-small a-insert" onclick="location.href='tenant-info-init-view.do'">创建并初始化租户</button>
+      <div style="margin-bottom: 20px;">
+	    <div class="pull-left btn-group" role="group">
+		  <button class="btn btn-default a-insert" onclick="location.href='tenant-info-input.do'">新建</button>
+		  <button class="btn btn-default a-remove" onclick="table.removeAll()">删除</button>
+		  <button class="btn btn-default a-export" onclick="table.exportExcel()">导出</button>
 		</div>
 
 		<div class="pull-right">
 		  每页显示
-		  <select class="m-page-size">
+		  <select class="m-page-size form-control" style="display:inline;width:auto;">
 		    <option value="10">10</option>
 		    <option value="20">20</option>
 		    <option value="50">50</option>
 		  </select>
 		  条
+        </div>
+
+	    <div class="clearfix"></div>
+	  </div>
+
+<form id="account-deviceGridForm" name="account-deviceGridForm" method='post' action="account-device-remove.do" class="m-form-blank">
+      <div class="panel panel-default">
+        <div class="panel-heading">
+		  <i class="glyphicon glyphicon-list"></i>
+		  <spring:message code="scope-info.scope-info.list.title" text="列表"/>
 		</div>
 
-	    <div class="m-clear"></div>
-	  </article>
-
-      <article class="m-widget">
-        <header class="header">
-		  <h4 class="title"><spring:message code="tenant-info.tenant-info.list.title" text="列表"/></h4>
-		</header>
-        <div class="content">
-<form id="tenant-infoGridForm" name="tenant-infoGridForm" method='post' action="tenant-info-remove.do" class="m-form-blank">
-  <table id="tenant-infoGrid" class="m-table table-hover">
+  <table id="scope-infoGrid" class="table table-hover">
     <thead>
       <tr>
         <th width="10" class="m-table-check"><input type="checkbox" name="checkAll" onchange="toggleSelectedItems(this.checked)"></th>
@@ -125,23 +126,22 @@ $(function() {
       </c:forEach>
     </tbody>
   </table>
+      </div>
 </form>
-        </div>
-      </article>
 
-	  <article>
+	  <div>
 	    <div class="m-page-info pull-left">
 		  共100条记录 显示1到10条记录
 		</div>
 
 		<div class="btn-group m-pagination pull-right">
-		  <button class="btn btn-small">&lt;</button>
-		  <button class="btn btn-small">1</button>
-		  <button class="btn btn-small">&gt;</button>
+		  <button class="btn btn-default">&lt;</button>
+		  <button class="btn btn-default">1</button>
+		  <button class="btn btn-default">&gt;</button>
 		</div>
 
-	    <div class="m-clear"></div>
-      </article>
+	    <div class="clearfix"></div>
+      </div>
 
       <div class="m-spacer"></div>
 

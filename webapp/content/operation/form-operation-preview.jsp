@@ -9,11 +9,11 @@
     <%@include file="/common/meta.jsp"%>
     <title><spring:message code="demo.demo.input.title" text="编辑"/></title>
     <%@include file="/common/s3.jsp"%>
-	<link href="${cdnPrefix}/xform3/styles/xform.css" rel="stylesheet">
-    <script type="text/javascript" src="${cdnPrefix}/xform3/xform-packed.js"></script>
+	<link href="${cdnPrefix}/public/mossle-xform/0.0.11/styles/xform.css" rel="stylesheet">
+    <script type="text/javascript" src="${cdnPrefix}/public/mossle-xform/0.0.11/xform-packed.js"></script>
 
-    <link type="text/css" rel="stylesheet" href="${cdnPrefix}/userpicker3-v2/userpicker.css">
-    <script type="text/javascript" src="${cdnPrefix}/userpicker3-v2/userpicker.js"></script>
+    <link type="text/css" rel="stylesheet" href="${cdnPrefix}/public/mossle-userpicker/3.0/userpicker.css">
+    <script type="text/javascript" src="${cdnPrefix}/public/mossle-userpicker/3.0/userpicker.js"></script>
 
 	<script type="text/javascript">
 document.onmousedown = function(e) {};

@@ -41,6 +41,9 @@ public class PartyEntity implements java.io.Serializable {
     /** 级别. */
     private Integer level;
 
+    /** null. */
+    private String code;
+
     /** . */
     private Set<PartyStruct> parentStructs = new HashSet<PartyStruct>(0);
 
@@ -55,14 +58,15 @@ public class PartyEntity implements java.io.Serializable {
     }
 
     public PartyEntity(Long id, PartyType partyType, String name, String ref,
-            String tenantId, Integer level, Set<PartyStruct> parentStructs,
-            Set<PartyStruct> childStructs) {
+            String tenantId, Integer level, String code,
+            Set<PartyStruct> parentStructs, Set<PartyStruct> childStructs) {
         this.id = id;
         this.partyType = partyType;
         this.name = name;
         this.ref = ref;
         this.tenantId = tenantId;
         this.level = level;
+        this.code = code;
         this.parentStructs = parentStructs;
         this.childStructs = childStructs;
     }
@@ -151,6 +155,20 @@ public class PartyEntity implements java.io.Serializable {
      */
     public void setLevel(Integer level) {
         this.level = level;
+    }
+
+    /** @return null. */
+    @Column(name = "CODE", length = 50)
+    public String getCode() {
+        return this.code;
+    }
+
+    /**
+     * @param code
+     *            null.
+     */
+    public void setCode(String code) {
+        this.code = code;
     }
 
     /** @return . */

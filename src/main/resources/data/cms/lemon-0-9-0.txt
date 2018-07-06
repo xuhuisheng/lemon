@@ -1,0 +1,19 @@
+<p>features:</p>
+
+<ul>
+	<li>集成了Modeler。参考集成方法</li>
+	<li>支持mysql。参考配置mysql</li>
+	<li>不重新发布流程，直接修改流程定义。</li>
+	<li>实现规则式的组织机构与参与者配置。参考表达式解析算法</li>
+	<li>发起流程前，指定每个环节的负责人。参考指定任务负责人</li>
+	<li>流程跟踪图中，高亮显示已经过的连线。</li>
+	<li>任务邮件提醒。参考任务邮件提醒</li>
+</ul>
+
+<p>resources:</p>
+
+<ul>
+	<li>详细修订列表： <a href="https://github.com/xuhuisheng/lemon/issues?q=milestone%3A0.9.0" target="_blank">https://github.com/xuhuisheng/lemon/issues?q=milestone%3A0.9.0</a></li>
+	<li>源码地址： <a href="https://github.com/xuhuisheng/lemon/tree/lemon-0.9.0" target="_blank">https://github.com/xuhuisheng/lemon/tree/lemon-0.9.0</a></li>
+	<li>独立运行包： <a href="http://pan.baidu.com/s/1sj52GpR" target="_blank">http://pan.baidu.com/s/1sj52GpR</a></li>
+</ul>

@@ -36,6 +36,9 @@ public class DictType implements java.io.Serializable {
     /** null. */
     private String tenantId;
 
+    /** null. */
+    private String code;
+
     /** . */
     private Set<DictSchema> dictSchemas = new HashSet<DictSchema>(0);
 
@@ -50,13 +53,14 @@ public class DictType implements java.io.Serializable {
     }
 
     public DictType(Long id, String name, String type, String descn,
-            String tenantId, Set<DictSchema> dictSchemas,
+            String tenantId, String code, Set<DictSchema> dictSchemas,
             Set<DictInfo> dictInfos) {
         this.id = id;
         this.name = name;
         this.type = type;
         this.descn = descn;
         this.tenantId = tenantId;
+        this.code = code;
         this.dictSchemas = dictSchemas;
         this.dictInfos = dictInfos;
     }
@@ -130,6 +134,20 @@ public class DictType implements java.io.Serializable {
      */
     public void setTenantId(String tenantId) {
         this.tenantId = tenantId;
+    }
+
+    /** @return null. */
+    @Column(name = "CODE", length = 50)
+    public String getCode() {
+        return this.code;
+    }
+
+    /**
+     * @param code
+     *            null.
+     */
+    public void setCode(String code) {
+        this.code = code;
     }
 
     /** @return . */
