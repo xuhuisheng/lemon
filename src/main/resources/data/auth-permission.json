@@ -9,7 +9,7 @@
         "priority": 10000,
 	"children": [
             {
-                "code": "bpm",
+                "code": "bpm-user",
                 "name": "流程中心",
                 "url": "/bpm/workspace-home.do",
                 "type": "module",

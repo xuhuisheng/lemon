@@ -5,6 +5,8 @@ import java.util.Date;
 import java.util.List;
 import java.util.Map;
 
+import javax.annotation.Resource;
+
 import com.mossle.api.tenant.TenantConnector;
 import com.mossle.api.tenant.TenantDTO;
 import com.mossle.api.user.UserConnector;
@@ -23,7 +25,7 @@ public class DatabaseUserAuthConnector implements UserAuthConnector {
     private JdbcTemplate jdbcTemplate;
     private TenantConnector tenantConnector;
     private UserConnector userConnector;
-	private boolean checkAccountStatus = false;
+    private boolean checkAccountStatus = false;
 
     // ~
     private String sqlFindPermissions = "SELECT P.CODE AS PERMISSION"
@@ -82,7 +84,7 @@ public class DatabaseUserAuthConnector implements UserAuthConnector {
         userAuthDto.setAccountLocked(false);
         userAuthDto.setAccountExpired(false);
 
-		this.doCheckAccountStatus(userAuthDto, userDto);
+        this.doCheckAccountStatus(userAuthDto, userDto);
 
         // permissions
         List<Map<String, Object>> permissions = jdbcTemplate.queryForList(
@@ -102,11 +104,12 @@ public class DatabaseUserAuthConnector implements UserAuthConnector {
         return userAuthDto;
     }
 
-	public void doCheckAccountStatus(UserAuthDTO userAuthDto, UserDTO userDto) {
-		if (!checkAccountStatus) {
-			logger.info("skip check account status");
-			return;
-		}
+    public void doCheckAccountStatus(UserAuthDTO userAuthDto, UserDTO userDto) {
+        if (!checkAccountStatus) {
+            logger.info("skip check account status");
+
+            return;
+        }
 
         // lock
         int lockCount = jdbcTemplate.queryForObject(sqlFindAccountLockInfo,
@@ -137,7 +140,7 @@ public class DatabaseUserAuthConnector implements UserAuthConnector {
         } catch (Exception ex) {
             logger.debug(ex.getMessage(), ex);
         }
-	}
+    }
 
     public List<String> convertMapListToStringList(
             List<Map<String, Object>> mapList, String name) {
@@ -154,14 +157,17 @@ public class DatabaseUserAuthConnector implements UserAuthConnector {
         return stringList;
     }
 
+    @Resource
     public void setTenantConnector(TenantConnector tenantConnector) {
         this.tenantConnector = tenantConnector;
     }
 
+    @Resource
     public void setUserConnector(UserConnector userConnector) {
         this.userConnector = userConnector;
     }
 
+    @Resource
     public void setJdbcTemplate(JdbcTemplate jdbcTemplate) {
         this.jdbcTemplate = jdbcTemplate;
     }
@@ -178,7 +184,7 @@ public class DatabaseUserAuthConnector implements UserAuthConnector {
         this.sqlFindAccountLockInfo = sqlFindAccountLockInfo;
     }
 
-	public void setCheckAccountStatus(boolean checkAccountStatus) {
-		this.checkAccountStatus = checkAccountStatus;
-	}
+    public void setCheckAccountStatus(boolean checkAccountStatus) {
+        this.checkAccountStatus = checkAccountStatus;
+    }
 }
