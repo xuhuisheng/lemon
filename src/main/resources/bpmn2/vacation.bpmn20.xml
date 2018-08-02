@@ -38,7 +38,7 @@
   <userTask id='taskuser-3' name='人事审批' activiti:formKey='vacation-hr'>
     <humanPerformer>
       <resourceAssignmentExpression>
-        <formalExpression>7</formalExpression>
+        <formalExpression>80007</formalExpression>
       </resourceAssignmentExpression>
     </humanPerformer>
   </userTask>
