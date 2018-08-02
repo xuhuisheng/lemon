@@ -1,4 +1,4 @@
-package com.mossle.meeting.web;
+package com.mossle.meeting.web.rs;
 
 import java.text.SimpleDateFormat;
 
