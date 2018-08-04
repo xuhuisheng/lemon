@@ -6,9 +6,8 @@ import java.util.List;
 import javax.annotation.PostConstruct;
 import javax.annotation.Resource;
 
+import com.mossle.api.user.UserConnector;
 import com.mossle.api.user.UserDTO;
-
-import com.mossle.client.user.UserClient;
 
 import com.mossle.party.PartyConstants;
 import com.mossle.party.persistence.domain.PartyEntity;
@@ -42,7 +41,7 @@ public class PartyDataDeployer {
     private String employeeDataEncoding = "GB2312";
     private List<EmployeeDTO> employeeDtos = new ArrayList<EmployeeDTO>();
     private OrgProcessor orgProcessor = new OrgProcessor();
-    private UserClient userClient;
+    private UserConnector userConnector;
 
     public void init() throws Exception {
         // 解析employee.csv
@@ -115,7 +114,7 @@ public class PartyDataDeployer {
                 continue;
             }
 
-            UserDTO userDto = userClient.findByUsername(username,
+            UserDTO userDto = userConnector.findByUsername(username,
                     defaultTenantId);
 
             if (userDto == null) {
@@ -392,7 +391,8 @@ public class PartyDataDeployer {
             return null;
         }
 
-        UserDTO userDto = userClient.findByUsername(username, defaultTenantId);
+        UserDTO userDto = userConnector.findByUsername(username,
+                defaultTenantId);
 
         if (userDto == null) {
             logger.info("cannot find user : {}", username);
@@ -547,7 +547,7 @@ public class PartyDataDeployer {
     }
 
     @Resource
-    public void setUserClient(UserClient userClient) {
-        this.userClient = userClient;
+    public void setUserConnector(UserConnector userConnector) {
+        this.userConnector = userConnector;
     }
 }
