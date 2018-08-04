@@ -6,8 +6,9 @@ import java.util.List;
 import javax.annotation.PostConstruct;
 import javax.annotation.Resource;
 
-import com.mossle.api.user.UserConnector;
 import com.mossle.api.user.UserDTO;
+
+import com.mossle.client.user.UserClient;
 
 import com.mossle.party.PartyConstants;
 import com.mossle.party.persistence.domain.PartyEntity;
@@ -41,7 +42,7 @@ public class PartyDataDeployer {
     private String employeeDataEncoding = "GB2312";
     private List<EmployeeDTO> employeeDtos = new ArrayList<EmployeeDTO>();
     private OrgProcessor orgProcessor = new OrgProcessor();
-    private UserConnector userConnector;
+    private UserClient userClient;
 
     public void init() throws Exception {
         // 解析employee.csv
@@ -114,7 +115,7 @@ public class PartyDataDeployer {
                 continue;
             }
 
-            UserDTO userDto = userConnector.findByUsername(username,
+            UserDTO userDto = userClient.findByUsername(username,
                     defaultTenantId);
 
             if (userDto == null) {
@@ -391,8 +392,7 @@ public class PartyDataDeployer {
             return null;
         }
 
-        UserDTO userDto = userConnector.findByUsername(username,
-                defaultTenantId);
+        UserDTO userDto = userClient.findByUsername(username, defaultTenantId);
 
         if (userDto == null) {
             logger.info("cannot find user : {}", username);
@@ -454,9 +454,17 @@ public class PartyDataDeployer {
             return;
         }
 
-        String hql = "from PartyStruct where partyStructType=? and parentEntity=? and childEntity=?";
-        PartyStruct partyStruct = this.partyStructManager.findUnique(hql,
-                partyStructType, parentPartyEntity, childPartyEntity);
+        PartyStruct partyStruct = null;
+
+        if (parentPartyEntity == null) {
+            String hql = "from PartyStruct where partyStructType=? and parentEntity is null and childEntity=?";
+            partyStruct = this.partyStructManager.findUnique(hql,
+                    partyStructType, childPartyEntity);
+        } else {
+            String hql = "from PartyStruct where partyStructType=? and parentEntity=? and childEntity=?";
+            partyStruct = this.partyStructManager.findUnique(hql,
+                    partyStructType, parentPartyEntity, childPartyEntity);
+        }
 
         if (partyStruct != null) {
             if (parentPartyEntity == null) {
@@ -539,7 +547,7 @@ public class PartyDataDeployer {
     }
 
     @Resource
-    public void setUserConnector(UserConnector userConnector) {
-        this.userConnector = userConnector;
+    public void setUserClient(UserClient userClient) {
+        this.userClient = userClient;
     }
 }
