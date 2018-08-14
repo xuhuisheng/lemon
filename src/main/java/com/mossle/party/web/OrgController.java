@@ -5,7 +5,8 @@ import java.util.List;
 import javax.annotation.Resource;
 
 import com.mossle.api.tenant.TenantHolder;
-import com.mossle.api.user.UserConnector;
+
+import com.mossle.client.user.UserClient;
 
 import com.mossle.core.mapper.BeanMapper;
 import com.mossle.core.page.Page;
@@ -45,7 +46,7 @@ public class OrgController {
     private PartyTypeManager partyTypeManager;
     private PartyStructManager partyStructManager;
     private PartyStructTypeManager partyStructTypeManager;
-    private UserConnector userConnector;
+    private UserClient userClient;
     private PartyService partyService;
     private BeanMapper beanMapper = new BeanMapper();
     private TenantHolder tenantHolder;
@@ -409,14 +410,14 @@ public class OrgController {
     public String orgPositionInput(
             Model model,
             @RequestParam(value = "partyStructTypeId", required = false) Long partyStructTypeId,
-            @RequestParam(value = "partyTypeId", required = false) Long partyTypeId,
+            @RequestParam(value = "partyTypeType", required = false) Integer partyTypeType,
             @RequestParam(value = "partyEntityId", required = false) Long partyEntityId)
             throws Exception {
         partyStructTypeId = 1L;
 
         PartyEntity partyEntity = this.init(model, partyStructTypeId,
                 partyEntityId);
-        PartyType partyType = partyTypeManager.get(partyTypeId);
+        PartyType partyType = partyTypeManager.findUniqueBy("type", partyTypeType);
 
         model.addAttribute("partyEntity", partyEntity);
         model.addAttribute("partyType", partyType);
@@ -440,7 +441,7 @@ public class OrgController {
         PartyType partyType = partyTypeManager.get(partyTypeId);
 
         // 岗位人员是5
-        PartyStructType partyStructType = partyStructTypeManager.get(5L);
+        PartyStructType partyStructType = partyStructTypeManager.findUniqueBy("type", "user-position");
 
         if (partyType.getType() == TYPE_POSITION) {
             // 岗位
@@ -509,8 +510,8 @@ public class OrgController {
     }
 
     @Resource
-    public void setUserConnector(UserConnector userConnector) {
-        this.userConnector = userConnector;
+    public void setUserClient(UserClient userClient) {
+        this.userClient = userClient;
     }
 
     @Resource

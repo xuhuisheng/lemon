@@ -142,7 +142,7 @@ $(function() {
         <td>
 		  <a href="org-remove.do?selectedItem=${item.id}&partyStructTypeId=${partyStructTypeId}&partyEntityId=${partyEntityId}" class="a-remove">删除</a>
 		  <c:if test="${item.childEntity.partyType.type==1}">
-		    <a href="org-position-input.do?partyStructTypeId=${partyStructTypeId}&partyEntityId=${item.childEntity.id}&partyTypeId=5" class="a-remove">配置职位</a>
+		    <a href="org-position-input.do?partyStructTypeId=${partyStructTypeId}&partyEntityId=${item.childEntity.id}&partyTypeType=2" class="a-remove">配置职位</a>
 		  </c:if>
 		</td>
       </tr>

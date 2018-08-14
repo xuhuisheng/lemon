@@ -22,8 +22,8 @@ $(function() {
 })
     </script>
 
-    <link type="text/css" rel="stylesheet" href="${cdnPrefix}/userpicker3/userpicker.css">
-    <script type="text/javascript" src="${cdnPrefix}/userpicker3/userpicker.js"></script>
+    <link type="text/css" rel="stylesheet" href="${cdnPrefix}/public/mossle-userpicker/3.0/userpicker.css">
+    <script type="text/javascript" src="${cdnPrefix}/public/mossle-userpicker/3.0/userpicker.js"></script>
 	<script type="text/javascript">
 $(function() {
 	createUserPicker({
