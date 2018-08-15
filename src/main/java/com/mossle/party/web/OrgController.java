@@ -6,8 +6,6 @@ import javax.annotation.Resource;
 
 import com.mossle.api.tenant.TenantHolder;
 
-import com.mossle.client.user.UserClient;
-
 import com.mossle.core.mapper.BeanMapper;
 import com.mossle.core.page.Page;
 
@@ -46,7 +44,6 @@ public class OrgController {
     private PartyTypeManager partyTypeManager;
     private PartyStructManager partyStructManager;
     private PartyStructTypeManager partyStructTypeManager;
-    private UserClient userClient;
     private PartyService partyService;
     private BeanMapper beanMapper = new BeanMapper();
     private TenantHolder tenantHolder;
@@ -507,11 +504,6 @@ public class OrgController {
     public void setPartyStructTypeManager(
             PartyStructTypeManager partyStructTypeManager) {
         this.partyStructTypeManager = partyStructTypeManager;
-    }
-
-    @Resource
-    public void setUserClient(UserClient userClient) {
-        this.userClient = userClient;
     }
 
     @Resource
