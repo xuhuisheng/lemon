@@ -127,6 +127,22 @@
     </div>
   </div>
 
+  <div class="panel panel-default">
+    <div class="panel-heading" role="tab" id="collapse-header-pim" data-toggle="collapse" data-parent="#accordion" href="#collapse-body-plan" aria-expanded="true" aria-controls="collapse-body-plan">
+      <h4 class="panel-title">
+	    <i class="glyphicon glyphicon-list"></i>
+        计划
+      </h4>
+    </div>
+    <div id="collapse-body-plan" class="panel-collapse collapse ${currentMenu == 'plan' ? 'in' : ''}" role="tabpanel" aria-labelledby="collapse-header-plan">
+      <div class="panel-body">
+        <ul class="nav nav-list">
+		  <li><a href="${tenantPrefix}/pim/pim-plan-list.do"><i class="glyphicon glyphicon-list"></i> 计划</a></li>
+        </ul>
+      </div>
+    </div>
+  </div>
+
 </div>
 
       <!-- end of sidebar -->

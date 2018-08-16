@@ -198,6 +198,25 @@
     </div>
   </div>
 
+  <div class="panel panel-default">
+    <div class="panel-heading" role="tab" id="collapse-header-report" data-toggle="collapse" data-parent="#accordion" href="#collapse-body-report" aria-expanded="true" aria-controls="collapse-body-report">
+      <h4 class="panel-title">
+	    <i class="glyphicon glyphicon-list"></i>
+        报表管理
+      </h4>
+    </div>
+    <div id="collapse-body-report" class="panel-collapse collapse ${currentMenu == 'report' ? 'in' : ''}" role="tabpanel" aria-labelledby="collapse-header-report">
+      <div class="panel-body">
+        <ul class="nav nav-list">
+		  <li><a href="${tenantPrefix}/report/report-subject-list.do"><i class="glyphicon glyphicon-list"></i> 报表主题</a></li>
+		  <li><a href="${tenantPrefix}/report/report-query-list.do"><i class="glyphicon glyphicon-list"></i> 报表查询</a></li>
+		  <li><a href="${tenantPrefix}/report/report-dim-list.do"><i class="glyphicon glyphicon-list"></i> 报表维度</a></li>
+		  <li><a href="${tenantPrefix}/report/report-info-list.do"><i class="glyphicon glyphicon-list"></i> 报表信息</a></li>
+        </ul>
+      </div>
+    </div>
+  </div>
+
 		<footer id="m-footer" class="text-center">
 		  <hr>
 		  &copy;Mossle

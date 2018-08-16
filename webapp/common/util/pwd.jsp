@@ -1,12 +1,12 @@
 <%@page contentType="text/html;charset=UTF-8"%>
 <%@page import="org.springframework.context.ApplicationContext"%>
 <%@page import="org.springframework.web.context.support.WebApplicationContextUtils"%>
-<%@page import="com.mossle.security.util.SimplePasswordEncoder"%>
+<%@page import="com.mossle.api.auth.CustomPasswordEncoder"%>
 <%
 	if (request.getParameter("password") != null) {
 		ApplicationContext ctx = WebApplicationContextUtils.getWebApplicationContext(application);
-		SimplePasswordEncoder simplePasswordEncoder = (SimplePasswordEncoder) ctx.getBean("simplePasswordEncoder");
-		pageContext.setAttribute("encodedPassword", simplePasswordEncoder.encode(request.getParameter("password")));
+		CustomPasswordEncoder customPasswordEncoder = (CustomPasswordEncoder) ctx.getBean("customPasswordEncoder");
+		pageContext.setAttribute("encodedPassword", customPasswordEncoder.encode(request.getParameter("password")));
 	}
 %>
 <html>
