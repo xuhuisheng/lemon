@@ -93,7 +93,7 @@ public class UserRestController {
 
         for (AccountInfo accountInfo : accountInfos) {
             Map<String, Object> map = new HashMap<String, Object>();
-            map.put("id", accountInfo.getId());
+            map.put("id", accountInfo.getCode());
             map.put("username", accountInfo.getUsername());
             map.put("displayName", accountInfo.getDisplayName());
             list.add(map);

@@ -69,7 +69,7 @@ public class UserResource {
             }
 
             Map<String, Object> map = new HashMap<String, Object>();
-            map.put("id", accountInfo.getId());
+            map.put("id", accountInfo.getCode());
             map.put("username", accountInfo.getUsername());
             map.put("nickName", accountInfo.getNickName());
             map.put("displayName", accountInfo.getDisplayName());
@@ -101,7 +101,7 @@ public class UserResource {
 
         for (AccountInfo accountInfo : accountInfos) {
             Map<String, Object> map = new HashMap<String, Object>();
-            map.put("id", accountInfo.getId());
+            map.put("id", accountInfo.getCode());
             map.put("username", accountInfo.getUsername());
             map.put("displayName", accountInfo.getDisplayName());
             list.add(map);
