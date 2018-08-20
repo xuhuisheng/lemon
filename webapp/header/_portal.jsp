@@ -35,7 +35,7 @@
           </a>
           <ul class="dropdown-menu">
 		    <li class="text-center">&nbsp;<img src="${tenantPrefix}/rs/avatar?id=<tags:currentUserId/>&width=64" style="width:64px;height:64px;" class="img-rounded"></li>
-            <li><a href="${tenantPrefix}/user/my-info-input.do"><i class="glyphicon glyphicon-list"></i> 个人信息</a></li>
+            <li><a href="${tenantPrefix}/user/my/my-info-input.do"><i class="glyphicon glyphicon-list"></i> 个人信息</a></li>
             <li class="divider"></li>
 			<li><a href="${tenantPrefix}/j_spring_security_logout"><i class="glyphicon glyphicon-list"></i> 退出</a></li>
           </ul>
