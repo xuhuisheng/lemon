@@ -45,7 +45,7 @@ public class DatabaseUserConnector implements UserConnector {
     private String sqlFindByRef = "SELECT UB.CODE AS CODE,UB.USERNAME AS USERNAME,UB.STATUS AS STATUS,"
             + "NICK_NAME AS NICK_NAME,EMAIL AS EMAIL,MOBILE AS MOBILE,USER_REPO_ID AS USER_REPO_REF"
             + " FROM ACCOUNT_INFO UB WHERE UB.REF=? AND UB.USER_REPO_ID=?";
-    private String sqlPagedQueryCount = "SELECT COUNT(*) FROM ACCOUNT_INFO";
+    private String sqlPagedQueryCount = "SELECT COUNT(*) FROM ACCOUNT_INFO AI";
     private String sqlPagedQuerySelect = "SELECT AI.CODE AS CODE,AI.USERNAME AS USERNAME,AI.STATUS AS STATUS,"
             + "AI.NICK_NAME AS NICK_NAME,AI.DISPLAY_NAME AS DISPLAY_NAME,PI.EMAIL AS EMAIL,"
             + "PI.CELLPHONE AS MOBILE,1 AS USER_REPO_REF"

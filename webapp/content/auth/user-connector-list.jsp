@@ -20,7 +20,7 @@ var config = {
     orderBy: '${page.orderBy == null ? "" : page.orderBy}',
     asc: ${page.asc},
     params: {
-        'filter_LIKES_username': '${param.filter_LIKES_username}'
+        'filter_LIKES_AI.username': '${param['filter_LIKES_AI.username']}'
     },
 	selectedItemClass: 'selectedItem',
 	gridFormId: 'user-connectorGridForm',
@@ -59,7 +59,7 @@ $(function() {
 
 		  <form name="user-connectorForm" method="post" action="user-connector-list.do" class="form-inline">
 		    <label for="user-connector_username"><spring:message code='user-connector.user-connector.list.search.name' text='名称'/>:</label>
-		    <input type="text" id="user-connector_username" name="filter_LIKES_username" value="${param.filter_LIKES_username}" class="form-control">
+		    <input type="text" id="user-connector_username" name="filter_LIKES_AI.username" value="${param['filter_LIKES_AI.username']}" class="form-control">
 			<button class="btn btn-default a-search" onclick="document.user-connectorForm.submit()">查询</button>&nbsp;
 		  </form>
 
