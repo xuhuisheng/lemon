@@ -1,0 +1,17 @@
+<p>features:</p>
+
+<ul>
+	<li>[cdn] 重新规划静态资源路径，cdn目录下的所有静态资源包含组件名和版本号。</li>
+	<li>[data] 不再使用sql初始化数据，改用csv和json初始化数据。</li>
+	<li>[user] 优化账号管理功能。</li>
+	<li>[bpm] 增加了几个演示流程。</li>
+	<li>[biz] 尝试添加车辆，会议室，考勤管理。</li>
+</ul>
+
+<p>resources:</p>
+
+<ul>
+	<li>详细修订列表： <a href="https://github.com/xuhuisheng/lemon/issues?q=milestone%3A1.9.0" target="_blank">https://github.com/xuhuisheng/lemon/issues?q=milestone%3A1.9.0</a></li>
+	<li>源码地址： <a href="https://github.com/xuhuisheng/lemon/tree/lemon-1.9.0" target="_blank">https://github.com/xuhuisheng/lemon/tree/lemon-1.9.0</a></li>
+	<li>独立运行包： <a href="https://pan.baidu.com/s/1e07BShLvx-ChiHJkSbfneg" target="_blank">https://pan.baidu.com/s/1e07BShLvx-ChiHJkSbfneg</a></li>
+</ul>
