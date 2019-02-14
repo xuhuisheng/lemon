@@ -1,4 +1,4 @@
-package com.mossle.party.web;
+package com.mossle.party.web.dev;
 
 import java.util.List;
 

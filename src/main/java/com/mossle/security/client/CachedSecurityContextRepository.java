@@ -33,23 +33,27 @@ public class CachedSecurityContextRepository extends
             return securityContext;
         }
 
-        SpringSecurityUserAuth userAuthInSession = SpringSecurityUtils
-                .getCurrentUser(securityContext);
+        try {
+            SpringSecurityUserAuth userAuthInSession = SpringSecurityUtils
+                    .getCurrentUser(securityContext);
 
-        if (userAuthInSession == null) {
-            logger.debug("userAuthInSession is null");
+            if (userAuthInSession == null) {
+                logger.debug("userAuthInSession is null");
 
-            return securityContext;
+                return securityContext;
+            }
+
+            UserAuthDTO userAuthInCache = userAuthConnector.findById(
+                    userAuthInSession.getId(), userAuthInSession.getTenantId());
+
+            SpringSecurityUserAuth userAuthResult = new SpringSecurityUserAuth();
+            beanMapper.copy(userAuthInCache, userAuthResult);
+
+            SpringSecurityUtils.saveUserDetailsToContext(userAuthResult, null,
+                    securityContext);
+        } catch(Exception ex) {
+            logger.error(ex.getMessage(), ex);
         }
-
-        UserAuthDTO userAuthInCache = userAuthConnector.findById(
-                userAuthInSession.getId(), userAuthInSession.getTenantId());
-
-        SpringSecurityUserAuth userAuthResult = new SpringSecurityUserAuth();
-        beanMapper.copy(userAuthInCache, userAuthResult);
-
-        SpringSecurityUtils.saveUserDetailsToContext(userAuthResult, null,
-                securityContext);
 
         return securityContext;
     }
