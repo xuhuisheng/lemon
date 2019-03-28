@@ -315,14 +315,15 @@ public class OrgController {
     public String orgAdminInput(
             Model model,
             @RequestParam(value = "partyStructTypeId", required = false) Long partyStructTypeId,
-            @RequestParam(value = "partyTypeId", required = false) Long partyTypeId,
+            @RequestParam(value = "partyTypeId", required = false) Integer partyTypeId,
             @RequestParam(value = "partyEntityId", required = false) Long partyEntityId)
             throws Exception {
         partyStructTypeId = 1L;
 
         PartyEntity partyEntity = this.init(model, partyStructTypeId,
                 partyEntityId);
-        PartyType partyType = partyTypeManager.get(partyTypeId);
+        // PartyType partyType = partyTypeManager.get(partyTypeId);
+        PartyType partyType = partyTypeManager.findUniqueBy("type", partyTypeId);
 
         model.addAttribute("partyEntity", partyEntity);
         model.addAttribute("partyType", partyType);
