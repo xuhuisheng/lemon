@@ -12,5 +12,5 @@
 <ul>
 	<li>详细修订列表： <a href="https://github.com/xuhuisheng/lemon/issues?q=milestone%3A1.10.0" target="_blank">https://github.com/xuhuisheng/lemon/issues?q=milestone%3A1.10.0</a></li>
 	<li>源码地址： <a href="https://github.com/xuhuisheng/lemon/tree/lemon-1.10.0" target="_blank">https://github.com/xuhuisheng/lemon/tree/lemon-1.10.0</a></li>
-	<li>独立运行包： <a href="https://pan.baidu.com/s/1e07BShLvx-ChiHJkSbfneg" target="_blank">https://pan.baidu.com/s/1e07BShLvx-ChiHJkSbfneg</a></li>
+	<li>独立运行包： 链接: <a href="https://pan.baidu.com/s/1rNCXXyWbIfPMcEehAZB4Qg" target="_blank">https://pan.baidu.com/s/1rNCXXyWbIfPMcEehAZB4Qg</a> 提取码: 9gwj </a></li>
 </ul>
