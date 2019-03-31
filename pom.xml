@@ -7,7 +7,7 @@
   <packaging>war</packaging>
   <description>Lemon is an OA.</description>
   
-  <inceptionYear>2015</inceptionYear>
+  <inceptionYear>2019</inceptionYear>
   
   <licenses>
     <license>
@@ -27,7 +27,7 @@
   
   
   <prerequisites>
-    <maven>3.0</maven>
+    <maven>3.6.0</maven>
   </prerequisites>
   <dependencies>
     <dependency>
@@ -204,10 +204,6 @@
       <groupId>org.activiti</groupId>
       <artifactId>activiti-json-converter</artifactId>
       <version>${activiti.version}</version>
-    </dependency><dependency>
-      <groupId>eu.bitwalker</groupId>
-      <artifactId>UserAgentUtils</artifactId>
-      <version>1.20</version>
     </dependency></dependencies>
 
   <dependencyManagement>
