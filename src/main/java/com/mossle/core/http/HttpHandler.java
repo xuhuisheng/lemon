@@ -11,4 +11,6 @@ public interface HttpHandler {
 
     String readText(String url, String encoding, Map<String, Object> params)
             throws IOException;
+
+    String doPost(String url, Map<String, Object> params) throws Exception;
 }

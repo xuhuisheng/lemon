@@ -7,6 +7,8 @@ import java.io.InputStreamReader;
 import javax.annotation.PostConstruct;
 import javax.annotation.Resource;
 
+import com.mossle.core.csv.CsvProcessor;
+
 import com.mossle.portal.persistence.domain.PortalInfo;
 import com.mossle.portal.persistence.domain.PortalItem;
 import com.mossle.portal.persistence.domain.PortalWidget;

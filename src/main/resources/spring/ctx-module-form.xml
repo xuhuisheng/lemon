@@ -7,6 +7,4 @@
 
 	<bean id="internalFormConnector" class="${form.internal.connector}"/>
 
-	<bean id="keyValueConnector" class="${keyvalue.connector}"/>
-
 </beans>

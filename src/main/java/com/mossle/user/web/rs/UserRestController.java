@@ -13,7 +13,6 @@ import javax.servlet.http.HttpServletRequest;
 import javax.servlet.http.HttpServletResponse;
 
 import com.mossle.api.auth.CustomPasswordEncoder;
-import com.mossle.api.store.StoreConnector;
 import com.mossle.api.tenant.TenantHolder;
 import com.mossle.api.user.UserCache;
 import com.mossle.api.user.UserDTO;
@@ -22,6 +21,7 @@ import com.mossle.core.export.Exportor;
 import com.mossle.core.mapper.BeanMapper;
 import com.mossle.core.page.Page;
 import com.mossle.core.spring.MessageHelper;
+import com.mossle.core.util.Select2Info;
 
 import com.mossle.user.persistence.domain.AccountInfo;
 import com.mossle.user.persistence.domain.PersonInfo;
@@ -29,7 +29,6 @@ import com.mossle.user.persistence.manager.AccountInfoManager;
 import com.mossle.user.persistence.manager.PersonInfoManager;
 import com.mossle.user.service.UserAvatarService;
 import com.mossle.user.service.UserService;
-import com.mossle.user.support.Select2Info;
 
 import org.apache.commons.io.IOUtils;
 import org.apache.commons.lang3.StringUtils;
@@ -126,6 +125,27 @@ public class UserRestController {
         }
 
         return select2Info;
+    }
+
+    @RequestMapping(value = "s", produces = MediaType.APPLICATION_JSON_VALUE)
+    public List<Map<String, Object>> searchUserPicker(
+            @RequestParam("username") String username) throws Exception {
+        String tenantId = tenantHolder.getTenantId();
+        Page page = accountInfoManager.pagedQuery(
+                "from AccountInfo where username like ?", 1, 5, "%" + username
+                        + "%");
+        List<AccountInfo> accountInfos = (List<AccountInfo>) page.getResult();
+        List<Map<String, Object>> list = new ArrayList<Map<String, Object>>();
+
+        for (AccountInfo accountInfo : accountInfos) {
+            Map<String, Object> map = new HashMap<String, Object>();
+            map.put("id", accountInfo.getCode());
+            map.put("username", accountInfo.getUsername());
+            map.put("displayName", accountInfo.getDisplayName());
+            list.add(map);
+        }
+
+        return list;
     }
 
     // ~ ======================================================================

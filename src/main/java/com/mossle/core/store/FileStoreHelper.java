@@ -101,6 +101,11 @@ public class FileStoreHelper implements StoreHelper {
         dir.mkdirs();
 
         File targetFile = new File(baseDir + "/" + model + "/" + path);
+
+        if (!targetFile.getParentFile().exists()) {
+            targetFile.getParentFile().mkdirs();
+        }
+
         FileOutputStream fos = new FileOutputStream(targetFile);
 
         try {

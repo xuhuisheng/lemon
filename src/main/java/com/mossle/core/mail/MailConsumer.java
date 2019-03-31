@@ -39,6 +39,7 @@ public class MailConsumer implements Runnable {
                 Thread.sleep(1000);
             } catch (InterruptedException ex) {
                 logger.info(ex.getMessage(), ex);
+                Thread.currentThread().interrupt();
             }
         }
     }

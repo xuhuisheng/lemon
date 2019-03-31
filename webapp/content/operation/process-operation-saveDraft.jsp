@@ -45,13 +45,16 @@ $(function() {
 	<!-- start of main -->
       <section id="m-main" class="col-md-12" style="padding-top:65px;">
 	 
-	  <div class="alert alert-info" role="alert">
-		<button type="button" class="close" data-dismiss="alert" style="margin-right:30px;">×</button>
-		<strong>草稿已保存</strong>
-	  </div>
+	    <div class="alert alert-info" role="alert">
+		  <button type="button" class="close" data-dismiss="alert" style="margin-right:30px;">×</button>
+		  <strong>草稿已保存</strong>
+	    </div>
 
-    </section>
+	    <a href="${ctx}/operation/process-operation-listDrafts.do">返回</a>
+
+      </section>
 	<!-- end of main -->
+
 	</div>
 
   </body>

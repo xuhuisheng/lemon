@@ -9,6 +9,7 @@ public class OrgDTO {
     private String type;
     private String leader;
     private List<OrgDTO> children = new ArrayList<OrgDTO>();
+    private String parentCode;
 
     public String getCode() {
         return code;
@@ -48,5 +49,13 @@ public class OrgDTO {
 
     public void setChildren(List<OrgDTO> children) {
         this.children = children;
+    }
+
+    public String getParentCode() {
+        return parentCode;
+    }
+
+    public void setParentCode(String parentCode) {
+        this.parentCode = parentCode;
     }
 }

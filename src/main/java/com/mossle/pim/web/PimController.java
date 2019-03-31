@@ -74,7 +74,7 @@ public class PimController {
 
     public void findSchedules(Model model, String key, Date startTime,
             Date endTime) {
-        logger.info("start : {}, end : {}", startTime, endTime);
+        logger.debug("start : {}, end : {}", startTime, endTime);
 
         String userId = currentUserHolder.getUserId();
         String hql = "from PimSchedule where userId=? and startTime>=? and startTime<=?";

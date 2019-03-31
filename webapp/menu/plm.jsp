@@ -21,7 +21,7 @@
     <div id="collapse-body-plm" class="panel-collapse collapse ${currentMenu == 'plm' ? 'in' : ''}" role="tabpanel" aria-labelledby="collapse-header-plm">
       <div class="panel-body">
         <ul class="nav nav-list">
-		  <li><a href="${scopePrefix}/plm/plm-project-list.do"><i class="glyphicon glyphicon-list"></i> 产品</a></li>
+		  <li><a href="${tenantPrefix}/plm/plm-project-list.do"><i class="glyphicon glyphicon-list"></i> 产品</a></li>
         </ul>
       </div>
     </div>

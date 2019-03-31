@@ -24,6 +24,7 @@ import org.apache.commons.lang3.StringUtils;
  */
 public class CorsFilter implements Filter {
     public void init(FilterConfig filterConfig) throws ServletException {
+        // init
     }
 
     public void doFilter(ServletRequest req, ServletResponse res,
@@ -45,5 +46,6 @@ public class CorsFilter implements Filter {
     }
 
     public void destroy() {
+        // destroy
     }
 }

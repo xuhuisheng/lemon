@@ -3,7 +3,6 @@ package com.mossle.user.web;
 import javax.annotation.Resource;
 
 import com.mossle.api.auth.CustomPasswordEncoder;
-import com.mossle.api.store.StoreConnector;
 import com.mossle.api.user.UserCache;
 import com.mossle.api.user.UserDTO;
 
@@ -37,7 +36,6 @@ public class PersonInfoController {
     private BeanMapper beanMapper = new BeanMapper();
     private CustomPasswordEncoder customPasswordEncoder;
     private UserService userService;
-    private StoreConnector storeConnector;
 
     @RequestMapping("person-info-account-input")
     public String accountInput(@RequestParam("code") String code) {
@@ -126,10 +124,5 @@ public class PersonInfoController {
     @Resource
     public void setExportor(Exportor exportor) {
         this.exportor = exportor;
-    }
-
-    @Resource
-    public void setStoreConnector(StoreConnector storeConnector) {
-        this.storeConnector = storeConnector;
     }
 }

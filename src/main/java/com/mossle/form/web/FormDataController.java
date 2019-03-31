@@ -12,19 +12,25 @@ import javax.annotation.Resource;
 import javax.servlet.http.HttpServletRequest;
 import javax.servlet.http.HttpServletResponse;
 
+import com.mossle.api.auth.CurrentUserHolder;
 import com.mossle.api.form.FormConnector;
 import com.mossle.api.form.FormDTO;
 import com.mossle.api.keyvalue.FormParameter;
-import com.mossle.api.keyvalue.KeyValueConnector;
 import com.mossle.api.keyvalue.Prop;
 import com.mossle.api.keyvalue.Record;
 import com.mossle.api.keyvalue.RecordBuilder;
-import com.mossle.api.store.StoreConnector;
+import com.mossle.api.model.ModelBuilder;
+import com.mossle.api.model.ModelConnector;
+import com.mossle.api.model.ModelInfoDTO;
+import com.mossle.api.model.ModelItemDTO;
+import com.mossle.api.process.ProcessConnector;
+import com.mossle.api.process.ProcessDTO;
 import com.mossle.api.tenant.TenantHolder;
 import com.mossle.api.user.UserConnector;
 
+import com.mossle.client.store.StoreClient;
+
 import com.mossle.core.MultipartHandler;
-import com.mossle.api.auth.CurrentUserHolder;
 import com.mossle.core.export.Exportor;
 import com.mossle.core.export.TableModel;
 import com.mossle.core.mapper.BeanMapper;
@@ -67,10 +73,11 @@ public class FormDataController {
     private MultipartResolver multipartResolver;
     private TenantHolder tenantHolder;
     private CurrentUserHolder currentUserHolder;
-    private KeyValueConnector keyValueConnector;
-    private StoreConnector storeConnector;
+    private StoreClient storeClient;
     private FormConnector formConnector;
     private UserConnector userConnector;
+    private ModelConnector modelConnector;
+    private ProcessConnector processConnector;
 
     /**
      * 列出所有草稿.
@@ -79,7 +86,10 @@ public class FormDataController {
     public String list(@ModelAttribute Page page, Model model) throws Exception {
         String userId = currentUserHolder.getUserId();
         String tenantId = tenantHolder.getTenantId();
-        page = keyValueConnector.pagedQuery(page, TEST, tenantId, tenantId);
+        // page = keyValueConnector.pagedQuery(page, TEST, tenantId, tenantId);
+        page = modelConnector.findDraft(page.getPageNo(), page.getPageSize(),
+                tenantId);
+
         model.addAttribute("page", page);
 
         return "form/form-data-list";
@@ -121,7 +131,7 @@ public class FormDataController {
             String tenantId = tenantHolder.getTenantId();
             FormDTO formDto = formConnector.findForm(category, tenantId);
 
-            Xform xform = new XformBuilder().setStoreConnector(storeConnector)
+            Xform xform = new XformBuilder().setStoreClient(storeClient)
                     .setContent(formDto.getContent()).build();
             model.addAttribute("xform", xform);
             model.addAttribute("bpmProcessId", category);
@@ -157,14 +167,20 @@ public class FormDataController {
                 formParameter.setBusinessKey(businessKey);
             }
 
-            Record record = keyValueConnector.findByCode(businessKey);
+            // Record record = keyValueConnector.findByCode(businessKey);
+            ModelInfoDTO modelInfoDto = modelConnector.findByCode(businessKey);
 
-            if (record != null) {
-                record = new RecordBuilder().build(record, multipartHandler,
-                        storeConnector, tenantId);
-
-                keyValueConnector.save(record);
+            // if (record != null) {
+            // record = new RecordBuilder().build(record, multipartHandler,
+            // storeClient, tenantId);
+            // keyValueConnector.save(record);
+            if (modelInfoDto != null) {
+                modelInfoDto = new ModelBuilder().build(modelInfoDto,
+                        multipartHandler, storeClient, tenantId);
+                modelConnector.save(modelInfoDto);
             }
+
+            // }
         } finally {
             multipartHandler.clear();
         }
@@ -175,7 +191,8 @@ public class FormDataController {
     @RequestMapping("form-data-remove")
     public String remove(@RequestParam("code") String code,
             RedirectAttributes redirectAttributes) {
-        keyValueConnector.removeByCode(code);
+        // keyValueConnector.removeByCode(code);
+        modelConnector.removeDraft(code);
         messageHelper.addFlashMessage(redirectAttributes,
                 "core.success.delete", "删除成功");
 
@@ -211,23 +228,37 @@ public class FormDataController {
 
         if (StringUtils.isNotBlank(businessKey)) {
             // 如果是流程草稿，直接通过businessKey获得record，更新数据
-            Record record = keyValueConnector.findByCode(businessKey);
-
-            record = new RecordBuilder().build(record, TEST, formParameter);
-            keyValueConnector.save(record);
+            // Record record = keyValueConnector.findByCode(businessKey);
+            // record = new RecordBuilder().build(record, TEST, formParameter);
+            // keyValueConnector.save(record);
+            ModelInfoDTO modelInfoDto = modelConnector.findByCode(businessKey);
+            modelInfoDto = new ModelBuilder().build(modelInfoDto, "test",
+                    formParameter);
+            modelConnector.save(modelInfoDto);
         } else if (StringUtils.isNotBlank(bpmProcessId)) {
             // 如果是第一次保存草稿，肯定是流程草稿，先初始化record，再保存数据
-            Record record = new RecordBuilder().build(bpmProcessId, TEST,
-                    formParameter, userId, tenantId);
+            // Record record = new RecordBuilder().build(bpmProcessId, TEST,
+            // formParameter, userId, tenantId);
             // ProcessDTO processDto = processConnector.findProcess(bpmProcessId);
             // record.setName(processDto.getProcessDefinitionName());
-            record.setName(bpmProcessId);
-            keyValueConnector.save(record);
-            businessKey = record.getCode();
+            // record.setName(bpmProcessId);
+            // keyValueConnector.save(record);
+            // businessKey = record.getCode();
+            // if (record.getBusinessKey() == null) {
+            // record.setBusinessKey(businessKey);
+            // keyValueConnector.save(record);
+            // }
+            ModelInfoDTO modelInfoDto = new ModelBuilder().build(bpmProcessId,
+                    "test", formParameter, userId, tenantId);
+            ProcessDTO processDto = processConnector.findProcess(bpmProcessId);
+            modelInfoDto.setName(processDto.getProcessDefinitionName());
+            modelInfoDto.setName(bpmProcessId);
+            modelConnector.save(modelInfoDto);
+            businessKey = modelInfoDto.getCode();
 
-            if (record.getBusinessKey() == null) {
-                record.setBusinessKey(businessKey);
-                keyValueConnector.save(record);
+            if (modelInfoDto.getCode() == null) {
+                modelInfoDto.setCode(businessKey);
+                modelConnector.save(modelInfoDto);
             }
         } else {
             logger.error(
@@ -262,18 +293,24 @@ public class FormDataController {
             model.addAttribute("json", json);
         }
 
-        Record record = keyValueConnector.findByCode(formParameter
+        // Record record = keyValueConnector.findByCode(formParameter
+        // .getBusinessKey());
+        ModelInfoDTO modelInfoDto = modelConnector.findByCode(formParameter
                 .getBusinessKey());
         FormDTO formDto = formConnector.findForm(formParameter.getFormDto()
                 .getCode(), tenantId);
 
-        if (record != null) {
-            Xform xform = new XformBuilder().setStoreConnector(storeConnector)
+        if (modelInfoDto != null) {
+            // Xform xform = new XformBuilder().setStoreClient(storeClient)
+            // .setUserConnector(userConnector)
+            // .setContent(formDto.getContent()).setRecord(record).build();
+            Xform xform = new XformBuilder().setStoreClient(storeClient)
                     .setUserConnector(userConnector)
-                    .setContent(formDto.getContent()).setRecord(record).build();
+                    .setContent(formDto.getContent())
+                    .setModelInfoDto(modelInfoDto).build();
             model.addAttribute("xform", xform);
         } else {
-            Xform xform = new XformBuilder().setStoreConnector(storeConnector)
+            Xform xform = new XformBuilder().setStoreClient(storeClient)
                     .setUserConnector(userConnector)
                     .setContent(formDto.getContent()).build();
             model.addAttribute("xform", xform);
@@ -286,16 +323,20 @@ public class FormDataController {
      * 读取草稿箱中的表单数据，转换成json.
      */
     public String findStartFormData(String businessKey) throws Exception {
-        Record record = keyValueConnector.findByCode(businessKey);
+        // Record record = keyValueConnector.findByCode(businessKey);
+        ModelInfoDTO modelInfoDto = modelConnector.findByCode(businessKey);
 
-        if (record == null) {
+        if (modelInfoDto == null) {
             return null;
         }
 
         Map map = new HashMap();
 
-        for (Prop prop : record.getProps().values()) {
-            map.put(prop.getCode(), prop.getValue());
+        // for (Prop prop : record.getProps().values()) {
+        // map.put(prop.getCode(), prop.getValue());
+        // }
+        for (ModelItemDTO modelItemDto : modelInfoDto.getItems()) {
+            map.put(modelItemDto.getCode(), modelItemDto.getValue());
         }
 
         String json = jsonMapper.toJson(map);
@@ -335,13 +376,13 @@ public class FormDataController {
     }
 
     @Resource
-    public void setKeyValueConnector(KeyValueConnector keyValueConnector) {
-        this.keyValueConnector = keyValueConnector;
+    public void setModelConnector(ModelConnector modelConnector) {
+        this.modelConnector = modelConnector;
     }
 
     @Resource
-    public void setStoreConnector(StoreConnector storeConnector) {
-        this.storeConnector = storeConnector;
+    public void setStoreClient(StoreClient storeClient) {
+        this.storeClient = storeClient;
     }
 
     @Resource
@@ -352,5 +393,10 @@ public class FormDataController {
     @Resource
     public void setUserConnector(UserConnector userConnector) {
         this.userConnector = userConnector;
+    }
+
+    @Resource
+    public void setProcessConnector(ProcessConnector processConnector) {
+        this.processConnector = processConnector;
     }
 }

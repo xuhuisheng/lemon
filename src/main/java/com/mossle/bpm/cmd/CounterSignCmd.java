@@ -81,7 +81,7 @@ public class CounterSignCmd implements Command<Object> {
     }
 
     /**
-     * <li>加签
+     * 加签
      */
     public void addInstance() {
         if (isParallel()) {
@@ -92,7 +92,7 @@ public class CounterSignCmd implements Command<Object> {
     }
 
     /**
-     * <li>减签
+     * 减签
      */
     public void removeInstance() {
         if (isParallel()) {
@@ -194,7 +194,7 @@ public class CounterSignCmd implements Command<Object> {
     }
 
     /**
-     * <li>冲串行列表中移除未完成的用户(当前执行的用户无法移除)
+     * 删除串行列表中移除未完成的用户(当前执行的用户无法移除)
      */
     private void removeSequentialInstance() {
         ExecutionEntity executionEntity = getActivieExecutions().get(0);
@@ -216,7 +216,8 @@ public class CounterSignCmd implements Command<Object> {
     }
 
     /**
-     * <li>获取活动的执行 , 子流程的活动执行是其孩子执行(并行多实例情况下) <li>串行情况下获取的结果数量为1
+     * 获取活动的执行 , 子流程的活动执行是其孩子执行(并行多实例情况下) 
+     * 串行情况下获取的结果数量为1
      */
     protected List<ExecutionEntity> getActivieExecutions() {
         List<ExecutionEntity> activeExecutions = new ArrayList<ExecutionEntity>();
@@ -235,7 +236,7 @@ public class CounterSignCmd implements Command<Object> {
     }
 
     /**
-     * <li>获取流程实例根的所有子执行
+     * 获取流程实例根的所有子执行
      */
     protected List<ExecutionEntity> getChildExecutionByProcessInstanceId() {
         return commandContext.getExecutionEntityManager()
@@ -243,28 +244,28 @@ public class CounterSignCmd implements Command<Object> {
     }
 
     /**
-     * <li>返回当前节点对象
+     * 返回当前节点对象
      */
     protected ActivityImpl getActivity() {
         return this.getProcessDefinition().findActivity(activityId);
     }
 
     /**
-     * <li>判断节点多实例类型是否是并发
+     * 判断节点多实例类型是否是并发
      */
     protected boolean isParallel() {
         return getActivity().getProperty("multiInstance").equals("parallel");
     }
 
     /**
-     * <li>返回流程定义对象
+     * 返回流程定义对象
      */
     protected ProcessDefinitionImpl getProcessDefinition() {
         return this.getProcessInstanceEntity().getProcessDefinition();
     }
 
     /**
-     * <li>返回流程实例的根执行对象
+     * 返回流程实例的根执行对象
      */
     protected ExecutionEntity getProcessInstanceEntity() {
         return commandContext.getExecutionEntityManager().findExecutionById(
@@ -272,7 +273,7 @@ public class CounterSignCmd implements Command<Object> {
     }
 
     /**
-     * <li>添加本地变量
+     * 添加本地变量
      */
     protected void setLoopVariable(ActivityExecution execution,
             String variableName, Object value) {

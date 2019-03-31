@@ -85,7 +85,11 @@ public class MeetingInfoController {
             if (meetingInfo.getOrganizer() != null) {
                 UserDTO userDto = userConnector.findById(meetingInfo
                         .getOrganizer());
-                model.addAttribute("organizerName", userDto.getDisplayName());
+
+                if (userDto != null) {
+                    model.addAttribute("organizerName",
+                            userDto.getDisplayName());
+                }
             }
 
             // attendees

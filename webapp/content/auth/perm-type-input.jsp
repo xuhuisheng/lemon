@@ -54,11 +54,11 @@ $(function() {
   <div class="form-group">
 	<label class="control-label col-md-1" for="permType_type"><spring:message code='auth.permType.input.type' text='类型'/></label>
     <div class="col-sm-5">
-	  <label for="permType_type_0" class="radio inline">
+	  <label for="permType_type_0" class="radio radio-inline">
 	    <input id="permType_type_0" type="radio" name="type" value="0" class="required" ${model.type != 1 ? 'checked' : ''}>
 		显示
 	  </label>
-	  <label for="permType_type_1" class="radio inline">
+	  <label for="permType_type_1" class="radio radio-inline">
 	    <input id="permType_type_1" type="radio" name="type" value="1" class="required" ${model.type == 1 ? 'checked' : ''}>
 		隐藏
 	  </label>
@@ -68,14 +68,14 @@ $(function() {
   <div class="form-group">
     <label class="control-label col-md-1" for="permType_descn"><spring:message code='auth.permType.input.description' text='描述'/></label>
     <div class="col-sm-5">
-      <textarea id="permType_descn" name="descn" maxlength="60" rows="4">${model.descn}</textarea>
+      <textarea id="permType_descn" class="form-control" name="descn" maxlength="60" rows="4">${model.descn}</textarea>
     </div>
   </div>
   <div class="form-group">
-    <div class="col-sm-5">
-      <button id="submitButton" class="btn a-submit"><spring:message code='core.input.save' text='保存'/></button>
-	  &nbsp;
-      <button type="button" onclick="history.back();" class="btn"><spring:message code='core.input.back' text='返回'/></button>
+    <div class="col-sm-5 col-md-offset-1">
+      <button id="submitButton" class="btn btn-default a-submit"><spring:message code='core.input.save' text='保存'/></button>
+	    &nbsp;
+      <button type="button" onclick="history.back();" class="btn btn-link"><spring:message code='core.input.back' text='返回'/></button>
     </div>
   </div>
 </form>

@@ -120,7 +120,9 @@ $(function() {
       <thead>
         <tr>
           <th width="10" style="text-indent:0px;text-align:center;"><input type="checkbox" name="checkAll" onchange="toggleSelectedItems(this.checked)"></th>
+          <!--
           <th class="sorting" name="id"><spring:message code="user.bpmCategory.list.id" text="编号"/></th>
+          -->
           <th class="sorting" name="name"><spring:message code="user.bpmCategory.list.name" text="名称"/></th>
           <th width="100">&nbsp;</th>
         </tr>
@@ -129,7 +131,9 @@ $(function() {
         <c:forEach items="${bpmConfOperations}" var="item">
         <tr>
           <td><input type="checkbox" class="selectedItem a-check" name="selectedItem" value="${item.id}"></td>
+          <!--
           <td>${item.id}</td>
+          -->
           <td>${item.value}</td>
           <td>
 		    <a href="bpm-conf-operation-remove.do?id=${item.id}">删除</a>

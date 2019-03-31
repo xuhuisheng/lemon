@@ -1,6 +1,7 @@
 package com.mossle.operation.web;
 
 import java.util.ArrayList;
+import java.util.Collections;
 import java.util.HashMap;
 import java.util.List;
 import java.util.Map;
@@ -8,25 +9,36 @@ import java.util.Map;
 import javax.annotation.Resource;
 
 import javax.servlet.http.HttpServletRequest;
+import javax.servlet.http.HttpServletResponse;
 
 import com.mossle.api.auth.CurrentUserHolder;
+import com.mossle.api.employee.EmployeeDTO;
 import com.mossle.api.form.FormConnector;
 import com.mossle.api.form.FormDTO;
+import com.mossle.api.form.FormMetadata;
 import com.mossle.api.humantask.HumanTaskConnector;
+import com.mossle.api.humantask.HumanTaskDTO;
 import com.mossle.api.humantask.HumanTaskDefinition;
 import com.mossle.api.keyvalue.FormParameter;
-import com.mossle.api.keyvalue.KeyValueConnector;
 import com.mossle.api.keyvalue.Prop;
 import com.mossle.api.keyvalue.Record;
 import com.mossle.api.keyvalue.RecordBuilder;
+import com.mossle.api.model.ModelConnector;
+import com.mossle.api.model.ModelInfoDTO;
+import com.mossle.api.model.ModelItemDTO;
+import com.mossle.api.process.ProcessBaseInfo;
 import com.mossle.api.process.ProcessConnector;
 import com.mossle.api.process.ProcessDTO;
-import com.mossle.api.store.StoreConnector;
 import com.mossle.api.tenant.TenantHolder;
 import com.mossle.api.user.UserConnector;
 
+import com.mossle.bpm.service.TraceService;
+
 import com.mossle.button.ButtonDTO;
 import com.mossle.button.ButtonHelper;
+
+import com.mossle.client.employee.EmployeeClient;
+import com.mossle.client.store.StoreClient;
 
 import com.mossle.core.MultipartHandler;
 import com.mossle.core.mapper.JsonMapper;
@@ -34,9 +46,23 @@ import com.mossle.core.page.Page;
 import com.mossle.core.spring.MessageHelper;
 
 import com.mossle.operation.service.OperationService;
+import com.mossle.operation.service.ProcessModelService;
+import com.mossle.operation.service.ViewService;
+import com.mossle.operation.support.FormData;
+import com.mossle.operation.support.FormDataBuilder;
+
+import com.mossle.spi.process.InternalProcessConnector;
 
 import com.mossle.xform.Xform;
 import com.mossle.xform.XformBuilder;
+
+import org.activiti.engine.HistoryService;
+import org.activiti.engine.ProcessEngine;
+import org.activiti.engine.history.HistoricProcessInstance;
+import org.activiti.engine.repository.ProcessDefinition;
+import org.activiti.engine.task.Task;
+
+import org.apache.commons.lang3.StringUtils;
 
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
@@ -64,18 +90,24 @@ public class ProcessOperationController {
     public static final int STATUS_DRAFT_TASK = 1;
     public static final int STATUS_RUNNING = 2;
     private OperationService operationService;
-    private KeyValueConnector keyValueConnector;
     private MessageHelper messageHelper;
     private CurrentUserHolder currentUserHolder;
     private ProcessConnector processConnector;
+    private InternalProcessConnector internalProcessConnector;
     private HumanTaskConnector humanTaskConnector;
     private MultipartResolver multipartResolver;
-    private StoreConnector storeConnector;
+    private StoreClient storeClient;
     private ButtonHelper buttonHelper = new ButtonHelper();
     private FormConnector formConnector;
     private JsonMapper jsonMapper = new JsonMapper();
     private TenantHolder tenantHolder;
     private UserConnector userConnector;
+    private ModelConnector modelConnector;
+    private ProcessModelService processModelService;
+    private EmployeeClient employeeClient;
+    private ProcessEngine processEngine;
+    private TraceService traceService;
+    private ViewService viewService;
 
     /**
      * 保存草稿.
@@ -95,8 +127,10 @@ public class ProcessOperationController {
             throws Exception {
         String userId = currentUserHolder.getUserId();
         String tenantId = tenantHolder.getTenantId();
-        page = keyValueConnector.pagedQuery(page, STATUS_DRAFT_PROCESS, userId,
-                tenantId);
+        // page = keyValueConnector.pagedQuery(page, STATUS_DRAFT_PROCESS, userId,
+        // tenantId);
+        page = modelConnector.findDraft(page.getPageNo(), page.getPageSize(),
+                userId);
         model.addAttribute("page", page);
 
         return "operation/process-operation-listDrafts";
@@ -107,9 +141,22 @@ public class ProcessOperationController {
      */
     @RequestMapping("process-operation-removeDraft")
     public String removeDraft(@RequestParam("code") String code) {
-        keyValueConnector.removeByCode(code);
+        // keyValueConnector.removeByCode(code);
+        modelConnector.removeDraft(code);
 
         return "redirect:/operation/process-operation-listDrafts.do";
+    }
+
+    @RequestMapping("process-operation-viewStartFormByKey")
+    public String viewStartFormByKey(@RequestParam("key") String key) {
+        String processDefinitionId = this.internalProcessConnector
+                .findProcessDefinitionId(key);
+        ProcessDTO processDto = this.processConnector
+                .findProcessByProcessDefinitionId(processDefinitionId);
+        String bpmProcessId = processDto.getId();
+
+        return "redirect:/operation/process-operation-viewStartForm.do?bpmProcessId="
+                + bpmProcessId;
     }
 
     /**
@@ -118,15 +165,26 @@ public class ProcessOperationController {
     @RequestMapping("process-operation-viewStartForm")
     public String viewStartForm(
             HttpServletRequest request,
-            @RequestParam("bpmProcessId") String bpmProcessId,
+            HttpServletResponse response,
+            @RequestParam(value = "bpmProcessId", required = false) String bpmProcessId,
             @RequestParam(value = "businessKey", required = false) String businessKey,
             Model model) throws Exception {
+        ProcessDTO processDto = null;
+
+        if (StringUtils.isBlank(bpmProcessId)) {
+            ModelInfoDTO modelInfoDto = modelConnector.findByCode(businessKey);
+            processDto = processConnector
+                    .findProcessByProcessDefinitionId(modelInfoDto
+                            .getProcessId());
+            bpmProcessId = processDto.getId();
+        } else {
+            processDto = processConnector.findProcess(bpmProcessId);
+        }
+
         String tenantId = tenantHolder.getTenantId();
         FormParameter formParameter = new FormParameter();
         formParameter.setBpmProcessId(bpmProcessId);
         formParameter.setBusinessKey(businessKey);
-
-        ProcessDTO processDto = processConnector.findProcess(bpmProcessId);
 
         String processDefinitionId = processDto.getProcessDefinitionId();
 
@@ -137,10 +195,33 @@ public class ProcessOperationController {
         if (formDto.isExists()) {
             if (formDto.isRedirect()) {
                 // 如果是外部表单，就直接跳转出去
-                String redirectUrl = formDto.getUrl() + "?processDefinitionId="
-                        + formDto.getProcessDefinitionId();
+                // url
+                String url = formDto.getUrl();
 
-                return "redirect:" + redirectUrl;
+                // metadata
+                FormMetadata formMetadata = new FormMetadata();
+                formMetadata.setBpmProcessId(bpmProcessId);
+                formMetadata.setBusinessKey(businessKey);
+
+                String userId = currentUserHolder.getUserId();
+                EmployeeDTO employeeDto = employeeClient.findById(userId,
+                        tenantId);
+                formMetadata.setUserId(userId);
+                formMetadata.setDisplayName(employeeDto.getName());
+                formMetadata.setDepartmentId(employeeDto.getDepartmentCode());
+                formMetadata.setDepartmentName(employeeDto.getDepartmentName());
+
+                // data
+                ModelInfoDTO modelInfoDto = null;
+
+                if (businessKey != null) {
+                    modelInfoDto = modelConnector.findByCode(businessKey);
+                }
+
+                this.viewExternalForm(request, response, url, formMetadata,
+                        modelInfoDto);
+
+                return null;
             }
 
             // 如果找到了form，就显示表单
@@ -161,6 +242,23 @@ public class ProcessOperationController {
             // 如果也不需要配置任务，就直接进入确认发起流程
             return this.doConfirmStartProcess(formParameter, model);
         }
+    }
+
+    public void viewExternalForm(HttpServletRequest request,
+            HttpServletResponse response, String path,
+            FormMetadata formMetadata, ModelInfoDTO modelInfoDto)
+            throws Exception {
+        request.setAttribute("formMetadata", formMetadata);
+
+        if (modelInfoDto != null) {
+            FormData formData = new FormDataBuilder().setModelInfoDto(
+                    modelInfoDto).build();
+            String formDataJson = jsonMapper.toJson(formData);
+            request.setAttribute("formData", formData);
+            request.setAttribute("formDataJson", formDataJson);
+        }
+
+        request.getRequestDispatcher(path).forward(request, response);
     }
 
     /**
@@ -209,10 +307,12 @@ public class ProcessOperationController {
     public String startProcessInstance(HttpServletRequest request, Model model)
             throws Exception {
         FormParameter formParameter = this.doSaveRecord(request);
+        String businessKey = formParameter.getBusinessKey();
         this.doConfirmStartProcess(formParameter, model);
 
-        Record record = keyValueConnector.findByCode(formParameter
-                .getBusinessKey());
+        // Record record = keyValueConnector.findByCode(formParameter
+        // .getBusinessKey());
+        ModelInfoDTO modelInfoDto = modelConnector.findByCode(businessKey);
         ProcessDTO processDto = processConnector.findProcess(formParameter
                 .getBpmProcessId());
         String processDefinitionId = processDto.getProcessDefinitionId();
@@ -220,22 +320,14 @@ public class ProcessOperationController {
         // 获得form的信息
         FormDTO formDto = processConnector.findStartForm(processDefinitionId);
 
-        Xform xform = new XformBuilder().setStoreConnector(storeConnector)
-                .setUserConnector(userConnector)
-                .setContent(formDto.getContent()).setRecord(record).build();
+        Xform xform = this.processModelService.processFormData(businessKey,
+                formDto);
         Map<String, Object> processParameters = xform.getMapData();
         logger.info("processParameters : {}", processParameters);
 
-        // String processInstanceId = processConnector.startProcess(
-        // currentUserHolder.getUserId(), formParameter.getBusinessKey(),
-        // processDefinitionId, processParameters);
-        // record = new RecordBuilder().build(record, STATUS_RUNNING,
-        // processInstanceId);
-        // keyValueConnector.save(record);
         String userId = currentUserHolder.getUserId();
-        String businessKey = formParameter.getBusinessKey();
         this.operationService.startProcessInstance(userId, businessKey,
-                processDefinitionId, processParameters, record);
+                processDefinitionId, processParameters, modelInfoDto);
 
         return "operation/process-operation-startProcessInstance";
     }
@@ -287,12 +379,12 @@ public class ProcessOperationController {
                 formParameter.setBusinessKey(businessKey);
             }
 
-            Record record = keyValueConnector.findByCode(businessKey);
+            // Record record = keyValueConnector.findByCode(businessKey);
+            ModelInfoDTO modelInfoDto = modelConnector.findByCode(businessKey);
 
-            record = new RecordBuilder().build(record, multipartHandler,
-                    storeConnector, tenantId);
-
-            keyValueConnector.save(record);
+            // record = new RecordBuilder().build(record, multipartHandler,
+            // storeConnector, tenantId);
+            // keyValueConnector.save(record);
         } finally {
             multipartHandler.clear();
         }
@@ -333,28 +425,14 @@ public class ProcessOperationController {
 
         model.addAttribute("formDto", formParameter.getFormDto());
 
-        String json = this.findStartFormData(formParameter.getBusinessKey());
+        String businessKey = formParameter.getBusinessKey();
 
-        if (json != null) {
-            model.addAttribute("json", json);
-        }
-
-        Record record = keyValueConnector.findByCode(formParameter
-                .getBusinessKey());
+        ModelInfoDTO modelInfoDto = modelConnector.findByCode(businessKey);
         FormDTO formDto = formConnector.findForm(formParameter.getFormDto()
                 .getCode(), tenantId);
-
-        if (record != null) {
-            Xform xform = new XformBuilder().setStoreConnector(storeConnector)
-                    .setUserConnector(userConnector)
-                    .setContent(formDto.getContent()).setRecord(record).build();
-            model.addAttribute("xform", xform);
-        } else {
-            Xform xform = new XformBuilder().setStoreConnector(storeConnector)
-                    .setUserConnector(userConnector)
-                    .setContent(formDto.getContent()).build();
-            model.addAttribute("xform", xform);
-        }
+        Xform xform = this.processModelService.processFormData(businessKey,
+                formDto);
+        model.addAttribute("xform", xform);
 
         return "operation/process-operation-viewStartForm";
     }
@@ -376,33 +454,43 @@ public class ProcessOperationController {
         return "operation/process-operation-taskConf";
     }
 
-    /**
-     * 读取草稿箱中的表单数据，转换成json.
-     */
-    public String findStartFormData(String businessKey) throws Exception {
-        Record record = keyValueConnector.findByCode(businessKey);
+    @RequestMapping("process-operation-view")
+    public String view(
+            @RequestParam("processInstanceId") String processInstanceId,
+            Model model) throws Exception {
+        HistoricProcessInstance historicProcessInstance = viewService
+                .findHistoricProcessInstance(processInstanceId);
+        model.addAttribute("historicProcessInstance", historicProcessInstance);
 
-        if (record == null) {
-            return null;
-        }
+        // 显示三部分
+        // 1. 流程基本信息
+        ProcessBaseInfo processBaseInfo = viewService
+                .findProcess(processInstanceId);
+        model.addAttribute("processBaseInfo", processBaseInfo);
 
-        Map map = new HashMap();
+        // 2. 表单
+        Map<String, Object> formResultMap = viewService
+                .findProcessForm(processInstanceId);
+        model.addAttribute("formDto", formResultMap.get("formDto"));
+        model.addAttribute("xform", formResultMap.get("xform"));
+        model.addAttribute("formMetadata", formResultMap.get("formMetadata"));
+        model.addAttribute("formData", formResultMap.get("formData"));
+        model.addAttribute("formDataJson", formResultMap.get("formDataJson"));
 
-        for (Prop prop : record.getProps().values()) {
-            map.put(prop.getCode(), prop.getValue());
-        }
+        // 3. 审批记录
+        List<HumanTaskDTO> humanTaskDtos = viewService
+                .findHumanTasks(processInstanceId);
+        model.addAttribute("humanTaskDtos", humanTaskDtos);
 
-        String json = jsonMapper.toJson(map);
+        // 4. 操作按钮
+        List<Map<String, String>> buttons = viewService
+                .findProcessToolbar(processInstanceId);
+        model.addAttribute("buttons", buttons);
 
-        return json;
+        return "operation/process-operation-view";
     }
 
     // ~ ======================================================================
-    @Resource
-    public void setKeyValueConnector(KeyValueConnector keyValueConnector) {
-        this.keyValueConnector = keyValueConnector;
-    }
-
     @Resource
     public void setMessageHelper(MessageHelper messageHelper) {
         this.messageHelper = messageHelper;
@@ -424,6 +512,12 @@ public class ProcessOperationController {
     }
 
     @Resource
+    public void setInternalProcessConnector(
+            InternalProcessConnector internalProcessConnector) {
+        this.internalProcessConnector = internalProcessConnector;
+    }
+
+    @Resource
     public void setHumanTaskConnector(HumanTaskConnector humanTaskConnector) {
         this.humanTaskConnector = humanTaskConnector;
     }
@@ -434,8 +528,8 @@ public class ProcessOperationController {
     }
 
     @Resource
-    public void setStoreConnector(StoreConnector storeConnector) {
-        this.storeConnector = storeConnector;
+    public void setStoreClient(StoreClient storeClient) {
+        this.storeClient = storeClient;
     }
 
     @Resource
@@ -451,5 +545,35 @@ public class ProcessOperationController {
     @Resource
     public void setUserConnector(UserConnector userConnector) {
         this.userConnector = userConnector;
+    }
+
+    @Resource
+    public void setModelConnector(ModelConnector modelConnector) {
+        this.modelConnector = modelConnector;
+    }
+
+    @Resource
+    public void setProcessModelService(ProcessModelService processModelService) {
+        this.processModelService = processModelService;
+    }
+
+    @Resource
+    public void setEmployeeClient(EmployeeClient employeeClient) {
+        this.employeeClient = employeeClient;
+    }
+
+    @Resource
+    public void setProcessEngine(ProcessEngine processEngine) {
+        this.processEngine = processEngine;
+    }
+
+    @Resource
+    public void setTraceService(TraceService traceService) {
+        this.traceService = traceService;
+    }
+
+    @Resource
+    public void setViewService(ViewService viewService) {
+        this.viewService = viewService;
     }
 }

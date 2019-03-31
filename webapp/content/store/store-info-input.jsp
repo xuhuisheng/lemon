@@ -48,38 +48,38 @@ $(function() {
   <div class="form-group">
     <label class="control-label col-md-1" for="storeInfo_name">名称</label>
 	<div class="col-sm-5">
-	  <input id="storeInfo_name" type="text" name="name" value="${model.name}" class="required" minlength="2" maxlength="50">
+	  <input id="storeInfo_name" type="text" name="name" value="${model.name}" class="form-control required" minlength="2" maxlength="50">
     </div>
   </div>
   <div class="form-group">
     <label class="control-label col-md-1" for="storeInfo_host">服务器</label>
 	<div class="col-sm-5">
-	  <input id="storeInfo_host" type="text" name="host" value="${model.host}" class="required" minlength="2" maxlength="50">
+	  <input id="storeInfo_host" type="text" name="host" value="${model.host}" class="form-control required" minlength="2" maxlength="50">
     </div>
   </div>
   <div class="form-group">
     <label class="control-label col-md-1" for="storeInfo_username">账号</label>
 	<div class="col-sm-5">
-	  <input id="storeInfo_username" type="text" name="username" value="${model.username}" maxlength="50">
+	  <input id="storeInfo_username" type="text" name="username" value="${model.username}" maxlength="50" class="form-control">
     </div>
   </div>
   <div class="form-group">
     <label class="control-label col-md-1" for="storeInfo_password">密码</label>
 	<div class="col-sm-5">
-	  <input id="storeInfo_password" type="password" name="password" value="${model.password}" maxlength="50">
+	  <input id="storeInfo_password" type="password" name="password" value="${model.password}" maxlength="50" class="form-control">
     </div>
   </div>
   <div class="form-group">
     <label class="control-label col-md-1" for="storeInfo_appId">appId</label>
 	<div class="col-sm-5">
-	  <input id="storeInfo_appId" type="text" name="appId" value="${model.appId}" maxlength="50">
+	  <input id="storeInfo_appId" type="text" name="appId" value="${model.appId}" maxlength="50" class="form-control">
     </div>
   </div>
   <div class="form-group">
-    <div class="col-sm-5">
-      <button type="submit" class="btn a-submit"><spring:message code='core.input.save' text='保存'/></button>
+    <div class="col-sm-5 col-md-offset-1">
+      <button type="submit" class="btn btn-default a-submit"><spring:message code='core.input.save' text='保存'/></button>
 	  &nbsp;
-      <button type="button" class="btn a-cancel" onclick="history.back();"><spring:message code='core.input.back' text='返回'/></button>
+      <button type="button" class="btn btn-link a-cancel" onclick="history.back();"><spring:message code='core.input.back' text='返回'/></button>
     </div>
   </div>
 </form>

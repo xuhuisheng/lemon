@@ -173,4 +173,12 @@ public class MockHumanTaskConnector implements HumanTaskConnector {
 
     public void skip(String humanTaskId, String userId, String comment) {
     }
+
+    public long findPersonalTaskCount(String userId, String tenantId) {
+        return 0L;
+    }
+
+    public long findGroupTaskCount(String userId, String tenantId) {
+        return 0L;
+    }
 }

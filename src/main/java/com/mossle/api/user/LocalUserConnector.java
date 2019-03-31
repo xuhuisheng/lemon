@@ -8,4 +8,6 @@ public interface LocalUserConnector {
     UserDTO updateAndFindById(String userId, String userRepoRef);
 
     UserDTO updateAndFindByUsername(String username, String userRepoRef);
+
+    void createOrUpdateLocalUser(UserDTO userDto);
 }

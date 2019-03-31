@@ -18,14 +18,17 @@
 
 	<!-- start of main -->
       <section id="m-main" class="col-md-12" style="padding-top:65px;">
-	 
-	  <div class="alert alert-info" role="alert">
-		<button type="button" class="close" data-dismiss="alert" style="margin-right:30px;">×</button>
-		<strong>流程已发起</strong>
-	  </div>
 
-    </section>
+	    <div class="alert alert-info" role="alert">
+		  <button type="button" class="close" data-dismiss="alert" style="margin-right:30px;">×</button>
+		  <strong>流程已发起</strong>
+	    </div>
+
+	    <a href="${ctx}/bpm/workspace-listRunningProcessInstances.do">返回</a>
+
+      </section>
 	<!-- end of main -->
+
 	</div>
 
   </body>

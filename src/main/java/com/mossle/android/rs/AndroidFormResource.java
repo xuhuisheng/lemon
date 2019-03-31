@@ -12,21 +12,23 @@ import javax.ws.rs.Path;
 import javax.ws.rs.Produces;
 import javax.ws.rs.core.MediaType;
 
+import com.mossle.api.auth.CurrentUserHolder;
 import com.mossle.api.form.FormDTO;
 import com.mossle.api.humantask.HumanTaskConnector;
 import com.mossle.api.humantask.HumanTaskDTO;
-import com.mossle.api.keyvalue.KeyValueConnector;
 import com.mossle.api.keyvalue.Record;
+import com.mossle.api.model.ModelConnector;
+import com.mossle.api.model.ModelInfoDTO;
 import com.mossle.api.process.ProcessConnector;
-import com.mossle.api.store.StoreConnector;
 import com.mossle.api.tenant.TenantHolder;
 
 import com.mossle.bpm.persistence.manager.BpmProcessManager;
 
-import com.mossle.api.auth.CurrentUserHolder;
+import com.mossle.client.store.StoreClient;
+
 import com.mossle.core.mapper.JsonMapper;
 
-import com.mossle.model.support.FormField;
+import com.mossle.model.data.FormField;
 
 import com.mossle.pim.persistence.manager.PimDeviceManager;
 
@@ -53,8 +55,8 @@ public class AndroidFormResource {
     private PimDeviceManager pimDeviceManager;
     private ProcessConnector processConnector;
     private HumanTaskConnector humanTaskConnector;
-    private KeyValueConnector keyValueConnector;
-    private StoreConnector storeConnector;
+    private ModelConnector modelConnector;
+    private StoreClient storeClient;
 
     @POST
     @Path("viewStartForm")
@@ -215,11 +217,13 @@ public class AndroidFormResource {
         // 如果是任务草稿，直接通过processInstanceId获得record，更新数据
         // TODO: 分支肯定有问题
         String processInstanceId = humanTaskDto.getProcessInstanceId();
+        String businessKey = processConnector
+                .findBusinessKeyByProcessInstanceId(processInstanceId);
+        ModelInfoDTO modelInfoDto = modelConnector.findByCode(businessKey);
 
-        Record record = keyValueConnector.findByRef(processInstanceId);
-
-        Xform xform = new XformBuilder().setStoreConnector(storeConnector)
-                .setContent(formDto.getContent()).setRecord(record).build();
+        Xform xform = new XformBuilder().setStoreClient(storeClient)
+                .setContent(formDto.getContent()).setModelInfoDto(modelInfoDto)
+                .build();
 
         StringBuilder buff = new StringBuilder();
 
@@ -313,12 +317,12 @@ public class AndroidFormResource {
     }
 
     @Resource
-    public void setKeyValueConnector(KeyValueConnector keyValueConnector) {
-        this.keyValueConnector = keyValueConnector;
+    public void setModelConnector(ModelConnector modelConnector) {
+        this.modelConnector = modelConnector;
     }
 
     @Resource
-    public void setStoreConnector(StoreConnector storeConnector) {
-        this.storeConnector = storeConnector;
+    public void setStoreClient(StoreClient storeClient) {
+        this.storeClient = storeClient;
     }
 }

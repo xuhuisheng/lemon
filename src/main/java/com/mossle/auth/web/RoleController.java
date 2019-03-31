@@ -1,6 +1,7 @@
 package com.mossle.auth.web;
 
 import java.util.ArrayList;
+import java.util.Arrays;
 import java.util.List;
 import java.util.Map;
 
@@ -14,11 +15,14 @@ import com.mossle.api.tenant.TenantDTO;
 import com.mossle.api.tenant.TenantHolder;
 
 import com.mossle.auth.component.RoleChecker;
+import com.mossle.auth.component.RoleConverter;
 import com.mossle.auth.persistence.domain.Role;
 import com.mossle.auth.persistence.domain.RoleDef;
 import com.mossle.auth.persistence.manager.RoleDefManager;
 import com.mossle.auth.persistence.manager.RoleManager;
+import com.mossle.auth.service.AuthService;
 import com.mossle.auth.support.CheckRoleException;
+import com.mossle.auth.support.RoleDTO;
 
 import com.mossle.core.export.Exportor;
 import com.mossle.core.export.TableModel;
@@ -53,6 +57,8 @@ public class RoleController {
     private BeanMapper beanMapper = new BeanMapper();
     private TenantConnector tenantConnector;
     private TenantHolder tenantHolder;
+    private RoleConverter roleConverter = new RoleConverter();
+    private AuthService authService;
 
     @RequestMapping("role-list")
     public String list(@ModelAttribute Page page,
@@ -211,6 +217,11 @@ public class RoleController {
         propertyFilters.add(new PropertyFilter("EQS_tenantId", tenantHolder
                 .getTenantId()));
         page = roleManager.pagedQuery(page, propertyFilters);
+
+        List<Role> roles = (List<Role>) page.getResult();
+        List<RoleDTO> roleDtos = this.roleConverter.createRoleDtos(roles);
+
+        page.setResult(roleDtos);
         model.addAttribute("page", page);
 
         return "auth/role-viewList";
@@ -292,6 +303,27 @@ public class RoleController {
         return "redirect:/auth/role-viewList.do";
     }
 
+    @RequestMapping("role-user-input")
+    public String userInput(@RequestParam("id") Long id, Model model)
+            throws Exception {
+        Role role = roleManager.get(id);
+        model.addAttribute("role", role);
+
+        return "auth/role-user-input";
+    }
+
+    @RequestMapping("role-user-save")
+    public String userSave(@RequestParam("id") Long id,
+            @RequestParam("text") String text,
+            RedirectAttributes redirectAttributes) throws Exception {
+        List<String> usernames = Arrays.asList(text.split("\n"));
+        authService.saveRoleUserRelation(id, usernames);
+        messageHelper.addFlashMessage(redirectAttributes, "core.success.save",
+                "保存成功");
+
+        return "redirect:/auth/role-user-input.do?id=" + id;
+    }
+
     // ~ ======================================================================
     @Resource
     public void setRoleManager(RoleManager roleManager) {
@@ -326,5 +358,10 @@ public class RoleController {
     @Resource
     public void setTenantHolder(TenantHolder tenantHolder) {
         this.tenantHolder = tenantHolder;
+    }
+
+    @Resource
+    public void setAuthService(AuthService authService) {
+        this.authService = authService;
     }
 }

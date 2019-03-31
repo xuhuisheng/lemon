@@ -16,18 +16,22 @@ import javax.ws.rs.core.MediaType;
 
 import com.mossle.api.form.FormDTO;
 import com.mossle.api.keyvalue.FormParameter;
-import com.mossle.api.keyvalue.KeyValueConnector;
 import com.mossle.api.keyvalue.Record;
 import com.mossle.api.keyvalue.RecordBuilder;
+import com.mossle.api.model.ModelBuilder;
+import com.mossle.api.model.ModelConnector;
+import com.mossle.api.model.ModelInfoDTO;
 import com.mossle.api.process.ProcessConnector;
 import com.mossle.api.process.ProcessDTO;
-import com.mossle.api.store.StoreConnector;
 import com.mossle.api.tenant.TenantHolder;
 
 import com.mossle.bpm.persistence.domain.BpmProcess;
 import com.mossle.bpm.persistence.manager.BpmProcessManager;
 
+import com.mossle.client.store.StoreClient;
+
 import com.mossle.core.mapper.JsonMapper;
+import com.mossle.core.page.Page;
 import com.mossle.core.util.BaseDTO;
 
 import com.mossle.operation.service.OperationService;
@@ -62,10 +66,10 @@ public class AndroidBpmResource {
     private BpmProcessManager bpmProcessManager;
     private TenantHolder tenantHolder;
     private PimDeviceManager pimDeviceManager;
-    private KeyValueConnector keyValueConnector;
     private ProcessConnector processConnector;
-    private StoreConnector storeConnector;
     private OperationService operationService;
+    private StoreClient storeClient;
+    private ModelConnector modelConnector;
 
     @POST
     @Path("processDefinitions")
@@ -209,20 +213,23 @@ public class AndroidBpmResource {
         String userId = pimDevice.getUserId();
         String tenantId = "1";
 
-        List<Record> records = keyValueConnector.findByStatus(
-                STATUS_DRAFT_PROCESS, userId, tenantId);
+        // List<Record> records = keyValueConnector.findByStatus(
+        // STATUS_DRAFT_PROCESS, userId, tenantId);
+        Page page = modelConnector.findDraft(1, 100, userId);
+        List<ModelInfoDTO> modelInfoDtos = (List<ModelInfoDTO>) page
+                .getResult();
 
         List<Map<String, Object>> list = new ArrayList<Map<String, Object>>();
 
-        for (Record record : records) {
+        for (ModelInfoDTO modelInfoDto : modelInfoDtos) {
             Map<String, Object> map = new HashMap<String, Object>();
-            map.put("name", record.getName());
-            map.put("formTemplateCode", record.getFormTemplateCode());
-            map.put("code", record.getCode());
-            map.put("category", record.getCategory());
-            map.put("status", record.getStatus());
-            map.put("ref", record.getRef());
-            map.put("createTime", record.getCreateTime());
+            map.put("name", modelInfoDto.getName());
+            // map.put("formTemplateCode", modelInfoDto.getFormTemplateCode());
+            map.put("code", modelInfoDto.getCode());
+            map.put("category", modelInfoDto.getCategory());
+            map.put("status", modelInfoDto.getStatus());
+            // map.put("ref", modelInfoDto.getRef());
+            map.put("createTime", modelInfoDto.getCreateTime());
             list.add(map);
         }
 
@@ -266,7 +273,9 @@ public class AndroidBpmResource {
         FormParameter formParameter = this.doSaveRecord(map, userId, tenantId);
 
         // doConfirmStartProcess(formParameter, model);
-        Record record = keyValueConnector.findByCode(formParameter
+        // Record record = keyValueConnector.findByCode(formParameter
+        // .getBusinessKey());
+        ModelInfoDTO modelInfoDto = modelConnector.findByCode(formParameter
                 .getBusinessKey());
         ProcessDTO processDto = processConnector.findProcess(formParameter
                 .getBpmProcessId());
@@ -276,8 +285,9 @@ public class AndroidBpmResource {
         // 获得form的信息
         FormDTO formDto = processConnector.findStartForm(processDefinitionId);
 
-        Xform xform = new XformBuilder().setStoreConnector(storeConnector)
-                .setContent(formDto.getContent()).setRecord(record).build();
+        Xform xform = new XformBuilder().setStoreClient(storeClient)
+                .setContent(formDto.getContent()).setModelInfoDto(modelInfoDto)
+                .build();
         Map<String, Object> processParameters = xform.getMapData();
         logger.info("processParameters : {}", processParameters);
 
@@ -285,9 +295,11 @@ public class AndroidBpmResource {
                 formParameter.getBusinessKey(), processDefinitionId,
                 processParameters);
 
-        record = new RecordBuilder().build(record, STATUS_RUNNING,
-                processInstanceId);
-        keyValueConnector.save(record);
+        // record = new RecordBuilder().build(record, STATUS_RUNNING,
+        // processInstanceId);
+        // keyValueConnector.save(record);
+        modelInfoDto.setStatus("active");
+        modelConnector.save(modelInfoDto);
 
         BaseDTO result = new BaseDTO();
         result.setCode(200);
@@ -320,11 +332,13 @@ public class AndroidBpmResource {
             formParameter.setBusinessKey(businessKey);
         }
 
-        Record record = keyValueConnector.findByCode(businessKey);
-
-        record = new RecordBuilder().build(record, multiValueMap, tenantId);
-
-        keyValueConnector.save(record);
+        // Record record = keyValueConnector.findByCode(businessKey);
+        // record = new RecordBuilder().build(record, multiValueMap, tenantId);
+        // keyValueConnector.save(record);
+        ModelInfoDTO modelInfoDto = modelConnector.findByCode(businessKey);
+        modelInfoDto = new ModelBuilder().build(modelInfoDto, multiValueMap,
+                tenantId);
+        modelConnector.save(modelInfoDto);
 
         return formParameter;
     }
@@ -351,22 +365,22 @@ public class AndroidBpmResource {
     }
 
     @Resource
-    public void setKeyValueConnector(KeyValueConnector keyValueConnector) {
-        this.keyValueConnector = keyValueConnector;
-    }
-
-    @Resource
     public void setProcessConnector(ProcessConnector processConnector) {
         this.processConnector = processConnector;
     }
 
     @Resource
-    public void setStoreConnector(StoreConnector storeConnector) {
-        this.storeConnector = storeConnector;
+    public void setOperationService(OperationService operationService) {
+        this.operationService = operationService;
     }
 
     @Resource
-    public void setOperationService(OperationService operationService) {
-        this.operationService = operationService;
+    public void setStoreClient(StoreClient storeClient) {
+        this.storeClient = storeClient;
+    }
+
+    @Resource
+    public void setModelConnector(ModelConnector modelConnector) {
+        this.modelConnector = modelConnector;
     }
 }

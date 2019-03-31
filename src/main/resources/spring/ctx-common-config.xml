@@ -1,0 +1,21 @@
+<?xml version="1.0" encoding="UTF-8"?>
+<beans xmlns="http://www.springframework.org/schema/beans"
+       xmlns:context="http://www.springframework.org/schema/context"
+       xmlns:tx="http://www.springframework.org/schema/tx"
+       xmlns:xsi="http://www.w3.org/2001/XMLSchema-instance"
+       xsi:schemaLocation="http://www.springframework.org/schema/beans http://www.springframework.org/schema/beans/spring-beans.xsd
+       http://www.springframework.org/schema/context http://www.springframework.org/schema/context/spring-context.xsd
+       http://www.springframework.org/schema/tx http://www.springframework.org/schema/tx/spring-tx.xsd">
+
+	<bean id="appConfig" class="com.mossle.core.config.AppConfig" factory-method="getInstance"/>
+
+	<bean id="applicationProperties" factory-bean="appConfig" factory-method="getProperties"/>
+
+	<!-- 支持xml和@Value中的占位符${key} -->
+	<bean id="propertySourcesPlaceholderConfigurer" class="org.springframework.context.support.PropertySourcesPlaceholderConfigurer">
+		<property name="propertySources">
+			<bean class="com.mossle.core.config.ConfigPropertySourcesFactoryBean"/>
+		</property>
+	</bean>
+
+</beans>

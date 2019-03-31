@@ -8,9 +8,10 @@ import java.util.Map;
 import javax.annotation.Resource;
 
 import com.mossle.api.auth.CurrentUserHolder;
-import com.mossle.api.store.StoreConnector;
 import com.mossle.api.store.StoreDTO;
 import com.mossle.api.tenant.TenantHolder;
+
+import com.mossle.client.store.StoreClient;
 
 import com.mossle.cms.persistence.domain.CmsArticle;
 import com.mossle.cms.persistence.domain.CmsAttachment;
@@ -52,7 +53,7 @@ public class OneCatalogController {
     private RenderService renderService;
     private TenantHolder tenantHolder;
     private CmsAttachmentManager cmsAttachmentManager;
-    private StoreConnector storeConnector;
+    private StoreClient storeClient;
     private CurrentUserHolder currentUserHolder;
     private CmsCommentManager cmsCommentManager;
 
@@ -130,8 +131,7 @@ public class OneCatalogController {
 
         // attachment
         if (file != null) {
-            StoreDTO storeDto = storeConnector.saveStore(
-                    "cms/html/r/attachments",
+            StoreDTO storeDto = storeClient.saveStore("cms/html/r/attachments",
                     new MultipartFileDataSource(file), tenantId);
             CmsAttachment cmsAttachment = new CmsAttachment();
             cmsAttachment.setCmsArticle(dest);
@@ -142,9 +142,8 @@ public class OneCatalogController {
 
         // logo
         if (logoFile != null) {
-            StoreDTO storeDto = storeConnector.saveStore(
-                    "cms/html/r/attachments", new MultipartFileDataSource(
-                            logoFile), tenantId);
+            StoreDTO storeDto = storeClient.saveStore("cms/html/r/attachments",
+                    new MultipartFileDataSource(logoFile), tenantId);
             dest.setLogo(storeDto.getKey());
         }
 
@@ -279,8 +278,8 @@ public class OneCatalogController {
     }
 
     @Resource
-    public void setStoreConnector(StoreConnector storeConnector) {
-        this.storeConnector = storeConnector;
+    public void setStoreClient(StoreClient storeClient) {
+        this.storeClient = storeClient;
     }
 
     @Resource

@@ -16,4 +16,7 @@ public class MockLocalUserConnector implements LocalUserConnector {
     public UserDTO updateAndFindByUsername(String username, String userRepoRef) {
         return null;
     }
+
+    public void createOrUpdateLocalUser(UserDTO userDto) {
+    }
 }

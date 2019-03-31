@@ -45,9 +45,11 @@ public class DelegateController {
     private TenantHolder tenantHolder;
 
     /**
-     * 自动委托列表 TODO 可以指定多个自动委托人？
-     * 
-     * @return
+     * 自动委托列表.
+     * TODO 可以指定多个自动委托人？
+     *
+     * @param model model
+     * @return String
      */
     @RequestMapping("delegate-listMyDelegateInfos")
     public String listMyDelegateInfos(Model model) {
@@ -60,9 +62,10 @@ public class DelegateController {
     }
 
     /**
-     * 删除自动委托
-     * 
-     * @return
+     * 删除自动委托.
+     *
+     * @param id id
+     * @return String
      */
     @RequestMapping("delegate-removeDelegateInfo")
     public String removeDelegateInfo(@RequestParam("id") Long id) {
@@ -73,9 +76,10 @@ public class DelegateController {
 
     // ~ ======================================================================
     /**
-     * 自动委托页面
-     * 
-     * @return
+     * 自动委托页面.
+     *
+     * @param model mode
+     * @return String
      */
     @RequestMapping("delegate-prepareAutoDelegate")
     public String prepareAutoDelegate(Model model) {
@@ -88,9 +92,15 @@ public class DelegateController {
     }
 
     /**
-     * 自动委托
-     * 
-     * @return
+     * 自动委托.
+     *
+     * @param startTime startTime
+     * @param endTime endTime
+     * @param processDefinitionId processDefinitionId
+     * @param taskDefinitionKey taskDefinitionKey
+     * @param attorney attorney
+     * @return String
+     * @throws Exception Exception
      */
     @RequestMapping("delegate-autoDelegate")
     public String autoDelegate(
@@ -119,7 +129,10 @@ public class DelegateController {
 
     // ~ ======================================================================
     /**
-     * 自动委派
+     * 自动委派.
+     *
+     * @param model model
+     * @return String
      */
     @RequestMapping("delegate-listDelegateInfos")
     public String listDelegateInfos(Model model) {
@@ -132,9 +145,10 @@ public class DelegateController {
     }
 
     /**
-     * 自动委托历史
+     * 自动委托历史.
      * 
-     * @return
+     * @param model model
+     * @return String
      */
     @RequestMapping("delegate-listDelegateHistories")
     public String listDelegateHistories(Model model) {

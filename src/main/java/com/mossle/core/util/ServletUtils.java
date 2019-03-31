@@ -49,7 +49,7 @@ public class ServletUtils {
 
     // -- 常用数值定义 --//
     /** one year seconds. */
-    public static final long ONE_YEAR_SECONDS = 60 * 60 * 24 * 365;
+    public static final long ONE_YEAR_SECONDS = 60L * 60 * 24 * 365;
 
     /** mill seconds. */
     public static final int MILL_SECONDS = 1000;

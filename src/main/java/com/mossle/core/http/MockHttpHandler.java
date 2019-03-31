@@ -21,6 +21,11 @@ public class MockHttpHandler implements HttpHandler {
         return content;
     }
 
+    public String doPost(String url, Map<String, Object> params)
+            throws Exception {
+        return content;
+    }
+
     public void setContent(String content) {
         this.content = content;
     }

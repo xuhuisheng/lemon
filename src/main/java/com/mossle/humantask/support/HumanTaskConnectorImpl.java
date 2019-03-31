@@ -700,13 +700,14 @@ public class HumanTaskConnectorImpl implements HumanTaskConnector {
      */
     public void rollbackInitiator(String humanTaskId, String comment) {
         HumanTaskDTO humanTaskDto = findHumanTask(humanTaskId);
-        humanTaskDto.setAction("回退（发起人）");
-        humanTaskDto.setComment(comment);
-        this.saveHumanTask(humanTaskDto, false);
 
         if (humanTaskDto == null) {
             throw new IllegalStateException("任务不存在");
         }
+
+        humanTaskDto.setAction("回退（发起人）");
+        humanTaskDto.setComment(comment);
+        this.saveHumanTask(humanTaskDto, false);
 
         String taskId = humanTaskDto.getTaskId();
         String processDefinitionId = humanTaskDto.getProcessDefinitionId();
@@ -715,7 +716,10 @@ public class HumanTaskConnectorImpl implements HumanTaskConnector {
                 .findInitiator(processInstanceId);
         String activityId = this.internalProcessConnector
                 .findFirstUserTaskActivityId(processDefinitionId, initiator);
-        internalProcessConnector.rollback(taskId, activityId, initiator);
+        this.internalProcessConnector.rollback(taskId, activityId, initiator);
+        // event
+        this.internalProcessConnector.fireEvent("reject",
+            humanTaskDto.getBusinessKey(), humanTaskDto.getAssignee(), humanTaskDto.getCode(), humanTaskDto.getName());
     }
 
     /**
@@ -888,6 +892,33 @@ public class HumanTaskConnectorImpl implements HumanTaskConnector {
         taskParticipant.setTaskInfo(taskInfoManager.get(Long
                 .parseLong(participantDto.getHumanTaskId())));
         taskParticipantManager.save(taskParticipant);
+    }
+
+    public long findPersonalTaskCount(String userId, String tenantId) {
+        String hql = "select count(*) from TaskInfo where assignee=? and tenantId=? and status='active'";
+
+        return taskInfoManager.getCount(hql, userId, tenantId);
+    }
+
+    public long findGroupTaskCount(String userId, String tenantId) {
+        List<String> partyIds = new ArrayList<String>();
+        partyIds.addAll(this.findGroupIds(userId));
+        partyIds.addAll(this.findUserIds(userId));
+
+        logger.debug("party ids : {}", partyIds);
+
+        if (partyIds.isEmpty()) {
+            return 0L;
+        }
+
+        Map<String, Object> map = new HashMap<String, Object>();
+        map.put("partyIds", partyIds);
+        map.put("tenantId", tenantId);
+
+        String hql = "select count(distinct t) from TaskInfo t join t.taskParticipants p "
+                + "with p.ref in (:partyIds) where t.tenantId=:tenantId and t.assignee=null and t.status='active' ";
+
+        return taskInfoManager.getCount(hql, map);
     }
 
     // ~ ==================================================

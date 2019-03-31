@@ -6,8 +6,9 @@ import java.util.List;
 import javax.annotation.Resource;
 
 import com.mossle.api.tenant.TenantHolder;
-import com.mossle.api.user.UserConnector;
 import com.mossle.api.user.UserDTO;
+
+import com.mossle.client.user.UserClient;
 
 import com.mossle.core.spring.MessageHelper;
 
@@ -29,7 +30,7 @@ import org.springframework.web.servlet.mvc.support.RedirectAttributes;
 @RequestMapping("party")
 public class AdminBatchController {
     private MessageHelper messageHelper;
-    private UserConnector userConnector;
+    private UserClient userClient;
     private PartyEntityManager partyEntityManager;
     private PartyStructManager partyStructManager;
     private PartyStructTypeManager partyStructTypeManager;
@@ -60,7 +61,7 @@ public class AdminBatchController {
                     continue;
                 }
 
-                UserDTO userDto = userConnector.findByUsername(str,
+                UserDTO userDto = userClient.findByUsername(str,
                         tenantHolder.getUserRepoRef());
 
                 if (userDto.getStatus() != 1) {
@@ -145,8 +146,8 @@ public class AdminBatchController {
     }
 
     @Resource
-    public void setUserConnector(UserConnector userConnector) {
-        this.userConnector = userConnector;
+    public void setUserClient(UserClient userClient) {
+        this.userClient = userClient;
     }
 
     @Resource

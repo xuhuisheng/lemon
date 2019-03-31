@@ -6,8 +6,9 @@ import javax.activation.DataSource;
 
 import javax.annotation.Resource;
 
-import com.mossle.api.store.StoreConnector;
 import com.mossle.api.store.StoreDTO;
+
+import com.mossle.client.store.StoreClient;
 
 import com.mossle.core.store.ByteArrayDataSource;
 
@@ -32,8 +33,8 @@ public class UserAvatarService {
             .getLogger(UserAvatarService.class);
     private AccountInfoManager accountInfoManager;
     private AccountAvatarManager accountAvatarManager;
-    private StoreConnector storeConnector;
     private AvatarCache avatarCache;
+    private StoreClient storeClient;
 
     public DataSource viewAvatarById(Long accountId, int width, String tenantId)
             throws Exception {
@@ -102,11 +103,10 @@ public class UserAvatarService {
 
         StoreDTO storeDto = null;
 
-        storeDto = storeConnector.getStore("avatar", key, tenantId);
+        storeDto = storeClient.getStore("avatar", key, tenantId);
 
         if (storeDto == null) {
-            storeDto = storeConnector.getStore("avatar", "default.jpg",
-                    tenantId);
+            storeDto = storeClient.getStore("avatar", "default.jpg", tenantId);
 
             return storeDto.getDataSource();
         }
@@ -121,7 +121,7 @@ public class UserAvatarService {
         String suffix = key.substring(index);
         String resizeKey = prefix + "-" + width + suffix;
 
-        StoreDTO resizeStoreDto = storeConnector.getStore("avatar", resizeKey,
+        StoreDTO resizeStoreDto = storeClient.getStore("avatar", resizeKey,
                 tenantId);
 
         if (resizeStoreDto == null) {
@@ -129,7 +129,7 @@ public class UserAvatarService {
             ImageUtils.zoomImage(originalStoreDto.getDataSource()
                     .getInputStream(), baos, width, width);
             logger.info("resizeKey : {}", resizeKey);
-            resizeStoreDto = storeConnector.saveStore("avatar", resizeKey,
+            resizeStoreDto = storeClient.saveStore("avatar", resizeKey,
                     new ByteArrayDataSource(storeDto.getDataSource().getName(),
                             baos.toByteArray()), tenantId);
         }
@@ -149,8 +149,8 @@ public class UserAvatarService {
     }
 
     @Resource
-    public void setStoreConnector(StoreConnector storeConnector) {
-        this.storeConnector = storeConnector;
+    public void setStoreClient(StoreClient storeClient) {
+        this.storeClient = storeClient;
     }
 
     @Resource

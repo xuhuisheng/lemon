@@ -10,9 +10,10 @@ import javax.annotation.Resource;
 
 import javax.imageio.ImageIO;
 
-import com.mossle.api.store.StoreConnector;
 import com.mossle.api.store.StoreDTO;
 import com.mossle.api.tenant.TenantHolder;
+
+import com.mossle.client.store.StoreClient;
 
 import com.mossle.core.export.Exportor;
 import com.mossle.core.mapper.BeanMapper;
@@ -44,7 +45,7 @@ public class AccountAvatarController {
     private MessageHelper messageHelper;
     private Exportor exportor;
     private BeanMapper beanMapper = new BeanMapper();
-    private StoreConnector storeConnector;
+    private StoreClient storeClient;
     private TenantHolder tenantHolder;
 
     @RequestMapping("account-avatar-input")
@@ -61,13 +62,18 @@ public class AccountAvatarController {
 
     /**
      * 上传.
+     *
+     * @param id Long
+     * @param avatar MultipartFile
+     * @return String
+     * @throws Exception ex
      */
     @RequestMapping("account-avatar-upload")
     @ResponseBody
     public String upload(@RequestParam("id") Long id,
             @RequestParam("avatar") MultipartFile avatar) throws Exception {
         String tenantId = tenantHolder.getTenantId();
-        StoreDTO storeDto = storeConnector.saveStore("avatar",
+        StoreDTO storeDto = storeClient.saveStore("avatar",
                 new MultipartFileDataSource(avatar), tenantId);
 
         AccountInfo accountInfo = accountInfoManager.get(id);
@@ -89,6 +95,10 @@ public class AccountAvatarController {
 
     /**
      * 显示.
+     *
+     * @param id Long
+     * @param os OutputStream
+     * @throws Exception ex
      */
     @RequestMapping("account-avatar-view")
     @ResponseBody
@@ -104,7 +114,7 @@ public class AccountAvatarController {
             return;
         }
 
-        StoreDTO storeDto = storeConnector.getStore("avatar",
+        StoreDTO storeDto = storeClient.getStore("avatar",
                 accountAvatar.getCode(), tenantId);
 
         IoUtils.copyStream(storeDto.getDataSource().getInputStream(), os);
@@ -125,7 +135,7 @@ public class AccountAvatarController {
             return "user/account-avatar-crop";
         }
 
-        StoreDTO storeDto = storeConnector.getStore("avatar",
+        StoreDTO storeDto = storeClient.getStore("avatar",
                 accountAvatar.getCode(), tenantId);
         BufferedImage bufferedImage = ImageIO.read(storeDto.getDataSource()
                 .getInputStream());
@@ -165,13 +175,13 @@ public class AccountAvatarController {
         model.addAttribute("accountAvatar", accountAvatar);
 
         if (accountAvatar != null) {
-            StoreDTO storeDto = storeConnector.getStore("avatar",
+            StoreDTO storeDto = storeClient.getStore("avatar",
                     accountAvatar.getCode(), tenantId);
             ByteArrayOutputStream baos = new ByteArrayOutputStream();
             ImageUtils.zoomImage(storeDto.getDataSource().getInputStream(),
                     baos, x1, y1, x2, y2);
 
-            storeDto = storeConnector.saveStore("avatar",
+            storeDto = storeClient.saveStore("avatar",
                     new InputStreamDataSource(w + ".png",
                             new ByteArrayInputStream(baos.toByteArray())),
                     tenantId);
@@ -205,8 +215,8 @@ public class AccountAvatarController {
     }
 
     @Resource
-    public void setStoreConnector(StoreConnector storeConnector) {
-        this.storeConnector = storeConnector;
+    public void setStoreClient(StoreClient storeClient) {
+        this.storeClient = storeClient;
     }
 
     @Resource

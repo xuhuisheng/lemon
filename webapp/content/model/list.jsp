@@ -142,7 +142,7 @@ $(function() {
 		  <button class="btn btn-default a-insert" onclick="location.href='sendmail-history-input.do'">新建</button>
 		  <button class="btn btn-default a-remove" onclick="table.removeAll()">删除</button>
 		  --%>
-		  <button class="btn btn-small a-export" onclick="table.exportExcel()">导出</button>
+		  <button class="btn btn-default a-export" onclick="table.exportExcel()">导出</button>
 		</div>
 
 		<div class="pull-right">

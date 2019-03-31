@@ -180,6 +180,7 @@ public final class CookieHttpSessionStrategy
 		if (this.sessionParam == null) {
 			return DEFAULT_ALIAS;
 		}
+		// String u = request.getParameter(this.sessionParam);
 		String u = safeGetParameter(request, this.sessionParam);
 		if (u == null) {
 			return DEFAULT_ALIAS;

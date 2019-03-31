@@ -2,6 +2,8 @@ package com.mossle.portal.data;
 
 import java.util.List;
 
+import com.mossle.core.csv.CsvCallback;
+
 import com.mossle.portal.persistence.domain.PortalInfo;
 import com.mossle.portal.persistence.domain.PortalItem;
 import com.mossle.portal.persistence.domain.PortalWidget;
@@ -27,7 +29,7 @@ public class PortalItemCallback implements CsvCallback {
         String columnIndex = list.get(1);
         String rowIndex = list.get(2);
 
-		name = name.toLowerCase();
+        name = name.toLowerCase();
 
         PortalInfo portalInfo = this.createOrGetPortalInfo();
 

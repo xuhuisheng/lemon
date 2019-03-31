@@ -131,8 +131,8 @@ $(function() {
   -->
   <div class="form-group">
     <label class="control-label col-md-1" for="cms-article_cmsArticlename">来源</label>
-	<div class="col-md-11">
-	  <input id="cms-article_cmsArticlename" type="text" name="source" value="${model.source}" size="40" class="form-control" minlength="2" maxlength="50">
+	  <div class="col-md-5">
+	    <input id="cms-article_cmsArticlename" type="text" name="source" value="${model.source}" size="40" class="form-control" minlength="2" maxlength="50">
     </div>
   </div>
   <!--
@@ -151,8 +151,8 @@ $(function() {
 -->
   <div class="form-group">
     <label class="control-label col-md-1" for="cms-article_cmsArticlename">发布时间</label>
-	<div class="input-group date datetimepicker col-md-5" style="padding-left:15px;padding-right:15px;">
-	  <input id="cal-info_startTime" name="publishTime" size="16" type="text" value="<fmt:formatDate value='${model.publishTime}' pattern='yyyy-MM-dd HH:mm'/>" readonly style="background-color:white;cursor:default;" class="form-control required">
+	  <div class="input-group date datetimepicker col-md-5" style="padding-left:15px;padding-right:15px;">
+	    <input id="cal-info_startTime" name="publishTime" size="16" type="text" value="<fmt:formatDate value='${model.publishTime}' pattern='yyyy-MM-dd HH:mm'/>" readonly style="background-color:white;cursor:default;" class="form-control required">
       <span class="input-group-addon"><span class="glyphicon glyphicon-remove"></span></span>
       <span class="input-group-addon"><span class="glyphicon glyphicon-th"></span></span>
     </div>

@@ -13,10 +13,13 @@
 	<!-- bootbox -->
     <script type="text/javascript" src="${cdnPrefix}/bootbox/bootbox.min.js"></script>
 	<link href="${cdnPrefix}/public/mossle-xform/0.0.11/styles/xform.css" rel="stylesheet">
-    <script type="text/javascript" src="${cdnPrefix}/public/mossle-xform/0.0.11/xform-packed.js"></script>
+    <script type="text/javascript" src="${cdnPrefix}/public/mossle-xform/0.0.11/xform-all.js"></script>
 
     <link type="text/css" rel="stylesheet" href="${cdnPrefix}/public/mossle-userpicker/3.0/userpicker.css">
     <script type="text/javascript" src="${cdnPrefix}/public/mossle-userpicker/3.0/userpicker.js"></script>
+
+    <link type="text/css" rel="stylesheet" href="${cdnPrefix}/public/webuploader/0.1.5/webuploader.css">
+	<script type="text/javascript" src="${cdnPrefix}/public/webuploader/0.1.5/webuploader.js"></script>
 
 	<style type="text/css">
 .xf-handler {
@@ -66,13 +69,13 @@ $(function() {
 	createUserPicker({
 		multiple: true,
 		searchUrl: '${tenantPrefix}/rs/user/search',
-		treeUrl: '${tenantPrefix}/rs/party/tree?partyStructTypeId=1',
-		childUrl: '${tenantPrefix}/rs/party/searchUser'
+		treeUrl: '${tenantPrefix}/party/rs/tree-data?type=struct',
+		childUrl: '${tenantPrefix}/party/rs/search-user'
 	});
 })
     </script>
 
-	<script type="text/javascript" src="${cdnPrefix}/public/mossle-operation/0.0.4/TaskOperation.js"></script>
+	<script type="text/javascript" src="${cdnPrefix}/public/mossle-operation/0.0.4/TaskOperation.js?v=20190327-01"></script>
 	<script type="text/javascript">
 ROOT_URL = '${tenantPrefix}';
 var taskOperation = new TaskOperation();
@@ -100,80 +103,17 @@ var taskOperation = new TaskOperation();
 		</div>
 		</c:if>
 
-      <c:if test="${humanTask.catalog != 'communicate'}">
-<table width="100%" cellspacing="0" cellpadding="0" border="0" align="center" class="xf-table">
-  <tbody>
-    <tr>
-	  <td width="25%" class="xf-cell xf-cell-right xf-cell-bottom xf-cell-top xf-cell-left">
-	    <label style="display:block;text-align:right;margin-bottom:0px;padding-top:10px;padding-bottom:10px;">上个环节&nbsp;</label>
-	  </td>
-	  <td width="25%" class="xf-cell xf-cell-right xf-cell-bottom xf-cell-top" colspan="1" rowspan="1">
-	    <div id="previousStep"></div>
-	  </td>
-	  <td width="25%" class="xf-cell xf-cell-right xf-cell-bottom xf-cell-top xf-cell-left">
-	    <label style="display:block;text-align:right;margin-bottom:0px;padding-top:10px;padding-bottom:10px;">下个环节&nbsp;</label>
-	  </td>
-	  <td width="25%" class="xf-cell xf-cell-right xf-cell-bottom xf-cell-top" colspan="1" rowspan="1">
-	    <div id="nextStep"></div>
-	  </td>
-	</tr>
-  </tbody>
-</table>
-	  <script>
-		  $.getJSON('${tenantPrefix}/rs/bpm/previous', {
-			  processDefinitionId: '${formDto.processDefinitionId}',
-			  activityId: '${formDto.activityId}'
-		  }, function(data) {
-			  $('#previousStep').append('&nbsp;');
-			  for (var i = 0; i < data.length; i++) {
-				  $('#previousStep').append(data[i].name);
-			  }
-		  });
-	  </script>
-
-		  <script>
-		  $.getJSON('${tenantPrefix}/rs/bpm/next', {
-			  processDefinitionId: '${formDto.processDefinitionId}',
-			  activityId: '${formDto.activityId}'
-		  }, function(data) {
-			  $('#nextStep').append('&nbsp;');
-			  for (var i = 0; i < data.length; i++) {
-				  $('#nextStep').append(data[i].name);
-			  }
-		  });
-		  </script>
-		  </c:if>
-
-
 	  <form id="xform" method="post" action="${tenantPrefix}/operation/task-operation-completeTask.do" class="xf-form" enctype="multipart/form-data">
 		<input id="humanTaskId" type="hidden" name="humanTaskId" value="${humanTaskId}">
 		<div id="xf-form-table"></div>
-
-		<c:if test="${humanTask.catalog == 'normal' || humanTask.catalog == 'vote'}">
-
-
-<table width="100%" cellspacing="0" cellpadding="0" border="0" align="center" class="xf-table">
-  <tbody>
-    <tr>
-	  <td width="100%" class="xf-cell xf-cell-bottom">
-	    <label style="display:block;text-align:left;margin-bottom:0px;padding-top:10px;padding-bottom:10px;">&nbsp;意见</label>
-	  </td>
-	</tr>
-    <tr>
-	  <td width="100%" class="xf-cell xf-cell-right xf-cell-bottom xf-cell-top xf-cell-left">
-			<input type="hidden" id="_humantask_action_" name="_humantask_action_" value="">
-		    <textarea name="_humantask_comment_" class="form-control"></textarea>
-	  </td>
-	</tr>
-  </tbody>
-</table>
-
-		</c:if>
-
+		<input type="hidden" id="_humantask_action_" name="_humantask_action_" value="">
+		<input type="hidden" id="_humantask_comment_" name="_humantask_comment_" value="">
 	  </form>
 
 	<div>
 	<br>
+
+<div class="panel panel-default">
 <table width="100%" cellspacing="0" cellpadding="0" border="0" align="center" class="table table-border">
   <thead>
     <tr>
@@ -198,6 +138,7 @@ var taskOperation = new TaskOperation();
 	  </c:forEach>
   </tbody>
 </table>
+</div>
 
 	</div>
 
@@ -293,6 +234,23 @@ var taskOperation = new TaskOperation();
 <div class="navbar navbar-default navbar-fixed-bottom">
   <div class="container-fluid">
     <div class="text-center" style="padding-top:8px;">
+<c:if test="${humanTask.catalog == 'normal' || humanTask.catalog == 'vote'}">
+		意见：
+		<textarea name="_humantask_comment_content_" class="form-control" id="task-comment"></textarea>
+<style>
+#task-comment {
+	height: 32px;
+	vertical-align: middle;
+	display: inline;
+	width: auto;
+}
+
+#task-comment:hover {
+	height: 100px;
+	vertical-align: text-bottom;
+}
+</style>
+</c:if>
 
 	    <c:if test="${humanTask.catalog == 'normal'}">
 	    <c:forEach var="item" items="${buttons}">

@@ -1,31 +1,89 @@
 package com.mossle.api.model;
 
-import java.util.ArrayList;
-import java.util.Date;
-import java.util.List;
+import java.io.Serializable;
 
-public class ModelInfoDTO {
+import java.util.ArrayList;
+import java.util.Collections;
+import java.util.Date;
+import java.util.HashMap;
+import java.util.List;
+import java.util.Map;
+
+public class ModelInfoDTO implements Serializable {
+    /** 物理id. */
     private Long id;
+
+    /** 逻辑id，工单流水号, businessKey. */
     private String code;
+
+    /** 流程名称. */
     private String name;
+
+    /** 流程实例id. */
     private String instanceId;
+
+    /** 流程分类. */
     private String category;
+
+    /** 流程定义id. */
     private String processId;
+
+    /** 流程定义名称. */
     private String processName;
+
+    /** 流程定义编码. */
     private String processKey;
+
+    /** 流程定义版本. */
     private Integer processVersion;
+
+    /** 创建人. */
     private String initiator;
+
+    /** 创建人部门. */
     private String initiatorDept;
+
+    /** 申请人. */
     private String applicant;
+
+    /** 申请人部门. */
     private String applicantDept;
+
+    /** 创建时间. */
     private Date createTime;
+
+    /** 发起时间. */
     private Date startTime;
+
+    /** 结束时间. */
     private Date endTime;
+
+    /** 类型. */
     private String type;
+
+    /** 步骤id. */
+    private String activityId;
+
+    /** 步骤名称. */
+    private String activityName;
+
+    /** 步骤. */
+    private String step;
+
+    /** 状态. */
     private String status;
+
+    /** 删除原因. */
     private String deleteReason;
+
+    /** 备注. */
     private String description;
-    private List<ModelItemDTO> items = new ArrayList<ModelItemDTO>();
+
+    /** 明细. */
+    private Map<String, ModelItemDTO> itemMap = new HashMap<String, ModelItemDTO>();
+
+    /** 子表. */
+    private List<ModelInfoDTO> infos = new ArrayList<ModelInfoDTO>();
 
     public Long getId() {
         return id;
@@ -163,6 +221,30 @@ public class ModelInfoDTO {
         this.type = type;
     }
 
+    public String getActivityId() {
+        return activityId;
+    }
+
+    public void setActivityId(String activityId) {
+        this.activityId = activityId;
+    }
+
+    public String getActivityName() {
+        return activityName;
+    }
+
+    public void setActivityName(String activityName) {
+        this.activityName = activityName;
+    }
+
+    public String getStep() {
+        return step;
+    }
+
+    public void setStep(String step) {
+        this.step = step;
+    }
+
     public String getStatus() {
         return this.status;
     }
@@ -187,11 +269,44 @@ public class ModelInfoDTO {
         this.description = description;
     }
 
-    public List<ModelItemDTO> getItems() {
-        return items;
+    // ~
+    public Map<String, ModelItemDTO> getItemMap() {
+        return itemMap;
     }
 
-    public void setItems(List<ModelItemDTO> items) {
-        this.items = items;
+    public void setItemMap(Map<String, ModelItemDTO> itemMap) {
+        this.itemMap = itemMap;
+    }
+
+    public List<ModelInfoDTO> getInfos() {
+        return infos;
+    }
+
+    public void setInfos(List<ModelInfoDTO> infos) {
+        this.infos = infos;
+    }
+
+    // ~
+    public List<ModelItemDTO> getItems() {
+        return Collections.unmodifiableList(new ArrayList<ModelItemDTO>(
+                this.itemMap.values()));
+    }
+
+    public ModelItemDTO findItem(String code) {
+        return itemMap.get(code);
+    }
+
+    public void addItem(ModelItemDTO modelItemDto) {
+        itemMap.put(modelItemDto.getCode(), modelItemDto);
+    }
+
+    public Object findItemValue(String name) {
+        ModelItemDTO modelItem = this.findItem(name);
+
+        if (modelItem == null) {
+            return null;
+        }
+
+        return modelItem.getValue();
     }
 }

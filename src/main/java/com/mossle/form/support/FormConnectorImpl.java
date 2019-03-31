@@ -42,22 +42,38 @@ public class FormConnectorImpl implements FormConnector {
                 tenantId);
 
         if (formTemplate == null) {
+            if (code.startsWith("external:")) {
+                return this.generateExternalForm(code);
+            }
+
             logger.error("cannot find form : {}, {}", code, tenantId);
 
             return null;
+        }
+
+        if (Integer.valueOf(1).equals(formTemplate.getType())) {
+            String url = formTemplate.getContent();
+
+            return this.generateExternalForm(url);
         }
 
         FormDTO formDto = new FormDTO();
         formDto.setId(formTemplate.getId().toString());
         formDto.setCode(formTemplate.getCode());
         formDto.setName(formTemplate.getName());
+        formDto.setContent(formTemplate.getContent());
 
-        if (Integer.valueOf(1).equals(formTemplate.getType())) {
-            formDto.setRedirect(true);
-            formDto.setUrl(formTemplate.getContent());
-        } else {
-            formDto.setContent(formTemplate.getContent());
+        return formDto;
+    }
+
+    public FormDTO generateExternalForm(String url) {
+        if (url.startsWith("external:")) {
+            url = url.substring("external:".length());
         }
+
+        FormDTO formDto = new FormDTO();
+        formDto.setRedirect(true);
+        formDto.setUrl(url);
 
         return formDto;
     }

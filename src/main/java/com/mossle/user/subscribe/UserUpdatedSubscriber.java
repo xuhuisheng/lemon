@@ -9,8 +9,9 @@ import com.mossle.api.tenant.TenantDTO;
 import com.mossle.api.user.UserCache;
 import com.mossle.api.user.UserDTO;
 import com.mossle.api.userauth.UserAuthCache;
-import com.mossle.api.userauth.UserAuthConnector;
 import com.mossle.api.userauth.UserAuthDTO;
+
+import com.mossle.client.authz.AuthzClient;
 
 import com.mossle.core.mapper.JsonMapper;
 import com.mossle.core.subscribe.Subscribable;
@@ -29,9 +30,8 @@ public class UserUpdatedSubscriber implements Subscribable<String> {
     private UserCache userCache;
     private UserAuthCache userAuthCache;
     private TenantConnector tenantConnector;
-    private UserAuthConnector userAuthConnector;
+    private AuthzClient authzClient;
 
-    // TODO: userAuthCache的操作应该通过Listener，迁移到auth模块里。
     public void handleMessage(String message) {
         try {
             UserDTO userDto = jsonMapper.fromJson(message, UserDTO.class);
@@ -39,7 +39,7 @@ public class UserUpdatedSubscriber implements Subscribable<String> {
             userCache.updateUser(userDto);
 
             for (TenantDTO tenantDto : tenantConnector.findAll()) {
-                UserAuthDTO userAuthDto = userAuthConnector.findByUsername(
+                UserAuthDTO userAuthDto = authzClient.findByUsername(
                         userDto.getUsername(), tenantDto.getId());
                 userAuthCache.updateUserAuth(userAuthDto);
             }
@@ -78,7 +78,7 @@ public class UserUpdatedSubscriber implements Subscribable<String> {
     }
 
     @Resource
-    public void setUserAuthConnector(UserAuthConnector userAuthConnector) {
-        this.userAuthConnector = userAuthConnector;
+    public void setAuthzClient(AuthzClient authzClient) {
+        this.authzClient = authzClient;
     }
 }

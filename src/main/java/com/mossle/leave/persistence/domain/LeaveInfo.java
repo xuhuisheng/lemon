@@ -47,6 +47,12 @@ public class LeaveInfo implements java.io.Serializable {
     /** null. */
     private String tenantId;
 
+    /** null. */
+    private String code;
+
+    /** null. */
+    private Double day;
+
     public LeaveInfo() {
     }
 
@@ -56,7 +62,7 @@ public class LeaveInfo implements java.io.Serializable {
 
     public LeaveInfo(Long id, String name, Date createTime, String status,
             String type, Date startTime, Date endTime, String employeeId,
-            String tenantId) {
+            String tenantId, String code, Double day) {
         this.id = id;
         this.name = name;
         this.createTime = createTime;
@@ -66,6 +72,8 @@ public class LeaveInfo implements java.io.Serializable {
         this.endTime = endTime;
         this.employeeId = employeeId;
         this.tenantId = tenantId;
+        this.code = code;
+        this.day = day;
     }
 
     /** @return null. */
@@ -196,5 +204,33 @@ public class LeaveInfo implements java.io.Serializable {
      */
     public void setTenantId(String tenantId) {
         this.tenantId = tenantId;
+    }
+
+    /** @return null. */
+    @Column(name = "CODE", length = 200)
+    public String getCode() {
+        return this.code;
+    }
+
+    /**
+     * @param code
+     *            null.
+     */
+    public void setCode(String code) {
+        this.code = code;
+    }
+
+    /** @return null. */
+    @Column(name = "DAY", precision = 64, scale = 0)
+    public Double getDay() {
+        return this.day;
+    }
+
+    /**
+     * @param day
+     *            null.
+     */
+    public void setDay(Double day) {
+        this.day = day;
     }
 }

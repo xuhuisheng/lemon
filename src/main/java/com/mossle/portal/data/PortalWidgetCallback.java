@@ -2,6 +2,8 @@ package com.mossle.portal.data;
 
 import java.util.List;
 
+import com.mossle.core.csv.CsvCallback;
+
 import com.mossle.portal.persistence.domain.PortalWidget;
 import com.mossle.portal.persistence.manager.PortalWidgetManager;
 

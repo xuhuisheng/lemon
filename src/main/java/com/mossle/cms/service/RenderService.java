@@ -10,13 +10,23 @@ import java.util.Map;
 
 import javax.annotation.Resource;
 
+import javax.servlet.http.HttpServletRequest;
+
 import com.mossle.api.user.UserConnector;
+
+import com.mossle.client.user.UserClient;
 
 import com.mossle.cms.persistence.domain.CmsArticle;
 import com.mossle.cms.persistence.domain.CmsCatalog;
+import com.mossle.cms.persistence.domain.CmsTemplateContent;
+import com.mossle.cms.persistence.manager.CmsTemplateContentManager;
+import com.mossle.cms.service.CmsService;
+import com.mossle.cms.support.CmsHelper;
 
 import com.mossle.core.page.Page;
 import com.mossle.core.template.TemplateService;
+
+import org.apache.commons.lang3.StringUtils;
 
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
@@ -33,6 +43,9 @@ public class RenderService {
     private TemplateService templateService;
     private UserConnector userConnector;
     private String baseDir;
+    private CmsTemplateContentManager cmsTemplateContentManager;
+    private CmsService cmsService;
+    private UserClient userClient;
 
     public void render(CmsArticle cmsArticle) {
         this.renderDetail(cmsArticle);
@@ -132,7 +145,80 @@ public class RenderService {
         data.put("catalogs", cmsCatalogs);
         data.put("userConnector", userConnector);
 
+        // data.put("cmsHelper", cmsHelper);
         String html = templateService.render("/default/index.html", data);
+
+        return html;
+    }
+
+    public String renderText(String templateCode, String ctx) {
+        CmsHelper cmsHelper = new CmsHelper();
+        cmsHelper.setCmsService(cmsService);
+        cmsHelper.setUserClient(userClient);
+        cmsHelper.setCtx(ctx);
+
+        return this.renderText(templateCode, cmsHelper);
+    }
+
+    public String renderText(String templateCode, String ctx,
+            CmsCatalog cmsCatalog, int pageNo, int pageSize) {
+        CmsHelper cmsHelper = new CmsHelper();
+        cmsHelper.setCmsService(cmsService);
+        cmsHelper.setUserClient(userClient);
+        cmsHelper.setCtx(ctx);
+        cmsHelper.setCatalog(cmsCatalog);
+        cmsHelper.setPageNo(pageNo);
+        cmsHelper.setPageSize(pageSize);
+
+        return this.renderText(templateCode, cmsHelper);
+    }
+
+    public String renderText(String templateCode, String ctx,
+            CmsArticle cmsArticle, int pageNo, int pageSize) {
+        CmsHelper cmsHelper = new CmsHelper();
+        cmsHelper.setCmsService(cmsService);
+        cmsHelper.setUserClient(userClient);
+        cmsHelper.setCtx(ctx);
+        cmsHelper.setCatalog(cmsArticle.getCmsCatalog());
+        cmsHelper.setArticle(cmsArticle);
+        cmsHelper.setPageNo(pageNo);
+        cmsHelper.setPageSize(pageSize);
+
+        return this.renderText(templateCode, cmsHelper);
+    }
+
+    public String renderText(String templateCode, CmsHelper cmsHelper) {
+        if (StringUtils.isBlank(templateCode)) {
+            logger.error("template code cannot blank");
+
+            return "";
+        }
+
+        if (templateCode.startsWith("/")) {
+            templateCode = templateCode.substring(1);
+        }
+
+        CmsTemplateContent cmsTemplateContent = cmsTemplateContentManager
+                .findUniqueBy("path", templateCode);
+
+        if (cmsTemplateContent == null) {
+            logger.info("cannot find template : {}", templateCode);
+
+            return "";
+        }
+
+        String content = cmsTemplateContent.getContent();
+
+        if (StringUtils.isBlank(content)) {
+            logger.info("template content is blank : {}", templateCode);
+
+            return "";
+        }
+
+        Map<String, Object> data = new HashMap<String, Object>();
+        data.put("cms", cmsHelper);
+
+        String html = templateService.renderText(content, data);
 
         return html;
     }
@@ -151,5 +237,21 @@ public class RenderService {
     @Value("${store.baseDir}")
     public void setBaseDir(String baseDir) {
         this.baseDir = baseDir;
+    }
+
+    @Resource
+    public void setCmsTemplateContentManager(
+            CmsTemplateContentManager cmsTemplateContentManager) {
+        this.cmsTemplateContentManager = cmsTemplateContentManager;
+    }
+
+    @Resource
+    public void setCmsService(CmsService cmsService) {
+        this.cmsService = cmsService;
+    }
+
+    @Resource
+    public void setUserClient(UserClient userClient) {
+        this.userClient = userClient;
     }
 }

@@ -21,9 +21,11 @@
     <div id="collapse-body-cms" class="panel-collapse collapse ${currentMenu == 'cms' ? 'in' : ''}" role="tabpanel" aria-labelledby="collapse-header-cms">
       <div class="panel-body">
         <ul class="nav nav-list">
-		  <li><a href="${tenantPrefix}/cms/cms-catalog-list.do"><i class="glyphicon glyphicon-list"></i> 栏目管理</a></li>
-		  <li><a href="${tenantPrefix}/cms/cms-article-list.do"><i class="glyphicon glyphicon-list"></i> 文章管理</a></li>
-		  <li><a href="${tenantPrefix}/cms/cms-comment-list.do"><i class="glyphicon glyphicon-list"></i> 评论管理</a></li>
+		      <li><a href="${tenantPrefix}/cms/cms-catalog-list.do"><i class="glyphicon glyphicon-list"></i> 栏目管理</a></li>
+		      <li><a href="${tenantPrefix}/cms/cms-article-list.do"><i class="glyphicon glyphicon-list"></i> 文章管理</a></li>
+          <li><a href="${tenantPrefix}/cms/cms-comment-list.do"><i class="glyphicon glyphicon-list"></i> 评论管理</a></li>
+          <li><a href="${tenantPrefix}/cms/template/index.do"><i class="glyphicon glyphicon-list"></i> 模板管理</a></li>
+          <li><a href="${tenantPrefix}/cms/cms-site-list.do"><i class="glyphicon glyphicon-list"></i> 站点管理</a></li>
         </ul>
       </div>
     </div>

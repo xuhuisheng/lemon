@@ -27,7 +27,7 @@ public class CmsSite implements java.io.Serializable {
     private Long id;
 
     /** null. */
-    private CmsArticle cmsArticle;
+    private CmsSite cmsSite;
 
     /** null. */
     private String type;
@@ -44,8 +44,14 @@ public class CmsSite implements java.io.Serializable {
     /** null. */
     private String tenantId;
 
+    /** null. */
+    private String templateCode;
+
     /** . */
     private Set<CmsCatalog> cmsCatalogs = new HashSet<CmsCatalog>(0);
+
+    /** . */
+    private Set<CmsSite> cmsSites = new HashSet<CmsSite>(0);
 
     public CmsSite() {
     }
@@ -54,17 +60,20 @@ public class CmsSite implements java.io.Serializable {
         this.id = id;
     }
 
-    public CmsSite(Long id, CmsArticle cmsArticle, String type, String name,
+    public CmsSite(Long id, CmsSite cmsSite, String type, String name,
             String code, Integer priority, String tenantId,
-            Set<CmsCatalog> cmsCatalogs) {
+            String templateCode, Set<CmsCatalog> cmsCatalogs,
+            Set<CmsSite> cmsSites) {
         this.id = id;
-        this.cmsArticle = cmsArticle;
+        this.cmsSite = cmsSite;
         this.type = type;
         this.name = name;
         this.code = code;
         this.priority = priority;
         this.tenantId = tenantId;
+        this.templateCode = templateCode;
         this.cmsCatalogs = cmsCatalogs;
+        this.cmsSites = cmsSites;
     }
 
     /** @return null. */
@@ -85,16 +94,16 @@ public class CmsSite implements java.io.Serializable {
     /** @return null. */
     @ManyToOne(fetch = FetchType.LAZY)
     @JoinColumn(name = "PARENT_ID")
-    public CmsArticle getCmsArticle() {
-        return this.cmsArticle;
+    public CmsSite getCmsSite() {
+        return this.cmsSite;
     }
 
     /**
-     * @param cmsArticle
+     * @param cmsSite
      *            null.
      */
-    public void setCmsArticle(CmsArticle cmsArticle) {
-        this.cmsArticle = cmsArticle;
+    public void setCmsSite(CmsSite cmsSite) {
+        this.cmsSite = cmsSite;
     }
 
     /** @return null. */
@@ -167,6 +176,20 @@ public class CmsSite implements java.io.Serializable {
         this.tenantId = tenantId;
     }
 
+    /** @return null. */
+    @Column(name = "TEMPLATE_CODE", length = 200)
+    public String getTemplateCode() {
+        return this.templateCode;
+    }
+
+    /**
+     * @param templateCode
+     *            null.
+     */
+    public void setTemplateCode(String templateCode) {
+        this.templateCode = templateCode;
+    }
+
     /** @return . */
     @OneToMany(fetch = FetchType.LAZY, mappedBy = "cmsSite")
     public Set<CmsCatalog> getCmsCatalogs() {
@@ -179,5 +202,19 @@ public class CmsSite implements java.io.Serializable {
      */
     public void setCmsCatalogs(Set<CmsCatalog> cmsCatalogs) {
         this.cmsCatalogs = cmsCatalogs;
+    }
+
+    /** @return . */
+    @OneToMany(fetch = FetchType.LAZY, mappedBy = "cmsSite")
+    public Set<CmsSite> getCmsSites() {
+        return this.cmsSites;
+    }
+
+    /**
+     * @param cmsSites
+     *            .
+     */
+    public void setCmsSites(Set<CmsSite> cmsSites) {
+        this.cmsSites = cmsSites;
     }
 }

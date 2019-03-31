@@ -28,6 +28,7 @@
     </div>
   </div>
 
+  <!--
   <div class="panel panel-default" style="margin-top:20px;">
     <div class="panel-heading" role="tab" id="collapse-header-user-import" data-toggle="collapse" data-parent="#accordion" href="#collapse-body-user-import" aria-expanded="true" aria-controls="collapse-body-user">
       <h4 class="panel-title">
@@ -44,6 +45,7 @@
       </div>
     </div>
   </div>
+  -->
 
 		<footer id="m-footer" class="text-center">
 		  <hr>

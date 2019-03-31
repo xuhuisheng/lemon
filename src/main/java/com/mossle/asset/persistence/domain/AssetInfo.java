@@ -30,10 +30,10 @@ public class AssetInfo implements java.io.Serializable {
     private Long id;
 
     /** null. */
-    private AssetCategory assetCategoryBySubCategoryId;
+    private AssetCategory assetCategoryByCategoryId;
 
     /** null. */
-    private AssetCategory assetCategoryByCategoryId;
+    private AssetCategory assetCategoryBySubCategoryId;
 
     /** null. */
     private String name;
@@ -78,14 +78,15 @@ public class AssetInfo implements java.io.Serializable {
         this.id = id;
     }
 
-    public AssetInfo(Long id, AssetCategory assetCategoryBySubCategoryId,
-            AssetCategory assetCategoryByCategoryId, String name, String code,
-            String description, String model, Double price, Date buyDate,
-            String status, String userId, Long location, Date startTime,
-            Set<AssetHistory> assetHistories, Set<AssetLend> assetLends) {
+    public AssetInfo(Long id, AssetCategory assetCategoryByCategoryId,
+            AssetCategory assetCategoryBySubCategoryId, String name,
+            String code, String description, String model, Double price,
+            Date buyDate, String status, String userId, Long location,
+            Date startTime, Set<AssetHistory> assetHistories,
+            Set<AssetLend> assetLends) {
         this.id = id;
-        this.assetCategoryBySubCategoryId = assetCategoryBySubCategoryId;
         this.assetCategoryByCategoryId = assetCategoryByCategoryId;
+        this.assetCategoryBySubCategoryId = assetCategoryBySubCategoryId;
         this.name = name;
         this.code = code;
         this.description = description;
@@ -117,22 +118,6 @@ public class AssetInfo implements java.io.Serializable {
 
     /** @return null. */
     @ManyToOne(fetch = FetchType.LAZY)
-    @JoinColumn(name = "SUB_CATEGORY_ID")
-    public AssetCategory getAssetCategoryBySubCategoryId() {
-        return this.assetCategoryBySubCategoryId;
-    }
-
-    /**
-     * @param assetCategoryBySubCategoryId
-     *            null.
-     */
-    public void setAssetCategoryBySubCategoryId(
-            AssetCategory assetCategoryBySubCategoryId) {
-        this.assetCategoryBySubCategoryId = assetCategoryBySubCategoryId;
-    }
-
-    /** @return null. */
-    @ManyToOne(fetch = FetchType.LAZY)
     @JoinColumn(name = "CATEGORY_ID")
     public AssetCategory getAssetCategoryByCategoryId() {
         return this.assetCategoryByCategoryId;
@@ -145,6 +130,22 @@ public class AssetInfo implements java.io.Serializable {
     public void setAssetCategoryByCategoryId(
             AssetCategory assetCategoryByCategoryId) {
         this.assetCategoryByCategoryId = assetCategoryByCategoryId;
+    }
+
+    /** @return null. */
+    @ManyToOne(fetch = FetchType.LAZY)
+    @JoinColumn(name = "SUB_CATEGORY_ID")
+    public AssetCategory getAssetCategoryBySubCategoryId() {
+        return this.assetCategoryBySubCategoryId;
+    }
+
+    /**
+     * @param assetCategoryBySubCategoryId
+     *            null.
+     */
+    public void setAssetCategoryBySubCategoryId(
+            AssetCategory assetCategoryBySubCategoryId) {
+        this.assetCategoryBySubCategoryId = assetCategoryBySubCategoryId;
     }
 
     /** @return null. */

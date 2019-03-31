@@ -19,13 +19,16 @@
 	<!-- start of main -->
       <section id="m-main" class="col-md-12" style="padding-top:65px;">
 	 
-	  <div class="alert alert-info" role="alert">
-		<button type="button" class="close" data-dismiss="alert" style="margin-right:30px;">×</button>
-		<strong>任务已完成</strong>
-	  </div>
+	    <div class="alert alert-info" role="alert">
+		  <button type="button" class="close" data-dismiss="alert" style="margin-right:30px;">×</button>
+		  <strong>任务已完成</strong>
+	    </div>
 
-    </section>
+	    <a href="${ctx}/humantask/workspace-personalTasks.do">返回</a>
+
+      </section>
 	<!-- end of main -->
+
 	</div>
 
   </body>

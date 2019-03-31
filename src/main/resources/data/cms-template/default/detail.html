@@ -1,0 +1,160 @@
+<!doctype html>
+<html>
+  <head>
+    <meta charset="utf-8" />
+    <meta http-equiv="X-UA-Compatible" content="IE=edge,chrome=1" />
+    <title>${cms.article.title}</title>
+    <!-- static start -->
+    <link rel="stylesheet" href="${cms.ctx}/cdn/public/bootstrap/3.3.7/css/bootstrap.min.css">
+    <script type="text/javascript" src="${cms.ctx}/cdn/public/jquery/1.12.4/jquery.min.js"></script>
+    <script type="text/javascript" src="${cms.ctx}/cdn/public/bootstrap/3.3.7/js/bootstrap.min.js"></script>
+    <!-- static end -->
+    <style type="text/css">
+* {
+    font-size: 16px;
+}
+    </style>
+    <script type="text/javascript">
+function doReply(el) {
+    var parentNode = $(el).parent();
+    var commentId = parentNode.children('input[type=hidden]').val();
+    var content = parentNode.children('textarea').val();
+    
+    $.post('cms-comment-reply.do', {
+        articleId: '${cms.article.id?c}',
+        commentId: commentId,
+        content: content
+    }, function() {
+        location.reload();
+    });
+}
+    </script>
+  </head>
+  <body>
+    <div class="container" style="font-size:12px;">
+      <div class="row">
+      <div class="col-md-6">
+        &nbsp;
+      </div>
+      <div class="col-md-6 text-right">
+        <a href='${cms.ctx}/portal/index.do' style="font-size:12px;">个人中心</a>
+      </div>
+      </div>
+    </div>
+
+    <div class="container" style="line-height:7rem;margin-bottom:10px;">
+      <div class="row">
+      <div class="col-md-2" style="font-size:3rem;">
+        Mossle
+      </div>
+      <div class="col-md-10">
+        <div class="text-center" style="background-color:#F8F8F8;color:white;">
+          &nbsp;
+        </div>
+      </div>
+      </div>
+    </div>
+
+    <!-- navbar start -->
+    <div class="container">
+      <div class="navbar navbar-default" role="navigation" style="margin-bottom:10px;">
+        <div class="navbar-header">
+          <a class="navbar-brand" href="${cms.ctx}/cms/view">首页</a>
+        </div>
+        <div class="collapse navbar-collapse" id="bs-example-navbar-collapse-1">
+          <ul class="nav navbar-nav">
+            <#list cms.catalogs() as theCatalog>
+            <li class=""><a href="${cms.ctx}/cms/view/${theCatalog.code}">${theCatalog.name}</a></li>
+            </#list>
+          </ul>
+        </div>
+    </div>
+    </div>
+    <!-- navbar end -->
+
+
+    <div class="container">
+      <div class="row">
+
+
+        <!-- left start -->
+        <div class="col-md-9">
+
+
+          <div class="panel panel-default">
+          <div class="panel-body">
+            <span style="color:gray;">
+              首页
+              /
+              <a href="${cms.ctx}/cms/view/${cms.catalog.code}">${cms.catalog.name}</a>
+            </span>
+
+          <h3 style="margin-top:10px;">${cms.article.title}</h3>
+          <p>
+            <span style="color:gray;">${cms.displayName(cms.article.userId)}</span>
+            |
+            <span style="color:gray;"><#if cms.article.publishTime??>${cms.article.publishTime?string("yyyy-MM-dd HH:mm")}</#if></span>
+            <span style="color:gray;"><i class="glyphicon glyphicon-eye-open"></i> ${cms.article.hitCount!}</span>
+
+            <span style="color:gray;">tags</span>
+            <span style="color:gray;">tags</span>
+          </p>
+
+        <#if cms.article.logo??>
+          <img src="${cms.article.logo}">
+        </#if>
+
+        <#--
+        <#if cms.article.summary??>
+          <p style="color:gray;">${cms.article.summary!}</p>
+        </#if>
+        --#>
+    
+          <hr>
+          <!-- ==================================================================== -->
+          ${cms.article.content!}
+
+          <!-- ==================================================================== -->
+
+        <#if cms.article.cmsAttachments??>
+          <#list cms.article.cmsAttachments as item>
+          <p><a href="${cms.ctx}/rs/cms/attachments?key=${item.path}">${item.name}</a></p>
+          </#list>
+        </#if>
+        
+            </div>
+          </div>
+
+          <div id="COMMENT"></div>
+          <script src="${cms.ctx}/cdn/public/mossle-comment/0.0.1/comment.js"></script>
+          <script type="text/javascript">
+            comment.api.init();
+          </script>
+        </div>
+        <!-- left end -->
+
+        <!-- right start -->
+        <div class="col-md-3">
+
+          <div class="panel panel-default">
+            <div class="panel-body">
+            <div style="font-size:18px;margin-bottom:5px;">热门标签</div>
+            <p style="color:gray;">tags, tags</p>
+            </div>
+          </div>
+        </div>
+        <!-- right end -->
+
+      </div>
+    </div>
+
+    <hr>
+
+    <div class="container">
+      <div class="row" style="text-align:center;">
+        &copy; Mossle
+      </div>
+    </div>
+
+  </body>
+</html>

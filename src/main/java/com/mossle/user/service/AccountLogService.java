@@ -40,6 +40,8 @@ public class AccountLogService {
 
     /**
      * 批量记录认证日志.
+     *
+     * @param accountLogDtos List
      */
     public void batchLog(List<AccountLogDTO> accountLogDtos) {
         for (AccountLogDTO accountLogDto : accountLogDtos) {
@@ -75,6 +77,8 @@ public class AccountLogService {
 
     /**
      * 记录一条日志.
+     *
+     * @param accountLog AccountLog
      */
     public void log(AccountLog accountLog) {
         try {

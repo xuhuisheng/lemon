@@ -106,7 +106,7 @@ public class DatabaseUserAuthConnector implements UserAuthConnector {
 
     public void doCheckAccountStatus(UserAuthDTO userAuthDto, UserDTO userDto) {
         if (!checkAccountStatus) {
-            logger.info("skip check account status");
+            logger.debug("skip check account status");
 
             return;
         }

@@ -9,7 +9,7 @@
             "name": "公司"
         }, {
             "code": "department",
-            "name": "部门"]
+            "name": "部门"
         }, {
 	    "code": "group",
 	    "name": "群组"
@@ -63,6 +63,18 @@
     "rules": [{
         "code": "position",
         "name": "岗位",
+        "children": [{
+            "code": "user",
+            "name": "人员"
+        }]
+    }]
+}, {
+    "code": "report",
+    "name": "汇报线",
+    "display": false,
+    "rules": [{
+        "code": "user",
+        "name": "人员",
         "children": [{
             "code": "user",
             "name": "人员"

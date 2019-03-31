@@ -50,7 +50,7 @@ $(function() {
 	<div class="col-sm-5">
 	  <select name="infoId" class="form-control">
 	    <c:forEach var="item" items="${vehicleInfos}">
-	    <option value="${item.id}" ${model.infoId==item.id ? 'selected' : ''}>${item.name} ${item.code}</option>
+	    <option value="${item.id}" ${model.vehicleInfo.id==item.id ? 'selected' : ''}>${item.name} ${item.code}</option>
 		</c:forEach>
 	  </select>
     </div>

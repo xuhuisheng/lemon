@@ -213,7 +213,7 @@ $(function() {
   <div class="form-group">
     <label class="control-label col-md-1" for="orgInputUser_status">组织类型</label>
 	<div class="col-sm-5">
-	  ${partyType.name}
+	  <p class="form-control-static">${partyType.name}</p>
     </div>
   </div>
   <div class="form-group">
@@ -252,7 +252,7 @@ $(function() {
   <div class="form-group">
     <label class="control-label col-md-1" for="orgInputUser_status">组织类型</label>
 	<div class="col-sm-5">
-	  ${partyType.name}
+	  <p class="form-control-static">${partyType.name}</p>
     </div>
   </div>
   <div class="form-group">

@@ -13,10 +13,13 @@
 	<!-- bootbox -->
     <script type="text/javascript" src="${cdnPrefix}/bootbox/bootbox.min.js"></script>
 	<link href="${cdnPrefix}/public/mossle-xform/0.0.11/styles/xform.css" rel="stylesheet">
-    <script type="text/javascript" src="${cdnPrefix}/public/mossle-xform/0.0.11/xform-packed.js"></script>
+    <script type="text/javascript" src="${cdnPrefix}/public/mossle-xform/0.0.11/xform-all.js"></script>
 
     <link type="text/css" rel="stylesheet" href="${cdnPrefix}/public/mossle-userpicker/3.0/userpicker.css">
     <script type="text/javascript" src="${cdnPrefix}/public/mossle-userpicker/3.0/userpicker.js"></script>
+
+    <link type="text/css" rel="stylesheet" href="${cdnPrefix}/public/webuploader/0.1.5/webuploader.css">
+	<script type="text/javascript" src="${cdnPrefix}/public/webuploader/0.1.5/webuploader.js"></script>
 
 	<style type="text/css">
 .xf-handler {
@@ -55,9 +58,9 @@ $(function() {
 
 	createUserPicker({
 		multiple: true,
-		searchUrl: '${tenantPrefix}/rs/user/search',
-		treeUrl: '${tenantPrefix}/rs/party/tree?partyStructTypeId=1',
-		childUrl: '${tenantPrefix}/rs/party/searchUser'
+		searchUrl: '${tenantPrefix}/user/rs/s',
+		treeUrl: '${tenantPrefix}/party/rs/tree-data?type=struct',
+		childUrl: '${tenantPrefix}/party/rs/search-user'
 	});
 
 	setTimeout(function() {
@@ -70,7 +73,7 @@ $(function() {
 })
     </script>
 
-	<script type="text/javascript" src="${cdnPrefix}/public/mossle-operation/0.0.4/TaskOperation.js"></script>
+	<script type="text/javascript" src="${cdnPrefix}/public/mossle-operation/0.0.4/TaskOperation.js?v=20190327-01"></script>
 	<script type="text/javascript">
 ROOT_URL = '${tenantPrefix}';
 var taskOperation = new TaskOperation();
@@ -86,30 +89,6 @@ var taskOperation = new TaskOperation();
 	<!-- start of main -->
       <section id="m-main" class="col-md-12" style="padding-top:65px;">
 
-<table width="100%" cellspacing="0" cellpadding="0" border="0" align="center" class="xf-table">
-  <tbody>
-    <tr>
-	  <td width="25%" class="xf-cell xf-cell-right xf-cell-bottom xf-cell-top xf-cell-left">
-	    <label style="display:block;text-align:right;margin-bottom:0px;padding-top:10px;padding-bottom:10px;">下个环节&nbsp;</label>
-	  </td>
-	  <td width="75%" class="xf-cell xf-cell-right xf-cell-bottom xf-cell-top" colspan="3" rowspan="1">
-	    <div id="nextStep"></div>
-	  </td>
-	</td>
-  </tbody>
-</table>
-		  <script>
-		  $.getJSON('${tenantPrefix}/rs/bpm/next', {
-			  processDefinitionId: '${formDto.processDefinitionId}',
-			  activityId: '${formDto.activityId}'
-		  }, function(data) {
-			  $('#nextStep').append('&nbsp;');
-			  for (var i = 0; i < data.length; i++) {
-				  $('#nextStep').append(data[i].name);
-			  }
-		  });
-		  </script>
-
       <form id="xform" method="post" action="${tenantPrefix}/operation/process-operation-startProcessInstance.do" class="xf-form" enctype="multipart/form-data">
 <input id="processDefinitionId" type="hidden" name="processDefinitionId" value="${formDto.processDefinitionId}">
 <input id="bpmProcessId" type="hidden" name="bpmProcessId" value="${bpmProcessId}">
@@ -119,6 +98,9 @@ var taskOperation = new TaskOperation();
 <input id="taskId" type="hidden" name="taskId" value="${taskId}">
 -->
 		<div id="xf-form-table"></div>
+
+
+
 		<br>
 		<br>
 		<br>

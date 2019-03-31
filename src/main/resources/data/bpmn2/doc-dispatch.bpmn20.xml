@@ -1,0 +1,75 @@
+<?xml version="1.0" encoding="UTF-8"?>
+<definitions xmlns="http://www.omg.org/spec/BPMN/20100524/MODEL" xmlns:xsi="http://www.w3.org/2001/XMLSchema-instance" xmlns:activiti="http://activiti.org/bpmn" xmlns:bpmndi="http://www.omg.org/spec/BPMN/20100524/DI" xmlns:omgdc="http://www.omg.org/spec/DD/20100524/DC" xmlns:omgdi="http://www.omg.org/spec/DD/20100524/DI" typeLanguage="http://www.w3.org/2001/XMLSchema" expressionLanguage="http://www.w3.org/1999/XPath" targetNamespace="http://www.mossle.com">
+  <process id="doc-dispatch" name="公文发布" isExecutable="true">
+    <documentation>公文发布</documentation>
+    <userTask id="taskuser-1" name="发文" activiti:assignee="常用语:流程发起人" activiti:formKey="doc-dispatch-request"></userTask>
+    <userTask id="taskuser-2" name="部门领导审批" activiti:assignee="常用语:直接上级" activiti:formKey="doc-dispatch-manager"></userTask>
+    <userTask id="taskuser-3" name="会签" activiti:formKey="doc-dispatch-countersign">
+    <humanPerformer>
+      <resourceAssignmentExpression>
+        <formalExpression>${countersignUser}</formalExpression>
+      </resourceAssignmentExpression>
+    </humanPerformer>
+    <multiInstanceLoopCharacteristics isSequential="false" activiti:collection="${countersignUsers}" activiti:elementVariable="countersignUser">
+      <completionCondition>
+	    ${counterSignService.canComplete(
+			execution,
+			nrOfInstances,
+			nrOfActiveInstances,
+			nrOfCompletedInstances,
+			loopCounter)}
+	  </completionCondition>
+    </multiInstanceLoopCharacteristics>
+	</userTask>
+    <userTask id="taskuser-6" name="归档" activiti:assignee="常用语:流程发起人" activiti:formKey="doc-dispatch-finish"></userTask>
+    <endEvent id="endnone-2" name="endnone-2"></endEvent>
+    <sequenceFlow id="transition-2" name="" sourceRef="taskuser-1" targetRef="taskuser-2"></sequenceFlow>
+    <sequenceFlow id="transition-14" name="" sourceRef="taskuser-6" targetRef="endnone-2"></sequenceFlow>
+    <sequenceFlow id="flow1" name="" sourceRef="taskuser-2" targetRef="taskuser-3"></sequenceFlow>
+    <sequenceFlow id="flow2" name="" sourceRef="taskuser-3" targetRef="taskuser-6"></sequenceFlow>
+    <startEvent id="startevent1" name="Start"></startEvent>
+    <sequenceFlow id="flow3" name="" sourceRef="startevent1" targetRef="taskuser-1"></sequenceFlow>
+  </process>
+  <bpmndi:BPMNDiagram id="BPMNDiagram_doc-dispatch">
+    <bpmndi:BPMNPlane bpmnElement="doc-dispatch" id="BPMNPlane_doc-dispatch">
+      <bpmndi:BPMNShape bpmnElement="taskuser-1" id="BPMNShape_taskuser-1">
+        <omgdc:Bounds height="80" width="120" x="109" y="185"></omgdc:Bounds>
+      </bpmndi:BPMNShape>
+      <bpmndi:BPMNShape bpmnElement="taskuser-2" id="BPMNShape_taskuser-2">
+        <omgdc:Bounds height="80" width="120" x="279" y="185"></omgdc:Bounds>
+      </bpmndi:BPMNShape>
+      <bpmndi:BPMNShape bpmnElement="taskuser-3" id="BPMNShape_taskuser-3">
+        <omgdc:Bounds height="80" width="120" x="470" y="185"></omgdc:Bounds>
+      </bpmndi:BPMNShape>
+      <bpmndi:BPMNShape bpmnElement="taskuser-6" id="BPMNShape_taskuser-6">
+        <omgdc:Bounds height="80" width="120" x="660" y="185"></omgdc:Bounds>
+      </bpmndi:BPMNShape>
+      <bpmndi:BPMNShape bpmnElement="endnone-2" id="BPMNShape_endnone-2">
+        <omgdc:Bounds height="40" width="40" x="830" y="206"></omgdc:Bounds>
+      </bpmndi:BPMNShape>
+      <bpmndi:BPMNShape bpmnElement="startevent1" id="BPMNShape_startevent1">
+        <omgdc:Bounds height="35" width="35" x="20" y="207"></omgdc:Bounds>
+      </bpmndi:BPMNShape>
+      <bpmndi:BPMNEdge bpmnElement="transition-2" id="BPMNEdge_transition-2">
+        <omgdi:waypoint x="229" y="225"></omgdi:waypoint>
+        <omgdi:waypoint x="279" y="225"></omgdi:waypoint>
+      </bpmndi:BPMNEdge>
+      <bpmndi:BPMNEdge bpmnElement="transition-14" id="BPMNEdge_transition-14">
+        <omgdi:waypoint x="780" y="225"></omgdi:waypoint>
+        <omgdi:waypoint x="830" y="226"></omgdi:waypoint>
+      </bpmndi:BPMNEdge>
+      <bpmndi:BPMNEdge bpmnElement="flow1" id="BPMNEdge_flow1">
+        <omgdi:waypoint x="399" y="225"></omgdi:waypoint>
+        <omgdi:waypoint x="470" y="225"></omgdi:waypoint>
+      </bpmndi:BPMNEdge>
+      <bpmndi:BPMNEdge bpmnElement="flow2" id="BPMNEdge_flow2">
+        <omgdi:waypoint x="590" y="225"></omgdi:waypoint>
+        <omgdi:waypoint x="660" y="225"></omgdi:waypoint>
+      </bpmndi:BPMNEdge>
+      <bpmndi:BPMNEdge bpmnElement="flow3" id="BPMNEdge_flow3">
+        <omgdi:waypoint x="55" y="224"></omgdi:waypoint>
+        <omgdi:waypoint x="109" y="225"></omgdi:waypoint>
+      </bpmndi:BPMNEdge>
+    </bpmndi:BPMNPlane>
+  </bpmndi:BPMNDiagram>
+</definitions>

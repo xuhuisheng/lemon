@@ -65,8 +65,14 @@ public class DiskShare implements java.io.Serializable {
     /** null. */
     private String sharePassword;
 
+    /** null. */
+    private String catalog;
+
     /** . */
     private Set<DiskAcl> diskAcls = new HashSet<DiskAcl>(0);
+
+    /** . */
+    private Set<DiskMember> diskMembers = new HashSet<DiskMember>(0);
 
     public DiskShare() {
     }
@@ -79,7 +85,7 @@ public class DiskShare implements java.io.Serializable {
             Date shareTime, String name, String creator, String type,
             Integer dirType, Integer countView, Integer countSave,
             Integer countDownload, String shareCode, String sharePassword,
-            Set<DiskAcl> diskAcls) {
+            String catalog, Set<DiskAcl> diskAcls, Set<DiskMember> diskMembers) {
         this.id = id;
         this.diskInfo = diskInfo;
         this.shareType = shareType;
@@ -93,7 +99,9 @@ public class DiskShare implements java.io.Serializable {
         this.countDownload = countDownload;
         this.shareCode = shareCode;
         this.sharePassword = sharePassword;
+        this.catalog = catalog;
         this.diskAcls = diskAcls;
+        this.diskMembers = diskMembers;
     }
 
     /** @return null. */
@@ -281,6 +289,20 @@ public class DiskShare implements java.io.Serializable {
         this.sharePassword = sharePassword;
     }
 
+    /** @return null. */
+    @Column(name = "CATALOG", length = 50)
+    public String getCatalog() {
+        return this.catalog;
+    }
+
+    /**
+     * @param catalog
+     *            null.
+     */
+    public void setCatalog(String catalog) {
+        this.catalog = catalog;
+    }
+
     /** @return . */
     @OneToMany(fetch = FetchType.LAZY, mappedBy = "diskShare")
     public Set<DiskAcl> getDiskAcls() {
@@ -293,5 +315,19 @@ public class DiskShare implements java.io.Serializable {
      */
     public void setDiskAcls(Set<DiskAcl> diskAcls) {
         this.diskAcls = diskAcls;
+    }
+
+    /** @return . */
+    @OneToMany(fetch = FetchType.LAZY, mappedBy = "diskShare")
+    public Set<DiskMember> getDiskMembers() {
+        return this.diskMembers;
+    }
+
+    /**
+     * @param diskMembers
+     *            .
+     */
+    public void setDiskMembers(Set<DiskMember> diskMembers) {
+        this.diskMembers = diskMembers;
     }
 }

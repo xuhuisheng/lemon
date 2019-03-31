@@ -20,10 +20,14 @@ import org.springframework.ui.Model;
 
 import org.springframework.web.bind.annotation.RequestMapping;
 import org.springframework.web.bind.annotation.RequestParam;
+import org.slf4j.Logger;
+import org.slf4j.LoggerFactory;
 
 @Controller
 @RequestMapping("bpm")
 public class BpmConfListenerController {
+    private static Logger logger = LoggerFactory
+            .getLogger(BpmConfListenerController.class);
     private BpmConfNodeManager bpmConfNodeManager;
     private BpmConfListenerManager bpmConfListenerManager;
     private BeanMapper beanMapper = new BeanMapper();
@@ -34,6 +38,10 @@ public class BpmConfListenerController {
     public String list(@RequestParam("bpmConfNodeId") Long bpmConfNodeId,
             Model model) {
         BpmConfNode bpmConfNode = bpmConfNodeManager.get(bpmConfNodeId);
+        if (bpmConfNode == null) {
+            logger.info("cannot find bpmConfNode : {}", bpmConfNodeId);
+            return "redirect:/";
+        }
         Long bpmConfBaseId = bpmConfNode.getBpmConfBase().getId();
         List<BpmConfListener> bpmConfListeners = bpmConfListenerManager.findBy(
                 "bpmConfNode", bpmConfNode);

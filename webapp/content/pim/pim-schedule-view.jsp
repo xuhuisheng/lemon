@@ -14,7 +14,7 @@
 	<link rel='stylesheet' type='text/css' href='${cdnPrefix}/public/fullcalendar/3.2.0/fullcalendar.print.css' media='print' />
 	<script type="text/javascript" src="${cdnPrefix}/public/fullcalendar/3.2.0/moment.min.js"></script>
 	<script type='text/javascript' src='${cdnPrefix}/public/fullcalendar/3.2.0/fullcalendar.js'></script>
-	<script type="text/javascript" src="${cdnPrefix}/public/fullcalendar/3.2.0/zh-CN.js"></script>
+	<script type="text/javascript" src="${cdnPrefix}/public/fullcalendar/3.2.0/locale/zh-CN.js"></script>
 
 	<script type="text/javascript">
 var Schedule = function() {

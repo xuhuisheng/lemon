@@ -444,7 +444,7 @@ public class TaskQueryImpl extends AbstractVariableQueryImpl<TaskQuery, Task>
         return this;
     }
 
-    /** @see {@link #taskUnassigned} */
+    /** {@link #taskUnassigned} */
     @Deprecated
     public TaskQuery taskUnnassigned() {
         return taskUnassigned();

@@ -21,6 +21,10 @@ import com.mossle.auth.persistence.manager.RoleDefManager;
 import com.mossle.auth.persistence.manager.RoleManager;
 import com.mossle.auth.persistence.manager.UserStatusManager;
 
+import com.mossle.client.user.UserClient;
+
+import com.mossle.core.csv.CsvProcessor;
+
 import com.mossle.spi.security.ResourceDetailsRefresher;
 
 import org.slf4j.Logger;
@@ -49,6 +53,7 @@ public class AuthDeployer {
     private UserConnector userConnector;
     private PlatformTransactionManager platformTransactionManager;
     private ResourceDetailsRefresher resourceDetailsRefresher;
+    private UserClient userClient;
 
     @PostConstruct
     public void init() throws Exception {
@@ -66,148 +71,35 @@ public class AuthDeployer {
     }
 
     public void initPermission() throws Exception {
-        List<String[]> list = new CsvParser().parse(permissionFilePath,
-                permissionEncoding);
-
-        int permTypeIndex = 0;
-        int permIndex = 0;
-
-        for (String[] item : list) {
-            String code = item[0];
-            String name = item[1];
-            String type = item[2];
-
-            Perm perm = this.permManager.findUniqueBy("code", code);
-
-            if (perm != null) {
-                continue;
-            }
-
-            PermType permType = this.permTypeManager.findUniqueBy("name", type);
-
-            if (permType == null) {
-                permType = new PermType();
-                permType.setName(type);
-                permType.setTenantId(defaultTenantId);
-                permType.setPriority(permTypeIndex++);
-
-                if ("默认".equals(type)) {
-                    permType.setType(1);
-                } else {
-                    permType.setType(0);
-                }
-
-                permTypeManager.save(permType);
-            }
-
-            perm = new Perm();
-            perm.setCode(code);
-            perm.setName(name);
-            perm.setPriority(permIndex++);
-            perm.setPermType(permType);
-            perm.setTenantId(defaultTenantId);
-            this.permManager.save(perm);
-        }
+        PermCallback permCallback = new PermCallback();
+        permCallback.setPermManager(permManager);
+        permCallback.setPermTypeManager(permTypeManager);
+        new CsvProcessor().process(permissionFilePath, permissionEncoding,
+                permCallback);
     }
 
     public void initResource() throws Exception {
-        List<String[]> list = new CsvParser().parse(resourceFilePath,
-                resourceEncoding);
-
-        int resourceIndex = 0;
-
-        for (String[] item : list) {
-            String type = item[0];
-            String value = item[1];
-            String permission = item[2];
-
-            Perm perm = this.permManager.findUniqueBy("code", permission);
-
-            Access access = new Access();
-            access.setType(type);
-            access.setValue(value);
-            access.setTenantId(defaultTenantId);
-            access.setPerm(perm);
-            access.setPriority(resourceIndex++);
-            accessManager.save(access);
-        }
+        ResourceCallback resourceCallback = new ResourceCallback();
+        resourceCallback.setPermManager(permManager);
+        resourceCallback.setAccessManager(accessManager);
+        new CsvProcessor().process(resourceFilePath, resourceEncoding,
+                resourceCallback);
     }
 
     public void initRole() throws Exception {
-        List<String[]> list = new CsvParser().parse(roleFilePath, roleEncoding);
-
-        for (String[] item : list) {
-            String name = item[0];
-            String permission = item[1];
-            RoleDef roleDef = roleDefManager.findUniqueBy("name", name);
-
-            if (roleDef == null) {
-                roleDef = new RoleDef();
-                roleDef.setName(name);
-                roleDefManager.save(roleDef);
-            }
-
-            Role role = roleManager.findUniqueBy("roleDef", roleDef);
-
-            if (role == null) {
-                role = new Role();
-                role.setName(name);
-                role.setRoleDef(roleDef);
-                role.setTenantId(defaultTenantId);
-                roleManager.save(role);
-            }
-
-            for (String text : permission.split(",")) {
-                Perm perm = this.permManager.findUniqueBy("code", text);
-
-                if (perm == null) {
-                    continue;
-                }
-
-                roleDef.getPerms().add(perm);
-                roleDefManager.save(roleDef);
-                permManager.save(perm);
-            }
-        }
+        RoleCallback roleCallback = new RoleCallback();
+        roleCallback.setPermManager(permManager);
+        roleCallback.setRoleManager(roleManager);
+        roleCallback.setRoleDefManager(roleDefManager);
+        new CsvProcessor().process(roleFilePath, roleEncoding, roleCallback);
     }
 
     public void initUser() throws Exception {
-        List<String[]> list = new CsvParser().parse(userFilePath, userEncoding);
-
-        for (String[] item : list) {
-            String username = item[0];
-            String role = item[1];
-            UserStatus userStatus = userStatusManager.findUniqueBy("username",
-                    username);
-
-            if (userStatus == null) {
-                UserDTO userDto = userConnector.findByUsername(username,
-                        defaultTenantId);
-
-                userStatus = new UserStatus();
-                userStatus.setUsername(username);
-                userStatus.setRef(userDto.getId());
-                userStatus.setStatus(1);
-                userStatus.setTenantId(defaultTenantId);
-                userStatusManager.save(userStatus);
-            }
-
-            for (String text : role.split(",")) {
-                Role roleInstance = roleManager.findUniqueBy("name", text);
-
-                if (roleInstance == null) {
-                    logger.info("role not exists : {}", text);
-
-                    continue;
-                }
-
-                userStatus.getRoles().add(roleInstance);
-                // roleInstance.getUserStatuses().add(userStatus);
-                userStatusManager.save(userStatus);
-
-                // roleManager.save(roleInstance);
-            }
-        }
+        UserCallback userCallback = new UserCallback();
+        userCallback.setUserStatusManager(userStatusManager);
+        userCallback.setRoleManager(roleManager);
+        userCallback.setUserClient(userClient);
+        new CsvProcessor().process(userFilePath, userEncoding, userCallback);
     }
 
     @Resource
@@ -255,5 +147,10 @@ public class AuthDeployer {
     public void setResourceDetailsRefresher(
             ResourceDetailsRefresher resourceDetailsRefresher) {
         this.resourceDetailsRefresher = resourceDetailsRefresher;
+    }
+
+    @Resource
+    public void setUserClient(UserClient userClient) {
+        this.userClient = userClient;
     }
 }

@@ -10,6 +10,9 @@ import java.util.Set;
 import javax.annotation.Resource;
 
 import com.mossle.api.tenant.TenantHolder;
+import com.mossle.api.user.UserDTO;
+
+import com.mossle.client.user.UserClient;
 
 import com.mossle.core.mapper.BeanMapper;
 import com.mossle.core.page.Page;
@@ -18,9 +21,11 @@ import com.mossle.core.spring.MessageHelper;
 
 import com.mossle.party.persistence.domain.PartyEntity;
 import com.mossle.party.persistence.domain.PartyStruct;
+import com.mossle.party.persistence.domain.PartyStructType;
 import com.mossle.party.persistence.domain.PartyType;
 import com.mossle.party.persistence.manager.PartyEntityManager;
 import com.mossle.party.persistence.manager.PartyStructManager;
+import com.mossle.party.persistence.manager.PartyStructTypeManager;
 import com.mossle.party.persistence.manager.PartyTypeManager;
 import com.mossle.party.service.PartyService;
 
@@ -45,10 +50,12 @@ public class PartyRestController {
     private PartyTypeManager partyTypeManager;
     private PartyStructManager partyStructManager;
     private PartyEntityManager partyEntityManager;
+    private PartyStructTypeManager partyStructTypeManager;
     private PartyService partyService;
     private MessageHelper messageHelper;
     private BeanMapper beanMapper = new BeanMapper();
     private TenantHolder tenantHolder;
+    private UserClient userClient;
 
     @RequestMapping("entities")
     public List<PartyEntityDTO> getPartyEntitiesByType(
@@ -104,12 +111,24 @@ public class PartyRestController {
     }
 
     @RequestMapping("tree")
-    public List<Map> list(
-            @RequestParam("partyStructTypeId") long partyStructTypeId) {
+    public List<Map> tree(
+            @RequestParam(value = "partyStructTypeId", required = false) Long partyStructTypeId) {
+        if (partyStructTypeId == null) {
+            partyStructTypeId = this.partyService.getDefaultPartyStructTypeId();
+        }
+
         List<PartyEntity> partyEntities = partyService
                 .getTopPartyEntities(partyStructTypeId);
 
         return generatePartyEntities(partyEntities, partyStructTypeId);
+    }
+
+    @RequestMapping("tree-data")
+    public List<Map> treeData(@RequestParam("type") String type) {
+        PartyStructType partyStructType = partyStructTypeManager.findUniqueBy(
+                "type", type);
+
+        return this.tree(partyStructType.getId());
     }
 
     public List<Map> generatePartyEntities(List<PartyEntity> partyEntities,
@@ -177,6 +196,29 @@ public class PartyRestController {
         }
     }
 
+    @RequestMapping("search-user")
+    public List<Map<String, String>> searchUser(
+            @RequestParam("parentId") Long parentId) {
+        String hql = "select child from PartyEntity child join child.parentStructs parent where child.partyType.type=1 and parent.parentEntity.id=?";
+        List<PartyEntity> partyEntities = partyEntityManager
+                .find(hql, parentId);
+
+        List<Map<String, String>> list = new ArrayList<Map<String, String>>();
+        String tenantId = tenantHolder.getTenantId();
+
+        for (PartyEntity partyEntity : partyEntities) {
+            Map<String, String> map = new HashMap<String, String>();
+            UserDTO userDto = userClient.findById(partyEntity.getRef(),
+                    tenantId);
+            map.put("id", userDto.getId());
+            map.put("username", userDto.getUsername());
+            map.put("displayName", userDto.getDisplayName());
+            list.add(map);
+        }
+
+        return list;
+    }
+
     // ~ ======================================================================
     @Resource
     public void setPartyTypeManager(PartyTypeManager partyTypeManager) {
@@ -194,6 +236,12 @@ public class PartyRestController {
     }
 
     @Resource
+    public void setPartyStructTypeManager(
+            PartyStructTypeManager partyStructTypeManager) {
+        this.partyStructTypeManager = partyStructTypeManager;
+    }
+
+    @Resource
     public void setPartyService(PartyService partyService) {
         this.partyService = partyService;
     }
@@ -206,6 +254,11 @@ public class PartyRestController {
     @Resource
     public void setTenantHolder(TenantHolder tenantHolder) {
         this.tenantHolder = tenantHolder;
+    }
+
+    @Resource
+    public void setUserClient(UserClient userClient) {
+        this.userClient = userClient;
     }
 
     // ~ ==================================================

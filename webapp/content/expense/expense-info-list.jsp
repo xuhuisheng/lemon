@@ -97,8 +97,10 @@ $(function() {
     <thead>
       <tr>
         <th width="10" class="table-check"><input type="checkbox" name="checkAll" onchange="toggleSelectedItems(this.checked)"></th>
-        <th class="sorting" name="id"><spring:message code="expense-info.expense-info.list.id" text="编号"/></th>
-        <th class="sorting" name="name"><spring:message code="expense-info.expense-info.list.name" text="名称"/></th>
+        <th>单号</th>
+        <th>申请人</th>
+        <th>请求事由</th>
+        <th>申请时间</th>
         <th width="80">&nbsp;</th>
       </tr>
     </thead>
@@ -107,8 +109,10 @@ $(function() {
       <c:forEach items="${page.result}" var="item">
       <tr>
         <td><input type="checkbox" class="selectedItem a-check" name="selectedItem" value="${item.id}"></td>
-        <td>${item.id}</td>
+        <td>${item.code}</td>
+        <td>${item.userId}</td>
         <td>${item.name}</td>
+        <td>${item.createTime}</td>
         <td>
           <a href="expense-info-input.do?id=${item.id}" class="a-update"><spring:message code="core.list.edit" text="编辑"/></a>
         </td>

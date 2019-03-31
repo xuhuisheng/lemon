@@ -648,7 +648,7 @@ public class RollbackTaskCmd implements Command<Object> {
         // TaskEntity taskEntity = Context.getCommandContext()
         // .getTaskEntityManager().findTaskById(this.taskId);
         Context.getCommandContext().getTaskEntityManager()
-                .deleteTask(taskEntity, "回退", false);
+                .deleteTask(taskEntity, "驳回", false);
 
         JdbcTemplate jdbcTemplate = ApplicationContextHelper
                 .getBean(JdbcTemplate.class);

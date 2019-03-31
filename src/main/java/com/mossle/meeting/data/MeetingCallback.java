@@ -2,6 +2,8 @@ package com.mossle.meeting.data;
 
 import java.util.List;
 
+import com.mossle.core.csv.CsvCallback;
+
 import com.mossle.meeting.persistence.domain.MeetingRoom;
 import com.mossle.meeting.persistence.manager.MeetingRoomManager;
 

@@ -39,6 +39,9 @@ public class Role implements java.io.Serializable {
     /** 租户. */
     private String tenantId;
 
+    /** null. */
+    private Integer priority;
+
     /** . */
     private Set<UserStatus> userStatuses = new HashSet<UserStatus>(0);
 
@@ -50,12 +53,13 @@ public class Role implements java.io.Serializable {
     }
 
     public Role(Long id, RoleDef roleDef, String name, String descn,
-            String tenantId, Set<UserStatus> userStatuses) {
+            String tenantId, Integer priority, Set<UserStatus> userStatuses) {
         this.id = id;
         this.roleDef = roleDef;
         this.name = name;
         this.descn = descn;
         this.tenantId = tenantId;
+        this.priority = priority;
         this.userStatuses = userStatuses;
     }
 
@@ -129,6 +133,20 @@ public class Role implements java.io.Serializable {
      */
     public void setTenantId(String tenantId) {
         this.tenantId = tenantId;
+    }
+
+    /** @return null. */
+    @Column(name = "PRIORITY")
+    public Integer getPriority() {
+        return this.priority;
+    }
+
+    /**
+     * @param priority
+     *            null.
+     */
+    public void setPriority(Integer priority) {
+        this.priority = priority;
     }
 
     /** @return . */

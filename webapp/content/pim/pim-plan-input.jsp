@@ -1,7 +1,7 @@
 <%@page contentType="text/html;charset=UTF-8"%>
 <%@include file="/taglibs.jsp"%>
 <%pageContext.setAttribute("currentHeader", "pim");%>
-<%pageContext.setAttribute("currentMenu", "address-list");%>
+<%pageContext.setAttribute("currentMenu", "plan");%>
 <!doctype html>
 <html lang="en">
 

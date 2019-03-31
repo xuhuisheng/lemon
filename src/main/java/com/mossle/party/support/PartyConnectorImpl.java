@@ -121,6 +121,9 @@ public class PartyConnectorImpl implements PartyConnector {
 
     /**
      * 根据userId获得对应的PartyEntity.
+     *
+     * @param userId String
+     * @return PartyEntity
      */
     public PartyEntity findUser(String userId) {
         // 找到userId对应的partyEntity
@@ -133,6 +136,9 @@ public class PartyConnectorImpl implements PartyConnector {
 
     /**
      * 获得上级部门.
+     *
+     * @param child PartyEntity
+     * @return PartyEntity
      */
     public PartyEntity findUpperDepartment(PartyEntity child) {
         if (child == null) {
@@ -171,6 +177,11 @@ public class PartyConnectorImpl implements PartyConnector {
 
     /**
      * 递归查找部门，子部门下的所有岗位.
+     *
+     * @param partyEntity PartyEntity
+     * @param positionName String
+     * @param visitedIds Set
+     * @return String
      */
     public String findPositionIdByParent(PartyEntity partyEntity,
             String positionName, Set<Long> visitedIds) {
@@ -229,6 +240,9 @@ public class PartyConnectorImpl implements PartyConnector {
 
     /**
      * 排序.
+     *
+     * @param partyStructSet Set
+     * @return List
      */
     public List<PartyStruct> sortPartyStructs(Set<PartyStruct> partyStructSet) {
         List<PartyStruct> partyStructList = new ArrayList<PartyStruct>(
@@ -240,6 +254,9 @@ public class PartyConnectorImpl implements PartyConnector {
 
     /**
      * 是否负责人.
+     *
+     * @param partyStruct PartyStruct
+     * @return boolean
      */
     public boolean isAdmin(PartyStruct partyStruct) {
         if (partyStruct == null) {
@@ -255,6 +272,9 @@ public class PartyConnectorImpl implements PartyConnector {
 
     /**
      * 是否员工.
+     *
+     * @param partyStruct PartyStruct
+     * @return boolean
      */
     public boolean isNotAdmin(PartyStruct partyStruct) {
         return !this.isAdmin(partyStruct);

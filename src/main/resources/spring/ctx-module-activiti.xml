@@ -4,7 +4,7 @@
 	xsi:schemaLocation="http://www.springframework.org/schema/beans http://www.springframework.org/schema/beans/spring-beans.xsd">
 
 	<!-- 流程引擎配置 -->
-	<bean id="processEngineConfiguration" class="org.activiti.spring.SpringProcessEngineConfiguration" depends-on="databaseMigrator">
+	<bean id="processEngineConfiguration" class="org.activiti.spring.SpringProcessEngineConfiguration">
 		<!-- 数据库连接池 -->
 		<property name="dataSource" ref="dataSource" />
 		<!-- 事务 -->
@@ -66,6 +66,7 @@
 		</property>
 		-->
 
+		<!--
 		<property name="eventListeners">
 			<list>
 				<bean class="com.mossle.bpm.listener.FunctionEventListener" />
@@ -88,6 +89,11 @@
 					</list>
 				</entry>
 			</map>
+		</property>
+		-->
+
+		<property name="eventListeners">
+			<bean class="com.mossle.bpm.support.SpringEventListener"/>
 		</property>
 	</bean>
 
@@ -119,6 +125,21 @@
 		</property>
 	</bean>
 	-->
+
+	<bean id="delegateEventListener" class="com.mossle.bpm.support.DelegateEventListener">
+		<property name="listeners">
+			<list>
+				<bean class="com.mossle.bpm.listener.FunctionEventListener" />
+				<bean class="com.mossle.bpm.listener.HumanTaskEventListener" />
+				<bean class="com.mossle.bpm.listener.AutoCompleteFirstTaskEventListener" />
+				<bean class="com.mossle.bpm.listener.SkipEventListener" />
+				<!-- ENTITY_INITIALIZED -->
+				<bean class="com.mossle.bpm.listener.UpdateProcessInstanceNameEventListener" />
+				<!-- SEQUENCEFLOW_TAKEN -->
+				<bean class="com.mossle.bpm.listener.SequenceFlowEventListener"/>
+			</list>
+		</property>
+	</bean>
 
 	<!-- 工作日历 -->
 	<bean id="businessCalendarManager" class="com.mossle.bpm.calendar.AdvancedBusinessCalendarManagerFactoryBean">

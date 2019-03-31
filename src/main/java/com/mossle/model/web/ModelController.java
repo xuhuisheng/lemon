@@ -9,7 +9,7 @@ import javax.annotation.Resource;
 import javax.servlet.http.HttpServletRequest;
 import javax.servlet.http.HttpServletResponse;
 
-import com.mossle.api.keyvalue.KeyValueConnector;
+import com.mossle.api.model.ModelConnector;
 import com.mossle.api.tenant.TenantHolder;
 
 import com.mossle.core.export.Exportor;
@@ -44,10 +44,10 @@ public class ModelController {
     private ModelInfoManager modelInfoManager;
     private ModelFieldManager modelFieldManager;
     private JdbcTemplate jdbcTemplate;
-    private KeyValueConnector keyValueConnector;
     private Exportor exportor;
     private TenantHolder tenantHolder;
     private InternalProcessConnector internalProcessConnector;
+    private ModelConnector modelConnector;
 
     @RequestMapping("index")
     public String index(Model model) {
@@ -152,9 +152,13 @@ public class ModelController {
         }
 
         String processId = this.findProcessId(modelInfo.getCode());
-        page.setTotalCount(this.keyValueConnector.findTotalCount(processId,
+        // page.setTotalCount(this.keyValueConnector.findTotalCount(processId,
+        // tenantId, q));
+        // page.setResult(this.keyValueConnector.findResult(page, processId,
+        // tenantId, headers, q));
+        page.setTotalCount(this.modelConnector.findTotalCount(processId,
                 tenantId, q));
-        page.setResult(this.keyValueConnector.findResult(page, processId,
+        page.setResult(this.modelConnector.findResult(page, processId,
                 tenantId, headers, q));
     }
 
@@ -183,11 +187,6 @@ public class ModelController {
     }
 
     @Resource
-    public void setKeyValueConnector(KeyValueConnector keyValueConnector) {
-        this.keyValueConnector = keyValueConnector;
-    }
-
-    @Resource
     public void setExportor(Exportor exportor) {
         this.exportor = exportor;
     }
@@ -201,5 +200,10 @@ public class ModelController {
     public void setInternalProcessConnector(
             InternalProcessConnector internalProcessConnector) {
         this.internalProcessConnector = internalProcessConnector;
+    }
+
+    @Resource
+    public void setModelConnector(ModelConnector modelConnector) {
+        this.modelConnector = modelConnector;
     }
 }

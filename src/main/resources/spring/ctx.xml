@@ -11,19 +11,11 @@
 	<context:component-scan base-package="com.mossle">
 		<context:exclude-filter type="annotation" expression="org.springframework.stereotype.Controller"/>
 	</context:component-scan>
-
-	<!-- 默认通过application.properties读取配置 -->
-    <bean id="applicationProperties" class="com.mossle.core.spring.ApplicationPropertiesFactoryBean"/>
-
-    <!-- 定义受环境影响易变的变量 -->
-    <bean class="org.springframework.beans.factory.config.PropertyPlaceholderConfigurer">
-        <property name="properties" ref="applicationProperties"/>
-    </bean>
 	
 	<!-- 把jul的日志导入给slf4j -->
 	<!--
 	在内嵌tomcat的环境，会导致tomcat-juli日志与jul, slf4j发生循环依赖，导致java.lang.ClassCircularityError
-	<bean class="com.mossle.core.logback.JulHandler"/>2017/3/16
+	<bean class="com.mossle.core.logback.JulHandler"/>
 	-->
 
 	<!-- 无法IoC时，提供一个单例获得当前的ctx -->

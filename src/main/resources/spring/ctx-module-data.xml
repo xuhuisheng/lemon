@@ -28,14 +28,14 @@
     </bean>
 
     <!-- 流程 -->
-    <bean id="autoDeployer" class="com.mossle.bpm.support.AutoDeployer" depends-on="applicationContextHelper">
+    <bean id="bpmDeployer" class="com.mossle.bpm.support.AutoDeployer" depends-on="applicationContextHelper">
         <property name="enable" value="${bpm.auto.deploy}"/>
         <property name="processEngine" ref="processEngine"/>
         <property name="defaultTenantCode" value="${tenant.default.code}"/>
         <property name="tenantConnector" ref="tenantConnector"/>
         <property name="deploymentResources">
             <list>
-                <value>classpath*:/bpmn2/*</value>
+                <value>classpath*:/data/bpmn2/*</value>
             </list>
         </property>
     </bean>
@@ -43,13 +43,18 @@
 	<!-- 导入流程分类 -->
 	<bean id="processCategoryDeployer" class="com.mossle.bpm.data.ProcessCategoryDeployer"/>
 
+    <!-- 流程配置 -->
+    <bean class="com.mossle.bpm.data.ProcessListenerDeployer" depends-on="bpmDeployer"/>
+
+    <bean class="com.mossle.bpm.data.ProcessOperationDeployer" depends-on="bpmDeployer"/>
+
 	<!-- 自动部署form -->
-	<bean class="com.mossle.form.support.XFormDeployer">
+	<bean class="com.mossle.form.data.XFormDeployer">
 		<property name="autoDeploy" value="${form.autoDeploy}"/>
 	</bean>
 
 	<!-- 自动解析model -->
-	<bean class="com.mossle.model.support.ModelDeployer">
+	<bean class="com.mossle.model.data.ModelDeployer">
 		<property name="autoDeploy" value="${model.autoDeploy}"/>
 		<property name="defaultTenantCode" value="${tenant.default.code}"/>
 		<property name="tenantConnector" ref="tenantConnector"/>
@@ -67,16 +72,19 @@
 	<!-- 门户 -->
     <bean id="portalDeployer" class="com.mossle.portal.data.PortalDeployer"/>
 
-	<!-- 文章分类 -->
-	<bean id="cmsCatalogDeployer" class="com.mossle.cms.data.CmsCatalogDeployer"/>
-
 	<!-- 文章 -->
-	<bean id="cmsArticleDeployer" class="com.mossle.cms.data.CmsArticleDeployer" depends-on="cmsCatalogDeployer"/>
+	<bean id="cmsDeployer" class="com.mossle.cms.data.CmsDeployer"/>
 
-	<!-- 评论 -->
-	<bean id="cmsCommentDeployer" class="com.mossle.cms.data.CmsCommentDeployer" depends-on="cmsArticleDeployer"/>
+	<!-- 文章模板 -->
+	<bean id="cmsTemplateDeployer" class="com.mossle.cms.data.CmsTemplateDeployer"/>
 
 	<!-- 报表 -->
 	<bean id="reportDeployer" class="com.mossle.report.data.ReportDeployer"/>
+
+	<!-- 工作日历 -->
+	<bean id="workcalDeployer" class="com.mossle.workcal.data.WorkcalDeployer" init-method="init"/>
+
+	<!-- 会议室 -->
+	<bean id="meetingDeployer" class="com.mossle.meeting.data.MeetingDeployer"/>
 
 </beans>

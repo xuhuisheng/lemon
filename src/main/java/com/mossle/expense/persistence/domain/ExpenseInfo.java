@@ -68,6 +68,9 @@ public class ExpenseInfo implements java.io.Serializable {
     /** null. */
     private String tenantId;
 
+    /** null. */
+    private String code;
+
     public ExpenseInfo() {
     }
 
@@ -78,7 +81,8 @@ public class ExpenseInfo implements java.io.Serializable {
     public ExpenseInfo(Long id, String name, Date createTime, String status,
             String type, Double money, Date startTime, Date endTime,
             Integer headCount, String person, String traffic, String country,
-            String address, String thing, String userId, String tenantId) {
+            String address, String thing, String userId, String tenantId,
+            String code) {
         this.id = id;
         this.name = name;
         this.createTime = createTime;
@@ -95,6 +99,7 @@ public class ExpenseInfo implements java.io.Serializable {
         this.thing = thing;
         this.userId = userId;
         this.tenantId = tenantId;
+        this.code = code;
     }
 
     /** @return null. */
@@ -323,5 +328,19 @@ public class ExpenseInfo implements java.io.Serializable {
      */
     public void setTenantId(String tenantId) {
         this.tenantId = tenantId;
+    }
+
+    /** @return null. */
+    @Column(name = "CODE", length = 50)
+    public String getCode() {
+        return this.code;
+    }
+
+    /**
+     * @param code
+     *            null.
+     */
+    public void setCode(String code) {
+        this.code = code;
     }
 }

@@ -7,10 +7,10 @@ import java.util.List;
 
 import javax.annotation.Resource;
 
+import com.mossle.api.auth.CurrentUserHolder;
 import com.mossle.api.tenant.TenantHolder;
 import com.mossle.api.user.UserConnector;
 
-import com.mossle.api.auth.CurrentUserHolder;
 import com.mossle.core.page.Page;
 
 import com.mossle.msg.persistence.domain.MsgInfo;

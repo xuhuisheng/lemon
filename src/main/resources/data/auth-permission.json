@@ -7,7 +7,7 @@
         "display": "true",
         "perm": "portal",
         "priority": 10000,
-	"children": [
+        "children": [
             {
                 "code": "bpm-user",
                 "name": "流程中心",
@@ -18,7 +18,7 @@
                 "priority": 10001
             },
             {
-                "code": "pim",
+                "code": "pim-user",
                 "name": "个人事务",
                 "url": "/pim/index.do",
                 "type": "module",
@@ -56,7 +56,7 @@
             {
                 "code": "website",
                 "name": "网站首页",
-                "url": "/cms/cms-site-view.do",
+                "url": "/cms/view",
                 "type": "module",
                 "display": "true",
                 "perm": "website",

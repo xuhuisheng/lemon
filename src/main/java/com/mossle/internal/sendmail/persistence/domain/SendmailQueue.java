@@ -33,6 +33,9 @@ public class SendmailQueue implements java.io.Serializable {
     private SendmailConfig sendmailConfig;
 
     /** null. */
+    private SendmailApp sendmailApp;
+
+    /** null. */
     private String subject;
 
     /** null. */
@@ -68,6 +71,9 @@ public class SendmailQueue implements java.io.Serializable {
     /** null. */
     private String tenantId;
 
+    /** null. */
+    private String businessKey;
+
     public SendmailQueue() {
     }
 
@@ -76,13 +82,15 @@ public class SendmailQueue implements java.io.Serializable {
     }
 
     public SendmailQueue(Long id, SendmailTemplate sendmailTemplate,
-            SendmailConfig sendmailConfig, String subject, String sender,
-            String receiver, String cc, String bcc, String content,
-            String attachment, String data, Date createTime, String status,
-            String info, String tenantId) {
+            SendmailConfig sendmailConfig, SendmailApp sendmailApp,
+            String subject, String sender, String receiver, String cc,
+            String bcc, String content, String attachment, String data,
+            Date createTime, String status, String info, String tenantId,
+            String businessKey) {
         this.id = id;
         this.sendmailTemplate = sendmailTemplate;
         this.sendmailConfig = sendmailConfig;
+        this.sendmailApp = sendmailApp;
         this.subject = subject;
         this.sender = sender;
         this.receiver = receiver;
@@ -95,6 +103,7 @@ public class SendmailQueue implements java.io.Serializable {
         this.status = status;
         this.info = info;
         this.tenantId = tenantId;
+        this.businessKey = businessKey;
     }
 
     /** @return null. */
@@ -140,6 +149,21 @@ public class SendmailQueue implements java.io.Serializable {
      */
     public void setSendmailConfig(SendmailConfig sendmailConfig) {
         this.sendmailConfig = sendmailConfig;
+    }
+
+    /** @return null. */
+    @ManyToOne(fetch = FetchType.LAZY)
+    @JoinColumn(name = "APP_ID")
+    public SendmailApp getSendmailApp() {
+        return this.sendmailApp;
+    }
+
+    /**
+     * @param sendmailApp
+     *            null.
+     */
+    public void setSendmailApp(SendmailApp sendmailApp) {
+        this.sendmailApp = sendmailApp;
     }
 
     /** @return null. */
@@ -309,5 +333,19 @@ public class SendmailQueue implements java.io.Serializable {
      */
     public void setTenantId(String tenantId) {
         this.tenantId = tenantId;
+    }
+
+    /** @return null. */
+    @Column(name = "BUSINESS_KEY", length = 100)
+    public String getBusinessKey() {
+        return this.businessKey;
+    }
+
+    /**
+     * @param businessKey
+     *            null.
+     */
+    public void setBusinessKey(String businessKey) {
+        this.businessKey = businessKey;
     }
 }

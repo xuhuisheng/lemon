@@ -9,6 +9,7 @@ import javax.annotation.Resource;
 import com.mossle.api.tenant.TenantHolder;
 
 import com.mossle.cms.persistence.domain.CmsArticle;
+import com.mossle.cms.persistence.domain.CmsCatalog;
 import com.mossle.cms.persistence.manager.CmsArticleManager;
 
 import com.mossle.core.page.Page;
@@ -41,10 +42,11 @@ public class CmsPortalController {
         buff.append("<tbody>");
 
         for (CmsArticle cmsArticle : cmsArticles) {
+            CmsCatalog cmsCatalog = cmsArticle.getCmsCatalog();
             buff.append("<tr>");
-            buff.append("  <td>" + cmsArticle.getCmsCatalog().getName()
+            buff.append("  <td>" + cmsCatalog.getName()
                     + "</td>");
-            buff.append("  <td><a href='../cms/cms-article-view.do?id="
+            buff.append("  <td><a href='../cms/view/" + cmsCatalog.getCode() + "/"
                     + cmsArticle.getId() + "'>" + cmsArticle.getTitle()
                     + "</a></td>");
             buff.append("  <td>"

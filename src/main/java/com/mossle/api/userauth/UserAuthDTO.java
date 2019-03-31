@@ -2,6 +2,8 @@ package com.mossle.api.userauth;
 
 import java.util.List;
 
+import com.mossle.api.menu.MenuDTO;
+
 public class UserAuthDTO {
     private String id;
     private String tenantId;
@@ -15,6 +17,7 @@ public class UserAuthDTO {
     private boolean accountExpired;
     private List<String> permissions;
     private List<String> roles;
+    private List<MenuDTO> menus;
 
     public String getId() {
         return id;
@@ -110,5 +113,13 @@ public class UserAuthDTO {
 
     public void setRoles(List<String> roles) {
         this.roles = roles;
+    }
+
+    public List<MenuDTO> getMenus() {
+        return menus;
+    }
+
+    public void setMenus(List<MenuDTO> menus) {
+        this.menus = menus;
     }
 }

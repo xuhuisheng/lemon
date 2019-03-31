@@ -350,8 +350,6 @@ public class HibernateBasicDao implements ApplicationContextAware {
      *            实体类型
      * @param entity
      *            实体对象
-     * @param <T>
-     *            generic
      * @return 主键
      * @throws NoSuchMethodException
      *             找不到方法

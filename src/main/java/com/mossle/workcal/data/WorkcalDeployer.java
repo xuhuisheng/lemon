@@ -67,6 +67,7 @@ public class WorkcalDeployer {
 
         WorkcalType workcalType = new WorkcalType();
         workcalType.setName(workcal.getType().getName());
+        workcalType.setTenantId(defaultTenantId);
         workcalTypeManager.save(workcalType);
     }
 
@@ -100,6 +101,7 @@ public class WorkcalDeployer {
         workcalRule.setName(rule.getName());
         workcalRule.setStatus(0);
         workcalRule.setWorkcalType(defaultWorkcalType);
+        workcalRule.setTenantId(defaultTenantId);
         workcalRuleManager.save(workcalRule);
 
         this.processPart(workcalRule);
@@ -138,6 +140,7 @@ public class WorkcalDeployer {
         workcalRule.setWorkDate(currentDate);
         workcalRule.setStatus(holiday.getStatus());
         workcalRule.setWorkcalType(defaultWorkcalType);
+        workcalRule.setTenantId(defaultTenantId);
         workcalRuleManager.save(workcalRule);
 
         this.processPart(workcalRule);
@@ -151,6 +154,7 @@ public class WorkcalDeployer {
         workcalPart0.setStartTime("9:00");
         workcalPart0.setEndTime("12:00");
         workcalPart0.setWorkcalRule(workcalRule);
+        workcalPart0.setTenantId(defaultTenantId);
         workcalPartManager.save(workcalPart0);
 
         WorkcalPart workcalPart1 = new WorkcalPart();
@@ -158,6 +162,7 @@ public class WorkcalDeployer {
         workcalPart1.setStartTime("13:00");
         workcalPart1.setEndTime("18:00");
         workcalPart1.setWorkcalRule(workcalRule);
+        workcalPart1.setTenantId(defaultTenantId);
         workcalPartManager.save(workcalPart1);
     }
 

@@ -64,7 +64,7 @@
 	<bean id="userAuthCache" class="com.mossle.auth.support.UserAuthCacheImpl">
 		<property name="cacheManager" ref="userAuthCacheManager"/>
 	</bean>
-
+<!--
 	<bean id="userAuthConnector" class="com.mossle.auth.support.UserAuthConnectorFactoryBean">
 		<property name="type" value="${userauth.connector.type}"/>
 		<property name="userAuthCache" ref="userAuthCache"/>
@@ -72,6 +72,7 @@
 		<property name="userConnector" ref="userConnector"/>
 		<property name="tenantConnector" ref="tenantConnector"/>
 	</bean>
+-->
 
 	<!-- ================================================== -->
 

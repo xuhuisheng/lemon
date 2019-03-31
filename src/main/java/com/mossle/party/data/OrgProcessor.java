@@ -44,6 +44,7 @@ public class OrgProcessor {
             OrgDTO child = new OrgDTO();
             orgDto.getChildren().add(child);
             this.processOrgDto(item, child);
+            child.setParentCode(code);
         }
     }
 

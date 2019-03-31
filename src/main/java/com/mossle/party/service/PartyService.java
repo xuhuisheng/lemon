@@ -1,5 +1,7 @@
 package com.mossle.party.service;
 
+import java.util.ArrayList;
+import java.util.Collections;
 import java.util.List;
 
 import javax.annotation.Resource;
@@ -82,6 +84,10 @@ public class PartyService {
     // ~ ======================================================================
     /**
      * 同步更新PartyEntity，比如company,department,group,position,user里改了什么信息，就同步修改PartyEntity里的信息.
+     *
+     * @param partyEntityRef String
+     * @param partyTypeRef String
+     * @param name String
      */
     public void insertPartyEntity(String partyEntityRef, String partyTypeRef,
             String name) {
@@ -126,11 +132,25 @@ public class PartyService {
     public String getDefaultRootPartyEntityRef() {
         Long defaultPartyStructTypeId = getDefaultPartyStructTypeId();
         String hql = "select distinct o from PartyEntity o left join o.parentStructs p with p.partyStructType.id=? "
-                + "join o.childStructs c where p is null and c.partyStructType.id=?";
+                + "join o.childStructs c where p.parentEntity is null and c.partyStructType.id=?";
         PartyEntity partyEntity = partyEntityManager.findUnique(hql,
                 defaultPartyStructTypeId, defaultPartyStructTypeId);
 
         return partyEntity.getRef();
+    }
+
+    public Long getDefaultRootPartyEntityId() {
+        Long defaultPartyStructTypeId = getDefaultPartyStructTypeId();
+        String hql = "select distinct o from PartyEntity o left join o.parentStructs p with p.partyStructType.id=? "
+                + "join o.childStructs c where p.parentEntity is null and c.partyStructType.id=?";
+        PartyEntity partyEntity = partyEntityManager.findUnique(hql,
+                defaultPartyStructTypeId, defaultPartyStructTypeId);
+
+        if (partyEntity == null) {
+            return null;
+        }
+
+        return partyEntity.getId();
     }
 
     public List<PartyEntity> getTopPartyEntities(Long partyStructTypeId) {
@@ -147,7 +167,9 @@ public class PartyService {
     }
 
     /**
-     * 如果对应的child实体，只有当前partyStruct一个上级关系，就需要级联删除所有的下级关系，避免形成孤岛。
+     * 如果对应的child实体，只有当前partyStruct一个上级关系，就需要级联删除所有的下级关系，避免形成孤岛.
+     *
+     * @param partyStruct PartyStruct
      */
     public void removeOrphan(PartyStruct partyStruct) {
         if (!"struct".equals(partyStruct.getPartyStructType().getType())) {
@@ -194,6 +216,40 @@ public class PartyService {
             for (PartyStruct partyStruct : partyEntity.getChildStructs()) {
                 this.removeOrphan(partyStruct);
             }
+        }
+    }
+
+    // report line
+    public List<PartyEntity> findReportLines(Long partyEntityId) {
+        List<PartyEntity> list = new ArrayList<PartyEntity>();
+        PartyEntity partyEntity = partyEntityManager.get(partyEntityId);
+
+        if (partyEntity == null) {
+            logger.info("cannot find : {}", partyEntityId);
+
+            return Collections.emptyList();
+        }
+
+        list.add(partyEntity);
+        this.visitReportLine(partyEntity, list);
+
+        return list;
+    }
+
+    public void visitReportLine(PartyEntity partyEntity, List<PartyEntity> list) {
+        for (PartyStruct partyStruct : partyEntity.getParentStructs()) {
+            if (!"report".equals(partyStruct.getPartyStructType().getType())) {
+                continue;
+            }
+
+            PartyEntity parent = partyStruct.getParentEntity();
+
+            if (parent == null) {
+                continue;
+            }
+
+            list.add(parent);
+            this.visitReportLine(parent, list);
         }
     }
 

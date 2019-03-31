@@ -33,6 +33,7 @@ TaskOperation.prototype.confirmStartProcess = function() {
 
 TaskOperation.prototype.completeTask = function() {
 	$('#' + this.formId).attr('action', ROOT_URL + '/operation/task-operation-completeTask.do');
+	$('#_humantask_comment_').val($('#task-comment').val());
 	$('#' + this.formId).submit();
 };
 
@@ -43,11 +44,13 @@ TaskOperation.prototype.rollbackPrevious = function() {
 
 TaskOperation.prototype.rollbackStart = function() {
 	$('#' + this.formId).attr('action', ROOT_URL + '/operation/task-operation-rollbackStart.do');
+	$('#_humantask_comment_').val($('#task-comment').val());
 	$('#' + this.formId).submit();
 };
 
 TaskOperation.prototype.rollbackInitiator = function() {
 	$('#' + this.formId).attr('action', ROOT_URL + '/operation/task-operation-rollbackInitiator.do');
+	$('#_humantask_comment_').val($('#task-comment').val());
 	$('#' + this.formId).submit();
 };
 
@@ -73,19 +76,22 @@ TaskOperation.prototype.communicate = function() {
 
 TaskOperation.prototype.approve = function() {
 	$('#' + this.formId).attr('action', ROOT_URL + '/operation/task-operation-completeTask.do');
-	$('#_humantask_action_').val("同意");
+	$('#_humantask_action_').val("通过");
+	$('#_humantask_comment_').val($('#task-comment').val());
 	$('#' + this.formId).submit();
 };
 
 TaskOperation.prototype.reject = function() {
-	$('#' + this.formId).attr('action', ROOT_URL + '/operation/task-operation-completeTask.do');
-	$('#_humantask_action_').val("反对");
+	$('#' + this.formId).attr('action', ROOT_URL + '/operation/task-operation-rollbackInitiator.do');
+	$('#_humantask_action_').val("驳回");
+	$('#_humantask_comment_').val($('#task-comment').val());
 	$('#' + this.formId).submit();
 };
 
 TaskOperation.prototype.abandon = function() {
 	$('#' + this.formId).attr('action', ROOT_URL + '/operation/task-operation-completeTask.do');
 	$('#_humantask_action_').val("弃权");
+	$('#_humantask_comment_').val($('#task-comment').val());
 	$('#' + this.formId).submit();
 };
 
@@ -97,4 +103,10 @@ TaskOperation.prototype.callback = function() {
 TaskOperation.prototype.addCounterSign = function() {
 	$('#modalCreateVote form').attr('action', ROOT_URL + '/operation/task-operation-createVote.do');
 	$('#modalCreateVote').modal();
+};
+
+TaskOperation.prototype.submit = function() {
+	$('#' + this.formId).attr('action', ROOT_URL + '/operation/task-operation-completeTask.do');
+	$('#_humantask_comment_').val($('#task-comment').val());
+	$('#' + this.formId).submit();
 };

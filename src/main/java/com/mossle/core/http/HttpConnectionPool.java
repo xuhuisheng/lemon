@@ -116,6 +116,7 @@ public class HttpConnectionPool implements Runnable {
                 Thread.sleep(TEN_SECOND);
             } catch (InterruptedException ex) {
                 logger.info(ex.getMessage(), ex);
+                Thread.currentThread().interrupt();
             }
 
             List<HttpConnectionInfo> checkedHttpConnectionInfos = new ArrayList(

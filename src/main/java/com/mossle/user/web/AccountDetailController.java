@@ -7,7 +7,6 @@ import java.util.Map;
 import javax.annotation.Resource;
 
 import com.mossle.api.auth.CustomPasswordEncoder;
-import com.mossle.api.store.StoreConnector;
 import com.mossle.api.tenant.TenantHolder;
 import com.mossle.api.user.UserCache;
 import com.mossle.api.user.UserDTO;
@@ -59,7 +58,6 @@ public class AccountDetailController {
     private Exportor exportor;
     private BeanMapper beanMapper = new BeanMapper();
     private CustomPasswordEncoder customPasswordEncoder;
-    private StoreConnector storeConnector;
     private UserPublisher userPublisher;
     private TenantHolder tenantHolder;
 
@@ -199,11 +197,6 @@ public class AccountDetailController {
     @Resource
     public void setExportor(Exportor exportor) {
         this.exportor = exportor;
-    }
-
-    @Resource
-    public void setStoreConnector(StoreConnector storeConnector) {
-        this.storeConnector = storeConnector;
     }
 
     @Resource

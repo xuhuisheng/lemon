@@ -8,24 +8,32 @@ import java.util.Map;
 import javax.annotation.Resource;
 
 import javax.servlet.http.HttpServletRequest;
+import javax.servlet.http.HttpServletResponse;
 
 import com.mossle.api.auth.CurrentUserHolder;
+import com.mossle.api.employee.EmployeeDTO;
 import com.mossle.api.form.FormDTO;
+import com.mossle.api.form.FormMetadata;
 import com.mossle.api.humantask.HumanTaskConnector;
 import com.mossle.api.humantask.HumanTaskConstants;
 import com.mossle.api.humantask.HumanTaskDTO;
 import com.mossle.api.keyvalue.FormParameter;
-import com.mossle.api.keyvalue.KeyValueConnector;
 import com.mossle.api.keyvalue.Prop;
 import com.mossle.api.keyvalue.Record;
 import com.mossle.api.keyvalue.RecordBuilder;
+import com.mossle.api.model.ModelConnector;
+import com.mossle.api.model.ModelInfoDTO;
+import com.mossle.api.model.ModelItemDTO;
+import com.mossle.api.process.ProcessBaseInfo;
 import com.mossle.api.process.ProcessConnector;
-import com.mossle.api.store.StoreConnector;
 import com.mossle.api.tenant.TenantHolder;
 import com.mossle.api.user.UserConnector;
 
 import com.mossle.button.ButtonDTO;
 import com.mossle.button.ButtonHelper;
+
+import com.mossle.client.employee.EmployeeClient;
+import com.mossle.client.store.StoreClient;
 
 import com.mossle.core.MultipartHandler;
 import com.mossle.core.mapper.BeanMapper;
@@ -34,6 +42,10 @@ import com.mossle.core.spring.MessageHelper;
 import com.mossle.core.util.BaseDTO;
 
 import com.mossle.operation.service.OperationService;
+import com.mossle.operation.service.ProcessModelService;
+import com.mossle.operation.service.ViewService;
+import com.mossle.operation.support.FormData;
+import com.mossle.operation.support.FormDataBuilder;
 
 import com.mossle.xform.Xform;
 import com.mossle.xform.XformBuilder;
@@ -65,18 +77,21 @@ public class TaskOperationController {
     public static final int STATUS_DRAFT_TASK = 1;
     public static final int STATUS_RUNNING = 2;
     private OperationService operationService;
-    private KeyValueConnector keyValueConnector;
     private MessageHelper messageHelper;
     private CurrentUserHolder currentUserHolder;
     private ProcessConnector processConnector;
     private HumanTaskConnector humanTaskConnector;
     private MultipartResolver multipartResolver;
-    private StoreConnector storeConnector;
+    private StoreClient storeClient;
     private ButtonHelper buttonHelper = new ButtonHelper();
     private JsonMapper jsonMapper = new JsonMapper();
     private TenantHolder tenantHolder;
     private BeanMapper beanMapper = new BeanMapper();
     private UserConnector userConnector;
+    private ModelConnector modelConnector;
+    private ProcessModelService processModelService;
+    private EmployeeClient employeeClient;
+    private ViewService viewService;
 
     /**
      * 保存草稿.
@@ -89,11 +104,23 @@ public class TaskOperationController {
     }
 
     /**
+     * 根据businessKey显示任务表单.
+     */
+    @RequestMapping("task-operation-viewTaskFormByBusinessKey")
+    public String viewTaskForm(@RequestParam("businessKey") String businessKey) {
+        ModelInfoDTO modelInfoDto = this.modelConnector.findByCode(businessKey);
+        List<HumanTaskDTO> humanTaskDtos = this.humanTaskConnector.findHumanTasksByProcessInstanceId(modelInfoDto.getInstanceId());
+        HumanTaskDTO humanTaskDto = humanTaskDtos.get(humanTaskDtos.size() - 1);
+        return "redirect:/operation/task-operation-viewTaskForm.do?humanTaskId=" + humanTaskDto.getId();
+    }
+
+    /**
      * 显示任务表单.
      */
     @RequestMapping("task-operation-viewTaskForm")
     public String viewTaskForm(@RequestParam("humanTaskId") String humanTaskId,
-            Model model, RedirectAttributes redirectAttributes)
+            Model model, RedirectAttributes redirectAttributes,
+            HttpServletRequest request, HttpServletResponse response)
             throws Exception {
         HumanTaskDTO humanTaskDto = humanTaskConnector
                 .findHumanTask(humanTaskId);
@@ -115,10 +142,39 @@ public class TaskOperationController {
         FormDTO formDto = this.findTaskForm(humanTaskDto);
 
         if (formDto.isRedirect()) {
-            String redirectUrl = formDto.getUrl() + "?humanTaskId="
-                    + formDto.getTaskId();
+            String processInstanceId = humanTaskDto.getProcessInstanceId();
 
-            return "redirect:" + redirectUrl;
+            String businessKey = processConnector
+                    .findBusinessKeyByProcessInstanceId(processInstanceId);
+            String tenantId = tenantHolder.getTenantId();
+
+            // 如果是外部表单，就直接跳转出去
+            // url
+            String url = formDto.getUrl();
+
+            // metadata
+            FormMetadata formMetadata = new FormMetadata();
+            formMetadata.setBusinessKey(businessKey);
+            formMetadata.setHumanTaskId(humanTaskId);
+
+            String userId = currentUserHolder.getUserId();
+            EmployeeDTO employeeDto = employeeClient.findById(userId, tenantId);
+            formMetadata.setUserId(userId);
+            formMetadata.setDisplayName(employeeDto.getName());
+            formMetadata.setDepartmentId(employeeDto.getDepartmentCode());
+            formMetadata.setDepartmentName(employeeDto.getDepartmentName());
+
+            // data
+            ModelInfoDTO modelInfoDto = null;
+
+            if (businessKey != null) {
+                modelInfoDto = modelConnector.findByCode(businessKey);
+            }
+
+            this.viewExternalForm(request, response, url, formMetadata,
+                    modelInfoDto);
+
+            return null;
         }
 
         model.addAttribute("formDto", formDto);
@@ -135,17 +191,11 @@ public class TaskOperationController {
             // 如果是任务草稿，直接通过processInstanceId获得record，更新数据
             // TODO: 分支肯定有问题
             String processInstanceId = humanTaskDto.getProcessInstanceId();
-            String json = this.findTaskFormData(processInstanceId);
 
-            if (json != null) {
-                model.addAttribute("json", json);
-            }
-
-            Record record = keyValueConnector.findByRef(processInstanceId);
-
-            Xform xform = new XformBuilder().setStoreConnector(storeConnector)
-                    .setUserConnector(userConnector)
-                    .setContent(formDto.getContent()).setRecord(record).build();
+            String businessKey = processConnector
+                    .findBusinessKeyByProcessInstanceId(processInstanceId);
+            Xform xform = this.processModelService.processFormData(businessKey,
+                    formDto);
             model.addAttribute("xform", xform);
         }
 
@@ -187,11 +237,13 @@ public class TaskOperationController {
         String tenantId = tenantHolder.getTenantId();
         MultipartHandler multipartHandler = new MultipartHandler(
                 multipartResolver);
-        Record record = null;
+
+        // Record record = null;
         String humanTaskId = null;
         FormParameter formParameter = null;
         HumanTaskDTO humanTaskDto = null;
         FormDTO formDto = null;
+        ModelInfoDTO modelInfoDto = null;
 
         try {
             multipartHandler.handle(request);
@@ -210,29 +262,23 @@ public class TaskOperationController {
             humanTaskDto = humanTaskConnector.findHumanTask(humanTaskId);
 
             String processInstanceId = humanTaskDto.getProcessInstanceId();
-            record = keyValueConnector.findByRef(processInstanceId);
 
-            record = new RecordBuilder().build(record, multipartHandler,
-                    storeConnector, tenantId);
-
-            keyValueConnector.save(record);
+            String businessKey = processConnector
+                    .findBusinessKeyByProcessInstanceId(processInstanceId);
+            modelInfoDto = modelConnector.findByCode(businessKey);
         } finally {
             multipartHandler.clear();
         }
 
-        Xform xform = new XformBuilder().setStoreConnector(storeConnector)
-                .setUserConnector(userConnector)
-                .setContent(formDto.getContent()).setRecord(record).build();
+        String businessKey = modelInfoDto.getCode();
+        Xform xform = this.processModelService.processFormData(businessKey,
+                formDto);
         Map<String, Object> taskParameters = xform.getMapData();
         logger.info("taskParameters : {}", taskParameters);
 
         try {
-            // humanTaskConnector.completeTask(humanTaskId,
-            // currentUserHolder.getUserId(), formParameter.getAction(),
-            // formParameter.getComment(), taskParameters);
             this.operationService.completeTask(humanTaskId, userId,
-                    formParameter, taskParameters, record,
-                    humanTaskDto.getProcessInstanceId());
+                    formParameter, taskParameters, modelInfoDto);
         } catch (IllegalStateException ex) {
             logger.error(ex.getMessage(), ex);
             messageHelper.addFlashMessage(redirectAttributes, ex.getMessage());
@@ -240,12 +286,6 @@ public class TaskOperationController {
             return "redirect:/humantask/workspace-personalTasks.do";
         }
 
-        // if (record == null) {
-        // record = new Record();
-        // }
-        // record = new RecordBuilder().build(record, STATUS_RUNNING,
-        // humanTaskDto.getProcessInstanceId());
-        // keyValueConnector.save(record);
         return "operation/task-operation-completeTask";
     }
 
@@ -488,39 +528,11 @@ public class TaskOperationController {
                     || "".equals(formParameter.getBusinessKey().trim())) {
                 formParameter.setBusinessKey(businessKey);
             }
-
-            Record record = keyValueConnector.findByCode(businessKey);
-
-            record = new RecordBuilder().build(record, multipartHandler,
-                    storeConnector, tenantId);
-
-            keyValueConnector.save(record);
         } finally {
             multipartHandler.clear();
         }
 
         return formParameter;
-    }
-
-    /**
-     * 读取任务对应的表单数据，转换成json.
-     */
-    public String findTaskFormData(String processInstanceId) throws Exception {
-        Record record = keyValueConnector.findByRef(processInstanceId);
-
-        if (record == null) {
-            return null;
-        }
-
-        Map map = new HashMap();
-
-        for (Prop prop : record.getProps().values()) {
-            map.put(prop.getCode(), prop.getValue());
-        }
-
-        String json = jsonMapper.toJson(map);
-
-        return json;
     }
 
     /**
@@ -532,12 +544,59 @@ public class TaskOperationController {
         return formDto;
     }
 
-    // ~ ======================================================================
-    @Resource
-    public void setKeyValueConnector(KeyValueConnector keyValueConnector) {
-        this.keyValueConnector = keyValueConnector;
+    public void viewExternalForm(HttpServletRequest request,
+            HttpServletResponse response, String path,
+            FormMetadata formMetadata, ModelInfoDTO modelInfoDto)
+            throws Exception {
+        request.setAttribute("formMetadata", formMetadata);
+
+        if (modelInfoDto != null) {
+            FormData formData = new FormDataBuilder().setModelInfoDto(
+                    modelInfoDto).build();
+            String formDataJson = jsonMapper.toJson(formData);
+            request.setAttribute("formData", formData);
+            request.setAttribute("formDataJson", formDataJson);
+        }
+
+        request.getRequestDispatcher(path).forward(request, response);
     }
 
+    @RequestMapping("task-operation-view")
+    public String view(@RequestParam("humanTaskId") String humanTaskId,
+            Model model) throws Exception {
+        HumanTaskDTO humanTaskDto = humanTaskConnector
+                .findHumanTask(humanTaskId);
+        String processInstanceId = humanTaskDto.getProcessInstanceId();
+
+        // 显示三部分
+        // 1. 流程基本信息
+        ProcessBaseInfo processBaseInfo = viewService
+                .findProcess(processInstanceId);
+        model.addAttribute("processBaseInfo", processBaseInfo);
+
+        // 2. 表单
+        Map<String, Object> formResultMap = viewService
+                .findTaskForm(humanTaskId);
+        model.addAttribute("formDto", formResultMap.get("formDto"));
+        model.addAttribute("xform", formResultMap.get("xform"));
+        model.addAttribute("formMetadata", formResultMap.get("formMetadata"));
+        model.addAttribute("formData", formResultMap.get("formData"));
+        model.addAttribute("formDataJson", formResultMap.get("formDataJson"));
+
+        // 3. 审批记录
+        List<HumanTaskDTO> humanTaskDtos = viewService
+                .findHumanTasks(processInstanceId);
+        model.addAttribute("humanTaskDtos", humanTaskDtos);
+
+        // 4. 操作按钮
+        List<Map<String, String>> buttons = viewService
+                .findTaskToolbar(humanTaskId);
+        model.addAttribute("buttons", buttons);
+
+        return "operation/process-operation-view";
+    }
+
+    // ~ ======================================================================
     @Resource
     public void setMessageHelper(MessageHelper messageHelper) {
         this.messageHelper = messageHelper;
@@ -569,8 +628,8 @@ public class TaskOperationController {
     }
 
     @Resource
-    public void setStoreConnector(StoreConnector storeConnector) {
-        this.storeConnector = storeConnector;
+    public void setStoreClient(StoreClient storeClient) {
+        this.storeClient = storeClient;
     }
 
     @Resource
@@ -581,5 +640,25 @@ public class TaskOperationController {
     @Resource
     public void setUserConnector(UserConnector userConnector) {
         this.userConnector = userConnector;
+    }
+
+    @Resource
+    public void setModelConnector(ModelConnector modelConnector) {
+        this.modelConnector = modelConnector;
+    }
+
+    @Resource
+    public void setProcessModelService(ProcessModelService processModelService) {
+        this.processModelService = processModelService;
+    }
+
+    @Resource
+    public void setEmployeeClient(EmployeeClient employeeClient) {
+        this.employeeClient = employeeClient;
+    }
+
+    @Resource
+    public void setViewService(ViewService viewService) {
+        this.viewService = viewService;
     }
 }

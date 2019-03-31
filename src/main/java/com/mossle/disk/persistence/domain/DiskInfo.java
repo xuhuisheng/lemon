@@ -33,6 +33,9 @@ public class DiskInfo implements java.io.Serializable {
     private DiskInfo diskInfo;
 
     /** null. */
+    private DiskSpace diskSpace;
+
+    /** null. */
     private String name;
 
     /** null. */
@@ -102,9 +105,9 @@ public class DiskInfo implements java.io.Serializable {
         this.id = id;
     }
 
-    public DiskInfo(Long id, DiskInfo diskInfo, String name,
-            String description, String type, Long fileSize, String creator,
-            Date createTime, String ref, String previewStatus,
+    public DiskInfo(Long id, DiskInfo diskInfo, DiskSpace diskSpace,
+            String name, String description, String type, Long fileSize,
+            String creator, Date createTime, String ref, String previewStatus,
             String previewRef, String parentPath, Integer dirType,
             Integer priority, String lastModifier, Date lastModifiedTime,
             String status, Date expireTime, String checkoutStatus,
@@ -112,6 +115,7 @@ public class DiskInfo implements java.io.Serializable {
             Set<DiskShare> diskShares) {
         this.id = id;
         this.diskInfo = diskInfo;
+        this.diskSpace = diskSpace;
         this.name = name;
         this.description = description;
         this.type = type;
@@ -163,6 +167,21 @@ public class DiskInfo implements java.io.Serializable {
      */
     public void setDiskInfo(DiskInfo diskInfo) {
         this.diskInfo = diskInfo;
+    }
+
+    /** @return null. */
+    @ManyToOne(fetch = FetchType.LAZY)
+    @JoinColumn(name = "SPACE_ID")
+    public DiskSpace getDiskSpace() {
+        return this.diskSpace;
+    }
+
+    /**
+     * @param diskSpace
+     *            null.
+     */
+    public void setDiskSpace(DiskSpace diskSpace) {
+        this.diskSpace = diskSpace;
     }
 
     /** @return null. */

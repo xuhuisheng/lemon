@@ -75,7 +75,7 @@ $(function() {
 
 		  <form name="bpmCategoryForm" method="get" action="bpm-conf-notice-input.do" class="form-inline">
 			<input type="hidden" name="bpmConfNodeId" value="${param.bpmConfNodeId}">
-			<button class="btn btn-small" onclick="document.bpmCategoryForm.submit()">新增</button>
+			<button class="btn btn-default" onclick="document.bpmCategoryForm.submit()">新增</button>
 		  </form>
 
 		</div>

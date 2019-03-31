@@ -15,10 +15,12 @@ public class MailStore {
 
     @PostConstruct
     public void start() {
+        // start
     }
 
     @PreDestroy
     public void stop() {
+        // stop
     }
 
     public void sendMail(MailDTO mailDto) {
@@ -26,6 +28,7 @@ public class MailStore {
             queue.put(mailDto);
         } catch (InterruptedException ex) {
             logger.info(ex.getMessage(), ex);
+            Thread.currentThread().interrupt();
         }
     }
 

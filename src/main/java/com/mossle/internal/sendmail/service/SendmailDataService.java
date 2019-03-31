@@ -9,8 +9,9 @@ import java.util.Map;
 
 import javax.annotation.Resource;
 
-import com.mossle.api.store.StoreConnector;
 import com.mossle.api.store.StoreDTO;
+
+import com.mossle.client.store.StoreClient;
 
 import com.mossle.core.mail.MailDTO;
 import com.mossle.core.mail.MailHelper;
@@ -21,6 +22,7 @@ import com.mossle.core.store.DataSourceInputStreamSource;
 import com.mossle.core.template.TemplateService;
 import com.mossle.core.util.StringUtils;
 
+import com.mossle.internal.sendmail.persistence.domain.SendmailApp;
 import com.mossle.internal.sendmail.persistence.domain.SendmailAttachment;
 import com.mossle.internal.sendmail.persistence.domain.SendmailConfig;
 import com.mossle.internal.sendmail.persistence.domain.SendmailHistory;
@@ -47,7 +49,7 @@ public class SendmailDataService {
     private SendmailQueueManager sendmailQueueManager;
     private SendmailHistoryManager sendmailHistoryManager;
     private SendmailTemplateManager sendmailTemplateManager;
-    private StoreConnector storeConnector;
+    private StoreClient storeClient;
     private BeanMapper beanMapper = new BeanMapper();
     private MailHelper mailHelper;
     private TemplateService templateService;
@@ -116,6 +118,15 @@ public class SendmailDataService {
                 .getResult();
     }
 
+    public List<SendmailQueue> findTopSendmailQueues(SendmailApp sendmailApp) {
+        int pageNo = 1;
+        int pageSize = sendmailApp.getPriority();
+
+        return (List<SendmailQueue>) sendmailQueueManager.pagedQuery(
+                "from SendmailQueue where sendmailApp=?", pageNo, pageSize,
+                sendmailApp).getResult();
+    }
+
     public void processSendmailQueue(SendmailQueue sendmailQueue)
             throws Exception {
         MailDTO mailDto = new MailDTO();
@@ -182,7 +193,7 @@ public class SendmailDataService {
             if (sendmailTemplate != null) {
                 for (SendmailAttachment sendmailAttachment : sendmailTemplate
                         .getSendmailAttachments()) {
-                    StoreDTO storeDto = storeConnector.getStore(
+                    StoreDTO storeDto = storeClient.getStore(
                             "sendmailattachment", sendmailAttachment.getPath(),
                             sendmailQueue.getTenantId());
                     mailDto.addAttachment(
@@ -288,6 +299,7 @@ public class SendmailDataService {
         sendmailHistory
                 .setSendmailTemplate(sendmailQueue.getSendmailTemplate());
         sendmailHistory.setSendmailConfig(sendmailQueue.getSendmailConfig());
+        sendmailHistory.setSendmailApp(sendmailQueue.getSendmailApp());
         sendmailHistory.setData(sendmailQueue.getData());
         sendmailHistory.setCreateTime(new Date());
 
@@ -336,8 +348,8 @@ public class SendmailDataService {
     }
 
     @Resource
-    public void setStoreConnector(StoreConnector storeConnector) {
-        this.storeConnector = storeConnector;
+    public void setStoreClient(StoreClient storeClient) {
+        this.storeClient = storeClient;
     }
 
     @Resource

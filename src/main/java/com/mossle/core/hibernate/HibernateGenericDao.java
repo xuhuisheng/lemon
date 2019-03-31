@@ -345,6 +345,9 @@ public class HibernateGenericDao extends HibernateBasicDao {
      * @param <T>
      *            实体类泛型
      * @return 如果唯一返回true，否则返回false
+     * @throws NoSuchMethodException cannot find getter
+     * @throws IllegalAccessException cannot access getter
+     * @throws InvocationTargetException invoke getter error
      */
     @Transactional(readOnly = true)
     public <T> boolean isUnique(Class<T> entityClass, T entity,

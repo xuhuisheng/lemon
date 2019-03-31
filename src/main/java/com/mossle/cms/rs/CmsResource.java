@@ -13,9 +13,10 @@ import javax.ws.rs.Produces;
 import javax.ws.rs.QueryParam;
 import javax.ws.rs.core.MediaType;
 
-import com.mossle.api.store.StoreConnector;
 import com.mossle.api.store.StoreDTO;
 import com.mossle.api.tenant.TenantHolder;
+
+import com.mossle.client.store.StoreClient;
 
 import com.mossle.core.util.ServletUtils;
 
@@ -28,7 +29,7 @@ import org.springframework.stereotype.Component;
 @Path("cms")
 public class CmsResource {
     private static Logger logger = LoggerFactory.getLogger(CmsResource.class);
-    private StoreConnector storeConnector;
+    private StoreClient storeClient;
     private TenantHolder tenantHolder;
 
     @GET
@@ -36,7 +37,7 @@ public class CmsResource {
     @Produces(MediaType.APPLICATION_OCTET_STREAM)
     public InputStream image(@QueryParam("key") String key) throws Exception {
         String tenantId = tenantHolder.getTenantId();
-        StoreDTO storeDto = storeConnector.getStore("cms/html/r/image", key,
+        StoreDTO storeDto = storeClient.getStore("cms/html/r/image", key,
                 tenantId);
 
         return storeDto.getDataSource().getInputStream();
@@ -47,7 +48,7 @@ public class CmsResource {
     @Produces(MediaType.APPLICATION_OCTET_STREAM)
     public InputStream video(@QueryParam("key") String key) throws Exception {
         String tenantId = tenantHolder.getTenantId();
-        StoreDTO storeDto = storeConnector.getStore("cms/html/r/video", key,
+        StoreDTO storeDto = storeClient.getStore("cms/html/r/video", key,
                 tenantId);
 
         return storeDto.getDataSource().getInputStream();
@@ -58,7 +59,7 @@ public class CmsResource {
     @Produces(MediaType.APPLICATION_OCTET_STREAM)
     public InputStream audio(@QueryParam("key") String key) throws Exception {
         String tenantId = tenantHolder.getTenantId();
-        StoreDTO storeDto = storeConnector.getStore("cms/html/r/audio", key,
+        StoreDTO storeDto = storeClient.getStore("cms/html/r/audio", key,
                 tenantId);
 
         return storeDto.getDataSource().getInputStream();
@@ -69,7 +70,7 @@ public class CmsResource {
     @Produces(MediaType.APPLICATION_OCTET_STREAM)
     public InputStream pdf(@QueryParam("key") String key) throws Exception {
         String tenantId = tenantHolder.getTenantId();
-        StoreDTO storeDto = storeConnector.getStore("cms/html/r/pdf", key,
+        StoreDTO storeDto = storeClient.getStore("cms/html/r/pdf", key,
                 tenantId);
 
         return storeDto.getDataSource().getInputStream();
@@ -80,8 +81,8 @@ public class CmsResource {
     @Produces(MediaType.APPLICATION_OCTET_STREAM)
     public InputStream zip(@QueryParam("key") String key) throws Exception {
         String tenantId = tenantHolder.getTenantId();
-        StoreDTO storeDto = storeConnector.getStore("cms/html/r/attachment",
-                key, tenantId);
+        StoreDTO storeDto = storeClient.getStore("cms/html/r/attachment", key,
+                tenantId);
 
         return storeDto.getDataSource().getInputStream();
     }
@@ -93,8 +94,8 @@ public class CmsResource {
             HttpServletRequest request, HttpServletResponse response)
             throws Exception {
         String tenantId = tenantHolder.getTenantId();
-        StoreDTO storeDto = storeConnector.getStore("cms/html/r/attachments",
-                key, tenantId);
+        StoreDTO storeDto = storeClient.getStore("cms/html/r/attachments", key,
+                tenantId);
         ServletUtils.setFileDownloadHeader(request, response,
                 storeDto.getDisplayName());
 
@@ -102,8 +103,8 @@ public class CmsResource {
     }
 
     @Resource
-    public void setStoreConnector(StoreConnector storeConnector) {
-        this.storeConnector = storeConnector;
+    public void setStoreClient(StoreClient storeClient) {
+        this.storeClient = storeClient;
     }
 
     @Resource

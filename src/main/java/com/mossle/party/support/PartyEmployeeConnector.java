@@ -4,19 +4,20 @@ import java.util.List;
 
 import javax.annotation.Resource;
 
-import com.mossle.api.org.EmployeeConnector;
-import com.mossle.api.org.EmployeeDTO;
+import com.mossle.api.employee.EmployeeConnector;
+import com.mossle.api.employee.EmployeeDTO;
 import com.mossle.api.org.OrgConnector;
 import com.mossle.api.org.OrgDTO;
-import com.mossle.api.user.UserConnector;
 import com.mossle.api.user.UserDTO;
 
+import com.mossle.client.user.UserClient;
+
 public class PartyEmployeeConnector implements EmployeeConnector {
-    private UserConnector userConnector;
+    private UserClient userClient;
     private OrgConnector orgConnector;
 
-    public EmployeeDTO findByCode(String code) {
-        UserDTO userDto = userConnector.findById(code);
+    public EmployeeDTO findByCode(String code, String tenantId) {
+        UserDTO userDto = userClient.findById(code, tenantId);
 
         if (userDto == null) {
             return null;
@@ -26,7 +27,7 @@ public class PartyEmployeeConnector implements EmployeeConnector {
         List<OrgDTO> orgs = orgConnector.getOrgsByUserId(code);
         OrgDTO department = this.findDepartment(orgs);
         String superiourCode = orgConnector.getSuperiorId(code);
-        UserDTO superiour = userConnector.findById(superiourCode);
+        UserDTO superiour = userClient.findById(superiourCode, tenantId);
         OrgDTO position = orgConnector.findPositionByUserId(code);
 
         EmployeeDTO employeeDto = new EmployeeDTO();
@@ -71,8 +72,8 @@ public class PartyEmployeeConnector implements EmployeeConnector {
     }
 
     @Resource
-    public void setUserConnector(UserConnector userConnector) {
-        this.userConnector = userConnector;
+    public void setUserClient(UserClient userClient) {
+        this.userClient = userClient;
     }
 
     @Resource

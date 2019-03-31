@@ -21,14 +21,19 @@ import com.mossle.api.form.FormDTO;
 import com.mossle.api.humantask.HumanTaskConnector;
 import com.mossle.api.humantask.HumanTaskDTO;
 import com.mossle.api.keyvalue.FormParameter;
-import com.mossle.api.keyvalue.KeyValueConnector;
 import com.mossle.api.keyvalue.Record;
 import com.mossle.api.keyvalue.RecordBuilder;
+import com.mossle.api.model.ModelBuilder;
+import com.mossle.api.model.ModelConnector;
+import com.mossle.api.model.ModelInfoDTO;
+import com.mossle.api.process.ProcessConnector;
 import com.mossle.api.store.StoreConnector;
 import com.mossle.api.tenant.TenantHolder;
 import com.mossle.api.user.UserConnector;
 
 import com.mossle.bpm.persistence.manager.BpmProcessManager;
+
+import com.mossle.client.store.StoreClient;
 
 import com.mossle.core.mapper.JsonMapper;
 import com.mossle.core.page.Page;
@@ -67,9 +72,10 @@ public class AndroidTaskResource {
     private HumanTaskConnector humanTaskConnector;
     private PimDeviceManager pimDeviceManager;
     private OperationService operationService;
-    private KeyValueConnector keyValueConnector;
-    private StoreConnector storeConnector;
+    private ModelConnector modelConnector;
+    private StoreClient storeClient;
     private UserConnector userConnector;
+    private ProcessConnector processConnector;
 
     @POST
     @Path("tasks")
@@ -367,15 +373,20 @@ public class AndroidTaskResource {
         humanTaskDto = humanTaskConnector.findHumanTask(humanTaskId);
 
         String processInstanceId = humanTaskDto.getProcessInstanceId();
-        record = keyValueConnector.findByRef(processInstanceId);
+        String businessKey = processConnector
+                .findBusinessKeyByProcessInstanceId(processInstanceId);
 
-        record = new RecordBuilder().build(record,
+        // record = modelConnector.findByRef(processInstanceId);
+        // record = new RecordBuilder().build(record,
+        // formParameter.getMultiValueMap(), tenantId);
+        // keyValueConnector.save(record);
+        ModelInfoDTO modelInfoDto = modelConnector.findByCode(businessKey);
+        modelInfoDto = new ModelBuilder().build(modelInfoDto,
                 formParameter.getMultiValueMap(), tenantId);
 
-        keyValueConnector.save(record);
-
-        Xform xform = new XformBuilder().setStoreConnector(storeConnector)
-                .setContent(formDto.getContent()).setRecord(record).build();
+        Xform xform = new XformBuilder().setStoreClient(storeClient)
+                .setContent(formDto.getContent()).setModelInfoDto(modelInfoDto)
+                .build();
         Map<String, Object> taskParameters = xform.getMapData();
         logger.info("taskParameters : {}", taskParameters);
 
@@ -391,13 +402,19 @@ public class AndroidTaskResource {
             return null;
         }
 
-        if (record == null) {
-            record = new Record();
+        // if (record == null) {
+        // record = new Record();
+        // }
+        // record = new RecordBuilder().build(record, STATUS_RUNNING,
+        // humanTaskDto.getProcessInstanceId());
+        // keyValueConnector.save(record);
+        if (modelInfoDto == null) {
+            modelInfoDto = new ModelInfoDTO();
         }
 
-        record = new RecordBuilder().build(record, STATUS_RUNNING,
-                humanTaskDto.getProcessInstanceId());
-        keyValueConnector.save(record);
+        // modelInfoDto = new ModelBuilder().build(modelInfoDto, "active", humanTaskDto.getProcessInstanceId());
+        modelInfoDto.setStatus("active");
+        modelConnector.save(modelInfoDto);
 
         BaseDTO result = new BaseDTO();
         result.setCode(200);
@@ -430,11 +447,13 @@ public class AndroidTaskResource {
             formParameter.setBusinessKey(businessKey);
         }
 
-        Record record = keyValueConnector.findByCode(businessKey);
-
-        record = new RecordBuilder().build(record, multiValueMap, tenantId);
-
-        keyValueConnector.save(record);
+        // Record record = keyValueConnector.findByCode(businessKey);
+        // record = new RecordBuilder().build(record, multiValueMap, tenantId);
+        // keyValueConnector.save(record);
+        ModelInfoDTO modelInfoDto = modelConnector.findByCode(businessKey);
+        modelInfoDto = new ModelBuilder().build(modelInfoDto, multiValueMap,
+                tenantId);
+        modelConnector.save(modelInfoDto);
 
         return formParameter;
     }
@@ -466,17 +485,22 @@ public class AndroidTaskResource {
     }
 
     @Resource
-    public void setKeyValueConnector(KeyValueConnector keyValueConnector) {
-        this.keyValueConnector = keyValueConnector;
-    }
-
-    @Resource
-    public void setStoreConnector(StoreConnector storeConnector) {
-        this.storeConnector = storeConnector;
+    public void setStoreClient(StoreClient storeClient) {
+        this.storeClient = storeClient;
     }
 
     @Resource
     public void setUserConnector(UserConnector userConnector) {
         this.userConnector = userConnector;
+    }
+
+    @Resource
+    public void setModelConnector(ModelConnector modelConnector) {
+        this.modelConnector = modelConnector;
+    }
+
+    @Resource
+    public void setProcessConnector(ProcessConnector processConnector) {
+        this.processConnector = processConnector;
     }
 }

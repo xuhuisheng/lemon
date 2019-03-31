@@ -59,7 +59,7 @@ public class ActivitiHistoryGraphBuilder {
 
             if (previousEdge == null) {
                 if (graph.getInitial() != null) {
-                    throw new IllegalStateException("already set an initial.");
+                    // throw new IllegalStateException("already set an initial.");
                 }
 
                 graph.setInitial(currentNode);

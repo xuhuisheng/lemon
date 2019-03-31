@@ -50,6 +50,11 @@ public class OrgController {
 
     /**
      * 初始化组织机构的维度，包括对应维度下的根节点.
+     *
+     * @param model Model
+     * @param partyStructTypeId Long
+     * @param partyEntityId Long
+     * @return PartyEntity
      */
     public PartyEntity init(Model model, Long partyStructTypeId,
             Long partyEntityId) {
@@ -111,6 +116,13 @@ public class OrgController {
 
     /**
      * 显示下级列表.
+     *
+     * @param model Model
+     * @param partyStructTypeId Long
+     * @param partyEntityId Long
+     * @param name String 
+     * @param page Page
+     * @return String
      */
     @RequestMapping("org-list")
     public String list(
@@ -156,6 +168,13 @@ public class OrgController {
 
     /**
      * 编辑下级.
+     *
+     * @param model Model
+     * @param partyStructTypeId Long
+     * @param partyTypeId Long
+     * @param partyEntityId Long
+     * @return String
+     * @throws Exception ex
      */
     @RequestMapping("org-input")
     public String input(
@@ -175,6 +194,16 @@ public class OrgController {
 
     /**
      * 添加下级.
+     *
+     * @param partyStruct PartyStruct
+     * @param childEntityRef String
+     * @param childEntityId Long
+     * @param childEntityName String
+     * @param partyEntityId Long
+     * @param partyTypeId Long
+     * @param partyStructTypeId Long
+     * @return String
+     * @throws Exception ex
      */
     @RequestMapping("org-save")
     public String save(
@@ -263,6 +292,11 @@ public class OrgController {
 
     /**
      * 删除下级.
+     *
+     * @param selectedItem List
+     * @param partyEntityId Long
+     * @param partyStructTypeId Long
+     * @return String
      */
     @RequestMapping("org-remove")
     public String removeUser(
@@ -281,6 +315,12 @@ public class OrgController {
 
     /**
      * 维护负责人.
+     *
+     * @param model Model
+     * @param partyStructTypeId Long
+     * @param partyEntityId Long
+     * @return String
+     * @throws Exception ex
      */
     @RequestMapping("org-admin-list")
     public String orgAdminList(
@@ -310,20 +350,26 @@ public class OrgController {
 
     /**
      * 添加管理人或管理岗位.
+     *
+     * @param model Model
+     * @param partyStructTypeId Long
+     * @param partyTypeId Long
+     * @param partyEntityId Long
+     * @return String
+     * @throws Exception ex
      */
     @RequestMapping("org-admin-input")
     public String orgAdminInput(
             Model model,
             @RequestParam(value = "partyStructTypeId", required = false) Long partyStructTypeId,
-            @RequestParam(value = "partyTypeId", required = false) Integer partyTypeId,
+            @RequestParam(value = "partyTypeId", required = false) Long partyTypeId,
             @RequestParam(value = "partyEntityId", required = false) Long partyEntityId)
             throws Exception {
         partyStructTypeId = 1L;
 
         PartyEntity partyEntity = this.init(model, partyStructTypeId,
                 partyEntityId);
-        // PartyType partyType = partyTypeManager.get(partyTypeId);
-        PartyType partyType = partyTypeManager.findUniqueBy("type", partyTypeId);
+        PartyType partyType = partyTypeManager.get(partyTypeId);
 
         model.addAttribute("partyEntity", partyEntity);
         model.addAttribute("partyType", partyType);
@@ -333,6 +379,16 @@ public class OrgController {
 
     /**
      * 保存管理.
+     *
+     * @param partyStruct PartyStruct
+     * @param childEntityRef String
+     * @param childEntityId Long
+     * @param childEntityName String
+     * @param partyEntityId Long
+     * @param partyTypeId Long
+     * @param partyStructTypeId Long
+     * @return String
+     * @throws Exception ex
      */
     @RequestMapping("org-admin-save")
     public String orgAdminSave(
@@ -403,6 +459,13 @@ public class OrgController {
 
     /**
      * 添加职位.
+     *
+     * @param model Model
+     * @param partyStructTypeId Long
+     * @param partyTypeType Long
+     * @param partyEntityId Long
+     * @return String
+     * @throws Exception ex
      */
     @RequestMapping("org-position-input")
     public String orgPositionInput(
@@ -415,7 +478,8 @@ public class OrgController {
 
         PartyEntity partyEntity = this.init(model, partyStructTypeId,
                 partyEntityId);
-        PartyType partyType = partyTypeManager.findUniqueBy("type", partyTypeType);
+        PartyType partyType = partyTypeManager.findUniqueBy("type",
+                partyTypeType);
 
         model.addAttribute("partyEntity", partyEntity);
         model.addAttribute("partyType", partyType);
@@ -425,6 +489,16 @@ public class OrgController {
 
     /**
      * 保存职位.
+     *
+     * @param partyStruct PartyStruct
+     * @param childEntityRef String
+     * @param childEntityId Long
+     * @param childEntityName String
+     * @param partyEntityId Long
+     * @param partyTypeId Long
+     * @param partyStructTypeId Long
+     * @return String
+     * @throws Exception ex
      */
     @RequestMapping("org-position-save")
     public String orgPositionSave(
@@ -439,7 +513,8 @@ public class OrgController {
         PartyType partyType = partyTypeManager.get(partyTypeId);
 
         // 岗位人员是5
-        PartyStructType partyStructType = partyStructTypeManager.findUniqueBy("type", "user-position");
+        PartyStructType partyStructType = partyStructTypeManager.findUniqueBy(
+                "type", "user-position");
 
         if (partyType.getType() == TYPE_POSITION) {
             // 岗位

@@ -10,8 +10,8 @@
     <title>列表</title>
     <%@include file="/common/s3.jsp"%>
 
-    <link type="text/css" rel="stylesheet" href="${cdnPrefix}/userpicker3-v2/userpicker.css">
-    <script type="text/javascript" src="${cdnPrefix}/userpicker3-v2/userpicker.js"></script>
+    <link type="text/css" rel="stylesheet" href="${cdnPrefix}/public/mossle-userpicker/3.0/userpicker.css">
+    <script type="text/javascript" src="${cdnPrefix}/public/mossle-userpicker/3.0/userpicker.js"></script>
     <script type="text/javascript">
 var config = {
     id: 'processGrid',
@@ -40,8 +40,8 @@ $(function() {
 	createUserPicker({
 		modalId: 'userPicker',
 		searchUrl: '${tenantPrefix}/rs/user/search',
-		treeUrl: '${tenantPrefix}/rs/party/tree?partyStructTypeId=1',
-		childUrl: '${tenantPrefix}/rs/party/searchUser'
+		treeUrl: '${tenantPrefix}/party/rs/tree-data?type=struct',
+		childUrl: '${tenantPrefix}/party/rs/search-user'
 	});
 });
 

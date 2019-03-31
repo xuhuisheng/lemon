@@ -122,4 +122,17 @@ public class DataSourceWrapper extends DataSourceProxy {
 
         this.init();
     }
+
+    // ~
+    public int getActive() {
+        return basicDataSource.getNumActive();
+    }
+
+    public int getMax() {
+        return basicDataSource.getMaxActive();
+    }
+
+    public int getMin() {
+        return basicDataSource.getMinIdle();
+    }
 }

@@ -28,7 +28,7 @@
 		  <div class="panel-body">
 		    <div class="text-center">
 		      <div style="font-size:36px;" id="attendenceTime">8:20:00</div>
-			  <div>2018年5月6日(星期日)</div>
+			  <div id="attendenceDate">2018年5月6日(星期日)</div>
 			  <div>
 			    <c:if test="${empty attendanceDto.upTime}">
 			    <a class="btn btn-success" href="record">上班打卡</a>
@@ -44,21 +44,33 @@
 			  </div>
 			  <c:if test="${not empty attendanceDto.upTime}">
 			  <div>
-			    上班打卡：${attendanceDto.upTime}
+			    上班打卡：<fmt:formatDate value="${attendanceDto.upTime}" type="both"/>
 			  </div>
 			  </c:if>
 			  <c:if test="${not empty attendanceDto.downTime}">
 			  <div>
-			    下班打卡：${attendanceDto.downTime}
+			    下班打卡：<fmt:formatDate value="${attendanceDto.downTime}" type="both"/>
 			  </div>
 			  </c:if>
 		    </div>
 			<script>
+  var week = {
+   "0" : "日",
+   "1" : "一",
+   "2" : "二",
+   "3" : "三",
+   "4" : "四",
+   "5" : "五",
+   "6" : "六",
+  }
 function updateAttendenceTime() {
 	var now = new Date();
-	$('#attendenceTime').text(
-		now.getHours() + ':' + now.getMinutes() + ':' + now.getSeconds()
-	);
+    $('#attendenceTime').text(
+        now.getHours() + ':' + now.getMinutes() + ':' + now.getSeconds()
+    );
+    $('#attendenceDate').text(
+        now.getFullYear() + '年' + (now.getMonth() + 1) + '月' + now.getDate() + "日(星期" + week[now.getDay()] + ")"
+    );
 }
 
 updateAttendenceTime();

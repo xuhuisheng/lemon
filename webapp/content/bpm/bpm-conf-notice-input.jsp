@@ -70,7 +70,7 @@ $(function() {
     <label class="control-label col-md-1">提醒方式</label>
 	<div class="col-sm-5">
 	  <c:forEach items="${types}" var="item">
-	  <label><input type="checkbox" name="notificationTypes" value="${item}"> ${item}</label>
+	  <label><input type="checkbox" name="notificationTypes" value="${item}" class="checkbox-inline"> ${item}</label>
 	  </c:forEach>
     </div>
   </div>
@@ -85,7 +85,7 @@ $(function() {
     </div>
   </div>
   <div class="form-group">
-    <div class="col-sm-5">
+    <div class="col-sm-5 col-sm-offset-1">
       <button id="submitButton" type="submit" class="btn btn-default">保存</button>
 	  &nbsp;
       <button type="button" onclick="history.back();" class="btn btn-link">返回</button>

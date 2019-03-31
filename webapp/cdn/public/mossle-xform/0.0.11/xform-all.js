@@ -937,6 +937,7 @@ xf.field.FieldFactory = function() {
 	this.register('fileupload', xf.field.FileUpload);
 	this.register('datepicker', xf.field.DatePicker);
 	this.register('userpicker', xf.field.UserPicker);
+	this.register('webuploader', xf.field.WebUploader);
 }
 
 xf.field.FieldFactory.prototype.create = function(type, parentNode) {
@@ -1419,11 +1420,11 @@ xf.field.Checkbox.prototype.updateItems = function(value) {
 
 	for (var i = 0; i < array.length; i++) {
 		var item = array[i];
-		html += '<label class="checkbox inline" style="padding-top:5px;padding-bottom:5px;">';
+		html += '<label class="checkbox-inline" style="padding-top:5px;padding-bottom:5px;">';
 		html += '<input type="checkbox" name="' + this.name + '" value="' + item + '" '
 			+ (this.readOnly ? 'readOnly' : '') + ' '
 			+ (this.value == item ? 'checked' : '') + ' '
-			+ (this.required ? ' required="true" class="required"' : '') + ' style="margin:1px;">';
+			+ (this.required ? ' required="true" class="required"' : '') + '>';
 		html += item;
 		html += '</label>&nbsp;';
 		html += '<label for="' + this.name + '" class="validate-error" generated="true" style="display:none;"></label>';
@@ -1617,6 +1618,7 @@ xf.field.UserPicker = function(parentNode) {
 	this.name = 'userpicker-' + this.row + '-' + this.col;
 	this.required = false;
 	this.readOnly = false;
+	this.multiple = false;
 	this.value = {
 		key: '',
 		label: ''
@@ -1637,6 +1639,7 @@ xf.field.UserPicker.prototype.doExport = function() {
 		+ ',"name":"' + this.name
 		+ '","required":' + this.required
 		+ ',"readOnly":' + this.readOnly
+		+ ',"multiple":' + this.multiple
 		+ '}';
 }
 
@@ -1647,6 +1650,8 @@ xf.field.UserPicker.prototype.viewForm = function(formNode) {
 	xf.createBooleanField('required', this.required, this.updateRequired, this, formNode);
 	formNode.appendChild(document.createElement('br'));
 	xf.createBooleanField('readOnly', this.readOnly, this.updateReadOnly, this, formNode);
+	formNode.appendChild(document.createElement('br'));
+	xf.createBooleanField('multiple', this.multiple, this.updateMultiple, this, formNode);
 }
 
 xf.field.UserPicker.prototype.updateName = function(value) {
@@ -1658,12 +1663,23 @@ xf.field.UserPicker.prototype.updateName = function(value) {
 			label: ''
 		}
 	}
+
+	var parameters = '';
+	if (!!this.required) {
+		parameters += ' required="true" class="required"';
+	}
+	if (!!this.multiple) {
+		parameters += ' data-multiple="true"';
+	} else {
+		parameters += ' data-multiple="false"';
+	}
+
 	parentNode.innerHTML = 
 		'<div class="xf-handler">'
 		+'	<div class="input-group userPicker" style="width:200px;">'
 		+'      <input type="hidden" name="' + this.name + '" value="' + this.value.key + '">'
 		+'      <input type="text" name="' + this.name + '_name" class="form-control" value="' + this.value.label + '"'
-		+ (this.required ? ' required="true" class="required"' : '') + ' style="width:175px;background-color:white;" readOnly="readOnly">'
+		+ parameters + ' style="width:175px;background-color:white;" readOnly="readOnly">'
 		+'      <div class="input-group-addon"><i class="glyphicon glyphicon-user"></i></div>'
 		+'	</div>'
 		+ '</div>';
@@ -1677,6 +1693,10 @@ xf.field.UserPicker.prototype.updateReadOnly = function(value) {
 	this.readOnly = value;
 }
 
+xf.field.UserPicker.prototype.updateMultiple = function(value) {
+	this.multiple = value;
+}
+
 xf.field.UserPicker.prototype.setValue = function(value) {
 	this.value = value;
 	this.updateName(this.name);
@@ -1684,4 +1704,142 @@ xf.field.UserPicker.prototype.setValue = function(value) {
 		var parentNode = xf.$(this.parentId);
 		parentNode.innerHTML = '<div class="xf-handler">' + value.label + '</div>';
 	}
+}
+
+;
+
+xf.field.WebUploader = function(parentNode) {
+	if (!parentNode) {
+		return;
+	}
+	var parentId = parentNode.id;
+	var array = parentId.split('-');
+
+	this.parentId = parentId;
+	this.row = array[2];
+	this.col = array[3];
+	this.name = 'webuploader-' + this.row + '-' + this.col;
+	this.required = false;
+	this.readOnly = false;
+}
+
+xf.field.WebUploader.prototype.render = function() {
+	this.updateName(this.name);
+}
+
+xf.field.WebUploader.prototype.doExport = function() {
+	return '{"type":"webuploader","row":' + this.row
+		+ ',"col":' + this.col
+		+ ',"name":"' + this.name
+		+ '","required":' + this.required
+		+ ',"readOnly":' + this.readOnly
+		+ '}';
+}
+
+xf.field.WebUploader.prototype.viewForm = function(formNode) {
+	formNode.innerHTML = '';
+	xf.createField('name', this.name, this.updateName, this, formNode);
+	formNode.appendChild(document.createElement('br'));
+	xf.createBooleanField('required', this.required, this.updateRequired, this, formNode);
+	formNode.appendChild(document.createElement('br'));
+	xf.createBooleanField('readOnly', this.readOnly, this.updateReadOnly, this, formNode);
+}
+
+xf.field.WebUploader.prototype.updateName = function(value) {
+	this.name = value;
+	var parentNode = xf.$(this.parentId);
+	parentNode.innerHTML = 
+		'<div class="xf-handler">'
+		+ '<input type="hidden" name="' + this.name + '" id="' + this.name + '" >'
+		+ '<div class="btns"><div id="' + this.name + '_picker">选择文件</div></div>'
+    	+ '<div id="' + this.name + '_list" class="uploader-list"></div>'
+    	+ '<script>renderWebUploader("' + this.name + '")</script>'
+		+ '</div>';
+	renderWebUploader(this.name);
+}
+
+xf.field.WebUploader.prototype.updateRequired = function(value) {
+	this.required = value;
+}
+
+xf.field.WebUploader.prototype.updateReadOnly = function(value) {
+	this.readOnly = value;
+}
+
+xf.field.WebUploader.prototype.setValue = function(value) {
+	var parentNode = null;
+	if (this.readOnly) {
+		parentNode = xf.$(this.parentId);
+		// parentNode.innerHTML = '<div class="xf-handler"><a href="../rs/store/view?model=form&key=' + value.key + '">' + value.label + '</a></div>';
+	} else {
+		parentNode = xf.$(this.parentId);
+		if (parentNode.children.length == 1) {
+			var span = document.createElement('span');
+			// span.innerHTML = '<div class="xf-handler"><a href="../rs/store/view?model=form&key=' + value.key + '">' + value.label + '</a></div>';
+			parentNode.appendChild(span);
+		} else {
+			parentNode = parentNode.children[1];
+			// parentNode.innerHTML = '<div class="xf-handler"><a href="../rs/store/view?model=form&key=' + value.key + '">' + value.label + '</a></div>';
+		}
+	}
+	$.get('../store/ajax/list.do?batchId=' + value, {}, function(response) {
+	    var html = '';
+	    $.each(response.data.list, function(index, item) {
+	    	html += '<span class="label label-success" id="' + item.id + '">'
+	    		+ '<a href="../store/ajax/download/' + item.model + '/' + item.path + '">'
+	    		+ item.name
+	    		+ '</a>'
+	    		+ '</span>&nbsp;';
+	    });
+	    parentNode.innerHTML = html;
+	});
+}
+
+function renderWebUploader(code) {
+
+	var uploader = WebUploader.create({
+	    swf: '../public/webuploader/0.1.5/Uploader.swf',
+	    server: '../store/ajax/upload.do',
+	    pick: '#' + code + '_picker',
+	    resize: false,
+	    auto: true
+	});
+
+	uploader.on( 'fileQueued', function( file ) {
+		var $list = $('#' + code + '_list')
+	    $list.append('<span class="label label-default" id="' + file.id + '">' + file.name + '</span>&nbsp;');
+	});
+
+	uploader.on( 'uploadSuccess', function( file, response ) {
+		// console.info(file, response);
+		//	alert('uploadSuccess' + file);
+	    // $( '#'+file.id ).find('p.state').text('已上传');
+	    $('#' + file.id).addClass('label-success');
+	    $('#' + file.id).html('<a href="' + response.data.list + '">' + file.name + '</a>');
+	    uploader.options.formData.batchId = response.data.batchId;
+	    $('#' + code).val(response.data.batchId);
+
+	    var html = '';
+	    $.each(response.data.list, function(index, item) {
+	    	html += '<span class="label label-success" id="' + item.id + '">'
+	    		+ '<a href="../store/ajax/download/' + item.model + '/' + item.path + '">'
+	    		+ item.name
+	    		+ '</a>'
+	    		+ '</span>&nbsp;';
+	    });
+	    // console.info(html);
+		var $list = $('#' + code + '_list');
+		$list.html(html);
+	});
+
+	uploader.on( 'uploadError', function( file ) {
+	//	alert('uploadError' + file);
+	    $( '#'+file.id ).find('p.state').text('上传出错');
+	});
+
+	uploader.on( 'uploadComplete', function( file ) {
+	//	alert('uploadComplete' + file);
+	    $( '#'+file.id ).find('.progress').fadeOut();
+	});
+
 }

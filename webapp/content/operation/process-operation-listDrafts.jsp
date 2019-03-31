@@ -107,12 +107,12 @@ $(function() {
 	    <%--
         <td><input type="checkbox" class="selectedItem" name="selectedItem" value="${item.code}"></td>
 		--%>
-        <td>${item.businessKey}</td>
-        <td>${item.name}</td>
+        <td>${item.code}</td>
+        <td>${item.processName}</td>
         <td><fmt:formatDate value="${item.createTime}" type="both"/></td>
-        <td>${item.status == 0 ? '流程草稿' : '任务草稿'}</td>
+        <td>${item.status == 'draft' ? '草稿' : '草稿'}</td>
         <td>
-          <a href="process-operation-viewStartForm.do?businessKey=${item.code}&bpmProcessId=${item.category}">编辑</a>
+          <a href="process-operation-viewStartForm.do?businessKey=${item.code}">编辑</a>
 		  &nbsp;
           <a href="process-operation-removeDraft.do?code=${item.code}">删除</a>
         </td>

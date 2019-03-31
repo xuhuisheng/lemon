@@ -46,7 +46,7 @@ $(function() {
   </head>
 
   <body>
-    <%@include file="/header/meeting.jsp"%>
+    <%@include file="/header/meeting-user.jsp"%>
 
     <div class="row-fluid" style="padding-top:65px;">
 
@@ -66,19 +66,19 @@ $(function() {
   <input id="car-info_id" type="hidden" name="roomId" value="${meetingRoom.id}">
   <input id="car-info_id" type="hidden" name="calendarDate" value="${param.calendarDate}">
   <div class="form-group">
-	<label class="control-label col-md-1" for="perm_resc">会议室</label>
+	<label class="control-label col-md-1 col-sm-1" for="perm_resc">会议室</label>
     <div class="col-sm-5">
        <p class="form-control-static">${meetingRoom.name}</p>
     </div>
   </div>
   <div class="form-group">
-    <label class="control-label col-md-1" for="meetingInfo_subject">主题</label>
+    <label class="control-label col-md-1 col-sm-1" for="meetingInfo_subject">主题</label>
 	<div class="col-sm-5">
 	  <input id="meetingInfo_subject" type="text" name="subject" value="${model.subject}" size="40" class="form-control required" minlength="2" maxlength="10">
     </div>
   </div>
   <div class="form-group">
-    <label class="control-label col-md-1" for="cal-info_startTime">开始时间</label>
+    <label class="control-label col-md-1 col-sm-1" for="cal-info_startTime">开始时间</label>
 	<div class="col-sm-5">
       <div class="input-group bootstrap-timepicker timepicker">
         <input class="form-control input-small" type="text" name="startTime" value="${startTime}">
@@ -87,7 +87,7 @@ $(function() {
 	</div>
   </div>
   <div class="form-group">
-    <label class="control-label col-md-1" for="cal-info_endTime">结束时间</label>
+    <label class="control-label col-md-1 col-sm-1" for="cal-info_endTime">结束时间</label>
 	<div class="col-sm-5">
       <div class="input-group bootstrap-timepicker timepicker">
         <input class="form-control input-small" type="text" name="endTime" value="${endTime}">
@@ -96,19 +96,19 @@ $(function() {
 	</div>
   </div>
   <div class="form-group">
-    <label class="control-label col-md-1" for="meetingInfo_organizer">发起人</label>
+    <label class="control-label col-md-1 col-sm-1" for="meetingInfo_organizer">发起人</label>
 	<div class="col-sm-5">
 	  <input type="text" name="organizer" value="" class="form-control">
     </div>
   </div>
   <div class="form-group">
-    <label class="control-label col-md-1" for="meetingInfo_attendees">与会人</label>
+    <label class="control-label col-md-1 col-sm-1" for="meetingInfo_attendees">与会人</label>
 	<div class="col-sm-5">
 	  <input type="text" name="attendees" value="" class="form-control">
 	</div>
   </div>
   <div class="form-group">
-    <label class="control-label col-md-1" for="meetingInfo_content">备注</label>
+    <label class="control-label col-md-1 col-sm-1" for="meetingInfo_content">备注</label>
 	<div class="col-sm-5">
 	  <textarea id="meetingInfo_content" name="content" class="form-control required" minlength="2" maxlength="10">${model.content}</textarea>
     </div>

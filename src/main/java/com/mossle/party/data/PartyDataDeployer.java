@@ -6,8 +6,11 @@ import java.util.List;
 import javax.annotation.PostConstruct;
 import javax.annotation.Resource;
 
-import com.mossle.api.user.UserConnector;
 import com.mossle.api.user.UserDTO;
+
+import com.mossle.client.user.UserClient;
+
+import com.mossle.core.csv.CsvProcessor;
 
 import com.mossle.party.PartyConstants;
 import com.mossle.party.persistence.domain.PartyEntity;
@@ -39,9 +42,12 @@ public class PartyDataDeployer {
     private String orgDataEncoding = "UTF-8";
     private String employeeDataFilePath = "data/party-user.csv";
     private String employeeDataEncoding = "GB2312";
+    private String reportDataFilePath = "data/party-report.json";
+    private String reportDataEncoding = "UTF-8";
     private List<EmployeeDTO> employeeDtos = new ArrayList<EmployeeDTO>();
     private OrgProcessor orgProcessor = new OrgProcessor();
-    private UserConnector userConnector;
+    private OrgProcessor reportProcessor = new OrgProcessor();
+    private UserClient userClient;
 
     public void init() throws Exception {
         // 解析employee.csv
@@ -49,6 +55,9 @@ public class PartyDataDeployer {
 
         // 解析org.json
         this.parseOrg();
+
+        // 解析report.json
+        this.parseReport();
 
         // 为user初始化partyEntity
         this.initUserPartyEntity();
@@ -70,28 +79,24 @@ public class PartyDataDeployer {
 
         // 设置用户岗位关系
         this.initPositionUser();
+
+        // 汇报线
+        this.initReportLine();
     }
 
     public void parseEmployee() throws Exception {
-        List<String[]> list = new CsvParser().parse(employeeDataFilePath,
-                employeeDataEncoding);
-
-        for (String[] item : list) {
-            String username = item[0];
-            String company = item[1];
-            String department = item[2];
-            String position = item[3];
-            EmployeeDTO employeeDto = new EmployeeDTO();
-            employeeDto.setUsername(username);
-            employeeDto.setCompany(company);
-            employeeDto.setDepartment(department);
-            employeeDto.setPosition(position);
-            employeeDtos.add(employeeDto);
-        }
+        EmployeeCallback employeeCallback = new EmployeeCallback();
+        new CsvProcessor().process(employeeDataFilePath, employeeDataEncoding,
+                employeeCallback);
+        employeeDtos.addAll(employeeCallback.getEmployeeDtos());
     }
 
     public void parseOrg() throws Exception {
         this.orgProcessor.init(orgDataFilePath, orgDataEncoding);
+    }
+
+    public void parseReport() throws Exception {
+        this.reportProcessor.init(reportDataFilePath, reportDataEncoding);
     }
 
     public void initUserPartyEntity() {
@@ -114,7 +119,7 @@ public class PartyDataDeployer {
                 continue;
             }
 
-            UserDTO userDto = userConnector.findByUsername(username,
+            UserDTO userDto = userClient.findByUsername(username,
                     defaultTenantId);
 
             if (userDto == null) {
@@ -355,7 +360,46 @@ public class PartyDataDeployer {
         }
     }
 
-    //
+    public void initReportLine() {
+        PartyType partyType = partyTypeManager.findUniqueBy("type",
+                PartyConstants.TYPE_USER);
+
+        if (partyType == null) {
+            logger.info("cannot find partyType : {}", PartyConstants.TYPE_USER);
+
+            return;
+        }
+
+        for (OrgDTO reportDto : reportProcessor.getOrgDtos()) {
+            try {
+                PartyEntity child = this.findUserPartyEntity(reportDto
+                        .getCode());
+
+                if (child == null) {
+                    logger.info("partyEntity not exists. skip. {}",
+                            reportDto.getCode());
+
+                    continue;
+                }
+
+                PartyEntity parent = this.findUserPartyEntity(reportDto
+                        .getParentCode());
+
+                if (parent == null) {
+                    logger.info("partyEntity not exists. skip. {}",
+                            reportDto.getParentCode());
+
+                    continue;
+                }
+
+                this.createPartyStruct("report", parent, child);
+            } catch (Exception ex) {
+                logger.error(ex.getMessage(), ex);
+            }
+        }
+    }
+
+    // ~
     public PartyEntity findOrgPartyEntity(String code, String type) {
         String typeHql = "from PartyType where ref=? and type=?";
         PartyType partyType = partyTypeManager.findUnique(typeHql, type,
@@ -382,6 +426,12 @@ public class PartyDataDeployer {
     }
 
     public PartyEntity findUserPartyEntity(String username) {
+        if (username == null) {
+            logger.info("require username : {}", username);
+
+            return null;
+        }
+
         PartyType partyType = partyTypeManager.findUniqueBy("type",
                 PartyConstants.TYPE_USER);
 
@@ -391,8 +441,7 @@ public class PartyDataDeployer {
             return null;
         }
 
-        UserDTO userDto = userConnector.findByUsername(username,
-                defaultTenantId);
+        UserDTO userDto = userClient.findByUsername(username, defaultTenantId);
 
         if (userDto == null) {
             logger.info("cannot find user : {}", username);
@@ -547,7 +596,7 @@ public class PartyDataDeployer {
     }
 
     @Resource
-    public void setUserConnector(UserConnector userConnector) {
-        this.userConnector = userConnector;
+    public void setUserClient(UserClient userClient) {
+        this.userClient = userClient;
     }
 }

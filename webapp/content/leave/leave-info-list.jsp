@@ -97,8 +97,11 @@ $(function() {
     <thead>
       <tr>
         <th width="10" class="table-check"><input type="checkbox" name="checkAll" onchange="toggleSelectedItems(this.checked)"></th>
-        <th class="sorting" name="id"><spring:message code="leave-info.leave-info.list.id" text="编号"/></th>
-        <th class="sorting" name="name"><spring:message code="leave-info.leave-info.list.name" text="名称"/></th>
+        <th>申请人</th>
+        <th>请假类型</th>
+        <th>请假事由</th>
+        <th>开始时间</th>
+        <th>结束时间</th>
         <th width="80">&nbsp;</th>
       </tr>
     </thead>
@@ -107,8 +110,11 @@ $(function() {
       <c:forEach items="${page.result}" var="item">
       <tr>
         <td><input type="checkbox" class="selectedItem a-check" name="selectedItem" value="${item.id}"></td>
-        <td>${item.id}</td>
+        <td><tags:user userId="${item.employeeId}"/></td>
+        <td>${item.type}</td>
         <td>${item.name}</td>
+        <td><fmt:formatDate value="${item.startTime}" type="both"/></td>
+        <td><fmt:formatDate value="${item.endTime}" type="both"/></td>
         <td>
           <a href="leave-info-input.do?id=${item.id}" class="a-update"><spring:message code="core.list.edit" text="编辑"/></a>
         </td>

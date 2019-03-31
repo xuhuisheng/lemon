@@ -175,7 +175,7 @@ public class Page {
         if ((pageNo < 1) || (pageSize < 1)) {
             start = -1;
         } else {
-            start = (pageNo - 1) * pageSize;
+            start = (pageNo - 1L) * pageSize;
         }
     }
 

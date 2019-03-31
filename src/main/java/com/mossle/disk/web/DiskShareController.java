@@ -91,6 +91,7 @@ public class DiskShareController {
         diskShare.setCountView(0);
         diskShare.setCountSave(0);
         diskShare.setCountDownload(0);
+        diskShare.setCatalog("public");
         diskShareManager.save(diskShare);
 
         return "redirect:/disk/disk-share-list.do";
@@ -121,6 +122,7 @@ public class DiskShareController {
         diskShare.setCountSave(0);
         diskShare.setCountDownload(0);
         diskShare.setSharePassword(this.generatePassword());
+        diskShare.setCatalog("external");
         diskShareManager.save(diskShare);
 
         return "redirect:/disk/disk-share-list.do";

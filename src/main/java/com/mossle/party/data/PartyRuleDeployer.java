@@ -33,6 +33,7 @@ public class PartyRuleDeployer {
         this.createPartyStructType("manage", "部门负责人", 2, "false");
         this.createPartyStructType("user-position", "人员岗位", 3, "false");
         this.createPartyStructType("department-position", "部门岗位", 4, "false");
+        this.createPartyStructType("report", "汇报线", 5, "false");
     }
 
     public void initPartyType() {

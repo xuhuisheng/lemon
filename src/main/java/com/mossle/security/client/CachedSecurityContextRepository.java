@@ -1,7 +1,8 @@
 package com.mossle.security.client;
 
-import com.mossle.api.userauth.UserAuthConnector;
 import com.mossle.api.userauth.UserAuthDTO;
+
+import com.mossle.client.authz.AuthzClient;
 
 import com.mossle.core.mapper.BeanMapper;
 
@@ -14,7 +15,7 @@ import org.springframework.security.web.context.HttpSessionSecurityContextReposi
 
 public class CachedSecurityContextRepository extends
         HttpSessionSecurityContextRepository {
-    private UserAuthConnector userAuthConnector;
+    private AuthzClient authzClient;
     private BeanMapper beanMapper = new BeanMapper();
     private boolean debug;
 
@@ -43,7 +44,7 @@ public class CachedSecurityContextRepository extends
                 return securityContext;
             }
 
-            UserAuthDTO userAuthInCache = userAuthConnector.findById(
+            UserAuthDTO userAuthInCache = authzClient.findById(
                     userAuthInSession.getId(), userAuthInSession.getTenantId());
 
             SpringSecurityUserAuth userAuthResult = new SpringSecurityUserAuth();
@@ -51,15 +52,15 @@ public class CachedSecurityContextRepository extends
 
             SpringSecurityUtils.saveUserDetailsToContext(userAuthResult, null,
                     securityContext);
-        } catch(Exception ex) {
+        } catch (Exception ex) {
             logger.error(ex.getMessage(), ex);
         }
 
         return securityContext;
     }
 
-    public void setUserAuthConnector(UserAuthConnector userAuthConnector) {
-        this.userAuthConnector = userAuthConnector;
+    public void setAuthzClient(AuthzClient authzClient) {
+        this.authzClient = authzClient;
     }
 
     public void setDebug(boolean debug) {

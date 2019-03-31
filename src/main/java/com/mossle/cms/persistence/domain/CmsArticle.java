@@ -122,9 +122,6 @@ public class CmsArticle implements java.io.Serializable {
     /** . */
     private Set<CmsClick> cmsClicks = new HashSet<CmsClick>(0);
 
-    /** . */
-    private Set<CmsSite> cmsSites = new HashSet<CmsSite>(0);
-
     public CmsArticle() {
     }
 
@@ -142,7 +139,7 @@ public class CmsArticle implements java.io.Serializable {
             Integer commentCount, String code, String tenantId,
             Set<CmsAttachment> cmsAttachments, Set<CmsFavorite> cmsFavorites,
             Set<CmsTagArticle> cmsTagArticles, Set<CmsComment> cmsComments,
-            Set<CmsClick> cmsClicks, Set<CmsSite> cmsSites) {
+            Set<CmsClick> cmsClicks) {
         this.id = id;
         this.cmsCatalog = cmsCatalog;
         this.title = title;
@@ -175,7 +172,6 @@ public class CmsArticle implements java.io.Serializable {
         this.cmsTagArticles = cmsTagArticles;
         this.cmsComments = cmsComments;
         this.cmsClicks = cmsClicks;
-        this.cmsSites = cmsSites;
     }
 
     /** @return null. */
@@ -629,19 +625,5 @@ public class CmsArticle implements java.io.Serializable {
      */
     public void setCmsClicks(Set<CmsClick> cmsClicks) {
         this.cmsClicks = cmsClicks;
-    }
-
-    /** @return . */
-    @OneToMany(fetch = FetchType.LAZY, mappedBy = "cmsArticle")
-    public Set<CmsSite> getCmsSites() {
-        return this.cmsSites;
-    }
-
-    /**
-     * @param cmsSites
-     *            .
-     */
-    public void setCmsSites(Set<CmsSite> cmsSites) {
-        this.cmsSites = cmsSites;
     }
 }

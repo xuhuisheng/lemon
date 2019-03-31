@@ -31,4 +31,6 @@
 	<!-- 员工 -->
 	<bean id="employeeConnector" class="com.mossle.party.support.PartyEmployeeConnector"/>
 
+	<bean id="modelConnector" class="com.mossle.model.support.ModelConnectorImpl" />
+
 </beans>

@@ -39,7 +39,7 @@ public class ReportDeployer {
 
     public void processQuery(Map<String, Object> map) throws Exception {
         String code = (String) map.get("code");
-		String name = (String) map.get("name");
+        String name = (String) map.get("name");
         Map<String, Object> chart = (Map<String, Object>) map.get("chart");
         String chartType = (String) chart.get("type");
         String chartConfig = (String) chart.get("config");
@@ -52,8 +52,8 @@ public class ReportDeployer {
 
         ReportQuery reportQuery = this.createOrGetQuery(map);
         reportInfo = new ReportInfo();
-		reportInfo.setCode(code);
-		reportInfo.setName(name);
+        reportInfo.setCode(code);
+        reportInfo.setName(name);
         reportInfo.setType(chartType);
         reportInfo.setContent(chartConfig);
         reportInfo.setReportQuery(reportQuery);
@@ -73,6 +73,7 @@ public class ReportDeployer {
 
         if (reportQuery == null) {
             reportQuery = new ReportQuery();
+            reportQuery.setName(name);
             reportQuery.setContent(query);
             reportQuery.setReportSubject(reportSubject);
             reportQueryManager.save(reportQuery);
@@ -95,7 +96,8 @@ public class ReportDeployer {
             reportDim.setReportQuery(reportQuery);
             reportDimManager.save(reportDim);
         }
-		return reportQuery;
+
+        return reportQuery;
     }
 
     public ReportSubject createOrGetSubject(String name) {

@@ -1,18 +1,13 @@
 package com.mossle.internal.sendmail.data;
 
-import java.io.BufferedReader;
-import java.io.InputStream;
-import java.io.InputStreamReader;
-
 import javax.annotation.PostConstruct;
 import javax.annotation.Resource;
 
-import com.mossle.internal.sendmail.persistence.domain.SendmailConfig;
-import com.mossle.internal.sendmail.persistence.domain.SendmailTemplate;
+import com.mossle.core.csv.CsvProcessor;
+
+import com.mossle.internal.sendmail.persistence.manager.SendmailAppManager;
 import com.mossle.internal.sendmail.persistence.manager.SendmailConfigManager;
 import com.mossle.internal.sendmail.persistence.manager.SendmailTemplateManager;
-
-import org.apache.commons.lang3.StringUtils;
 
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
@@ -22,13 +17,16 @@ public class SendmailDeployer {
             .getLogger(SendmailDeployer.class);
     private SendmailConfigManager sendmailConfigManager;
     private SendmailTemplateManager sendmailTemplateManager;
+    private SendmailAppManager sendmailAppManager;
     private String dataFilePath = "data/sendmail-config.csv";
     private String templateDataFilePath = "data/sendmail-template.csv";
+    private String appDataFilePath = "data/sendmail-app.csv";
     private String dataFileEncoding = "GB2312";
     private String defaultTenantId = "1";
     private boolean enable = true;
     private SendmailConfigCallback sendmailConfigCallback;
     private SendmailTemplateCallback sendmailTemplateCallback;
+    private SendmailAppCallback sendmailAppCallback;
 
     public void init() {
         sendmailConfigCallback = new SendmailConfigCallback();
@@ -36,6 +34,8 @@ public class SendmailDeployer {
         sendmailTemplateCallback = new SendmailTemplateCallback();
         sendmailTemplateCallback
                 .setSendmailTemplateManager(sendmailTemplateManager);
+        sendmailAppCallback = new SendmailAppCallback();
+        sendmailAppCallback.setSendmailAppManager(sendmailAppManager);
     }
 
     @PostConstruct
@@ -53,6 +53,9 @@ public class SendmailDeployer {
 
         new CsvProcessor().process(templateDataFilePath, dataFileEncoding,
                 sendmailTemplateCallback);
+
+        new CsvProcessor().process(appDataFilePath, dataFileEncoding,
+                sendmailAppCallback);
     }
 
     @Resource
@@ -65,5 +68,10 @@ public class SendmailDeployer {
     public void setSendmailTemplateManager(
             SendmailTemplateManager sendmailTemplateManager) {
         this.sendmailTemplateManager = sendmailTemplateManager;
+    }
+
+    @Resource
+    public void setSendmailAppManager(SendmailAppManager sendmailAppManager) {
+        this.sendmailAppManager = sendmailAppManager;
     }
 }

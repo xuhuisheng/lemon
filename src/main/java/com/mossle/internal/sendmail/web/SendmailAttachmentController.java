@@ -8,9 +8,10 @@ import javax.annotation.Resource;
 import javax.servlet.http.HttpServletRequest;
 import javax.servlet.http.HttpServletResponse;
 
-import com.mossle.api.store.StoreConnector;
 import com.mossle.api.store.StoreDTO;
 import com.mossle.api.tenant.TenantHolder;
+
+import com.mossle.client.store.StoreClient;
 
 import com.mossle.core.export.Exportor;
 import com.mossle.core.export.TableModel;
@@ -42,7 +43,7 @@ public class SendmailAttachmentController {
     private SendmailAttachmentManager sendmailAttachmentManager;
     private MessageHelper messageHelper;
     private Exportor exportor;
-    private StoreConnector storeConnector;
+    private StoreClient storeClient;
     private BeanMapper beanMapper = new BeanMapper();
     private TenantHolder tenantHolder;
 
@@ -131,7 +132,7 @@ public class SendmailAttachmentController {
     public String upload(@RequestParam("file") MultipartFile multipartFile)
             throws Exception {
         String tenantId = tenantHolder.getTenantId();
-        StoreDTO storeDto = storeConnector.saveStore("mailattachment",
+        StoreDTO storeDto = storeClient.saveStore("mailattachment",
                 new MultipartFileDataSource(multipartFile), tenantId);
         SendmailAttachment sendmailAttachment = new SendmailAttachment();
         sendmailAttachment.setName(multipartFile.getOriginalFilename());
@@ -159,7 +160,7 @@ public class SendmailAttachmentController {
         String tenantId = tenantHolder.getTenantId();
         SendmailAttachment sendmailAttachment = sendmailAttachmentManager
                 .get(id);
-        StoreDTO storeDto = storeConnector.getStore("sendmailattachment",
+        StoreDTO storeDto = storeClient.getStore("sendmailattachment",
                 sendmailAttachment.getPath(), tenantId);
 
         ServletUtils.setFileDownloadHeader(request, response,
@@ -186,8 +187,8 @@ public class SendmailAttachmentController {
     }
 
     @Resource
-    public void setStoreConnector(StoreConnector storeConnector) {
-        this.storeConnector = storeConnector;
+    public void setStoreClient(StoreClient storeClient) {
+        this.storeClient = storeClient;
     }
 
     @Resource

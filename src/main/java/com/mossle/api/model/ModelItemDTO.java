@@ -1,6 +1,8 @@
 package com.mossle.api.model;
 
-public class ModelItemDTO {
+import java.io.Serializable;
+
+public class ModelItemDTO implements Serializable {
     private Long id;
     private String code;
     private String label;

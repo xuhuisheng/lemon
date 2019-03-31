@@ -50,8 +50,8 @@ import ch.qos.logback.core.util.OptionHelper;
 
 /**
  * An abstract class that provides support for sending events to an email address.
- * <p/>
- * <p/>
+ * <p></p>
+ * <p></p>
  * See http://logback.qos.ch/manual/appenders.html#SMTPAppender for further documentation.
  * 
  * @author Ceki G&uuml;lc&uuml;
@@ -247,8 +247,8 @@ public abstract class SMTPAppenderBase<E> extends AppenderBase<E> {
 
     /**
      * This method determines if there is a sense in attempting to append.
-     * <p/>
-     * <p/>
+     * <p></p>
+     * <p></p>
      * It checks whether there is a set output target and also if there is a set layout. If these checks fail, then the
      * boolean value <code>false</code> is returned.
      */
@@ -532,7 +532,7 @@ public abstract class SMTPAppenderBase<E> extends AppenderBase<E> {
 
     /**
      * Set the "mail.smtp.localhost" property to the value passed as parameter to this method.
-     * <p/>
+     * <p></p>
      * <p>
      * Useful in case the hostname for the client host is not fully qualified and as a consequence the SMTP server
      * rejects the clients HELO/EHLO command.

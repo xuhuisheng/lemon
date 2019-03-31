@@ -6,6 +6,10 @@ import java.util.List;
 
 import javax.annotation.Resource;
 
+import com.mossle.api.tenant.TenantHolder;
+import com.mossle.api.user.UserConnector;
+import com.mossle.api.user.UserDTO;
+
 import com.mossle.auth.persistence.domain.Access;
 import com.mossle.auth.persistence.domain.Perm;
 import com.mossle.auth.persistence.domain.Role;
@@ -38,6 +42,8 @@ public class AuthService {
     private JdbcTemplate jdbcTemplate;
     private AccessManager accessManager;
     private PermManager permManager;
+    private TenantHolder tenantHolder;
+    private UserConnector userConnector;
 
     public UserStatus createOrGetUserStatus(String username, String ref,
             String userRepoRef, String tenantId) {
@@ -172,6 +178,71 @@ public class AuthService {
         return roleManager.find("from Role where tenantId=?", tenantId);
     }
 
+    public void saveRoleUserRelation(Long roleId, List<String> usernames) {
+        logger.debug("roleId: {}, usernames: {}", roleId, usernames);
+
+        Role role = roleManager.get(roleId);
+
+        if (role == null) {
+            logger.warn("cannot find role : {}", roleId);
+
+            return;
+        }
+
+        List<String> exists = new ArrayList<String>();
+
+        for (UserStatus userStatus : role.getUserStatuses()) {
+            exists.add(userStatus.getUsername());
+        }
+
+        List<String> targetUsernames = new ArrayList<String>();
+
+        for (String username : usernames) {
+            targetUsernames.add(username.trim().toLowerCase());
+        }
+
+        List<String> removed = new ArrayList<String>();
+        List<String> inserted = new ArrayList<String>();
+
+        for (String username : targetUsernames) {
+            if (!exists.contains(username)) {
+                inserted.add(username);
+            }
+        }
+
+        for (String username : exists) {
+            if (!targetUsernames.contains(username)) {
+                removed.add(username);
+            }
+        }
+
+        logger.debug("exists : {}", exists);
+        logger.debug("removed : {}", removed);
+        logger.debug("inserted : {}", inserted);
+
+        for (String username : removed) {
+            logger.debug("remove : {}", username);
+
+            UserStatus userStatus = userStatusManager.findUniqueBy("username",
+                    username);
+            role.getUserStatuses().remove(userStatus);
+        }
+
+        for (String username : inserted) {
+            logger.debug("insert : {}", username);
+
+            UserDTO userDto = userConnector.findByUsername(username,
+                    tenantHolder.getTenantId());
+            UserStatus userStatus = this.createOrGetUserStatus(username,
+                    userDto.getId(), tenantHolder.getUserRepoRef(),
+                    tenantHolder.getTenantId());
+
+            role.getUserStatuses().add(userStatus);
+        }
+
+        roleManager.save(role);
+    }
+
     @Resource
     public void setUserStatusManager(UserStatusManager userStatusManager) {
         this.userStatusManager = userStatusManager;
@@ -195,5 +266,15 @@ public class AuthService {
     @Resource
     public void setJdbcTemplate(JdbcTemplate jdbcTemplate) {
         this.jdbcTemplate = jdbcTemplate;
+    }
+
+    @Resource
+    public void setUserConnector(UserConnector userConnector) {
+        this.userConnector = userConnector;
+    }
+
+    @Resource
+    public void setTenantHolder(TenantHolder tenantHolder) {
+        this.tenantHolder = tenantHolder;
     }
 }

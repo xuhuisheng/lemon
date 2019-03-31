@@ -2,7 +2,7 @@
   <modelVersion>4.0.0</modelVersion>
   <groupId>com.mossle</groupId>
   <artifactId>lemon</artifactId>
-  <version>1.9.0</version>
+  <version>1.10.0</version>
   <name>lemon</name>
   <packaging>war</packaging>
   <description>Lemon is an OA.</description>
@@ -88,12 +88,12 @@
       <groupId>ch.qos.logback</groupId>
       <artifactId>logback-classic</artifactId>
     </dependency><dependency>
-	  <groupId>org.fusesource.jansi</groupId>
-	  <artifactId>jansi</artifactId>
-	</dependency><dependency>
+      <groupId>org.fusesource.jansi</groupId>
+      <artifactId>jansi</artifactId>
+    </dependency><dependency>
       <groupId>org.codehaus.janino</groupId>
       <artifactId>janino</artifactId>
-	</dependency><dependency>
+    </dependency><dependency>
       <groupId>commons-beanutils</groupId>
       <artifactId>commons-beanutils</artifactId>
     </dependency><dependency>
@@ -106,18 +106,18 @@
       <groupId>javax.ws.rs</groupId>
       <artifactId>javax.ws.rs-api</artifactId>
     </dependency><dependency>
-	  <groupId>com.fasterxml.jackson.jaxrs</groupId>
-	  <artifactId>jackson-jaxrs-json-provider</artifactId>
+      <groupId>com.fasterxml.jackson.jaxrs</groupId>
+      <artifactId>jackson-jaxrs-json-provider</artifactId>
     </dependency><dependency>
-	  <groupId>javax.mail</groupId>
-	  <artifactId>mail</artifactId>
+      <groupId>javax.mail</groupId>
+      <artifactId>mail</artifactId>
     </dependency><dependency>
-	  <groupId>com.github.inspektr</groupId>
-	  <artifactId>inspektr-support-spring</artifactId>
-	</dependency><dependency>
-  	  <groupId>org.jolokia</groupId>
-	  <artifactId>jolokia-core</artifactId>
-	</dependency><dependency>
+      <groupId>com.github.inspektr</groupId>
+      <artifactId>inspektr-support-spring</artifactId>
+    </dependency><dependency>
+        <groupId>org.jolokia</groupId>
+      <artifactId>jolokia-core</artifactId>
+    </dependency><dependency>
       <groupId>org.javasimon</groupId>
       <artifactId>javasimon-spring</artifactId>
     </dependency><dependency>
@@ -127,27 +127,27 @@
       <groupId>org.javasimon</groupId>
       <artifactId>javasimon-javaee</artifactId>
     </dependency><dependency>
-	  <groupId>ma.glasnost.orika</groupId>
-	  <artifactId>orika-core</artifactId>
-	</dependency><dependency>
+      <groupId>ma.glasnost.orika</groupId>
+      <artifactId>orika-core</artifactId>
+    </dependency><dependency>
       <groupId>org.springframework</groupId>
       <artifactId>spring-jms</artifactId>
     </dependency><dependency>
-	  <groupId>org.apache.geronimo.specs</groupId>
-	  <artifactId>geronimo-jms_1.1_spec</artifactId>
-	</dependency><dependency>
-	  <groupId>javax.servlet</groupId>
-	  <artifactId>jstl</artifactId>
-	</dependency><dependency>
-	  <groupId>commons-fileupload</groupId>
-	  <artifactId>commons-fileupload</artifactId>
-	</dependency><dependency>
-	  <groupId>org.freemarker</groupId>
-	  <artifactId>freemarker</artifactId>
-	</dependency><dependency>
-	  <groupId>com.belerweb</groupId>
-	  <artifactId>pinyin4j</artifactId>
-	</dependency><dependency>
+      <groupId>org.apache.geronimo.specs</groupId>
+      <artifactId>geronimo-jms_1.1_spec</artifactId>
+    </dependency><dependency>
+      <groupId>javax.servlet</groupId>
+      <artifactId>jstl</artifactId>
+    </dependency><dependency>
+      <groupId>commons-fileupload</groupId>
+      <artifactId>commons-fileupload</artifactId>
+    </dependency><dependency>
+      <groupId>org.freemarker</groupId>
+      <artifactId>freemarker</artifactId>
+    </dependency><dependency>
+      <groupId>com.belerweb</groupId>
+      <artifactId>pinyin4j</artifactId>
+    </dependency><dependency>
       <groupId>io.dropwizard.metrics</groupId>
       <artifactId>metrics-servlet</artifactId>
       <version>3.1.5</version>
@@ -177,9 +177,9 @@
       <groupId>org.lazyluke</groupId>
       <artifactId>log4jdbc-remix</artifactId>
     </dependency><dependency>
-	  <groupId>mysql</groupId>
-	  <artifactId>mysql-connector-java</artifactId>
-	</dependency><dependency>
+      <groupId>mysql</groupId>
+      <artifactId>mysql-connector-java</artifactId>
+    </dependency><dependency>
       <groupId>org.flywaydb</groupId>
       <artifactId>flyway-core</artifactId>
     </dependency><dependency>
@@ -191,15 +191,19 @@
     </dependency><dependency>
       <groupId>org.springframework.security</groupId>
       <artifactId>spring-security-cas</artifactId>
-	  <version>${spring-security.version}</version>
-	  <optional>true</optional>
+      <version>${spring-security.version}</version>
+      <optional>true</optional>
     </dependency><dependency>
-	  <groupId>org.activiti</groupId>
-	  <artifactId>activiti-spring</artifactId>
-	</dependency><dependency>
+      <groupId>eu.bitwalker</groupId>
+      <artifactId>UserAgentUtils</artifactId>
+      <version>1.20</version>
+    </dependency><dependency>
+      <groupId>org.activiti</groupId>
+      <artifactId>activiti-spring</artifactId>
+    </dependency><dependency>
       <groupId>org.activiti</groupId>
       <artifactId>activiti-json-converter</artifactId>
-	  <version>${activiti.version}</version>
+      <version>${activiti.version}</version>
     </dependency><dependency>
       <groupId>eu.bitwalker</groupId>
       <artifactId>UserAgentUtils</artifactId>

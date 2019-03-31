@@ -170,6 +170,7 @@ var createUserPicker = function(conf) {
             data: {
                 parentId: parentId
             },
+			dataType: "json",
             success: function(data) {
                 var html = '';
                 for (var i = 0; i < data.length; i++) {

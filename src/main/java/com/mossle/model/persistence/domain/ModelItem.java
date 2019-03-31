@@ -26,6 +26,9 @@ public class ModelItem implements java.io.Serializable {
     private ModelSchema modelSchema;
 
     /** null. */
+    private ModelRow modelRow;
+
+    /** null. */
     private ModelBase modelBase;
 
     /** null. */
@@ -47,10 +50,12 @@ public class ModelItem implements java.io.Serializable {
         this.id = id;
     }
 
-    public ModelItem(Long id, ModelSchema modelSchema, ModelBase modelBase,
-            String code, String value, String type, String tenantId) {
+    public ModelItem(Long id, ModelSchema modelSchema, ModelRow modelRow,
+            ModelBase modelBase, String code, String value, String type,
+            String tenantId) {
         this.id = id;
         this.modelSchema = modelSchema;
+        this.modelRow = modelRow;
         this.modelBase = modelBase;
         this.code = code;
         this.value = value;
@@ -86,6 +91,21 @@ public class ModelItem implements java.io.Serializable {
      */
     public void setModelSchema(ModelSchema modelSchema) {
         this.modelSchema = modelSchema;
+    }
+
+    /** @return null. */
+    @ManyToOne(fetch = FetchType.LAZY)
+    @JoinColumn(name = "ROW_ID")
+    public ModelRow getModelRow() {
+        return this.modelRow;
+    }
+
+    /**
+     * @param modelRow
+     *            null.
+     */
+    public void setModelRow(ModelRow modelRow) {
+        this.modelRow = modelRow;
     }
 
     /** @return null. */

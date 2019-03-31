@@ -39,14 +39,14 @@ public class AssetCategory implements java.io.Serializable {
     private String description;
 
     /** . */
+    private Set<AssetInfo> assetInfosForCategoryId = new HashSet<AssetInfo>(0);
+
+    /** . */
     private Set<AssetCategory> assetCategories = new HashSet<AssetCategory>(0);
 
     /** . */
     private Set<AssetInfo> assetInfosForSubCategoryId = new HashSet<AssetInfo>(
             0);
-
-    /** . */
-    private Set<AssetInfo> assetInfosForCategoryId = new HashSet<AssetInfo>(0);
 
     public AssetCategory() {
     }
@@ -57,17 +57,17 @@ public class AssetCategory implements java.io.Serializable {
 
     public AssetCategory(Long id, AssetCategory assetCategory, String name,
             String code, String description,
+            Set<AssetInfo> assetInfosForCategoryId,
             Set<AssetCategory> assetCategories,
-            Set<AssetInfo> assetInfosForSubCategoryId,
-            Set<AssetInfo> assetInfosForCategoryId) {
+            Set<AssetInfo> assetInfosForSubCategoryId) {
         this.id = id;
         this.assetCategory = assetCategory;
         this.name = name;
         this.code = code;
         this.description = description;
+        this.assetInfosForCategoryId = assetInfosForCategoryId;
         this.assetCategories = assetCategories;
         this.assetInfosForSubCategoryId = assetInfosForSubCategoryId;
-        this.assetInfosForCategoryId = assetInfosForCategoryId;
     }
 
     /** @return null. */
@@ -143,6 +143,21 @@ public class AssetCategory implements java.io.Serializable {
     }
 
     /** @return . */
+    @OneToMany(fetch = FetchType.LAZY, mappedBy = "assetCategoryByCategoryId")
+    public Set<AssetInfo> getAssetInfosForCategoryId() {
+        return this.assetInfosForCategoryId;
+    }
+
+    /**
+     * @param assetInfosForCategoryId
+     *            .
+     */
+    public void setAssetInfosForCategoryId(
+            Set<AssetInfo> assetInfosForCategoryId) {
+        this.assetInfosForCategoryId = assetInfosForCategoryId;
+    }
+
+    /** @return . */
     @OneToMany(fetch = FetchType.LAZY, mappedBy = "assetCategory")
     public Set<AssetCategory> getAssetCategories() {
         return this.assetCategories;
@@ -169,20 +184,5 @@ public class AssetCategory implements java.io.Serializable {
     public void setAssetInfosForSubCategoryId(
             Set<AssetInfo> assetInfosForSubCategoryId) {
         this.assetInfosForSubCategoryId = assetInfosForSubCategoryId;
-    }
-
-    /** @return . */
-    @OneToMany(fetch = FetchType.LAZY, mappedBy = "assetCategoryByCategoryId")
-    public Set<AssetInfo> getAssetInfosForCategoryId() {
-        return this.assetInfosForCategoryId;
-    }
-
-    /**
-     * @param assetInfosForCategoryId
-     *            .
-     */
-    public void setAssetInfosForCategoryId(
-            Set<AssetInfo> assetInfosForCategoryId) {
-        this.assetInfosForCategoryId = assetInfosForCategoryId;
     }
 }

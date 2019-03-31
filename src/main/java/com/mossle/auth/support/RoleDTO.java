@@ -6,6 +6,7 @@ public class RoleDTO {
     private String tenantId;
     private String tenantCode;
     private String status;
+    private String users;
 
     public Long getId() {
         return id;
@@ -45,5 +46,13 @@ public class RoleDTO {
 
     public void setStatus(String status) {
         this.status = status;
+    }
+
+    public String getUsers() {
+        return users;
+    }
+
+    public void setUsers(String users) {
+        this.users = users;
     }
 }

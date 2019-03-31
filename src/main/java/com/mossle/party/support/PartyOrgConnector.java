@@ -31,6 +31,9 @@ public class PartyOrgConnector implements OrgConnector {
 
     /**
      * 根据userId获得对应的PartyEntity.
+     *
+     * @param userId String
+     * @return PartyEntity
      */
     public PartyEntity findUser(String userId) {
         // 找到userId对应的partyEntity
@@ -43,6 +46,9 @@ public class PartyOrgConnector implements OrgConnector {
 
     /**
      * 获得人员对应的岗位的级别.
+     *
+     * @param userId String
+     * @return int
      */
     public int getJobLevelByUserId(String userId) {
         // 找到userId对应的partyEntity
@@ -68,6 +74,10 @@ public class PartyOrgConnector implements OrgConnector {
 
     /**
      * 根据人员和对应的岗位名称，获得离这个人员最近的岗位的级别.
+     *
+     * @param userId String
+     * @param positionName String
+     * @return int
      */
     public int getJobLevelByInitiatorAndPosition(String userId,
             String positionName) {
@@ -82,6 +92,9 @@ public class PartyOrgConnector implements OrgConnector {
 
     /**
      * 获得上级领导.
+     *
+     * @param userId String
+     * @return String
      */
     public String getSuperiorId(String userId) {
         logger.debug("user id : {}", userId);
@@ -111,6 +124,10 @@ public class PartyOrgConnector implements OrgConnector {
 
     /**
      * 获得人员对应的最近的岗位下的所有用户.
+     *
+     * @param userId String
+     * @param positionName String
+     * @return List
      */
     public List<String> getPositionUserIds(String userId, String positionName) {
         logger.info("getPositionUserIds : userId : {}, positionName : {}",
@@ -126,11 +143,15 @@ public class PartyOrgConnector implements OrgConnector {
 
     /**
      * 获取这个人的所有的直接部门或者公司.
+     *
+     * @param userId String
+     * @return List
      */
     public List<OrgDTO> getOrgsByUserId(String userId) {
         PartyEntity partyEntity = this.findUser(userId);
 
         if (partyEntity == null) {
+            logger.info("cannot find party by userId : {}", userId);
             return Collections.emptyList();
         }
 
@@ -200,9 +221,34 @@ public class PartyOrgConnector implements OrgConnector {
 
     // ~ ==================================================
     /**
-     * 获得直接上级.
+     * 通过汇报线获取直接领导.
+     *
+     * @param child PartyEntity
+     * @return PartyEntity
      */
     public PartyEntity findSuperior(PartyEntity child) {
+        for (PartyStruct partyStruct : child.getParentStructs()) {
+            if (!"report".equals(partyStruct.getPartyStructType().getType())) {
+                continue;
+            }
+
+            return partyStruct.getParentEntity();
+        }
+
+        logger.info("cannot find superior : {} {} {}", child.getId(),
+                child.getCode(), child.getName());
+
+        // 找不到上级领导
+        return null;
+    }
+
+    /**
+     * 获得直接上级. 暂时保留之前按照部门负责人获取汇报线的功能.
+     *
+     * @param child PartyEntity
+     * @return PartyEntity
+     */
+    public PartyEntity findSuperior2(PartyEntity child) {
         // 得到上级部门
         PartyEntity partyEntity = this.findUpperDepartment(child);
 
@@ -318,6 +364,10 @@ public class PartyOrgConnector implements OrgConnector {
 
     /**
      * 在本部门下，查找对应职位的人员.
+     *
+     * @param partyEntity PartyEntity
+     * @param positionName String
+     * @return List
      */
     public List<PartyEntity> findByPosition(PartyEntity partyEntity,
             String positionName) {
@@ -346,6 +396,10 @@ public class PartyOrgConnector implements OrgConnector {
 
     /**
      * 判断用户是否包含对应岗位.
+     *
+     * @param partyEntity PartyEntity
+     * @param positionName String
+     * @return boolean
      */
     public boolean hasPosition(PartyEntity partyEntity, String positionName) {
         for (PartyStruct partyStruct : partyEntity.getChildStructs()) {
@@ -368,6 +422,9 @@ public class PartyOrgConnector implements OrgConnector {
 
     /**
      * 是否负责人.
+     *
+     * @param partyStruct PartyStruct
+     * @return boolean
      */
     public boolean isAdmin(PartyStruct partyStruct) {
         if (partyStruct == null) {
@@ -383,6 +440,9 @@ public class PartyOrgConnector implements OrgConnector {
 
     /**
      * 是否员工.
+     *
+     * @param partyStruct PartyStruct
+     * @return boolean
      */
     public boolean isNotAdmin(PartyStruct partyStruct) {
         return !this.isAdmin(partyStruct);
@@ -390,6 +450,9 @@ public class PartyOrgConnector implements OrgConnector {
 
     /**
      * 获取岗位的管理者.
+     *
+     * @param parent PartyEntity
+     * @return PartyEntity
      */
     public PartyEntity findAdministrator(PartyEntity parent) {
         for (PartyStruct partyStruct : this.sortPartyStructs(parent
@@ -413,6 +476,10 @@ public class PartyOrgConnector implements OrgConnector {
 
     /**
      * 寻找距离parent最近的岗位下的人员，默认不包含兄弟部门.
+     *
+     * @param parent PartyEntity
+     * @param positionName String
+     * @return List
      */
     public List<String> findPositionUserIds(PartyEntity parent,
             String positionName) {
@@ -421,6 +488,11 @@ public class PartyOrgConnector implements OrgConnector {
 
     /**
      * 找到离parent最近的岗位下的人员.
+     *
+     * @param parent PartyEntity
+     * @param positionName String
+     * @param includeNeighboor boolean
+     * @return List
      */
     public List<String> findPositionUserIds(PartyEntity parent,
             String positionName, boolean includeNeighboor) {
@@ -451,6 +523,11 @@ public class PartyOrgConnector implements OrgConnector {
 
     /**
      * 递归查找部门，子部门下的所有岗位.
+     *
+     * @param partyEntity PartyEntity
+     * @param positionName String
+     * @param visitedIds Set
+     * @return List
      */
     public List<String> findPositionUserIdsByParent(PartyEntity partyEntity,
             String positionName, Set<Long> visitedIds) {
@@ -537,6 +614,9 @@ public class PartyOrgConnector implements OrgConnector {
 
     /**
      * 获得上级部门.
+     *
+     * @param child PartyEnttiy
+     * @return PartyEntity
      */
     public PartyEntity findUpperDepartment(PartyEntity child) {
         boolean isPartTime2 = false; // 是否有主职，默认没有
@@ -702,6 +782,9 @@ public class PartyOrgConnector implements OrgConnector {
 
     /**
      * 排序.
+     *
+     * @param partyStructSet Set
+     * @return List
      */
     public List<PartyStruct> sortPartyStructs(Set<PartyStruct> partyStructSet) {
         List<PartyStruct> partyStructList = new ArrayList<PartyStruct>(
@@ -713,6 +796,10 @@ public class PartyOrgConnector implements OrgConnector {
 
     /**
      * 查找距离最近的岗位，包含兄弟部门下的岗位.
+     *
+     * @param userId String
+     * @param positionName String
+     * @return List
      */
     public List<String> findUserByNearestPositionName(String userId,
             String positionName) {
@@ -729,8 +816,9 @@ public class PartyOrgConnector implements OrgConnector {
      * 查找这个/部门/岗位/人员所在的公司
      * 
      * @author Sven
-     * @param partyEntity
-     * @return
+     * @param partyEntity PartyEntity
+     * @param visitedIds Set
+     * @return PartyEntity
      */
     public PartyEntity findCompany(PartyEntity partyEntity, Set<Long> visitedIds) {
         if (visitedIds.contains(partyEntity.getId())) {

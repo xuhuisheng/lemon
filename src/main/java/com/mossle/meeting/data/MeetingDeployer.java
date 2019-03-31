@@ -7,6 +7,8 @@ import java.io.InputStreamReader;
 import javax.annotation.PostConstruct;
 import javax.annotation.Resource;
 
+import com.mossle.core.csv.CsvProcessor;
+
 import com.mossle.meeting.persistence.domain.MeetingRoom;
 import com.mossle.meeting.persistence.manager.MeetingRoomManager;
 

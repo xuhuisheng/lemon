@@ -49,6 +49,7 @@ public class StaticContentFilter implements Filter {
     }
 
     public void destroy() {
+        // destroy
     }
 
     public void doFilter(ServletRequest req, ServletResponse res,

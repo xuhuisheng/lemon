@@ -23,7 +23,7 @@ import org.springframework.core.io.support.PropertiesLoaderSupport;
 
 public class ApplicationPropertiesFactoryBean extends PropertiesLoaderSupport
         implements FactoryBean<Properties>, InitializingBean {
-    private static Logger logger = LoggerFactory
+    private static Logger logger2 = LoggerFactory
             .getLogger(ApplicationPropertiesFactoryBean.class);
     private ResourceLoader resourceLoader = new DefaultResourceLoader();
     private String propertiesListLocation = "classpath:/properties.lst";
@@ -56,7 +56,7 @@ public class ApplicationPropertiesFactoryBean extends PropertiesLoaderSupport
         List<Resource> resources = new ArrayList<Resource>();
 
         if (!propertiesListResource.exists()) {
-            logger.info("use default properties");
+            logger2.info("use default properties");
             resources.add(resourceLoader
                     .getResource("classpath:/application.properties"));
             resources.add(resourceLoader

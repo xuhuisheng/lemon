@@ -52,10 +52,12 @@ public class ImageUtils {
     }
 
     /**
-     * @param im
+     * 缩放.
+     *
+     * @param srcImage
      *            原始图像
-     * @param resizeTimes
-     *            倍数,比如0.5就是缩小一半,0.98等等double类型
+     * @param toWidth 宽度
+     * @param toHeight 高度
      * @return 返回处理后的图像
      */
     public static BufferedImage zoomImage(BufferedImage srcImage, int toWidth,

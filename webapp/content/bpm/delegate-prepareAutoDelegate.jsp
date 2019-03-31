@@ -10,13 +10,15 @@
     <title>编辑</title>
     <%@include file="/common/s.jsp"%>
 
-    <link type="text/css" rel="stylesheet" href="${tenantPrefix}/widgets/userpicker/userpicker.css">
-    <script type="text/javascript" src="${tenantPrefix}/widgets/userpicker/userpicker.js"></script>
+    <link type="text/css" rel="stylesheet" href="${cdnPrefix}/public/mossle-userpicker/3.0/userpicker.css">
+    <script type="text/javascript" src="${cdnPrefix}/public/mossle-userpicker/3.0/userpicker.js"></script>
 	<script type="text/javascript">
 $(function() {
 	createUserPicker({
 		modalId: 'userPicker',
-		url: '${tenantPrefix}/rs/user/search'
+		searchUrl: '${tenantPrefix}/rs/user/search',
+		treeUrl: '${tenantPrefix}/party/rs/tree-data?type=struct',
+		childUrl: '${tenantPrefix}/party/rs/search-user'
 	});
 })
     </script>

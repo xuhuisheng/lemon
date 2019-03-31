@@ -9,8 +9,8 @@ import java.util.Set;
 
 import javax.annotation.Resource;
 
-import com.mossle.api.org.EmployeeConnector;
-import com.mossle.api.org.EmployeeDTO;
+import com.mossle.api.employee.EmployeeConnector;
+import com.mossle.api.employee.EmployeeDTO;
 import com.mossle.api.tenant.TenantHolder;
 
 import com.mossle.core.mapper.BeanMapper;
@@ -45,10 +45,12 @@ public class EmployeeRestController {
     private static Logger logger = LoggerFactory
             .getLogger(EmployeeRestController.class);
     private EmployeeConnector employeeConnector;
+    private TenantHolder tenantHolder;
 
     @RequestMapping("view")
     public EmployeeDTO view(@RequestParam("code") String code) {
-        EmployeeDTO employeeDto = employeeConnector.findByCode(code);
+        String tenantId = tenantHolder.getTenantId();
+        EmployeeDTO employeeDto = employeeConnector.findByCode(code, tenantId);
 
         return employeeDto;
     }
@@ -57,5 +59,10 @@ public class EmployeeRestController {
     @Resource
     public void setEmployeeConnector(EmployeeConnector employeeConnector) {
         this.employeeConnector = employeeConnector;
+    }
+
+    @Resource
+    public void setTenantHolder(TenantHolder tenantHolder) {
+        this.tenantHolder = tenantHolder;
     }
 }

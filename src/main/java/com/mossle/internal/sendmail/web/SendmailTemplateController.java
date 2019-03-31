@@ -11,8 +11,9 @@ import javax.annotation.Resource;
 import javax.servlet.http.HttpServletRequest;
 import javax.servlet.http.HttpServletResponse;
 
-import com.mossle.api.store.StoreConnector;
 import com.mossle.api.tenant.TenantHolder;
+
+import com.mossle.client.store.StoreClient;
 
 import com.mossle.core.export.Exportor;
 import com.mossle.core.export.TableModel;
@@ -47,7 +48,7 @@ public class SendmailTemplateController {
     private SendmailTemplateManager sendmailTemplateManager;
     private SendmailConfigManager sendmailConfigManager;
     private SendmailAttachmentManager sendmailAttachmentManager;
-    private StoreConnector storeConnector;
+    private StoreClient storeClient;
     private MessageHelper messageHelper;
     private Exportor exportor;
     private BeanMapper beanMapper = new BeanMapper();
@@ -182,7 +183,7 @@ public class SendmailTemplateController {
         for (SendmailAttachment sendmailAttachment : sendmailTemplate
                 .getSendmailAttachments()) {
             DataSourceInputStreamSource resource = new DataSourceInputStreamSource(
-                    storeConnector.getStore("sendmailattachment",
+                    storeClient.getStore("sendmailattachment",
                             sendmailAttachment.getPath(), tenantId)
                             .getDataSource());
             mailDto.addAttachment(sendmailAttachment.getName(), resource);
@@ -221,8 +222,8 @@ public class SendmailTemplateController {
     }
 
     @Resource
-    public void setStoreConnector(StoreConnector storeConnector) {
-        this.storeConnector = storeConnector;
+    public void setStoreClient(StoreClient storeClient) {
+        this.storeClient = storeClient;
     }
 
     @Resource

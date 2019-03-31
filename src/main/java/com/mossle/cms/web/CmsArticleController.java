@@ -12,9 +12,10 @@ import javax.servlet.http.HttpServletRequest;
 import javax.servlet.http.HttpServletResponse;
 
 import com.mossle.api.auth.CurrentUserHolder;
-import com.mossle.api.store.StoreConnector;
 import com.mossle.api.store.StoreDTO;
 import com.mossle.api.tenant.TenantHolder;
+
+import com.mossle.client.store.StoreClient;
 
 import com.mossle.cms.CmsConstants;
 import com.mossle.cms.persistence.domain.CmsArticle;
@@ -62,7 +63,7 @@ public class CmsArticleController {
     private BeanMapper beanMapper = new BeanMapper();
     private MessageHelper messageHelper;
     private RenderService renderService;
-    private StoreConnector storeConnector;
+    private StoreClient storeClient;
     private JsonMapper jsonMapper = new JsonMapper();
     private CurrentUserHolder currentUserHolder;
     private TenantHolder tenantHolder;
@@ -143,8 +144,7 @@ public class CmsArticleController {
 
         // attachment
         if (file != null) {
-            StoreDTO storeDto = storeConnector.saveStore(
-                    "cms/html/r/attachments",
+            StoreDTO storeDto = storeClient.saveStore("cms/html/r/attachments",
                     new MultipartFileDataSource(file), tenantId);
             CmsAttachment cmsAttachment = new CmsAttachment();
             cmsAttachment.setCmsArticle(dest);
@@ -155,9 +155,8 @@ public class CmsArticleController {
 
         // logo
         if (logoFile != null) {
-            StoreDTO storeDto = storeConnector.saveStore(
-                    "cms/html/r/attachments", new MultipartFileDataSource(
-                            logoFile), tenantId);
+            StoreDTO storeDto = storeClient.saveStore("cms/html/r/attachments",
+                    new MultipartFileDataSource(logoFile), tenantId);
             dest.setLogo(storeDto.getKey());
         }
 
@@ -309,7 +308,7 @@ public class CmsArticleController {
     public String uploadImage(@RequestParam("CKEditorFuncNum") String callback,
             @RequestParam("upload") MultipartFile attachment) throws Exception {
         String tenantId = tenantHolder.getTenantId();
-        StoreDTO storeDto = storeConnector.saveStore("cms/html/r/images",
+        StoreDTO storeDto = storeClient.saveStore("cms/html/r/images",
                 new MultipartFileDataSource(attachment), tenantId);
 
         return "<script type='text/javascript'>"
@@ -351,7 +350,7 @@ public class CmsArticleController {
     public String upload(@RequestParam("id") Long id,
             @RequestParam("files[]") MultipartFile attachment) throws Exception {
         String tenantId = tenantHolder.getTenantId();
-        StoreDTO storeDto = storeConnector.saveStore("cms/html/r/image",
+        StoreDTO storeDto = storeClient.saveStore("cms/html/r/image",
                 new MultipartFileDataSource(attachment), tenantId);
         CmsArticle cmsArticle = cmsArticleManager.get(id);
         CmsAttachment cmsAttachment = new CmsAttachment();
@@ -528,8 +527,8 @@ public class CmsArticleController {
     }
 
     @Resource
-    public void setStoreConnector(StoreConnector storeConnector) {
-        this.storeConnector = storeConnector;
+    public void setStoreClient(StoreClient storeClient) {
+        this.storeClient = storeClient;
     }
 
     @Resource

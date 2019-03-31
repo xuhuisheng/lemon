@@ -3,8 +3,16 @@ package com.mossle.meeting.web;
 import java.text.SimpleDateFormat;
 
 import java.util.Date;
+import java.util.List;
+import java.util.Map;
 
 import javax.annotation.Resource;
+
+import com.mossle.api.auth.CurrentUserHolder;
+import com.mossle.api.tenant.TenantHolder;
+
+import com.mossle.core.page.Page;
+import com.mossle.core.query.PropertyFilter;
 
 import com.mossle.meeting.persistence.domain.MeetingAttendee;
 import com.mossle.meeting.persistence.domain.MeetingInfo;
@@ -33,6 +41,8 @@ public class MeetingController {
     private MeetingRoomManager meetingRoomManager;
     private MeetingInfoManager meetingInfoManager;
     private MeetingAttendeeManager meetingAttendeeManager;
+    private CurrentUserHolder currentUserHolder;
+    private TenantHolder tenantHolder;
 
     @RequestMapping("index")
     public String index(
@@ -115,6 +125,22 @@ public class MeetingController {
         return "redirect:/meeting/index.do?calendarDate=" + calendarDateText;
     }
 
+    @RequestMapping("list")
+    public String list(@ModelAttribute Page page,
+            @RequestParam Map<String, Object> parameterMap, Model model) {
+        String tenantId = tenantHolder.getTenantId();
+        String userId = currentUserHolder.getUserId();
+        List<PropertyFilter> propertyFilters = PropertyFilter
+                .buildFromMap(parameterMap);
+        propertyFilters.add(new PropertyFilter("EQS_tenantId", tenantId));
+        propertyFilters.add(new PropertyFilter("EQS_organizer", userId));
+        page = meetingInfoManager.pagedQuery(page, propertyFilters);
+
+        model.addAttribute("page", page);
+
+        return "meeting/list";
+    }
+
     @Resource
     public void setMeetingRoomManager(MeetingRoomManager meetingRoomManager) {
         this.meetingRoomManager = meetingRoomManager;
@@ -129,5 +155,15 @@ public class MeetingController {
     public void setMeetingAttendeeManager(
             MeetingAttendeeManager meetingAttendeeManager) {
         this.meetingAttendeeManager = meetingAttendeeManager;
+    }
+
+    @Resource
+    public void setCurrentUserHolder(CurrentUserHolder currentUserHolder) {
+        this.currentUserHolder = currentUserHolder;
+    }
+
+    @Resource
+    public void setTenantHolder(TenantHolder tenantHolder) {
+        this.tenantHolder = tenantHolder;
     }
 }

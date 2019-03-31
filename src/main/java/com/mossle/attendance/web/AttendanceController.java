@@ -44,13 +44,24 @@ public class AttendanceController {
     private CurrentUserHolder currentUserHolder;
     private AttendanceService attendanceService;
 
+    @RequestMapping("index")
+    public String index(Model model) {
+        String tenantId = tenantHolder.getTenantId();
+        String userId = currentUserHolder.getUserId();
+
+        AttendanceDTO attendanceDto = this.attendanceService.findAttendanceStatus(userId);
+        model.addAttribute("attendanceDto", attendanceDto);
+
+        return "attendance/index";
+    }
+
     @RequestMapping("widget")
     public String widget(Model model) {
         String tenantId = tenantHolder.getTenantId();
-		String userId = currentUserHolder.getUserId();
+        String userId = currentUserHolder.getUserId();
 
-		AttendanceDTO attendanceDto = this.attendanceService.findAttendanceStatus(userId);
-		model.addAttribute("attendanceDto", attendanceDto);
+        AttendanceDTO attendanceDto = this.attendanceService.findAttendanceStatus(userId);
+        model.addAttribute("attendanceDto", attendanceDto);
 
         return "attendance/widget";
     }

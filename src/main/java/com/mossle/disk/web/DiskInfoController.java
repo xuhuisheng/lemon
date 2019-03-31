@@ -11,8 +11,9 @@ import javax.servlet.http.HttpServletRequest;
 import javax.servlet.http.HttpServletResponse;
 
 import com.mossle.api.auth.CurrentUserHolder;
-import com.mossle.api.store.StoreConnector;
 import com.mossle.api.tenant.TenantHolder;
+
+import com.mossle.client.store.StoreClient;
 
 import com.mossle.core.store.MultipartFileDataSource;
 import com.mossle.core.util.IoUtils;
@@ -44,7 +45,7 @@ public class DiskInfoController {
     private DiskInfoManager diskInfoManager;
     private DiskShareManager diskShareManager;
     private CurrentUserHolder currentUserHolder;
-    private StoreConnector storeConnector;
+    private StoreClient storeClient;
     private DiskService diskService;
     private TenantHolder tenantHolder;
 
@@ -93,8 +94,7 @@ public class DiskInfoController {
     @ResponseBody
     public String upload(@RequestParam("file") MultipartFile file,
             @RequestParam("path") String path,
-            @RequestParam("lastModified") long lastModified)
-            throws Exception {
+            @RequestParam("lastModified") long lastModified) throws Exception {
         logger.info("lastModified : {}", lastModified);
 
         String userId = currentUserHolder.getUserId();
@@ -160,7 +160,7 @@ public class DiskInfoController {
         try {
             ServletUtils.setFileDownloadHeader(request, response,
                     diskInfo.getName());
-            is = storeConnector
+            is = storeClient
                     .getStore("disk/user/" + userId, diskInfo.getRef(),
                             tenantId).getDataSource().getInputStream();
             IoUtils.copyStream(is, response.getOutputStream());
@@ -313,6 +313,9 @@ public class DiskInfoController {
 
         if ("private".equals(type)) {
             diskShare.setSharePassword(this.generatePassword());
+            diskShare.setCatalog("external");
+        } else {
+            diskShare.setCatalog("public");
         }
 
         diskShareManager.save(diskShare);
@@ -352,8 +355,8 @@ public class DiskInfoController {
     }
 
     @Resource
-    public void setStoreConnector(StoreConnector storeConnector) {
-        this.storeConnector = storeConnector;
+    public void setStoreClient(StoreClient storeClient) {
+        this.storeClient = storeClient;
     }
 
     @Resource

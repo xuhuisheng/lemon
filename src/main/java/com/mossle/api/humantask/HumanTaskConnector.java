@@ -167,4 +167,8 @@ public interface HumanTaskConnector {
     /** 经手任务. */
     Page findDelegateTasks(String userId, String tenantId, int pageNo,
             int pageSize);
+
+    long findPersonalTaskCount(String userId, String tenantId);
+
+    long findGroupTaskCount(String userId, String tenantId);
 }

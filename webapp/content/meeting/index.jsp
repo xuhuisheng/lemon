@@ -79,7 +79,7 @@ function refreshRooms() {
 +'			  <div class="pull-right">'
 +'				  ' + deviceItem
 +'				  <span>'
-+'					' + room.num + '人'
++'					' + room.num + '<i class="glyphicon glyphicon-user"></i>'
 +'				  </span>'
 +'			  </div>'
 +'		    </div>'
@@ -150,10 +150,10 @@ $(function() {
   </head>
 
   <body>
-    <%@include file="/header/meeting.jsp"%>
+    <%@include file="/header/meeting-user.jsp"%>
 
 	<div class="row-fluid" style="padding-top:65px;margin-bottom:50px;">
-	  <div class="col-md-12">
+	  <div class="col-md-11">
 	    <form class="form-inline">
           <div class="form-group">
             <label for="exampleInputName2">办公区</label>
@@ -172,9 +172,12 @@ $(function() {
 			<div class="input-group date datepicker" style="padding-left:15px;padding-right:15px;">
 	          <input id="meeting-calendarDate" name="calendarDate" size="16" type="text" value="${calendarDate}" readonly style="background-color:white;cursor:default;" class="form-control required">
               <span class="input-group-addon"><i class="glyphicon glyphicon-th"></i></span>
-            </div>
+            </div> 
           </div>
         </form>
+	  </div>
+	  <div class="col-md-1">
+        <a href="list.do" class="pull-right btn btn-default">预定列表</a>
 	  </div>
 	</div>
 
@@ -190,7 +193,7 @@ $(function() {
 				  <i class="glyphicon glyphicon-phone-alt" style="padding-right:10px;" title="电话"></i>
 				  <i class="glyphicon glyphicon-blackboard" style="padding-right:10px;" title="白板"></i>
 				  <span>
-					10人
+					10<i class="glyphicon glyphicon-user"></i>
 				  </span>
 			  </div>
 		    </div>

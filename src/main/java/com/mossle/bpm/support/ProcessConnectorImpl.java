@@ -62,6 +62,8 @@ public class ProcessConnectorImpl implements ProcessConnector {
         // 先设置登录用户
         IdentityService identityService = processEngine.getIdentityService();
         identityService.setAuthenticatedUserId(userId);
+        processParameters.put("_starter", userId);
+        logger.info("businessKey : {}", businessKey);
 
         ProcessInstance processInstance = processEngine.getRuntimeService()
                 .startProcessInstanceById(processDefinitionId, businessKey,
@@ -589,17 +591,18 @@ public class ProcessConnectorImpl implements ProcessConnector {
      * 根据processInstanceId获取businessKey.
      */
     public String findBusinessKeyByProcessInstanceId(String processInstanceId) {
-        ProcessInstance processInstance = processEngine.getRuntimeService()
-                .createProcessInstanceQuery()
-                .processInstanceId(processInstanceId).singleResult();
+        HistoricProcessInstance historicProcessInstance = processEngine
+                .getHistoryService().createHistoricProcessInstanceQuery()
+                .processInstanceId(processInstanceId)
+                .processInstanceTenantId("1").singleResult();
 
-        if (processInstance == null) {
+        if (historicProcessInstance == null) {
             logger.info("cannot find processInstance : {}", processInstanceId);
-
-            return null;
+            throw new IllegalStateException("cannot find process instance : "
+                    + processInstanceId);
         }
 
-        return processInstance.getId();
+        return historicProcessInstance.getBusinessKey();
     }
 
     @Resource

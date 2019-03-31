@@ -15,9 +15,10 @@ import javax.imageio.ImageIO;
 
 import com.mossle.api.auth.CurrentUserHolder;
 import com.mossle.api.avatar.AvatarDTO;
-import com.mossle.api.store.StoreConnector;
 import com.mossle.api.store.StoreDTO;
 import com.mossle.api.tenant.TenantHolder;
+
+import com.mossle.client.store.StoreClient;
 
 import com.mossle.core.mapper.BeanMapper;
 import com.mossle.core.page.Page;
@@ -67,7 +68,7 @@ public class UserMyController {
     private BeanMapper beanMapper = new BeanMapper();
     private CurrentUserHolder currentUserHolder;
     private ChangePasswordService changePasswordService;
-    private StoreConnector storeConnector;
+    private StoreClient storeClient;
     private TenantHolder tenantHolder;
     private InternalUserConnector internalUserConnector;
 
@@ -86,6 +87,9 @@ public class UserMyController {
 
     /**
      * 显示个人信息.
+     *
+     * @param model Model
+     * @return String
      */
     @RequestMapping("my-info-input")
     public String infoInput(Model model) {
@@ -100,6 +104,11 @@ public class UserMyController {
 
     /**
      * 保存个人信息.
+     *
+     * @param personInfo PersonInfo
+     * @param redirectAttributes RedirectAttributes
+     * @return String
+     * @throws Exception ex
      */
     @RequestMapping("my-info-save")
     public String infoSave(@ModelAttribute PersonInfo personInfo,
@@ -128,6 +137,8 @@ public class UserMyController {
 
     /**
      * 准备修改密码.
+     *
+     * @return String
      */
     @RequestMapping("my-change-password-input")
     public String changepasswordInput() {
@@ -136,6 +147,12 @@ public class UserMyController {
 
     /**
      * 修改密码.
+     *
+     * @param oldPassword String
+     * @param newPassword String
+     * @param confirmPassword String
+     * @param redirectAttributes RedirectAttributes
+     * @return String
      */
     @RequestMapping("my-change-password-save")
     public String changePasswordSave(
@@ -166,6 +183,9 @@ public class UserMyController {
 
     /**
      * 显示头像.
+     *
+     * @param model model
+     * @return String
      */
     @RequestMapping("my-avatar-input")
     public String avatarInput(Model model) {
@@ -182,13 +202,17 @@ public class UserMyController {
 
     /**
      * 上传头像.
+     *
+     * @param avatar MultipartFile
+     * @return map
+     * @throws Exception ex
      */
     @RequestMapping("my-avatar-upload")
     @ResponseBody
     public Map<String, Object> avatarUpload(
             @RequestParam("avatar") MultipartFile avatar) throws Exception {
         String tenantId = tenantHolder.getTenantId();
-        StoreDTO storeDto = storeConnector.saveStore("avatar",
+        StoreDTO storeDto = storeClient.saveStore("avatar",
                 new MultipartFileDataSource(avatar), tenantId);
 
         String userId = currentUserHolder.getUserId();
@@ -203,6 +227,9 @@ public class UserMyController {
 
     /**
      * 显示头像.
+     *
+     * @param os OutputStream
+     * @throws Exception ex
      */
     @RequestMapping("my-avatar-view")
     @ResponseBody
@@ -215,14 +242,18 @@ public class UserMyController {
             return;
         }
 
-        StoreDTO storeDto = storeConnector.getStore("avatar",
-                avatarDto.getCode(), tenantId);
+        StoreDTO storeDto = storeClient.getStore("avatar", avatarDto.getCode(),
+                tenantId);
 
         IoUtils.copyStream(storeDto.getDataSource().getInputStream(), os);
     }
 
     /**
      * 剪切头像.
+     *
+     * @param model model
+     * @return String
+     * @throws Exception ex
      */
     @RequestMapping("my-avatar-crop")
     public String avatarCrop(Model model) throws Exception {
@@ -238,8 +269,8 @@ public class UserMyController {
             return "user/my/my-avatar-crop";
         }
 
-        StoreDTO storeDto = storeConnector.getStore("avatar",
-                avatarDto.getCode(), tenantId);
+        StoreDTO storeDto = storeClient.getStore("avatar", avatarDto.getCode(),
+                tenantId);
         BufferedImage bufferedImage = ImageIO.read(storeDto.getDataSource()
                 .getInputStream());
         int height = bufferedImage.getHeight();
@@ -268,6 +299,15 @@ public class UserMyController {
 
     /**
      * 保存头像.
+     *
+     * @param x1 int
+     * @param x2 int
+     * @param y1 int
+     * @param y2 int
+     * @param w int
+     * @param model model
+     * @return String
+     * @throws Exception ex
      */
     @RequestMapping("my-avatar-save")
     public String avatarSave(@RequestParam("x1") int x1,
@@ -284,13 +324,13 @@ public class UserMyController {
         model.addAttribute("avatarDto", avatarDto);
 
         if (avatarDto != null) {
-            StoreDTO storeDto = storeConnector.getStore("avatar",
+            StoreDTO storeDto = storeClient.getStore("avatar",
                     avatarDto.getCode(), tenantId);
             ByteArrayOutputStream baos = new ByteArrayOutputStream();
             ImageUtils.zoomImage(storeDto.getDataSource().getInputStream(),
                     baos, x1, y1, x2, y2);
 
-            storeDto = storeConnector.saveStore("avatar",
+            storeDto = storeClient.saveStore("avatar",
                     new InputStreamDataSource(w + ".png",
                             new ByteArrayInputStream(baos.toByteArray())),
                     tenantId);
@@ -302,6 +342,10 @@ public class UserMyController {
 
     /**
      * 设备列表.
+     *
+     * @param page page
+     * @param model mode
+     * @return String
      */
     @RequestMapping("my-device-list")
     public String myDeviceList(@ModelAttribute Page page, Model model) {
@@ -383,8 +427,8 @@ public class UserMyController {
     }
 
     @Resource
-    public void setStoreConnector(StoreConnector storeConnector) {
-        this.storeConnector = storeConnector;
+    public void setStoreClient(StoreClient storeClient) {
+        this.storeClient = storeClient;
     }
 
     @Resource

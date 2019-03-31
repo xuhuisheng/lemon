@@ -1,0 +1,84 @@
+[{
+    "code": "TS",
+    "name": "唐山办公区",
+    "address": "唐山路北区",
+    "status": "active",
+    "buildings": [{
+        "code": "A",
+        "name": "A栋",
+        "status": "active",
+        "floors": [{
+            "code": "F1",
+            "name": "1层",
+            "status": "active",
+            "areas": [{
+                "code": "N",
+                "name": "北区",
+                "status": "active"
+            }, {
+                "code": "S",
+                "name": "南区",
+                "status": "active"
+            }]
+        }, {
+            "code": "F2",
+            "name": "2层",
+            "status": "active",
+            "areas": [{
+                "code": "N",
+                "name": "北区",
+                "status": "active"
+            }, {
+                "code": "S",
+                "name": "南区",
+                "status": "active"
+            }]
+        }]
+    }, {
+        "code": "B",
+        "name": "B栋",
+        "status": "active",
+        "floors": [{
+            "code": "F1",
+            "name": "1层",
+            "status": "active",
+            "areas": [{
+                "code": "N",
+                "name": "北区",
+                "status": "active"
+            }, {
+                "code": "S",
+                "name": "南区",
+                "status": "active"
+            }]
+        }, {
+            "code": "F2",
+            "name": "2层",
+            "status": "active",
+            "areas": [{
+                "code": "N",
+                "name": "北区",
+                "status": "active"
+            }, {
+                "code": "S",
+                "name": "南区",
+                "status": "active"
+            }]
+        }]
+    }]
+}, {
+    "code": "BJ",
+    "name": "北京办公区",
+    "address": "北京海淀区",
+    "status": "active",
+    "buildings": [{
+        "code": "default",
+        "name": "默认",
+        "status": "active",
+        "floors": [{
+            "code": "F10",
+            "name": "10层",
+            "status": "active"
+        }]
+    }]
+}]

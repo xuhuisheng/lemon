@@ -27,7 +27,12 @@ public class PartyJsonpResource {
     private PartyEntityManager partyEntityManager;
 
     /**
-     * TODO: replace JSONWithPadding to JSONPObject
+     * TODO: replace JSONWithPadding to JSONPObject.
+     *
+     * @param callback String
+     * @param typeId long
+     * @param q String
+     * @return JSONPObject
      */
     @GET
     @Path("search")

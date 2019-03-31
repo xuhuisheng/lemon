@@ -267,12 +267,8 @@ public class HibernateEntityDao<T> extends HibernatePagingDao {
     /**
      * find by ids.
      * 
-     * @param entityClass
-     *            Class
      * @param ids
      *            List
-     * @param <T>
-     *            generic
      * @return List
      */
     @Transactional(readOnly = true)

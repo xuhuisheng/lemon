@@ -10,10 +10,10 @@
     <title>编辑</title>
     <%@include file="/common/s3.jsp"%>
 
-	<link href="${tenantPrefix}/s/jquery-ui/jquery-ui.min.css" rel="stylesheet">
-    <script src="${tenantPrefix}/s/jquery-ui/jquery-ui.min.js"></script>
-    <link rel='stylesheet' href='${tenantPrefix}/s/inputosaurus/inputosaurus.css' type='text/css' media='screen' />
-    <script src='${tenantPrefix}/s/inputosaurus/inputosaurus.js' type='text/javascript'></script>
+    <link href="${cdnPrefix}/public/jquery-ui/1.10.2/jquery-ui.min.css" rel="stylesheet">
+    <script src="${cdnPrefix}/public/jquery-ui/1.10.2/jquery-ui.min.js"></script>
+    <link rel='stylesheet' href='${cdnPrefix}/public/inputosaurus/0.1.6/inputosaurus.css' type='text/css' media='screen' />
+    <script src='${cdnPrefix}/public/inputosaurus/0.1.6/inputosaurus.js' type='text/javascript'></script>
     <script type="text/javascript">
 $(function() {
     $("#msg-infoForm").validate({

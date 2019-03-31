@@ -21,6 +21,9 @@ public class DelegateLocalUserConnector implements LocalUserConnector {
         return remoteUserConnector.findByUsername(username, userRepoRef);
     }
 
+    public void createOrUpdateLocalUser(UserDTO userDto) {
+    }
+
     @Resource
     public void setRemoteUserConnector(RemoteUserConnector remoteUserConnector) {
         this.remoteUserConnector = remoteUserConnector;

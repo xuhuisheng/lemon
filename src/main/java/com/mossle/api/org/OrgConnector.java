@@ -39,13 +39,9 @@ public interface OrgConnector {
             String positionName);
 
     /**
-     * 
-     * @Title: findPositionByUserId
-     * @Description: TODO(根据用户查询用所主职所在的岗位。)
-     * @param @param userId
-     * @param @return 参数
+     * TODO(根据用户查询用所主职所在的岗位.
+     * @param userId
      * @return OrgDTO 返回类型
-     * @throws
      */
     OrgDTO findPositionByUserId(String userId);
 

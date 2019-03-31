@@ -30,6 +30,9 @@ public class ModelBase implements java.io.Serializable {
     private Long id;
 
     /** null. */
+    private ModelBase modelBase;
+
+    /** null. */
     private ModelCategory modelCategory;
 
     /** null. */
@@ -93,6 +96,12 @@ public class ModelBase implements java.io.Serializable {
     private String tenantId;
 
     /** . */
+    private Set<ModelRow> modelRows = new HashSet<ModelRow>(0);
+
+    /** . */
+    private Set<ModelBase> modelBases = new HashSet<ModelBase>(0);
+
+    /** . */
     private Set<ModelItem> modelItems = new HashSet<ModelItem>(0);
 
     public ModelBase() {
@@ -102,14 +111,17 @@ public class ModelBase implements java.io.Serializable {
         this.id = id;
     }
 
-    public ModelBase(Long id, ModelCategory modelCategory, String code,
-            String name, String instanceId, String category, String processId,
-            String processName, String processKey, Integer processVersion,
-            String initiator, String initiatorDept, String applicant,
-            String applicantDept, Date createTime, Date startTime,
-            Date endTime, String type, String status, String deleteReason,
-            String description, String tenantId, Set<ModelItem> modelItems) {
+    public ModelBase(Long id, ModelBase modelBase, ModelCategory modelCategory,
+            String code, String name, String instanceId, String category,
+            String processId, String processName, String processKey,
+            Integer processVersion, String initiator, String initiatorDept,
+            String applicant, String applicantDept, Date createTime,
+            Date startTime, Date endTime, String type, String status,
+            String deleteReason, String description, String tenantId,
+            Set<ModelRow> modelRows, Set<ModelBase> modelBases,
+            Set<ModelItem> modelItems) {
         this.id = id;
+        this.modelBase = modelBase;
         this.modelCategory = modelCategory;
         this.code = code;
         this.name = name;
@@ -131,6 +143,8 @@ public class ModelBase implements java.io.Serializable {
         this.deleteReason = deleteReason;
         this.description = description;
         this.tenantId = tenantId;
+        this.modelRows = modelRows;
+        this.modelBases = modelBases;
         this.modelItems = modelItems;
     }
 
@@ -147,6 +161,21 @@ public class ModelBase implements java.io.Serializable {
      */
     public void setId(Long id) {
         this.id = id;
+    }
+
+    /** @return null. */
+    @ManyToOne(fetch = FetchType.LAZY)
+    @JoinColumn(name = "PARENT_ID")
+    public ModelBase getModelBase() {
+        return this.modelBase;
+    }
+
+    /**
+     * @param modelBase
+     *            null.
+     */
+    public void setModelBase(ModelBase modelBase) {
+        this.modelBase = modelBase;
     }
 
     /** @return null. */
@@ -445,6 +474,34 @@ public class ModelBase implements java.io.Serializable {
      */
     public void setTenantId(String tenantId) {
         this.tenantId = tenantId;
+    }
+
+    /** @return . */
+    @OneToMany(fetch = FetchType.LAZY, mappedBy = "modelBase")
+    public Set<ModelRow> getModelRows() {
+        return this.modelRows;
+    }
+
+    /**
+     * @param modelRows
+     *            .
+     */
+    public void setModelRows(Set<ModelRow> modelRows) {
+        this.modelRows = modelRows;
+    }
+
+    /** @return . */
+    @OneToMany(fetch = FetchType.LAZY, mappedBy = "modelBase")
+    public Set<ModelBase> getModelBases() {
+        return this.modelBases;
+    }
+
+    /**
+     * @param modelBases
+     *            .
+     */
+    public void setModelBases(Set<ModelBase> modelBases) {
+        this.modelBases = modelBases;
     }
 
     /** @return . */

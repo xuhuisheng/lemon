@@ -5,12 +5,14 @@ import java.util.List;
 import javax.annotation.Resource;
 
 import com.mossle.api.tenant.TenantConnector;
-import com.mossle.api.tenant.TenantDTO;
 
 import com.mossle.core.mail.MailHelper;
 import com.mossle.core.mapper.BeanMapper;
 
+import com.mossle.internal.sendmail.persistence.domain.SendmailApp;
 import com.mossle.internal.sendmail.persistence.domain.SendmailQueue;
+import com.mossle.internal.sendmail.persistence.manager.SendmailAppManager;
+import com.mossle.internal.sendmail.persistence.manager.SendmailQueueManager;
 import com.mossle.internal.sendmail.service.SendmailDataService;
 
 import org.slf4j.Logger;
@@ -28,6 +30,8 @@ import org.springframework.transaction.annotation.Transactional;
 @Transactional
 public class SendMailJob {
     private static Logger logger = LoggerFactory.getLogger(SendMailJob.class);
+    private SendmailAppManager sendmailAppManager;
+    private SendmailQueueManager sendmailQueueManager;
     private SendmailDataService sendmailDataService;
     private int threshold = 20;
     private BeanMapper beanMapper = new BeanMapper();
@@ -44,15 +48,16 @@ public class SendMailJob {
         }
 
         try {
-            for (TenantDTO tenantDto : tenantConnector.findAll()) {
-                this.doExecute(tenantDto.getId());
+            for (SendmailApp sendmailApp : sendmailAppManager.getAll()) {
+                this.doExecute(sendmailApp);
             }
         } catch (Exception ex) {
             logger.error(ex.getMessage(), ex);
         }
     }
 
-    public synchronized void doExecute(String tenantId) throws Exception {
+    public synchronized void doExecute(SendmailApp sendmailApp)
+            throws Exception {
         if (running) {
             return;
         }
@@ -61,7 +66,7 @@ public class SendMailJob {
         logger.debug("send mail job start");
 
         List<SendmailQueue> sendmailQueues = sendmailDataService
-                .findTopSendmailQueues(threshold, tenantId);
+                .findTopSendmailQueues(sendmailApp);
         logger.debug("sendmailQueues : {}", sendmailQueues.size());
 
         for (SendmailQueue sendmailQueue : sendmailQueues) {
@@ -70,6 +75,18 @@ public class SendMailJob {
 
         logger.debug("send mail job end");
         running = false;
+    }
+
+    // ~
+    @Resource
+    public void setSendmailAppManager(SendmailAppManager sendmailAppManager) {
+        this.sendmailAppManager = sendmailAppManager;
+    }
+
+    @Resource
+    public void setSendmailQueueManager(
+            SendmailQueueManager sendmailQueueManager) {
+        this.sendmailQueueManager = sendmailQueueManager;
     }
 
     @Resource
@@ -86,7 +103,7 @@ public class SendMailJob {
         this.threshold = threshold;
     }
 
-    @Value("${mail.enabled}")
+    @Value("${sendmail.enabled}")
     public void setEnabled(boolean enabled) {
         this.enabled = enabled;
     }

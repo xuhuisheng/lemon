@@ -27,7 +27,7 @@
                 "priority": 20001
             },
             {
-                "code": "pim",
+                "code": "pim-user",
                 "name": "个人事务",
                 "url": "/pim/index.do",
                 "type": "module",
@@ -65,7 +65,7 @@
             {
                 "code": "website",
                 "name": "网站首页",
-                "url": "/cms/cms-site-view.do",
+                "url": "/cms/view/",
                 "type": "module",
                 "display": "true",
                 "perm": "website",
@@ -112,29 +112,11 @@
                     {
                         "code": "auth",
                         "name": "权限管理",
-                        "url": "/auth/user-status-list.do",
+                        "url": "/auth/user-connector-list.do",
                         "type": "module",
                         "display": "true",
                         "perm": "auth",
                         "priority": 40003
-                    },
-                    {
-                        "code": "session",
-                        "name": "会话管理",
-                        "url": "/user/account-online-list.do",
-                        "type": "module",
-                        "display": "true",
-                        "perm": "session",
-                        "priority": 40004
-                    },
-                    {
-                        "code": "device",
-                        "name": "设备管理",
-                        "url": "/user/account-device-list.do",
-                        "type": "module",
-                        "display": "true",
-                        "perm": "device",
-                        "priority": 40005
                     }
                 ]
             },
@@ -336,7 +318,7 @@
             {
                 "code": "hr",
                 "name": "人力资源",
-                "url": "/party/org-list.do",
+                "url": "/party/index.do",
                 "type": "system",
                 "display": "true",
                 "perm": "sys_hr",
@@ -344,8 +326,8 @@
                 "children": [
                     {
                         "code": "org",
-                        "name": "组织机构",
-                        "url": "/party/org-list.do",
+                        "name": "组织结构",
+                        "url": "/party/index.do",
                         "type": "module",
                         "display": "true",
                         "perm": "org",
@@ -574,43 +556,7 @@
 		"display": "true",
 		"perm": "sys_sys",
 		"priority": 120000
-	    },
-            {
-                "code": "system",
-                "name": "系统配置",
-                "url": "/party/tree-list.do",
-                "type": "system",
-                "display": "true",
-                "perm": "sys_sys",
-                "priority": 990000,
-		"children": [{
-                        "code": "system_menu",
-                        "name": "系统配置",
-                        "url": "/party/tree-list.do",
-                        "type": "module",
-                        "display": "true",
-                        "perm": "sys_sys",
-                        "priority": 990001
-		},
-		{
-                        "code": "system_notice",
-                        "name": "提醒配置",
-                        "url": "/sendmail/sendmail-history-list.do",
-                        "type": "module",
-                        "display": "true",
-                        "perm": "sys_sys",
-                        "priority": 990002
-		},
-		{
-                        "code": "system_incubator",
-                        "name": "实验室",
-                        "url": "/ticket/ticket-catalog-list.do",
-                        "type": "module",
-                        "display": "true",
-                        "perm": "sys_sys",
-                        "priority": 990003
-		}]
-            }
+	    }
         ]
     }
 ]

@@ -9,6 +9,7 @@ import javax.annotation.Resource;
 import com.mossle.api.user.UserConnector;
 
 import org.activiti.engine.delegate.event.ActivitiEvent;
+import org.activiti.engine.delegate.event.ActivitiEventType;
 import org.activiti.engine.delegate.event.BaseEntityEventListener;
 import org.activiti.engine.delegate.event.impl.ActivitiEntityEventImpl;
 import org.activiti.engine.impl.cmd.GetDeploymentProcessDefinitionCmd;
@@ -32,6 +33,12 @@ public class UpdateProcessInstanceNameEventListener extends
         Object entity = activitiEntityEventImpl.getEntity();
 
         if (!(entity instanceof ExecutionEntity)) {
+            return;
+        }
+
+        ActivitiEventType activitiEventType = activitiEntityEventImpl.getType();
+
+        if (activitiEventType != ActivitiEventType.ENTITY_INITIALIZED) {
             return;
         }
 

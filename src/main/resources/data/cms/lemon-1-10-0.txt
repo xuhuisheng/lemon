@@ -1,0 +1,16 @@
+<p>features:</p>
+
+<ul>
+	<li>[core] 仿造springboot的配置方法，每个环境的配置文件单独一个文件，不再使用之前的覆盖方式。</li>
+	<li>[biz] 做一个简单的应用导航页。</li>
+	<li>[party] 优化组织结构操作。</li>
+	<li>[bpm] 演示流程：印章，资产，差旅，车辆，休假，报销，收发文。</li>
+</ul>
+
+<p>resources:</p>
+
+<ul>
+	<li>详细修订列表： <a href="https://github.com/xuhuisheng/lemon/issues?q=milestone%3A1.10.0" target="_blank">https://github.com/xuhuisheng/lemon/issues?q=milestone%3A1.10.0</a></li>
+	<li>源码地址： <a href="https://github.com/xuhuisheng/lemon/tree/lemon-1.10.0" target="_blank">https://github.com/xuhuisheng/lemon/tree/lemon-1.10.0</a></li>
+	<li>独立运行包： <a href="https://pan.baidu.com/s/1e07BShLvx-ChiHJkSbfneg" target="_blank">https://pan.baidu.com/s/1e07BShLvx-ChiHJkSbfneg</a></li>
+</ul>

@@ -41,6 +41,9 @@ public class DictInfo implements java.io.Serializable {
     /** null. */
     private String tenantId;
 
+    /** null. */
+    private String ref;
+
     /** . */
     private Set<DictData> dictDatas = new HashSet<DictData>(0);
 
@@ -52,13 +55,15 @@ public class DictInfo implements java.io.Serializable {
     }
 
     public DictInfo(Long id, DictType dictType, String name, String value,
-            Integer priority, String tenantId, Set<DictData> dictDatas) {
+            Integer priority, String tenantId, String ref,
+            Set<DictData> dictDatas) {
         this.id = id;
         this.dictType = dictType;
         this.name = name;
         this.value = value;
         this.priority = priority;
         this.tenantId = tenantId;
+        this.ref = ref;
         this.dictDatas = dictDatas;
     }
 
@@ -146,6 +151,20 @@ public class DictInfo implements java.io.Serializable {
      */
     public void setTenantId(String tenantId) {
         this.tenantId = tenantId;
+    }
+
+    /** @return null. */
+    @Column(name = "REF", length = 50)
+    public String getRef() {
+        return this.ref;
+    }
+
+    /**
+     * @param ref
+     *            null.
+     */
+    public void setRef(String ref) {
+        this.ref = ref;
     }
 
     /** @return . */

@@ -53,7 +53,7 @@ public class ProcessResource {
      *            发起人
      * @param parameters
      *            json格式流程变量
-     * @result 流程实例ID
+     * @return 流程实例ID
      */
     @POST
     @Path("startProcess")

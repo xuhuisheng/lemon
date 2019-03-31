@@ -16,8 +16,9 @@ import com.mossle.api.form.FormDTO;
 import com.mossle.api.humantask.HumanTaskConnector;
 import com.mossle.api.humantask.HumanTaskConstants;
 import com.mossle.api.humantask.HumanTaskDTO;
-import com.mossle.api.keyvalue.KeyValueConnector;
 import com.mossle.api.keyvalue.Record;
+import com.mossle.api.model.ModelConnector;
+import com.mossle.api.model.ModelInfoDTO;
 import com.mossle.api.notification.NotificationConnector;
 import com.mossle.api.notification.NotificationDTO;
 import com.mossle.api.process.ProcessConnector;
@@ -86,11 +87,11 @@ public class WorkspaceController {
     private CurrentUserHolder currentUserHolder;
     private TraceService traceService;
     private TenantHolder tenantHolder;
-    private KeyValueConnector keyValueConnector;
     private JsonMapper jsonMapper = new JsonMapper();
     private HumanTaskConnector humanTaskConnector;
     private NotificationConnector notificationConnector;
     private InternalProcessConnector internalProcessConnector;
+    private ModelConnector modelConnector;
     private String baseUrl;
 
     @RequestMapping("workspace-home")
@@ -147,7 +148,8 @@ public class WorkspaceController {
                 .getProcessDefinitionId();
 
         // 2. 从businessKey获取keyvalue
-        Record original = keyValueConnector.findByCode(businessKey);
+        // Record original = keyValueConnector.findByCode(businessKey);
+        ModelInfoDTO original = modelConnector.findByCode(businessKey);
 
         // 3. 找到流程的第一个form
         FormDTO formDto = this.processConnector
@@ -194,7 +196,9 @@ public class WorkspaceController {
         logger.debug("fieldNames : {}", fieldNames);
 
         // 4. 使用第一个form复制数据，后续的审批意见数据之类的不要复制
-        Record record = keyValueConnector.copyRecord(original, fieldNames);
+        // Record record = keyValueConnector.copyRecord(original, fieldNames);
+        ModelInfoDTO modelInfoDto = modelConnector.copyModel(original,
+                fieldNames);
 
         // 5. 跳转到草稿箱
         return "redirect:/operation/process-operation-listDrafts.do";
@@ -766,11 +770,6 @@ public class WorkspaceController {
     }
 
     @Resource
-    public void setKeyValueConnector(KeyValueConnector keyValueConnector) {
-        this.keyValueConnector = keyValueConnector;
-    }
-
-    @Resource
     public void setHumanTaskConnector(HumanTaskConnector humanTaskConnector) {
         this.humanTaskConnector = humanTaskConnector;
     }
@@ -785,6 +784,11 @@ public class WorkspaceController {
     public void setInternalProcessConnector(
             InternalProcessConnector internalProcessConnector) {
         this.internalProcessConnector = internalProcessConnector;
+    }
+
+    @Resource
+    public void setModelConnector(ModelConnector modelConnector) {
+        this.modelConnector = modelConnector;
     }
 
     @Value("${application.baseUrl}")

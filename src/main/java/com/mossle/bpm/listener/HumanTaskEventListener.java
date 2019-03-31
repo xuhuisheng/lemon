@@ -6,7 +6,7 @@ import java.util.Date;
 import java.util.List;
 
 import javax.annotation.Resource;
-
+import org.activiti.engine.history.HistoricTaskInstance;;
 import com.mossle.api.humantask.HumanTaskConnector;
 import com.mossle.api.humantask.HumanTaskConstants;
 import com.mossle.api.humantask.HumanTaskDTO;
@@ -35,6 +35,7 @@ import org.activiti.engine.impl.interceptor.CommandContext;
 import org.activiti.engine.impl.persistence.entity.ExecutionEntity;
 import org.activiti.engine.impl.persistence.entity.HistoricProcessInstanceEntity;
 import org.activiti.engine.impl.persistence.entity.ProcessDefinitionEntity;
+import org.activiti.engine.impl.persistence.entity.TaskEntity;
 import org.activiti.engine.impl.persistence.entity.TaskEntity;
 import org.activiti.engine.impl.pvm.process.ActivityImpl;
 import org.activiti.engine.task.IdentityLink;
@@ -157,12 +158,27 @@ public class HumanTaskEventListener implements ActivitiEventListener {
             return;
         }
 
-        humanTaskDto.setStatus("delete");
-        humanTaskDto.setCompleteTime(new Date());
-        humanTaskDto.setAction("人工终止");
-        humanTaskDto.setOwner(humanTaskDto.getAssignee());
-        humanTaskDto.setAssignee(Authentication.getAuthenticatedUserId());
-        humanTaskConnector.saveHumanTask(humanTaskDto, false);
+        logger.info(delegateTask.getId());
+
+        HistoricTaskInstance historicTaskInstance
+        = Context.getCommandContext().getHistoricTaskInstanceEntityManager()
+        .findHistoricTaskInstanceById(delegateTask.getId());
+
+        if ("驳回".equals(historicTaskInstance.getDeleteReason())) {
+            humanTaskDto.setStatus("delete");
+            humanTaskDto.setCompleteTime(new Date());
+            humanTaskDto.setAction("驳回");
+            humanTaskDto.setOwner(humanTaskDto.getAssignee());
+            humanTaskDto.setAssignee(Authentication.getAuthenticatedUserId());
+            humanTaskConnector.saveHumanTask(humanTaskDto, false);
+        } else {
+            humanTaskDto.setStatus("delete");
+            humanTaskDto.setCompleteTime(new Date());
+            humanTaskDto.setAction("作废");
+            humanTaskDto.setOwner(humanTaskDto.getAssignee());
+            humanTaskDto.setAssignee(Authentication.getAuthenticatedUserId());
+            humanTaskConnector.saveHumanTask(humanTaskDto, false);
+        }
     }
 
     /**

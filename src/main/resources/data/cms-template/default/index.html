@@ -1,0 +1,117 @@
+<!doctype html>
+<html>
+  <head>
+    <meta charset="utf-8" />
+    <meta http-equiv="X-UA-Compatible" content="IE=edge,chrome=1" />
+    <title>Index</title>
+    <!-- static start -->
+    <link rel="stylesheet" href="${cms.ctx}/cdn/public/bootstrap/3.3.7/css/bootstrap.min.css">
+    <script type="text/javascript" src="${cms.ctx}/cdn/public/jquery/1.12.4/jquery.min.js"></script>
+    <script type="text/javascript" src="${cms.ctx}/cdn/public/bootstrap/3.3.7/js/bootstrap.min.js"></script>
+    <!-- static end -->
+    <style type="text/css">
+* {
+    font-size: 16px;
+}
+    </style>
+  </head>
+  <body>
+    <div class="container" style="font-size:12px;">
+      <div class="row">
+      <div class="col-md-6">
+        &nbsp;
+      </div>
+      <div class="col-md-6 text-right">
+        <a href='${cms.ctx}/portal/index.do' style="font-size:12px;">个人中心</a>
+      </div>
+      </div>
+    </div>
+
+    <div class="container" style="line-height:7rem;margin-bottom:10px;">
+      <div class="row">
+      <div class="col-md-2" style="font-size:3rem;">
+        Mossle
+      </div>
+      <div class="col-md-10">
+        <div class="text-center" style="background-color:#F8F8F8;color:white;">
+          &nbsp;
+        </div>
+      </div>
+      </div>
+    </div>
+
+    <!-- navbar start -->
+    <div class="container">
+      <div class="navbar navbar-default" role="navigation" style="margin-bottom:10px;">
+        <div class="navbar-header">
+          <a class="navbar-brand" href="${cms.ctx}/cms/view/">首页</a>
+        </div>
+        <div class="collapse navbar-collapse" id="bs-example-navbar-collapse-1">
+          <ul class="nav navbar-nav">
+            <#list cms.catalogs() as catalog>
+            <li class=""><a href="${cms.ctx}/cms/view/${catalog.code}">${catalog.name}</a></li>
+            </#list>
+          </ul>
+        </div>
+    </div>
+    </div>
+    <!-- navbar end -->
+
+
+    <div class="container">
+      <div class="row">
+
+
+        <!-- left start -->
+        <div class="col-md-9">
+
+          <#list cms.catalogs() as catalog>
+            <div class="panel panel-default">
+              <div class="panel-heading">
+                <a href="${cms.ctx}/cms/view/${catalog.code}">${catalog.name}</a>
+              </div>
+              <ul class="list-group">
+              <#list cms.articles(catalog.id).result as article>
+                <#if article_index < 5>
+                <li class="list-group-item">
+                  <a href="${cms.ctx}/cms/view/${catalog.code}/${article.id?string('#')}">${article.title!}</a>
+                  <div class="pull-right">
+                    <#if article.publishTime??>${article.publishTime?string("yyyy-MM-dd HH:mm")}</#if>
+                  </div>
+                </li>
+                </#if>
+              </#list>
+              </ul>
+            </div>
+
+            <hr>
+          </#list>
+
+        </div>
+        <!-- left end -->
+
+        <!-- right start -->
+        <div class="col-md-3">
+
+          <div class="panel panel-default">
+            <div class="panel-body">
+            <div style="font-size:18px;margin-bottom:5px;">热门标签</div>
+            <p style="color:gray;">tags, tags</p>
+            </div>
+          </div>
+        </div>
+        <!-- right end -->
+
+      </div>
+    </div>
+
+    <hr>
+
+    <div class="container">
+      <div class="row" style="text-align:center;">
+        &copy; Mossle
+      </div>
+    </div>
+
+  </body>
+</html>

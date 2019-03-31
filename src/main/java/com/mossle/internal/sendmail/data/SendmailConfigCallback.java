@@ -2,10 +2,10 @@ package com.mossle.internal.sendmail.data;
 
 import java.util.List;
 
+import com.mossle.core.csv.CsvCallback;
+
 import com.mossle.internal.sendmail.persistence.domain.SendmailConfig;
 import com.mossle.internal.sendmail.persistence.manager.SendmailConfigManager;
-
-import org.apache.commons.lang3.StringUtils;
 
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;

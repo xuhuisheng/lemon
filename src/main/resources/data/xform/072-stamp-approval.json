@@ -1,0 +1,188 @@
+{
+    "name": "上级审批",
+    "code": "stamp-approval",
+    "sections": [
+        {
+            "type": "text",
+            "tag": "h1",
+            "text": "印章申请"
+        },
+        {
+            "type": "grid",
+            "row": "8",
+            "col": "4",
+            "merge": [
+                {
+                    "startId": "0-1",
+                    "minRow": 0,
+                    "minCol": 1,
+                    "maxRow": 0,
+                    "maxCol": 3
+                },
+                {
+                    "startId": "1-1",
+                    "minRow": 1,
+                    "minCol": 1,
+                    "maxRow": 1,
+                    "maxCol": 3
+                },
+                {
+                    "startId": "2-1",
+                    "minRow": 2,
+                    "minCol": 1,
+                    "maxRow": 2,
+                    "maxCol": 3
+                },
+                {
+                    "startId": "3-1",
+                    "minRow": 3,
+                    "minCol": 1,
+                    "maxRow": 3,
+                    "maxCol": 3
+                },
+                {
+                    "startId": "4-1",
+                    "minRow": 4,
+                    "minCol": 1,
+                    "maxRow": 4,
+                    "maxCol": 3
+                },
+                {
+                    "startId": "5-1",
+                    "minRow": 5,
+                    "minCol": 1,
+                    "maxRow": 5,
+                    "maxCol": 3
+                },
+                {
+                    "startId": "6-1",
+                    "minRow": 6,
+                    "minCol": 1,
+                    "maxRow": 6,
+                    "maxCol": 3
+                },
+                {
+                    "startId": "7-1",
+                    "minRow": 7,
+                    "minCol": 1,
+                    "maxRow": 7,
+                    "maxCol": 3
+                }
+            ],
+            "fields": [
+                {
+                    "type": "label",
+                    "row": 0,
+                    "col": 0,
+                    "text": "使用时间"
+                },
+                {
+                    "type": "datepicker",
+                    "row": 0,
+                    "col": 1,
+                    "name": "date",
+                    "required": false,
+                    "readOnly": true
+                },
+                {
+                    "type": "label",
+                    "row": 1,
+                    "col": 0,
+                    "text": "文件名称"
+                },
+                {
+                    "type": "fileupload",
+                    "row": 1,
+                    "col": 1,
+                    "name": "fileName",
+                    "required": false,
+                    "readOnly": true
+                },
+                {
+                    "type": "label",
+                    "row": 2,
+                    "col": 0,
+                    "text": "文件份数"
+                },
+                {
+                    "type": "textfield",
+                    "row": 2,
+                    "col": 1,
+                    "name": "fileCopy",
+                    "required": false,
+                    "readOnly": true
+                },
+                {
+                    "type": "label",
+                    "row": 3,
+                    "col": 0,
+                    "text": "文件页数"
+                },
+                {
+                    "type": "textfield",
+                    "row": 3,
+                    "col": 1,
+                    "name": "filePage",
+                    "required": false,
+                    "readOnly": true
+                },
+                {
+                    "type": "label",
+                    "row": 4,
+                    "col": 0,
+                    "text": "所属公司"
+                },
+                {
+                    "type": "textfield",
+                    "row": 4,
+                    "col": 1,
+                    "name": "companyName",
+                    "required": false,
+                    "readOnly": true
+                },
+                {
+                    "type": "label",
+                    "row": 5,
+                    "col": 0,
+                    "text": "印章类型"
+                },
+                {
+                    "type": "textfield",
+                    "row": 5,
+                    "col": 1,
+                    "name": "type",
+                    "required": false,
+                    "readOnly": true
+                },
+                {
+                    "type": "label",
+                    "row": 6,
+                    "col": 0,
+                    "text": "接收单位"
+                },
+                {
+                    "type": "textfield",
+                    "row": 6,
+                    "col": 1,
+                    "name": "acceptUnit",
+                    "required": false,
+                    "readOnly": true
+                },
+                {
+                    "type": "label",
+                    "row": 7,
+                    "col": 0,
+                    "text": "申请原因"
+                },
+                {
+                    "type": "textarea",
+                    "row": 7,
+                    "col": 1,
+                    "name": "description",
+                    "required": false,
+                    "readOnly": true
+                }
+            ]
+        }
+    ]
+}

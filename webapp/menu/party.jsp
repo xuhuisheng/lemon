@@ -47,18 +47,18 @@
     <div class="panel-heading" role="tab" id="collapse-header-party" data-toggle="collapse" data-parent="#accordion" href="#collapse-body-party" aria-expanded="true" aria-controls="collapse-body-party">
       <h4 class="panel-title">
 	    <i class="glyphicon glyphicon-list"></i>
-        组织机构管理
+        组织结构管理
       </h4>
     </div>
     <div id="collapse-body-party" class="panel-collapse collapse ${currentMenu == 'party' ? 'in' : ''}" role="tabpanel" aria-labelledby="collapse-header-party">
       <div class="panel-body">
         <ul class="nav nav-list">
-		  <li><a href="${tenantPrefix}/party/tree-list.do"><i class="glyphicon glyphicon-list"></i> <spring:message code="layout.leftmenu.tree" text="组织机构图"/></a></li>
-		  <li><a href="${tenantPrefix}/party/party-entity-list.do"><i class="glyphicon glyphicon-list"></i> <spring:message code="layout.leftmenu.org" text="组织机构"/></a></li>
-		  <li><a href="${tenantPrefix}/party/party-struct-list.do"><i class="glyphicon glyphicon-list"></i> <spring:message code="layout.leftmenu.struct" text="组织机构结构"/></a></li>
-		  <li><a href="${tenantPrefix}/party/party-type-list.do"><i class="glyphicon glyphicon-list"></i> <spring:message code="layout.leftmenu.type" text="组织机构类型"/></a></li>
-		  <li><a href="${tenantPrefix}/party/party-struct-type-list.do"><i class="glyphicon glyphicon-list"></i> <spring:message code="layout.leftmenu.struct.type" text="组织机构结构类型"/></a></li>
-		  <li><a href="${tenantPrefix}/party/party-struct-rule-list.do"><i class="glyphicon glyphicon-list"></i> <spring:message code="layout.leftmenu.struct.rule" text="组织机构结构规则"/></a></li>
+		  <li><a href="${tenantPrefix}/party/tree-list.do"><i class="glyphicon glyphicon-list"></i> <spring:message code="layout.leftmenu.tree" text="组织结构图"/></a></li>
+		  <li><a href="${tenantPrefix}/party/party-entity-list.do"><i class="glyphicon glyphicon-list"></i> <spring:message code="layout.leftmenu.org" text="组织结构"/></a></li>
+		  <li><a href="${tenantPrefix}/party/party-struct-list.do"><i class="glyphicon glyphicon-list"></i> <spring:message code="layout.leftmenu.struct" text="组织结构结构"/></a></li>
+		  <li><a href="${tenantPrefix}/party/party-type-list.do"><i class="glyphicon glyphicon-list"></i> <spring:message code="layout.leftmenu.type" text="组织结构类型"/></a></li>
+		  <li><a href="${tenantPrefix}/party/party-struct-type-list.do"><i class="glyphicon glyphicon-list"></i> <spring:message code="layout.leftmenu.struct.type" text="组织结构结构类型"/></a></li>
+		  <li><a href="${tenantPrefix}/party/party-struct-rule-list.do"><i class="glyphicon glyphicon-list"></i> <spring:message code="layout.leftmenu.struct.rule" text="组织结构结构规则"/></a></li>
         </ul>
       </div>
     </div>

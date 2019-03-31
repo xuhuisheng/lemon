@@ -4,7 +4,7 @@ import java.util.Date;
 import java.util.List;
 import java.util.Map;
 
-import com.mossle.api.store.StoreConnector;
+import com.mossle.client.store.StoreClient;
 
 import com.mossle.core.MultipartHandler;
 import com.mossle.core.store.MultipartFileDataSource;
@@ -76,7 +76,7 @@ public class RecordBuilder {
     }
 
     public Record build(Record record, MultipartHandler multipartHandler,
-            StoreConnector storeConnector, String tenantId) throws Exception {
+            StoreClient storeClient, String tenantId) throws Exception {
         for (Map.Entry<String, List<String>> entry : multipartHandler
                 .getMultiValueMap().entrySet()) {
             String key = entry.getKey();
@@ -132,7 +132,7 @@ public class RecordBuilder {
             Prop prop = new Prop();
             prop.setCode(key);
             prop.setType(0);
-            prop.setValue(storeConnector.saveStore("form",
+            prop.setValue(storeClient.saveStore("form",
                     new MultipartFileDataSource(multipartFile), tenantId)
                     .getKey());
             record.getProps().put(prop.getCode(), prop);

@@ -29,6 +29,7 @@ public class WhitelistFilter implements Filter {
     private Map<UrlPatternMatcher, List<String>> map = new HashMap<UrlPatternMatcher, List<String>>();
 
     public void destroy() {
+        // destroy
     }
 
     public void init(FilterConfig config) throws ServletException {

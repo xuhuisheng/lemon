@@ -28,9 +28,11 @@ public class I18nFilter implements Filter {
     private LocaleResolver localeResolver;
 
     public void init(FilterConfig filterConfig) throws ServletException {
+        // init
     }
 
     public void destroy() {
+        // destroy
     }
 
     public void doFilter(ServletRequest request, ServletResponse response,

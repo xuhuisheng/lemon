@@ -76,9 +76,9 @@ $(function() {
 		  <form name="bpmCategoryForm" method="post" action="bpm-conf-listener-save.do" class="form-inline">
 			<input type="hidden" name="bpmConfNodeId" value="${param.bpmConfNodeId}">
 		    <label for="value">监听器:</label>
-		    <input type="text" id="value" name="value" value="">
+		    <input type="text" id="value" name="value" value="" class="form-control" style="width:600px;">
 		    <label for="type">类型</label>
-			<select name="type">
+			<select name="type" class="form-control">
 			  <option value="0">开始</option>
 			  <option value="1">结束</option>
 			  <option value="2">经过</option>
@@ -87,7 +87,7 @@ $(function() {
 			  <option value="5">完成</option>
 			  <option value="6">删除</option>
 			</select>
-			<button class="btn btn-small" onclick="document.bpmCategoryForm.submit()">提交</button>
+			<button class="btn btn-default" onclick="document.bpmCategoryForm.submit()">提交</button>
 		  </form>
 
 		</div>
@@ -126,8 +126,12 @@ $(function() {
     <table id="bpmCategoryGrid" class="table table-hover">
       <thead>
         <tr>
+          <!--
           <th width="10" style="text-indent:0px;text-align:center;"><input type="checkbox" name="checkAll" onchange="toggleSelectedItems(this.checked)"></th>
+          -->
+          <!--
           <th class="sorting" name="id"><spring:message code="user.bpmCategory.list.id" text="编号"/></th>
+          -->
           <th class="sorting" name="name"><spring:message code="user.bpmCategory.list.name" text="名称"/></th>
           <th class="sorting" name="priority">类型</th>
           <th class="sorting" name="priority">状态</th>
@@ -137,10 +141,30 @@ $(function() {
       <tbody>
         <c:forEach items="${bpmConfListeners}" var="item">
         <tr>
+          <!--
           <td><input type="checkbox" class="selectedItem a-check" name="selectedItem" value="${item.id}"></td>
+          -->
+          <!--
           <td>${item.id}</td>
-          <td>${item.value}</td>
-          <td>${item.type == 0 ? '开始' : '结束'}</td>
+          -->
+          <td><div title="${item.value}" style="width: 600px;overflow: hidden;white-space: nowrap;text-overflow: ellipsis;">${item.value}</div></td>
+          <td>
+            <c:choose>
+              <c:when test="${item.type == 0}">开始</c:when>
+              <c:when test="${item.type == 1}">结束</c:when>
+              <c:when test="${item.type == 2}">经过</c:when>
+              <c:when test="${item.type == 3}">创建</c:when>
+              <c:when test="${item.type == 4}">分配</c:when>
+              <c:when test="${item.type == 5}">完成</c:when>
+              <c:when test="${item.type == 6}">删除</c:when>
+              <c:when test="${item.type == 11}">通过</c:when>
+              <c:when test="${item.type == 12}">驳回</c:when>
+              <c:when test="${item.type == 21}">草稿</c:when>
+              <c:when test="${item.type == 22}">发起</c:when>
+              <c:when test="${item.type == 23}">完成</c:when>
+              <c:when test="${item.type == 24}">终止</c:when>
+            </c:choose>
+          </td>
           <td>${item.status == 0 ? '默认' : ''}</td>
           <td>
 		    <a href="bpm-conf-listener-remove.do?id=${item.id}&bpmConfNodeId=${param.bpmConfNodeId}">删除</a>

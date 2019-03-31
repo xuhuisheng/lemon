@@ -13,7 +13,7 @@ public class ButtonHelper {
     public ButtonHelper() {
         this.addButton("saveDraft", "保存草稿");
         this.addButton("taskConf", "配置任务");
-        this.addButton("confirmStartProcess", "提交数据");
+        this.addButton("confirmStartProcess", "提交信息");
         this.addButton("startProcess", "发起流程");
         this.addButton("completeTask", "完成任务");
 
@@ -41,6 +41,10 @@ public class ButtonHelper {
 
         this.addButton("communicate", "沟通");
         this.addButton("callback", "反馈");
+
+        this.addButton("approve", "通过");
+        this.addButton("reject", "驳回");
+        this.addButton("submit", "重新提交");
     }
 
     public void addButton(String name, String label) {

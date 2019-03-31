@@ -9,7 +9,6 @@ import java.util.Map;
 import javax.annotation.Resource;
 
 import com.mossle.api.auth.CustomPasswordEncoder;
-import com.mossle.api.store.StoreConnector;
 import com.mossle.api.tenant.TenantHolder;
 import com.mossle.api.user.UserCache;
 import com.mossle.api.user.UserConnector;
@@ -55,7 +54,6 @@ public class AccountController {
     private Exportor exportor;
     private BeanMapper beanMapper = new BeanMapper();
     private CustomPasswordEncoder customPasswordEncoder;
-    private StoreConnector storeConnector;
     private UserPublisher userPublisher;
     private TenantHolder tenantHolder;
     private UserConnector userConnector;
@@ -218,8 +216,7 @@ public class AccountController {
         List<UserDTO> userDtos = new ArrayList<UserDTO>();
 
         for (AccountInfo accountInfo : accountInfos) {
-            UserDTO userDto = userConnector.findById(Long.toString(accountInfo
-                    .getId()));
+            UserDTO userDto = userConnector.findById(accountInfo.getCode());
             userDtos.add(userDto);
         }
 
@@ -235,7 +232,7 @@ public class AccountController {
                 accountInfo.getCode(), accountInfo.getTenantId());
 
         UserDTO userDto = new UserDTO();
-        userDto.setId(Long.toString(accountInfo.getId()));
+        userDto.setId(accountInfo.getCode());
         userDto.setUsername(accountInfo.getUsername());
         userDto.setDisplayName(accountInfo.getDisplayName());
         userDto.setNickName(accountInfo.getNickName());
@@ -291,11 +288,6 @@ public class AccountController {
     @Resource
     public void setExportor(Exportor exportor) {
         this.exportor = exportor;
-    }
-
-    @Resource
-    public void setStoreConnector(StoreConnector storeConnector) {
-        this.storeConnector = storeConnector;
     }
 
     @Resource

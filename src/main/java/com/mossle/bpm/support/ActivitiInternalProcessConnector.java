@@ -7,21 +7,28 @@ import java.util.Map;
 import javax.annotation.Resource;
 
 import com.mossle.api.form.FormDTO;
+import com.mossle.api.model.ModelConnector;
+import com.mossle.api.model.ModelInfoDTO;
 
+import com.mossle.bpm.cmd.CheckWithdrawTaskCmd;
 import com.mossle.bpm.cmd.CompleteTaskWithCommentCmd;
 import com.mossle.bpm.cmd.DeleteTaskWithCommentCmd;
+import com.mossle.bpm.cmd.ExecuteExpressionCmd;
 import com.mossle.bpm.cmd.FindTaskDefinitionsCmd;
 import com.mossle.bpm.cmd.RollbackTaskCmd;
 import com.mossle.bpm.cmd.SignalStartEventCmd;
 import com.mossle.bpm.cmd.WithdrawTaskCmd;
 import com.mossle.bpm.persistence.domain.BpmConfForm;
+import com.mossle.bpm.persistence.domain.BpmConfListener;
 import com.mossle.bpm.persistence.domain.BpmConfOperation;
 import com.mossle.bpm.persistence.domain.BpmConfUser;
 import com.mossle.bpm.persistence.domain.BpmTaskConf;
 import com.mossle.bpm.persistence.manager.BpmConfFormManager;
+import com.mossle.bpm.persistence.manager.BpmConfListenerManager;
 import com.mossle.bpm.persistence.manager.BpmConfOperationManager;
 import com.mossle.bpm.persistence.manager.BpmConfUserManager;
 import com.mossle.bpm.persistence.manager.BpmTaskConfManager;
+import com.mossle.bpm.support.MockVariableScope;
 
 import com.mossle.spi.process.InternalProcessConnector;
 import com.mossle.spi.process.ProcessTaskDefinition;
@@ -33,6 +40,7 @@ import org.activiti.engine.impl.cmd.GetDeploymentProcessDefinitionCmd;
 import org.activiti.engine.impl.context.Context;
 import org.activiti.engine.impl.el.ExpressionManager;
 import org.activiti.engine.impl.interceptor.Command;
+import org.activiti.engine.impl.persistence.entity.ExecutionEntity;
 import org.activiti.engine.impl.persistence.entity.ProcessDefinitionEntity;
 import org.activiti.engine.impl.persistence.entity.TaskEntity;
 import org.activiti.engine.impl.pvm.PvmActivity;
@@ -61,6 +69,8 @@ public class ActivitiInternalProcessConnector implements
     private BpmTaskConfManager bpmTaskConfManager;
     private BpmConfUserManager bpmConfUserManager;
     private JdbcTemplate jdbcTemplate;
+    private ModelConnector modelConnector;
+    private BpmConfListenerManager bpmConfListenerManager;
 
     /**
      * 获得任务表单，不包含表单内容.
@@ -416,6 +426,81 @@ public class ActivitiInternalProcessConnector implements
         return processDefinition.getId();
     }
 
+    public boolean checkWithdraw(String historyTaskId) {
+        return processEngine.getManagementService().executeCommand(
+                new CheckWithdrawTaskCmd(historyTaskId));
+    }
+
+    public void fireEvent(String eventName, String businessKey, String userId,
+            String activityId, String activityName) {
+        int eventCode = this.findEventCode(eventName);
+        ModelInfoDTO modelInfo = this.modelConnector.findByCode(businessKey);
+
+        if (modelInfo == null) {
+            logger.info("cannot find model : {}", businessKey);
+
+            return;
+        }
+
+        String processDefinitionId = modelInfo.getProcessId();
+        logger.info("{} {} {}", processDefinitionId, activityId, eventCode);
+
+        if ((eventCode == 21) || (eventCode == 22) || (eventCode == 23) || (eventCode == 24)) {
+            activityId = "";
+        }
+
+        String hql = "from BpmConfListener where bpmConfNode.bpmConfBase.processDefinitionId=? and bpmConfNode.code=? and type=?";
+        List<BpmConfListener> bpmConfListeners = bpmConfListenerManager.find(
+                hql, processDefinitionId, activityId, eventCode);
+
+        for (BpmConfListener bpmConfListener : bpmConfListeners) {
+            String expressionText = bpmConfListener.getValue();
+
+            if (Context.getProcessEngineConfiguration() == null) {
+                processEngine.getManagementService().executeCommand(
+                        new ExecuteExpressionCmd(expressionText, eventCode,
+                                eventName, modelInfo, userId, activityId,
+                                activityName));
+            } else {
+                new ExecuteExpressionCmd(expressionText, eventCode, eventName,
+                        modelInfo, userId, activityId, activityName)
+                        .execute(Context.getCommandContext());
+            }
+        }
+    }
+
+    public Integer findEventCode(String name) {
+        if ("start".equals(name)) {
+            return 0;
+        } else if ("end".equals(name)) {
+            return 1;
+        } else if ("take".equals(name)) {
+            return 2;
+        } else if ("create".equals(name)) {
+            return 3;
+        } else if ("assign".equals(name)) {
+            return 4;
+        } else if ("complete".equals(name)) {
+            return 5;
+        } else if ("delete".equals(name)) {
+            return 6;
+        } else if ("approve".equals(name)) {
+            return 11;
+        } else if ("reject".equals(name)) {
+            return 12;
+        } else if ("process-draft".equals(name)) {
+            return 21;
+        } else if ("process-start".equals(name)) {
+            return 22;
+        } else if ("process-close".equals(name)) {
+            return 23;
+        } else if ("process-end".equals(name)) {
+            return 24;
+        }
+
+        return -1;
+    }
+
     // ~ ==================================================
     @Resource
     public void setProcessEngine(ProcessEngine processEngine) {
@@ -446,5 +531,16 @@ public class ActivitiInternalProcessConnector implements
     @Resource
     public void setJdbcTemplate(JdbcTemplate jdbcTemplate) {
         this.jdbcTemplate = jdbcTemplate;
+    }
+
+    @Resource
+    public void setModelConnector(ModelConnector modelConnector) {
+        this.modelConnector = modelConnector;
+    }
+
+    @Resource
+    public void setBpmConfListenerManager(
+            BpmConfListenerManager bpmConfListenerManager) {
+        this.bpmConfListenerManager = bpmConfListenerManager;
     }
 }

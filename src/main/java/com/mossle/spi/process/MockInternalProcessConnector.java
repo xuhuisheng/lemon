@@ -71,4 +71,12 @@ public class MockInternalProcessConnector implements InternalProcessConnector {
     public String findProcessDefinitionId(String processDefinitionKey) {
         return null;
     }
+
+    public boolean checkWithdraw(String historyTaskId) {
+        return false;
+    }
+
+    public void fireEvent(String eventType, String businessKey, String userId,
+            String activityId, String activityName) {
+    }
 }
