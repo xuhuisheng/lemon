@@ -47,7 +47,7 @@ $(function() {
 $(function() {
 	createUserPicker({
 		modalId: 'userPicker',
-		url: '${tenantPrefix}/localuser/rs/s'
+		url: '${tenantPrefix}/user/rs/s'
 	});
 })
     </script>
