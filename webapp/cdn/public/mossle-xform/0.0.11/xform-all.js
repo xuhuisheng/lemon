@@ -154,12 +154,12 @@ xf.Xform.prototype.initEvents = function() {
 xf.Xform.prototype.mouseDown = function(e) {
 	var target = xf.getTarget(e);
 	var handler = xf.getHandler(target);
-	if (handler || target.className == 'xf-pallete') {
+	if (handler || target.className == 'xf-palette') {
 		e.preventDefault();
 	}
 
 	if (this.mode == 'EDIT') {
-		if (target.className == 'xf-pallete') {
+		if (target.className == 'xf-palette') {
 			this.request = {
 				type: 'add',
 				fieldType: target.title

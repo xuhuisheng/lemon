@@ -13,6 +13,12 @@
     <script type="text/javascript" src="${cdnPrefix}/public/mossle-xform/0.0.11/xform-all.js"></script>
     <script type="text/javascript" src="${cdnPrefix}/public/mossle-xform/0.0.11/adaptor.js"></script>
 
+    <link type="text/css" rel="stylesheet" href="${cdnPrefix}/public/mossle-userpicker/3.0/userpicker.css">
+    <script type="text/javascript" src="${cdnPrefix}/public/mossle-userpicker/3.0/userpicker.js"></script>
+
+    <link type="text/css" rel="stylesheet" href="${cdnPrefix}/public/webuploader/0.1.5/webuploader.css">
+	<script type="text/javascript" src="${cdnPrefix}/public/webuploader/0.1.5/webuploader.js"></script>
+
 	<style type="text/css">
 .xf-palette {
 	border: dotted 2px gray;
