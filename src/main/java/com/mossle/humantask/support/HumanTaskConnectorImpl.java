@@ -36,7 +36,7 @@ import com.mossle.spi.process.InternalProcessConnector;
 import com.mossle.spi.process.ProcessTaskDefinition;
 
 import org.apache.commons.lang3.StringUtils;
-
+import org.hibernate.SQLQuery;
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
 
@@ -464,10 +464,20 @@ public class HumanTaskConnectorImpl implements HumanTaskConnector {
      */
     public Page findPersonalTasks(String userId, String tenantId, int pageNo,
             int pageSize) {
-        String hql = "from TaskInfo where assignee=? and tenantId=? and status='active' order by id desc";
-        Page page = taskInfoManager.pagedQuery(hql, pageNo, pageSize, userId,
-                tenantId);
-        List<TaskInfo> taskInfos = (List<TaskInfo>) page.getResult();
+    	//修复某一账号多环节参与后，系统首页“待办任务”、”已办任务“出现多条重复数据问题
+        //String hql = "from TaskInfo where assignee=? and tenantId=? and status='active' order by id desc";
+        //Page page = taskInfoManager.pagedQuery(hql, pageNo, pageSize, userId,
+        //        tenantId);
+    	String sql="SELECT task.* FROM task_info task INNER JOIN"
+    			+"(SELECT ID FROM task_info WHERE assignee=? and TENANT_ID=? AND `status`='complete' order by CREATE_TIME DESC LIMIT 0,1)"
+    			+"b ON task.ID=b.ID";
+    	SQLQuery query=taskInfoManager.getSession().createSQLQuery(sql);
+    	query.setParameter(0, userId).setParameter(1, tenantId);
+    	query.addEntity(TaskInfo.class);
+        List<TaskInfo> taskInfos = (List<TaskInfo>)query.list();;
+        Page page=new Page();
+    	page.setPageNo(pageNo);
+    	page.setPageSize(pageSize);
         List<HumanTaskDTO> humanTaskDtos = this.convertHumanTaskDtos(taskInfos);
         page.setResult(humanTaskDtos);
 
@@ -479,10 +489,19 @@ public class HumanTaskConnectorImpl implements HumanTaskConnector {
      */
     public Page findFinishedTasks(String userId, String tenantId, int pageNo,
             int pageSize) {
-        String hql = "from TaskInfo where assignee=? and tenantId=? and status='complete' order by id desc";
-        Page page = taskInfoManager.pagedQuery(hql, pageNo, pageSize, userId,
-                tenantId);
-        List<TaskInfo> taskInfos = (List<TaskInfo>) page.getResult();
+    	//修复某一账号多环节参与后，系统首页“待办任务”、”已办任务“出现多条重复数据问题
+//        String hql = "from TaskInfo where assignee=? and tenantId=? and status='complete' order by id desc";
+//        Page page = taskInfoManager.pagedQuery(hql, pageNo, pageSize, userId,
+//                tenantId);
+//        List<TaskInfo> taskInfos = (List<TaskInfo>) page.getResult();
+    	String sql="SELECT task.* FROM task_info task INNER JOIN(SELECT BUSINESS_KEY, MAX(TASK_ID) taskID FROM task_info WHERE assignee=? and TENANT_ID=? AND `status`='complete' GROUP BY BUSINESS_KEY) b ON task.BUSINESS_KEY=b.BUSINESS_KEY AND task.TASK_ID=b.taskId ORDER BY CREATE_TIME DESC";
+    	SQLQuery query=taskInfoManager.getSession().createSQLQuery(sql);
+    	query.setParameter(0, userId).setParameter(1, tenantId);
+    	query.addEntity(TaskInfo.class);
+    	List<TaskInfo> taskInfos=(List<TaskInfo>)query.list();
+    	Page page=new Page();
+    	page.setPageNo(pageNo);
+    	page.setPageSize(pageSize);
         List<HumanTaskDTO> humanTaskDtos = this.convertHumanTaskDtos(taskInfos);
         page.setResult(humanTaskDtos);
 

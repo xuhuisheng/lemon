@@ -1,6 +1,7 @@
 package com.mossle.spi.store;
 
 import javax.activation.DataSource;
+import javax.activation.FileDataSource;
 
 import com.mossle.api.store.StoreDTO;
 
@@ -54,7 +55,10 @@ public class LocalInternalStoreConnector implements InternalStoreConnector {
         storeDto.setKey(storeResult.getKey());
         storeDto.setDataSource(storeResult.getDataSource());
         storeDto.setDisplayName(storeResult.getKey());
-
+        //增加文件大小和文件类型处理
+        FileDataSource dataSource=(FileDataSource)storeResult.getDataSource();
+        storeDto.setSize(dataSource.getFile().length());
+        storeDto.setType(dataSource.getContentType());
         return storeDto;
     }
 
