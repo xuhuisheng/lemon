@@ -10,7 +10,7 @@ var WorkCalendar = function(year) {
 
 WorkCalendar.prototype = {
 	render: function(id) {
-		var html = '<div class="container" style="width:960px;"><div class="row" style="padding-bottom:10px;">';
+		var html = '<div class="container" style="width:100%;"><div class="row" style="padding-bottom:10px;">';
 		for (var i = 0; i < 12; i++) {
 			if (i == 4 || i == 8) {
 				html += '</div><div class="row" style="padding-bottom:10px;">';

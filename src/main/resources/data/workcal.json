@@ -1,5 +1,5 @@
 {
-  "description": "0表示每周工作日的规则，1表示假期，2表示调休导致的当天上班，3表示调休导致的当前放假",
+  "description": "0表示每周工作日的规则，1表示假期，2表示调休导致的当天上班，3表示补休导致的当前放假",
   "type": {
     "code": "default",
     "name": "默认"
@@ -21,6 +21,59 @@
     "week": 6
   }],
   "years": [{
+    "year": 2020,
+    "holidays": [{
+      "name": "元旦",
+      "status": 1,
+      "startDate": "2020-01-01",
+      "endDate": "2020-01-01"
+    }, {
+      "name": "春节调休",
+      "status": 2,
+      "startDate": "2020-01-19",
+      "endDate": "2020-01-19"
+    }, {
+      "name": "春节",
+      "status": 1,
+      "startDate": "2020-01-24",
+      "endDate": "2020-01-30"
+    }, {
+      "name": "春节调休",
+      "status": 2,
+      "startDate": "2020-02-01",
+      "endDate": "2020-02-01"
+    }, {
+      "name": "清明节",
+      "status": 1,
+      "startDate": "2020-04-04",
+      "endDate": "2020-04-06"
+    }, {
+      "name": "劳动节",
+      "status": 1,
+      "startDate": "2020-05-01",
+      "endDate": "2020-05-05"
+    }, {
+      "name": "劳动节调休",
+      "status": 2,
+      "startDate": "2020-05-09",
+      "endDate": "2020-05-09"
+    }, {
+      "name": "端午节",
+      "status": 1,
+      "startDate": "2020-06-25",
+      "endDate": "2020-06-27"
+    }, {
+      "name": "端午节调休",
+      "status": 2,
+      "startDate": "2020-06-28",
+      "endDate": "2020-06-28"
+    }, {
+      "name": "国庆节",
+      "status": 1,
+      "startDate": "2020-10-01",
+      "endDate": "2020-10-08"
+    }]
+  }, {
     "year": 2019,
     "holidays": [{
       "name": "元旦调休",

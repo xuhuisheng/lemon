@@ -144,7 +144,7 @@ public class CmsArticleController {
 
         // attachment
         if (file != null) {
-            StoreDTO storeDto = storeClient.saveStore("cms/html/r/attachments",
+            StoreDTO storeDto = storeClient.saveStore("cms",
                     new MultipartFileDataSource(file), tenantId);
             CmsAttachment cmsAttachment = new CmsAttachment();
             cmsAttachment.setCmsArticle(dest);
@@ -155,7 +155,7 @@ public class CmsArticleController {
 
         // logo
         if (logoFile != null) {
-            StoreDTO storeDto = storeClient.saveStore("cms/html/r/attachments",
+            StoreDTO storeDto = storeClient.saveStore("cms",
                     new MultipartFileDataSource(logoFile), tenantId);
             dest.setLogo(storeDto.getKey());
         }

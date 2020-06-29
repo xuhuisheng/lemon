@@ -1,5 +1,6 @@
 package com.mossle.spi.rpc;
 
+import java.util.Date;
 import java.util.Map;
 
 import javax.servlet.http.HttpServletRequest;
@@ -32,5 +33,11 @@ public class MockRpcAuthHelper implements RpcAuthHelper {
 
     public String generateAuthorizationStore(RequestConfig requestConfig) {
         return requestConfig.getAccessKey();
+    }
+
+    public String generatePresignedUri(String bucketName, String objectName,
+            Date expiration, String httpMethod, String contentType,
+            String accessKey, String secretKey) {
+        return accessKey;
     }
 }

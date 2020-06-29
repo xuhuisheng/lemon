@@ -111,7 +111,7 @@ $(function() {
 	<div class="col-md-11">
 	  <input id="cmsArticle_logo" type="file" name="logoFile" value="" class="form-control-static">
 	  <c:if test="${not empty model.logo}">
-	    <img src="r/attachments/${model.logo}" width="80">
+	    <img src="file/download.do?path=${model.logo}" width="80">
 	  </c:if>
     </div>
   </div>

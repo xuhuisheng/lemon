@@ -1,5 +1,7 @@
 package com.mossle.api.user;
 
+import java.util.List;
+
 import javax.annotation.Resource;
 
 public class DelegateLocalUserConnector implements LocalUserConnector {
@@ -24,6 +26,11 @@ public class DelegateLocalUserConnector implements LocalUserConnector {
     public void createOrUpdateLocalUser(UserDTO userDto) {
     }
 
+    public List<UserDTO> search(String query) {
+        return this.remoteUserConnector.search(query);
+    }
+
+    // ~
     @Resource
     public void setRemoteUserConnector(RemoteUserConnector remoteUserConnector) {
         this.remoteUserConnector = remoteUserConnector;

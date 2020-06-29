@@ -18,6 +18,8 @@ import com.mossle.client.authz.AuthzClient;
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
 
+import org.springframework.beans.factory.annotation.Value;
+
 import org.springframework.jdbc.core.JdbcTemplate;
 
 public class AuthzClientImpl implements AuthzClient {
@@ -27,6 +29,7 @@ public class AuthzClientImpl implements AuthzClient {
     private TenantConnector tenantConnector;
     private UserConnector userConnector;
     private boolean checkAccountStatus = false;
+    private String sysCode;
 
     // ~
     private String sqlFindPermissions = "SELECT P.CODE AS PERMISSION"
@@ -89,7 +92,7 @@ public class AuthzClientImpl implements AuthzClient {
 
         // permissions
         List<Map<String, Object>> permissions = jdbcTemplate.queryForList(
-                sqlFindPermissions, userDto.getId(), tenantDto.getId());
+                sqlFindPermissions, userDto.getId(), sysCode);
         logger.debug("sqlFindPermissions : {}", sqlFindPermissions);
         logger.debug("userDto.getId() : {}", userDto.getId());
         logger.debug("tenantDto.getId() : {}", tenantDto.getId());
@@ -99,7 +102,7 @@ public class AuthzClientImpl implements AuthzClient {
 
         // roles
         List<Map<String, Object>> roles = jdbcTemplate.queryForList(
-                sqlFindRoles, userDto.getId(), tenantDto.getId());
+                sqlFindRoles, userDto.getId(), sysCode);
         userAuthDto.setRoles(this.convertMapListToStringList(roles, "role"));
 
         return userAuthDto;
@@ -187,5 +190,10 @@ public class AuthzClientImpl implements AuthzClient {
 
     public void setCheckAccountStatus(boolean checkAccountStatus) {
         this.checkAccountStatus = checkAccountStatus;
+    }
+
+    @Value("${authz.client.code}")
+    public void setSysCode(String sysCode) {
+        this.sysCode = sysCode;
     }
 }

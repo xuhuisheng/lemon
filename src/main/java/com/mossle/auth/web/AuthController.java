@@ -19,6 +19,11 @@ public class AuthController {
     private AuthService authService;
     private ResourcePublisher resourcePublisher;
 
+    @RequestMapping("index")
+    public String index() throws Exception {
+        return "auth/index";
+    }
+
     @RequestMapping("auth-list")
     public String list(Model model) throws Exception {
         String text = authService.doExport();

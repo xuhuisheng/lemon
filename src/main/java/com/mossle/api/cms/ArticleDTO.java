@@ -13,6 +13,8 @@ public class ArticleDTO {
     private int commentCount;
     private String catalogId;
     private String catalogCode;
+    private Date publishTime;
+    private String source;
 
     public String getId() {
         return id;
@@ -92,5 +94,21 @@ public class ArticleDTO {
 
     public void setCatalogCode(String catalogCode) {
         this.catalogCode = catalogCode;
+    }
+
+    public Date getPublishTime() {
+        return publishTime;
+    }
+
+    public void setPublishTime(Date publishTime) {
+        this.publishTime = publishTime;
+    }
+
+    public String getSource() {
+        return source;
+    }
+
+    public void setSource(String source) {
+        this.source = source;
     }
 }

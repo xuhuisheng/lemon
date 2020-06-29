@@ -12,62 +12,66 @@
     <script type="text/javascript">
 
 var setting = {
-	async: {
-		enable: true,
-		url: "${tenantPrefix}/cms/rs/template/tree.do"
-	},
-	callback: {
-		onClick: function(event, treeId, treeNode) {
-			location.href = 'index.do?catalogId=' + treeNode.id;
-		}
-	}
+    async: {
+        enable: true,
+        url: "${tenantPrefix}/cms/rs/template/tree.do"
+    },
+    callback: {
+        onClick: function(event, treeId, treeNode) {
+      var url = 'index.do?catalogId=' + treeNode.id;
+      if (treeNode.type == 'content') {
+        url = 'file-input.do?id=' + treeNode.id + '&catalogId=' + treeNode.categoryId;
+      }
+            location.href = url;
+        }
+    }
 };
 
 var zNodes = [];
 
 $(function(){
-	$.fn.zTree.init($("#treeMenu"), setting, zNodes);
+    $.fn.zTree.init($("#treeMenu"), setting, zNodes);
 });
     </script>
-	<style type="text/css">
-	  .ztree * {
-	  	font-size: 14px;
-	  }
-	</style>
+    <style type="text/css">
+      .ztree * {
+          font-size: 14px;
+      }
+    </style>
   </head>
 
   <body>
     <%@include file="/header/cms.jsp"%>
 
     <div class="row-fluid">
-	  <%@include file="/menu/cms.jsp"%>
+      <%@include file="/menu/cms.jsp"%>
 
-	  <div class="col-md-2" style="padding-top:65px;">
-	    <div class="panel panel-default">
-		  <div class="panel-heading">
-		    <i class="glyphicon glyphicon-list"></i>
-		    目录
-		  </div>
-		  <div class="panel-body" style="padding:15px 0px;">
-			<ul id="treeMenu" class="ztree"></ul>
-		  </div>
-		</div>
-	  </div>
+      <div class="col-md-2" style="padding-top:65px;">
+        <div class="panel panel-default">
+          <div class="panel-heading">
+            <i class="glyphicon glyphicon-list"></i>
+            目录
+          </div>
+          <div class="panel-body" style="padding:15px 0px;">
+            <ul id="treeMenu" class="ztree"></ul>
+          </div>
+        </div>
+      </div>
 
-	  <!-- start of main -->
+      <!-- start of main -->
       <section id="m-main" class="col-md-8" style="padding-top:65px;">
 
       <div style="margin-bottom: 15px;">
 
-		<div class="btn-group">
-		  <c:if test="${not empty param.catalogId}">
-		    <a type="button" class="btn btn-default" href="dir-input.do?catalogId=${param.catalogId}">新建目录</a>
-		    <a type="button" class="btn btn-default" href="file-input.do?catalogId=${param.catalogId}">新建文件</a>
-		  </c:if>
-		</div>
+        <div class="btn-group">
+          <c:if test="${not empty param.catalogId}">
+            <a type="button" class="btn btn-default" href="dir-input.do?catalogId=${param.catalogId}">新建目录</a>
+            <a type="button" class="btn btn-default" href="file-input.do?catalogId=${param.catalogId}">新建文件</a>
+          </c:if>
+        </div>
 
-	    <div class="clearfix"></div>
-	  </div>
+        <div class="clearfix"></div>
+      </div>
 
 <form id="cms-articleGridForm" name="cms-articleGridForm" method='post' action="" class="m-form-blank">
       <div class="panel panel-default">
@@ -107,18 +111,18 @@ $(function(){
       </div>
 </form>
 
-	  <div>
-	    <div class="m-page-info pull-left">
-	      &nbsp;
-		  ${fn:length(cmsTemplateCatalogs) + fn:length(cmsTemplateContents)}
-		</div>
+      <div>
+        <div class="m-page-info pull-left">
+          &nbsp;
+          总 ${fn:length(cmsTemplateCatalogs) + fn:length(cmsTemplateContents)} 条
+        </div>
       </div>
 
       <div class="m-spacer"></div>
 
       </section>
-	  <!-- end of main -->
-	</div>
+      <!-- end of main -->
+    </div>
 
   </body>
 

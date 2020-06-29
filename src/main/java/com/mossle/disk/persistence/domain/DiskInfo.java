@@ -30,10 +30,13 @@ public class DiskInfo implements java.io.Serializable {
     private Long id;
 
     /** null. */
-    private DiskInfo diskInfo;
+    private DiskSpace diskSpace;
 
     /** null. */
-    private DiskSpace diskSpace;
+    private DiskRule diskRule;
+
+    /** null. */
+    private DiskInfo diskInfo;
 
     /** null. */
     private String name;
@@ -92,11 +95,14 @@ public class DiskInfo implements java.io.Serializable {
     /** null. */
     private String securityLevel;
 
-    /** . */
-    private Set<DiskInfo> diskInfos = new HashSet<DiskInfo>(0);
+    /** null. */
+    private String inherit;
 
     /** . */
     private Set<DiskShare> diskShares = new HashSet<DiskShare>(0);
+
+    /** . */
+    private Set<DiskInfo> diskInfos = new HashSet<DiskInfo>(0);
 
     public DiskInfo() {
     }
@@ -105,17 +111,18 @@ public class DiskInfo implements java.io.Serializable {
         this.id = id;
     }
 
-    public DiskInfo(Long id, DiskInfo diskInfo, DiskSpace diskSpace,
-            String name, String description, String type, Long fileSize,
-            String creator, Date createTime, String ref, String previewStatus,
-            String previewRef, String parentPath, Integer dirType,
-            Integer priority, String lastModifier, Date lastModifiedTime,
-            String status, Date expireTime, String checkoutStatus,
-            String fileVersion, String securityLevel, Set<DiskInfo> diskInfos,
-            Set<DiskShare> diskShares) {
+    public DiskInfo(Long id, DiskSpace diskSpace, DiskRule diskRule,
+            DiskInfo diskInfo, String name, String description, String type,
+            Long fileSize, String creator, Date createTime, String ref,
+            String previewStatus, String previewRef, String parentPath,
+            Integer dirType, Integer priority, String lastModifier,
+            Date lastModifiedTime, String status, Date expireTime,
+            String checkoutStatus, String fileVersion, String securityLevel,
+            String inherit, Set<DiskShare> diskShares, Set<DiskInfo> diskInfos) {
         this.id = id;
-        this.diskInfo = diskInfo;
         this.diskSpace = diskSpace;
+        this.diskRule = diskRule;
+        this.diskInfo = diskInfo;
         this.name = name;
         this.description = description;
         this.type = type;
@@ -135,8 +142,9 @@ public class DiskInfo implements java.io.Serializable {
         this.checkoutStatus = checkoutStatus;
         this.fileVersion = fileVersion;
         this.securityLevel = securityLevel;
-        this.diskInfos = diskInfos;
+        this.inherit = inherit;
         this.diskShares = diskShares;
+        this.diskInfos = diskInfos;
     }
 
     /** @return null. */
@@ -156,21 +164,6 @@ public class DiskInfo implements java.io.Serializable {
 
     /** @return null. */
     @ManyToOne(fetch = FetchType.LAZY)
-    @JoinColumn(name = "PARENT_ID")
-    public DiskInfo getDiskInfo() {
-        return this.diskInfo;
-    }
-
-    /**
-     * @param diskInfo
-     *            null.
-     */
-    public void setDiskInfo(DiskInfo diskInfo) {
-        this.diskInfo = diskInfo;
-    }
-
-    /** @return null. */
-    @ManyToOne(fetch = FetchType.LAZY)
     @JoinColumn(name = "SPACE_ID")
     public DiskSpace getDiskSpace() {
         return this.diskSpace;
@@ -182,6 +175,36 @@ public class DiskInfo implements java.io.Serializable {
      */
     public void setDiskSpace(DiskSpace diskSpace) {
         this.diskSpace = diskSpace;
+    }
+
+    /** @return null. */
+    @ManyToOne(fetch = FetchType.LAZY)
+    @JoinColumn(name = "RULE_ID")
+    public DiskRule getDiskRule() {
+        return this.diskRule;
+    }
+
+    /**
+     * @param diskRule
+     *            null.
+     */
+    public void setDiskRule(DiskRule diskRule) {
+        this.diskRule = diskRule;
+    }
+
+    /** @return null. */
+    @ManyToOne(fetch = FetchType.LAZY)
+    @JoinColumn(name = "PARENT_ID")
+    public DiskInfo getDiskInfo() {
+        return this.diskInfo;
+    }
+
+    /**
+     * @param diskInfo
+     *            null.
+     */
+    public void setDiskInfo(DiskInfo diskInfo) {
+        this.diskInfo = diskInfo;
     }
 
     /** @return null. */
@@ -453,18 +476,18 @@ public class DiskInfo implements java.io.Serializable {
         this.securityLevel = securityLevel;
     }
 
-    /** @return . */
-    @OneToMany(fetch = FetchType.LAZY, mappedBy = "diskInfo")
-    public Set<DiskInfo> getDiskInfos() {
-        return this.diskInfos;
+    /** @return null. */
+    @Column(name = "INHERIT", length = 50)
+    public String getInherit() {
+        return this.inherit;
     }
 
     /**
-     * @param diskInfos
-     *            .
+     * @param inherit
+     *            null.
      */
-    public void setDiskInfos(Set<DiskInfo> diskInfos) {
-        this.diskInfos = diskInfos;
+    public void setInherit(String inherit) {
+        this.inherit = inherit;
     }
 
     /** @return . */
@@ -479,5 +502,19 @@ public class DiskInfo implements java.io.Serializable {
      */
     public void setDiskShares(Set<DiskShare> diskShares) {
         this.diskShares = diskShares;
+    }
+
+    /** @return . */
+    @OneToMany(fetch = FetchType.LAZY, mappedBy = "diskInfo")
+    public Set<DiskInfo> getDiskInfos() {
+        return this.diskInfos;
+    }
+
+    /**
+     * @param diskInfos
+     *            .
+     */
+    public void setDiskInfos(Set<DiskInfo> diskInfos) {
+        this.diskInfos = diskInfos;
     }
 }

@@ -11,6 +11,7 @@ public class RpcAuthResult {
     private static Logger logger = LoggerFactory.getLogger(RpcAuthResult.class);
     private boolean success;
     private String accessKey;
+    private String expire;
     private String accessSignature;
     private String message;
 
@@ -28,6 +29,14 @@ public class RpcAuthResult {
 
     public void setAccessKey(String accessKey) {
         this.accessKey = accessKey;
+    }
+
+    public String getExpire() {
+        return expire;
+    }
+
+    public void setExpire(String expire) {
+        this.expire = expire;
     }
 
     public String getAccessSignature() {

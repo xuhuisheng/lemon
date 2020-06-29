@@ -11,7 +11,7 @@ import javax.persistence.Temporal;
 import javax.persistence.TemporalType;
 
 /**
- * AssetRequest 印章申请.
+ * AssetRequest 资产申请.
  * 
  * @author Lingo
  */

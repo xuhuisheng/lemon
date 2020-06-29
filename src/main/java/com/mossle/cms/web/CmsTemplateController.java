@@ -78,10 +78,15 @@ public class CmsTemplateController {
 
     @RequestMapping("file-input")
     public String fileInput(
-            @RequestParam(value = "id", required = false) Long id, Model model) {
+            @RequestParam(value = "id", required = false) Long id,
+            @RequestParam(value = "catalogId", required = false) Long catalogId,
+            Model model) {
         if (id != null) {
             model.addAttribute("model", cmsTemplateContentManager.get(id));
         }
+
+        model.addAttribute("cmsTemplateCatalog",
+                cmsTemplateCatalogManager.get(catalogId));
 
         return "cms/template/file-input";
     }

@@ -44,10 +44,9 @@ public class CmsPortalController {
         for (CmsArticle cmsArticle : cmsArticles) {
             CmsCatalog cmsCatalog = cmsArticle.getCmsCatalog();
             buff.append("<tr>");
-            buff.append("  <td>" + cmsCatalog.getName()
-                    + "</td>");
-            buff.append("  <td><a href='../cms/view/" + cmsCatalog.getCode() + "/"
-                    + cmsArticle.getId() + "'>" + cmsArticle.getTitle()
+            buff.append("  <td>" + cmsCatalog.getName() + "</td>");
+            buff.append("  <td><a href='../cms/view/" + cmsCatalog.getCode()
+                    + "/" + cmsArticle.getId() + "'>" + cmsArticle.getTitle()
                     + "</a></td>");
             buff.append("  <td>"
                     + new SimpleDateFormat("yyyy-MM-dd").format(cmsArticle

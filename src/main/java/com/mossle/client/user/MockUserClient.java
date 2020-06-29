@@ -1,5 +1,8 @@
 package com.mossle.client.user;
 
+import java.util.Collections;
+import java.util.List;
+
 import com.mossle.api.user.UserDTO;
 
 public class MockUserClient implements UserClient {
@@ -25,5 +28,9 @@ public class MockUserClient implements UserClient {
         }
 
         return alias.trim().toLowerCase();
+    }
+
+    public List<UserDTO> search(String query) {
+        return Collections.emptyList();
     }
 }

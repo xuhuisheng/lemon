@@ -14,10 +14,10 @@ import javax.servlet.http.Cookie;
 import javax.servlet.http.HttpServletRequest;
 import javax.servlet.http.HttpServletResponse;
 
-import com.mossle.spi.user.InternalUserConnector;
+import com.mossle.client.authn.AuthnClient;
 
 public class DeviceFilter implements Filter {
-    private InternalUserConnector internalUserConnector;
+    private AuthnClient authnClient;
 
     public void init(FilterConfig filterConfig) throws ServletException {
     }
@@ -36,7 +36,7 @@ public class DeviceFilter implements Filter {
             return;
         }
 
-        DeviceDTO deviceDto = internalUserConnector.findDevice(deviceId);
+        DeviceDTO deviceDto = authnClient.findDevice(deviceId);
 
         if ((deviceDto != null) && "disabled".equals(deviceDto.getStatus())) {
             HttpServletResponse res = (HttpServletResponse) response;
@@ -70,8 +70,7 @@ public class DeviceFilter implements Filter {
     }
 
     @Resource
-    public void setInternalUserConnector(
-            InternalUserConnector internalUserConnector) {
-        this.internalUserConnector = internalUserConnector;
+    public void setAuthnClient(AuthnClient authnClient) {
+        this.authnClient = authnClient;
     }
 }

@@ -1,9 +1,14 @@
 package com.mossle.client.user;
 
+import java.util.List;
+
 import com.mossle.api.user.LocalUserConnector;
 import com.mossle.api.user.RemoteUserConnector;
 import com.mossle.api.user.UserDTO;
 
+/**
+ * default没用自动注入.
+ */
 public class DefaultUserClient implements UserClient {
     public static final String MODE_LOCAL = "local";
     public static final String MODE_CLIENT = "client";
@@ -68,8 +73,14 @@ public class DefaultUserClient implements UserClient {
     }
 
     public void createOrUpdateLocalUser(UserDTO userDto) {
+        this.localUserConnector.createOrUpdateLocalUser(userDto);
     }
 
+    public List<UserDTO> search(String query) {
+        return this.remoteUserConnector.search(query);
+    }
+
+    // ~
     public void setLocalUserConnector(LocalUserConnector localUserConnector) {
         this.localUserConnector = localUserConnector;
     }

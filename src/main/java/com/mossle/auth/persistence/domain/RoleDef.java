@@ -37,10 +37,10 @@ public class RoleDef implements java.io.Serializable {
     private String tenantId;
 
     /** . */
-    private Set<Role> roles = new HashSet<Role>(0);
+    private Set<Perm> perms = new HashSet<Perm>(0);
 
     /** . */
-    private Set<Perm> perms = new HashSet<Perm>(0);
+    private Set<Role> roles = new HashSet<Role>(0);
 
     public RoleDef() {
     }
@@ -50,13 +50,13 @@ public class RoleDef implements java.io.Serializable {
     }
 
     public RoleDef(Long id, String name, String descn, String tenantId,
-            Set<Role> roles, Set<Perm> perms) {
+            Set<Perm> perms, Set<Role> roles) {
         this.id = id;
         this.name = name;
         this.descn = descn;
         this.tenantId = tenantId;
-        this.roles = roles;
         this.perms = perms;
+        this.roles = roles;
     }
 
     /** @return 主键. */
@@ -117,20 +117,6 @@ public class RoleDef implements java.io.Serializable {
     }
 
     /** @return . */
-    @OneToMany(fetch = FetchType.LAZY, mappedBy = "roleDef")
-    public Set<Role> getRoles() {
-        return this.roles;
-    }
-
-    /**
-     * @param roles
-     *            .
-     */
-    public void setRoles(Set<Role> roles) {
-        this.roles = roles;
-    }
-
-    /** @return . */
     @ManyToMany(fetch = FetchType.LAZY)
     @JoinTable(name = "AUTH_PERM_ROLE_DEF", joinColumns = { @JoinColumn(name = "ROLE_DEF_ID", nullable = false, updatable = false) }, inverseJoinColumns = { @JoinColumn(name = "PERM_ID", nullable = false, updatable = false) })
     public Set<Perm> getPerms() {
@@ -143,5 +129,19 @@ public class RoleDef implements java.io.Serializable {
      */
     public void setPerms(Set<Perm> perms) {
         this.perms = perms;
+    }
+
+    /** @return . */
+    @OneToMany(fetch = FetchType.LAZY, mappedBy = "roleDef")
+    public Set<Role> getRoles() {
+        return this.roles;
+    }
+
+    /**
+     * @param roles
+     *            .
+     */
+    public void setRoles(Set<Role> roles) {
+        this.roles = roles;
     }
 }

@@ -27,13 +27,18 @@ import com.mossle.core.store.MultipartFileDataSource;
 import com.mossle.core.util.IoUtils;
 import com.mossle.core.util.ServletUtils;
 
+import com.mossle.disk.persistence.domain.DiskAcl;
 import com.mossle.disk.persistence.domain.DiskInfo;
 import com.mossle.disk.persistence.domain.DiskShare;
 import com.mossle.disk.persistence.domain.DiskSpace;
+import com.mossle.disk.persistence.manager.DiskAclManager;
 import com.mossle.disk.persistence.manager.DiskInfoManager;
 import com.mossle.disk.persistence.manager.DiskShareManager;
 import com.mossle.disk.persistence.manager.DiskSpaceManager;
+import com.mossle.disk.service.DiskAclService;
+import com.mossle.disk.service.DiskInfoService;
 import com.mossle.disk.service.DiskService;
+import com.mossle.disk.service.DiskSpaceService;
 
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
@@ -60,8 +65,12 @@ public class DiskController {
     private UserClient userClient;
     private UserConnector userConnector;
     private DiskSpaceManager diskSpaceManager;
+    private DiskAclManager diskAclManager;
     private CurrentUserHolder currentUserHolder;
     private DiskService diskService;
+    private DiskAclService diskAclService;
+    private DiskSpaceService diskSpaceService;
+    private DiskInfoService diskInfoService;
 
     /**
      * 个人文档.
@@ -71,7 +80,7 @@ public class DiskController {
             @RequestParam(value = "path", required = false, defaultValue = "") String path,
             Model model) {
         String userId = currentUserHolder.getUserId();
-        DiskSpace diskSpace = this.diskService.findUserSpace(userId);
+        DiskSpace diskSpace = this.diskSpaceService.findUserSpace(userId);
 
         List<DiskInfo> diskInfos = diskService.listFiles(diskSpace, path);
         model.addAttribute("diskInfos", diskInfos);
@@ -186,7 +195,7 @@ public class DiskController {
     @RequestMapping("trash")
     public String trash(Model model) {
         String userId = currentUserHolder.getUserId();
-        DiskSpace diskSpace = this.diskService.findUserSpace(userId);
+        DiskSpace diskSpace = this.diskSpaceService.findUserSpace(userId);
 
         List<DiskInfo> diskInfos = diskInfoManager
                 .find("from DiskInfo where diskSpace=? and status='trash'",
@@ -210,7 +219,7 @@ public class DiskController {
 
         String userId = currentUserHolder.getUserId();
         String tenantId = tenantHolder.getTenantId();
-        diskService.createFile(userId, new MultipartFileDataSource(file),
+        diskInfoService.createFile(userId, new MultipartFileDataSource(file),
                 file.getOriginalFilename(), file.getSize(), path, spaceId,
                 tenantId);
 
@@ -225,7 +234,7 @@ public class DiskController {
             @RequestParam("name") String name,
             @RequestParam("spaceId") Long spaceId) {
         String userId = currentUserHolder.getUserId();
-        diskService.createDir(userId, name, path, spaceId);
+        diskInfoService.createDir(userId, name, path, spaceId);
 
         return "redirect:/disk/index.do?path=" + path;
     }
@@ -471,6 +480,33 @@ public class DiskController {
         return "redirect:/disk/disk-view.do?id=" + id;
     }
 
+    @RequestMapping("acl-list")
+    public String aclList(@RequestParam("id") Long id, Model model) {
+        DiskInfo diskInfo = diskInfoManager.get(id);
+        model.addAttribute("diskInfo", diskInfo);
+
+        return "disk/acl-list";
+    }
+
+    @RequestMapping("acl-add")
+    public String aclAdd(@RequestParam("diskInfoId") Long diskInfoId,
+            @RequestParam("entityCatalog") String entityCatalog,
+            @RequestParam("entityRef") String entityRef,
+            @RequestParam("mask") int mask) {
+        diskAclService
+                .addPermission(entityCatalog, entityRef, diskInfoId, mask);
+
+        return "redirect:/disk/acl-list.do?id=" + diskInfoId;
+    }
+
+    /*
+     * @RequestMapping("acl-remove") public String aclRemove(@RequestParam("id") Long id) { DiskAcl diskAcl =
+     * diskAclManager.get(id); DiskInfo diskInfo = diskAcl.getDiskInfo(); Long diskInfoId = diskInfo.getId(); String
+     * entityCatalog = diskAcl.getEntityCatalog(); String entityRef = diskAcl.getEntityRef();
+     * diskAclService.removePermission(entityCatalog, entityRef, diskInfoId); return "redirect:/disk/acl-list.do?id=" +
+     * diskInfoId; }
+     */
+
     // ~ ======================================================================
     @Resource
     public void setDiskShareManager(DiskShareManager diskShareManager) {
@@ -508,6 +544,11 @@ public class DiskController {
     }
 
     @Resource
+    public void setDiskAclManager(DiskAclManager diskAclManager) {
+        this.diskAclManager = diskAclManager;
+    }
+
+    @Resource
     public void setCurrentUserHolder(CurrentUserHolder currentUserHolder) {
         this.currentUserHolder = currentUserHolder;
     }
@@ -515,5 +556,20 @@ public class DiskController {
     @Resource
     public void setDiskService(DiskService diskService) {
         this.diskService = diskService;
+    }
+
+    @Resource
+    public void setDiskAclService(DiskAclService diskAclService) {
+        this.diskAclService = diskAclService;
+    }
+
+    @Resource
+    public void setDiskSpaceService(DiskSpaceService diskSpaceService) {
+        this.diskSpaceService = diskSpaceService;
+    }
+
+    @Resource
+    public void setDiskInfoService(DiskInfoService diskInfoService) {
+        this.diskInfoService = diskInfoService;
     }
 }

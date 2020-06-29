@@ -6,6 +6,7 @@ import javax.annotation.Resource;
 
 import javax.servlet.http.HttpServletRequest;
 
+import com.mossle.api.auth.CurrentUserHolder;
 import com.mossle.api.tenant.TenantHolder;
 
 import com.mossle.cms.persistence.domain.CmsArticle;
@@ -40,21 +41,30 @@ public class CmsViewController {
     private MessageHelper messageHelper;
     private RenderService renderService;
     private TenantHolder tenantHolder;
+    private CurrentUserHolder currentUserHolder;
     private CmsService cmsService;
 
+    /**
+     * 模板，站点首页.
+     */
     @RequestMapping("")
     public String index(Model model, HttpServletRequest request) {
+        String currentUserId = this.currentUserHolder.getUserId();
         CmsSite cmsSite = cmsService.findDefaultSite();
         String templateCode = cmsSite.getTemplateCode();
         String ctx = request.getContextPath();
 
-        String html = renderService.renderText(templateCode, ctx);
+        String html = renderService
+                .renderText(templateCode, ctx, currentUserId);
 
         model.addAttribute("html", html);
 
         return "cms/view/index";
     }
 
+    /**
+     * 模板，分类列表.
+     */
     @RequestMapping("{catalogCode}")
     public String catalog(
             @PathVariable("catalogCode") String catalogCode,
@@ -72,6 +82,9 @@ public class CmsViewController {
         return "cms/view/index";
     }
 
+    /**
+     * 模板，文章详情.
+     */
     @RequestMapping("{catalogCode}/{articleId}")
     public String article(
             @PathVariable("catalogCode") String catalogCode,
@@ -90,6 +103,41 @@ public class CmsViewController {
         model.addAttribute("html", html);
 
         return "cms/view/index";
+    }
+
+    /**
+     * 预览.
+     */
+    @RequestMapping("preview/{catalogCode}/{articleId}")
+    public String previewArticle(
+            @PathVariable("catalogCode") String catalogCode,
+            @PathVariable("articleId") Long articleId, Model model,
+            HttpServletRequest request) {
+        CmsCatalog cmsCatalog = cmsCatalogManager.findUniqueBy("code",
+                catalogCode);
+        CmsArticle cmsArticle = cmsArticleManager.get(articleId);
+        String templateCode = cmsCatalog.getTemplateDetail();
+        String ctx = request.getContextPath();
+        int pageNo = 1;
+        int pageSize = 10;
+        String html = renderService.renderText(templateCode, ctx, cmsArticle,
+                pageNo, pageSize);
+
+        model.addAttribute("html", html);
+
+        return "cms/view/preview";
+    }
+
+    @RequestMapping("redirect/{articleCode}")
+    public String redirectArticle(
+            @PathVariable("articleCode") String articleCode) {
+        CmsArticle cmsArticle = cmsArticleManager.findUniqueBy("code",
+                articleCode);
+        CmsCatalog cmsCatalog = cmsArticle.getCmsCatalog();
+        String catalogCode = cmsCatalog.getCode();
+        Long articleId = cmsArticle.getId();
+
+        return "redirect:/cms/view/" + catalogCode + "/" + articleId;
     }
 
     // ~ ======================================================================
@@ -126,6 +174,11 @@ public class CmsViewController {
     @Resource
     public void setTenantHolder(TenantHolder tenantHolder) {
         this.tenantHolder = tenantHolder;
+    }
+
+    @Resource
+    public void setCurrentUserHolder(CurrentUserHolder currentUserHolder) {
+        this.currentUserHolder = currentUserHolder;
     }
 
     @Resource

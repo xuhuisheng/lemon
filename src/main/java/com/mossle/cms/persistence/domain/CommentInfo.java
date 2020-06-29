@@ -30,10 +30,13 @@ public class CommentInfo implements java.io.Serializable {
     private Long id;
 
     /** null. */
-    private CommentInfo commentInfo;
+    private CommentThread commentThread;
 
     /** null. */
-    private CommentThread commentThread;
+    private CommentInfo commentInfoByReplyId;
+
+    /** null. */
+    private CommentInfo commentInfoByParentId;
 
     /** null. */
     private String content;
@@ -75,10 +78,15 @@ public class CommentInfo implements java.io.Serializable {
     private String tenantId;
 
     /** . */
-    private Set<CommentVoter> commentVoters = new HashSet<CommentVoter>(0);
+    private Set<CommentInfo> commentInfosForReplyId = new HashSet<CommentInfo>(
+            0);
 
     /** . */
-    private Set<CommentInfo> commentInfos = new HashSet<CommentInfo>(0);
+    private Set<CommentInfo> commentInfosForParentId = new HashSet<CommentInfo>(
+            0);
+
+    /** . */
+    private Set<CommentVoter> commentVoters = new HashSet<CommentVoter>(0);
 
     public CommentInfo() {
     }
@@ -87,15 +95,19 @@ public class CommentInfo implements java.io.Serializable {
         this.id = id;
     }
 
-    public CommentInfo(Long id, CommentInfo commentInfo,
-            CommentThread commentThread, String content, Date createTime,
+    public CommentInfo(Long id, CommentThread commentThread,
+            CommentInfo commentInfoByReplyId,
+            CommentInfo commentInfoByParentId, String content, Date createTime,
             Date updateTime, Integer likes, Integer dislikes, String userId,
             String userName, String userAvatar, String mode, String ip,
             String url, String conversation, String tenantId,
-            Set<CommentVoter> commentVoters, Set<CommentInfo> commentInfos) {
+            Set<CommentInfo> commentInfosForReplyId,
+            Set<CommentInfo> commentInfosForParentId,
+            Set<CommentVoter> commentVoters) {
         this.id = id;
-        this.commentInfo = commentInfo;
         this.commentThread = commentThread;
+        this.commentInfoByReplyId = commentInfoByReplyId;
+        this.commentInfoByParentId = commentInfoByParentId;
         this.content = content;
         this.createTime = createTime;
         this.updateTime = updateTime;
@@ -109,8 +121,9 @@ public class CommentInfo implements java.io.Serializable {
         this.url = url;
         this.conversation = conversation;
         this.tenantId = tenantId;
+        this.commentInfosForReplyId = commentInfosForReplyId;
+        this.commentInfosForParentId = commentInfosForParentId;
         this.commentVoters = commentVoters;
-        this.commentInfos = commentInfos;
     }
 
     /** @return null. */
@@ -130,21 +143,6 @@ public class CommentInfo implements java.io.Serializable {
 
     /** @return null. */
     @ManyToOne(fetch = FetchType.LAZY)
-    @JoinColumn(name = "PARENT_ID")
-    public CommentInfo getCommentInfo() {
-        return this.commentInfo;
-    }
-
-    /**
-     * @param commentInfo
-     *            null.
-     */
-    public void setCommentInfo(CommentInfo commentInfo) {
-        this.commentInfo = commentInfo;
-    }
-
-    /** @return null. */
-    @ManyToOne(fetch = FetchType.LAZY)
     @JoinColumn(name = "THREAD_ID")
     public CommentThread getCommentThread() {
         return this.commentThread;
@@ -156,6 +154,36 @@ public class CommentInfo implements java.io.Serializable {
      */
     public void setCommentThread(CommentThread commentThread) {
         this.commentThread = commentThread;
+    }
+
+    /** @return null. */
+    @ManyToOne(fetch = FetchType.LAZY)
+    @JoinColumn(name = "REPLY_ID")
+    public CommentInfo getCommentInfoByReplyId() {
+        return this.commentInfoByReplyId;
+    }
+
+    /**
+     * @param commentInfoByReplyId
+     *            null.
+     */
+    public void setCommentInfoByReplyId(CommentInfo commentInfoByReplyId) {
+        this.commentInfoByReplyId = commentInfoByReplyId;
+    }
+
+    /** @return null. */
+    @ManyToOne(fetch = FetchType.LAZY)
+    @JoinColumn(name = "PARENT_ID")
+    public CommentInfo getCommentInfoByParentId() {
+        return this.commentInfoByParentId;
+    }
+
+    /**
+     * @param commentInfoByParentId
+     *            null.
+     */
+    public void setCommentInfoByParentId(CommentInfo commentInfoByParentId) {
+        this.commentInfoByParentId = commentInfoByParentId;
     }
 
     /** @return null. */
@@ -343,6 +371,36 @@ public class CommentInfo implements java.io.Serializable {
     }
 
     /** @return . */
+    @OneToMany(fetch = FetchType.LAZY, mappedBy = "commentInfoByReplyId")
+    public Set<CommentInfo> getCommentInfosForReplyId() {
+        return this.commentInfosForReplyId;
+    }
+
+    /**
+     * @param commentInfosForReplyId
+     *            .
+     */
+    public void setCommentInfosForReplyId(
+            Set<CommentInfo> commentInfosForReplyId) {
+        this.commentInfosForReplyId = commentInfosForReplyId;
+    }
+
+    /** @return . */
+    @OneToMany(fetch = FetchType.LAZY, mappedBy = "commentInfoByParentId")
+    public Set<CommentInfo> getCommentInfosForParentId() {
+        return this.commentInfosForParentId;
+    }
+
+    /**
+     * @param commentInfosForParentId
+     *            .
+     */
+    public void setCommentInfosForParentId(
+            Set<CommentInfo> commentInfosForParentId) {
+        this.commentInfosForParentId = commentInfosForParentId;
+    }
+
+    /** @return . */
     @OneToMany(fetch = FetchType.LAZY, mappedBy = "commentInfo")
     public Set<CommentVoter> getCommentVoters() {
         return this.commentVoters;
@@ -354,19 +412,5 @@ public class CommentInfo implements java.io.Serializable {
      */
     public void setCommentVoters(Set<CommentVoter> commentVoters) {
         this.commentVoters = commentVoters;
-    }
-
-    /** @return . */
-    @OneToMany(fetch = FetchType.LAZY, mappedBy = "commentInfo")
-    public Set<CommentInfo> getCommentInfos() {
-        return this.commentInfos;
-    }
-
-    /**
-     * @param commentInfos
-     *            .
-     */
-    public void setCommentInfos(Set<CommentInfo> commentInfos) {
-        this.commentInfos = commentInfos;
     }
 }

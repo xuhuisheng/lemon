@@ -22,15 +22,15 @@ var config = {
     params: {
         'filter_LIKES_name': '${param.filter_LIKES_name}'
     },
-	selectedItemClass: 'selectedItem',
-	gridFormId: 'travel-infoGridForm',
-	exportUrl: 'travel-info-export.do'
+    selectedItemClass: 'selectedItem',
+    gridFormId: 'travel-infoGridForm',
+    exportUrl: 'travel-info-export.do'
 };
 
 var table;
 
 $(function() {
-	table = new Table(config);
+    table = new Table(config);
     table.configPagination('.m-pagination');
     table.configPageInfo('.m-page-info');
     table.configPageSize('.m-page-size');
@@ -42,54 +42,54 @@ $(function() {
     <%@include file="/header/travel-user.jsp"%>
 
     <div class="row-fluid">
-	  <%@include file="/menu/travel-user.jsp"%>
+      <%@include file="/menu/travel-user.jsp"%>
 
-	  <!-- start of main -->
+      <!-- start of main -->
       <section id="m-main" class="col-md-10" style="padding-top:65px;">
 
 <div class="panel panel-default">
   <div class="panel-heading">
-	<i class="glyphicon glyphicon-list"></i>
+    <i class="glyphicon glyphicon-list"></i>
     查询
-	<div class="pull-right ctrl">
-	  <a class="btn btn-default btn-xs"><i id="travel-infoSearchIcon" class="glyphicon glyphicon-chevron-up"></i></a>
+    <div class="pull-right ctrl">
+      <a class="btn btn-default btn-xs"><i id="travel-infoSearchIcon" class="glyphicon glyphicon-chevron-up"></i></a>
     </div>
   </div>
   <div class="panel-body">
 
-		  <form name="travel-infoForm" method="post" action="index.do" class="form-inline">
-		    <label for="travel-info_name"><spring:message code='travel-info.travel-info.list.search.name' text='名称'/>:</label>
-		    <input type="text" id="travel-info_name" name="filter_LIKES_name" value="${param.filter_LIKES_name}" class="form-control">
-			<button class="btn btn-default a-search" onclick="document.travel-infoForm.submit()">查询</button>&nbsp;
-		  </form>
+          <form name="travel-infoForm" method="post" action="index.do" class="form-inline">
+            <label for="travel-info_name"><spring:message code='travel-info.travel-info.list.search.name' text='名称'/>:</label>
+            <input type="text" id="travel-info_name" name="filter_LIKES_name" value="${param.filter_LIKES_name}" class="form-control">
+            <button class="btn btn-default a-search" onclick="document.travel-infoForm.submit()">查询</button>&nbsp;
+          </form>
 
-		</div>
-	  </div>
+        </div>
+      </div>
 
       <div style="margin-bottom: 20px;">
-	    <div class="pull-left btn-group" role="group">
-		  <button class="btn btn-default a-insert" onclick="location.href='${ctx}/operation/process-operation-viewStartFormByKey.do?key=travel'">新建申请</button>
-		</div>
-
-		<div class="pull-right">
-		  每页显示
-		  <select class="m-page-size form-control" style="display:inline;width:auto;">
-		    <option value="10">10</option>
-		    <option value="20">20</option>
-		    <option value="50">50</option>
-		  </select>
-		  条
+        <div class="pull-left btn-group" role="group">
+          <a class="btn btn-default a-insert" href="input.do">新建申请</a>
         </div>
 
-	    <div class="clearfix"></div>
-	  </div>
+        <div class="pull-right">
+          每页显示
+          <select class="m-page-size form-control" style="display:inline;width:auto;">
+            <option value="10">10</option>
+            <option value="20">20</option>
+            <option value="50">50</option>
+          </select>
+          条
+        </div>
+
+        <div class="clearfix"></div>
+      </div>
 
 <form id="travel-infoGridForm" name="travel-infoGridForm" method='post' action="travel-info-remove.do" class="m-form-blank">
       <div class="panel panel-default">
         <div class="panel-heading">
-		  <i class="glyphicon glyphicon-list"></i>
-		  <spring:message code="scope-info.scope-info.list.title" text="列表"/>
-		</div>
+          <i class="glyphicon glyphicon-list"></i>
+          <spring:message code="scope-info.scope-info.list.title" text="列表"/>
+        </div>
 
   <table id="travel-infoGrid" class="table table-hover">
     <thead>
@@ -101,10 +101,6 @@ $(function() {
         <th>单号</th>
         <th>申请人</th>
         <th>申请人部门</th>
-        <th>交通工具</th>
-        <th>单程/往返</th>
-        <th>起始城市</th>
-        <th>目的城市</th>
         <th>开始时间</th>
         <th>结束时间</th>
         <th>申请时间</th>
@@ -120,15 +116,11 @@ $(function() {
         <!--
         <td>${item.id}</td>
         -->
-        <td><a href="${tenantPrefix}/operation/form-operation-view.do?businessKey=${item.code}">${item.code}</a></td>
+        <td><a href="view.do?id=${item.id}">${item.code}</a></td>
         <td><tags:user userId="${item.userId}"/></td>
-        <td>${item.deptCode}</td>
-        <td>${item.vehicle}</td>
-        <td>${item.type}</td>
-        <td>${item.startCity}</td>
-        <td>${item.endCity}</td>
-        <td>${item.startDate}</td>
-        <td>${item.endDate}</td>
+        <td></td>
+        <td><fmt:formatDate value="${item.startDate}" type="date"/></td>
+        <td><fmt:formatDate value="${item.endDate}" type="date"/></td>
         <td><fmt:formatDate value="${item.createTime}" type="both"/></td>
         <td>${item.status}</td>
         <td>
@@ -148,25 +140,25 @@ $(function() {
       </div>
 </form>
 
-	  <div>
-	    <div class="m-page-info pull-left">
-		  共100条记录 显示1到10条记录
-		</div>
+      <div>
+        <div class="m-page-info pull-left">
+          共100条记录 显示1到10条记录
+        </div>
 
-		<div class="btn-group m-pagination pull-right">
-		  <button class="btn btn-default">&lt;</button>
-		  <button class="btn btn-default">1</button>
-		  <button class="btn btn-default">&gt;</button>
-		</div>
+        <div class="btn-group m-pagination pull-right">
+          <button class="btn btn-default">&lt;</button>
+          <button class="btn btn-default">1</button>
+          <button class="btn btn-default">&gt;</button>
+        </div>
 
-	    <div class="clearfix"></div>
+        <div class="clearfix"></div>
       </div>
 
       <div class="m-spacer"></div>
 
       </section>
-	  <!-- end of main -->
-	</div>
+      <!-- end of main -->
+    </div>
 
   </body>
 

@@ -1,5 +1,5 @@
 /*
- * Copyright 2014-2016 the original author or authors.
+ * Copyright 2002-2015 the original author or authors.
  *
  * Licensed under the Apache License, Version 2.0 (the "License");
  * you may not use this file except in compliance with the License.
@@ -13,7 +13,6 @@
  * See the License for the specific language governing permissions and
  * limitations under the License.
  */
-
 package org.springframework.session.web.http;
 
 import java.util.Map;
@@ -21,8 +20,8 @@ import java.util.Map;
 import javax.servlet.http.HttpServletRequest;
 
 /**
- * Allows managing a mapping of alias to the session id for having multiple active
- * sessions at the same time.
+ * Allows managing a mapping of alias to the session id for having multiple
+ * active sessions at the same time.
  *
  * @author Rob Winch
  * @since 1.0
@@ -33,20 +32,18 @@ public interface HttpSessionManager {
 	/**
 	 * Gets the current session's alias from the {@link HttpServletRequest}.
 	 *
-	 * @param request the {@link HttpServletRequest} to obtain the current session's alias
-	 * from.
+	 * @param request the {@link HttpServletRequest} to obtain the current session's alias from.
 	 * @return the current sessions' alias. Cannot be null.
 	 */
 	String getCurrentSessionAlias(HttpServletRequest request);
 
 	/**
 	 * Gets a mapping of the session alias to the session id from the
-	 * {@link HttpServletRequest}.
+	 * {@link HttpServletRequest}
 	 *
-	 * @param request the {@link HttpServletRequest} to obtain the mapping from. Cannot be
-	 * null.
+	 * @param request the {@link HttpServletRequest} to obtain the mapping from. Cannot be null.
 	 * @return a mapping of the session alias to the session id from the
-	 * {@link HttpServletRequest}. Cannot be null.
+	 *         {@link HttpServletRequest}. Cannot be null.
 	 */
 	Map<String, String> getSessionIds(HttpServletRequest request);
 
@@ -69,7 +66,7 @@ public interface HttpSessionManager {
 	 * </code>
 	 *
 	 * @param request the {@link HttpServletRequest} to get a new alias from
-	 * @return Gets a new and unique Session alias.
+	 * @return
 	 */
 	String getNewSessionAlias(HttpServletRequest request);
 }

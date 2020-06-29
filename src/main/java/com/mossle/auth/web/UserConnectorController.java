@@ -16,6 +16,8 @@ import com.mossle.auth.persistence.manager.UserStatusManager;
 import com.mossle.auth.service.AuthService;
 import com.mossle.auth.support.UserStatusDTO;
 
+import com.mossle.client.user.UserClient;
+
 import com.mossle.core.page.Page;
 import com.mossle.core.util.ServletUtils;
 
@@ -40,6 +42,7 @@ public class UserConnectorController {
     private UserConnector userConnector;
     private AuthService authService;
     private TenantHolder tenantHolder;
+    private UserClient userClient;
 
     @RequestMapping("user-connector-list")
     public String list(@ModelAttribute Page page,
@@ -67,17 +70,30 @@ public class UserConnectorController {
             page.setResult(userStatusDtos);
             model.addAttribute("page", page);
         } else {
-            // 如果设置了查询条件，就根据条件查询
-            page = userConnector.pagedQuery(tenantId, page, parameterMap);
+            logger.debug("param : {}", parameterMap);
 
-            List<UserDTO> userDtos = (List<UserDTO>) page.getResult();
+            // 如果设置了查询条件，就根据条件查询
+            String username = (String) parameterMap
+                    .get("filter_LIKES_username");
+            logger.debug("username : {}", username);
+
+            // page = userConnector.pagedQuery(tenantId, page, parameterMap);
+
+            // List<UserDTO> userDtos = (List<UserDTO>) page.getResult();
+            List<UserDTO> userDtos = this.userClient.search(username);
+            logger.debug("userDtos : {}", userDtos);
+
             List<UserStatusDTO> userStatusDtos = new ArrayList<UserStatusDTO>();
 
             for (UserDTO userDto : userDtos) {
                 String usernameStr = userDto.getUsername();
-                String hql = "from UserStatus where username=? and userRepoRef=?";
+
+                // String hql = "from UserStatus where username=? and userRepoRef=?";
+                // UserStatus userStatus = userStatusManager.findUnique(hql,
+                // usernameStr, tenantHolder.getUserRepoRef());
+                String hql = "from UserStatus where username=?";
                 UserStatus userStatus = userStatusManager.findUnique(hql,
-                        usernameStr, tenantHolder.getUserRepoRef());
+                        usernameStr);
 
                 if (userStatus == null) {
                     UserStatusDTO userStatusDto = new UserStatusDTO();
@@ -143,5 +159,10 @@ public class UserConnectorController {
     @Resource
     public void setTenantHolder(TenantHolder tenantHolder) {
         this.tenantHolder = tenantHolder;
+    }
+
+    @Resource
+    public void setUserClient(UserClient userClient) {
+        this.userClient = userClient;
     }
 }

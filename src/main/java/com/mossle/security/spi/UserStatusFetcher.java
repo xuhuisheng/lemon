@@ -15,9 +15,12 @@ public interface UserStatusFetcher {
      * 根据用户名获得用户状态.
      * 
      * 如果用户存在，就会返回一个状态 如果用户不存在，就会抛出异常
-     * @param username username
+     * 
+     * @param username
+     *            username
      * @return int
-     * @throws UsernameNotFoundException not exists
+     * @throws UsernameNotFoundException
+     *             not exists
      */
     int getUserStatus(String username) throws UsernameNotFoundException;
 }

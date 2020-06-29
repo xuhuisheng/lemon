@@ -2,12 +2,12 @@
   <modelVersion>4.0.0</modelVersion>
   <groupId>com.mossle</groupId>
   <artifactId>lemon</artifactId>
-  <version>1.10.0</version>
+  <version>1.11.0</version>
   <name>lemon</name>
   <packaging>war</packaging>
   <description>Lemon is an OA.</description>
   
-  <inceptionYear>2019</inceptionYear>
+  <inceptionYear>2015</inceptionYear>
   
   <licenses>
     <license>
@@ -27,7 +27,7 @@
   
   
   <prerequisites>
-    <maven>3.6.0</maven>
+    <maven>3.0</maven>
   </prerequisites>
   <dependencies>
     <dependency>
@@ -150,11 +150,11 @@
     </dependency><dependency>
       <groupId>io.dropwizard.metrics</groupId>
       <artifactId>metrics-servlet</artifactId>
-      <version>3.1.5</version>
+      <version>3.2.2</version>
     </dependency><dependency>
       <groupId>io.dropwizard.metrics</groupId>
       <artifactId>metrics-servlets</artifactId>
-      <version>3.1.5</version>
+      <version>3.2.2</version>
     </dependency><dependency>
       <groupId>javax.cache</groupId>
       <artifactId>cache-api</artifactId>
@@ -204,6 +204,10 @@
       <groupId>org.activiti</groupId>
       <artifactId>activiti-json-converter</artifactId>
       <version>${activiti.version}</version>
+    </dependency><dependency>
+      <groupId>eu.bitwalker</groupId>
+      <artifactId>UserAgentUtils</artifactId>
+      <version>1.20</version>
     </dependency></dependencies>
 
   <dependencyManagement>
@@ -1574,7 +1578,38 @@
           </plugin>
         </plugins>
       </build>
+    </profile>    <profile>
+      <id>java8</id>
+      <activation>
+        <jdk>1.8</jdk>
+      </activation>
+      <build>
+        <plugins>
+          <plugin>
+            <groupId>org.eclipse.jetty</groupId>
+            <artifactId>jetty-maven-plugin</artifactId>
+            <version>9.3.11.v20160721</version>
+            <configuration>
+              <connectors>
+                <connector implementation="org.mortbay.jetty.nio.SelectChannelConnector">
+                  <port>8080</port>
+                  <maxIdleTime>3600000</maxIdleTime>
+                </connector>
+              </connectors>
+<!--
+              <scanIntervalSeconds>10</scanIntervalSeconds>
+-->
+              <webDefaultXml>webdefault.xml</webDefaultXml>
+              <webAppSourceDirectory>webapp</webAppSourceDirectory>
+              <webAppConfig>
+                <contextPath>/${project.artifactId}</contextPath>
+              </webAppConfig>
+            </configuration>
+          </plugin>
+        </plugins>
+      </build>
     </profile>
+
   </profiles>
 
 </project>

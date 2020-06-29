@@ -13,8 +13,6 @@ import com.mossle.client.authn.AuthnClient;
 import com.mossle.core.mapper.BeanMapper;
 import com.mossle.core.util.BaseDTO;
 
-import com.mossle.spi.user.InternalUserConnector;
-
 import org.springframework.security.authentication.BadCredentialsException;
 import org.springframework.security.authentication.UsernamePasswordAuthenticationToken;
 import org.springframework.security.authentication.dao.DaoAuthenticationProvider;
@@ -35,10 +33,10 @@ public class DefaultAuthenticationProvider extends DaoAuthenticationProvider {
 
         String tenantId = tenantHolder.getTenantId();
 
-        BaseDTO baseDto = authnClient.authenticate(username, presentedPassword,
+        String result = authnClient.authenticate(username, presentedPassword,
                 tenantId);
 
-        boolean isValid = baseDto.getCode() == 200;
+        boolean isValid = AccountStatus.SUCCESS.equals(result);
 
         if (!isValid) {
             logger.debug("Authentication failed: password does not match stored value");

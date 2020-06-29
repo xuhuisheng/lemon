@@ -122,4 +122,8 @@ public class UserAuthDTO {
     public void setMenus(List<MenuDTO> menus) {
         this.menus = menus;
     }
+
+    public List<MenuDTO> getMenusBySys(String sysCode) {
+        return this.getMenus();
+    }
 }

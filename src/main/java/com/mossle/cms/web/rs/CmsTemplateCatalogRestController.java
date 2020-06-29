@@ -121,6 +121,8 @@ public class CmsTemplateCatalogRestController {
             map.put("name", cmsTemplateContent.getName());
             map.put("type", "content");
             map.put("open", false);
+            map.put("categoryId", cmsTemplateContent.getCmsTemplateCatalog()
+                    .getId());
 
             return map;
         } catch (Exception ex) {

@@ -1,5 +1,7 @@
 package com.mossle.client.user;
 
+import java.util.List;
+
 import com.mossle.api.user.UserDTO;
 
 public interface UserClient {
@@ -12,4 +14,6 @@ public interface UserClient {
     UserDTO updateAndFindByUsername(String username, String userRepoRef);
 
     String convertAlias(String alias, String userRepoRef);
+
+    List<UserDTO> search(String query);
 }

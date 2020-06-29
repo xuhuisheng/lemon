@@ -40,6 +40,14 @@ public class MockUserDetailsService implements UserDetailsService {
         SpringSecurityUserAuth userAuth = new SpringSecurityUserAuth();
         UserAuthDTO userAuthDto = authzClient.findByUsername(processedUsername,
                 tenantId);
+
+        if (userAuthDto == null) {
+            logger.info("cannot find user auth : {} {}", processedUsername,
+                    tenantId);
+
+            return null;
+        }
+
         beanMapper.copy(userAuthDto, userAuth);
 
         return userAuth;

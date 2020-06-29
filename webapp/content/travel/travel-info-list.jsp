@@ -110,9 +110,9 @@ $(function() {
       <tr>
         <td><input type="checkbox" class="selectedItem a-check" name="selectedItem" value="${item.id}"></td>
         <td><tags:user userId="${item.userId}"/></td>
-        <td>${item.name}</td>
-        <td><fmt:formatDate value="${item.startTime}" type="date"/></td>
-        <td><fmt:formatDate value="${item.endTime}" type="date"/></td>
+        <td>${item.description}</td>
+        <td><fmt:formatDate value="${item.startDate}" type="date"/></td>
+        <td><fmt:formatDate value="${item.endDate}" type="date"/></td>
         <td>
           <a href="travel-info-input.do?id=${item.id}" class="a-update"><spring:message code="core.list.edit" text="编辑"/></a>
         </td>

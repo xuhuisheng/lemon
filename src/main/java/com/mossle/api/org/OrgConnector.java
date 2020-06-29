@@ -40,6 +40,7 @@ public interface OrgConnector {
 
     /**
      * TODO(根据用户查询用所主职所在的岗位.
+     * 
      * @param userId
      * @return OrgDTO 返回类型
      */

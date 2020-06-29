@@ -51,7 +51,7 @@ public class CmsFilter implements Filter {
 
         String servletPath = request.getServletPath();
 
-        if (tenantDto.getType() != TenantDTO.TYPE_CMS) {
+        if (TenantDTO.TYPE_CMS.equals(tenantDto.getType())) {
             if (servletPath.startsWith("/cms/r/")) {
                 String path = storeBaseDir + "/" + tenantDto.getId()
                         + cmsBaseDir + servletPath.substring("/cms".length());

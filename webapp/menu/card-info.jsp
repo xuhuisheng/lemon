@@ -1,36 +1,34 @@
 <%@ page language="java" pageEncoding="UTF-8" %>
 <style type="text/css">
 #accordion .panel-heading {
-	cursor: pointer;
+    cursor: pointer;
 }
 #accordion .panel-body {
-	padding:0px;
+    padding:0px;
 }
 </style>
 
       <!-- start of sidebar -->
-<div class="panel-group col-md-2" id="accordion" role="tablist" aria-multiselectable="true" style="padding-top:65px;">
+<div class="panel-group col-md-2" style="padding-top:65px;">
 
   <div class="panel panel-default">
-    <div class="panel-heading" role="tab" id="collapse-header-card" data-toggle="collapse" data-parent="#accordion" href="#collapse-body-card" aria-expanded="true" aria-controls="collapse-body-card">
+    <div class="panel-heading">
       <h4 class="panel-title">
-	    <i class="glyphicon glyphicon-list"></i>
+        <i class="glyphicon glyphicon-list"></i>
         工卡管理
       </h4>
     </div>
-    <div id="collapse-body-card" class="panel-collapse collapse ${currentMenu == 'card' ? 'in' : ''}" role="tabpanel" aria-labelledby="collapse-header-card">
-      <div class="panel-body">
-        <ul class="nav nav-list">
-		  <li><a href="${tenantPrefix}/card/card-info-list.do"><i class="glyphicon glyphicon-list"></i> 工卡管理</a></li>
-        </ul>
-      </div>
-    </div>
+    <ul class="nav nav-list">
+      <li><a href="${tenantPrefix}/card/card-info-list.do"><i class="glyphicon glyphicon-list"></i> 工卡管理</a></li>
+      <li><a href="${tenantPrefix}/card/card-avatar-list.do"><i class="glyphicon glyphicon-list"></i> 头像管理</a></li>
+      <li><a href="${tenantPrefix}/card/door-info-list.do"><i class="glyphicon glyphicon-list"></i> 门禁管理</a></li>
+    </ul>
   </div>
 
-		<footer id="m-footer" class="text-center">
-		  <hr>
-		  &copy;Mossle
-		</footer>
+        <footer id="m-footer" class="text-center">
+          <hr>
+          &copy;Mossle
+        </footer>
 
 </div>
       <!-- end of sidebar -->

@@ -15,6 +15,7 @@ public class RequestConfig {
     private String requestId;
     private String contentType;
     private String contentMd5;
+    private String expire;
 
     public String getMethod() {
         return method;
@@ -102,5 +103,13 @@ public class RequestConfig {
 
     public void setContentMd5(String contentMd5) {
         this.contentMd5 = contentMd5;
+    }
+
+    public String getExpire() {
+        return expire;
+    }
+
+    public void setExpire(String expire) {
+        this.expire = expire;
     }
 }
