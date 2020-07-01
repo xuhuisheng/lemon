@@ -127,7 +127,9 @@
 	</bean>
 
 	<!-- 认证成功后，记住最后使用的账号 -->
-	<bean id="authenticationSuccessHandler" class="com.mossle.security.util.RememberLastUsernameAuthenticationSuccessHandler"/>
+	<bean id="authenticationSuccessHandler" class="com.mossle.security.util.RememberLastUsernameAuthenticationSuccessHandler">
+		<property name="alwaysUseDefaultTargetUrl" value="true"/>
+	</bean>
 
 	<!-- 认证失败后，记住最后使用的账号 -->
 	<bean id="authenticationFailureHandler" class="com.mossle.security.util.RememberLastUsernameAuthenticationFailureHandler">

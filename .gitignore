@@ -4,7 +4,11 @@ target/
 
 /.settings
 
+/.idea
+
+
 /.classpath
 
 /.project
 /mossle.store
+
