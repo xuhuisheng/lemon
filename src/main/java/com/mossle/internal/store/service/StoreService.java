@@ -34,6 +34,8 @@ public class StoreService {
         storeInfo.setPath(storeDto.getKey());
         storeInfo.setCreateTime(new Date());
         storeInfo.setTenantId(tenantId);
+        storeInfo.setType(storeDto.getType());
+        storeInfo.setSize(storeDto.getSize());
         storeInfoManager.save(storeInfo);
 
         return storeDto;
@@ -50,6 +52,8 @@ public class StoreService {
         storeInfo.setPath(storeDto.getKey());
         storeInfo.setCreateTime(new Date());
         storeInfo.setTenantId(tenantId);
+        storeInfo.setType(storeDto.getType());
+        storeInfo.setSize(storeDto.getSize());
         storeInfoManager.save(storeInfo);
 
         return storeDto;
