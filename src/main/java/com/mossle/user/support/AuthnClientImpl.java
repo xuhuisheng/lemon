@@ -8,6 +8,7 @@ import java.util.Map;
 import javax.annotation.Resource;
 
 import com.mossle.api.auth.CustomPasswordEncoder;
+import com.mossle.api.user.AccountStatus;
 import com.mossle.api.user.LocalUserConnector;
 import com.mossle.api.user.RemoteUserConnector;
 import com.mossle.api.user.UserConnector;
@@ -20,6 +21,8 @@ import com.mossle.core.page.Page;
 import com.mossle.core.query.PropertyFilter;
 import com.mossle.core.query.PropertyFilterUtils;
 import com.mossle.core.util.BaseDTO;
+
+import com.mossle.spi.device.DeviceDTO;
 
 import com.mossle.user.persistence.domain.AccountCredential;
 import com.mossle.user.persistence.domain.AccountInfo;
@@ -44,27 +47,36 @@ public class AuthnClientImpl implements AuthnClient {
     private AccountCredentialManager accountCredentialManager;
     private CustomPasswordEncoder customPasswordEncoder;
 
-    public BaseDTO authenticate(String username, String password,
-            String tenantId) {
+    public String authenticate(String username, String password, String tenantId) {
         AccountInfo accountInfo = accountInfoManager.findUniqueBy("username",
                 username);
         String hql = "from AccountCredential where accountInfo=? and catalog='default'";
         AccountCredential accountCredential = accountCredentialManager
                 .findUnique(hql, accountInfo);
+
+        if (accountCredential == null) {
+            logger.info("cannot find credential : {} {}", username, "xxx");
+
+            return AccountStatus.FAILURE;
+        }
+
         String encodedPassword = accountCredential.getPassword();
 
         boolean result = customPasswordEncoder.matches(password,
                 encodedPassword);
-        BaseDTO baseDto = new BaseDTO();
-        baseDto.setCode(200);
-        baseDto.setData(username);
 
         if (!result) {
-            baseDto.setCode(400);
-            baseDto.setMessage("failure");
+            return AccountStatus.FAILURE;
         }
 
-        return baseDto;
+        return AccountStatus.SUCCESS;
+    }
+
+    public DeviceDTO findDevice(String code) {
+        return null;
+    }
+
+    public void saveDevice(DeviceDTO deviceDto) {
     }
 
     @Resource

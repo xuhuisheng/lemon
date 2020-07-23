@@ -13,11 +13,12 @@ import javax.servlet.http.HttpServletResponse;
 
 import com.mossle.api.tenant.TenantHolder;
 
+import com.mossle.client.authn.AuthnClient;
+
 import com.mossle.security.SecurityConstants;
 import com.mossle.security.impl.SpringSecurityUserAuth;
 
 import com.mossle.spi.device.DeviceDTO;
-import com.mossle.spi.user.InternalUserConnector;
 
 import eu.bitwalker.useragentutils.UserAgent;
 
@@ -27,7 +28,7 @@ import org.springframework.security.web.authentication.SavedRequestAwareAuthenti
 public class RememberLastUsernameAuthenticationSuccessHandler extends
         SavedRequestAwareAuthenticationSuccessHandler {
     private TenantHolder tenantHolder;
-    private InternalUserConnector internalUserConnector;
+    private AuthnClient authnClient;
 
     @Override
     public void onAuthenticationSuccess(HttpServletRequest request,
@@ -62,7 +63,7 @@ public class RememberLastUsernameAuthenticationSuccessHandler extends
                     3600 * 24 * 365 * 100);
         }
 
-        DeviceDTO deviceDto = internalUserConnector.findDevice(deviceId);
+        DeviceDTO deviceDto = authnClient.findDevice(deviceId);
 
         if (deviceDto == null) {
             deviceDto = new DeviceDTO();
@@ -76,7 +77,7 @@ public class RememberLastUsernameAuthenticationSuccessHandler extends
             deviceDto.setClient(userAgent.getBrowser().toString());
         }
 
-        internalUserConnector.saveDevice(deviceDto);
+        authnClient.saveDevice(deviceDto);
     }
 
     public void addCookie(HttpServletResponse response, String key, String value) {
@@ -130,8 +131,7 @@ public class RememberLastUsernameAuthenticationSuccessHandler extends
     }
 
     @Resource
-    public void setInternalUserConnector(
-            InternalUserConnector internalUserConnector) {
-        this.internalUserConnector = internalUserConnector;
+    public void setAuthnClient(AuthnClient authnClient) {
+        this.authnClient = authnClient;
     }
 }

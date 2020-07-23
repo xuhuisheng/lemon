@@ -97,6 +97,12 @@ public class CmsArticleCallback implements CsvCallback {
             InputStream is = CmsArticleCallback.class.getClassLoader()
                     .getResourceAsStream(path);
 
+            if (is == null) {
+                logger.warn("cannot find : {}", path);
+
+                return "";
+            }
+
             return IOUtils.toString(is, encoding);
         } catch (Exception ex) {
             logger.info("cannot find : {}", path);

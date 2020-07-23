@@ -9,10 +9,10 @@ import javax.annotation.Resource;
 
 import com.mossle.api.model.ModelInfoDTO;
 
+import com.mossle.core.mapper.JsonMapper;
+
 import com.mossle.travel.persistence.domain.TravelRequest;
 import com.mossle.travel.persistence.manager.TravelRequestManager;
-
-import com.mossle.core.mapper.JsonMapper;
 
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
@@ -25,6 +25,16 @@ public class TravelBpmService {
             .getLogger(TravelBpmService.class);
     private TravelRequestManager travelRequestManager;
     private JsonMapper jsonMapper = new JsonMapper();
+
+    /** 交通工具. */
+    private String vehicle;
+    private String type;
+    private String startCity;
+    private String endCity;
+    private Date startDate;
+    private Date endDate;
+    private Integer day;
+    private String peer;
 
     public void save(int eventCode, ModelInfoDTO modelInfo, String userId,
             String activityId, String activityName) throws Exception {
@@ -43,18 +53,6 @@ public class TravelBpmService {
             this.insert(userId, modelInfo, eventCode, activityId, activityName);
         }
     }
-
-
-    /** 交通工具. */
-    private String vehicle;
-
-    private String type;
-    private String startCity;
-    private String endCity;
-    private Date startDate;
-    private Date endDate;
-    private Integer day;
-    private String peer;
 
     public void update(TravelRequest travelRequest, ModelInfoDTO modelInfo,
             int eventCode, String activityId, String activityName) {
@@ -185,7 +183,8 @@ public class TravelBpmService {
     }
 
     @Resource
-    public void setTravelRequestManager(TravelRequestManager travelRequestManager) {
+    public void setTravelRequestManager(
+            TravelRequestManager travelRequestManager) {
         this.travelRequestManager = travelRequestManager;
     }
 }

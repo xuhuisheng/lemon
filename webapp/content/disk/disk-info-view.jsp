@@ -28,7 +28,7 @@ body {
 
 <div class="row">
   <div class="col-md-12">
-    <a href="disk-info-list.do?path=${item.parentPath}"><i class=" glyphicon glyphicon-arrow-left"></i>返回</a>
+    <a href="index.do?path=${item.parentPath}"><i class=" glyphicon glyphicon-arrow-left"></i>返回</a>
   </div>
   <div class="col-md-12 text-center">
     <i class="icon-62 icon-62-${diskInfo.type}"></i>

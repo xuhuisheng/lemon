@@ -53,11 +53,13 @@ public class ImageUtils {
 
     /**
      * 缩放.
-     *
+     * 
      * @param srcImage
      *            原始图像
-     * @param toWidth 宽度
-     * @param toHeight 高度
+     * @param toWidth
+     *            宽度
+     * @param toHeight
+     *            高度
      * @return 返回处理后的图像
      */
     public static BufferedImage zoomImage(BufferedImage srcImage, int toWidth,

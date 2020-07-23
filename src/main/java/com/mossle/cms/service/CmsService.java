@@ -49,6 +49,10 @@ public class CmsService {
         return cmsCatalogs;
     }
 
+    public CmsCatalog findCatalogByCode(String code) {
+        return cmsCatalogManager.findUniqueBy("code", code);
+    }
+
     public CmsSite findDefaultSite() {
         String hql = "from CmsSite";
         CmsSite cmsSite = cmsSiteManager.findUnique(hql);
@@ -60,6 +64,14 @@ public class CmsService {
         String hql = "from CmsArticle where cmsCatalog.id=? order by publishTime desc";
 
         return cmsArticleManager.pagedQuery(hql, pageNo, pageSize, catalogId);
+    }
+
+    public Page findArticlesByCatalogCode(String catalogCode, int pageNo,
+            int pageSize) {
+        String hql = "select cmsArticle from CmsArticle cmsArticle "
+                + "where cmsArticle.cmsCatalog.code=? order by cmsArticle.publishTime desc";
+
+        return cmsArticleManager.pagedQuery(hql, pageNo, pageSize, catalogCode);
     }
 
     public Page findComments(Long articleId, int pageNo, int pageSize) {

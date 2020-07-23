@@ -9,6 +9,8 @@ import javax.persistence.Column;
 import javax.persistence.Entity;
 import javax.persistence.FetchType;
 import javax.persistence.Id;
+import javax.persistence.JoinColumn;
+import javax.persistence.ManyToOne;
 import javax.persistence.OneToMany;
 import javax.persistence.Table;
 import javax.persistence.Temporal;
@@ -26,6 +28,9 @@ public class DiskSpace implements java.io.Serializable {
 
     /** null. */
     private Long id;
+
+    /** null. */
+    private DiskRule diskRule;
 
     /** null. */
     private String catalog;
@@ -67,11 +72,12 @@ public class DiskSpace implements java.io.Serializable {
         this.id = id;
     }
 
-    public DiskSpace(Long id, String catalog, String type, String name,
-            String description, String creator, Date createTime, String status,
-            Integer priority, Integer quota, Set<DiskInfo> diskInfos,
-            Set<DiskMember> diskMembers) {
+    public DiskSpace(Long id, DiskRule diskRule, String catalog, String type,
+            String name, String description, String creator, Date createTime,
+            String status, Integer priority, Integer quota,
+            Set<DiskInfo> diskInfos, Set<DiskMember> diskMembers) {
         this.id = id;
+        this.diskRule = diskRule;
         this.catalog = catalog;
         this.type = type;
         this.name = name;
@@ -98,6 +104,21 @@ public class DiskSpace implements java.io.Serializable {
      */
     public void setId(Long id) {
         this.id = id;
+    }
+
+    /** @return null. */
+    @ManyToOne(fetch = FetchType.LAZY)
+    @JoinColumn(name = "RULE_ID")
+    public DiskRule getDiskRule() {
+        return this.diskRule;
+    }
+
+    /**
+     * @param diskRule
+     *            null.
+     */
+    public void setDiskRule(DiskRule diskRule) {
+        this.diskRule = diskRule;
     }
 
     /** @return null. */

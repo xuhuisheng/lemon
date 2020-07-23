@@ -13,12 +13,23 @@
 	<!-- 授权 -->
 	<bean id="authzClient" class="${client.authz}" />
 
+	<bean id="authzResourceClient" class="${client.authzresource}" />
+
 	<!-- 存储 -->
 	<bean id="storeClient" class="${client.store}" />
+
+	<!-- oss -->
+	<bean id="ossClient" class="${client.oss}" />
 
 	<!-- sendmail -->
 	<bean id="sendmailClient" class="${client.sendmail}" />
 
+	<!-- sys -->
+	<bean id="sysClient" class="${client.sys}" />
+
 	<bean id="rpcAuthHelper" class="${rpc.auth.helper}" />
+
+	<!-- open -->
+	<bean id="openClient" class="${client.open}" />
 
 </beans>

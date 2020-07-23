@@ -65,6 +65,9 @@ public class AssetInfo implements java.io.Serializable {
     /** null. */
     private Date startTime;
 
+    /** null. */
+    private String sn;
+
     /** . */
     private Set<AssetHistory> assetHistories = new HashSet<AssetHistory>(0);
 
@@ -82,7 +85,7 @@ public class AssetInfo implements java.io.Serializable {
             AssetCategory assetCategoryBySubCategoryId, String name,
             String code, String description, String model, Double price,
             Date buyDate, String status, String userId, Long location,
-            Date startTime, Set<AssetHistory> assetHistories,
+            Date startTime, String sn, Set<AssetHistory> assetHistories,
             Set<AssetLend> assetLends) {
         this.id = id;
         this.assetCategoryByCategoryId = assetCategoryByCategoryId;
@@ -97,6 +100,7 @@ public class AssetInfo implements java.io.Serializable {
         this.userId = userId;
         this.location = location;
         this.startTime = startTime;
+        this.sn = sn;
         this.assetHistories = assetHistories;
         this.assetLends = assetLends;
     }
@@ -288,6 +292,20 @@ public class AssetInfo implements java.io.Serializable {
      */
     public void setStartTime(Date startTime) {
         this.startTime = startTime;
+    }
+
+    /** @return null. */
+    @Column(name = "SN", length = 50)
+    public String getSn() {
+        return this.sn;
+    }
+
+    /**
+     * @param sn
+     *            null.
+     */
+    public void setSn(String sn) {
+        this.sn = sn;
     }
 
     /** @return . */

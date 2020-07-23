@@ -1,5 +1,5 @@
 /*
- * Copyright 2014-2016 the original author or authors.
+ * Copyright 2002-2015 the original author or authors.
  *
  * Licensed under the Apache License, Version 2.0 (the "License");
  * you may not use this file except in compliance with the License.
@@ -13,31 +13,31 @@
  * See the License for the specific language governing permissions and
  * limitations under the License.
  */
-
 package org.springframework.session.events;
 
+import org.springframework.context.ApplicationEvent;
 import org.springframework.session.Session;
+import org.springframework.session.SessionRepository;
 
 /**
- * Base class for events fired when a {@link Session} is destroyed explicitly.
+ * For {@link SessionRepository} implementations that support it, this event is
+ * fired when a {@link Session} is destroyed either explicitly or via
+ * expiration.
  *
  * @author Rob Winch
  * @since 1.0
  *
  */
 @SuppressWarnings("serial")
-public class SessionDestroyedEvent extends AbstractSessionEvent {
+public class SessionDestroyedEvent extends ApplicationEvent {
+	private final String sessionId;
 
 	public SessionDestroyedEvent(Object source, String sessionId) {
-		super(source, sessionId);
+		super(source);
+		this.sessionId = sessionId;
 	}
 
-	/**
-	 * Create a new {@link SessionDestroyedEvent}.
-	 * @param source The Source of the SessionDestoryedEvent
-	 * @param session the Session that was created
-	 */
-	public SessionDestroyedEvent(Object source, Session session) {
-		super(source, session);
+	public String getSessionId() {
+		return sessionId;
 	}
 }

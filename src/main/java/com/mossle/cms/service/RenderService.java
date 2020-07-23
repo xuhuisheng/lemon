@@ -7,6 +7,7 @@ import java.io.PrintWriter;
 import java.util.HashMap;
 import java.util.List;
 import java.util.Map;
+import java.util.Properties;
 
 import javax.annotation.Resource;
 
@@ -14,6 +15,7 @@ import javax.servlet.http.HttpServletRequest;
 
 import com.mossle.api.user.UserConnector;
 
+import com.mossle.client.mdm.SysClient;
 import com.mossle.client.user.UserClient;
 
 import com.mossle.cms.persistence.domain.CmsArticle;
@@ -46,6 +48,9 @@ public class RenderService {
     private CmsTemplateContentManager cmsTemplateContentManager;
     private CmsService cmsService;
     private UserClient userClient;
+    private SysClient sysClient;
+    private String cdnPrefix;
+    private Properties applicationProperties;
 
     public void render(CmsArticle cmsArticle) {
         this.renderDetail(cmsArticle);
@@ -53,6 +58,8 @@ public class RenderService {
     }
 
     public void renderDetail(CmsArticle cmsArticle) {
+        PrintWriter writer = null;
+
         try {
             Map<String, Object> data = new HashMap<String, Object>();
             CmsCatalog cmsCatalog = cmsArticle.getCmsCatalog();
@@ -62,17 +69,23 @@ public class RenderService {
             String html = templateService.render(
                     cmsCatalog.getTemplateDetail(), data);
             String path = baseDir + "/cms/html/" + cmsArticle.getId() + ".html";
-            PrintWriter writer = new PrintWriter(new OutputStreamWriter(
+            writer = new PrintWriter(new OutputStreamWriter(
                     new FileOutputStream(path), "UTF-8"));
             writer.print(html);
             writer.flush();
-            writer.close();
         } catch (Exception ex) {
             logger.error(ex.getMessage(), ex);
+        } finally {
+            if (writer != null) {
+                writer.close();
+                writer = null;
+            }
         }
     }
 
     public void renderIndex(CmsCatalog cmsCatalog) {
+        PrintWriter writer = null;
+
         try {
             Map<String, Object> data = new HashMap<String, Object>();
             data.put("catalog", cmsCatalog);
@@ -81,13 +94,17 @@ public class RenderService {
             String html = templateService.render(cmsCatalog.getTemplateIndex(),
                     data);
             String path = baseDir + "/cms/html/index.html";
-            PrintWriter writer = new PrintWriter(new OutputStreamWriter(
+            writer = new PrintWriter(new OutputStreamWriter(
                     new FileOutputStream(path), "UTF-8"));
             writer.print(html);
             writer.flush();
-            writer.close();
         } catch (Exception ex) {
             logger.error(ex.getMessage(), ex);
+        } finally {
+            if (writer != null) {
+                writer.close();
+                writer = null;
+            }
         }
     }
 
@@ -151,11 +168,23 @@ public class RenderService {
         return html;
     }
 
-    public String renderText(String templateCode, String ctx) {
+    public String renderText(String templateCode, String ctx,
+            String currentUserId) {
         CmsHelper cmsHelper = new CmsHelper();
         cmsHelper.setCmsService(cmsService);
         cmsHelper.setUserClient(userClient);
+        cmsHelper.setProp(applicationProperties);
         cmsHelper.setCtx(ctx);
+        cmsHelper.setCurrentUserId(currentUserId);
+
+        if (StringUtils.isNotBlank(cdnPrefix)) {
+            cmsHelper.setCdnPrefix(cdnPrefix);
+        } else {
+            cmsHelper.setCdnPrefix(ctx + "/cdn");
+        }
+
+        cmsHelper.getServiceMap().put("sysClient", sysClient);
+        cmsHelper.getServiceMap().put("userClient", userClient);
 
         return this.renderText(templateCode, cmsHelper);
     }
@@ -165,24 +194,34 @@ public class RenderService {
         CmsHelper cmsHelper = new CmsHelper();
         cmsHelper.setCmsService(cmsService);
         cmsHelper.setUserClient(userClient);
+        cmsHelper.setProp(applicationProperties);
         cmsHelper.setCtx(ctx);
-        cmsHelper.setCatalog(cmsCatalog);
+        cmsHelper.setCurrentCatalog(cmsCatalog);
         cmsHelper.setPageNo(pageNo);
         cmsHelper.setPageSize(pageSize);
+        cmsHelper.getServiceMap().put("sysClient", sysClient);
 
         return this.renderText(templateCode, cmsHelper);
     }
 
     public String renderText(String templateCode, String ctx,
             CmsArticle cmsArticle, int pageNo, int pageSize) {
+        if (cmsArticle == null) {
+            logger.info("cannot find article : {}", templateCode);
+
+            return "";
+        }
+
         CmsHelper cmsHelper = new CmsHelper();
         cmsHelper.setCmsService(cmsService);
         cmsHelper.setUserClient(userClient);
+        cmsHelper.setProp(applicationProperties);
         cmsHelper.setCtx(ctx);
-        cmsHelper.setCatalog(cmsArticle.getCmsCatalog());
-        cmsHelper.setArticle(cmsArticle);
+        cmsHelper.setCurrentCatalog(cmsArticle.getCmsCatalog());
+        cmsHelper.setCurrentArticle(cmsArticle);
         cmsHelper.setPageNo(pageNo);
         cmsHelper.setPageSize(pageSize);
+        cmsHelper.getServiceMap().put("sysClient", sysClient);
 
         return this.renderText(templateCode, cmsHelper);
     }
@@ -253,5 +292,20 @@ public class RenderService {
     @Resource
     public void setUserClient(UserClient userClient) {
         this.userClient = userClient;
+    }
+
+    @Resource
+    public void setSysClient(SysClient sysClient) {
+        this.sysClient = sysClient;
+    }
+
+    @Value("${application.cdnPrefix}")
+    public void setCdnPrefix(String cdnPrefix) {
+        this.cdnPrefix = cdnPrefix;
+    }
+
+    @Resource
+    public void setApplicationProperties(Properties applicationProperties) {
+        this.applicationProperties = applicationProperties;
     }
 }

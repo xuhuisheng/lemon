@@ -2,7 +2,7 @@ package com.mossle.client.authn;
 
 import com.mossle.api.user.AccountStatus;
 
-import com.mossle.core.util.BaseDTO;
+import com.mossle.spi.device.DeviceDTO;
 
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
@@ -11,17 +11,12 @@ public class MockAuthnClient implements AuthnClient {
     private static Logger logger = LoggerFactory
             .getLogger(MockAuthnClient.class);
 
-    public BaseDTO authenticate(String username, String password,
-            String tenantId) {
+    public String authenticate(String username, String password, String tenantId) {
         logger.info("process : {}", username);
 
         String processedUsername = this.processUsername(username);
-        BaseDTO baseDto = new BaseDTO();
-        baseDto.setCode(200);
-        baseDto.setMessage("success");
-        baseDto.setData(processedUsername);
 
-        return baseDto;
+        return AccountStatus.SUCCESS;
     }
 
     public String processUsername(String username) {
@@ -30,5 +25,12 @@ public class MockAuthnClient implements AuthnClient {
         }
 
         return username.trim().toLowerCase();
+    }
+
+    public DeviceDTO findDevice(String code) {
+        return null;
+    }
+
+    public void saveDevice(DeviceDTO deviceDto) {
     }
 }

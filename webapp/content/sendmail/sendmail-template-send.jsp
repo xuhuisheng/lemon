@@ -3,15 +3,15 @@
 <%pageContext.setAttribute("currentHeader", "sendmail");%>
 <%pageContext.setAttribute("currentMenu", "sendmail");%>
 <!doctype html>
-<html>
+<html lang="en">
 
   <head>
     <%@include file="/common/meta.jsp"%>
     <title>编辑</title>
-    <%@include file="/common/s3.jsp"%>
+    <%@include file="/common/s.jsp"%>
     <script type="text/javascript">
 $(function() {
-    $("#sendmail-templateForm").validate({
+    $("#mailConfigForm").validate({
         submitHandler: function(form) {
 			bootbox.animate(false);
 			var box = bootbox.dialog('<div class="progress progress-striped active" style="margin:0px;"><div class="bar" style="width: 100%;"></div></div>');
@@ -29,17 +29,15 @@ $(function() {
     <div class="row-fluid">
 	  <%@include file="/menu/sendmail.jsp"%>
 
-	<!-- start of main -->
-      <section id="m-main" class="col-md-10" style="padding-top:65px;">
+	  <!-- start of main -->
+      <section id="m-main" class="span10">
 
-      <div class="panel panel-default">
-        <div class="panel-heading">
-		  <i class="glyphicon glyphicon-list"></i>
-		  编辑
-		</div>
+      <article class="m-widget">
+        <header class="header">
+		  <h4 class="title">${mailDto.success ? '发送成功' : '发送失败'}</h4>
+		</header>
 
-		<div class="panel-body">
-
+		<div class="content content-inner">
 
 <c:if test="${mailDto.success}">
 发送成功
@@ -48,14 +46,13 @@ $(function() {
 <pre>${exception}</pre>
 </c:if>
 
-		</div>
+        </div>
       </article>
 
-    </section>
-	<!-- end of main -->
+      </section>
+	  <!-- end of main -->
 	</div>
 
   </body>
 
 </html>
-

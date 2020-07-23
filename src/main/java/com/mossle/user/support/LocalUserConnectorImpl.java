@@ -1,6 +1,7 @@
 package com.mossle.user.support;
 
 import java.util.ArrayList;
+import java.util.Collections;
 import java.util.HashMap;
 import java.util.List;
 import java.util.Map;
@@ -24,6 +25,8 @@ import com.mossle.user.persistence.domain.PersonInfo;
 import com.mossle.user.persistence.manager.AccountCredentialManager;
 import com.mossle.user.persistence.manager.AccountInfoManager;
 import com.mossle.user.persistence.manager.PersonInfoManager;
+
+import org.apache.commons.lang3.StringUtils;
 
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
@@ -112,6 +115,28 @@ public class LocalUserConnectorImpl implements LocalUserConnector {
         return userDto;
     }
 
+    public List<UserDTO> search(String query) {
+        if (StringUtils.isBlank(query)) {
+            return Collections.emptyList();
+        }
+
+        String hql = "from AccountInfo where username like ?";
+        List<AccountInfo> accountInfos = accountInfoManager.find(hql, "%"
+                + query + "%");
+        List<UserDTO> userDtos = new ArrayList<UserDTO>();
+
+        for (AccountInfo accountInfo : accountInfos) {
+            String code = accountInfo.getCode();
+            PersonInfo personInfo = personInfoManager
+                    .findUniqueBy("code", code);
+            UserDTO userDto = this.convertUserDto(accountInfo, personInfo);
+            userDtos.add(userDto);
+        }
+
+        return userDtos;
+    }
+
+    // ~
     @Resource
     public void setAccountInfoManager(AccountInfoManager accountInfoManager) {
         this.accountInfoManager = accountInfoManager;

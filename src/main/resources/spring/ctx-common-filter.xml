@@ -15,7 +15,9 @@
 				<ref bean="tenantFilter"/>
 				<ref bean="cmsFilter"/>
 				-->
+				<!--
 				<ref bean="cmsFilter"/>
+			-->
 				<ref bean="springSecurityFilterChainProxy"/>
 				<ref bean="openSessionInViewFilter"/>
 				<ref bean="auditTrailFilter"/>

@@ -28,6 +28,8 @@ import com.mossle.core.util.BaseDTO;
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
 
+import org.springframework.beans.factory.annotation.Value;
+
 import org.springframework.web.bind.annotation.PathVariable;
 import org.springframework.web.bind.annotation.RequestMapping;
 import org.springframework.web.bind.annotation.RequestMethod;
@@ -46,6 +48,7 @@ public class CmsCommentApiController {
     private CommentThreadManager commentThreadManager;
     private CurrentUserHolder currentUserHolder;
     private UserClient userClient;
+    private String avatarPrefix;
 
     @RequestMapping("")
     public BaseDTO fetch(
@@ -61,7 +64,7 @@ public class CmsCommentApiController {
             commentThreadManager.save(commentThread);
         }
 
-        String hql = "from CommentInfo where commentInfo=null and commentThread=? order by id desc";
+        String hql = "from CommentInfo where commentInfoByParentId=null and commentThread=? order by id desc";
         int pageSize = 10;
         Page page = commentInfoManager.pagedQuery(hql, pageNo, pageSize,
                 commentThread);
@@ -96,13 +99,18 @@ public class CmsCommentApiController {
 
         // commentInfo.setMode(1);
         if (parentId != 0L) {
-            CommentInfo parent = commentInfoManager.get(parentId);
+            CommentInfo reply = commentInfoManager.get(parentId);
 
-            if (parent.getCommentInfo() != null) {
-                parent = parent.getCommentInfo();
+            CommentInfo parent;
+
+            if (reply.getCommentInfoByParentId() != null) {
+                parent = reply.getCommentInfoByParentId();
+            } else {
+                parent = reply;
             }
 
-            commentInfo.setCommentInfo(parent);
+            commentInfo.setCommentInfoByParentId(parent);
+            commentInfo.setCommentInfoByReplyId(reply);
         }
 
         String userId = currentUserHolder.getUserId();
@@ -110,7 +118,7 @@ public class CmsCommentApiController {
 
         UserDTO userDto = userClient.findById(userId, "1");
         commentInfo.setUserName(userDto.getDisplayName());
-        commentInfo.setUserAvatar("../../api/avatar/" + userDto.getUsername());
+        commentInfo.setUserAvatar(avatarPrefix + "/" + userDto.getUsername());
         commentInfoManager.save(commentInfo);
 
         return new BaseDTO();
@@ -128,6 +136,8 @@ public class CmsCommentApiController {
     }
 
     public Map<String, Object> convertComment(CommentInfo commentInfo) {
+        CommentInfo reply = commentInfo.getCommentInfoByReplyId();
+
         Map<String, Object> map = new HashMap<String, Object>();
         map.put("id", commentInfo.getId());
         map.put("content", commentInfo.getContent());
@@ -136,7 +146,12 @@ public class CmsCommentApiController {
         map.put("userAvatar", commentInfo.getUserAvatar());
         map.put("createTime", commentInfo.getCreateTime());
 
-        String hql = "from CommentInfo where commentInfo.id=? order by id asc";
+        if (reply != null) {
+            map.put("replyUserId", reply.getUserId());
+            map.put("replyUserName", reply.getUserName());
+        }
+
+        String hql = "from CommentInfo where commentInfoByParentId.id=? order by id asc";
         List<CommentInfo> children = commentInfoManager.find(hql,
                 commentInfo.getId());
 
@@ -177,5 +192,10 @@ public class CmsCommentApiController {
     @Resource
     public void setUserClient(UserClient userClient) {
         this.userClient = userClient;
+    }
+
+    @Value("${avatar.prefix}")
+    public void setAvatarPrefix(String avatarPrefix) {
+        this.avatarPrefix = avatarPrefix;
     }
 }

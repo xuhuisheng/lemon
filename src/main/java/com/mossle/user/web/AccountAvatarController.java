@@ -62,11 +62,14 @@ public class AccountAvatarController {
 
     /**
      * 上传.
-     *
-     * @param id Long
-     * @param avatar MultipartFile
+     * 
+     * @param id
+     *            Long
+     * @param avatar
+     *            MultipartFile
      * @return String
-     * @throws Exception ex
+     * @throws Exception
+     *             ex
      */
     @RequestMapping("account-avatar-upload")
     @ResponseBody
@@ -95,10 +98,13 @@ public class AccountAvatarController {
 
     /**
      * 显示.
-     *
-     * @param id Long
-     * @param os OutputStream
-     * @throws Exception ex
+     * 
+     * @param id
+     *            Long
+     * @param os
+     *            OutputStream
+     * @throws Exception
+     *             ex
      */
     @RequestMapping("account-avatar-view")
     @ResponseBody

@@ -47,7 +47,7 @@
             {
                 "code": "disk",
                 "name": "网盘",
-                "url": "/disk/disk-info-list.do",
+                "url": "/disk/index.do",
                 "type": "module",
                 "display": "true",
                 "perm": "disk",
@@ -64,7 +64,7 @@
             },
             {
                 "code": "website",
-                "name": "网站首页",
+                "name": "企业门户",
                 "url": "/cms/view/",
                 "type": "module",
                 "display": "true",
@@ -255,7 +255,7 @@
                         "name": "工卡管理",
                         "url": "/card/card-info-list.do",
                         "type": "module",
-                        "display": "false",
+                        "display": "true",
                         "perm": "card",
                         "priority": 70006
                     },
@@ -312,6 +312,15 @@
                         "display": "false",
                         "perm": "vote",
                         "priority": 70012
+                    },
+                    {
+                        "code": "travel",
+                        "name": "差旅管理",
+                        "url": "/travel/index.do",
+                        "type": "module",
+                        "display": "true",
+                        "perm": "travel",
+                        "priority": 80012
                     }
                 ]
             },
@@ -430,15 +439,6 @@
                         "type": "module",
                         "display": "true",
                         "perm": "leave",
-                        "priority": 80012
-                    },
-                    {
-                        "code": "travel",
-                        "name": "差旅管理",
-                        "url": "/travel/travel-info-list.do",
-                        "type": "module",
-                        "display": "true",
-                        "perm": "travel",
                         "priority": 80012
                     }
                 ]

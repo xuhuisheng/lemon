@@ -52,7 +52,7 @@ public class DatabaseUserAuthConnector implements UserAuthConnector {
             return null;
         }
 
-        return this.process(userDto, tenantDto);
+        return this.process(userDto, tenantId);
     }
 
     public UserAuthDTO findByRef(String ref, String tenantId) {
@@ -60,20 +60,20 @@ public class DatabaseUserAuthConnector implements UserAuthConnector {
         UserDTO userDto = userConnector.findByRef(ref,
                 tenantDto.getUserRepoRef());
 
-        return process(userDto, tenantDto);
+        return process(userDto, tenantId);
     }
 
     public UserAuthDTO findById(String id, String tenantId) {
         TenantDTO tenantDto = tenantConnector.findById(tenantId);
         UserDTO userDto = userConnector.findById(id);
 
-        return process(userDto, tenantDto);
+        return process(userDto, tenantId);
     }
 
-    public UserAuthDTO process(UserDTO userDto, TenantDTO tenantDto) {
+    public UserAuthDTO process(UserDTO userDto, String tenantId) {
         UserAuthDTO userAuthDto = new UserAuthDTO();
         userAuthDto.setId(userDto.getId());
-        userAuthDto.setTenantId(tenantDto.getId());
+        userAuthDto.setTenantId(tenantId);
         userAuthDto.setUsername(userDto.getUsername());
         userAuthDto.setRef(userDto.getRef());
         userAuthDto.setDisplayName(userDto.getDisplayName());
@@ -88,17 +88,17 @@ public class DatabaseUserAuthConnector implements UserAuthConnector {
 
         // permissions
         List<Map<String, Object>> permissions = jdbcTemplate.queryForList(
-                sqlFindPermissions, userDto.getId(), tenantDto.getId());
+                sqlFindPermissions, userDto.getId(), tenantId);
         logger.debug("sqlFindPermissions : {}", sqlFindPermissions);
         logger.debug("userDto.getId() : {}", userDto.getId());
-        logger.debug("tenantDto.getId() : {}", tenantDto.getId());
+        logger.debug("tenantId : {}", tenantId);
         logger.debug("permissions : {}", permissions);
         userAuthDto.setPermissions(this.convertMapListToStringList(permissions,
                 "permission"));
 
         // roles
         List<Map<String, Object>> roles = jdbcTemplate.queryForList(
-                sqlFindRoles, userDto.getId(), tenantDto.getId());
+                sqlFindRoles, userDto.getId(), tenantId);
         userAuthDto.setRoles(this.convertMapListToStringList(roles, "role"));
 
         return userAuthDto;

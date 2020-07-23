@@ -20,7 +20,7 @@ var config = {
     orderBy: '${page.orderBy == null ? "" : page.orderBy}',
     asc: ${page.asc},
     params: {
-        'filter_LIKES_name': '${param.filter_LIKES_name}'
+        'filter_LIKES_receiver': '${param.filter_LIKES_receiver}'
     },
 	selectedItemClass: 'selectedItem',
 	gridFormId: 'sendmail-historyGridForm',
@@ -59,7 +59,7 @@ $(function() {
 
 		  <form name="mailHistoryForm" method="post" action="sendmail-history-list.do" class="form-inline">
 		    <label for="mailHistory_receiver">收信人:</label>
-		    <input type="text" id="mailHistory_receiver" class="form-control" name="mailHistory_receiver" value="${param.mailHistory_receiver}">
+		    <input type="text" id="mailHistory_receiver" class="form-control" name="filter_LIKES_receiver" value="${param.filter_LIKES_receiver}">
 			<button class="btn btn-default a-search" onclick="document.mailHistoryForm.submit()">查询</button>&nbsp;
 		  </form>
 
@@ -102,9 +102,10 @@ $(function() {
 		<!--
         <th>编号</th>
 		-->
-        <th>创建时间</th>
-        <th>模板</th>
+        <th>app</th>
         <th>接收者</th>
+        <th>模板</th>
+        <th>创建时间</th>
         <th>状态</th>
         <th width="90">&nbsp;</th>
       </tr>
@@ -117,9 +118,10 @@ $(function() {
 		<!--
         <td>${item.id}</td>
 		-->
-        <td>${item.createTime}</td>
-        <td>${item.sendmailTemplate.name}</td>
+        <td>${item.sendmailApp.name}</td>
         <td>${item.receiver}</td>
+        <td>${item.sendmailTemplate.name}</td>
+        <td><fmt:formatDate value="${item.createTime}" type="both"/></td>
         <td>${item.status}</td>
         <td>
           <a href="sendmail-history-view.do?id=${item.id}">查看</a>

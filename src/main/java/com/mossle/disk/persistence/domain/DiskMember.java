@@ -27,10 +27,10 @@ public class DiskMember implements java.io.Serializable {
     private Long id;
 
     /** null. */
-    private DiskShare diskShare;
+    private DiskSpace diskSpace;
 
     /** null. */
-    private DiskSpace diskSpace;
+    private DiskShare diskShare;
 
     /** null. */
     private String catalog;
@@ -72,13 +72,13 @@ public class DiskMember implements java.io.Serializable {
         this.id = id;
     }
 
-    public DiskMember(Long id, DiskShare diskShare, DiskSpace diskSpace,
+    public DiskMember(Long id, DiskSpace diskSpace, DiskShare diskShare,
             String catalog, String type, String name, Integer mask,
             String description, String userId, String creator, Date createTime,
             Date expireTime, String status, Integer priority) {
         this.id = id;
-        this.diskShare = diskShare;
         this.diskSpace = diskSpace;
+        this.diskShare = diskShare;
         this.catalog = catalog;
         this.type = type;
         this.name = name;
@@ -109,21 +109,6 @@ public class DiskMember implements java.io.Serializable {
 
     /** @return null. */
     @ManyToOne(fetch = FetchType.LAZY)
-    @JoinColumn(name = "SHARE_ID")
-    public DiskShare getDiskShare() {
-        return this.diskShare;
-    }
-
-    /**
-     * @param diskShare
-     *            null.
-     */
-    public void setDiskShare(DiskShare diskShare) {
-        this.diskShare = diskShare;
-    }
-
-    /** @return null. */
-    @ManyToOne(fetch = FetchType.LAZY)
     @JoinColumn(name = "SPACE_ID")
     public DiskSpace getDiskSpace() {
         return this.diskSpace;
@@ -135,6 +120,21 @@ public class DiskMember implements java.io.Serializable {
      */
     public void setDiskSpace(DiskSpace diskSpace) {
         this.diskSpace = diskSpace;
+    }
+
+    /** @return null. */
+    @ManyToOne(fetch = FetchType.LAZY)
+    @JoinColumn(name = "SHARE_ID")
+    public DiskShare getDiskShare() {
+        return this.diskShare;
+    }
+
+    /**
+     * @param diskShare
+     *            null.
+     */
+    public void setDiskShare(DiskShare diskShare) {
+        this.diskShare = diskShare;
     }
 
     /** @return null. */

@@ -23,6 +23,7 @@ import com.mossle.disk.persistence.domain.DiskInfo;
 import com.mossle.disk.persistence.domain.DiskShare;
 import com.mossle.disk.persistence.manager.DiskInfoManager;
 import com.mossle.disk.persistence.manager.DiskShareManager;
+import com.mossle.disk.service.DiskInfoService;
 import com.mossle.disk.service.DiskService;
 
 import org.slf4j.Logger;
@@ -48,6 +49,7 @@ public class DiskInfoController {
     private StoreClient storeClient;
     private DiskService diskService;
     private TenantHolder tenantHolder;
+    private DiskInfoService diskInfoService;
 
     /**
      * 列表显示.
@@ -99,7 +101,7 @@ public class DiskInfoController {
 
         String userId = currentUserHolder.getUserId();
         String tenantId = tenantHolder.getTenantId();
-        diskService.createFile(userId, new MultipartFileDataSource(file),
+        diskInfoService.createFile(userId, new MultipartFileDataSource(file),
                 file.getOriginalFilename(), file.getSize(), path, tenantId);
 
         return "{\"success\":true}";
@@ -112,7 +114,7 @@ public class DiskInfoController {
     public String createDir(@RequestParam("path") String path,
             @RequestParam("name") String name) {
         String userId = currentUserHolder.getUserId();
-        diskService.createDir(userId, name, path);
+        diskInfoService.createDir(userId, name, path);
 
         return "redirect:/disk/disk-info-list.do?path=" + path;
     }
@@ -367,5 +369,10 @@ public class DiskInfoController {
     @Resource
     public void setTenantHolder(TenantHolder tenantHolder) {
         this.tenantHolder = tenantHolder;
+    }
+
+    @Resource
+    public void setDiskInfoService(DiskInfoService diskInfoService) {
+        this.diskInfoService = diskInfoService;
     }
 }

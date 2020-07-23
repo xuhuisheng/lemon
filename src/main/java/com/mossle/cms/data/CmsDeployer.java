@@ -45,16 +45,19 @@ public class CmsDeployer {
             return;
         }
 
+        // site
         CmsSiteCallback cmsSiteCallback = new CmsSiteCallback();
         cmsSiteCallback.setCmsSiteManager(cmsSiteManager);
         new CsvProcessor().process(siteDataFilePath, dataFileEncoding,
                 cmsSiteCallback);
 
+        // catalog
         CmsCatalogCallback cmsCatalogCallback = new CmsCatalogCallback();
         cmsCatalogCallback.setCmsCatalogManager(cmsCatalogManager);
         new CsvProcessor().process(catalogDataFilePath, dataFileEncoding,
                 cmsCatalogCallback);
 
+        // article
         CmsArticleCallback cmsArticleCallback = new CmsArticleCallback();
         cmsArticleCallback.setCmsArticleManager(cmsArticleManager);
         cmsArticleCallback.setCmsCatalogManager(cmsCatalogManager);
@@ -62,6 +65,12 @@ public class CmsDeployer {
         new CsvProcessor().process(articleDataFilePath, dataFileEncoding,
                 cmsArticleCallback);
 
+        // article attribute
+        CmsArticleAttributeCallback cmsArticleAttributeCallback = new CmsArticleAttributeCallback();
+        cmsArticleAttributeCallback.setCmsArticleManager(cmsArticleManager);
+        cmsArticleAttributeCallback.process();
+
+        // comment
         CmsCommentCallback cmsCommentCallback = new CmsCommentCallback();
         cmsCommentCallback.setCmsCommentManager(cmsCommentManager);
         cmsCommentCallback.setCmsArticleManager(cmsArticleManager);

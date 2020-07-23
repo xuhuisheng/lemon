@@ -97,10 +97,13 @@ $(function() {
     <thead>
       <tr>
         <th width="10" class="table-check"><input type="checkbox" name="checkAll" onchange="toggleSelectedItems(this.checked)"></th>
+		<!--
+        <th>编号</th>
+		-->
         <th>名称</th>
         <th>主题</th>
         <th>接收者</th>
-        <th width="100">&nbsp;</th>
+        <th width="90">&nbsp;</th>
       </tr>
     </thead>
 
@@ -108,8 +111,11 @@ $(function() {
       <c:forEach items="${page.result}" var="item">
       <tr>
         <td><input type="checkbox" class="selectedItem a-check" name="selectedItem" value="${item.id}"></td>
+		<!--
+        <td>${item.id}</td>
+		-->
         <td>${item.name}</td>
-        <td><c:out value="${item.subject}"/></td>
+        <td>${item.subject}</td>
         <td><c:out value="${item.receiver}"/></td>
         <td>
           <a href="sendmail-template-input.do?id=${item.id}" class="a-update"><spring:message code="core.list.edit" text="编辑"/></a>

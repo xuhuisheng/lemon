@@ -23,6 +23,9 @@ public class DiskAcl implements java.io.Serializable {
     private Long id;
 
     /** null. */
+    private DiskRule diskRule;
+
+    /** null. */
     private DiskShare diskShare;
 
     /** null. */
@@ -31,6 +34,15 @@ public class DiskAcl implements java.io.Serializable {
     /** null. */
     private String ref;
 
+    /** null. */
+    private String entityRef;
+
+    /** null. */
+    private String entityCatalog;
+
+    /** null. */
+    private Integer mask;
+
     public DiskAcl() {
     }
 
@@ -38,11 +50,17 @@ public class DiskAcl implements java.io.Serializable {
         this.id = id;
     }
 
-    public DiskAcl(Long id, DiskShare diskShare, String type, String ref) {
+    public DiskAcl(Long id, DiskRule diskRule, DiskShare diskShare,
+            String type, String ref, String entityRef, String entityCatalog,
+            Integer mask) {
         this.id = id;
+        this.diskRule = diskRule;
         this.diskShare = diskShare;
         this.type = type;
         this.ref = ref;
+        this.entityRef = entityRef;
+        this.entityCatalog = entityCatalog;
+        this.mask = mask;
     }
 
     /** @return null. */
@@ -58,6 +76,21 @@ public class DiskAcl implements java.io.Serializable {
      */
     public void setId(Long id) {
         this.id = id;
+    }
+
+    /** @return null. */
+    @ManyToOne(fetch = FetchType.LAZY)
+    @JoinColumn(name = "RULE_ID")
+    public DiskRule getDiskRule() {
+        return this.diskRule;
+    }
+
+    /**
+     * @param diskRule
+     *            null.
+     */
+    public void setDiskRule(DiskRule diskRule) {
+        this.diskRule = diskRule;
     }
 
     /** @return null. */
@@ -101,5 +134,47 @@ public class DiskAcl implements java.io.Serializable {
      */
     public void setRef(String ref) {
         this.ref = ref;
+    }
+
+    /** @return null. */
+    @Column(name = "ENTITY_REF", length = 50)
+    public String getEntityRef() {
+        return this.entityRef;
+    }
+
+    /**
+     * @param entityRef
+     *            null.
+     */
+    public void setEntityRef(String entityRef) {
+        this.entityRef = entityRef;
+    }
+
+    /** @return null. */
+    @Column(name = "ENTITY_CATALOG", length = 50)
+    public String getEntityCatalog() {
+        return this.entityCatalog;
+    }
+
+    /**
+     * @param entityCatalog
+     *            null.
+     */
+    public void setEntityCatalog(String entityCatalog) {
+        this.entityCatalog = entityCatalog;
+    }
+
+    /** @return null. */
+    @Column(name = "MASK")
+    public Integer getMask() {
+        return this.mask;
+    }
+
+    /**
+     * @param mask
+     *            null.
+     */
+    public void setMask(Integer mask) {
+        this.mask = mask;
     }
 }

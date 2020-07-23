@@ -35,8 +35,9 @@ public class UserStatusConverter {
             } else {
                 TenantDTO tenantDto = tenantConnector.findById(role
                         .getTenantId());
-                buff.append(role.getName()).append("(")
-                        .append(tenantDto.getName()).append("),");
+                // buff.append(role.getName()).append("(")
+                // .append(tenantDto.getName()).append("),");
+                buff.append(role.getName()).append(",");
             }
         }
 

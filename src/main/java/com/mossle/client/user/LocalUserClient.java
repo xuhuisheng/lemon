@@ -1,11 +1,20 @@
 package com.mossle.client.user;
 
+import java.util.List;
+
 import javax.annotation.Resource;
 
 import com.mossle.api.user.LocalUserConnector;
 import com.mossle.api.user.RemoteUserConnector;
 import com.mossle.api.user.UserDTO;
 
+/**
+ * local模式.
+ * 
+ * <pre>
+ * 本地查询user，找不到就报错。
+ * </pre>
+ */
 public class LocalUserClient implements UserClient {
     private LocalUserConnector localUserConnector;
 
@@ -46,6 +55,11 @@ public class LocalUserClient implements UserClient {
         return alias.trim().toLowerCase();
     }
 
+    public List<UserDTO> search(String query) {
+        return this.localUserConnector.search(query);
+    }
+
+    // ~
     @Resource
     public void setLocalUserConnector(LocalUserConnector localUserConnector) {
         this.localUserConnector = localUserConnector;

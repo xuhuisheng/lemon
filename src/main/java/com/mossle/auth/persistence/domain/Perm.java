@@ -13,6 +13,7 @@ import javax.persistence.JoinTable;
 import javax.persistence.ManyToMany;
 import javax.persistence.ManyToOne;
 import javax.persistence.OneToMany;
+import javax.persistence.OrderBy;
 import javax.persistence.Table;
 
 /**
@@ -28,11 +29,11 @@ public class Perm implements java.io.Serializable {
     /** 主键. */
     private Long id;
 
-    /** null. */
-    private Perm perm;
-
     /** 外键，权限类型. */
     private PermType permType;
+
+    /** null. */
+    private Perm perm;
 
     /** 编码. */
     private String code;
@@ -59,7 +60,7 @@ public class Perm implements java.io.Serializable {
     private String icon;
 
     /** . */
-    private Set<RoleDef> roleDefs = new HashSet<RoleDef>(0);
+    private Set<Menu> menus = new HashSet<Menu>(0);
 
     /** . */
     private Set<Access> accesses = new HashSet<Access>(0);
@@ -68,23 +69,22 @@ public class Perm implements java.io.Serializable {
     private Set<Perm> perms = new HashSet<Perm>(0);
 
     /** . */
-    private Set<Menu> menus = new HashSet<Menu>(0);
+    private Set<RoleDef> roleDefs = new HashSet<RoleDef>(0);
 
     public Perm() {
     }
 
-    public Perm(Long id, PermType permType) {
+    public Perm(Long id) {
         this.id = id;
-        this.permType = permType;
     }
 
-    public Perm(Long id, Perm perm, PermType permType, String code,
+    public Perm(Long id, PermType permType, Perm perm, String code,
             String name, String tenantId, Integer priority, String type,
-            String title, String url, String icon, Set<RoleDef> roleDefs,
-            Set<Access> accesses, Set<Perm> perms, Set<Menu> menus) {
+            String title, String url, String icon, Set<Menu> menus,
+            Set<Access> accesses, Set<Perm> perms, Set<RoleDef> roleDefs) {
         this.id = id;
-        this.perm = perm;
         this.permType = permType;
+        this.perm = perm;
         this.code = code;
         this.name = name;
         this.tenantId = tenantId;
@@ -93,10 +93,10 @@ public class Perm implements java.io.Serializable {
         this.title = title;
         this.url = url;
         this.icon = icon;
-        this.roleDefs = roleDefs;
+        this.menus = menus;
         this.accesses = accesses;
         this.perms = perms;
-        this.menus = menus;
+        this.roleDefs = roleDefs;
     }
 
     /** @return 主键. */
@@ -114,6 +114,21 @@ public class Perm implements java.io.Serializable {
         this.id = id;
     }
 
+    /** @return 外键，权限类型. */
+    @ManyToOne(fetch = FetchType.LAZY)
+    @JoinColumn(name = "PERM_TYPE_ID")
+    public PermType getPermType() {
+        return this.permType;
+    }
+
+    /**
+     * @param permType
+     *            外键，权限类型.
+     */
+    public void setPermType(PermType permType) {
+        this.permType = permType;
+    }
+
     /** @return null. */
     @ManyToOne(fetch = FetchType.LAZY)
     @JoinColumn(name = "PARENT_ID")
@@ -127,21 +142,6 @@ public class Perm implements java.io.Serializable {
      */
     public void setPerm(Perm perm) {
         this.perm = perm;
-    }
-
-    /** @return 外键，权限类型. */
-    @ManyToOne(fetch = FetchType.LAZY)
-    @JoinColumn(name = "PERM_TYPE_ID", nullable = false)
-    public PermType getPermType() {
-        return this.permType;
-    }
-
-    /**
-     * @param permType
-     *            外键，权限类型.
-     */
-    public void setPermType(PermType permType) {
-        this.permType = permType;
     }
 
     /** @return 编码. */
@@ -257,18 +257,17 @@ public class Perm implements java.io.Serializable {
     }
 
     /** @return . */
-    @ManyToMany(fetch = FetchType.LAZY)
-    @JoinTable(name = "AUTH_PERM_ROLE_DEF", joinColumns = { @JoinColumn(name = "PERM_ID", nullable = false, updatable = false) }, inverseJoinColumns = { @JoinColumn(name = "ROLE_DEF_ID", nullable = false, updatable = false) })
-    public Set<RoleDef> getRoleDefs() {
-        return this.roleDefs;
+    @OneToMany(fetch = FetchType.LAZY, mappedBy = "perm")
+    public Set<Menu> getMenus() {
+        return this.menus;
     }
 
     /**
-     * @param roleDefs
+     * @param menus
      *            .
      */
-    public void setRoleDefs(Set<RoleDef> roleDefs) {
-        this.roleDefs = roleDefs;
+    public void setMenus(Set<Menu> menus) {
+        this.menus = menus;
     }
 
     /** @return . */
@@ -287,6 +286,7 @@ public class Perm implements java.io.Serializable {
 
     /** @return . */
     @OneToMany(fetch = FetchType.LAZY, mappedBy = "perm")
+    @OrderBy("priority")
     public Set<Perm> getPerms() {
         return this.perms;
     }
@@ -300,16 +300,17 @@ public class Perm implements java.io.Serializable {
     }
 
     /** @return . */
-    @OneToMany(fetch = FetchType.LAZY, mappedBy = "perm")
-    public Set<Menu> getMenus() {
-        return this.menus;
+    @ManyToMany(fetch = FetchType.LAZY)
+    @JoinTable(name = "AUTH_PERM_ROLE_DEF", joinColumns = { @JoinColumn(name = "PERM_ID", nullable = false, updatable = false) }, inverseJoinColumns = { @JoinColumn(name = "ROLE_DEF_ID", nullable = false, updatable = false) })
+    public Set<RoleDef> getRoleDefs() {
+        return this.roleDefs;
     }
 
     /**
-     * @param menus
+     * @param roleDefs
      *            .
      */
-    public void setMenus(Set<Menu> menus) {
-        this.menus = menus;
+    public void setRoleDefs(Set<RoleDef> roleDefs) {
+        this.roleDefs = roleDefs;
     }
 }

@@ -5,6 +5,8 @@ import java.util.Date;
 import java.util.List;
 import java.util.Map;
 
+import javax.annotation.Resource;
+
 import com.mossle.api.cms.ArticleDTO;
 import com.mossle.api.cms.CatalogDTO;
 import com.mossle.api.cms.CmsConnector;
@@ -39,7 +41,8 @@ public class DatabaseCmsConnector implements CmsConnector {
 
         String selectSql = "select a.id as id,a.title as title,a.summary as summary,a.content as content,"
                 + "a.create_time as createTime,a.user_id as userId,a.hit_count as hitCount,"
-                + "a.comment_count as commentCount,c.id as catalogId,c.code as catalogCode "
+                + "a.comment_count as commentCount,c.id as catalogId,c.code as catalogCode, "
+                + "a.publish_time as publishTime "
                 + "from CMS_ARTICLE a,CMS_CATALOG c "
                 + "where a.catalog_id=c.ID and c.code=? and c.tenant_id=? order by a.create_time desc limit "
                 + start + "," + pageSize;
@@ -93,13 +96,22 @@ public class DatabaseCmsConnector implements CmsConnector {
         articleDto.setSummary((String) map.get("summary"));
         articleDto.setContent((String) map.get("content"));
         articleDto.setCreateTime((Date) map.get("createTime"));
+        articleDto.setPublishTime((Date) map.get("publishTime"));
         articleDto.setUserId((String) map.get("userId"));
-        articleDto.setHitCount((Integer) map.get("hitCount"));
-        articleDto.setCommentCount((Integer) map.get("commentCount"));
+        articleDto.setHitCount(this.findInteger(map.get("hitCount")));
+        articleDto.setCommentCount(this.findInteger(map.get("commentCount")));
         articleDto.setCatalogId(map.get("catalogId").toString());
         articleDto.setCatalogCode((String) map.get("catalogCode"));
 
         return articleDto;
+    }
+
+    public int findInteger(Object value) {
+        if (value == null) {
+            return 0;
+        }
+
+        return (Integer) value;
     }
 
     public Page findComments(String id, int pageNo, int pageSize) {
@@ -159,6 +171,7 @@ public class DatabaseCmsConnector implements CmsConnector {
                 Long.parseLong(articleId));
     }
 
+    @Resource
     public void setJdbcTemplate(JdbcTemplate jdbcTemplate) {
         this.jdbcTemplate = jdbcTemplate;
     }
