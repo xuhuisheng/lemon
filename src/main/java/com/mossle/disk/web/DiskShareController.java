@@ -41,6 +41,8 @@ public class DiskShareController {
     public String list(
             @RequestParam(value = "path", required = false) String path,
             Model model) {
+        logger.debug("list");
+
         if (path == null) {
             path = "";
         }
@@ -169,7 +171,7 @@ public class DiskShareController {
         this.currentUserHolder = currentUserHolder;
     }
 
-    @Value("${application.baseUrl}")
+    @Value("${application.baseUrl:localhost}")
     public void setBaseUrl(String baseUrl) {
         this.baseUrl = baseUrl;
     }

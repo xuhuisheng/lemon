@@ -11,6 +11,7 @@ import com.mossle.api.user.UserConnector;
 
 import com.mossle.cms.persistence.domain.CmsArticle;
 import com.mossle.cms.persistence.domain.CmsCatalog;
+import com.mossle.cms.persistence.domain.CmsSite;
 import com.mossle.cms.persistence.manager.CmsArticleManager;
 import com.mossle.cms.persistence.manager.CmsCatalogManager;
 
@@ -29,7 +30,7 @@ public class CmsArticleCallback implements CsvCallback {
     private CmsCatalogManager cmsCatalogManager;
     private UserConnector userConnector;
     private String defaultTenantId = "1";
-    private String dataFileEncoding = "GB2312";
+    private String dataFileEncoding = "UTF-8";
 
     public void process(List<String> list, int lineNo) throws Exception {
         String code = list.get(0);
@@ -70,7 +71,11 @@ public class CmsArticleCallback implements CsvCallback {
 
         if (cmsCatalog == null) {
             logger.info("cannot find catalog : {}", catalog);
+
+            return;
         }
+
+        CmsSite cmsSite = cmsCatalog.getCmsSite();
 
         try {
             Date createTimeValue = new SimpleDateFormat("yyy-MM-dd")
@@ -81,6 +86,7 @@ public class CmsArticleCallback implements CsvCallback {
             cmsArticle.setCreateTime(createTimeValue);
             cmsArticle.setPublishTime(createTimeValue);
             cmsArticle.setCmsCatalog(cmsCatalog);
+            cmsArticle.setCmsSite(cmsSite);
             cmsArticle.setHitCount(Integer.parseInt(hit));
             cmsArticle.setTenantId(defaultTenantId);
             cmsArticle.setContent(content);

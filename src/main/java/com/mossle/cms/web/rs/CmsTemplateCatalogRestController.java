@@ -1,7 +1,5 @@
 package com.mossle.cms.web.rs;
 
-import java.text.SimpleDateFormat;
-
 import java.util.ArrayList;
 import java.util.HashMap;
 import java.util.List;
@@ -9,21 +7,15 @@ import java.util.Map;
 
 import javax.annotation.Resource;
 
-import com.mossle.api.tenant.TenantHolder;
-
 import com.mossle.cms.persistence.domain.CmsTemplateCatalog;
 import com.mossle.cms.persistence.domain.CmsTemplateContent;
 import com.mossle.cms.persistence.manager.CmsTemplateCatalogManager;
 import com.mossle.cms.persistence.manager.CmsTemplateContentManager;
 
-import com.mossle.core.page.Page;
-
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
 
-import org.springframework.web.bind.annotation.PathVariable;
 import org.springframework.web.bind.annotation.RequestMapping;
-import org.springframework.web.bind.annotation.RequestMethod;
 import org.springframework.web.bind.annotation.RestController;
 
 @RestController
@@ -33,7 +25,6 @@ public class CmsTemplateCatalogRestController {
             .getLogger(CmsTemplateCatalogRestController.class);
     private CmsTemplateCatalogManager cmsTemplateCatalogManager;
     private CmsTemplateContentManager cmsTemplateContentManager;
-    private TenantHolder tenantHolder;
 
     @RequestMapping("tree")
     public List<Map> tree() throws Exception {
@@ -121,7 +112,7 @@ public class CmsTemplateCatalogRestController {
             map.put("name", cmsTemplateContent.getName());
             map.put("type", "content");
             map.put("open", false);
-            map.put("categoryId", cmsTemplateContent.getCmsTemplateCatalog()
+            map.put("catalogId", cmsTemplateContent.getCmsTemplateCatalog()
                     .getId());
 
             return map;
@@ -132,6 +123,7 @@ public class CmsTemplateCatalogRestController {
         }
     }
 
+    // ~
     @Resource
     public void setCmsTemplateCatalogManager(
             CmsTemplateCatalogManager cmsTemplateCatalogManager) {
@@ -142,10 +134,5 @@ public class CmsTemplateCatalogRestController {
     public void setCmsTemplateContentManager(
             CmsTemplateContentManager cmsTemplateContentManager) {
         this.cmsTemplateContentManager = cmsTemplateContentManager;
-    }
-
-    @Resource
-    public void setTenantHolder(TenantHolder tenantHolder) {
-        this.tenantHolder = tenantHolder;
     }
 }

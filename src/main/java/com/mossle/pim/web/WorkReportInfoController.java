@@ -11,11 +11,12 @@ import javax.annotation.Resource;
 import javax.servlet.http.HttpServletRequest;
 import javax.servlet.http.HttpServletResponse;
 
-import com.mossle.api.store.StoreConnector;
+import com.mossle.api.auth.CurrentUserHolder;
 import com.mossle.api.store.StoreDTO;
 import com.mossle.api.tenant.TenantHolder;
 
-import com.mossle.api.auth.CurrentUserHolder;
+import com.mossle.client.store.StoreClient;
+
 import com.mossle.core.export.Exportor;
 import com.mossle.core.export.TableModel;
 import com.mossle.core.mapper.BeanMapper;
@@ -55,7 +56,7 @@ public class WorkReportInfoController {
     private JsonMapper jsonMapper = new JsonMapper();
     private CurrentUserHolder currentUserHolder;
     private TenantHolder tenantHolder;
-    private StoreConnector storeConnector;
+    private StoreClient storeClient;
 
     @RequestMapping("work-report-info-list")
     public String list(@ModelAttribute Page page,
@@ -215,7 +216,7 @@ public class WorkReportInfoController {
     public String upload(@RequestParam("id") Long id,
             @RequestParam("files[]") MultipartFile attachment) throws Exception {
         String tenantId = tenantHolder.getTenantId();
-        StoreDTO storeDto = storeConnector.saveStore("workReport/attachment",
+        StoreDTO storeDto = this.storeClient.saveStore("workReport/attachment",
                 new MultipartFileDataSource(attachment), tenantId);
         WorkReportInfo workReportInfo = null;
 
@@ -252,7 +253,7 @@ public class WorkReportInfoController {
         String tenantId = tenantHolder.getTenantId();
         WorkReportAttachment workReportAttachment = workReportAttachmentManager
                 .get(id);
-        StoreDTO storeDto = storeConnector.getStore("workReport/attachment",
+        StoreDTO storeDto = this.storeClient.getStore("workReport/attachment",
                 workReportAttachment.getRef(), tenantId);
         ServletUtils.setFileDownloadHeader(request, response,
                 workReportAttachment.getName());
@@ -294,7 +295,7 @@ public class WorkReportInfoController {
     }
 
     @Resource
-    public void setStoreConnector(StoreConnector storeConnector) {
-        this.storeConnector = storeConnector;
+    public void setStoreClient(StoreClient storeClient) {
+        this.storeClient = storeClient;
     }
 }

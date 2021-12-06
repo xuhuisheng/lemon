@@ -18,7 +18,7 @@ import javax.persistence.Temporal;
 import javax.persistence.TemporalType;
 
 /**
- * PlmRequirement .
+ * PlmRequirement 需求.
  * 
  * @author Lingo
  */
@@ -27,26 +27,41 @@ import javax.persistence.TemporalType;
 public class PlmRequirement implements java.io.Serializable {
     private static final long serialVersionUID = 0L;
 
-    /** null. */
+    /** 主键. */
     private Long id;
-
-    /** null. */
-    private PlmProject plmProject;
 
     /** null. */
     private PlmVersion plmVersion;
 
-    /** null. */
-    private PlmRequirement plmRequirement;
+    /** 所属项目. */
+    private PlmProject plmProject;
 
     /** null. */
     private PlmIssue plmIssue;
 
     /** null. */
+    private PlmRequirement plmRequirement;
+
+    /** 标题. */
     private String name;
 
-    /** null. */
+    /** 分类：新功能，功能优化，线上bug，运营需求，问题反馈. */
+    private String category;
+
+    /** 紧急程度. */
+    private String severity;
+
+    /** 优先级. */
     private Integer priority;
+
+    /** 需求类型：产品，业务，技术，其他. */
+    private String type;
+
+    /** 截止时间. */
+    private Date deadline;
+
+    /** 备注. */
+    private String description;
 
     /** null. */
     private String tag;
@@ -54,11 +69,17 @@ public class PlmRequirement implements java.io.Serializable {
     /** null. */
     private String status;
 
-    /** null. */
+    /** 创建时间. */
     private Date createTime;
 
-    /** null. */
+    /** 创建人. */
     private String userId;
+
+    /** 负责团队. */
+    private String groupName;
+
+    /** 负责人. */
+    private String assignee;
 
     /** . */
     private Set<PlmRequirement> plmRequirements = new HashSet<PlmRequirement>(0);
@@ -70,26 +91,35 @@ public class PlmRequirement implements java.io.Serializable {
         this.id = id;
     }
 
-    public PlmRequirement(Long id, PlmProject plmProject,
-            PlmVersion plmVersion, PlmRequirement plmRequirement,
-            PlmIssue plmIssue, String name, Integer priority, String tag,
-            String status, Date createTime, String userId,
+    public PlmRequirement(Long id, PlmVersion plmVersion,
+            PlmProject plmProject, PlmIssue plmIssue,
+            PlmRequirement plmRequirement, String name, String category,
+            String severity, Integer priority, String type, Date deadline,
+            String description, String tag, String status, Date createTime,
+            String userId, String groupName, String assignee,
             Set<PlmRequirement> plmRequirements) {
         this.id = id;
-        this.plmProject = plmProject;
         this.plmVersion = plmVersion;
-        this.plmRequirement = plmRequirement;
+        this.plmProject = plmProject;
         this.plmIssue = plmIssue;
+        this.plmRequirement = plmRequirement;
         this.name = name;
+        this.category = category;
+        this.severity = severity;
         this.priority = priority;
+        this.type = type;
+        this.deadline = deadline;
+        this.description = description;
         this.tag = tag;
         this.status = status;
         this.createTime = createTime;
         this.userId = userId;
+        this.groupName = groupName;
+        this.assignee = assignee;
         this.plmRequirements = plmRequirements;
     }
 
-    /** @return null. */
+    /** @return 主键. */
     @Id
     @Column(name = "ID", unique = true, nullable = false)
     public Long getId() {
@@ -98,25 +128,10 @@ public class PlmRequirement implements java.io.Serializable {
 
     /**
      * @param id
-     *            null.
+     *            主键.
      */
     public void setId(Long id) {
         this.id = id;
-    }
-
-    /** @return null. */
-    @ManyToOne(fetch = FetchType.LAZY)
-    @JoinColumn(name = "PROJECT_ID")
-    public PlmProject getPlmProject() {
-        return this.plmProject;
-    }
-
-    /**
-     * @param plmProject
-     *            null.
-     */
-    public void setPlmProject(PlmProject plmProject) {
-        this.plmProject = plmProject;
     }
 
     /** @return null. */
@@ -134,19 +149,19 @@ public class PlmRequirement implements java.io.Serializable {
         this.plmVersion = plmVersion;
     }
 
-    /** @return null. */
+    /** @return 所属项目. */
     @ManyToOne(fetch = FetchType.LAZY)
-    @JoinColumn(name = "PARENT_ID")
-    public PlmRequirement getPlmRequirement() {
-        return this.plmRequirement;
+    @JoinColumn(name = "PROJECT_ID")
+    public PlmProject getPlmProject() {
+        return this.plmProject;
     }
 
     /**
-     * @param plmRequirement
-     *            null.
+     * @param plmProject
+     *            所属项目.
      */
-    public void setPlmRequirement(PlmRequirement plmRequirement) {
-        this.plmRequirement = plmRequirement;
+    public void setPlmProject(PlmProject plmProject) {
+        this.plmProject = plmProject;
     }
 
     /** @return null. */
@@ -165,6 +180,21 @@ public class PlmRequirement implements java.io.Serializable {
     }
 
     /** @return null. */
+    @ManyToOne(fetch = FetchType.LAZY)
+    @JoinColumn(name = "PARENT_ID")
+    public PlmRequirement getPlmRequirement() {
+        return this.plmRequirement;
+    }
+
+    /**
+     * @param plmRequirement
+     *            null.
+     */
+    public void setPlmRequirement(PlmRequirement plmRequirement) {
+        this.plmRequirement = plmRequirement;
+    }
+
+    /** @return 标题. */
     @Column(name = "NAME", length = 200)
     public String getName() {
         return this.name;
@@ -172,13 +202,41 @@ public class PlmRequirement implements java.io.Serializable {
 
     /**
      * @param name
-     *            null.
+     *            标题.
      */
     public void setName(String name) {
         this.name = name;
     }
 
-    /** @return null. */
+    /** @return 分类：新功能，功能优化，线上bug，运营需求，问题反馈. */
+    @Column(name = "CATEGORY", length = 50)
+    public String getCategory() {
+        return this.category;
+    }
+
+    /**
+     * @param category
+     *            分类：新功能，功能优化，线上bug，运营需求，问题反馈.
+     */
+    public void setCategory(String category) {
+        this.category = category;
+    }
+
+    /** @return 紧急程度. */
+    @Column(name = "SEVERITY", length = 50)
+    public String getSeverity() {
+        return this.severity;
+    }
+
+    /**
+     * @param severity
+     *            紧急程度.
+     */
+    public void setSeverity(String severity) {
+        this.severity = severity;
+    }
+
+    /** @return 优先级. */
     @Column(name = "PRIORITY")
     public Integer getPriority() {
         return this.priority;
@@ -186,10 +244,53 @@ public class PlmRequirement implements java.io.Serializable {
 
     /**
      * @param priority
-     *            null.
+     *            优先级.
      */
     public void setPriority(Integer priority) {
         this.priority = priority;
+    }
+
+    /** @return 需求类型：产品，业务，技术，其他. */
+    @Column(name = "TYPE", length = 50)
+    public String getType() {
+        return this.type;
+    }
+
+    /**
+     * @param type
+     *            需求类型：产品，业务，技术，其他.
+     */
+    public void setType(String type) {
+        this.type = type;
+    }
+
+    /** @return 截止时间. */
+    @Temporal(TemporalType.DATE)
+    @Column(name = "DEADLINE", length = 10)
+    public Date getDeadline() {
+        return this.deadline;
+    }
+
+    /**
+     * @param deadline
+     *            截止时间.
+     */
+    public void setDeadline(Date deadline) {
+        this.deadline = deadline;
+    }
+
+    /** @return 备注. */
+    @Column(name = "DESCRIPTION", length = 200)
+    public String getDescription() {
+        return this.description;
+    }
+
+    /**
+     * @param description
+     *            备注.
+     */
+    public void setDescription(String description) {
+        this.description = description;
     }
 
     /** @return null. */
@@ -220,7 +321,7 @@ public class PlmRequirement implements java.io.Serializable {
         this.status = status;
     }
 
-    /** @return null. */
+    /** @return 创建时间. */
     @Temporal(TemporalType.TIMESTAMP)
     @Column(name = "CREATE_TIME", length = 26)
     public Date getCreateTime() {
@@ -229,13 +330,13 @@ public class PlmRequirement implements java.io.Serializable {
 
     /**
      * @param createTime
-     *            null.
+     *            创建时间.
      */
     public void setCreateTime(Date createTime) {
         this.createTime = createTime;
     }
 
-    /** @return null. */
+    /** @return 创建人. */
     @Column(name = "USER_ID", length = 64)
     public String getUserId() {
         return this.userId;
@@ -243,10 +344,38 @@ public class PlmRequirement implements java.io.Serializable {
 
     /**
      * @param userId
-     *            null.
+     *            创建人.
      */
     public void setUserId(String userId) {
         this.userId = userId;
+    }
+
+    /** @return 负责团队. */
+    @Column(name = "GROUP_NAME", length = 200)
+    public String getGroupName() {
+        return this.groupName;
+    }
+
+    /**
+     * @param groupName
+     *            负责团队.
+     */
+    public void setGroupName(String groupName) {
+        this.groupName = groupName;
+    }
+
+    /** @return 负责人. */
+    @Column(name = "ASSIGNEE", length = 64)
+    public String getAssignee() {
+        return this.assignee;
+    }
+
+    /**
+     * @param assignee
+     *            负责人.
+     */
+    public void setAssignee(String assignee) {
+        this.assignee = assignee;
     }
 
     /** @return . */

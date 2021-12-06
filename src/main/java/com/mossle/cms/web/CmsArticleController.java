@@ -22,10 +22,17 @@ import com.mossle.cms.persistence.domain.CmsArticle;
 import com.mossle.cms.persistence.domain.CmsAttachment;
 import com.mossle.cms.persistence.domain.CmsCatalog;
 import com.mossle.cms.persistence.domain.CmsComment;
+import com.mossle.cms.persistence.domain.CmsSite;
+import com.mossle.cms.persistence.domain.CmsTag;
+import com.mossle.cms.persistence.domain.CmsTagArticle;
 import com.mossle.cms.persistence.manager.CmsArticleManager;
 import com.mossle.cms.persistence.manager.CmsAttachmentManager;
 import com.mossle.cms.persistence.manager.CmsCatalogManager;
 import com.mossle.cms.persistence.manager.CmsCommentManager;
+import com.mossle.cms.persistence.manager.CmsSiteManager;
+import com.mossle.cms.persistence.manager.CmsTagArticleManager;
+import com.mossle.cms.persistence.manager.CmsTagManager;
+import com.mossle.cms.service.CmsService;
 import com.mossle.cms.service.RenderService;
 import com.mossle.cms.support.CommentDTO;
 
@@ -38,10 +45,13 @@ import com.mossle.core.query.PropertyFilter;
 import com.mossle.core.spring.MessageHelper;
 import com.mossle.core.store.MultipartFileDataSource;
 
+import org.apache.commons.lang3.StringUtils;
+
 import org.springframework.stereotype.Controller;
 
 import org.springframework.ui.Model;
 
+import org.springframework.web.bind.annotation.CookieValue;
 import org.springframework.web.bind.annotation.ModelAttribute;
 import org.springframework.web.bind.annotation.RequestMapping;
 import org.springframework.web.bind.annotation.RequestParam;
@@ -59,10 +69,14 @@ public class CmsArticleController {
     private CmsCatalogManager cmsCatalogManager;
     private CmsAttachmentManager cmsAttachmentManager;
     private CmsCommentManager cmsCommentManager;
+    private CmsTagManager cmsTagManager;
+    private CmsTagArticleManager cmsTagArticleManager;
+    private CmsSiteManager cmsSiteManager;
     private Exportor exportor;
     private BeanMapper beanMapper = new BeanMapper();
     private MessageHelper messageHelper;
     private RenderService renderService;
+    private CmsService cmsService;
     private StoreClient storeClient;
     private JsonMapper jsonMapper = new JsonMapper();
     private CurrentUserHolder currentUserHolder;
@@ -72,14 +86,23 @@ public class CmsArticleController {
      * 文章列表.
      */
     @RequestMapping("cms-article-list")
-    public String list(@ModelAttribute Page page,
-            @RequestParam Map<String, Object> parameterMap, Model model) {
+    public String list(
+            @ModelAttribute Page page,
+            @RequestParam Map<String, Object> parameterMap,
+            @CookieValue(value = "currentSiteId", required = false) Long currentSiteId,
+            Model model) {
+        model.addAttribute("cmsSites", cmsSiteManager.getAll("id", true));
+
+        CmsSite cmsSite = this.cmsService.findCurrentSite(currentSiteId);
+
         page.setDefaultOrder("publishTime", Page.DESC);
 
         String tenantId = tenantHolder.getTenantId();
         List<PropertyFilter> propertyFilters = PropertyFilter
                 .buildFromMap(parameterMap);
-        propertyFilters.add(new PropertyFilter("EQS_tenantId", tenantId));
+        // propertyFilters.add(new PropertyFilter("EQS_tenantId", tenantId));
+        propertyFilters.add(new PropertyFilter("EQL_cmsSite.id", Long
+                .toString(cmsSite.getId())));
         page = cmsArticleManager.pagedQuery(page, propertyFilters);
         model.addAttribute("page", page);
 
@@ -93,7 +116,12 @@ public class CmsArticleController {
     public String input(
             @RequestParam(value = "id", required = false) Long id,
             @RequestParam(value = "catalogId", required = false) Long catalogId,
+            @CookieValue(value = "currentSiteId", required = false) Long currentSiteId,
             Model model) {
+        model.addAttribute("cmsSites", cmsSiteManager.getAll("id", true));
+
+        CmsSite cmsSite = this.cmsService.findCurrentSite(currentSiteId);
+
         String tenantId = tenantHolder.getTenantId();
 
         if (id != null) {
@@ -101,8 +129,8 @@ public class CmsArticleController {
             model.addAttribute("model", cmsArticle);
         }
 
-        model.addAttribute("cmsCatalogs",
-                cmsCatalogManager.findBy("tenantId", tenantId));
+        model.addAttribute("cmsCatalogs", cmsCatalogManager.find(
+                "from CmsCatalog where cmsSite.id=?", cmsSite.getId()));
 
         if (catalogId != null) {
             CmsCatalog cmsCatalog = this.cmsCatalogManager.get(catalogId);
@@ -121,6 +149,7 @@ public class CmsArticleController {
             @RequestParam("cmsCatalogId") Long cmsCatalogId,
             @RequestParam(value = "file", required = false) MultipartFile file,
             @RequestParam(value = "logoFile", required = false) MultipartFile logoFile,
+            @RequestParam(value = "tags", required = false) String tags,
             RedirectAttributes redirectAttributes) throws Exception {
         String tenantId = tenantHolder.getTenantId();
         Long id = cmsArticle.getId();
@@ -158,6 +187,37 @@ public class CmsArticleController {
             StoreDTO storeDto = storeClient.saveStore("cms",
                     new MultipartFileDataSource(logoFile), tenantId);
             dest.setLogo(storeDto.getKey());
+        }
+
+        // tags
+        if (StringUtils.isNotBlank(tags)) {
+            for (String tag : tags.split(" ")) {
+                tag = StringUtils.trim(tag);
+
+                if (StringUtils.isBlank(tag)) {
+                    continue;
+                }
+
+                CmsTag cmsTag = cmsTagManager.findUniqueBy("name", tag);
+
+                if (cmsTag == null) {
+                    cmsTag = new CmsTag();
+                    cmsTag.setName(tag);
+                    cmsTagManager.save(cmsTag);
+                }
+
+                CmsTagArticle cmsTagArticle = cmsTagArticleManager
+                        .findUnique(
+                                "from CmsTagArticle where cmsArticle.id=? and cmsTag.id=?",
+                                cmsArticle.getId(), cmsTag.getId());
+
+                if (cmsTagArticle != null) {
+                    cmsTagArticle = new CmsTagArticle();
+                    cmsTagArticle.setCmsTag(cmsTag);
+                    cmsTagArticle.setCmsArticle(cmsArticle);
+                    cmsTagArticleManager.save(cmsTagArticle);
+                }
+            }
         }
 
         cmsArticleManager.save(dest);
@@ -512,6 +572,22 @@ public class CmsArticleController {
     }
 
     @Resource
+    public void setCmsTagManager(CmsTagManager cmsTagManager) {
+        this.cmsTagManager = cmsTagManager;
+    }
+
+    @Resource
+    public void setCmsTagArticleManager(
+            CmsTagArticleManager cmsTagArticleManager) {
+        this.cmsTagArticleManager = cmsTagArticleManager;
+    }
+
+    @Resource
+    public void setCmsSiteManager(CmsSiteManager cmsSiteManager) {
+        this.cmsSiteManager = cmsSiteManager;
+    }
+
+    @Resource
     public void setExportor(Exportor exportor) {
         this.exportor = exportor;
     }
@@ -524,6 +600,11 @@ public class CmsArticleController {
     @Resource
     public void setRenderService(RenderService renderService) {
         this.renderService = renderService;
+    }
+
+    @Resource
+    public void setCmsService(CmsService cmsService) {
+        this.cmsService = cmsService;
     }
 
     @Resource

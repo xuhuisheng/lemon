@@ -72,18 +72,27 @@ public class AccountInfo implements java.io.Serializable {
     /** 租户. */
     private String tenantId;
 
-    /** . */
-    private Set<AccountCredential> accountCredentials = new HashSet<AccountCredential>(
-            0);
+    /** 来源. */
+    private String source;
 
-    /** . */
-    private Set<AccountAlias> accountAliases = new HashSet<AccountAlias>(0);
+    /** 外部标识. */
+    private String ref;
+
+    /** 负责人. */
+    private String director;
 
     /** . */
     private Set<AccountDevice> accountDevices = new HashSet<AccountDevice>(0);
 
     /** . */
     private Set<AccountAvatar> accountAvatars = new HashSet<AccountAvatar>(0);
+
+    /** . */
+    private Set<AccountCredential> accountCredentials = new HashSet<AccountCredential>(
+            0);
+
+    /** . */
+    private Set<AccountAlias> accountAliases = new HashSet<AccountAlias>(0);
 
     public AccountInfo() {
     }
@@ -96,10 +105,11 @@ public class AccountInfo implements java.io.Serializable {
             String displayName, String status, String passwordRequired,
             String locked, Date createTime, Date closeTime, Date loginTime,
             String nickName, String description, String language,
-            String timezone, String tenantId,
+            String timezone, String tenantId, String source, String ref,
+            String director, Set<AccountDevice> accountDevices,
+            Set<AccountAvatar> accountAvatars,
             Set<AccountCredential> accountCredentials,
-            Set<AccountAlias> accountAliases,
-            Set<AccountDevice> accountDevices, Set<AccountAvatar> accountAvatars) {
+            Set<AccountAlias> accountAliases) {
         this.id = id;
         this.code = code;
         this.username = username;
@@ -116,10 +126,13 @@ public class AccountInfo implements java.io.Serializable {
         this.language = language;
         this.timezone = timezone;
         this.tenantId = tenantId;
-        this.accountCredentials = accountCredentials;
-        this.accountAliases = accountAliases;
+        this.source = source;
+        this.ref = ref;
+        this.director = director;
         this.accountDevices = accountDevices;
         this.accountAvatars = accountAvatars;
+        this.accountCredentials = accountCredentials;
+        this.accountAliases = accountAliases;
     }
 
     /** @return 主键. */
@@ -350,32 +363,46 @@ public class AccountInfo implements java.io.Serializable {
         this.tenantId = tenantId;
     }
 
-    /** @return . */
-    @OneToMany(fetch = FetchType.LAZY, mappedBy = "accountInfo")
-    public Set<AccountCredential> getAccountCredentials() {
-        return this.accountCredentials;
+    /** @return 来源. */
+    @Column(name = "SOURCE", length = 100)
+    public String getSource() {
+        return this.source;
     }
 
     /**
-     * @param accountCredentials
-     *            .
+     * @param source
+     *            来源.
      */
-    public void setAccountCredentials(Set<AccountCredential> accountCredentials) {
-        this.accountCredentials = accountCredentials;
+    public void setSource(String source) {
+        this.source = source;
     }
 
-    /** @return . */
-    @OneToMany(fetch = FetchType.LAZY, mappedBy = "accountInfo")
-    public Set<AccountAlias> getAccountAliases() {
-        return this.accountAliases;
+    /** @return 外部标识. */
+    @Column(name = "REF", length = 100)
+    public String getRef() {
+        return this.ref;
     }
 
     /**
-     * @param accountAliases
-     *            .
+     * @param ref
+     *            外部标识.
      */
-    public void setAccountAliases(Set<AccountAlias> accountAliases) {
-        this.accountAliases = accountAliases;
+    public void setRef(String ref) {
+        this.ref = ref;
+    }
+
+    /** @return 负责人. */
+    @Column(name = "DIRECTOR", length = 100)
+    public String getDirector() {
+        return this.director;
+    }
+
+    /**
+     * @param director
+     *            负责人.
+     */
+    public void setDirector(String director) {
+        this.director = director;
     }
 
     /** @return . */
@@ -404,5 +431,33 @@ public class AccountInfo implements java.io.Serializable {
      */
     public void setAccountAvatars(Set<AccountAvatar> accountAvatars) {
         this.accountAvatars = accountAvatars;
+    }
+
+    /** @return . */
+    @OneToMany(fetch = FetchType.LAZY, mappedBy = "accountInfo")
+    public Set<AccountCredential> getAccountCredentials() {
+        return this.accountCredentials;
+    }
+
+    /**
+     * @param accountCredentials
+     *            .
+     */
+    public void setAccountCredentials(Set<AccountCredential> accountCredentials) {
+        this.accountCredentials = accountCredentials;
+    }
+
+    /** @return . */
+    @OneToMany(fetch = FetchType.LAZY, mappedBy = "accountInfo")
+    public Set<AccountAlias> getAccountAliases() {
+        return this.accountAliases;
+    }
+
+    /**
+     * @param accountAliases
+     *            .
+     */
+    public void setAccountAliases(Set<AccountAlias> accountAliases) {
+        this.accountAliases = accountAliases;
     }
 }

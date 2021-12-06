@@ -36,6 +36,8 @@ public class CmsResource {
     @Path("image")
     @Produces(MediaType.APPLICATION_OCTET_STREAM)
     public InputStream image(@QueryParam("key") String key) throws Exception {
+        logger.debug("image : {}", key);
+
         String tenantId = tenantHolder.getTenantId();
         StoreDTO storeDto = storeClient.getStore("cms/html/r/image", key,
                 tenantId);

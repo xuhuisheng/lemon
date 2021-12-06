@@ -1,41 +1,22 @@
 package com.mossle.plm.web;
 
-import java.util.ArrayList;
-import java.util.Date;
-import java.util.HashMap;
 import java.util.List;
 import java.util.Map;
 
 import javax.annotation.Resource;
 
-import com.mossle.api.auth.CurrentUserHolder;
-import com.mossle.core.mapper.BeanMapper;
 import com.mossle.core.page.Page;
+import com.mossle.core.query.PropertyFilter;
 
-import com.mossle.plm.persistence.domain.*;
-import com.mossle.plm.persistence.domain.PlmCategory;
-import com.mossle.plm.persistence.domain.PlmComment;
-import com.mossle.plm.persistence.domain.PlmConfig;
 import com.mossle.plm.persistence.domain.PlmIssue;
-import com.mossle.plm.persistence.domain.PlmLog;
 import com.mossle.plm.persistence.domain.PlmProject;
-import com.mossle.plm.persistence.domain.PlmSprint;
-import com.mossle.plm.persistence.domain.PlmVersion;
-import com.mossle.plm.persistence.manager.*;
-import com.mossle.plm.persistence.manager.PlmCategoryManager;
-import com.mossle.plm.persistence.manager.PlmCommentManager;
-import com.mossle.plm.persistence.manager.PlmConfigManager;
+import com.mossle.plm.persistence.domain.PlmRequirement;
 import com.mossle.plm.persistence.manager.PlmIssueManager;
-import com.mossle.plm.persistence.manager.PlmLogManager;
 import com.mossle.plm.persistence.manager.PlmProjectManager;
-import com.mossle.plm.persistence.manager.PlmSprintManager;
-import com.mossle.plm.persistence.manager.PlmVersionManager;
-import com.mossle.plm.service.PlmLogService;
+import com.mossle.plm.persistence.manager.PlmRequirementManager;
 
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
-
-import org.springframework.jdbc.core.JdbcTemplate;
 
 import org.springframework.stereotype.Controller;
 
@@ -50,18 +31,44 @@ import org.springframework.web.bind.annotation.RequestParam;
 public class PlmRequirementController {
     private static Logger logger = LoggerFactory.getLogger(PlmController.class);
     private PlmProjectManager plmProjectManager;
-    private PlmVersionManager plmVersionManager;
     private PlmIssueManager plmIssueManager;
-    private PlmCommentManager plmCommentManager;
-    private PlmCategoryManager plmCategoryManager;
-    private PlmLogManager plmLogManager;
-    private PlmSprintManager plmSprintManager;
-    private PlmConfigManager plmConfigManager;
     private PlmRequirementManager plmRequirementManager;
-    private PlmLogService plmLogService;
-    private CurrentUserHolder currentUserHolder;
-    private JdbcTemplate jdbcTemplate;
-    private BeanMapper beanMapper = new BeanMapper();
+
+    /**
+     * 需求列表.
+     */
+    @RequestMapping("plm-requirement-list")
+    public String list(@ModelAttribute Page page,
+            @RequestParam Map<String, Object> parameterMap, Model model) {
+        logger.debug("list");
+        page.setDefaultOrder("id", "desc");
+
+        List<PropertyFilter> propertyFilters = PropertyFilter
+                .buildFromMap(parameterMap);
+        page = plmRequirementManager.pagedQuery(page, propertyFilters);
+
+        model.addAttribute("page", page);
+
+        return "plm/plm-requirement-list";
+    }
+
+    /**
+     * 添加需求.
+     */
+    @RequestMapping("plm-requirement-input")
+    public String input(Model model) {
+        return "plm/plm-requirement-input";
+    }
+
+    /**
+     * 添加需求.
+     */
+    @RequestMapping("plm-requirement-save")
+    public String save(PlmRequirement plmRequirement) {
+        this.plmRequirementManager.save(plmRequirement);
+
+        return "redirect:/plm/plm-requirement-list.do";
+    }
 
     /**
      * 产品视图.
@@ -143,7 +150,7 @@ public class PlmRequirementController {
     }
 
     /**
-     * 为需求创建issue.
+     * x * 为需求创建issue.
      */
     @RequestMapping("requirement-link")
     public String requirementLink(@RequestParam("id") Long id) {
@@ -167,58 +174,13 @@ public class PlmRequirementController {
     }
 
     @Resource
-    public void setPlmVersionManager(PlmVersionManager plmVersionManager) {
-        this.plmVersionManager = plmVersionManager;
-    }
-
-    @Resource
     public void setPlmIssueManager(PlmIssueManager plmIssueManager) {
         this.plmIssueManager = plmIssueManager;
-    }
-
-    @Resource
-    public void setPlmCommentManager(PlmCommentManager plmCommentManager) {
-        this.plmCommentManager = plmCommentManager;
-    }
-
-    @Resource
-    public void setPlmCategoryManager(PlmCategoryManager plmCategoryManager) {
-        this.plmCategoryManager = plmCategoryManager;
-    }
-
-    @Resource
-    public void setPlmLogManager(PlmLogManager plmLogManager) {
-        this.plmLogManager = plmLogManager;
-    }
-
-    @Resource
-    public void setPlmSprintManager(PlmSprintManager plmSprintManager) {
-        this.plmSprintManager = plmSprintManager;
-    }
-
-    @Resource
-    public void setPlmConfigManager(PlmConfigManager plmConfigManager) {
-        this.plmConfigManager = plmConfigManager;
     }
 
     @Resource
     public void setPlmRequirementManager(
             PlmRequirementManager plmRequirementManager) {
         this.plmRequirementManager = plmRequirementManager;
-    }
-
-    @Resource
-    public void setPlmLogService(PlmLogService plmLogService) {
-        this.plmLogService = plmLogService;
-    }
-
-    @Resource
-    public void setCurrentUserHolder(CurrentUserHolder currentUserHolder) {
-        this.currentUserHolder = currentUserHolder;
-    }
-
-    @Resource
-    public void setJdbcTemplate(JdbcTemplate jdbcTemplate) {
-        this.jdbcTemplate = jdbcTemplate;
     }
 }

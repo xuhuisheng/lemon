@@ -38,6 +38,9 @@ public class PersonInfo implements java.io.Serializable {
     /** 全名. */
     private String fullName;
 
+    /** 手机区号. */
+    private String cellphoneCode;
+
     /** 手机. */
     private String cellphone;
 
@@ -89,11 +92,29 @@ public class PersonInfo implements java.io.Serializable {
     /** 部门名称. */
     private String departmentName;
 
+    /** null. */
+    private String departmentPath;
+
     /** 职位编码. */
     private String positionCode;
 
     /** 职位名称. */
     private String positionName;
+
+    /** null. */
+    private String costCenterCode;
+
+    /** null. */
+    private String costCenterName;
+
+    /** null. */
+    private String superiourCode;
+
+    /** null. */
+    private String superiourName;
+
+    /** 入职时间. */
+    private Date entryDate;
 
     /** 性别. */
     private String gender;
@@ -122,6 +143,15 @@ public class PersonInfo implements java.io.Serializable {
     /** 租户. */
     private String tenantId;
 
+    /** 显示名. */
+    private String displayName;
+
+    /** 类型. */
+    private String type;
+
+    /** 状态. */
+    private String status;
+
     public PersonInfo() {
     }
 
@@ -130,21 +160,25 @@ public class PersonInfo implements java.io.Serializable {
     }
 
     public PersonInfo(Long id, String code, String username, String familyName,
-            String givenName, String fullName, String cellphone,
-            String telephone, String email, String im, String country,
-            String province, String city, String building, String floor,
-            String seat, String employeeNo, String employeeType, String card,
-            String companyCode, String companyName, String departmentCode,
-            String departmentName, String positionCode, String positionName,
-            String gender, Date birthday, String idCardType,
-            String idCardValue, String nationality, String star, String blood,
-            String clothSize, String tenantId) {
+            String givenName, String fullName, String cellphoneCode,
+            String cellphone, String telephone, String email, String im,
+            String country, String province, String city, String building,
+            String floor, String seat, String employeeNo, String employeeType,
+            String card, String companyCode, String companyName,
+            String departmentCode, String departmentName,
+            String departmentPath, String positionCode, String positionName,
+            String costCenterCode, String costCenterName, String superiourCode,
+            String superiourName, Date entryDate, String gender, Date birthday,
+            String idCardType, String idCardValue, String nationality,
+            String star, String blood, String clothSize, String tenantId,
+            String displayName, String type, String status) {
         this.id = id;
         this.code = code;
         this.username = username;
         this.familyName = familyName;
         this.givenName = givenName;
         this.fullName = fullName;
+        this.cellphoneCode = cellphoneCode;
         this.cellphone = cellphone;
         this.telephone = telephone;
         this.email = email;
@@ -162,8 +196,14 @@ public class PersonInfo implements java.io.Serializable {
         this.companyName = companyName;
         this.departmentCode = departmentCode;
         this.departmentName = departmentName;
+        this.departmentPath = departmentPath;
         this.positionCode = positionCode;
         this.positionName = positionName;
+        this.costCenterCode = costCenterCode;
+        this.costCenterName = costCenterName;
+        this.superiourCode = superiourCode;
+        this.superiourName = superiourName;
+        this.entryDate = entryDate;
         this.gender = gender;
         this.birthday = birthday;
         this.idCardType = idCardType;
@@ -173,6 +213,9 @@ public class PersonInfo implements java.io.Serializable {
         this.blood = blood;
         this.clothSize = clothSize;
         this.tenantId = tenantId;
+        this.displayName = displayName;
+        this.type = type;
+        this.status = status;
     }
 
     /** @return 主键. */
@@ -258,6 +301,20 @@ public class PersonInfo implements java.io.Serializable {
      */
     public void setFullName(String fullName) {
         this.fullName = fullName;
+    }
+
+    /** @return 手机区号. */
+    @Column(name = "CELLPHONE_CODE", length = 10)
+    public String getCellphoneCode() {
+        return this.cellphoneCode;
+    }
+
+    /**
+     * @param cellphoneCode
+     *            手机区号.
+     */
+    public void setCellphoneCode(String cellphoneCode) {
+        this.cellphoneCode = cellphoneCode;
     }
 
     /** @return 手机. */
@@ -498,6 +555,20 @@ public class PersonInfo implements java.io.Serializable {
         this.departmentName = departmentName;
     }
 
+    /** @return null. */
+    @Column(name = "DEPARTMENT_PATH", length = 200)
+    public String getDepartmentPath() {
+        return this.departmentPath;
+    }
+
+    /**
+     * @param departmentPath
+     *            null.
+     */
+    public void setDepartmentPath(String departmentPath) {
+        this.departmentPath = departmentPath;
+    }
+
     /** @return 职位编码. */
     @Column(name = "POSITION_CODE", length = 200)
     public String getPositionCode() {
@@ -524,6 +595,77 @@ public class PersonInfo implements java.io.Serializable {
      */
     public void setPositionName(String positionName) {
         this.positionName = positionName;
+    }
+
+    /** @return null. */
+    @Column(name = "COST_CENTER_CODE", length = 200)
+    public String getCostCenterCode() {
+        return this.costCenterCode;
+    }
+
+    /**
+     * @param costCenterCode
+     *            null.
+     */
+    public void setCostCenterCode(String costCenterCode) {
+        this.costCenterCode = costCenterCode;
+    }
+
+    /** @return null. */
+    @Column(name = "COST_CENTER_NAME", length = 200)
+    public String getCostCenterName() {
+        return this.costCenterName;
+    }
+
+    /**
+     * @param costCenterName
+     *            null.
+     */
+    public void setCostCenterName(String costCenterName) {
+        this.costCenterName = costCenterName;
+    }
+
+    /** @return null. */
+    @Column(name = "SUPERIOUR_CODE", length = 200)
+    public String getSuperiourCode() {
+        return this.superiourCode;
+    }
+
+    /**
+     * @param superiourCode
+     *            null.
+     */
+    public void setSuperiourCode(String superiourCode) {
+        this.superiourCode = superiourCode;
+    }
+
+    /** @return null. */
+    @Column(name = "SUPERIOUR_NAME", length = 200)
+    public String getSuperiourName() {
+        return this.superiourName;
+    }
+
+    /**
+     * @param superiourName
+     *            null.
+     */
+    public void setSuperiourName(String superiourName) {
+        this.superiourName = superiourName;
+    }
+
+    /** @return 入职时间. */
+    @Temporal(TemporalType.DATE)
+    @Column(name = "ENTRY_DATE", length = 10)
+    public Date getEntryDate() {
+        return this.entryDate;
+    }
+
+    /**
+     * @param entryDate
+     *            入职时间.
+     */
+    public void setEntryDate(Date entryDate) {
+        this.entryDate = entryDate;
     }
 
     /** @return 性别. */
@@ -651,5 +793,47 @@ public class PersonInfo implements java.io.Serializable {
      */
     public void setTenantId(String tenantId) {
         this.tenantId = tenantId;
+    }
+
+    /** @return 显示名. */
+    @Column(name = "DISPLAY_NAME", length = 50)
+    public String getDisplayName() {
+        return this.displayName;
+    }
+
+    /**
+     * @param displayName
+     *            显示名.
+     */
+    public void setDisplayName(String displayName) {
+        this.displayName = displayName;
+    }
+
+    /** @return 类型. */
+    @Column(name = "TYPE", length = 50)
+    public String getType() {
+        return this.type;
+    }
+
+    /**
+     * @param type
+     *            类型.
+     */
+    public void setType(String type) {
+        this.type = type;
+    }
+
+    /** @return 状态. */
+    @Column(name = "STATUS", length = 50)
+    public String getStatus() {
+        return this.status;
+    }
+
+    /**
+     * @param status
+     *            状态.
+     */
+    public void setStatus(String status) {
+        this.status = status;
     }
 }

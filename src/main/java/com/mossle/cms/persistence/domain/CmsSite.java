@@ -47,8 +47,29 @@ public class CmsSite implements java.io.Serializable {
     /** null. */
     private String templateCode;
 
+    /** null. */
+    private String status;
+
+    /** null. */
+    private String domain;
+
+    /** null. */
+    private String watermarkType;
+
+    /** null. */
+    private String watermarkText;
+
+    /** null. */
+    private String templateTag;
+
     /** . */
     private Set<CmsCatalog> cmsCatalogs = new HashSet<CmsCatalog>(0);
+
+    /** . */
+    private Set<CmsArticle> cmsArticles = new HashSet<CmsArticle>(0);
+
+    /** . */
+    private Set<CmsTag> cmsTags = new HashSet<CmsTag>(0);
 
     /** . */
     private Set<CmsSite> cmsSites = new HashSet<CmsSite>(0);
@@ -62,8 +83,10 @@ public class CmsSite implements java.io.Serializable {
 
     public CmsSite(Long id, CmsSite cmsSite, String type, String name,
             String code, Integer priority, String tenantId,
-            String templateCode, Set<CmsCatalog> cmsCatalogs,
-            Set<CmsSite> cmsSites) {
+            String templateCode, String status, String domain,
+            String watermarkType, String watermarkText, String templateTag,
+            Set<CmsCatalog> cmsCatalogs, Set<CmsArticle> cmsArticles,
+            Set<CmsTag> cmsTags, Set<CmsSite> cmsSites) {
         this.id = id;
         this.cmsSite = cmsSite;
         this.type = type;
@@ -72,7 +95,14 @@ public class CmsSite implements java.io.Serializable {
         this.priority = priority;
         this.tenantId = tenantId;
         this.templateCode = templateCode;
+        this.status = status;
+        this.domain = domain;
+        this.watermarkType = watermarkType;
+        this.watermarkText = watermarkText;
+        this.templateTag = templateTag;
         this.cmsCatalogs = cmsCatalogs;
+        this.cmsArticles = cmsArticles;
+        this.cmsTags = cmsTags;
         this.cmsSites = cmsSites;
     }
 
@@ -190,6 +220,76 @@ public class CmsSite implements java.io.Serializable {
         this.templateCode = templateCode;
     }
 
+    /** @return null. */
+    @Column(name = "STATUS", length = 50)
+    public String getStatus() {
+        return this.status;
+    }
+
+    /**
+     * @param status
+     *            null.
+     */
+    public void setStatus(String status) {
+        this.status = status;
+    }
+
+    /** @return null. */
+    @Column(name = "DOMAIN", length = 200)
+    public String getDomain() {
+        return this.domain;
+    }
+
+    /**
+     * @param domain
+     *            null.
+     */
+    public void setDomain(String domain) {
+        this.domain = domain;
+    }
+
+    /** @return null. */
+    @Column(name = "WATERMARK_TYPE", length = 50)
+    public String getWatermarkType() {
+        return this.watermarkType;
+    }
+
+    /**
+     * @param watermarkType
+     *            null.
+     */
+    public void setWatermarkType(String watermarkType) {
+        this.watermarkType = watermarkType;
+    }
+
+    /** @return null. */
+    @Column(name = "WATERMARK_TEXT", length = 200)
+    public String getWatermarkText() {
+        return this.watermarkText;
+    }
+
+    /**
+     * @param watermarkText
+     *            null.
+     */
+    public void setWatermarkText(String watermarkText) {
+        this.watermarkText = watermarkText;
+    }
+
+    /** @return null. */
+    @Column(name = "TEMPLATE_TAG", length = 100)
+    public String getTemplateTag() {
+        return this.templateTag;
+    }
+
+    /**
+     * @param templateTag
+     *            null.
+     */
+    public void setTemplateTag(String templateTag) {
+        this.templateTag = templateTag;
+    }
+
     /** @return . */
     @OneToMany(fetch = FetchType.LAZY, mappedBy = "cmsSite")
     public Set<CmsCatalog> getCmsCatalogs() {
@@ -202,6 +302,34 @@ public class CmsSite implements java.io.Serializable {
      */
     public void setCmsCatalogs(Set<CmsCatalog> cmsCatalogs) {
         this.cmsCatalogs = cmsCatalogs;
+    }
+
+    /** @return . */
+    @OneToMany(fetch = FetchType.LAZY, mappedBy = "cmsSite")
+    public Set<CmsArticle> getCmsArticles() {
+        return this.cmsArticles;
+    }
+
+    /**
+     * @param cmsArticles
+     *            .
+     */
+    public void setCmsArticles(Set<CmsArticle> cmsArticles) {
+        this.cmsArticles = cmsArticles;
+    }
+
+    /** @return . */
+    @OneToMany(fetch = FetchType.LAZY, mappedBy = "cmsSite")
+    public Set<CmsTag> getCmsTags() {
+        return this.cmsTags;
+    }
+
+    /**
+     * @param cmsTags
+     *            .
+     */
+    public void setCmsTags(Set<CmsTag> cmsTags) {
+        this.cmsTags = cmsTags;
     }
 
     /** @return . */

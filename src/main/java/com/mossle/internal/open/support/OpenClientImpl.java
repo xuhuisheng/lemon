@@ -1,6 +1,5 @@
 package com.mossle.internal.open.support;
 
-import java.util.Collections;
 import java.util.List;
 
 import javax.annotation.Resource;
@@ -13,7 +12,6 @@ import com.mossle.internal.open.persistence.domain.OpenApp;
 import com.mossle.internal.open.persistence.domain.SysInfo;
 import com.mossle.internal.open.persistence.manager.OpenAppManager;
 import com.mossle.internal.open.persistence.manager.SysInfoManager;
-import com.mossle.internal.open.support.OpenAppConverter;
 
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
@@ -26,6 +24,8 @@ public class OpenClientImpl implements OpenClient {
     private OpenAppConverter openAppConverter = new OpenAppConverter();
 
     public OpenAppDTO getApp(String clientId) {
+        logger.debug("get app : {}", clientId);
+
         OpenApp openApp = openAppManager.findUniqueBy("clientId", clientId);
 
         OpenAppDTO openAppDto = this.openAppConverter
@@ -69,6 +69,7 @@ public class OpenClientImpl implements OpenClient {
         }
 
         SysDTO sysDto = new SysDTO();
+        sysDto.setId(Long.toString(sysInfo.getId()));
         sysDto.setCode(code);
         sysDto.setName(sysInfo.getName());
 

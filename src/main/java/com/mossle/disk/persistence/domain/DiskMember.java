@@ -14,7 +14,7 @@ import javax.persistence.Temporal;
 import javax.persistence.TemporalType;
 
 /**
- * DiskMember .
+ * DiskMember 文件成员.
  * 
  * @author Lingo
  */
@@ -23,46 +23,46 @@ import javax.persistence.TemporalType;
 public class DiskMember implements java.io.Serializable {
     private static final long serialVersionUID = 0L;
 
-    /** null. */
+    /** 主键. */
     private Long id;
 
-    /** null. */
+    /** 所属空间. */
     private DiskSpace diskSpace;
 
-    /** null. */
+    /** 对应分享. */
     private DiskShare diskShare;
 
-    /** null. */
+    /** 类型. */
     private String catalog;
 
-    /** null. */
+    /** 分类. */
     private String type;
 
-    /** null. */
+    /** 名称. */
     private String name;
 
-    /** null. */
+    /** 掩码. */
     private Integer mask;
 
-    /** null. */
+    /** 备注. */
     private String description;
 
-    /** null. */
+    /** 成员. */
     private String userId;
 
-    /** null. */
+    /** 创建人. */
     private String creator;
 
-    /** null. */
+    /** 创建时间. */
     private Date createTime;
 
-    /** null. */
+    /** 过期时间. */
     private Date expireTime;
 
-    /** null. */
+    /** 状态. */
     private String status;
 
-    /** null. */
+    /** 优先级. */
     private Integer priority;
 
     public DiskMember() {
@@ -92,7 +92,7 @@ public class DiskMember implements java.io.Serializable {
         this.priority = priority;
     }
 
-    /** @return null. */
+    /** @return 主键. */
     @Id
     @Column(name = "ID", unique = true, nullable = false)
     public Long getId() {
@@ -101,13 +101,13 @@ public class DiskMember implements java.io.Serializable {
 
     /**
      * @param id
-     *            null.
+     *            主键.
      */
     public void setId(Long id) {
         this.id = id;
     }
 
-    /** @return null. */
+    /** @return 所属空间. */
     @ManyToOne(fetch = FetchType.LAZY)
     @JoinColumn(name = "SPACE_ID")
     public DiskSpace getDiskSpace() {
@@ -116,13 +116,13 @@ public class DiskMember implements java.io.Serializable {
 
     /**
      * @param diskSpace
-     *            null.
+     *            所属空间.
      */
     public void setDiskSpace(DiskSpace diskSpace) {
         this.diskSpace = diskSpace;
     }
 
-    /** @return null. */
+    /** @return 对应分享. */
     @ManyToOne(fetch = FetchType.LAZY)
     @JoinColumn(name = "SHARE_ID")
     public DiskShare getDiskShare() {
@@ -131,13 +131,13 @@ public class DiskMember implements java.io.Serializable {
 
     /**
      * @param diskShare
-     *            null.
+     *            对应分享.
      */
     public void setDiskShare(DiskShare diskShare) {
         this.diskShare = diskShare;
     }
 
-    /** @return null. */
+    /** @return 类型. */
     @Column(name = "CATALOG", length = 50)
     public String getCatalog() {
         return this.catalog;
@@ -145,13 +145,13 @@ public class DiskMember implements java.io.Serializable {
 
     /**
      * @param catalog
-     *            null.
+     *            类型.
      */
     public void setCatalog(String catalog) {
         this.catalog = catalog;
     }
 
-    /** @return null. */
+    /** @return 分类. */
     @Column(name = "TYPE", length = 50)
     public String getType() {
         return this.type;
@@ -159,13 +159,13 @@ public class DiskMember implements java.io.Serializable {
 
     /**
      * @param type
-     *            null.
+     *            分类.
      */
     public void setType(String type) {
         this.type = type;
     }
 
-    /** @return null. */
+    /** @return 名称. */
     @Column(name = "NAME", length = 200)
     public String getName() {
         return this.name;
@@ -173,13 +173,13 @@ public class DiskMember implements java.io.Serializable {
 
     /**
      * @param name
-     *            null.
+     *            名称.
      */
     public void setName(String name) {
         this.name = name;
     }
 
-    /** @return null. */
+    /** @return 掩码. */
     @Column(name = "MASK")
     public Integer getMask() {
         return this.mask;
@@ -187,13 +187,13 @@ public class DiskMember implements java.io.Serializable {
 
     /**
      * @param mask
-     *            null.
+     *            掩码.
      */
     public void setMask(Integer mask) {
         this.mask = mask;
     }
 
-    /** @return null. */
+    /** @return 备注. */
     @Column(name = "DESCRIPTION")
     public String getDescription() {
         return this.description;
@@ -201,13 +201,13 @@ public class DiskMember implements java.io.Serializable {
 
     /**
      * @param description
-     *            null.
+     *            备注.
      */
     public void setDescription(String description) {
         this.description = description;
     }
 
-    /** @return null. */
+    /** @return 成员. */
     @Column(name = "USER_ID", length = 64)
     public String getUserId() {
         return this.userId;
@@ -215,13 +215,13 @@ public class DiskMember implements java.io.Serializable {
 
     /**
      * @param userId
-     *            null.
+     *            成员.
      */
     public void setUserId(String userId) {
         this.userId = userId;
     }
 
-    /** @return null. */
+    /** @return 创建人. */
     @Column(name = "CREATOR", length = 64)
     public String getCreator() {
         return this.creator;
@@ -229,13 +229,13 @@ public class DiskMember implements java.io.Serializable {
 
     /**
      * @param creator
-     *            null.
+     *            创建人.
      */
     public void setCreator(String creator) {
         this.creator = creator;
     }
 
-    /** @return null. */
+    /** @return 创建时间. */
     @Temporal(TemporalType.TIMESTAMP)
     @Column(name = "CREATE_TIME", length = 26)
     public Date getCreateTime() {
@@ -244,13 +244,13 @@ public class DiskMember implements java.io.Serializable {
 
     /**
      * @param createTime
-     *            null.
+     *            创建时间.
      */
     public void setCreateTime(Date createTime) {
         this.createTime = createTime;
     }
 
-    /** @return null. */
+    /** @return 过期时间. */
     @Temporal(TemporalType.TIMESTAMP)
     @Column(name = "EXPIRE_TIME", length = 26)
     public Date getExpireTime() {
@@ -259,13 +259,13 @@ public class DiskMember implements java.io.Serializable {
 
     /**
      * @param expireTime
-     *            null.
+     *            过期时间.
      */
     public void setExpireTime(Date expireTime) {
         this.expireTime = expireTime;
     }
 
-    /** @return null. */
+    /** @return 状态. */
     @Column(name = "STATUS", length = 50)
     public String getStatus() {
         return this.status;
@@ -273,13 +273,13 @@ public class DiskMember implements java.io.Serializable {
 
     /**
      * @param status
-     *            null.
+     *            状态.
      */
     public void setStatus(String status) {
         this.status = status;
     }
 
-    /** @return null. */
+    /** @return 优先级. */
     @Column(name = "PRIORITY")
     public Integer getPriority() {
         return this.priority;
@@ -287,7 +287,7 @@ public class DiskMember implements java.io.Serializable {
 
     /**
      * @param priority
-     *            null.
+     *            优先级.
      */
     public void setPriority(Integer priority) {
         this.priority = priority;

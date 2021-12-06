@@ -24,7 +24,6 @@ import com.mossle.cms.persistence.manager.CmsCommentManager;
 import com.mossle.cms.service.RenderService;
 import com.mossle.cms.support.CommentDTO;
 
-import com.mossle.core.export.Exportor;
 import com.mossle.core.mapper.BeanMapper;
 import com.mossle.core.page.Page;
 import com.mossle.core.query.PropertyFilter;
@@ -47,7 +46,6 @@ import org.springframework.web.servlet.mvc.support.RedirectAttributes;
 public class OneCatalogController {
     private CmsArticleManager cmsArticleManager;
     private CmsCatalogManager cmsCatalogManager;
-    private Exportor exportor;
     private BeanMapper beanMapper = new BeanMapper();
     private MessageHelper messageHelper;
     private RenderService renderService;
@@ -249,11 +247,6 @@ public class OneCatalogController {
     @Resource
     public void setCmsCatalogManager(CmsCatalogManager cmsCatalogManager) {
         this.cmsCatalogManager = cmsCatalogManager;
-    }
-
-    @Resource
-    public void setExportor(Exportor exportor) {
-        this.exportor = exportor;
     }
 
     @Resource

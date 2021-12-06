@@ -25,6 +25,7 @@ public class DatabaseUserSyncConnector implements UserSyncConnector {
     @Transactional
     public void updateUser(UserDTO userDto) {
         Assert.notNull(userDto, "userDto should not be null");
+        logger.debug("update user : {}", userDto.getId());
 
         String code = userDto.getRef();
         int count = jdbcTemplate.queryForObject(sqlFindByCode, Integer.class,

@@ -8,7 +8,6 @@ import javax.annotation.Resource;
 
 import com.mossle.user.persistence.domain.AccountLockInfo;
 import com.mossle.user.persistence.domain.AccountLockLog;
-import com.mossle.user.persistence.manager.AccountInfoManager;
 import com.mossle.user.persistence.manager.AccountLockInfoManager;
 import com.mossle.user.persistence.manager.AccountLockLogManager;
 
@@ -30,7 +29,6 @@ public class AccountLockService {
     public static final int FIVE_MINUTES = 5;
     public static final int TEN_MINUTES = 10;
     private int threshold = DEFAULT_THRESHOLD;
-    private AccountInfoManager accountInfoManager;
     private AccountLockInfoManager accountLockInfoManager;
     private AccountLockLogManager accountLockLogManager;
 
@@ -134,10 +132,5 @@ public class AccountLockService {
     public void setAccountLockLogManager(
             AccountLockLogManager accountLockLogManager) {
         this.accountLockLogManager = accountLockLogManager;
-    }
-
-    @Resource
-    public void setAccountInfoManager(AccountInfoManager accountInfoManager) {
-        this.accountInfoManager = accountInfoManager;
     }
 }

@@ -15,7 +15,7 @@ import javax.persistence.Temporal;
 import javax.persistence.TemporalType;
 
 /**
- * DiskRule .
+ * DiskRule 权限规则.
  * 
  * @author Lingo
  */
@@ -24,16 +24,16 @@ import javax.persistence.TemporalType;
 public class DiskRule implements java.io.Serializable {
     private static final long serialVersionUID = 0L;
 
-    /** null. */
+    /** id. */
     private Long id;
 
-    /** null. */
+    /** 创建时间. */
     private Date createTime;
 
-    /** null. */
+    /** 创建人. */
     private String userId;
 
-    /** null. */
+    /** 更新时间. */
     private Date updateTime;
 
     /** . */
@@ -64,7 +64,7 @@ public class DiskRule implements java.io.Serializable {
         this.diskInfos = diskInfos;
     }
 
-    /** @return null. */
+    /** @return id. */
     @Id
     @Column(name = "ID", unique = true, nullable = false)
     public Long getId() {
@@ -73,13 +73,13 @@ public class DiskRule implements java.io.Serializable {
 
     /**
      * @param id
-     *            null.
+     *            id.
      */
     public void setId(Long id) {
         this.id = id;
     }
 
-    /** @return null. */
+    /** @return 创建时间. */
     @Temporal(TemporalType.TIMESTAMP)
     @Column(name = "CREATE_TIME", length = 26)
     public Date getCreateTime() {
@@ -88,13 +88,13 @@ public class DiskRule implements java.io.Serializable {
 
     /**
      * @param createTime
-     *            null.
+     *            创建时间.
      */
     public void setCreateTime(Date createTime) {
         this.createTime = createTime;
     }
 
-    /** @return null. */
+    /** @return 创建人. */
     @Column(name = "USER_ID", length = 64)
     public String getUserId() {
         return this.userId;
@@ -102,13 +102,13 @@ public class DiskRule implements java.io.Serializable {
 
     /**
      * @param userId
-     *            null.
+     *            创建人.
      */
     public void setUserId(String userId) {
         this.userId = userId;
     }
 
-    /** @return null. */
+    /** @return 更新时间. */
     @Temporal(TemporalType.TIMESTAMP)
     @Column(name = "UPDATE_TIME", length = 26)
     public Date getUpdateTime() {
@@ -117,7 +117,7 @@ public class DiskRule implements java.io.Serializable {
 
     /**
      * @param updateTime
-     *            null.
+     *            更新时间.
      */
     public void setUpdateTime(Date updateTime) {
         this.updateTime = updateTime;

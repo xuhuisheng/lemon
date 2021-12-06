@@ -38,6 +38,8 @@ public class RegisterController {
 
     @RequestMapping("register-view")
     public String registerView() {
+        logger.debug("register view");
+
         return "guest/register-view";
     }
 

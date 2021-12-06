@@ -11,7 +11,6 @@ import javax.servlet.http.HttpServletResponse;
 
 import com.mossle.api.auth.CurrentUserHolder;
 
-import com.mossle.cms.persistence.domain.CmsArticle;
 import com.mossle.cms.persistence.domain.CmsComment;
 import com.mossle.cms.persistence.manager.CmsArticleManager;
 import com.mossle.cms.persistence.manager.CmsCommentManager;

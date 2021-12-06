@@ -8,7 +8,6 @@ import javax.annotation.Resource;
 
 import com.mossle.api.tenant.TenantHolder;
 
-import com.mossle.core.export.Exportor;
 import com.mossle.core.mapper.BeanMapper;
 import com.mossle.core.page.Page;
 import com.mossle.core.query.PropertyFilter;
@@ -31,7 +30,6 @@ import org.springframework.web.servlet.mvc.support.RedirectAttributes;
 public class AccountDeviceController {
     private AccountDeviceManager accountDeviceManager;
     private MessageHelper messageHelper;
-    private Exportor exportor;
     private BeanMapper beanMapper = new BeanMapper();
     private TenantHolder tenantHolder;
 
@@ -146,11 +144,6 @@ public class AccountDeviceController {
     @Resource
     public void setMessageHelper(MessageHelper messageHelper) {
         this.messageHelper = messageHelper;
-    }
-
-    @Resource
-    public void setExportor(Exportor exportor) {
-        this.exportor = exportor;
     }
 
     @Resource

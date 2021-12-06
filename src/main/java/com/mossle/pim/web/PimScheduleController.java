@@ -8,10 +8,9 @@ import javax.annotation.Resource;
 import javax.servlet.http.HttpServletRequest;
 import javax.servlet.http.HttpServletResponse;
 
-import com.mossle.api.tenant.TenantHolder;
-import com.mossle.api.user.UserConnector;
-
 import com.mossle.api.auth.CurrentUserHolder;
+import com.mossle.api.tenant.TenantHolder;
+
 import com.mossle.core.export.Exportor;
 import com.mossle.core.export.TableModel;
 import com.mossle.core.mapper.BeanMapper;
@@ -37,7 +36,6 @@ public class PimScheduleController {
     private PimScheduleManager pimScheduleManager;
     private Exportor exportor;
     private BeanMapper beanMapper = new BeanMapper();
-    private UserConnector userConnector;
     private MessageHelper messageHelper;
     private CurrentUserHolder currentUserHolder;
     private TenantHolder tenantHolder;
@@ -143,11 +141,6 @@ public class PimScheduleController {
     @Resource
     public void setExportor(Exportor exportor) {
         this.exportor = exportor;
-    }
-
-    @Resource
-    public void setUserConnector(UserConnector userConnector) {
-        this.userConnector = userConnector;
     }
 
     @Resource

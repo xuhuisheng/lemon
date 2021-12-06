@@ -1,9 +1,5 @@
 package com.mossle.cms.data;
 
-import java.io.BufferedReader;
-import java.io.InputStream;
-import java.io.InputStreamReader;
-
 import java.util.ArrayList;
 import java.util.Collections;
 import java.util.Comparator;
@@ -14,17 +10,12 @@ import java.util.Map;
 import javax.annotation.PostConstruct;
 import javax.annotation.Resource;
 
-import com.mossle.api.user.UserConnector;
-
 import com.mossle.cms.persistence.domain.CmsTemplateCatalog;
 import com.mossle.cms.persistence.domain.CmsTemplateContent;
 import com.mossle.cms.persistence.manager.CmsTemplateCatalogManager;
 import com.mossle.cms.persistence.manager.CmsTemplateContentManager;
 
-import com.mossle.core.csv.CsvProcessor;
-
 import org.apache.commons.io.IOUtils;
-import org.apache.commons.lang3.StringUtils;
 
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
@@ -51,6 +42,8 @@ public class CmsTemplateDeployer implements ApplicationContextAware {
 
             return;
         }
+
+        logger.debug("default tenant id : {}", defaultTenantId);
 
         org.springframework.core.io.Resource[] resources = applicationContext
                 .getResources(dataFilePath + "/**");

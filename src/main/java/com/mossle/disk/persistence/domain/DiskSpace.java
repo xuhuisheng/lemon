@@ -17,7 +17,7 @@ import javax.persistence.Temporal;
 import javax.persistence.TemporalType;
 
 /**
- * DiskSpace .
+ * DiskSpace 文件空间.
  * 
  * @author Lingo
  */
@@ -26,37 +26,37 @@ import javax.persistence.TemporalType;
 public class DiskSpace implements java.io.Serializable {
     private static final long serialVersionUID = 0L;
 
-    /** null. */
+    /** 主键. */
     private Long id;
 
-    /** null. */
+    /** 权限规则. */
     private DiskRule diskRule;
 
-    /** null. */
+    /** 分类. */
     private String catalog;
 
-    /** null. */
+    /** 类型. */
     private String type;
 
-    /** null. */
+    /** 名称. */
     private String name;
 
-    /** null. */
+    /** 备注. */
     private String description;
 
-    /** null. */
+    /** 创建人. */
     private String creator;
 
-    /** null. */
+    /** 创建时间. */
     private Date createTime;
 
-    /** null. */
+    /** 状态. */
     private String status;
 
-    /** null. */
+    /** 优先级. */
     private Integer priority;
 
-    /** null. */
+    /** 配额. */
     private Integer quota;
 
     /** . */
@@ -91,7 +91,7 @@ public class DiskSpace implements java.io.Serializable {
         this.diskMembers = diskMembers;
     }
 
-    /** @return null. */
+    /** @return 主键. */
     @Id
     @Column(name = "ID", unique = true, nullable = false)
     public Long getId() {
@@ -100,13 +100,13 @@ public class DiskSpace implements java.io.Serializable {
 
     /**
      * @param id
-     *            null.
+     *            主键.
      */
     public void setId(Long id) {
         this.id = id;
     }
 
-    /** @return null. */
+    /** @return 权限规则. */
     @ManyToOne(fetch = FetchType.LAZY)
     @JoinColumn(name = "RULE_ID")
     public DiskRule getDiskRule() {
@@ -115,13 +115,13 @@ public class DiskSpace implements java.io.Serializable {
 
     /**
      * @param diskRule
-     *            null.
+     *            权限规则.
      */
     public void setDiskRule(DiskRule diskRule) {
         this.diskRule = diskRule;
     }
 
-    /** @return null. */
+    /** @return 分类. */
     @Column(name = "CATALOG", length = 50)
     public String getCatalog() {
         return this.catalog;
@@ -129,13 +129,13 @@ public class DiskSpace implements java.io.Serializable {
 
     /**
      * @param catalog
-     *            null.
+     *            分类.
      */
     public void setCatalog(String catalog) {
         this.catalog = catalog;
     }
 
-    /** @return null. */
+    /** @return 类型. */
     @Column(name = "TYPE", length = 50)
     public String getType() {
         return this.type;
@@ -143,13 +143,13 @@ public class DiskSpace implements java.io.Serializable {
 
     /**
      * @param type
-     *            null.
+     *            类型.
      */
     public void setType(String type) {
         this.type = type;
     }
 
-    /** @return null. */
+    /** @return 名称. */
     @Column(name = "NAME", length = 200)
     public String getName() {
         return this.name;
@@ -157,13 +157,13 @@ public class DiskSpace implements java.io.Serializable {
 
     /**
      * @param name
-     *            null.
+     *            名称.
      */
     public void setName(String name) {
         this.name = name;
     }
 
-    /** @return null. */
+    /** @return 备注. */
     @Column(name = "DESCRIPTION")
     public String getDescription() {
         return this.description;
@@ -171,13 +171,13 @@ public class DiskSpace implements java.io.Serializable {
 
     /**
      * @param description
-     *            null.
+     *            备注.
      */
     public void setDescription(String description) {
         this.description = description;
     }
 
-    /** @return null. */
+    /** @return 创建人. */
     @Column(name = "CREATOR", length = 64)
     public String getCreator() {
         return this.creator;
@@ -185,13 +185,13 @@ public class DiskSpace implements java.io.Serializable {
 
     /**
      * @param creator
-     *            null.
+     *            创建人.
      */
     public void setCreator(String creator) {
         this.creator = creator;
     }
 
-    /** @return null. */
+    /** @return 创建时间. */
     @Temporal(TemporalType.TIMESTAMP)
     @Column(name = "CREATE_TIME", length = 26)
     public Date getCreateTime() {
@@ -200,13 +200,13 @@ public class DiskSpace implements java.io.Serializable {
 
     /**
      * @param createTime
-     *            null.
+     *            创建时间.
      */
     public void setCreateTime(Date createTime) {
         this.createTime = createTime;
     }
 
-    /** @return null. */
+    /** @return 状态. */
     @Column(name = "STATUS", length = 50)
     public String getStatus() {
         return this.status;
@@ -214,13 +214,13 @@ public class DiskSpace implements java.io.Serializable {
 
     /**
      * @param status
-     *            null.
+     *            状态.
      */
     public void setStatus(String status) {
         this.status = status;
     }
 
-    /** @return null. */
+    /** @return 优先级. */
     @Column(name = "PRIORITY")
     public Integer getPriority() {
         return this.priority;
@@ -228,13 +228,13 @@ public class DiskSpace implements java.io.Serializable {
 
     /**
      * @param priority
-     *            null.
+     *            优先级.
      */
     public void setPriority(Integer priority) {
         this.priority = priority;
     }
 
-    /** @return null. */
+    /** @return 配额. */
     @Column(name = "QUOTA")
     public Integer getQuota() {
         return this.quota;
@@ -242,7 +242,7 @@ public class DiskSpace implements java.io.Serializable {
 
     /**
      * @param quota
-     *            null.
+     *            配额.
      */
     public void setQuota(Integer quota) {
         this.quota = quota;

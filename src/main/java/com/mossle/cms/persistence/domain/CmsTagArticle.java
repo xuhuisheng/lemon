@@ -34,6 +34,9 @@ public class CmsTagArticle implements java.io.Serializable {
     /** null. */
     private String tenantId;
 
+    /** null. */
+    private Integer priority;
+
     public CmsTagArticle() {
     }
 
@@ -42,12 +45,13 @@ public class CmsTagArticle implements java.io.Serializable {
     }
 
     public CmsTagArticle(Long id, CmsTag cmsTag, CmsArticle cmsArticle,
-            String type, String tenantId) {
+            String type, String tenantId, Integer priority) {
         this.id = id;
         this.cmsTag = cmsTag;
         this.cmsArticle = cmsArticle;
         this.type = type;
         this.tenantId = tenantId;
+        this.priority = priority;
     }
 
     /** @return null. */
@@ -121,5 +125,19 @@ public class CmsTagArticle implements java.io.Serializable {
      */
     public void setTenantId(String tenantId) {
         this.tenantId = tenantId;
+    }
+
+    /** @return null. */
+    @Column(name = "PRIORITY")
+    public Integer getPriority() {
+        return this.priority;
+    }
+
+    /**
+     * @param priority
+     *            null.
+     */
+    public void setPriority(Integer priority) {
+        this.priority = priority;
     }
 }

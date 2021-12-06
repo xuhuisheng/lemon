@@ -1,0 +1,44 @@
+
+
+-------------------------------------------------------------------------------
+--  disk version
+-------------------------------------------------------------------------------
+CREATE TABLE DISK_VERSION(
+    ID BIGINT NOT NULL,
+	NAME VARCHAR(200),
+	DESCRIPTION VARCHAR(255),
+
+	TYPE VARCHAR(50),
+	FILE_SIZE BIGINT,
+	CREATOR VARCHAR(64),
+	CREATE_TIME DATETIME,
+	FILE_PATH VARCHAR(200),
+	PRIORITY INT,
+	FILE_VERSION VARCHAR(50),
+
+	LAST_MODIFIER VARCHAR(64),
+	LAST_MODIFIED_TIME DATETIME,
+	STATUS VARCHAR(50),
+
+	INFO_ID BIGINT,
+
+    CONSTRAINT PK_DISK_VERSION PRIMARY KEY(ID),
+	CONSTRAINT FK_DISK_VERSION_INFO FOREIGN KEY (INFO_ID) REFERENCES DISK_INFO(ID)
+) ENGINE=INNODB CHARSET=UTF8;
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+

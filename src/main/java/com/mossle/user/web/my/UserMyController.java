@@ -1,9 +1,12 @@
 package com.mossle.user.web.my;
 
+import java.awt.Image;
 import java.awt.image.BufferedImage;
 
 import java.io.ByteArrayInputStream;
 import java.io.ByteArrayOutputStream;
+import java.io.IOException;
+import java.io.InputStream;
 import java.io.OutputStream;
 
 import java.util.HashMap;
@@ -25,7 +28,6 @@ import com.mossle.core.page.Page;
 import com.mossle.core.spring.MessageHelper;
 import com.mossle.core.store.InputStreamDataSource;
 import com.mossle.core.store.MultipartFileDataSource;
-import com.mossle.core.util.IoUtils;
 
 import com.mossle.spi.user.InternalUserConnector;
 
@@ -38,6 +40,8 @@ import com.mossle.user.persistence.manager.AccountInfoManager;
 import com.mossle.user.persistence.manager.PersonInfoManager;
 import com.mossle.user.service.ChangePasswordService;
 import com.mossle.user.support.ChangePasswordResult;
+
+import org.apache.commons.io.IOUtils;
 
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
@@ -116,8 +120,13 @@ public class UserMyController {
      */
     @RequestMapping("my-info-save")
     public String infoSave(@ModelAttribute PersonInfo personInfo,
+            @RequestParam("nickName") String nickName,
+            @RequestParam("description") String description,
             RedirectAttributes redirectAttributes) throws Exception {
         AccountInfo accountInfo = this.findCurrentAccount();
+        accountInfo.setNickName(nickName);
+        accountInfo.setDescription(description);
+        accountInfoManager.save(accountInfo);
 
         PersonInfo dest = personInfoManager.findUniqueBy("code",
                 accountInfo.getCode());
@@ -258,7 +267,7 @@ public class UserMyController {
         StoreDTO storeDto = storeClient.getStore("avatar", avatarDto.getCode(),
                 tenantId);
 
-        IoUtils.copyStream(storeDto.getDataSource().getInputStream(), os);
+        IOUtils.copy(storeDto.getDataSource().getInputStream(), os);
     }
 
     /**
@@ -348,18 +357,20 @@ public class UserMyController {
         if (avatarDto != null) {
             StoreDTO storeDto = storeClient.getStore("avatar",
                     avatarDto.getCode(), tenantId);
-            ByteArrayOutputStream baos = new ByteArrayOutputStream();
-            ImageUtils.zoomImage(storeDto.getDataSource().getInputStream(),
-                    baos, x1, y1, x2, y2);
+            InputStream is = this.cropImage(storeDto.getDataSource()
+                    .getInputStream(), x1, y1, x2, y2);
 
             storeDto = storeClient.saveStore("avatar",
-                    new InputStreamDataSource(w + ".png",
-                            new ByteArrayInputStream(baos.toByteArray())),
-                    tenantId);
+                    new InputStreamDataSource(w + ".png", is), tenantId);
             internalUserConnector.saveAvatar(userId, storeDto.getKey());
         }
 
-        return "user/my/my-avatar-save";
+        return "redirect:/user/my/my-avatar-preview.do";
+    }
+
+    @RequestMapping("my-avatar-preview")
+    public String accountAvatarPreview() {
+        return "user/my/my-avatar-preview";
     }
 
     /**
@@ -415,6 +426,59 @@ public class UserMyController {
                 "core.success.update", "操作成功");
 
         return "redirect:/user/my/my-device-list.do";
+    }
+
+    // 先把图片变成，上下左右居中，最大长宽350的图片，背景白色
+    // 然后再截取x1, y1, x2, y2
+    public InputStream cropImage(InputStream inputStream, int x1, int y1,
+            int x2, int y2) throws Exception {
+        logger.info("crop image {} {} {} {}", x1, y1, x2, y2);
+
+        int theWidth = 350;
+        int theHeight = 350;
+        BufferedImage src = ImageIO.read(inputStream);
+        BufferedImage bufferedImage = new BufferedImage(theWidth, theHeight,
+                BufferedImage.TYPE_INT_RGB);
+        float scale = this.getScale(src, theWidth, theHeight);
+        int h = (int) (src.getHeight() * scale);
+        int w = (int) (src.getWidth() * scale);
+        logger.info("scale {} {} {}", scale, w, h);
+
+        int x = 0;
+        int y = 0;
+
+        if (w < theWidth) {
+            x = (theWidth - w) / 2;
+        }
+
+        if (h < theHeight) {
+            y = (theHeight - h) / 2;
+        }
+
+        Image scaledImage = src.getScaledInstance((int) w, (int) h,
+                Image.SCALE_SMOOTH);
+        bufferedImage.getGraphics().drawImage(scaledImage, x, y, null);
+
+        ByteArrayOutputStream baos = new ByteArrayOutputStream();
+        ImageUtils.zoomImage(bufferedImage, baos, x1, y1, x2, y2);
+
+        return new ByteArrayInputStream(baos.toByteArray());
+    }
+
+    public float getScale(BufferedImage src, int theWidth, int theHeight)
+            throws IOException {
+        int width = src.getWidth();
+        int height = src.getHeight();
+
+        float scale = 1f;
+
+        if (width > height) {
+            scale = (1f * theWidth) / width;
+        } else {
+            scale = (1f * theHeight) / height;
+        }
+
+        return scale;
     }
 
     // ~ ======================================================================

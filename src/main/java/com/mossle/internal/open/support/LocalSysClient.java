@@ -37,6 +37,7 @@ public class LocalSysClient implements SysClient {
         return list;
     }
 
+    // ~
     @Resource
     public void setSysInfoManager(SysInfoManager sysInfoManager) {
         this.sysInfoManager = sysInfoManager;

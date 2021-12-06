@@ -8,6 +8,8 @@ import javax.persistence.Column;
 import javax.persistence.Entity;
 import javax.persistence.FetchType;
 import javax.persistence.Id;
+import javax.persistence.JoinColumn;
+import javax.persistence.ManyToOne;
 import javax.persistence.OneToMany;
 import javax.persistence.Table;
 
@@ -25,6 +27,9 @@ public class CmsTag implements java.io.Serializable {
     private Long id;
 
     /** null. */
+    private CmsSite cmsSite;
+
+    /** null. */
     private String name;
 
     /** null. */
@@ -32,6 +37,9 @@ public class CmsTag implements java.io.Serializable {
 
     /** null. */
     private String tenantId;
+
+    /** null. */
+    private String code;
 
     /** . */
     private Set<CmsTagArticle> cmsTagArticles = new HashSet<CmsTagArticle>(0);
@@ -43,12 +51,14 @@ public class CmsTag implements java.io.Serializable {
         this.id = id;
     }
 
-    public CmsTag(Long id, String name, Integer countArticle, String tenantId,
-            Set<CmsTagArticle> cmsTagArticles) {
+    public CmsTag(Long id, CmsSite cmsSite, String name, Integer countArticle,
+            String tenantId, String code, Set<CmsTagArticle> cmsTagArticles) {
         this.id = id;
+        this.cmsSite = cmsSite;
         this.name = name;
         this.countArticle = countArticle;
         this.tenantId = tenantId;
+        this.code = code;
         this.cmsTagArticles = cmsTagArticles;
     }
 
@@ -65,6 +75,21 @@ public class CmsTag implements java.io.Serializable {
      */
     public void setId(Long id) {
         this.id = id;
+    }
+
+    /** @return null. */
+    @ManyToOne(fetch = FetchType.LAZY)
+    @JoinColumn(name = "SITE_ID")
+    public CmsSite getCmsSite() {
+        return this.cmsSite;
+    }
+
+    /**
+     * @param cmsSite
+     *            null.
+     */
+    public void setCmsSite(CmsSite cmsSite) {
+        this.cmsSite = cmsSite;
     }
 
     /** @return null. */
@@ -107,6 +132,20 @@ public class CmsTag implements java.io.Serializable {
      */
     public void setTenantId(String tenantId) {
         this.tenantId = tenantId;
+    }
+
+    /** @return null. */
+    @Column(name = "CODE", length = 50)
+    public String getCode() {
+        return this.code;
+    }
+
+    /**
+     * @param code
+     *            null.
+     */
+    public void setCode(String code) {
+        this.code = code;
     }
 
     /** @return . */

@@ -15,9 +15,6 @@
 				<ref bean="tenantFilter"/>
 				<ref bean="cmsFilter"/>
 				-->
-				<!--
-				<ref bean="cmsFilter"/>
-			-->
 				<ref bean="springSecurityFilterChainProxy"/>
 				<ref bean="openSessionInViewFilter"/>
 				<ref bean="auditTrailFilter"/>
@@ -153,7 +150,6 @@
 		</property>
 		<property name="enable" value="${tenant.filter.enable}"/>
 	</bean>
-	-->
 
 	<bean id="cmsFilter" class="com.mossle.core.servlet.ProxyFilter">
 		<property name="name" value="cms"/>
@@ -165,7 +161,7 @@
 		</property>
 		<property name="enable" value="${filter.cms.enable}"/>
 	</bean>
-
+-->
 	<bean id="springSecurityFilterChainProxy" class="com.mossle.core.servlet.ProxyFilter">
 		<property name="name" value="security"/>
 		<property name="filter" ref="springSecurityFilterChain"/>

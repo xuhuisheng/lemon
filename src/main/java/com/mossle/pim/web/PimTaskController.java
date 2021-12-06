@@ -6,15 +6,12 @@ import java.util.List;
 
 import javax.annotation.Resource;
 
-import com.mossle.api.tenant.TenantHolder;
-
 import com.mossle.api.auth.CurrentUserHolder;
+
 import com.mossle.core.mapper.BeanMapper;
 
 import com.mossle.pim.persistence.domain.PimTask;
 import com.mossle.pim.persistence.manager.PimTaskManager;
-
-import org.springframework.jdbc.core.JdbcTemplate;
 
 import org.springframework.stereotype.Controller;
 
@@ -28,7 +25,6 @@ import org.springframework.web.bind.annotation.RequestParam;
 @RequestMapping("pim")
 public class PimTaskController {
     private PimTaskManager pimTaskManager;
-    private TenantHolder tenantHolder;
     private CurrentUserHolder currentUserHolder;
     private BeanMapper beanMapper = new BeanMapper();
 
@@ -158,11 +154,6 @@ public class PimTaskController {
     @Resource
     public void setPimTaskManager(PimTaskManager pimTaskManager) {
         this.pimTaskManager = pimTaskManager;
-    }
-
-    @Resource
-    public void setTenantHolder(TenantHolder tenantHolder) {
-        this.tenantHolder = tenantHolder;
     }
 
     @Resource

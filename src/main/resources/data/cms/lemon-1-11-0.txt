@@ -1,14 +1,14 @@
 <p>features:</p>
 
 <ul>
-	<li>[open] ³¢ÊÔÒıÈëopen¶ÔÓ¦ÓÃ½øĞĞÍ³Ò»Î¬»¤¡£</li>
-	<li>[oss] ³¢ÊÔÊ¹ÓÃoss¶Ô¸½¼ş½øĞĞÖ§³Ö¡£</li>
+	<li>[open] å°è¯•å¼•å…¥openå¯¹åº”ç”¨è¿›è¡Œç»Ÿä¸€ç»´æŠ¤ã€‚</li>
+	<li>[oss] å°è¯•ä½¿ç”¨osså¯¹é™„ä»¶è¿›è¡Œæ”¯æŒã€‚</li>
 </ul>
 
 <p>resources:</p>
 
 <ul>
-	<li>ÏêÏ¸ĞŞ¶©ÁĞ±í£º <a href="https://github.com/xuhuisheng/lemon/issues?q=milestone%3A1.11.0" target="_blank">https://github.com/xuhuisheng/lemon/issues?q=milestone%3A1.11.0</a></li>
-	<li>Ô´ÂëµØÖ·£º <a href="https://github.com/xuhuisheng/lemon/tree/lemon-1.11.0" target="_blank">https://github.com/xuhuisheng/lemon/tree/lemon-1.11.0</a></li>
-	<li>¶ÀÁ¢ÔËĞĞ°ü£º Á´½Ó: <a href="https://pan.baidu.com/s/1RaW4DQvMBdmbNkOHc2mdLQ" target="_blank">https://pan.baidu.com/s/1RaW4DQvMBdmbNkOHc2mdLQ</a> Á´½Ó:  ÌáÈ¡Âë: knmk </a></li>
+	<li>è¯¦ç»†ä¿®è®¢åˆ—è¡¨ï¼š <a href="https://github.com/xuhuisheng/lemon/issues?q=milestone%3A1.11.0" target="_blank">https://github.com/xuhuisheng/lemon/issues?q=milestone%3A1.11.0</a></li>
+	<li>æºç åœ°å€ï¼š <a href="https://github.com/xuhuisheng/lemon/tree/lemon-1.11.0" target="_blank">https://github.com/xuhuisheng/lemon/tree/lemon-1.11.0</a></li>
+	<li>ç‹¬ç«‹è¿è¡ŒåŒ…ï¼š é“¾æ¥: <a href="https://pan.baidu.com/s/1RaW4DQvMBdmbNkOHc2mdLQ" target="_blank">https://pan.baidu.com/s/1RaW4DQvMBdmbNkOHc2mdLQ</a> é“¾æ¥:  æå–ç : knmk </a></li>
 </ul>

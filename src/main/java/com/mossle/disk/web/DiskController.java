@@ -1,9 +1,6 @@
 package com.mossle.disk.web;
 
-import java.io.InputStream;
-
 import java.util.ArrayList;
-import java.util.Date;
 import java.util.HashMap;
 import java.util.List;
 import java.util.Map;
@@ -11,31 +8,21 @@ import java.util.Map;
 import javax.annotation.Resource;
 
 import javax.servlet.http.Cookie;
-import javax.servlet.http.HttpServletRequest;
 import javax.servlet.http.HttpServletResponse;
 
 import com.mossle.api.auth.CurrentUserHolder;
-import com.mossle.api.tenant.TenantHolder;
-import com.mossle.api.user.UserConnector;
 import com.mossle.api.user.UserDTO;
 
-import com.mossle.client.store.StoreClient;
 import com.mossle.client.user.UserClient;
 
 import com.mossle.core.page.Page;
-import com.mossle.core.store.MultipartFileDataSource;
-import com.mossle.core.util.IoUtils;
-import com.mossle.core.util.ServletUtils;
 
-import com.mossle.disk.persistence.domain.DiskAcl;
 import com.mossle.disk.persistence.domain.DiskInfo;
 import com.mossle.disk.persistence.domain.DiskShare;
 import com.mossle.disk.persistence.domain.DiskSpace;
-import com.mossle.disk.persistence.manager.DiskAclManager;
 import com.mossle.disk.persistence.manager.DiskInfoManager;
 import com.mossle.disk.persistence.manager.DiskShareManager;
 import com.mossle.disk.persistence.manager.DiskSpaceManager;
-import com.mossle.disk.service.DiskAclService;
 import com.mossle.disk.service.DiskInfoService;
 import com.mossle.disk.service.DiskService;
 import com.mossle.disk.service.DiskSpaceService;
@@ -50,8 +37,6 @@ import org.springframework.ui.Model;
 import org.springframework.web.bind.annotation.CookieValue;
 import org.springframework.web.bind.annotation.RequestMapping;
 import org.springframework.web.bind.annotation.RequestParam;
-import org.springframework.web.bind.annotation.ResponseBody;
-import org.springframework.web.multipart.MultipartFile;
 
 @Controller
 @RequestMapping("disk")
@@ -60,15 +45,10 @@ public class DiskController {
             .getLogger(DiskController.class);
     private DiskShareManager diskShareManager;
     private DiskInfoManager diskInfoManager;
-    private StoreClient storeClient;
-    private TenantHolder tenantHolder;
     private UserClient userClient;
-    private UserConnector userConnector;
     private DiskSpaceManager diskSpaceManager;
-    private DiskAclManager diskAclManager;
     private CurrentUserHolder currentUserHolder;
     private DiskService diskService;
-    private DiskAclService diskAclService;
     private DiskSpaceService diskSpaceService;
     private DiskInfoService diskInfoService;
 
@@ -79,6 +59,9 @@ public class DiskController {
     public String index(
             @RequestParam(value = "path", required = false, defaultValue = "") String path,
             Model model) {
+        logger.debug("index");
+
+        // return "redirect:/disk/space/user.do";
         String userId = currentUserHolder.getUserId();
         DiskSpace diskSpace = this.diskSpaceService.findUserSpace(userId);
 
@@ -103,8 +86,8 @@ public class DiskController {
         // 如果spaceId不存在，就显示可以查看的共享空间
         if (spaceId == null) {
             String userId = currentUserHolder.getUserId();
-            String hql = "select diskSpace from DiskSpace diskSpace join diskSpace.diskMembers diskMember where diskMember.userId=?";
-            List<DiskSpace> diskSpaces = diskSpaceManager.find(hql, userId);
+            List<DiskSpace> diskSpaces = this.diskSpaceService
+                    .findShareSpaces(userId);
             model.addAttribute("diskSpaces", diskSpaces);
 
             return "disk/share-space";
@@ -142,9 +125,8 @@ public class DiskController {
         // 如果spaceId不存在，就显示可以查看的群组空间
         if (spaceId == null) {
             String userId = currentUserHolder.getUserId();
-            String hql = "select diskSpace from DiskSpace diskSpace join diskSpace.diskMembers diskMember"
-                    + " where diskMember.userId=? and diskSpace.catalog='group' and diskSpace.type='group'";
-            List<DiskSpace> diskSpaces = diskSpaceManager.find(hql, userId);
+            List<DiskSpace> diskSpaces = this.diskSpaceService
+                    .findGroupSpaces(userId);
             model.addAttribute("diskSpaces", diskSpaces);
 
             return "disk/group-space";
@@ -172,8 +154,8 @@ public class DiskController {
         // 如果spaceId不存在，就显示可以查看的文档库
         if (spaceId == null) {
             String userId = currentUserHolder.getUserId();
-            String hql = "from DiskSpace where catalog='group' and type='repo'";
-            List<DiskSpace> diskSpaces = diskSpaceManager.find(hql);
+            List<DiskSpace> diskSpaces = this.diskSpaceService
+                    .findRepoSpaces(userId);
             model.addAttribute("diskSpaces", diskSpaces);
 
             return "disk/repo-space";
@@ -193,62 +175,22 @@ public class DiskController {
      * 回收站.
      */
     @RequestMapping("trash")
-    public String trash(Model model) {
+    public String trash(Page page, Model model) {
         String userId = currentUserHolder.getUserId();
-        DiskSpace diskSpace = this.diskSpaceService.findUserSpace(userId);
 
-        List<DiskInfo> diskInfos = diskInfoManager
-                .find("from DiskInfo where diskSpace=? and status='trash'",
-                        diskSpace);
-        model.addAttribute("diskInfos", diskInfos);
-        model.addAttribute("diskSpace", diskSpace);
+        // DiskSpace diskSpace = this.diskSpaceService.findUserSpace(userId);
+
+        // List<DiskInfo> diskInfos = diskInfoManager
+        // .find("from DiskInfo where diskSpace=? and status='trash'",
+        // diskSpace);
+        // model.addAttribute("diskInfos", diskInfos);
+        // model.addAttribute("diskSpace", diskSpace);
+        String hql = "from DiskInfo where status='trash' and deleteStatus='root' and lastModifier=? order by lastModifiedTime desc";
+        page = diskInfoManager.pagedQuery(hql, page.getPageNo(),
+                page.getPageSize(), userId);
+        model.addAttribute("page", page);
 
         return "disk/trash";
-    }
-
-    /**
-     * 上传文件.
-     */
-    @RequestMapping("upload")
-    @ResponseBody
-    public String upload(@RequestParam("file") MultipartFile file,
-            @RequestParam("path") String path,
-            @RequestParam("spaceId") Long spaceId,
-            @RequestParam("lastModified") long lastModified) throws Exception {
-        logger.info("lastModified : {}", lastModified);
-
-        String userId = currentUserHolder.getUserId();
-        String tenantId = tenantHolder.getTenantId();
-        diskInfoService.createFile(userId, new MultipartFileDataSource(file),
-                file.getOriginalFilename(), file.getSize(), path, spaceId,
-                tenantId);
-
-        return "{\"success\":true}";
-    }
-
-    /**
-     * 创建目录.
-     */
-    @RequestMapping("create-dir")
-    public String createDir(@RequestParam("path") String path,
-            @RequestParam("name") String name,
-            @RequestParam("spaceId") Long spaceId) {
-        String userId = currentUserHolder.getUserId();
-        diskInfoService.createDir(userId, name, path, spaceId);
-
-        return "redirect:/disk/index.do?path=" + path;
-    }
-
-    /**
-     * 删除目录.
-     */
-    @RequestMapping("remove-dir")
-    public String removeDir(@RequestParam("infoId") Long infoId) {
-        DiskInfo diskInfo = diskInfoManager.get(infoId);
-        diskInfo.setStatus("trash");
-        diskInfoManager.save(diskInfo);
-
-        return "redirect:/disk/index.do?path=" + diskInfo.getParentPath();
     }
 
     /**
@@ -275,13 +217,7 @@ public class DiskController {
     @RequestMapping("create-group")
     public String createGroup(@RequestParam("name") String name) {
         String userId = currentUserHolder.getUserId();
-        DiskSpace diskSpace = new DiskSpace();
-        diskSpace.setName(name);
-        diskSpace.setCatalog("group");
-        diskSpace.setType("group");
-        diskSpace.setCreator(userId);
-        diskSpaceManager.save(diskSpace);
-        diskService.addMember(diskSpace, userId);
+        this.diskSpaceService.createGroupSpace(userId, name);
 
         return "redirect:/disk/group.do";
     }
@@ -292,13 +228,7 @@ public class DiskController {
     @RequestMapping("create-repo")
     public String createRepo(@RequestParam("name") String name) {
         String userId = currentUserHolder.getUserId();
-        DiskSpace diskSpace = new DiskSpace();
-        diskSpace.setName(name);
-        diskSpace.setCatalog("group");
-        diskSpace.setType("repo");
-        diskSpace.setCreator(userId);
-        diskSpaceManager.save(diskSpace);
-        diskService.addMember(diskSpace, userId);
+        this.diskSpaceService.createRepoSpace(userId, name);
 
         return "redirect:/disk/repo.do";
     }
@@ -365,42 +295,30 @@ public class DiskController {
     /**
      * 首页.
      */
-    @RequestMapping("disk-home")
-    public String home(
-            @RequestParam(value = "username", required = false) String username,
-            Model model) {
-        if (username == null) {
-            Page page = diskInfoManager.pagedQuery("from DiskInfo", 1, 10);
-            List<DiskInfo> diskInfos = (List<DiskInfo>) page.getResult();
-            List<String> userIds = new ArrayList<String>();
-            List<UserDTO> userDtos = new ArrayList<UserDTO>();
 
-            for (DiskInfo diskInfo : diskInfos) {
-                String userId = diskInfo.getCreator();
-
-                if (userIds.contains(userId)) {
-                    continue;
-                }
-
-                UserDTO userDto = userClient.findById(userId, "1");
-                userDtos.add(userDto);
-            }
-
-            model.addAttribute("userDtos", userDtos);
-        } else {
-            Map<String, Object> parameters = new HashMap<String, Object>();
-            parameters.put("filter_LIKES_username", username);
-
-            Page page = userConnector.pagedQuery(tenantHolder.getTenantId(),
-                    new Page(), parameters);
-
-            if (page != null) {
-                model.addAttribute("userDtos", page.getResult());
-            }
-        }
-
-        return "disk/disk-home";
-    }
+    /*
+     * @RequestMapping("disk-home") public String home(
+     * 
+     * @RequestParam(value = "username", required = false) String username, Model model) { if (username == null) { Page
+     * page = diskInfoManager.pagedQuery("from DiskInfo", 1, 10); List<DiskInfo> diskInfos = (List<DiskInfo>)
+     * page.getResult(); List<String> userIds = new ArrayList<String>(); List<UserDTO> userDtos = new
+     * ArrayList<UserDTO>();
+     * 
+     * for (DiskInfo diskInfo : diskInfos) { String userId = diskInfo.getCreator();
+     * 
+     * if (userIds.contains(userId)) { continue; }
+     * 
+     * UserDTO userDto = userClient.findById(userId, "1"); userDtos.add(userDto); }
+     * 
+     * model.addAttribute("userDtos", userDtos); } else { Map<String, Object> parameters = new HashMap<String,
+     * Object>(); parameters.put("filter_LIKES_username", username);
+     * 
+     * Page page = userConnector.pagedQuery(tenantHolder.getTenantId(), new Page(), parameters);
+     * 
+     * if (page != null) { model.addAttribute("userDtos", page.getResult()); } }
+     * 
+     * return "disk/disk-home"; }
+     */
 
     /**
      * 列表.
@@ -444,34 +362,8 @@ public class DiskController {
     }
 
     /**
-     * 下载.
+     * 私密分享输入验证码.
      */
-    @RequestMapping("disk-download")
-    public void download(@RequestParam("id") Long id,
-            HttpServletRequest request, HttpServletResponse response)
-            throws Exception {
-        String tenantId = tenantHolder.getTenantId();
-        DiskShare diskShare = diskShareManager.get(id);
-        DiskInfo diskInfo = diskShare.getDiskInfo();
-        InputStream is = null;
-
-        try {
-            ServletUtils.setFileDownloadHeader(request, response,
-                    diskInfo.getName());
-
-            String modelName = "disk/user/" + diskInfo.getCreator();
-            String keyName = diskInfo.getRef();
-
-            is = storeClient.getStore(modelName, keyName, tenantId)
-                    .getDataSource().getInputStream();
-            IoUtils.copyStream(is, response.getOutputStream());
-        } finally {
-            if (is != null) {
-                is.close();
-            }
-        }
-    }
-
     @RequestMapping("disk-code")
     public String diskCode(@RequestParam("id") Long id,
             @RequestParam("code") String code, HttpServletResponse response) {
@@ -480,6 +372,9 @@ public class DiskController {
         return "redirect:/disk/disk-view.do?id=" + id;
     }
 
+    /**
+     * 权限列表.
+     */
     @RequestMapping("acl-list")
     public String aclList(@RequestParam("id") Long id, Model model) {
         DiskInfo diskInfo = diskInfoManager.get(id);
@@ -488,24 +383,43 @@ public class DiskController {
         return "disk/acl-list";
     }
 
-    @RequestMapping("acl-add")
-    public String aclAdd(@RequestParam("diskInfoId") Long diskInfoId,
-            @RequestParam("entityCatalog") String entityCatalog,
-            @RequestParam("entityRef") String entityRef,
-            @RequestParam("mask") int mask) {
-        diskAclService
-                .addPermission(entityCatalog, entityRef, diskInfoId, mask);
+    // ~
 
-        return "redirect:/disk/acl-list.do?id=" + diskInfoId;
+    /**
+     * 以空间为入口，打开folder.
+     */
+    @RequestMapping("space/open")
+    public String spaceOpen(@RequestParam("spaceId") Long spaceId) {
+        DiskInfo diskInfo = diskInfoManager
+                .findUnique(
+                        "from DiskInfo where diskSpace.id=? and diskInfo=null",
+                        spaceId);
+
+        return "redirect:/disk/folder/" + diskInfo.getId();
     }
 
-    /*
-     * @RequestMapping("acl-remove") public String aclRemove(@RequestParam("id") Long id) { DiskAcl diskAcl =
-     * diskAclManager.get(id); DiskInfo diskInfo = diskAcl.getDiskInfo(); Long diskInfoId = diskInfo.getId(); String
-     * entityCatalog = diskAcl.getEntityCatalog(); String entityRef = diskAcl.getEntityRef();
-     * diskAclService.removePermission(entityCatalog, entityRef, diskInfoId); return "redirect:/disk/acl-list.do?id=" +
-     * diskInfoId; }
+    /**
+     * 从回收站恢复.
      */
+    @RequestMapping("recover")
+    public String recover(@RequestParam("id") Long id,
+            @RequestParam(value = "parentId", required = false) Long parentId) {
+        String userId = currentUserHolder.getUserId();
+        this.diskInfoService.recover(id, userId, parentId);
+
+        return "redirect:/disk/trash.do";
+    }
+
+    /**
+     * 确认删除.
+     */
+    @RequestMapping("remove-confirm")
+    public String removeConfirm(@RequestParam("id") Long id) {
+        String userId = currentUserHolder.getUserId();
+        this.diskInfoService.delete(id, userId);
+
+        return "redirect:/disk/trash.do";
+    }
 
     // ~ ======================================================================
     @Resource
@@ -519,33 +433,13 @@ public class DiskController {
     }
 
     @Resource
-    public void setStoreClient(StoreClient storeClient) {
-        this.storeClient = storeClient;
-    }
-
-    @Resource
-    public void setTenantHolder(TenantHolder tenantHolder) {
-        this.tenantHolder = tenantHolder;
-    }
-
-    @Resource
     public void setUserClient(UserClient userClient) {
         this.userClient = userClient;
     }
 
     @Resource
-    public void setUserConnector(UserConnector userConnector) {
-        this.userConnector = userConnector;
-    }
-
-    @Resource
     public void setDiskSpaceManager(DiskSpaceManager diskSpaceManager) {
         this.diskSpaceManager = diskSpaceManager;
-    }
-
-    @Resource
-    public void setDiskAclManager(DiskAclManager diskAclManager) {
-        this.diskAclManager = diskAclManager;
     }
 
     @Resource
@@ -556,11 +450,6 @@ public class DiskController {
     @Resource
     public void setDiskService(DiskService diskService) {
         this.diskService = diskService;
-    }
-
-    @Resource
-    public void setDiskAclService(DiskAclService diskAclService) {
-        this.diskAclService = diskAclService;
     }
 
     @Resource

@@ -10,7 +10,7 @@ import javax.persistence.ManyToOne;
 import javax.persistence.Table;
 
 /**
- * DiskAcl .
+ * DiskAcl 权限.
  * 
  * @author Lingo
  */
@@ -19,29 +19,35 @@ import javax.persistence.Table;
 public class DiskAcl implements java.io.Serializable {
     private static final long serialVersionUID = 0L;
 
-    /** null. */
+    /** id. */
     private Long id;
 
-    /** null. */
+    /** 实体标识. */
+    private DiskSid diskSid;
+
+    /** 外键，规则. */
     private DiskRule diskRule;
 
-    /** null. */
+    /** 外键，共享. */
     private DiskShare diskShare;
 
-    /** null. */
+    /** 类型. */
     private String type;
 
-    /** null. */
+    /** 引用. */
     private String ref;
 
-    /** null. */
+    /** 实体引用. */
     private String entityRef;
 
-    /** null. */
+    /** 实体分类，owner, role, user. */
     private String entityCatalog;
 
-    /** null. */
+    /** 掩码. */
     private Integer mask;
+
+    /** 排序. */
+    private Integer priority;
 
     public DiskAcl() {
     }
@@ -50,10 +56,11 @@ public class DiskAcl implements java.io.Serializable {
         this.id = id;
     }
 
-    public DiskAcl(Long id, DiskRule diskRule, DiskShare diskShare,
-            String type, String ref, String entityRef, String entityCatalog,
-            Integer mask) {
+    public DiskAcl(Long id, DiskSid diskSid, DiskRule diskRule,
+            DiskShare diskShare, String type, String ref, String entityRef,
+            String entityCatalog, Integer mask, Integer priority) {
         this.id = id;
+        this.diskSid = diskSid;
         this.diskRule = diskRule;
         this.diskShare = diskShare;
         this.type = type;
@@ -61,9 +68,10 @@ public class DiskAcl implements java.io.Serializable {
         this.entityRef = entityRef;
         this.entityCatalog = entityCatalog;
         this.mask = mask;
+        this.priority = priority;
     }
 
-    /** @return null. */
+    /** @return id. */
     @Id
     @Column(name = "ID", unique = true, nullable = false)
     public Long getId() {
@@ -72,13 +80,28 @@ public class DiskAcl implements java.io.Serializable {
 
     /**
      * @param id
-     *            null.
+     *            id.
      */
     public void setId(Long id) {
         this.id = id;
     }
 
-    /** @return null. */
+    /** @return 实体标识. */
+    @ManyToOne(fetch = FetchType.LAZY)
+    @JoinColumn(name = "SID_ID")
+    public DiskSid getDiskSid() {
+        return this.diskSid;
+    }
+
+    /**
+     * @param diskSid
+     *            实体标识.
+     */
+    public void setDiskSid(DiskSid diskSid) {
+        this.diskSid = diskSid;
+    }
+
+    /** @return 外键，规则. */
     @ManyToOne(fetch = FetchType.LAZY)
     @JoinColumn(name = "RULE_ID")
     public DiskRule getDiskRule() {
@@ -87,13 +110,13 @@ public class DiskAcl implements java.io.Serializable {
 
     /**
      * @param diskRule
-     *            null.
+     *            外键，规则.
      */
     public void setDiskRule(DiskRule diskRule) {
         this.diskRule = diskRule;
     }
 
-    /** @return null. */
+    /** @return 外键，共享. */
     @ManyToOne(fetch = FetchType.LAZY)
     @JoinColumn(name = "SHARE_ID")
     public DiskShare getDiskShare() {
@@ -102,13 +125,13 @@ public class DiskAcl implements java.io.Serializable {
 
     /**
      * @param diskShare
-     *            null.
+     *            外键，共享.
      */
     public void setDiskShare(DiskShare diskShare) {
         this.diskShare = diskShare;
     }
 
-    /** @return null. */
+    /** @return 类型. */
     @Column(name = "TYPE", length = 50)
     public String getType() {
         return this.type;
@@ -116,13 +139,13 @@ public class DiskAcl implements java.io.Serializable {
 
     /**
      * @param type
-     *            null.
+     *            类型.
      */
     public void setType(String type) {
         this.type = type;
     }
 
-    /** @return null. */
+    /** @return 引用. */
     @Column(name = "REF", length = 64)
     public String getRef() {
         return this.ref;
@@ -130,13 +153,13 @@ public class DiskAcl implements java.io.Serializable {
 
     /**
      * @param ref
-     *            null.
+     *            引用.
      */
     public void setRef(String ref) {
         this.ref = ref;
     }
 
-    /** @return null. */
+    /** @return 实体引用. */
     @Column(name = "ENTITY_REF", length = 50)
     public String getEntityRef() {
         return this.entityRef;
@@ -144,13 +167,13 @@ public class DiskAcl implements java.io.Serializable {
 
     /**
      * @param entityRef
-     *            null.
+     *            实体引用.
      */
     public void setEntityRef(String entityRef) {
         this.entityRef = entityRef;
     }
 
-    /** @return null. */
+    /** @return 实体分类，owner, role, user. */
     @Column(name = "ENTITY_CATALOG", length = 50)
     public String getEntityCatalog() {
         return this.entityCatalog;
@@ -158,13 +181,13 @@ public class DiskAcl implements java.io.Serializable {
 
     /**
      * @param entityCatalog
-     *            null.
+     *            实体分类，owner, role, user.
      */
     public void setEntityCatalog(String entityCatalog) {
         this.entityCatalog = entityCatalog;
     }
 
-    /** @return null. */
+    /** @return 掩码. */
     @Column(name = "MASK")
     public Integer getMask() {
         return this.mask;
@@ -172,9 +195,23 @@ public class DiskAcl implements java.io.Serializable {
 
     /**
      * @param mask
-     *            null.
+     *            掩码.
      */
     public void setMask(Integer mask) {
         this.mask = mask;
+    }
+
+    /** @return 排序. */
+    @Column(name = "PRIORITY")
+    public Integer getPriority() {
+        return this.priority;
+    }
+
+    /**
+     * @param priority
+     *            排序.
+     */
+    public void setPriority(Integer priority) {
+        this.priority = priority;
     }
 }

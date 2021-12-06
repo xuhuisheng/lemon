@@ -17,7 +17,7 @@ import javax.persistence.Temporal;
 import javax.persistence.TemporalType;
 
 /**
- * TicketInfo .
+ * TicketInfo 工单信息.
  * 
  * @author Lingo
  */
@@ -26,51 +26,69 @@ import javax.persistence.TemporalType;
 public class TicketInfo implements java.io.Serializable {
     private static final long serialVersionUID = 0L;
 
-    /** null. */
+    /** ID. */
     private Long id;
 
-    /** null. */
+    /** 群组. */
     private TicketGroup ticketGroup;
 
-    /** null. */
+    /** 分类. */
     private TicketCatalog ticketCatalog;
 
-    /** null. */
+    /** 编号. */
     private String code;
 
-    /** null. */
+    /** 名称. */
     private String name;
 
-    /** null. */
+    /** 内容. */
     private String content;
 
-    /** null. */
+    /** 创建人. */
     private String creator;
 
-    /** null. */
+    /** 状态. */
     private String status;
 
-    /** null. */
+    /** 创建时间. */
     private Date createTime;
 
-    /** null. */
+    /** 分配人. */
     private String assignee;
 
-    /** null. */
+    /** 更新时间. */
     private Date updateTime;
 
-    /** null. */
+    /** 是否问卷调研. */
     private String survey;
 
-    /** null. */
+    /** 问卷信息. */
     private String surveyMessage;
+
+    /** 优先级. */
+    private Integer priority;
+
+    /** 来源. */
+    private String source;
+
+    /** 解决时间. */
+    private Date resolveTime;
+
+    /** 解决状态. */
+    private String resolveStatus;
+
+    /** 关闭时间. */
+    private Date closeTime;
+
+    /** 关闭状态. */
+    private String closeStatus;
+
+    /** . */
+    private Set<TicketComment> ticketComments = new HashSet<TicketComment>(0);
 
     /** . */
     private Set<TicketAttachment> ticketAttachments = new HashSet<TicketAttachment>(
             0);
-
-    /** . */
-    private Set<TicketComment> ticketComments = new HashSet<TicketComment>(0);
 
     public TicketInfo() {
     }
@@ -83,8 +101,10 @@ public class TicketInfo implements java.io.Serializable {
             TicketCatalog ticketCatalog, String code, String name,
             String content, String creator, String status, Date createTime,
             String assignee, Date updateTime, String survey,
-            String surveyMessage, Set<TicketAttachment> ticketAttachments,
-            Set<TicketComment> ticketComments) {
+            String surveyMessage, Integer priority, String source,
+            Date resolveTime, String resolveStatus, Date closeTime,
+            String closeStatus, Set<TicketComment> ticketComments,
+            Set<TicketAttachment> ticketAttachments) {
         this.id = id;
         this.ticketGroup = ticketGroup;
         this.ticketCatalog = ticketCatalog;
@@ -98,11 +118,17 @@ public class TicketInfo implements java.io.Serializable {
         this.updateTime = updateTime;
         this.survey = survey;
         this.surveyMessage = surveyMessage;
-        this.ticketAttachments = ticketAttachments;
+        this.priority = priority;
+        this.source = source;
+        this.resolveTime = resolveTime;
+        this.resolveStatus = resolveStatus;
+        this.closeTime = closeTime;
+        this.closeStatus = closeStatus;
         this.ticketComments = ticketComments;
+        this.ticketAttachments = ticketAttachments;
     }
 
-    /** @return null. */
+    /** @return ID. */
     @Id
     @Column(name = "ID", unique = true, nullable = false)
     public Long getId() {
@@ -111,13 +137,13 @@ public class TicketInfo implements java.io.Serializable {
 
     /**
      * @param id
-     *            null.
+     *            ID.
      */
     public void setId(Long id) {
         this.id = id;
     }
 
-    /** @return null. */
+    /** @return 群组. */
     @ManyToOne(fetch = FetchType.LAZY)
     @JoinColumn(name = "GROUP_ID")
     public TicketGroup getTicketGroup() {
@@ -126,13 +152,13 @@ public class TicketInfo implements java.io.Serializable {
 
     /**
      * @param ticketGroup
-     *            null.
+     *            群组.
      */
     public void setTicketGroup(TicketGroup ticketGroup) {
         this.ticketGroup = ticketGroup;
     }
 
-    /** @return null. */
+    /** @return 分类. */
     @ManyToOne(fetch = FetchType.LAZY)
     @JoinColumn(name = "CATALOG_ID")
     public TicketCatalog getTicketCatalog() {
@@ -141,13 +167,13 @@ public class TicketInfo implements java.io.Serializable {
 
     /**
      * @param ticketCatalog
-     *            null.
+     *            分类.
      */
     public void setTicketCatalog(TicketCatalog ticketCatalog) {
         this.ticketCatalog = ticketCatalog;
     }
 
-    /** @return null. */
+    /** @return 编号. */
     @Column(name = "CODE", length = 200)
     public String getCode() {
         return this.code;
@@ -155,13 +181,13 @@ public class TicketInfo implements java.io.Serializable {
 
     /**
      * @param code
-     *            null.
+     *            编号.
      */
     public void setCode(String code) {
         this.code = code;
     }
 
-    /** @return null. */
+    /** @return 名称. */
     @Column(name = "NAME", length = 200)
     public String getName() {
         return this.name;
@@ -169,13 +195,13 @@ public class TicketInfo implements java.io.Serializable {
 
     /**
      * @param name
-     *            null.
+     *            名称.
      */
     public void setName(String name) {
         this.name = name;
     }
 
-    /** @return null. */
+    /** @return 内容. */
     @Column(name = "CONTENT", length = 65535)
     public String getContent() {
         return this.content;
@@ -183,13 +209,13 @@ public class TicketInfo implements java.io.Serializable {
 
     /**
      * @param content
-     *            null.
+     *            内容.
      */
     public void setContent(String content) {
         this.content = content;
     }
 
-    /** @return null. */
+    /** @return 创建人. */
     @Column(name = "CREATOR", length = 64)
     public String getCreator() {
         return this.creator;
@@ -197,13 +223,13 @@ public class TicketInfo implements java.io.Serializable {
 
     /**
      * @param creator
-     *            null.
+     *            创建人.
      */
     public void setCreator(String creator) {
         this.creator = creator;
     }
 
-    /** @return null. */
+    /** @return 状态. */
     @Column(name = "STATUS", length = 50)
     public String getStatus() {
         return this.status;
@@ -211,13 +237,13 @@ public class TicketInfo implements java.io.Serializable {
 
     /**
      * @param status
-     *            null.
+     *            状态.
      */
     public void setStatus(String status) {
         this.status = status;
     }
 
-    /** @return null. */
+    /** @return 创建时间. */
     @Temporal(TemporalType.TIMESTAMP)
     @Column(name = "CREATE_TIME", length = 26)
     public Date getCreateTime() {
@@ -226,13 +252,13 @@ public class TicketInfo implements java.io.Serializable {
 
     /**
      * @param createTime
-     *            null.
+     *            创建时间.
      */
     public void setCreateTime(Date createTime) {
         this.createTime = createTime;
     }
 
-    /** @return null. */
+    /** @return 分配人. */
     @Column(name = "ASSIGNEE", length = 64)
     public String getAssignee() {
         return this.assignee;
@@ -240,13 +266,13 @@ public class TicketInfo implements java.io.Serializable {
 
     /**
      * @param assignee
-     *            null.
+     *            分配人.
      */
     public void setAssignee(String assignee) {
         this.assignee = assignee;
     }
 
-    /** @return null. */
+    /** @return 更新时间. */
     @Temporal(TemporalType.TIMESTAMP)
     @Column(name = "UPDATE_TIME", length = 26)
     public Date getUpdateTime() {
@@ -255,13 +281,13 @@ public class TicketInfo implements java.io.Serializable {
 
     /**
      * @param updateTime
-     *            null.
+     *            更新时间.
      */
     public void setUpdateTime(Date updateTime) {
         this.updateTime = updateTime;
     }
 
-    /** @return null. */
+    /** @return 是否问卷调研. */
     @Column(name = "SURVEY", length = 50)
     public String getSurvey() {
         return this.survey;
@@ -269,13 +295,13 @@ public class TicketInfo implements java.io.Serializable {
 
     /**
      * @param survey
-     *            null.
+     *            是否问卷调研.
      */
     public void setSurvey(String survey) {
         this.survey = survey;
     }
 
-    /** @return null. */
+    /** @return 问卷信息. */
     @Column(name = "SURVEY_MESSAGE", length = 200)
     public String getSurveyMessage() {
         return this.surveyMessage;
@@ -283,24 +309,96 @@ public class TicketInfo implements java.io.Serializable {
 
     /**
      * @param surveyMessage
-     *            null.
+     *            问卷信息.
      */
     public void setSurveyMessage(String surveyMessage) {
         this.surveyMessage = surveyMessage;
     }
 
-    /** @return . */
-    @OneToMany(fetch = FetchType.LAZY, mappedBy = "ticketInfo")
-    public Set<TicketAttachment> getTicketAttachments() {
-        return this.ticketAttachments;
+    /** @return 优先级. */
+    @Column(name = "PRIORITY")
+    public Integer getPriority() {
+        return this.priority;
     }
 
     /**
-     * @param ticketAttachments
-     *            .
+     * @param priority
+     *            优先级.
      */
-    public void setTicketAttachments(Set<TicketAttachment> ticketAttachments) {
-        this.ticketAttachments = ticketAttachments;
+    public void setPriority(Integer priority) {
+        this.priority = priority;
+    }
+
+    /** @return 来源. */
+    @Column(name = "SOURCE", length = 50)
+    public String getSource() {
+        return this.source;
+    }
+
+    /**
+     * @param source
+     *            来源.
+     */
+    public void setSource(String source) {
+        this.source = source;
+    }
+
+    /** @return 解决时间. */
+    @Temporal(TemporalType.TIMESTAMP)
+    @Column(name = "RESOLVE_TIME", length = 26)
+    public Date getResolveTime() {
+        return this.resolveTime;
+    }
+
+    /**
+     * @param resolveTime
+     *            解决时间.
+     */
+    public void setResolveTime(Date resolveTime) {
+        this.resolveTime = resolveTime;
+    }
+
+    /** @return 解决状态. */
+    @Column(name = "RESOLVE_STATUS", length = 50)
+    public String getResolveStatus() {
+        return this.resolveStatus;
+    }
+
+    /**
+     * @param resolveStatus
+     *            解决状态.
+     */
+    public void setResolveStatus(String resolveStatus) {
+        this.resolveStatus = resolveStatus;
+    }
+
+    /** @return 关闭时间. */
+    @Temporal(TemporalType.TIMESTAMP)
+    @Column(name = "CLOSE_TIME", length = 26)
+    public Date getCloseTime() {
+        return this.closeTime;
+    }
+
+    /**
+     * @param closeTime
+     *            关闭时间.
+     */
+    public void setCloseTime(Date closeTime) {
+        this.closeTime = closeTime;
+    }
+
+    /** @return 关闭状态. */
+    @Column(name = "CLOSE_STATUS", length = 50)
+    public String getCloseStatus() {
+        return this.closeStatus;
+    }
+
+    /**
+     * @param closeStatus
+     *            关闭状态.
+     */
+    public void setCloseStatus(String closeStatus) {
+        this.closeStatus = closeStatus;
     }
 
     /** @return . */
@@ -315,5 +413,19 @@ public class TicketInfo implements java.io.Serializable {
      */
     public void setTicketComments(Set<TicketComment> ticketComments) {
         this.ticketComments = ticketComments;
+    }
+
+    /** @return . */
+    @OneToMany(fetch = FetchType.LAZY, mappedBy = "ticketInfo")
+    public Set<TicketAttachment> getTicketAttachments() {
+        return this.ticketAttachments;
+    }
+
+    /**
+     * @param ticketAttachments
+     *            .
+     */
+    public void setTicketAttachments(Set<TicketAttachment> ticketAttachments) {
+        this.ticketAttachments = ticketAttachments;
     }
 }

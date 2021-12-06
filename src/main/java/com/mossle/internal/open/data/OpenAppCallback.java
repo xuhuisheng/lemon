@@ -20,12 +20,15 @@ public class OpenAppCallback implements CsvCallback {
     private String defaultTenantId = "1";
 
     public void process(List<String> list, int lineNo) throws Exception {
+        logger.debug("default tenant id : {}", defaultTenantId);
+
         String groupCode = list.get(0);
         String code = list.get(1);
         String name = list.get(2);
         String clientId = list.get(3);
         String clientSecret = list.get(4);
         String userId = list.get(5);
+        String url = list.get(6);
 
         if (StringUtils.isBlank(clientId)) {
             logger.warn("clientId cannot be blank {} {}", lineNo, list);
@@ -50,10 +53,15 @@ public class OpenAppCallback implements CsvCallback {
         openApp.setName(name);
         openApp.setClientId(clientId);
         openApp.setClientSecret(clientSecret);
+        openApp.setUrl(url);
         openApp.setUserId(userId);
         openApp.setStatus("active");
         openApp.setCreateTime(new Date());
         openAppManager.save(openApp);
+    }
+
+    public void setDefaultTenantId(String defaultTenantId) {
+        this.defaultTenantId = defaultTenantId;
     }
 
     public void setOpenAppManager(OpenAppManager openAppManager) {

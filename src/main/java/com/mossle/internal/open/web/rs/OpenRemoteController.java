@@ -1,58 +1,30 @@
 package com.mossle.internal.open.web.rs;
 
-import java.io.InputStream;
-
-import java.util.ArrayList;
-import java.util.Collections;
-import java.util.HashMap;
 import java.util.List;
-import java.util.Map;
 
 import javax.annotation.Resource;
 
-import javax.servlet.http.HttpServletRequest;
-import javax.servlet.http.HttpServletResponse;
-
-import com.mossle.api.auth.CustomPasswordEncoder;
-import com.mossle.api.tenant.TenantHolder;
-import com.mossle.api.user.AccountStatus;
-import com.mossle.api.user.UserCache;
-import com.mossle.api.user.UserDTO;
-
 import com.mossle.client.open.OpenAppDTO;
+import com.mossle.client.open.SysDTO;
 
-import com.mossle.core.export.Exportor;
-import com.mossle.core.mapper.BeanMapper;
-import com.mossle.core.page.Page;
-import com.mossle.core.spring.MessageHelper;
 import com.mossle.core.util.BaseDTO;
-import com.mossle.core.util.Select2Info;
 
 import com.mossle.internal.open.persistence.domain.OpenApp;
+import com.mossle.internal.open.persistence.domain.SysInfo;
 import com.mossle.internal.open.persistence.manager.OpenAppManager;
+import com.mossle.internal.open.persistence.manager.SysInfoManager;
 import com.mossle.internal.open.support.OpenAppConverter;
-
-import org.apache.commons.io.IOUtils;
-import org.apache.commons.lang3.StringUtils;
 
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
 
 import org.springframework.http.MediaType;
 
-import org.springframework.stereotype.Controller;
-
-import org.springframework.ui.Model;
-
 import org.springframework.util.Assert;
 
-import org.springframework.web.bind.annotation.ModelAttribute;
-import org.springframework.web.bind.annotation.PathVariable;
 import org.springframework.web.bind.annotation.RequestMapping;
 import org.springframework.web.bind.annotation.RequestParam;
-import org.springframework.web.bind.annotation.ResponseBody;
 import org.springframework.web.bind.annotation.RestController;
-import org.springframework.web.servlet.mvc.support.RedirectAttributes;
 
 @RestController
 @RequestMapping("open/rs/remote")
@@ -60,10 +32,12 @@ public class OpenRemoteController {
     private static Logger logger = LoggerFactory
             .getLogger(OpenRemoteController.class);
     private OpenAppManager openAppManager;
+    private SysInfoManager sysInfoManager;
     private OpenAppConverter openAppConverter = new OpenAppConverter();
 
     @RequestMapping(value = "getOpenApp", produces = MediaType.APPLICATION_JSON_VALUE)
     public BaseDTO getOpenApp(@RequestParam("clientId") String clientId) {
+        logger.debug("get open app : {}", clientId);
         Assert.hasText(clientId, "clientId should not be null");
 
         OpenApp openApp = openAppManager.findUniqueBy("clientId", clientId);
@@ -118,9 +92,35 @@ public class OpenRemoteController {
         return baseDto;
     }
 
+    @RequestMapping(value = "findSys", produces = MediaType.APPLICATION_JSON_VALUE)
+    public BaseDTO findSys(@RequestParam("code") String code) {
+        String hql = "from SysInfo where code=?";
+        SysInfo sysInfo = sysInfoManager.findUnique(hql, code);
+        SysDTO sysDto = new SysDTO();
+
+        if (sysInfo != null) {
+            sysDto.setId(Long.toString(sysInfo.getId()));
+            sysDto.setCode(code);
+            sysDto.setName(sysInfo.getName());
+        } else {
+            sysDto = null;
+        }
+
+        BaseDTO baseDto = new BaseDTO();
+        baseDto.setCode(200);
+        baseDto.setData(sysDto);
+
+        return baseDto;
+    }
+
     // ~ ======================================================================
     @Resource
     public void setOpenAppManager(OpenAppManager openAppManager) {
         this.openAppManager = openAppManager;
+    }
+
+    @Resource
+    public void setSysInfoManager(SysInfoManager sysInfoManager) {
+        this.sysInfoManager = sysInfoManager;
     }
 }

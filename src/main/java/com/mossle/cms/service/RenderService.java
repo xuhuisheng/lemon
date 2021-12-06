@@ -11,8 +11,6 @@ import java.util.Properties;
 
 import javax.annotation.Resource;
 
-import javax.servlet.http.HttpServletRequest;
-
 import com.mossle.api.user.UserConnector;
 
 import com.mossle.client.mdm.SysClient;
@@ -20,9 +18,10 @@ import com.mossle.client.user.UserClient;
 
 import com.mossle.cms.persistence.domain.CmsArticle;
 import com.mossle.cms.persistence.domain.CmsCatalog;
+import com.mossle.cms.persistence.domain.CmsSite;
+import com.mossle.cms.persistence.domain.CmsTag;
 import com.mossle.cms.persistence.domain.CmsTemplateContent;
 import com.mossle.cms.persistence.manager.CmsTemplateContentManager;
-import com.mossle.cms.service.CmsService;
 import com.mossle.cms.support.CmsHelper;
 
 import com.mossle.core.page.Page;
@@ -117,6 +116,7 @@ public class RenderService {
         data.put("article", cmsArticle);
         data.put("catalog", cmsCatalog);
         data.put("userConnector", userConnector);
+        data.put("userClient", userClient);
         data.put("catalogs", cmsCatalogs);
         data.put("page", page);
 
@@ -138,6 +138,7 @@ public class RenderService {
         Map<String, Object> data = new HashMap<String, Object>();
         data.put("catalog", cmsCatalog);
         data.put("userConnector", userConnector);
+        data.put("userClient", userClient);
         data.put("page", page);
         data.put("catalogs", cmsCatalogs);
 
@@ -153,6 +154,7 @@ public class RenderService {
         data.put("article", cmsArticle);
         data.put("catalog", cmsCatalog);
         data.put("userConnector", userConnector);
+        data.put("userClient", userClient);
 
         return templateService.render(cmsCatalog.getTemplateDetail(), data);
     }
@@ -161,6 +163,7 @@ public class RenderService {
         Map<String, Object> data = new HashMap<String, Object>();
         data.put("catalogs", cmsCatalogs);
         data.put("userConnector", userConnector);
+        data.put("userClient", userClient);
 
         // data.put("cmsHelper", cmsHelper);
         String html = templateService.render("/default/index.html", data);
@@ -168,14 +171,16 @@ public class RenderService {
         return html;
     }
 
-    public String renderText(String templateCode, String ctx,
-            String currentUserId) {
+    public String renderText(String templateCode, String ctx, String cmsPrefix,
+            CmsSite cmsSite, String currentUserId) {
         CmsHelper cmsHelper = new CmsHelper();
         cmsHelper.setCmsService(cmsService);
         cmsHelper.setUserClient(userClient);
         cmsHelper.setProp(applicationProperties);
         cmsHelper.setCtx(ctx);
+        cmsHelper.setCmsPrefix(cmsPrefix);
         cmsHelper.setCurrentUserId(currentUserId);
+        cmsHelper.setCurrentSite(cmsSite);
 
         if (StringUtils.isNotBlank(cdnPrefix)) {
             cmsHelper.setCdnPrefix(cdnPrefix);
@@ -189,22 +194,81 @@ public class RenderService {
         return this.renderText(templateCode, cmsHelper);
     }
 
-    public String renderText(String templateCode, String ctx,
+    public String renderText(String templateCode, String ctx, String cmsPrefix,
             CmsCatalog cmsCatalog, int pageNo, int pageSize) {
         CmsHelper cmsHelper = new CmsHelper();
         cmsHelper.setCmsService(cmsService);
         cmsHelper.setUserClient(userClient);
         cmsHelper.setProp(applicationProperties);
         cmsHelper.setCtx(ctx);
+        cmsHelper.setCmsPrefix(cmsPrefix);
         cmsHelper.setCurrentCatalog(cmsCatalog);
+        cmsHelper.setCurrentSite(cmsCatalog.getCmsSite());
         cmsHelper.setPageNo(pageNo);
         cmsHelper.setPageSize(pageSize);
         cmsHelper.getServiceMap().put("sysClient", sysClient);
+        cmsHelper.getServiceMap().put("userClient", userClient);
 
         return this.renderText(templateCode, cmsHelper);
     }
 
-    public String renderText(String templateCode, String ctx,
+    public String renderText(String templateCode, String ctx, String cmsPrefix,
+            CmsCatalog cmsCatalog, Page page, Map<String, Object> parameterMap,
+            String currentUserId) {
+        CmsHelper cmsHelper = new CmsHelper();
+        cmsHelper.setCmsService(cmsService);
+        cmsHelper.setUserClient(userClient);
+        cmsHelper.setProp(applicationProperties);
+        cmsHelper.setCtx(ctx);
+        cmsHelper.setCmsPrefix(cmsPrefix);
+        cmsHelper.setCurrentCatalog(cmsCatalog);
+        cmsHelper.setCurrentSite(cmsCatalog.getCmsSite());
+        cmsHelper.setPageNo(page.getPageNo());
+        cmsHelper.setPageSize(page.getPageSize());
+        cmsHelper.getServiceMap().put("sysClient", sysClient);
+        cmsHelper.getServiceMap().put("userClient", userClient);
+        cmsHelper.setPage(page);
+        cmsHelper.setParameterMap(parameterMap);
+        cmsHelper.setCurrentUserId(currentUserId);
+
+        if (StringUtils.isNotBlank(cdnPrefix)) {
+            cmsHelper.setCdnPrefix(cdnPrefix);
+        } else {
+            cmsHelper.setCdnPrefix(ctx + "/cdn");
+        }
+
+        return this.renderText(templateCode, cmsHelper);
+    }
+
+    public String renderText(String templateCode, String ctx, String cmsPrefix,
+            CmsTag cmsTag, Page page, Map<String, Object> parameterMap,
+            String currentUserId) {
+        CmsHelper cmsHelper = new CmsHelper();
+        cmsHelper.setCmsService(cmsService);
+        cmsHelper.setUserClient(userClient);
+        cmsHelper.setProp(applicationProperties);
+        cmsHelper.setCtx(ctx);
+        cmsHelper.setCmsPrefix(cmsPrefix);
+        cmsHelper.setCurrentTag(cmsTag);
+        cmsHelper.setCurrentSite(cmsTag.getCmsSite());
+        cmsHelper.setPageNo(page.getPageNo());
+        cmsHelper.setPageSize(page.getPageSize());
+        cmsHelper.getServiceMap().put("sysClient", sysClient);
+        cmsHelper.getServiceMap().put("userClient", userClient);
+        cmsHelper.setPage(page);
+        cmsHelper.setParameterMap(parameterMap);
+        cmsHelper.setCurrentUserId(currentUserId);
+
+        if (StringUtils.isNotBlank(cdnPrefix)) {
+            cmsHelper.setCdnPrefix(cdnPrefix);
+        } else {
+            cmsHelper.setCdnPrefix(ctx + "/cdn");
+        }
+
+        return this.renderText(templateCode, cmsHelper);
+    }
+
+    public String renderText(String templateCode, String ctx, String cmsPrefix,
             CmsArticle cmsArticle, int pageNo, int pageSize) {
         if (cmsArticle == null) {
             logger.info("cannot find article : {}", templateCode);
@@ -217,11 +281,84 @@ public class RenderService {
         cmsHelper.setUserClient(userClient);
         cmsHelper.setProp(applicationProperties);
         cmsHelper.setCtx(ctx);
+        cmsHelper.setCmsPrefix(cmsPrefix);
         cmsHelper.setCurrentCatalog(cmsArticle.getCmsCatalog());
         cmsHelper.setCurrentArticle(cmsArticle);
+        cmsHelper.setCurrentSite(cmsArticle.getCmsSite());
         cmsHelper.setPageNo(pageNo);
         cmsHelper.setPageSize(pageSize);
         cmsHelper.getServiceMap().put("sysClient", sysClient);
+        cmsHelper.getServiceMap().put("userClient", userClient);
+
+        return this.renderText(templateCode, cmsHelper);
+    }
+
+    public String renderText(String templateCode, String ctx, String cmsPrefix,
+            CmsArticle cmsArticle, Page page, Map<String, Object> parameterMap,
+            String currentUserId) {
+        if (cmsArticle == null) {
+            logger.info("cannot find article : {}", templateCode);
+
+            return "";
+        }
+
+        CmsHelper cmsHelper = new CmsHelper();
+        cmsHelper.setCmsService(cmsService);
+        cmsHelper.setUserClient(userClient);
+        cmsHelper.setProp(applicationProperties);
+        cmsHelper.setCtx(ctx);
+        cmsHelper.setCmsPrefix(cmsPrefix);
+        cmsHelper.setCurrentCatalog(cmsArticle.getCmsCatalog());
+        cmsHelper.setCurrentArticle(cmsArticle);
+        cmsHelper.setCurrentSite(cmsArticle.getCmsSite());
+        cmsHelper.setPageNo(page.getPageNo());
+        cmsHelper.setPageSize(page.getPageSize());
+        cmsHelper.getServiceMap().put("sysClient", sysClient);
+        cmsHelper.getServiceMap().put("userClient", userClient);
+        cmsHelper.setPage(page);
+        cmsHelper.setCurrentUserId(currentUserId);
+
+        if (StringUtils.isNotBlank(cdnPrefix)) {
+            cmsHelper.setCdnPrefix(cdnPrefix);
+        } else {
+            cmsHelper.setCdnPrefix(ctx + "/cdn");
+        }
+
+        return this.renderText(templateCode, cmsHelper);
+    }
+
+    public String renderText(String templateCode, String ctx, String cmsPrefix,
+            CmsSite cmsSite, Page page, Map<String, Object> parameterMap,
+            String currentUserId) {
+        if (cmsSite == null) {
+            logger.info("cannot find site : {}", templateCode);
+
+            return "";
+        }
+
+        CmsHelper cmsHelper = new CmsHelper();
+        cmsHelper.setCmsService(cmsService);
+        cmsHelper.setUserClient(userClient);
+        cmsHelper.setProp(applicationProperties);
+        cmsHelper.setCtx(ctx);
+        cmsHelper.setCmsPrefix(cmsPrefix);
+        // cmsHelper.setCurrentCatalog(cmsArticle.getCmsCatalog());
+        // cmsHelper.setCurrentArticle(cmsArticle);
+        // cmsHelper.setCurrentSite(cmsArticle.getCmsSite());
+        cmsHelper.setCurrentSite(cmsSite);
+        // cmsHelper.setPageNo(pageNo);
+        // cmsHelper.setPageSize(pageSize);
+        cmsHelper.getServiceMap().put("sysClient", sysClient);
+        cmsHelper.getServiceMap().put("userClient", userClient);
+        cmsHelper.setPage(page);
+        cmsHelper.setParameterMap(parameterMap);
+        cmsHelper.setCurrentUserId(currentUserId);
+
+        if (StringUtils.isNotBlank(cdnPrefix)) {
+            cmsHelper.setCdnPrefix(cdnPrefix);
+        } else {
+            cmsHelper.setCdnPrefix(ctx + "/cdn");
+        }
 
         return this.renderText(templateCode, cmsHelper);
     }

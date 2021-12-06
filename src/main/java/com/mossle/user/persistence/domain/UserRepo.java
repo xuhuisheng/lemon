@@ -37,10 +37,10 @@ public class UserRepo implements java.io.Serializable {
     private String scopeId;
 
     /** . */
-    private Set<UserBase> userBases = new HashSet<UserBase>(0);
+    private Set<UserSchema> userSchemas = new HashSet<UserSchema>(0);
 
     /** . */
-    private Set<UserSchema> userSchemas = new HashSet<UserSchema>(0);
+    private Set<UserBase> userBases = new HashSet<UserBase>(0);
 
     public UserRepo() {
     }
@@ -50,14 +50,14 @@ public class UserRepo implements java.io.Serializable {
     }
 
     public UserRepo(Long id, String code, String name, String ref,
-            String scopeId, Set<UserBase> userBases, Set<UserSchema> userSchemas) {
+            String scopeId, Set<UserSchema> userSchemas, Set<UserBase> userBases) {
         this.id = id;
         this.code = code;
         this.name = name;
         this.ref = ref;
         this.scopeId = scopeId;
-        this.userBases = userBases;
         this.userSchemas = userSchemas;
+        this.userBases = userBases;
     }
 
     /** @return null. */
@@ -133,20 +133,6 @@ public class UserRepo implements java.io.Serializable {
 
     /** @return . */
     @OneToMany(fetch = FetchType.LAZY, mappedBy = "userRepo")
-    public Set<UserBase> getUserBases() {
-        return this.userBases;
-    }
-
-    /**
-     * @param userBases
-     *            .
-     */
-    public void setUserBases(Set<UserBase> userBases) {
-        this.userBases = userBases;
-    }
-
-    /** @return . */
-    @OneToMany(fetch = FetchType.LAZY, mappedBy = "userRepo")
     public Set<UserSchema> getUserSchemas() {
         return this.userSchemas;
     }
@@ -157,5 +143,19 @@ public class UserRepo implements java.io.Serializable {
      */
     public void setUserSchemas(Set<UserSchema> userSchemas) {
         this.userSchemas = userSchemas;
+    }
+
+    /** @return . */
+    @OneToMany(fetch = FetchType.LAZY, mappedBy = "userRepo")
+    public Set<UserBase> getUserBases() {
+        return this.userBases;
+    }
+
+    /**
+     * @param userBases
+     *            .
+     */
+    public void setUserBases(Set<UserBase> userBases) {
+        this.userBases = userBases;
     }
 }

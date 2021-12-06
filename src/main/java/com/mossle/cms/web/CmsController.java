@@ -12,10 +12,6 @@ import com.mossle.cms.persistence.manager.CmsArticleManager;
 import com.mossle.cms.persistence.manager.CmsCatalogManager;
 import com.mossle.cms.service.RenderService;
 
-import com.mossle.core.export.Exportor;
-import com.mossle.core.mapper.BeanMapper;
-import com.mossle.core.spring.MessageHelper;
-
 import org.springframework.stereotype.Controller;
 
 import org.springframework.ui.Model;
@@ -28,9 +24,6 @@ import org.springframework.web.bind.annotation.RequestParam;
 public class CmsController {
     private CmsArticleManager cmsArticleManager;
     private CmsCatalogManager cmsCatalogManager;
-    private Exportor exportor;
-    private BeanMapper beanMapper = new BeanMapper();
-    private MessageHelper messageHelper;
     private RenderService renderService;
     private TenantHolder tenantHolder;
 
@@ -79,16 +72,6 @@ public class CmsController {
     @Resource
     public void setCmsCatalogManager(CmsCatalogManager cmsCatalogManager) {
         this.cmsCatalogManager = cmsCatalogManager;
-    }
-
-    @Resource
-    public void setExportor(Exportor exportor) {
-        this.exportor = exportor;
-    }
-
-    @Resource
-    public void setMessageHelper(MessageHelper messageHelper) {
-        this.messageHelper = messageHelper;
     }
 
     @Resource

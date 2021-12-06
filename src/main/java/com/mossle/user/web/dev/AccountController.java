@@ -8,14 +8,11 @@ import java.util.Map;
 
 import javax.annotation.Resource;
 
-import com.mossle.api.auth.CustomPasswordEncoder;
 import com.mossle.api.tenant.TenantHolder;
 import com.mossle.api.user.UserCache;
 import com.mossle.api.user.UserConnector;
 import com.mossle.api.user.UserDTO;
 
-import com.mossle.core.export.Exportor;
-import com.mossle.core.mapper.BeanMapper;
 import com.mossle.core.page.Page;
 import com.mossle.core.query.PropertyFilter;
 import com.mossle.core.spring.MessageHelper;
@@ -51,9 +48,6 @@ public class AccountController {
     private PersonInfoManager personInfoManager;
     private UserCache userCache;
     private MessageHelper messageHelper;
-    private Exportor exportor;
-    private BeanMapper beanMapper = new BeanMapper();
-    private CustomPasswordEncoder customPasswordEncoder;
     private UserPublisher userPublisher;
     private TenantHolder tenantHolder;
     private UserConnector userConnector;
@@ -277,17 +271,6 @@ public class AccountController {
     @Resource
     public void setMessageHelper(MessageHelper messageHelper) {
         this.messageHelper = messageHelper;
-    }
-
-    @Resource
-    public void setCustomPasswordEncoder(
-            CustomPasswordEncoder customPasswordEncoder) {
-        this.customPasswordEncoder = customPasswordEncoder;
-    }
-
-    @Resource
-    public void setExportor(Exportor exportor) {
-        this.exportor = exportor;
     }
 
     @Resource

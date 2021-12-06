@@ -1,0 +1,15 @@
+<p>features:</p>
+
+<ul>
+	<li>[store] 使用StoreClient替换StoreConnector。</li>
+</ul>
+
+<p>resources:</p>
+
+<ul>
+	<li>详细修订列表： <a href="https://github.com/xuhuisheng/lemon/issues?q=milestone%3A1.12.0" target="_blank">https://github.com/xuhuisheng/lemon/issues?q=milestone%3A1.12.0</a></li>
+	<li>源码地址： <a href="https://github.com/xuhuisheng/lemon/tree/lemon-1.12.0" target="_blank">https://github.com/xuhuisheng/lemon/tree/lemon-1.12.0</a></li>
+	<!--
+	<li>独立运行包： 链接: <a href="#" target="_blank"></a> 提取码:  </a></li>
+	-->
+</ul>

@@ -29,6 +29,9 @@ public class SysInfo implements java.io.Serializable {
     /** 主键. */
     private Long id;
 
+    /** 外键，应用. */
+    private OpenApp openApp;
+
     /** 外键，系统分类. */
     private SysCategory sysCategory;
 
@@ -65,8 +68,8 @@ public class SysInfo implements java.io.Serializable {
     /** 创建人. */
     private String userId;
 
-    /** 外键，应用. */
-    private Long appId;
+    /** 账号体系. */
+    private String userRepoCode;
 
     /** 租户. */
     private String tenantId;
@@ -81,11 +84,13 @@ public class SysInfo implements java.io.Serializable {
         this.id = id;
     }
 
-    public SysInfo(Long id, SysCategory sysCategory, String logo, String type,
-            String code, String name, String url, Integer priority,
-            String status, String descn, String platform, Date createTime,
-            String userId, Long appId, String tenantId, Set<SysEntry> sysEntries) {
+    public SysInfo(Long id, OpenApp openApp, SysCategory sysCategory,
+            String logo, String type, String code, String name, String url,
+            Integer priority, String status, String descn, String platform,
+            Date createTime, String userId, String userRepoCode,
+            String tenantId, Set<SysEntry> sysEntries) {
         this.id = id;
+        this.openApp = openApp;
         this.sysCategory = sysCategory;
         this.logo = logo;
         this.type = type;
@@ -98,7 +103,7 @@ public class SysInfo implements java.io.Serializable {
         this.platform = platform;
         this.createTime = createTime;
         this.userId = userId;
-        this.appId = appId;
+        this.userRepoCode = userRepoCode;
         this.tenantId = tenantId;
         this.sysEntries = sysEntries;
     }
@@ -116,6 +121,21 @@ public class SysInfo implements java.io.Serializable {
      */
     public void setId(Long id) {
         this.id = id;
+    }
+
+    /** @return 外键，应用. */
+    @ManyToOne(fetch = FetchType.LAZY)
+    @JoinColumn(name = "APP_ID")
+    public OpenApp getOpenApp() {
+        return this.openApp;
+    }
+
+    /**
+     * @param openApp
+     *            外键，应用.
+     */
+    public void setOpenApp(OpenApp openApp) {
+        this.openApp = openApp;
     }
 
     /** @return 外键，系统分类. */
@@ -288,18 +308,18 @@ public class SysInfo implements java.io.Serializable {
         this.userId = userId;
     }
 
-    /** @return 外键，应用. */
-    @Column(name = "APP_ID")
-    public Long getAppId() {
-        return this.appId;
+    /** @return 账号体系. */
+    @Column(name = "USER_REPO_CODE", length = 64)
+    public String getUserRepoCode() {
+        return this.userRepoCode;
     }
 
     /**
-     * @param appId
-     *            外键，应用.
+     * @param userRepoCode
+     *            账号体系.
      */
-    public void setAppId(Long appId) {
-        this.appId = appId;
+    public void setUserRepoCode(String userRepoCode) {
+        this.userRepoCode = userRepoCode;
     }
 
     /** @return 租户. */

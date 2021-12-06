@@ -7,9 +7,9 @@ import java.util.List;
 
 import javax.annotation.Resource;
 
+import com.mossle.api.auth.CurrentUserHolder;
 import com.mossle.api.tenant.TenantHolder;
 
-import com.mossle.api.auth.CurrentUserHolder;
 import com.mossle.core.page.Page;
 
 import com.mossle.pim.persistence.domain.PimTask;
@@ -18,9 +18,7 @@ import com.mossle.pim.persistence.manager.PimTaskManager;
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
 
-import org.springframework.web.bind.annotation.PathVariable;
 import org.springframework.web.bind.annotation.RequestMapping;
-import org.springframework.web.bind.annotation.RequestMethod;
 import org.springframework.web.bind.annotation.RestController;
 
 @RestController
@@ -34,6 +32,8 @@ public class TaskPortalController {
 
     @RequestMapping("tasks")
     public String personalTasks() {
+        logger.debug("personal tasks");
+
         String userId = currentUserHolder.getUserId();
         String tenantId = tenantHolder.getTenantId();
 

@@ -29,6 +29,8 @@ public class UserCallback implements CsvCallback {
     private String defaultTenantId = "1";
 
     public void process(List<String> list, int lineNo) throws Exception {
+        logger.debug("default tenant id : {}", defaultTenantId);
+
         String username = list.get(0);
         String displayName = list.get(1);
         String cellphone = list.get(2);
@@ -131,9 +133,14 @@ public class UserCallback implements CsvCallback {
         if (personInfo == null) {
             personInfo = new PersonInfo();
             personInfo.setCode(accountInfo.getCode());
+            personInfo.setFullName(accountInfo.getDisplayName());
+            personInfo.setDisplayName(accountInfo.getDisplayName());
+            personInfo.setType("employee");
             personInfo.setUsername(username);
+            personInfo.setCellphoneCode("+86");
             personInfo.setCellphone(cellphone);
             personInfo.setEmail(email);
+            personInfo.setStatus("active");
             personInfo.setTenantId(defaultTenantId);
             personInfoManager.save(personInfo);
 
@@ -178,5 +185,9 @@ public class UserCallback implements CsvCallback {
     public void setCustomPasswordEncoder(
             CustomPasswordEncoder customPasswordEncoder) {
         this.customPasswordEncoder = customPasswordEncoder;
+    }
+
+    public void setDefaultTenantId(String defaultTenantId) {
+        this.defaultTenantId = defaultTenantId;
     }
 }

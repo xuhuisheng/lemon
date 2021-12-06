@@ -3,6 +3,7 @@ package com.mossle.user;
 import java.awt.Image;
 import java.awt.image.BufferedImage;
 
+import java.io.IOException;
 import java.io.InputStream;
 import java.io.OutputStream;
 
@@ -86,5 +87,31 @@ public class ImageUtils {
         }
 
         return result;
+    }
+
+    public static void zoomImage(BufferedImage bufferedImage,
+            OutputStream outputStream, int x1, int y1, int x2, int y2)
+            throws IOException {
+        //
+        int height = bufferedImage.getHeight();
+        int width = bufferedImage.getWidth();
+
+        int defaultSize = Math.min(512, Math.min(height, width));
+
+        if (height > width) {
+            int h2 = defaultSize;
+            int w2 = (defaultSize * width) / height;
+            bufferedImage = zoomImage(bufferedImage, w2, h2);
+        } else {
+            int w2 = defaultSize;
+            int h2 = (defaultSize * height) / width;
+            bufferedImage = zoomImage(bufferedImage, w2, h2);
+        }
+
+        //
+        BufferedImage outImage = bufferedImage.getSubimage(x1, y1, x2 - x1, y2
+                - y1);
+        ImageIO.write(outImage, "png", outputStream);
+        outputStream.flush();
     }
 }

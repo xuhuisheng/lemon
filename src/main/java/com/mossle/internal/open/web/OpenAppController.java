@@ -110,6 +110,14 @@ public class OpenAppController {
         exportor.export(request, response, tableModel);
     }
 
+    @RequestMapping("open/index")
+    public String openIndex(Model model) {
+        List<OpenApp> openApps = openAppManager.getAll();
+        model.addAttribute("openApps", openApps);
+
+        return "open/index";
+    }
+
     // ~ ======================================================================
     @Resource
     public void setOpenAppManager(OpenAppManager openAppManager) {

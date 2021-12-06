@@ -11,7 +11,6 @@ import com.mossle.api.tenant.TenantHolder;
 import com.mossle.api.user.UserCache;
 import com.mossle.api.user.UserDTO;
 
-import com.mossle.core.export.Exportor;
 import com.mossle.core.mapper.BeanMapper;
 import com.mossle.core.page.Page;
 import com.mossle.core.query.PropertyFilter;
@@ -36,7 +35,6 @@ import org.springframework.ui.Model;
 import org.springframework.web.bind.annotation.ModelAttribute;
 import org.springframework.web.bind.annotation.RequestMapping;
 import org.springframework.web.bind.annotation.RequestParam;
-import org.springframework.web.bind.annotation.ResponseBody;
 import org.springframework.web.servlet.mvc.support.RedirectAttributes;
 
 @Controller
@@ -48,7 +46,6 @@ public class AccountInfoController {
     private PersonInfoManager personInfoManager;
     private UserCache userCache;
     private MessageHelper messageHelper;
-    private Exportor exportor;
     private BeanMapper beanMapper = new BeanMapper();
     private CustomPasswordEncoder customPasswordEncoder;
     private UserPublisher userPublisher;
@@ -314,11 +311,6 @@ public class AccountInfoController {
     public void setCustomPasswordEncoder(
             CustomPasswordEncoder customPasswordEncoder) {
         this.customPasswordEncoder = customPasswordEncoder;
-    }
-
-    @Resource
-    public void setExportor(Exportor exportor) {
-        this.exportor = exportor;
     }
 
     @Resource

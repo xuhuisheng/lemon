@@ -32,10 +32,10 @@ public class PlmIssue implements java.io.Serializable {
     private Long id;
 
     /** null. */
-    private PlmProject plmProject;
+    private PlmSprint plmSprint;
 
     /** null. */
-    private PlmSprint plmSprint;
+    private PlmProject plmProject;
 
     /** null. */
     private String type;
@@ -77,13 +77,13 @@ public class PlmIssue implements java.io.Serializable {
     private Date updateTime;
 
     /** . */
-    private Set<PlmLog> plmLogs = new HashSet<PlmLog>(0);
-
-    /** . */
     private Set<PlmComment> plmComments = new HashSet<PlmComment>(0);
 
     /** . */
     private Set<PlmVersion> plmVersions = new HashSet<PlmVersion>(0);
+
+    /** . */
+    private Set<PlmLog> plmLogs = new HashSet<PlmLog>(0);
 
     /** . */
     private Set<PlmComponent> plmComponents = new HashSet<PlmComponent>(0);
@@ -98,16 +98,16 @@ public class PlmIssue implements java.io.Serializable {
         this.id = id;
     }
 
-    public PlmIssue(Long id, PlmProject plmProject, PlmSprint plmSprint,
+    public PlmIssue(Long id, PlmSprint plmSprint, PlmProject plmProject,
             String type, String name, String content, Integer severity,
             Date createTime, Date startTime, Date completeTime,
             String reporterId, String assigneeId, String status, String step,
-            String resolution, Date updateTime, Set<PlmLog> plmLogs,
-            Set<PlmComment> plmComments, Set<PlmVersion> plmVersions,
+            String resolution, Date updateTime, Set<PlmComment> plmComments,
+            Set<PlmVersion> plmVersions, Set<PlmLog> plmLogs,
             Set<PlmComponent> plmComponents, Set<PlmRequirement> plmRequirements) {
         this.id = id;
-        this.plmProject = plmProject;
         this.plmSprint = plmSprint;
+        this.plmProject = plmProject;
         this.type = type;
         this.name = name;
         this.content = content;
@@ -121,9 +121,9 @@ public class PlmIssue implements java.io.Serializable {
         this.step = step;
         this.resolution = resolution;
         this.updateTime = updateTime;
-        this.plmLogs = plmLogs;
         this.plmComments = plmComments;
         this.plmVersions = plmVersions;
+        this.plmLogs = plmLogs;
         this.plmComponents = plmComponents;
         this.plmRequirements = plmRequirements;
     }
@@ -145,21 +145,6 @@ public class PlmIssue implements java.io.Serializable {
 
     /** @return null. */
     @ManyToOne(fetch = FetchType.LAZY)
-    @JoinColumn(name = "PROJECT_ID")
-    public PlmProject getPlmProject() {
-        return this.plmProject;
-    }
-
-    /**
-     * @param plmProject
-     *            null.
-     */
-    public void setPlmProject(PlmProject plmProject) {
-        this.plmProject = plmProject;
-    }
-
-    /** @return null. */
-    @ManyToOne(fetch = FetchType.LAZY)
     @JoinColumn(name = "SPRINT_ID")
     public PlmSprint getPlmSprint() {
         return this.plmSprint;
@@ -171,6 +156,21 @@ public class PlmIssue implements java.io.Serializable {
      */
     public void setPlmSprint(PlmSprint plmSprint) {
         this.plmSprint = plmSprint;
+    }
+
+    /** @return null. */
+    @ManyToOne(fetch = FetchType.LAZY)
+    @JoinColumn(name = "PROJECT_ID")
+    public PlmProject getPlmProject() {
+        return this.plmProject;
+    }
+
+    /**
+     * @param plmProject
+     *            null.
+     */
+    public void setPlmProject(PlmProject plmProject) {
+        this.plmProject = plmProject;
     }
 
     /** @return null. */
@@ -361,20 +361,6 @@ public class PlmIssue implements java.io.Serializable {
 
     /** @return . */
     @OneToMany(fetch = FetchType.LAZY, mappedBy = "plmIssue")
-    public Set<PlmLog> getPlmLogs() {
-        return this.plmLogs;
-    }
-
-    /**
-     * @param plmLogs
-     *            .
-     */
-    public void setPlmLogs(Set<PlmLog> plmLogs) {
-        this.plmLogs = plmLogs;
-    }
-
-    /** @return . */
-    @OneToMany(fetch = FetchType.LAZY, mappedBy = "plmIssue")
     public Set<PlmComment> getPlmComments() {
         return this.plmComments;
     }
@@ -400,6 +386,20 @@ public class PlmIssue implements java.io.Serializable {
      */
     public void setPlmVersions(Set<PlmVersion> plmVersions) {
         this.plmVersions = plmVersions;
+    }
+
+    /** @return . */
+    @OneToMany(fetch = FetchType.LAZY, mappedBy = "plmIssue")
+    public Set<PlmLog> getPlmLogs() {
+        return this.plmLogs;
+    }
+
+    /**
+     * @param plmLogs
+     *            .
+     */
+    public void setPlmLogs(Set<PlmLog> plmLogs) {
+        this.plmLogs = plmLogs;
     }
 
     /** @return . */

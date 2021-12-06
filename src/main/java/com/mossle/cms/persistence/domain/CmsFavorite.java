@@ -27,10 +27,10 @@ public class CmsFavorite implements java.io.Serializable {
     private Long id;
 
     /** null. */
-    private CmsComment cmsComment;
+    private CmsArticle cmsArticle;
 
     /** null. */
-    private CmsArticle cmsArticle;
+    private CmsComment cmsComment;
 
     /** null. */
     private String subject;
@@ -48,11 +48,11 @@ public class CmsFavorite implements java.io.Serializable {
         this.id = id;
     }
 
-    public CmsFavorite(Long id, CmsComment cmsComment, CmsArticle cmsArticle,
+    public CmsFavorite(Long id, CmsArticle cmsArticle, CmsComment cmsComment,
             String subject, Date createTime, String userId) {
         this.id = id;
-        this.cmsComment = cmsComment;
         this.cmsArticle = cmsArticle;
+        this.cmsComment = cmsComment;
         this.subject = subject;
         this.createTime = createTime;
         this.userId = userId;
@@ -75,21 +75,6 @@ public class CmsFavorite implements java.io.Serializable {
 
     /** @return null. */
     @ManyToOne(fetch = FetchType.LAZY)
-    @JoinColumn(name = "COMMENT_ID")
-    public CmsComment getCmsComment() {
-        return this.cmsComment;
-    }
-
-    /**
-     * @param cmsComment
-     *            null.
-     */
-    public void setCmsComment(CmsComment cmsComment) {
-        this.cmsComment = cmsComment;
-    }
-
-    /** @return null. */
-    @ManyToOne(fetch = FetchType.LAZY)
     @JoinColumn(name = "ARTICLE_ID")
     public CmsArticle getCmsArticle() {
         return this.cmsArticle;
@@ -101,6 +86,21 @@ public class CmsFavorite implements java.io.Serializable {
      */
     public void setCmsArticle(CmsArticle cmsArticle) {
         this.cmsArticle = cmsArticle;
+    }
+
+    /** @return null. */
+    @ManyToOne(fetch = FetchType.LAZY)
+    @JoinColumn(name = "COMMENT_ID")
+    public CmsComment getCmsComment() {
+        return this.cmsComment;
+    }
+
+    /**
+     * @param cmsComment
+     *            null.
+     */
+    public void setCmsComment(CmsComment cmsComment) {
+        this.cmsComment = cmsComment;
     }
 
     /** @return null. */

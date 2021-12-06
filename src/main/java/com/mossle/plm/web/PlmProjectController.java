@@ -8,8 +8,6 @@ import javax.annotation.Resource;
 import javax.servlet.http.HttpServletRequest;
 import javax.servlet.http.HttpServletResponse;
 
-import com.mossle.api.user.UserConnector;
-
 import com.mossle.core.export.Exportor;
 import com.mossle.core.export.TableModel;
 import com.mossle.core.mapper.BeanMapper;
@@ -35,7 +33,6 @@ public class PlmProjectController {
     private PlmProjectManager plmProjectManager;
     private Exportor exportor;
     private BeanMapper beanMapper = new BeanMapper();
-    private UserConnector userConnector;
     private MessageHelper messageHelper;
 
     @RequestMapping("plm-project-list")
@@ -125,11 +122,6 @@ public class PlmProjectController {
     @Resource
     public void setExportor(Exportor exportor) {
         this.exportor = exportor;
-    }
-
-    @Resource
-    public void setUserConnector(UserConnector userConnector) {
-        this.userConnector = userConnector;
     }
 
     @Resource

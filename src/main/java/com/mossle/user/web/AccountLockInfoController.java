@@ -5,15 +5,12 @@ import java.util.Map;
 
 import javax.annotation.Resource;
 
-import com.mossle.core.export.Exportor;
-import com.mossle.core.mapper.BeanMapper;
 import com.mossle.core.page.Page;
 import com.mossle.core.query.PropertyFilter;
 import com.mossle.core.spring.MessageHelper;
 
 import com.mossle.user.persistence.domain.AccountLockInfo;
 import com.mossle.user.persistence.manager.AccountLockInfoManager;
-import com.mossle.user.persistence.manager.AccountLockLogManager;
 import com.mossle.user.service.AccountLockService;
 
 import org.springframework.stereotype.Controller;
@@ -29,10 +26,7 @@ import org.springframework.web.servlet.mvc.support.RedirectAttributes;
 @RequestMapping("user")
 public class AccountLockInfoController {
     private AccountLockInfoManager accountLockInfoManager;
-    private AccountLockLogManager accountLockLogManager;
     private AccountLockService accountLockService;
-    private Exportor exportor;
-    private BeanMapper beanMapper = new BeanMapper();
     private MessageHelper messageHelper;
 
     @RequestMapping("account-lock-info-list")
@@ -71,19 +65,8 @@ public class AccountLockInfoController {
     }
 
     @Resource
-    public void setAccountLockLogManager(
-            AccountLockLogManager accountLockLogManager) {
-        this.accountLockLogManager = accountLockLogManager;
-    }
-
-    @Resource
     public void setAccountLockService(AccountLockService accountLockService) {
         this.accountLockService = accountLockService;
-    }
-
-    @Resource
-    public void setExportor(Exportor exportor) {
-        this.exportor = exportor;
     }
 
     @Resource

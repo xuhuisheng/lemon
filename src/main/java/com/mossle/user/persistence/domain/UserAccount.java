@@ -23,10 +23,10 @@ public class UserAccount implements java.io.Serializable {
     private Long id;
 
     /** null. */
-    private UserAccountType userAccountType;
+    private UserBase userBase;
 
     /** null. */
-    private UserBase userBase;
+    private UserAccountType userAccountType;
 
     /** null. */
     private String username;
@@ -44,11 +44,12 @@ public class UserAccount implements java.io.Serializable {
         this.id = id;
     }
 
-    public UserAccount(Long id, UserAccountType userAccountType,
-            UserBase userBase, String username, String password, String scopeId) {
+    public UserAccount(Long id, UserBase userBase,
+            UserAccountType userAccountType, String username, String password,
+            String scopeId) {
         this.id = id;
-        this.userAccountType = userAccountType;
         this.userBase = userBase;
+        this.userAccountType = userAccountType;
         this.username = username;
         this.password = password;
         this.scopeId = scopeId;
@@ -71,21 +72,6 @@ public class UserAccount implements java.io.Serializable {
 
     /** @return null. */
     @ManyToOne(fetch = FetchType.LAZY)
-    @JoinColumn(name = "TYPE_ID")
-    public UserAccountType getUserAccountType() {
-        return this.userAccountType;
-    }
-
-    /**
-     * @param userAccountType
-     *            null.
-     */
-    public void setUserAccountType(UserAccountType userAccountType) {
-        this.userAccountType = userAccountType;
-    }
-
-    /** @return null. */
-    @ManyToOne(fetch = FetchType.LAZY)
     @JoinColumn(name = "USER_BASE_ID")
     public UserBase getUserBase() {
         return this.userBase;
@@ -97,6 +83,21 @@ public class UserAccount implements java.io.Serializable {
      */
     public void setUserBase(UserBase userBase) {
         this.userBase = userBase;
+    }
+
+    /** @return null. */
+    @ManyToOne(fetch = FetchType.LAZY)
+    @JoinColumn(name = "TYPE_ID")
+    public UserAccountType getUserAccountType() {
+        return this.userAccountType;
+    }
+
+    /**
+     * @param userAccountType
+     *            null.
+     */
+    public void setUserAccountType(UserAccountType userAccountType) {
+        this.userAccountType = userAccountType;
     }
 
     /** @return null. */

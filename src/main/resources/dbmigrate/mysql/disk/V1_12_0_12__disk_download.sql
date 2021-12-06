@@ -1,0 +1,38 @@
+
+
+-------------------------------------------------------------------------------
+--  disk download
+-------------------------------------------------------------------------------
+CREATE TABLE DISK_DOWNLOAD(
+    ID BIGINT NOT NULL,
+    NAME VARCHAR(50),
+    TYPE VARCHAR(50),
+
+    INFO_ID BIGINT,
+
+    START_TIME TIMESTAMP,
+    END_TIME TIMESTAMP,
+
+	CREATOR VARCHAR(64),
+	CREATE_TIME DATETIME,
+	UPDATER VARCHAR(64),
+	UPDATE_TIME DATETIME,
+	STATUS VARCHAR(50),
+    TENANT_ID VARCHAR(64),
+    CONSTRAINT PK_DISK_DOWNLOAD PRIMARY KEY(ID),
+    CONSTRAINT FK_DISK_DOWNLOAD_INFO FOREIGN KEY(INFO_ID) REFERENCES DISK_INFO(ID)
+) ENGINE=INNODB CHARSET=UTF8;
+
+
+
+
+
+
+
+
+
+
+
+
+
+

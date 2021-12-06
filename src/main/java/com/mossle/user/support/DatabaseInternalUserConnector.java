@@ -2,11 +2,7 @@ package com.mossle.user.support;
 
 import java.io.InputStream;
 
-import java.util.ArrayList;
 import java.util.Date;
-import java.util.HashMap;
-import java.util.List;
-import java.util.Map;
 
 import javax.activation.DataSource;
 
@@ -18,9 +14,6 @@ import com.mossle.api.tenant.TenantHolder;
 import com.mossle.api.user.AccountStatus;
 
 import com.mossle.core.mapper.BeanMapper;
-import com.mossle.core.page.Page;
-import com.mossle.core.query.PropertyFilter;
-import com.mossle.core.query.PropertyFilterUtils;
 
 import com.mossle.spi.device.DeviceDTO;
 import com.mossle.spi.user.InternalUserConnector;

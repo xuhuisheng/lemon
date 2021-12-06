@@ -1,17 +1,11 @@
 package com.mossle.guest.web;
 
 import java.util.Calendar;
-import java.util.Date;
 import java.util.UUID;
 
 import javax.annotation.Resource;
 
 import com.mossle.api.auth.CustomPasswordEncoder;
-
-import com.mossle.core.id.IdGenerator;
-import com.mossle.core.spring.MessageHelper;
-
-import com.mossle.spi.user.InternalUserConnector;
 
 import com.mossle.user.persistence.domain.AccountCredential;
 import com.mossle.user.persistence.domain.AccountInfo;
@@ -27,24 +21,18 @@ import org.springframework.stereotype.Controller;
 
 import org.springframework.ui.Model;
 
-import org.springframework.web.bind.annotation.ModelAttribute;
 import org.springframework.web.bind.annotation.RequestMapping;
 import org.springframework.web.bind.annotation.RequestParam;
-import org.springframework.web.bind.annotation.ResponseBody;
-import org.springframework.web.servlet.mvc.support.RedirectAttributes;
 
 @Controller
 @RequestMapping("guest")
 public class ForgetPasswordController {
     private static Logger logger = LoggerFactory
             .getLogger(ForgetPasswordController.class);
-    private MessageHelper messageHelper;
     private AccountInfoManager accountInfoManager;
     private AccountCredentialManager accountCredentialManager;
     private PersonInfoManager personInfoManager;
     private CustomPasswordEncoder customPasswordEncoder;
-    private IdGenerator idGenerator;
-    private InternalUserConnector internalUserConnector;
 
     @RequestMapping("forget-password-view")
     public String forgetPasswordView() {
@@ -164,11 +152,6 @@ public class ForgetPasswordController {
 
     // ~ ======================================================================
     @Resource
-    public void setMessageHelper(MessageHelper messageHelper) {
-        this.messageHelper = messageHelper;
-    }
-
-    @Resource
     public void setAccountInfoManager(AccountInfoManager accountInfoManager) {
         this.accountInfoManager = accountInfoManager;
     }
@@ -183,17 +166,6 @@ public class ForgetPasswordController {
     public void setCustomPasswordEncoder(
             CustomPasswordEncoder customPasswordEncoder) {
         this.customPasswordEncoder = customPasswordEncoder;
-    }
-
-    @Resource
-    public void setIdGenerator(IdGenerator idGenerator) {
-        this.idGenerator = idGenerator;
-    }
-
-    @Resource
-    public void setInternalUserConnector(
-            InternalUserConnector internalUserConnector) {
-        this.internalUserConnector = internalUserConnector;
     }
 
     @Resource

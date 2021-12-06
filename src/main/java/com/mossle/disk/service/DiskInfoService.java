@@ -1,290 +1,544 @@
 package com.mossle.disk.service;
 
-import java.util.Date;
 import java.util.List;
-
-import javax.activation.DataSource;
 
 import javax.annotation.Resource;
 
-import com.mossle.api.store.StoreDTO;
-
-import com.mossle.client.store.StoreClient;
-
 import com.mossle.disk.persistence.domain.DiskAcl;
 import com.mossle.disk.persistence.domain.DiskInfo;
-import com.mossle.disk.persistence.domain.DiskMember;
-import com.mossle.disk.persistence.domain.DiskRule;
-import com.mossle.disk.persistence.domain.DiskShare;
-import com.mossle.disk.persistence.domain.DiskSpace;
-import com.mossle.disk.persistence.manager.DiskAclManager;
-import com.mossle.disk.persistence.manager.DiskInfoManager;
-import com.mossle.disk.persistence.manager.DiskMemberManager;
-import com.mossle.disk.persistence.manager.DiskRuleManager;
-import com.mossle.disk.persistence.manager.DiskShareManager;
-import com.mossle.disk.persistence.manager.DiskSpaceManager;
-import com.mossle.disk.util.FileUtils;
+import com.mossle.disk.persistence.domain.DiskTag;
+import com.mossle.disk.service.internal.DiskAclInternalService;
+import com.mossle.disk.service.internal.DiskBaseInternalService;
+import com.mossle.disk.service.internal.DiskLogInternalService;
+import com.mossle.disk.service.internal.DiskShareInternalService;
+import com.mossle.disk.service.internal.DiskTagInternalService;
+import com.mossle.disk.support.DiskAclException;
+import com.mossle.disk.support.Result;
 
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
 
 import org.springframework.stereotype.Service;
 
+import org.springframework.transaction.annotation.Transactional;
+
 @Service
+@Transactional
 public class DiskInfoService {
     private static Logger logger = LoggerFactory
             .getLogger(DiskInfoService.class);
-    private DiskInfoManager diskInfoManager;
-    private DiskSpaceManager diskSpaceManager;
-    private DiskMemberManager diskMemberManager;
-    private DiskShareManager diskShareManager;
-    private DiskRuleManager diskRuleManager;
-    private DiskAclManager diskAclManager;
-    private StoreClient storeClient;
-    private DiskSpaceService diskSpaceService;
+    private DiskAclInternalService diskAclInternalService;
+    private DiskBaseInternalService diskBaseInternalService;
+    private DiskLogInternalService diskLogInternalService;
+    private DiskTagInternalService diskTagInternalService;
+    private DiskShareInternalService diskShareInternalService;
 
     /**
-     * 上传文件.
+     * 0202 删除.
      */
-    public DiskInfo createFile(String userId, DataSource dataSource,
-            String name, long size, String parentPath, String tenantId)
-            throws Exception {
-        String modelName = "disk/user/" + userId;
-        String keyName = parentPath + "/" + name;
-        StoreDTO storeDto = storeClient.saveStore(modelName, keyName,
-                dataSource, tenantId);
-        String type = FileUtils.getSuffix(name);
+    public Result<DiskInfo> remove(Long fileId, String userId) {
+        logger.info("remove {} {}", fileId, userId);
 
-        return this.createDiskInfo(userId, name, size, storeDto.getKey(), type,
-                1, parentPath);
+        // acl
+        if (this.diskAclInternalService.lackPermission(fileId, userId,
+                diskAclInternalService.MASK_DELETE)) {
+            logger.info("lack permission : {} {} {} {} {}", fileId, "file",
+                    userId, diskAclInternalService.MASK_DELETE, "removeFile");
+            throw new DiskAclException(fileId, "file", userId,
+                    diskAclInternalService.MASK_DELETE, "removeFile");
+        }
+
+        Result<DiskInfo> result = this.diskBaseInternalService.remove(fileId,
+                userId);
+
+        if (result.isSuccess()) {
+            DiskInfo diskInfo = result.getData();
+            // log
+            this.diskLogInternalService.recordLog(diskInfo, userId,
+                    DiskLogInternalService.CATALOG_REMOVE_FILE);
+
+            return result;
+        }
+
+        return result;
     }
 
     /**
-     * 新建文件夹.
+     * 0203 详情.
      */
-    public DiskInfo createDir(String userId, String name, String parentPath) {
-        // internalStoreConnector.mkdir("1/disk/user/" + userId + "/" + parentPath
-        // + "/" + name);
-        return this.createDiskInfo(userId, name, 0, null, "dir", 0, parentPath);
+    public Result<DiskInfo> findById(Long fileId, String userId) {
+        logger.info("findFile {} {}", fileId, userId);
+
+        // acl
+        if (this.diskAclInternalService.lackPermission(fileId, userId,
+                diskAclInternalService.MASK_READ)) {
+            logger.info("lack permission : {} {} {} {} {}", fileId, "file",
+                    userId, diskAclInternalService.MASK_READ, "findFile");
+            throw new DiskAclException(fileId, "file", userId,
+                    diskAclInternalService.MASK_READ, "findFile");
+        }
+
+        Result<DiskInfo> result = this.diskBaseInternalService
+                .findActive(fileId);
+
+        if (result.isFailure()) {
+            return result;
+        }
+
+        return result;
     }
 
     /**
-     * 上传文件，或新建文件夹.
+     * 0204 重命名.
      */
-    public DiskInfo createDiskInfo(String userId, String name, long size,
-            String ref, String type, int dirType, String parentPath) {
-        if (name == null) {
-            logger.info("name cannot be null");
+    public Result<DiskInfo> rename(Long fileId, String userId, String name) {
+        logger.info("rename : {} {} {}", fileId, userId, name);
 
-            return null;
+        // acl
+        if (this.diskAclInternalService.lackPermission(fileId, userId,
+                diskAclInternalService.MASK_EDIT)) {
+            logger.info("lack permission : {} {} {} {} {}", fileId, "file",
+                    userId, diskAclInternalService.MASK_EDIT, "rename");
+            throw new DiskAclException(fileId, "file", userId,
+                    diskAclInternalService.MASK_EDIT, "rename");
         }
 
-        name = name.trim();
+        Result<DiskInfo> result = this.diskBaseInternalService.rename(fileId,
+                userId, name);
 
-        if (name.length() == 0) {
-            logger.info("name cannot be empty");
-
-            return null;
+        if (result.isFailure()) {
+            return result;
         }
 
-        if (parentPath == null) {
-            parentPath = "";
-        } else {
-            parentPath = parentPath.trim();
+        return result;
+    }
+
+    /**
+     * 0205 移动.
+     */
+    public Result<DiskInfo> move(Long fileId, String userId, Long parentId) {
+        logger.info("move : {} {} {}", fileId, userId, parentId);
+
+        // acl
+        if (this.diskAclInternalService.lackPermission(fileId, userId,
+                diskAclInternalService.MASK_DELETE)) {
+            logger.info("lack permission : {} {} {} {} {}", fileId, "file",
+                    userId, diskAclInternalService.MASK_DELETE, "move");
+            throw new DiskAclException(fileId, "file", userId,
+                    diskAclInternalService.MASK_DELETE, "move");
         }
 
-        if (parentPath.length() != 0) {
-            if (!parentPath.startsWith("/")) {
-                parentPath = "/" + parentPath;
+        if (this.diskAclInternalService.lackPermission(parentId, userId,
+                diskAclInternalService.MASK_CREATE)) {
+            logger.info("lack permission : {} {} {} {} {}", parentId, "file",
+                    userId, diskAclInternalService.MASK_CREATE, "move");
+            throw new DiskAclException(parentId, "file", userId,
+                    diskAclInternalService.MASK_CREATE, "move");
+        }
+
+        Result<DiskInfo> result = this.diskBaseInternalService.move(fileId,
+                userId, parentId);
+
+        if (result.isFailure()) {
+            return result;
+        }
+
+        DiskInfo diskInfo = result.getData();
+        this.diskLogInternalService.recordLog(diskInfo, userId,
+                DiskLogInternalService.CATALOG_MOVE);
+
+        return result;
+    }
+
+    /**
+     * 0206 复制.
+     */
+    public Result<DiskInfo> copy(Long fileId, String userId, Long parentId) {
+        logger.info("copy : {} {} {}", fileId, userId, parentId);
+
+        // acl
+        if (this.diskAclInternalService.lackPermission(fileId, userId,
+                diskAclInternalService.MASK_COPY)) {
+            logger.info("lack permission : {} {} {} {} {}", fileId, "file",
+                    userId, diskAclInternalService.MASK_COPY, "copy");
+            throw new DiskAclException(fileId, "file", userId,
+                    diskAclInternalService.MASK_COPY, "copy");
+        }
+
+        if (this.diskAclInternalService.lackPermission(parentId, userId,
+                diskAclInternalService.MASK_CREATE)) {
+            logger.info("lack permission : {} {} {} {} {}", parentId, "folder",
+                    userId, diskAclInternalService.MASK_CREATE, "copy");
+            throw new DiskAclException(parentId, "folder", userId,
+                    diskAclInternalService.MASK_CREATE, "copy");
+        }
+
+        Result<DiskInfo> result = this.diskBaseInternalService.copy(fileId,
+                userId, parentId);
+
+        if (result.isFailure()) {
+            return result;
+        }
+
+        DiskInfo diskInfo = result.getData();
+
+        this.diskLogInternalService.recordLog(diskInfo, userId,
+                DiskLogInternalService.CATALOG_COPY);
+
+        return result;
+    }
+
+    /**
+     * 链接.
+     */
+    public Result<DiskInfo> link(Long fileId, String userId, Long parentId) {
+        logger.info("link : {} {} {}", fileId, userId, parentId);
+
+        // acl
+        if (this.diskAclInternalService.lackPermission(fileId, userId,
+                diskAclInternalService.MASK_COPY)) {
+            logger.info("lack permission : {} {} {} {} {}", fileId, "file",
+                    userId, diskAclInternalService.MASK_READ, "link");
+            throw new DiskAclException(fileId, "file", userId,
+                    diskAclInternalService.MASK_READ, "link");
+        }
+
+        if (this.diskAclInternalService.lackPermission(parentId, userId,
+                diskAclInternalService.MASK_CREATE)) {
+            logger.info("lack permission : {} {} {} {} {}", parentId, "folder",
+                    userId, diskAclInternalService.MASK_CREATE, "link");
+            throw new DiskAclException(parentId, "folder", userId,
+                    diskAclInternalService.MASK_CREATE, "link");
+        }
+
+        Result<DiskInfo> result = this.diskBaseInternalService.link(fileId,
+                userId, parentId);
+
+        if (result.isFailure()) {
+            return result;
+        }
+
+        DiskInfo diskInfo = result.getData();
+
+        this.diskLogInternalService.recordLog(diskInfo, userId,
+                DiskLogInternalService.CATALOG_LINK);
+
+        return result;
+    }
+
+    /**
+     * 0207 恢复.
+     */
+    public Result<DiskInfo> recover(Long fileId, String userId, Long parentId) {
+        logger.info("recover : {} {} {}", fileId, userId, parentId);
+
+        if (parentId == null) {
+            Result<DiskInfo> result = diskBaseInternalService.findById(fileId);
+
+            if (result.isFailure()) {
+                return result;
             }
 
-            int index = parentPath.lastIndexOf("/");
-            String targetParentPath = parentPath.substring(0, index);
-            String targetName = parentPath.substring(index + 1);
-            String hql = "from DiskInfo where parentPath=? and name=?";
-            DiskInfo parent = diskInfoManager.findUnique(hql, targetParentPath,
-                    targetName);
+            DiskInfo file = result.getData();
 
-            if (parent == null) {
-                logger.info("cannot find : {} {} {}", parentPath,
-                        targetParentPath, targetName);
-
-                return null;
+            if (file != null) {
+                parentId = file.getOriginalParentId();
             }
         }
 
-        String hql = "select name from DiskInfo where creator=? and parentPath=?";
-        List<String> currentNames = diskInfoManager.find(hql, userId,
-                parentPath);
-        String targetName = FileUtils.calculateName(name, currentNames);
+        // acl
+        if (this.diskAclInternalService.lackPermission(fileId, userId,
+                diskAclInternalService.MASK_READ)) {
+            logger.info("lack permission : {} {} {} {} {}", fileId, "file",
+                    userId, diskAclInternalService.MASK_READ, "recover");
+            throw new DiskAclException(fileId, "file", userId,
+                    diskAclInternalService.MASK_READ, "recover");
+        }
 
-        // TODO: parent
-        DiskSpace diskSpace = this.diskSpaceService.findUserSpace(userId);
-        DiskRule diskRule = diskSpace.getDiskRule();
+        if (this.diskAclInternalService.lackPermission(parentId, userId,
+                diskAclInternalService.MASK_CREATE)) {
+            logger.info("lack permission : {} {} {} {} {}", parentId, "folder",
+                    userId, diskAclInternalService.MASK_CREATE, "recover");
+            throw new DiskAclException(parentId, "folder", userId,
+                    diskAclInternalService.MASK_CREATE, "recover");
+        }
 
-        Date now = new Date();
-        DiskInfo diskInfo = new DiskInfo();
-        diskInfo.setName(targetName);
-        diskInfo.setType(type);
-        diskInfo.setFileSize(size);
-        diskInfo.setCreator(userId);
-        diskInfo.setCreateTime(now);
-        diskInfo.setLastModifier(userId);
-        diskInfo.setLastModifiedTime(now);
-        diskInfo.setDirType(dirType);
-        diskInfo.setRef(ref);
-        diskInfo.setStatus("active");
-        diskInfo.setParentPath(parentPath);
-        diskInfo.setInherit("true");
-        diskInfo.setDiskRule(diskRule);
-        diskInfoManager.save(diskInfo);
+        Result<DiskInfo> result = this.diskBaseInternalService.recover(fileId,
+                userId, parentId);
 
-        return diskInfo;
+        if (result.isFailure()) {
+            return result;
+        }
+
+        return result;
     }
 
     /**
-     * 上传文件.
+     * 0208 彻底删除.
      */
-    public DiskInfo createFile(String userId, DataSource dataSource,
-            String name, long size, String parentPath, Long spaceId,
-            String tenantId) throws Exception {
-        String modelName = "disk/user/" + userId;
-        String keyName = parentPath + "/" + name;
-        StoreDTO storeDto = storeClient.saveStore(modelName, keyName,
-                dataSource, tenantId);
-        String type = FileUtils.getSuffix(name);
+    public Result<DiskInfo> delete(Long fileId, String userId) {
+        logger.info("delete : {} {}", fileId, userId);
 
-        return this.createDiskInfo(userId, name, size, storeDto.getKey(), type,
-                1, parentPath, spaceId);
+        // acl
+        if (this.diskAclInternalService.lackPermission(fileId, userId,
+                diskAclInternalService.MASK_DELETE)) {
+            logger.info("lack permission : {} {} {} {} {}", fileId, "file",
+                    userId, diskAclInternalService.MASK_DELETE, "delete");
+            throw new DiskAclException(fileId, "file", userId,
+                    diskAclInternalService.MASK_DELETE, "delete");
+        }
+
+        Result<DiskInfo> result = this.diskBaseInternalService.delete(fileId,
+                userId);
+
+        if (result.isFailure()) {
+            return result;
+        }
+
+        return result;
     }
 
     /**
-     * 新建文件夹.
+     * 0209 获取标签.
      */
-    public DiskInfo createDir(String userId, String name, String parentPath,
-            Long spaceId) {
-        // internalStoreConnector.mkdir("1/disk/user/" + userId + "/" + parentPath
-        // + "/" + name);
-        return this.createDiskInfo(userId, name, 0, null, "dir", 0, parentPath,
-                spaceId);
+    public List<DiskTag> findTags(Long fileId, String userId) {
+        logger.info("findTags : {} {}", fileId, userId);
+
+        // acl
+        if (this.diskAclInternalService.lackPermission(fileId, userId,
+                diskAclInternalService.MASK_READ)) {
+            logger.info("lack permission : {} {} {} {} {}", fileId, "file",
+                    userId, diskAclInternalService.MASK_READ, "findTags");
+            throw new DiskAclException(fileId, "file", userId,
+                    diskAclInternalService.MASK_READ, "findTags");
+        }
+
+        List<DiskTag> diskTags = this.diskTagInternalService.findTags(fileId);
+
+        return diskTags;
     }
 
     /**
-     * 上传文件，或新建文件夹.
+     * 0210 保存标签.
      */
-    public DiskInfo createDiskInfo(String userId, String name, long size,
-            String ref, String type, int dirType, String parentPath,
-            Long spaceId) {
-        if (name == null) {
-            logger.info("name cannot be null");
+    public Result<DiskInfo> saveTags(Long fileId, String userId, String tags) {
+        logger.info("saveTags : {} {} {}", fileId, userId, tags);
 
-            return null;
+        // acl
+        if (this.diskAclInternalService.lackPermission(fileId, userId,
+                diskAclInternalService.MASK_EDIT)) {
+            logger.info("lack permission : {} {} {} {} {}", fileId, "file",
+                    userId, diskAclInternalService.MASK_EDIT, "saveTags");
+            throw new DiskAclException(fileId, "file", userId,
+                    diskAclInternalService.MASK_EDIT, "saveTags");
         }
 
-        name = name.trim();
+        Result<DiskInfo> result = this.diskTagInternalService.updateTags(
+                fileId, userId, tags);
 
-        if (name.length() == 0) {
-            logger.info("name cannot be empty");
-
-            return null;
+        if (result.isFailure()) {
+            return result;
         }
 
-        DiskSpace diskSpace = diskSpaceManager.get(spaceId);
+        DiskInfo diskInfo = result.getData();
 
-        if (parentPath == null) {
-            parentPath = "";
-        } else {
-            parentPath = parentPath.trim();
+        // log
+        this.diskLogInternalService.recordLogEditTag(diskInfo, userId,
+                DiskLogInternalService.CATALOG_EDIT_TAGS, tags);
+
+        return result;
+    }
+
+    /**
+     * 0211 获取权限.
+     */
+    public List<DiskAcl> findPermissions(Long fileId, String userId) {
+        return this.diskAclInternalService.findPermissions(fileId, userId);
+    }
+
+    /**
+     * 0212 添加权限.
+     */
+    public Result<DiskInfo> addPermission(Long fileId, String userId,
+            String memberId, int mask) {
+        logger.info("addPermission : {} {} {} {}", fileId, userId, memberId,
+                mask);
+
+        // acl
+        if (this.diskAclInternalService.lackPermission(fileId, userId,
+                diskAclInternalService.MASK_READ)) {
+            logger.info("lack permission : {} {} {} {} {}", fileId, "file",
+                    userId, diskAclInternalService.MASK_READ, "addPermission");
+            throw new DiskAclException(fileId, "fild", userId,
+                    diskAclInternalService.MASK_READ, "addPermission");
         }
 
-        if (parentPath.length() != 0) {
-            if (!parentPath.startsWith("/")) {
-                parentPath = "/" + parentPath;
-            }
+        Result<DiskInfo> result = this.diskAclInternalService.addPermission(
+                fileId, userId, memberId, mask);
 
-            int index = parentPath.lastIndexOf("/");
-            String targetParentPath = parentPath.substring(0, index);
-            String targetName = parentPath.substring(index + 1);
-            String hql = "from DiskInfo where parentPath=? and name=? and diskSpace=?";
-            DiskInfo parent = diskInfoManager.findUnique(hql, targetParentPath,
-                    targetName, diskSpace);
-
-            if (parent == null) {
-                logger.info("cannot find : {} {} {}", parentPath,
-                        targetParentPath, targetName);
-
-                return null;
-            }
+        if (result.isFailure()) {
+            return result;
         }
 
-        String hql = "select name from DiskInfo where creator=? and parentPath=? and diskSpace=?";
-        List<String> currentNames = diskInfoManager.find(hql, userId,
-                parentPath, diskSpace);
-        String targetName = FileUtils.calculateName(name, currentNames);
+        diskShareInternalService.addMember(fileId, userId, memberId, "user");
 
-        // TODO: parent
-        // DiskSpace diskSpace = this.diskSpaceService.findUserSpace(userId);
-        DiskRule diskRule = diskSpace.getDiskRule();
+        return result;
+    }
 
-        Date now = new Date();
-        DiskInfo diskInfo = new DiskInfo();
-        diskInfo.setName(targetName);
-        diskInfo.setType(type);
-        diskInfo.setFileSize(size);
-        diskInfo.setCreator(userId);
-        diskInfo.setCreateTime(now);
-        diskInfo.setLastModifier(userId);
-        diskInfo.setLastModifiedTime(now);
-        diskInfo.setDirType(dirType);
-        diskInfo.setRef(ref);
-        diskInfo.setStatus("active");
-        diskInfo.setParentPath(parentPath);
-        diskInfo.setDiskSpace(diskSpace);
-        diskInfo.setInherit("true");
-        diskInfo.setDiskRule(diskRule);
-        diskInfoManager.save(diskInfo);
+    // /**
+    // * 0212 删除权限.
+    // */
+    // public void removePermission(Long fileId, String userId, String memberId) {
+    // // TODO: 应该是自己自己添加的权限才能删除吧
+    // // TODO: 或者只要有修改权限，就能删除所有权限
+    // // 目前是只要有read权限，就可以删除所有权限，能量有点儿大，回头细化
+    // logger.info("removePermission : {} {} {}", fileId, userId, memberId);
 
-        return diskInfo;
+    // // acl
+    // if (this.diskAclInternalService.lackPermission(fileId, userId,
+    // diskAclInternalService.MASK_READ)) {
+    // logger.info("lack permission : {} {} {} {} {}", fileId, "file",
+    // userId, diskAclInternalService.MASK_READ,
+    // "removePermission");
+    // throw new DiskAclException(fileId, "file", userId,
+    // diskAclInternalService.MASK_READ, "removePermission");
+    // }
+
+    // String entityCatalog = "user";
+    // String entityRef = "user:" + memberId;
+    // this.diskAclInternalService.removePermission(entityCatalog, entityRef,
+    // fileId);
+    // }
+
+    // /**
+    // * 0212 删除权限.
+    // */
+    // public void removePermission(Long fileId, String userId,
+    // String entityCatalog, String entityRef) {
+    // // TODO: 应该是自己自己添加的权限才能删除吧
+    // // TODO: 或者只要有修改权限，就能删除所有权限
+    // // 目前是只要有read权限，就可以删除所有权限，能量有点儿大，回头细化
+    // logger.info("removePermission : {} {} {} {}", fileId, userId,
+    // entityCatalog, entityRef);
+
+    // // acl
+    // if (this.diskAclInternalService.lackPermission(fileId, userId,
+    // diskAclInternalService.MASK_READ)) {
+    // logger.info("lack permission : {} {} {} {} {}", fileId, "file",
+    // userId, diskAclInternalService.MASK_READ,
+    // "removePermission");
+    // throw new DiskAclException(fileId, "file", userId,
+    // diskAclInternalService.MASK_READ, "removePermission");
+    // }
+
+    // this.diskAclInternalService.removePermission(entityCatalog, entityRef,
+    // fileId);
+    // }
+
+    /**
+     * 0212 删除权限.
+     */
+    public Result<DiskInfo> removePermission(Long fileId, String userId,
+            Long aclId) {
+        // TODO: 应该是自己自己添加的权限才能删除吧
+        // TODO: 或者只要有修改权限，就能删除所有权限
+        // 目前是只要有read权限，就可以删除所有权限，能量有点儿大，回头细化
+        logger.info("removePermission : {} {} {}", fileId, userId, aclId);
+
+        // acl
+        if (this.diskAclInternalService.lackPermission(fileId, userId,
+                diskAclInternalService.MASK_READ)) {
+            logger.info("lack permission : {} {} {} {} {}", fileId, "file",
+                    userId, diskAclInternalService.MASK_READ,
+                    "removePermission");
+            throw new DiskAclException(fileId, "file", userId,
+                    diskAclInternalService.MASK_READ, "removePermission");
+        }
+
+        Result<DiskInfo> result = this.diskAclInternalService.removePermission(
+                fileId, userId, aclId);
+
+        if (result.isFailure()) {
+            return result;
+        }
+
+        try {
+            DiskAcl diskAcl = diskAclInternalService.findAcl(aclId);
+            String memberId = diskAcl.getDiskSid().getValue();
+            String memberCatalog = diskAcl.getDiskSid().getCatalog();
+            diskShareInternalService.removeMember(fileId, userId, memberId,
+                    memberCatalog);
+        } catch (Exception ex) {
+            logger.error(ex.getMessage(), ex);
+        }
+
+        return result;
+    }
+
+    /**
+     * 修改密级.
+     */
+    public Result<DiskInfo> updateSecurityLevel(long infoId, String userId,
+            String securityLevel) {
+        logger.info("updateSecurityLevel : {} {}", infoId, securityLevel);
+
+        // acl
+        if (this.diskAclInternalService.lackPermission(infoId, userId,
+                diskAclInternalService.MASK_EDIT)) {
+            logger.info("lack permission : {} {} {} {} {}", infoId, "file",
+                    userId, diskAclInternalService.MASK_EDIT,
+                    "updateSecurityLevel");
+            throw new DiskAclException(infoId, "file", userId,
+                    diskAclInternalService.MASK_EDIT, "updateSecurityLevel");
+        }
+
+        Result<DiskInfo> result = diskBaseInternalService.findActive(infoId);
+
+        if (result.isFailure()) {
+            return result;
+        }
+
+        DiskInfo diskInfo = result.getData();
+        diskInfo.setSecurityLevel(securityLevel);
+        diskBaseInternalService.save(diskInfo);
+
+        return Result.success(diskInfo);
+    }
+
+    public Result<DiskInfo> save(DiskInfo diskInfo) {
+        diskBaseInternalService.save(diskInfo);
+
+        return Result.success(diskInfo);
     }
 
     // ~
     @Resource
-    public void setDiskInfoManager(DiskInfoManager diskInfoManager) {
-        this.diskInfoManager = diskInfoManager;
+    public void setDiskAclInternalService(
+            DiskAclInternalService diskAclInternalService) {
+        this.diskAclInternalService = diskAclInternalService;
     }
 
     @Resource
-    public void setDiskSpaceManager(DiskSpaceManager diskSpaceManager) {
-        this.diskSpaceManager = diskSpaceManager;
+    public void setDiskBaseInternalService(
+            DiskBaseInternalService diskBaseInternalService) {
+        this.diskBaseInternalService = diskBaseInternalService;
     }
 
     @Resource
-    public void setDiskMemberManager(DiskMemberManager diskMemberManager) {
-        this.diskMemberManager = diskMemberManager;
+    public void setDiskLogInternalService(
+            DiskLogInternalService diskLogInternalService) {
+        this.diskLogInternalService = diskLogInternalService;
     }
 
     @Resource
-    public void setDiskShareManager(DiskShareManager diskShareManager) {
-        this.diskShareManager = diskShareManager;
+    public void setDiskTagInternalService(
+            DiskTagInternalService diskTagInternalService) {
+        this.diskTagInternalService = diskTagInternalService;
     }
 
     @Resource
-    public void setDiskRuleManager(DiskRuleManager diskRuleManager) {
-        this.diskRuleManager = diskRuleManager;
-    }
-
-    @Resource
-    public void setDiskAclManager(DiskAclManager diskAclManager) {
-        this.diskAclManager = diskAclManager;
-    }
-
-    @Resource
-    public void setStoreClient(StoreClient storeClient) {
-        this.storeClient = storeClient;
-    }
-
-    @Resource
-    public void setDiskSpaceService(DiskSpaceService diskSpaceService) {
-        this.diskSpaceService = diskSpaceService;
+    public void setDiskShareInternalService(
+            DiskShareInternalService diskShareInternalService) {
+        this.diskShareInternalService = diskShareInternalService;
     }
 }

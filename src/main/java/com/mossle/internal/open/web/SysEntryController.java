@@ -15,9 +15,7 @@ import com.mossle.core.page.Page;
 import com.mossle.core.query.PropertyFilter;
 import com.mossle.core.spring.MessageHelper;
 
-import com.mossle.internal.open.persistence.domain.SysCategory;
 import com.mossle.internal.open.persistence.domain.SysEntry;
-import com.mossle.internal.open.persistence.domain.SysInfo;
 import com.mossle.internal.open.persistence.manager.SysCategoryManager;
 import com.mossle.internal.open.persistence.manager.SysEntryManager;
 import com.mossle.internal.open.persistence.manager.SysInfoManager;

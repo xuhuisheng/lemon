@@ -5,14 +5,14 @@ import java.util.List;
 import java.util.Map;
 import java.util.Properties;
 
-import javax.annotation.Resource;
-
 import com.mossle.api.user.UserDTO;
 
 import com.mossle.client.user.UserClient;
 
 import com.mossle.cms.persistence.domain.CmsArticle;
 import com.mossle.cms.persistence.domain.CmsCatalog;
+import com.mossle.cms.persistence.domain.CmsSite;
+import com.mossle.cms.persistence.domain.CmsTag;
 import com.mossle.cms.service.CmsService;
 
 import com.mossle.core.page.Page;
@@ -20,15 +20,17 @@ import com.mossle.core.page.Page;
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
 
-import org.springframework.stereotype.Component;
-
+// 最常用的应该就是列表搜索
 public class CmsHelper {
     private static Logger logger = LoggerFactory.getLogger(CmsHelper.class);
     private String ctx;
     private String cdnPrefix;
+    private String cmsPrefix;
     private CmsService cmsService;
-    private CmsCatalog catalog;
-    private CmsArticle article;
+    private CmsTag currentTag;
+    private CmsCatalog currentCatalog;
+    private CmsArticle currentArticle;
+    private CmsSite currentSite;
     private String currentUserId;
     private int pageNo = 1;
     private int pageSize = 10;
@@ -36,24 +38,54 @@ public class CmsHelper {
     private Properties prop;
     @Deprecated
     private UserClient uClient;
+    private Page page;
+    private Map<String, Object> parameterMap;
 
-    public List<CmsCatalog> catalogs() {
-        return cmsService.getTopCatalogs();
+    public List<CmsCatalog> findTopCatalogs() {
+        return cmsService.findTopCatalogs(this.currentSite);
     }
 
-    public CmsCatalog catalog(String code) {
-        return cmsService.findCatalogByCode(code);
+    public CmsCatalog findCatalogByCode(String code) {
+        return cmsService.findCatalogByCode(code, this.currentSite);
     }
 
-    public Page articles(Long catalogId) {
-        return cmsService.findArticles(catalogId, pageNo, pageSize);
+    public Page findArticlesByCatalogId(Long catalogId) {
+        CmsCatalog cmsCatalog = cmsService.findCatalog(catalogId);
+
+        return cmsService.findArticlesByCatalog(cmsCatalog, this.page,
+                this.parameterMap);
     }
 
+    /**
+     * 搜索一个分类下的文章.
+     */
     public Page findArticlesByCatalogCode(String code) {
-        return cmsService.findArticlesByCatalogCode(code, pageNo, pageSize);
+        CmsCatalog cmsCatalog = cmsService.findCatalogByCode(code,
+                this.currentSite);
+
+        return cmsService.findArticlesByCatalog(cmsCatalog, this.page,
+                this.parameterMap);
     }
 
-    public Page comments(Long articleId) {
+    /**
+     * 搜索一个标签下的文章.
+     */
+    public Page findArticlesByTagCode(String code) {
+        CmsTag cmsTag = cmsService.findTagByCode(code, this.currentSite);
+
+        return cmsService.findArticlesByTag(cmsTag, this.page,
+                this.parameterMap);
+    }
+
+    /**
+     * 搜索所有文章.
+     */
+    public Page findArticles() {
+        return cmsService.findArticles(this.currentSite, this.page,
+                this.parameterMap);
+    }
+
+    public Page findCommentsByArticleId(Long articleId) {
         return cmsService.findComments(articleId, pageNo, pageSize);
     }
 
@@ -62,7 +94,21 @@ public class CmsHelper {
         try {
             UserClient userClient = (UserClient) this.findService("userClient");
 
-            return userClient.findById(userId, "1").getDisplayName();
+            if (userClient == null) {
+                logger.info("unsupport userClient");
+
+                return userId;
+            }
+
+            UserDTO userDto = userClient.findById(userId, "1");
+
+            if (userDto == null) {
+                logger.info("cannot find : {}", userId);
+
+                return userId;
+            }
+
+            return userDto.getDisplayName();
         } catch (Exception ex) {
             logger.error(ex.getMessage(), ex);
 
@@ -70,16 +116,23 @@ public class CmsHelper {
         }
     }
 
+    public int findCountByEvent(Long articleId, String event) {
+        return this.cmsService.findCountByEvent(articleId, event);
+    }
+
+    public List<Map<String, String>> findAttrs(Long articleId) {
+        return this.cmsService.findAttrs(articleId);
+    }
+
+    public List<CmsTag> findTags() {
+        return this.cmsService.findTags(this.currentSite.getId());
+    }
+
+    public String findCatalogPathByCatalogId(Long catalogId) {
+        return cmsService.findCatalogPathByCatalogId(catalogId);
+    }
+
     // ~
-    public void setCmsService(CmsService cmsService) {
-        this.cmsService = cmsService;
-    }
-
-    @Deprecated
-    public void setUserClient(UserClient uClient) {
-        this.uClient = uClient;
-    }
-
     public void setProp(Properties prop) {
         this.prop = prop;
     }
@@ -104,20 +157,44 @@ public class CmsHelper {
         this.cdnPrefix = cdnPrefix;
     }
 
-    public CmsCatalog getCurrentCatalog() {
-        return catalog;
+    public String getCmsPrefix() {
+        return cmsPrefix;
     }
 
-    public void setCurrentCatalog(CmsCatalog catalog) {
-        this.catalog = catalog;
+    public void setCmsPrefix(String cmsPrefix) {
+        this.cmsPrefix = cmsPrefix;
+    }
+
+    public CmsSite getCurrentSite() {
+        return currentSite;
+    }
+
+    public void setCurrentSite(CmsSite currentSite) {
+        this.currentSite = currentSite;
+    }
+
+    public CmsCatalog getCurrentCatalog() {
+        return currentCatalog;
+    }
+
+    public void setCurrentCatalog(CmsCatalog currentCatalog) {
+        this.currentCatalog = currentCatalog;
+    }
+
+    public CmsTag getCurrentTag() {
+        return this.currentTag;
+    }
+
+    public void setCurrentTag(CmsTag currentTag) {
+        this.currentTag = currentTag;
     }
 
     public CmsArticle getCurrentArticle() {
-        return article;
+        return currentArticle;
     }
 
-    public void setCurrentArticle(CmsArticle article) {
-        this.article = article;
+    public void setCurrentArticle(CmsArticle currentArticle) {
+        this.currentArticle = currentArticle;
     }
 
     public String getCurrentUserId() {
@@ -128,22 +205,7 @@ public class CmsHelper {
         this.currentUserId = currentUserId;
     }
 
-    public int getPageNo() {
-        return pageNo;
-    }
-
-    public void setPageNo(int pageNo) {
-        this.pageNo = pageNo;
-    }
-
-    public int getPageSize() {
-        return pageSize;
-    }
-
-    public void setPageSize(int pageSize) {
-        this.pageSize = pageSize;
-    }
-
+    // service
     public Map<String, Object> getServiceMap() {
         return serviceMap;
     }
@@ -168,5 +230,55 @@ public class CmsHelper {
 
             return null;
         }
+    }
+
+    public void setCmsService(CmsService cmsService) {
+        this.cmsService = cmsService;
+    }
+
+    /**
+     * @deprecated use findService instead.
+     */
+    @Deprecated
+    public void setUserClient(UserClient uClient) {
+        this.uClient = uClient;
+    }
+
+    // page
+    public Page getPage() {
+        return page;
+    }
+
+    public void setPage(Page page) {
+        this.page = page;
+    }
+
+    public int getPageNo() {
+        return pageNo;
+    }
+
+    public void setPageNo(int pageNo) {
+        this.pageNo = pageNo;
+    }
+
+    public int getPageSize() {
+        return pageSize;
+    }
+
+    public void setPageSize(int pageSize) {
+        this.pageSize = pageSize;
+    }
+
+    // parameter
+    public Map<String, Object> getParameterMap(Map<String, Object> parameterMap) {
+        return parameterMap;
+    }
+
+    public void setParameterMap(Map<String, Object> parameterMap) {
+        this.parameterMap = parameterMap;
+    }
+
+    public Map<String, Object> getParams() {
+        return parameterMap;
     }
 }

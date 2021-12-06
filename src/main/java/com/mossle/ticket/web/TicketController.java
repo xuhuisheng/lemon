@@ -1,7 +1,5 @@
 package com.mossle.ticket.web;
 
-import java.io.InputStream;
-
 import java.util.ArrayList;
 import java.util.Date;
 import java.util.HashMap;
@@ -13,27 +11,23 @@ import javax.annotation.Resource;
 import javax.servlet.http.HttpServletRequest;
 import javax.servlet.http.HttpServletResponse;
 
-import com.mossle.api.store.StoreConnector;
+import com.mossle.api.auth.CurrentUserHolder;
 import com.mossle.api.store.StoreDTO;
 import com.mossle.api.user.UserConnector;
 import com.mossle.api.user.UserDTO;
 
-import com.mossle.api.auth.CurrentUserHolder;
-import com.mossle.core.export.Exportor;
-import com.mossle.core.export.TableModel;
+import com.mossle.client.store.StoreClient;
+
 import com.mossle.core.mapper.BeanMapper;
 import com.mossle.core.mapper.JsonMapper;
 import com.mossle.core.page.Page;
 import com.mossle.core.query.PropertyFilter;
-import com.mossle.core.spring.MessageHelper;
 import com.mossle.core.store.MultipartFileDataSource;
 
 import com.mossle.ticket.persistence.domain.TicketAttachment;
-import com.mossle.ticket.persistence.domain.TicketCatalog;
 import com.mossle.ticket.persistence.domain.TicketComment;
 import com.mossle.ticket.persistence.domain.TicketInfo;
 import com.mossle.ticket.persistence.manager.TicketAttachmentManager;
-import com.mossle.ticket.persistence.manager.TicketCatalogManager;
 import com.mossle.ticket.persistence.manager.TicketCommentManager;
 import com.mossle.ticket.persistence.manager.TicketInfoManager;
 
@@ -52,24 +46,20 @@ import org.springframework.web.bind.annotation.RequestMapping;
 import org.springframework.web.bind.annotation.RequestParam;
 import org.springframework.web.bind.annotation.ResponseBody;
 import org.springframework.web.multipart.MultipartFile;
-import org.springframework.web.servlet.mvc.support.RedirectAttributes;
 
 @Controller
 @RequestMapping("ticket")
 public class TicketController {
     private static Logger logger = LoggerFactory
             .getLogger(TicketController.class);
-    private TicketCatalogManager ticketCatalogManager;
     private TicketInfoManager ticketInfoManager;
     private TicketCommentManager ticketCommentManager;
     private TicketAttachmentManager ticketAttachmentManager;
-    private MessageHelper messageHelper;
-    private Exportor exportor;
     private BeanMapper beanMapper = new BeanMapper();
     private JsonMapper jsonMapper = new JsonMapper();
     private CurrentUserHolder currentUserHolder;
     private UserConnector userConnector;
-    private StoreConnector storeConnector;
+    private StoreClient storeClient;
 
     @RequestMapping("index")
     public String index(
@@ -100,6 +90,8 @@ public class TicketController {
     @RequestMapping("list")
     public String list(@ModelAttribute Page page,
             @RequestParam Map<String, Object> parameterMap, Model model) {
+        page.setDefaultOrder("id", Page.DESC);
+
         List<PropertyFilter> propertyFilters = PropertyFilter
                 .buildFromMap(parameterMap);
         page = ticketInfoManager.pagedQuery(page, propertyFilters);
@@ -110,13 +102,16 @@ public class TicketController {
 
     @RequestMapping("save")
     public String save(@ModelAttribute TicketInfo ticketInfo,
-            @RequestParam("files") List<String> files) throws Exception {
+            @RequestParam(value = "files", required = false) List<String> files)
+            throws Exception {
         String userId = currentUserHolder.getUserId();
         Date now = new Date();
         ticketInfo.setCreator(userId);
         ticketInfo.setCreateTime(now);
         ticketInfo.setStatus("new");
         ticketInfo.setUpdateTime(now);
+        ticketInfoManager.save(ticketInfo);
+        ticketInfo.setCode(Long.toString(ticketInfo.getId()));
         ticketInfoManager.save(ticketInfo);
 
         List<TicketAttachment> ticketAttachments = ticketAttachmentManager
@@ -125,19 +120,21 @@ public class TicketController {
         List<String> inserts = new ArrayList<String>();
         List<TicketAttachment> removes = new ArrayList<TicketAttachment>();
 
-        for (String fileKey : files) {
-            boolean exists = false;
+        if (files != null) {
+            for (String fileKey : files) {
+                boolean exists = false;
 
-            for (TicketAttachment ticketAttachment : ticketAttachments) {
-                if (fileKey.equals(ticketAttachment.getCode())) {
-                    exists = true;
+                for (TicketAttachment ticketAttachment : ticketAttachments) {
+                    if (fileKey.equals(ticketAttachment.getCode())) {
+                        exists = true;
 
-                    break;
+                        break;
+                    }
                 }
-            }
 
-            if (!exists) {
-                inserts.add(fileKey);
+                if (!exists) {
+                    inserts.add(fileKey);
+                }
             }
         }
 
@@ -148,11 +145,16 @@ public class TicketController {
         }
 
         for (String fileKey : inserts) {
-            StoreDTO storeDto = storeConnector.getStore("ticket", fileKey, "1");
+            StoreDTO storeDto = this.storeClient.getStore("ticket", fileKey,
+                    "1");
             TicketAttachment ticketAttachment = new TicketAttachment();
             ticketAttachment.setTicketInfo(ticketInfo);
             ticketAttachment.setCode(fileKey);
-            ticketAttachment.setName(storeDto.getDisplayName());
+
+            if (storeDto != null) {
+                ticketAttachment.setName(storeDto.getDisplayName());
+            }
+
             ticketAttachmentManager.save(ticketAttachment);
         }
 
@@ -342,7 +344,7 @@ public class TicketController {
 
         // String tenantId = tenantHolder.getTenantId();
         String tenantId = "1";
-        StoreDTO storeDto = storeConnector.saveStore("ticket",
+        StoreDTO storeDto = this.storeClient.saveStore("ticket",
                 new MultipartFileDataSource(attachment), tenantId);
 
         Map<String, Object> data = new HashMap<String, Object>();
@@ -367,7 +369,7 @@ public class TicketController {
             throws Exception {
         // String tenantId = tenantHolder.getTenantId();
         String tenantId = "1";
-        StoreDTO storeDto = storeConnector.getStore("ticket", key, tenantId);
+        StoreDTO storeDto = this.storeClient.getStore("ticket", key, tenantId);
         IOUtils.copy(storeDto.getDataSource().getInputStream(),
                 response.getOutputStream());
     }
@@ -470,12 +472,6 @@ public class TicketController {
 
     // ~ ======================================================================
     @Resource
-    public void setTicketCatalogManager(
-            TicketCatalogManager ticketCatalogManager) {
-        this.ticketCatalogManager = ticketCatalogManager;
-    }
-
-    @Resource
     public void setTicketInfoManager(TicketInfoManager ticketInfoManager) {
         this.ticketInfoManager = ticketInfoManager;
     }
@@ -493,16 +489,6 @@ public class TicketController {
     }
 
     @Resource
-    public void setMessageHelper(MessageHelper messageHelper) {
-        this.messageHelper = messageHelper;
-    }
-
-    @Resource
-    public void setExportor(Exportor exportor) {
-        this.exportor = exportor;
-    }
-
-    @Resource
     public void setCurrentUserHolder(CurrentUserHolder currentUserHolder) {
         this.currentUserHolder = currentUserHolder;
     }
@@ -513,7 +499,7 @@ public class TicketController {
     }
 
     @Resource
-    public void setStoreConnector(StoreConnector storeConnector) {
-        this.storeConnector = storeConnector;
+    public void setStoreClient(StoreClient storeClient) {
+        this.storeClient = storeClient;
     }
 }

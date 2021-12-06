@@ -17,7 +17,7 @@ import javax.persistence.Temporal;
 import javax.persistence.TemporalType;
 
 /**
- * DiskInfo .
+ * DiskInfo 文件信息.
  * 
  * @author Lingo
  */
@@ -26,83 +26,125 @@ import javax.persistence.TemporalType;
 public class DiskInfo implements java.io.Serializable {
     private static final long serialVersionUID = 0L;
 
-    /** null. */
+    /** 主键. */
     private Long id;
 
-    /** null. */
+    /** 所属空间. */
     private DiskSpace diskSpace;
 
-    /** null. */
+    /** 规则. */
     private DiskRule diskRule;
 
-    /** null. */
+    /** 上级文件. */
     private DiskInfo diskInfo;
 
-    /** null. */
+    /** 名称. */
     private String name;
 
-    /** null. */
+    /** 备注. */
     private String description;
 
-    /** null. */
+    /** 类型. */
     private String type;
 
-    /** null. */
+    /** 文件大小. */
     private Long fileSize;
 
-    /** null. */
+    /** 创建人. */
     private String creator;
 
-    /** null. */
+    /** 创建时间. */
     private Date createTime;
 
-    /** null. */
+    /** 外部引用. */
     private String ref;
 
-    /** null. */
+    /** 预览状态. */
     private String previewStatus;
 
-    /** null. */
+    /** 预览引用. */
     private String previewRef;
 
-    /** null. */
+    /** 上级路径. */
     private String parentPath;
 
-    /** null. */
+    /** 是否目录. */
     private Integer dirType;
 
-    /** null. */
+    /** 优先级. */
     private Integer priority;
 
-    /** null. */
+    /** 最后修改人. */
     private String lastModifier;
 
-    /** null. */
+    /** 最后修改时间. */
     private Date lastModifiedTime;
 
-    /** null. */
+    /** 状态. */
     private String status;
 
-    /** null. */
+    /** 过期时间. */
     private Date expireTime;
 
-    /** null. */
+    /** 签出时间. */
     private String checkoutStatus;
 
-    /** null. */
+    /** 文件版本. */
     private String fileVersion;
 
-    /** null. */
+    /** 安全级别. */
     private String securityLevel;
 
-    /** null. */
+    /** 继承. */
     private String inherit;
+
+    /** 原上级文件夹. */
+    private Long originalParentId;
+
+    /** 链接. */
+    private Integer linkType;
+
+    /** 链接原文件. */
+    private Long linkId;
+
+    /** 所有者id. */
+    private String ownerId;
+
+    /** 是否回收站顶级文件夹. */
+    private String deleteStatus;
+
+    /** 回收站自动清理时间. */
+    private Date deleteTime;
+
+    /** 是否公开. */
+    private String publicType;
+
+    /** 公开是否可编辑. */
+    private String publicEdit;
+
+    /** . */
+    private Set<DiskFavorite> diskFavorites = new HashSet<DiskFavorite>(0);
+
+    /** . */
+    private Set<DiskDownload> diskDownloads = new HashSet<DiskDownload>(0);
+
+    /** . */
+    private Set<DiskRequest> diskRequests = new HashSet<DiskRequest>(0);
 
     /** . */
     private Set<DiskShare> diskShares = new HashSet<DiskShare>(0);
 
     /** . */
+    private Set<DiskRecent> diskRecents = new HashSet<DiskRecent>(0);
+
+    /** . */
+    private Set<DiskTagInfo> diskTagInfos = new HashSet<DiskTagInfo>(0);
+
+    /** . */
     private Set<DiskInfo> diskInfos = new HashSet<DiskInfo>(0);
+
+    /** . */
+    private Set<DiskVersion> diskVersions = new HashSet<DiskVersion>(0);
 
     public DiskInfo() {
     }
@@ -118,7 +160,13 @@ public class DiskInfo implements java.io.Serializable {
             Integer dirType, Integer priority, String lastModifier,
             Date lastModifiedTime, String status, Date expireTime,
             String checkoutStatus, String fileVersion, String securityLevel,
-            String inherit, Set<DiskShare> diskShares, Set<DiskInfo> diskInfos) {
+            String inherit, Long originalParentId, Integer linkType,
+            Long linkId, String ownerId, String deleteStatus, Date deleteTime,
+            String publicType, String publicEdit,
+            Set<DiskFavorite> diskFavorites, Set<DiskDownload> diskDownloads,
+            Set<DiskRequest> diskRequests, Set<DiskShare> diskShares,
+            Set<DiskRecent> diskRecents, Set<DiskTagInfo> diskTagInfos,
+            Set<DiskInfo> diskInfos, Set<DiskVersion> diskVersions) {
         this.id = id;
         this.diskSpace = diskSpace;
         this.diskRule = diskRule;
@@ -143,11 +191,25 @@ public class DiskInfo implements java.io.Serializable {
         this.fileVersion = fileVersion;
         this.securityLevel = securityLevel;
         this.inherit = inherit;
+        this.originalParentId = originalParentId;
+        this.linkType = linkType;
+        this.linkId = linkId;
+        this.ownerId = ownerId;
+        this.deleteStatus = deleteStatus;
+        this.deleteTime = deleteTime;
+        this.publicType = publicType;
+        this.publicEdit = publicEdit;
+        this.diskFavorites = diskFavorites;
+        this.diskDownloads = diskDownloads;
+        this.diskRequests = diskRequests;
         this.diskShares = diskShares;
+        this.diskRecents = diskRecents;
+        this.diskTagInfos = diskTagInfos;
         this.diskInfos = diskInfos;
+        this.diskVersions = diskVersions;
     }
 
-    /** @return null. */
+    /** @return 主键. */
     @Id
     @Column(name = "ID", unique = true, nullable = false)
     public Long getId() {
@@ -156,13 +218,13 @@ public class DiskInfo implements java.io.Serializable {
 
     /**
      * @param id
-     *            null.
+     *            主键.
      */
     public void setId(Long id) {
         this.id = id;
     }
 
-    /** @return null. */
+    /** @return 所属空间. */
     @ManyToOne(fetch = FetchType.LAZY)
     @JoinColumn(name = "SPACE_ID")
     public DiskSpace getDiskSpace() {
@@ -171,13 +233,13 @@ public class DiskInfo implements java.io.Serializable {
 
     /**
      * @param diskSpace
-     *            null.
+     *            所属空间.
      */
     public void setDiskSpace(DiskSpace diskSpace) {
         this.diskSpace = diskSpace;
     }
 
-    /** @return null. */
+    /** @return 规则. */
     @ManyToOne(fetch = FetchType.LAZY)
     @JoinColumn(name = "RULE_ID")
     public DiskRule getDiskRule() {
@@ -186,13 +248,13 @@ public class DiskInfo implements java.io.Serializable {
 
     /**
      * @param diskRule
-     *            null.
+     *            规则.
      */
     public void setDiskRule(DiskRule diskRule) {
         this.diskRule = diskRule;
     }
 
-    /** @return null. */
+    /** @return 上级文件. */
     @ManyToOne(fetch = FetchType.LAZY)
     @JoinColumn(name = "PARENT_ID")
     public DiskInfo getDiskInfo() {
@@ -201,13 +263,13 @@ public class DiskInfo implements java.io.Serializable {
 
     /**
      * @param diskInfo
-     *            null.
+     *            上级文件.
      */
     public void setDiskInfo(DiskInfo diskInfo) {
         this.diskInfo = diskInfo;
     }
 
-    /** @return null. */
+    /** @return 名称. */
     @Column(name = "NAME", length = 200)
     public String getName() {
         return this.name;
@@ -215,13 +277,13 @@ public class DiskInfo implements java.io.Serializable {
 
     /**
      * @param name
-     *            null.
+     *            名称.
      */
     public void setName(String name) {
         this.name = name;
     }
 
-    /** @return null. */
+    /** @return 备注. */
     @Column(name = "DESCRIPTION")
     public String getDescription() {
         return this.description;
@@ -229,13 +291,13 @@ public class DiskInfo implements java.io.Serializable {
 
     /**
      * @param description
-     *            null.
+     *            备注.
      */
     public void setDescription(String description) {
         this.description = description;
     }
 
-    /** @return null. */
+    /** @return 类型. */
     @Column(name = "TYPE", length = 50)
     public String getType() {
         return this.type;
@@ -243,13 +305,13 @@ public class DiskInfo implements java.io.Serializable {
 
     /**
      * @param type
-     *            null.
+     *            类型.
      */
     public void setType(String type) {
         this.type = type;
     }
 
-    /** @return null. */
+    /** @return 文件大小. */
     @Column(name = "FILE_SIZE")
     public Long getFileSize() {
         return this.fileSize;
@@ -257,13 +319,13 @@ public class DiskInfo implements java.io.Serializable {
 
     /**
      * @param fileSize
-     *            null.
+     *            文件大小.
      */
     public void setFileSize(Long fileSize) {
         this.fileSize = fileSize;
     }
 
-    /** @return null. */
+    /** @return 创建人. */
     @Column(name = "CREATOR", length = 64)
     public String getCreator() {
         return this.creator;
@@ -271,13 +333,13 @@ public class DiskInfo implements java.io.Serializable {
 
     /**
      * @param creator
-     *            null.
+     *            创建人.
      */
     public void setCreator(String creator) {
         this.creator = creator;
     }
 
-    /** @return null. */
+    /** @return 创建时间. */
     @Temporal(TemporalType.TIMESTAMP)
     @Column(name = "CREATE_TIME", length = 26)
     public Date getCreateTime() {
@@ -286,13 +348,13 @@ public class DiskInfo implements java.io.Serializable {
 
     /**
      * @param createTime
-     *            null.
+     *            创建时间.
      */
     public void setCreateTime(Date createTime) {
         this.createTime = createTime;
     }
 
-    /** @return null. */
+    /** @return 外部引用. */
     @Column(name = "REF", length = 200)
     public String getRef() {
         return this.ref;
@@ -300,13 +362,13 @@ public class DiskInfo implements java.io.Serializable {
 
     /**
      * @param ref
-     *            null.
+     *            外部引用.
      */
     public void setRef(String ref) {
         this.ref = ref;
     }
 
-    /** @return null. */
+    /** @return 预览状态. */
     @Column(name = "PREVIEW_STATUS", length = 50)
     public String getPreviewStatus() {
         return this.previewStatus;
@@ -314,13 +376,13 @@ public class DiskInfo implements java.io.Serializable {
 
     /**
      * @param previewStatus
-     *            null.
+     *            预览状态.
      */
     public void setPreviewStatus(String previewStatus) {
         this.previewStatus = previewStatus;
     }
 
-    /** @return null. */
+    /** @return 预览引用. */
     @Column(name = "PREVIEW_REF", length = 200)
     public String getPreviewRef() {
         return this.previewRef;
@@ -328,13 +390,13 @@ public class DiskInfo implements java.io.Serializable {
 
     /**
      * @param previewRef
-     *            null.
+     *            预览引用.
      */
     public void setPreviewRef(String previewRef) {
         this.previewRef = previewRef;
     }
 
-    /** @return null. */
+    /** @return 上级路径. */
     @Column(name = "PARENT_PATH", length = 200)
     public String getParentPath() {
         return this.parentPath;
@@ -342,13 +404,13 @@ public class DiskInfo implements java.io.Serializable {
 
     /**
      * @param parentPath
-     *            null.
+     *            上级路径.
      */
     public void setParentPath(String parentPath) {
         this.parentPath = parentPath;
     }
 
-    /** @return null. */
+    /** @return 是否目录. */
     @Column(name = "DIR_TYPE")
     public Integer getDirType() {
         return this.dirType;
@@ -356,13 +418,13 @@ public class DiskInfo implements java.io.Serializable {
 
     /**
      * @param dirType
-     *            null.
+     *            是否目录.
      */
     public void setDirType(Integer dirType) {
         this.dirType = dirType;
     }
 
-    /** @return null. */
+    /** @return 优先级. */
     @Column(name = "PRIORITY")
     public Integer getPriority() {
         return this.priority;
@@ -370,13 +432,13 @@ public class DiskInfo implements java.io.Serializable {
 
     /**
      * @param priority
-     *            null.
+     *            优先级.
      */
     public void setPriority(Integer priority) {
         this.priority = priority;
     }
 
-    /** @return null. */
+    /** @return 最后修改人. */
     @Column(name = "LAST_MODIFIER", length = 64)
     public String getLastModifier() {
         return this.lastModifier;
@@ -384,13 +446,13 @@ public class DiskInfo implements java.io.Serializable {
 
     /**
      * @param lastModifier
-     *            null.
+     *            最后修改人.
      */
     public void setLastModifier(String lastModifier) {
         this.lastModifier = lastModifier;
     }
 
-    /** @return null. */
+    /** @return 最后修改时间. */
     @Temporal(TemporalType.TIMESTAMP)
     @Column(name = "LAST_MODIFIED_TIME", length = 26)
     public Date getLastModifiedTime() {
@@ -399,13 +461,13 @@ public class DiskInfo implements java.io.Serializable {
 
     /**
      * @param lastModifiedTime
-     *            null.
+     *            最后修改时间.
      */
     public void setLastModifiedTime(Date lastModifiedTime) {
         this.lastModifiedTime = lastModifiedTime;
     }
 
-    /** @return null. */
+    /** @return 状态. */
     @Column(name = "STATUS", length = 50)
     public String getStatus() {
         return this.status;
@@ -413,13 +475,13 @@ public class DiskInfo implements java.io.Serializable {
 
     /**
      * @param status
-     *            null.
+     *            状态.
      */
     public void setStatus(String status) {
         this.status = status;
     }
 
-    /** @return null. */
+    /** @return 过期时间. */
     @Temporal(TemporalType.TIMESTAMP)
     @Column(name = "EXPIRE_TIME", length = 26)
     public Date getExpireTime() {
@@ -428,13 +490,13 @@ public class DiskInfo implements java.io.Serializable {
 
     /**
      * @param expireTime
-     *            null.
+     *            过期时间.
      */
     public void setExpireTime(Date expireTime) {
         this.expireTime = expireTime;
     }
 
-    /** @return null. */
+    /** @return 签出时间. */
     @Column(name = "CHECKOUT_STATUS", length = 50)
     public String getCheckoutStatus() {
         return this.checkoutStatus;
@@ -442,13 +504,13 @@ public class DiskInfo implements java.io.Serializable {
 
     /**
      * @param checkoutStatus
-     *            null.
+     *            签出时间.
      */
     public void setCheckoutStatus(String checkoutStatus) {
         this.checkoutStatus = checkoutStatus;
     }
 
-    /** @return null. */
+    /** @return 文件版本. */
     @Column(name = "FILE_VERSION", length = 50)
     public String getFileVersion() {
         return this.fileVersion;
@@ -456,13 +518,13 @@ public class DiskInfo implements java.io.Serializable {
 
     /**
      * @param fileVersion
-     *            null.
+     *            文件版本.
      */
     public void setFileVersion(String fileVersion) {
         this.fileVersion = fileVersion;
     }
 
-    /** @return null. */
+    /** @return 安全级别. */
     @Column(name = "SECURITY_LEVEL", length = 50)
     public String getSecurityLevel() {
         return this.securityLevel;
@@ -470,13 +532,13 @@ public class DiskInfo implements java.io.Serializable {
 
     /**
      * @param securityLevel
-     *            null.
+     *            安全级别.
      */
     public void setSecurityLevel(String securityLevel) {
         this.securityLevel = securityLevel;
     }
 
-    /** @return null. */
+    /** @return 继承. */
     @Column(name = "INHERIT", length = 50)
     public String getInherit() {
         return this.inherit;
@@ -484,10 +546,165 @@ public class DiskInfo implements java.io.Serializable {
 
     /**
      * @param inherit
-     *            null.
+     *            继承.
      */
     public void setInherit(String inherit) {
         this.inherit = inherit;
+    }
+
+    /** @return 原上级文件夹. */
+    @Column(name = "ORIGINAL_PARENT_ID")
+    public Long getOriginalParentId() {
+        return this.originalParentId;
+    }
+
+    /**
+     * @param originalParentId
+     *            原上级文件夹.
+     */
+    public void setOriginalParentId(Long originalParentId) {
+        this.originalParentId = originalParentId;
+    }
+
+    /** @return 链接. */
+    @Column(name = "LINK_TYPE")
+    public Integer getLinkType() {
+        return this.linkType;
+    }
+
+    /**
+     * @param linkType
+     *            链接.
+     */
+    public void setLinkType(Integer linkType) {
+        this.linkType = linkType;
+    }
+
+    /** @return 链接原文件. */
+    @Column(name = "LINK_ID")
+    public Long getLinkId() {
+        return this.linkId;
+    }
+
+    /**
+     * @param linkId
+     *            链接原文件.
+     */
+    public void setLinkId(Long linkId) {
+        this.linkId = linkId;
+    }
+
+    /** @return 所有者id. */
+    @Column(name = "OWNER_ID", length = 64)
+    public String getOwnerId() {
+        return this.ownerId;
+    }
+
+    /**
+     * @param ownerId
+     *            所有者id.
+     */
+    public void setOwnerId(String ownerId) {
+        this.ownerId = ownerId;
+    }
+
+    /** @return 是否回收站顶级文件夹. */
+    @Column(name = "DELETE_STATUS", length = 10)
+    public String getDeleteStatus() {
+        return this.deleteStatus;
+    }
+
+    /**
+     * @param deleteStatus
+     *            是否回收站顶级文件夹.
+     */
+    public void setDeleteStatus(String deleteStatus) {
+        this.deleteStatus = deleteStatus;
+    }
+
+    /** @return 回收站自动清理时间. */
+    @Temporal(TemporalType.TIMESTAMP)
+    @Column(name = "DELETE_TIME", length = 26)
+    public Date getDeleteTime() {
+        return this.deleteTime;
+    }
+
+    /**
+     * @param deleteTime
+     *            回收站自动清理时间.
+     */
+    public void setDeleteTime(Date deleteTime) {
+        this.deleteTime = deleteTime;
+    }
+
+    /** @return 是否公开. */
+    @Column(name = "PUBLIC_TYPE", length = 50)
+    public String getPublicType() {
+        return this.publicType;
+    }
+
+    /**
+     * @param publicType
+     *            是否公开.
+     */
+    public void setPublicType(String publicType) {
+        this.publicType = publicType;
+    }
+
+    /** @return 公开是否可编辑. */
+    @Column(name = "PUBLIC_EDIT", length = 50)
+    public String getPublicEdit() {
+        return this.publicEdit;
+    }
+
+    /**
+     * @param publicEdit
+     *            公开是否可编辑.
+     */
+    public void setPublicEdit(String publicEdit) {
+        this.publicEdit = publicEdit;
+    }
+
+    /** @return . */
+    @OneToMany(fetch = FetchType.LAZY, mappedBy = "diskInfo")
+    public Set<DiskFavorite> getDiskFavorites() {
+        return this.diskFavorites;
+    }
+
+    /**
+     * @param diskFavorites
+     *            .
+     */
+    public void setDiskFavorites(Set<DiskFavorite> diskFavorites) {
+        this.diskFavorites = diskFavorites;
+    }
+
+    /** @return . */
+    @OneToMany(fetch = FetchType.LAZY, mappedBy = "diskInfo")
+    public Set<DiskDownload> getDiskDownloads() {
+        return this.diskDownloads;
+    }
+
+    /**
+     * @param diskDownloads
+     *            .
+     */
+    public void setDiskDownloads(Set<DiskDownload> diskDownloads) {
+        this.diskDownloads = diskDownloads;
+    }
+
+    /** @return . */
+    @OneToMany(fetch = FetchType.LAZY, mappedBy = "diskInfo")
+    public Set<DiskRequest> getDiskRequests() {
+        return this.diskRequests;
+    }
+
+    /**
+     * @param diskRequests
+     *            .
+     */
+    public void setDiskRequests(Set<DiskRequest> diskRequests) {
+        this.diskRequests = diskRequests;
     }
 
     /** @return . */
@@ -506,6 +723,34 @@ public class DiskInfo implements java.io.Serializable {
 
     /** @return . */
     @OneToMany(fetch = FetchType.LAZY, mappedBy = "diskInfo")
+    public Set<DiskRecent> getDiskRecents() {
+        return this.diskRecents;
+    }
+
+    /**
+     * @param diskRecents
+     *            .
+     */
+    public void setDiskRecents(Set<DiskRecent> diskRecents) {
+        this.diskRecents = diskRecents;
+    }
+
+    /** @return . */
+    @OneToMany(fetch = FetchType.LAZY, mappedBy = "diskInfo")
+    public Set<DiskTagInfo> getDiskTagInfos() {
+        return this.diskTagInfos;
+    }
+
+    /**
+     * @param diskTagInfos
+     *            .
+     */
+    public void setDiskTagInfos(Set<DiskTagInfo> diskTagInfos) {
+        this.diskTagInfos = diskTagInfos;
+    }
+
+    /** @return . */
+    @OneToMany(fetch = FetchType.LAZY, mappedBy = "diskInfo")
     public Set<DiskInfo> getDiskInfos() {
         return this.diskInfos;
     }
@@ -516,5 +761,19 @@ public class DiskInfo implements java.io.Serializable {
      */
     public void setDiskInfos(Set<DiskInfo> diskInfos) {
         this.diskInfos = diskInfos;
+    }
+
+    /** @return . */
+    @OneToMany(fetch = FetchType.LAZY, mappedBy = "diskInfo")
+    public Set<DiskVersion> getDiskVersions() {
+        return this.diskVersions;
+    }
+
+    /**
+     * @param diskVersions
+     *            .
+     */
+    public void setDiskVersions(Set<DiskVersion> diskVersions) {
+        this.diskVersions = diskVersions;
     }
 }

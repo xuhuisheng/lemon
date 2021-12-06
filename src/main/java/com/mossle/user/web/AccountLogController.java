@@ -5,11 +5,8 @@ import java.util.Map;
 
 import javax.annotation.Resource;
 
-import com.mossle.core.export.Exportor;
-import com.mossle.core.mapper.BeanMapper;
 import com.mossle.core.page.Page;
 import com.mossle.core.query.PropertyFilter;
-import com.mossle.core.spring.MessageHelper;
 
 import com.mossle.user.persistence.manager.AccountLogManager;
 
@@ -25,9 +22,6 @@ import org.springframework.web.bind.annotation.RequestParam;
 @RequestMapping("user")
 public class AccountLogController {
     private AccountLogManager accountLogManager;
-    private Exportor exportor;
-    private BeanMapper beanMapper = new BeanMapper();
-    private MessageHelper messageHelper;
 
     @RequestMapping("account-log-list")
     public String list(@ModelAttribute Page page,
@@ -47,15 +41,5 @@ public class AccountLogController {
     @Resource
     public void setAccountLogManager(AccountLogManager accountLogManager) {
         this.accountLogManager = accountLogManager;
-    }
-
-    @Resource
-    public void setExportor(Exportor exportor) {
-        this.exportor = exportor;
-    }
-
-    @Resource
-    public void setMessageHelper(MessageHelper messageHelper) {
-        this.messageHelper = messageHelper;
     }
 }

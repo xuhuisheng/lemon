@@ -15,6 +15,7 @@ public class CmsSiteCallback implements CsvCallback {
         String code = list.get(0);
         String name = list.get(1);
         String templateCode = list.get(2);
+        String templateTag = list.get(3);
 
         code = code.toLowerCase();
 
@@ -28,7 +29,9 @@ public class CmsSiteCallback implements CsvCallback {
         cmsSite.setCode(code);
         cmsSite.setName(name);
         cmsSite.setTemplateCode(templateCode);
+        cmsSite.setTemplateTag(templateTag);
         cmsSite.setTenantId(defaultTenantId);
+        cmsSite.setPriority(lineNo);
         cmsSiteManager.save(cmsSite);
     }
 

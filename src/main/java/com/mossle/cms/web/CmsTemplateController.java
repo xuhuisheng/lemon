@@ -10,11 +10,6 @@ import com.mossle.cms.persistence.domain.CmsTemplateCatalog;
 import com.mossle.cms.persistence.domain.CmsTemplateContent;
 import com.mossle.cms.persistence.manager.CmsTemplateCatalogManager;
 import com.mossle.cms.persistence.manager.CmsTemplateContentManager;
-import com.mossle.cms.service.RenderService;
-
-import com.mossle.core.export.Exportor;
-import com.mossle.core.mapper.BeanMapper;
-import com.mossle.core.spring.MessageHelper;
 
 import org.springframework.stereotype.Controller;
 
@@ -28,9 +23,6 @@ import org.springframework.web.bind.annotation.RequestParam;
 public class CmsTemplateController {
     private CmsTemplateCatalogManager cmsTemplateCatalogManager;
     private CmsTemplateContentManager cmsTemplateContentManager;
-    private BeanMapper beanMapper = new BeanMapper();
-    private MessageHelper messageHelper;
-    private RenderService renderService;
     private TenantHolder tenantHolder;
 
     @RequestMapping("index")
@@ -97,6 +89,8 @@ public class CmsTemplateController {
             @RequestParam("catalogId") Long catalogId,
             @RequestParam("name") String name,
             @RequestParam("content") String content, Model model) {
+        CmsTemplateCatalog cmsTemplateCatalog = cmsTemplateCatalogManager
+                .get(catalogId);
         CmsTemplateContent cmsTemplateContent = null;
 
         if (id != null) {
@@ -109,9 +103,26 @@ public class CmsTemplateController {
 
         cmsTemplateContent.setName(name);
         cmsTemplateContent.setContent(content);
+        cmsTemplateContent.setPath(this.findPath(cmsTemplateCatalog) + name);
         cmsTemplateContentManager.save(cmsTemplateContent);
 
         return "redirect:/cms/template/index.do?catalogId=" + catalogId;
+    }
+
+    // ~
+    public String findPath(CmsTemplateCatalog cmsTemplateCatalog) {
+        StringBuilder buff = new StringBuilder();
+        visitPath(cmsTemplateCatalog, buff);
+
+        return buff.toString();
+    }
+
+    public void visitPath(CmsTemplateCatalog cmsTemplateCatalog,
+            StringBuilder buff) {
+        if (cmsTemplateCatalog.getCmsTemplateCatalog() != null) {
+            visitPath(cmsTemplateCatalog.getCmsTemplateCatalog(), buff);
+            buff.append(cmsTemplateCatalog.getName()).append("/");
+        }
     }
 
     // ~ ======================================================================
@@ -125,16 +136,6 @@ public class CmsTemplateController {
     public void setCmsTemplateContentgManager(
             CmsTemplateContentManager cmsTemplateContentManager) {
         this.cmsTemplateContentManager = cmsTemplateContentManager;
-    }
-
-    @Resource
-    public void setMessageHelper(MessageHelper messageHelper) {
-        this.messageHelper = messageHelper;
-    }
-
-    @Resource
-    public void setRenderService(RenderService renderService) {
-        this.renderService = renderService;
     }
 
     @Resource

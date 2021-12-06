@@ -8,7 +8,6 @@ import javax.annotation.Resource;
 
 import com.mossle.api.tenant.TenantHolder;
 
-import com.mossle.core.export.Exportor;
 import com.mossle.core.mapper.BeanMapper;
 import com.mossle.core.page.Page;
 import com.mossle.core.query.PropertyFilter;
@@ -31,11 +30,10 @@ import org.springframework.web.servlet.mvc.support.RedirectAttributes;
 public class AccountAliasController {
     private AccountAliasManager accountAliasManager;
     private MessageHelper messageHelper;
-    private Exportor exportor;
     private BeanMapper beanMapper = new BeanMapper();
     private TenantHolder tenantHolder;
 
-    @RequestMapping("account-alis-list")
+    @RequestMapping("account-alias-list")
     public String list(@ModelAttribute Page page,
             @RequestParam Map<String, Object> parameterMap, Model model) {
         String tenantId = tenantHolder.getTenantId();
@@ -116,11 +114,6 @@ public class AccountAliasController {
     @Resource
     public void setMessageHelper(MessageHelper messageHelper) {
         this.messageHelper = messageHelper;
-    }
-
-    @Resource
-    public void setExportor(Exportor exportor) {
-        this.exportor = exportor;
     }
 
     @Resource

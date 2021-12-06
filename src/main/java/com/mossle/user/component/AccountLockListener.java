@@ -9,7 +9,6 @@ import com.mossle.core.auth.LoginEvent;
 
 import com.mossle.user.persistence.domain.AccountLockInfo;
 import com.mossle.user.persistence.domain.AccountLockLog;
-import com.mossle.user.persistence.manager.AccountInfoManager;
 import com.mossle.user.persistence.manager.AccountLockInfoManager;
 import com.mossle.user.persistence.manager.AccountLockLogManager;
 
@@ -23,7 +22,6 @@ public class AccountLockListener implements ApplicationListener<LoginEvent> {
     private static Logger logger = LoggerFactory
             .getLogger(AccountLockListener.class);
     public static final int DEFAULT_THREHOLD = 5;
-    private AccountInfoManager accountInfoManager;
     private AccountLockInfoManager accountLockInfoManager;
     private AccountLockLogManager accountLockLogManager;
     private int threhold = 5;
@@ -74,11 +72,6 @@ public class AccountLockListener implements ApplicationListener<LoginEvent> {
         } catch (Exception ex) {
             logger.error(ex.getMessage(), ex);
         }
-    }
-
-    @Resource
-    public void setAccountInfoManager(AccountInfoManager accountInfoManager) {
-        this.accountInfoManager = accountInfoManager;
     }
 
     @Resource

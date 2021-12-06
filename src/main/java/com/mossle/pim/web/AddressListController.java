@@ -5,8 +5,9 @@ import java.util.List;
 import javax.annotation.Resource;
 
 import com.mossle.api.tenant.TenantHolder;
+import com.mossle.api.user.UserDTO;
 
-import org.springframework.jdbc.core.JdbcTemplate;
+import com.mossle.client.user.UserClient;
 
 import org.springframework.stereotype.Controller;
 
@@ -18,32 +19,28 @@ import org.springframework.web.bind.annotation.RequestParam;
 @Controller
 @RequestMapping("pim")
 public class AddressListController {
-    private JdbcTemplate jdbcTemplate;
     private TenantHolder tenantHolder;
+    private UserClient userClient;
 
     @RequestMapping("address-list-list")
     public String list(
             @RequestParam(value = "username", required = false) String query,
             Model model) {
         String tenantId = tenantHolder.getTenantId();
-        String sql = "select ai.id as id,ai.username as username,ai.display_name as displayName,pi.email as email,pi.cellphone as mobile"
-                + " from ACCOUNT_INFO ai left join PERSON_INFO pi on ai.code=pi.code"
-                + " where ai.tenant_ID=? and (ai.username like ? or ai.display_name like ? or pi.email like ? or pi.cellphone = ?)";
-        String param = "%" + query + "%";
-        List list = jdbcTemplate.queryForList(sql, tenantId, param, param, param, query);
-        model.addAttribute("list", list);
+        List<UserDTO> userDtos = this.userClient.search(query);
+        model.addAttribute("list", userDtos);
 
         return "pim/address-list-list";
     }
 
     // ~ ======================================================================
     @Resource
-    public void setJdbcTemplate(JdbcTemplate jdbcTemplate) {
-        this.jdbcTemplate = jdbcTemplate;
+    public void setTenantHolder(TenantHolder tenantHolder) {
+        this.tenantHolder = tenantHolder;
     }
 
     @Resource
-    public void setTenantHolder(TenantHolder tenantHolder) {
-        this.tenantHolder = tenantHolder;
+    public void setUserClient(UserClient userClient) {
+        this.userClient = userClient;
     }
 }

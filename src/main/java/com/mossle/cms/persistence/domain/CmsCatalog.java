@@ -69,10 +69,13 @@ public class CmsCatalog implements java.io.Serializable {
     private String status;
 
     /** . */
-    private Set<CmsCatalog> cmsCatalogs = new HashSet<CmsCatalog>(0);
+    private Set<CmsArticle> cmsArticles = new HashSet<CmsArticle>(0);
 
     /** . */
-    private Set<CmsArticle> cmsArticles = new HashSet<CmsArticle>(0);
+    private Set<CmsAcl> cmsAcls = new HashSet<CmsAcl>(0);
+
+    /** . */
+    private Set<CmsCatalog> cmsCatalogs = new HashSet<CmsCatalog>(0);
 
     public CmsCatalog() {
     }
@@ -85,8 +88,8 @@ public class CmsCatalog implements java.io.Serializable {
             String name, String code, String logo, Integer type,
             String templateIndex, String templateList, String templateDetail,
             String keyword, String description, String tenantId,
-            Integer priority, String status, Set<CmsCatalog> cmsCatalogs,
-            Set<CmsArticle> cmsArticles) {
+            Integer priority, String status, Set<CmsArticle> cmsArticles,
+            Set<CmsAcl> cmsAcls, Set<CmsCatalog> cmsCatalogs) {
         this.id = id;
         this.cmsSite = cmsSite;
         this.cmsCatalog = cmsCatalog;
@@ -102,8 +105,9 @@ public class CmsCatalog implements java.io.Serializable {
         this.tenantId = tenantId;
         this.priority = priority;
         this.status = status;
-        this.cmsCatalogs = cmsCatalogs;
         this.cmsArticles = cmsArticles;
+        this.cmsAcls = cmsAcls;
+        this.cmsCatalogs = cmsCatalogs;
     }
 
     /** @return null. */
@@ -321,20 +325,6 @@ public class CmsCatalog implements java.io.Serializable {
 
     /** @return . */
     @OneToMany(fetch = FetchType.LAZY, mappedBy = "cmsCatalog")
-    public Set<CmsCatalog> getCmsCatalogs() {
-        return this.cmsCatalogs;
-    }
-
-    /**
-     * @param cmsCatalogs
-     *            .
-     */
-    public void setCmsCatalogs(Set<CmsCatalog> cmsCatalogs) {
-        this.cmsCatalogs = cmsCatalogs;
-    }
-
-    /** @return . */
-    @OneToMany(fetch = FetchType.LAZY, mappedBy = "cmsCatalog")
     public Set<CmsArticle> getCmsArticles() {
         return this.cmsArticles;
     }
@@ -345,5 +335,33 @@ public class CmsCatalog implements java.io.Serializable {
      */
     public void setCmsArticles(Set<CmsArticle> cmsArticles) {
         this.cmsArticles = cmsArticles;
+    }
+
+    /** @return . */
+    @OneToMany(fetch = FetchType.LAZY, mappedBy = "cmsCatalog")
+    public Set<CmsAcl> getCmsAcls() {
+        return this.cmsAcls;
+    }
+
+    /**
+     * @param cmsAcls
+     *            .
+     */
+    public void setCmsAcls(Set<CmsAcl> cmsAcls) {
+        this.cmsAcls = cmsAcls;
+    }
+
+    /** @return . */
+    @OneToMany(fetch = FetchType.LAZY, mappedBy = "cmsCatalog")
+    public Set<CmsCatalog> getCmsCatalogs() {
+        return this.cmsCatalogs;
+    }
+
+    /**
+     * @param cmsCatalogs
+     *            .
+     */
+    public void setCmsCatalogs(Set<CmsCatalog> cmsCatalogs) {
+        this.cmsCatalogs = cmsCatalogs;
     }
 }

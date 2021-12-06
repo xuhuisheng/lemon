@@ -3,6 +3,8 @@ package com.mossle.disk.util;
 import java.util.ArrayList;
 import java.util.List;
 
+import org.apache.commons.lang3.StringUtils;
+
 public class FileUtils {
     /**
      * 获取文件后缀.
@@ -15,6 +17,34 @@ public class FileUtils {
         String suffix = name.substring(name.lastIndexOf(".") + 1);
 
         return suffix.trim().toLowerCase();
+    }
+
+    /**
+     * 获取文件前缀.
+     */
+    public static String getPrefix(String name) {
+        if (name.indexOf(".") == -1) {
+            return name;
+        }
+
+        String prefix = name.substring(0, name.indexOf("."));
+
+        return prefix.trim();
+    }
+
+    /**
+     * 文件改名.
+     */
+    public static String modifyFileName(String originalFileName,
+            String appendPart) {
+        String suffix = getSuffix(originalFileName);
+        String prefix = getPrefix(originalFileName);
+
+        if (StringUtils.isBlank(suffix)) {
+            return prefix + appendPart;
+        } else {
+            return prefix + appendPart + "." + suffix;
+        }
     }
 
     /**

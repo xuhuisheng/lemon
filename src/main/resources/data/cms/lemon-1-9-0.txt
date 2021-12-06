@@ -1,17 +1,17 @@
 <p>features:</p>
 
 <ul>
-	<li>[cdn] ÖØĞÂ¹æ»®¾²Ì¬×ÊÔ´Â·¾¶£¬cdnÄ¿Â¼ÏÂµÄËùÓĞ¾²Ì¬×ÊÔ´°üº¬×é¼şÃûºÍ°æ±¾ºÅ¡£</li>
-	<li>[data] ²»ÔÙÊ¹ÓÃsql³õÊ¼»¯Êı¾İ£¬¸ÄÓÃcsvºÍjson³õÊ¼»¯Êı¾İ¡£</li>
-	<li>[user] ÓÅ»¯ÕËºÅ¹ÜÀí¹¦ÄÜ¡£</li>
-	<li>[bpm] Ôö¼ÓÁË¼¸¸öÑİÊ¾Á÷³Ì¡£</li>
-	<li>[biz] ³¢ÊÔÌí¼Ó³µÁ¾£¬»áÒéÊÒ£¬¿¼ÇÚ¹ÜÀí¡£</li>
+	<li>[cdn] é‡æ–°è§„åˆ’é™æ€èµ„æºè·¯å¾„ï¼Œcdnç›®å½•ä¸‹çš„æ‰€æœ‰é™æ€èµ„æºåŒ…å«ç»„ä»¶åå’Œç‰ˆæœ¬å·ã€‚</li>
+	<li>[data] ä¸å†ä½¿ç”¨sqlåˆå§‹åŒ–æ•°æ®ï¼Œæ”¹ç”¨csvå’Œjsonåˆå§‹åŒ–æ•°æ®ã€‚</li>
+	<li>[user] ä¼˜åŒ–è´¦å·ç®¡ç†åŠŸèƒ½ã€‚</li>
+	<li>[bpm] å¢åŠ äº†å‡ ä¸ªæ¼”ç¤ºæµç¨‹ã€‚</li>
+	<li>[biz] å°è¯•æ·»åŠ è½¦è¾†ï¼Œä¼šè®®å®¤ï¼Œè€ƒå‹¤ç®¡ç†ã€‚</li>
 </ul>
 
 <p>resources:</p>
 
 <ul>
-	<li>ÏêÏ¸ĞŞ¶©ÁĞ±í£º <a href="https://github.com/xuhuisheng/lemon/issues?q=milestone%3A1.9.0" target="_blank">https://github.com/xuhuisheng/lemon/issues?q=milestone%3A1.9.0</a></li>
-	<li>Ô´ÂëµØÖ·£º <a href="https://github.com/xuhuisheng/lemon/tree/lemon-1.9.0" target="_blank">https://github.com/xuhuisheng/lemon/tree/lemon-1.9.0</a></li>
-	<li>¶ÀÁ¢ÔËĞĞ°ü£º <a href="https://pan.baidu.com/s/1e07BShLvx-ChiHJkSbfneg" target="_blank">https://pan.baidu.com/s/1e07BShLvx-ChiHJkSbfneg</a></li>
+	<li>è¯¦ç»†ä¿®è®¢åˆ—è¡¨ï¼š <a href="https://github.com/xuhuisheng/lemon/issues?q=milestone%3A1.9.0" target="_blank">https://github.com/xuhuisheng/lemon/issues?q=milestone%3A1.9.0</a></li>
+	<li>æºç åœ°å€ï¼š <a href="https://github.com/xuhuisheng/lemon/tree/lemon-1.9.0" target="_blank">https://github.com/xuhuisheng/lemon/tree/lemon-1.9.0</a></li>
+	<li>ç‹¬ç«‹è¿è¡ŒåŒ…ï¼š <a href="https://pan.baidu.com/s/1e07BShLvx-ChiHJkSbfneg" target="_blank">https://pan.baidu.com/s/1e07BShLvx-ChiHJkSbfneg</a></li>
 </ul>

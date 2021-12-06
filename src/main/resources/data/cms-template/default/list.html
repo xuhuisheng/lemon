@@ -3,7 +3,7 @@
   <head>
     <meta charset="utf-8" />
     <meta http-equiv="X-UA-Compatible" content="IE=edge,chrome=1" />
-    <title>${cms.catalog.name}</title>
+    <title>${cms.currentCatalog.name}</title>
   <!-- static start -->
   <link rel="stylesheet" href="${cms.ctx}/cdn/public/bootstrap/3.3.7/css/bootstrap.min.css">
     <script type="text/javascript" src="${cms.ctx}/cdn/public/jquery/1.12.4/jquery.min.js"></script>
@@ -44,12 +44,12 @@
     <div class="container">
     <div class="navbar navbar-default" role="navigation" style="margin-bottom:10px;">
         <div class="navbar-header">
-          <a class="navbar-brand" href="${cms.ctx}/cms/view">首页</a>
+          <a class="navbar-brand" href="${cms.ctx}/${cms.cmsPrefix}/">首页</a>
         </div>
         <div class="collapse navbar-collapse" id="bs-example-navbar-collapse-1">
           <ul class="nav navbar-nav">
-        <#list cms.catalogs() as theCatalog>
-            <li class=""><a href="${cms.ctx}/cms/view/${theCatalog.code}">${theCatalog.name}</a></li>
+        <#list cms.findTopCatalogs() as theCatalog>
+            <li class=""><a href="${cms.ctx}/${cms.cmsPrefix}/catalog/${theCatalog.code}/articles">${theCatalog.name}</a></li>
       </#list>
           </ul>
     </div>
@@ -65,10 +65,10 @@
         <!-- left start -->
         <div class="col-md-9">
  
-      <#assign articlePage=cms.articles(cms.catalog.id) />
+      <#assign articlePage=cms.findArticlesByCatalogId(cms.currentCatalog.id) />
       <#list articlePage.result as article>
         <div>
-        <a href="${cms.ctx}/cms/view/${cms.catalog.code}/${article.id?string('#')}"><h3>${article.title!}</h3></a>
+        <a href="${cms.ctx}/${cms.cmsPrefix}/article/${article.id?string('#')}"><h3>${article.title!}</h3></a>
         <p>
         <span style="color:gray;">${(userConnector.findById(article.userId).displayName)!}</span>
         |

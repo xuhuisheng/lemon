@@ -50,10 +50,10 @@ public class PlmVersion implements java.io.Serializable {
     private Integer priority;
 
     /** . */
-    private Set<PlmIssue> plmIssues = new HashSet<PlmIssue>(0);
+    private Set<PlmRequirement> plmRequirements = new HashSet<PlmRequirement>(0);
 
     /** . */
-    private Set<PlmRequirement> plmRequirements = new HashSet<PlmRequirement>(0);
+    private Set<PlmIssue> plmIssues = new HashSet<PlmIssue>(0);
 
     public PlmVersion() {
     }
@@ -64,7 +64,7 @@ public class PlmVersion implements java.io.Serializable {
 
     public PlmVersion(Long id, PlmProject plmProject, String name,
             String status, Date createTime, String userId, Integer priority,
-            Set<PlmIssue> plmIssues, Set<PlmRequirement> plmRequirements) {
+            Set<PlmRequirement> plmRequirements, Set<PlmIssue> plmIssues) {
         this.id = id;
         this.plmProject = plmProject;
         this.name = name;
@@ -72,8 +72,8 @@ public class PlmVersion implements java.io.Serializable {
         this.createTime = createTime;
         this.userId = userId;
         this.priority = priority;
-        this.plmIssues = plmIssues;
         this.plmRequirements = plmRequirements;
+        this.plmIssues = plmIssues;
     }
 
     /** @return null. */
@@ -178,6 +178,20 @@ public class PlmVersion implements java.io.Serializable {
     }
 
     /** @return . */
+    @OneToMany(fetch = FetchType.LAZY, mappedBy = "plmVersion")
+    public Set<PlmRequirement> getPlmRequirements() {
+        return this.plmRequirements;
+    }
+
+    /**
+     * @param plmRequirements
+     *            .
+     */
+    public void setPlmRequirements(Set<PlmRequirement> plmRequirements) {
+        this.plmRequirements = plmRequirements;
+    }
+
+    /** @return . */
     @ManyToMany(fetch = FetchType.LAZY)
     @JoinTable(name = "PLM_ISSUE_VERSION", joinColumns = { @JoinColumn(name = "VERSION_ID", nullable = false, updatable = false) }, inverseJoinColumns = { @JoinColumn(name = "ISSUE_ID", nullable = false, updatable = false) })
     public Set<PlmIssue> getPlmIssues() {
@@ -190,19 +204,5 @@ public class PlmVersion implements java.io.Serializable {
      */
     public void setPlmIssues(Set<PlmIssue> plmIssues) {
         this.plmIssues = plmIssues;
-    }
-
-    /** @return . */
-    @OneToMany(fetch = FetchType.LAZY, mappedBy = "plmVersion")
-    public Set<PlmRequirement> getPlmRequirements() {
-        return this.plmRequirements;
-    }
-
-    /**
-     * @param plmRequirements
-     *            .
-     */
-    public void setPlmRequirements(Set<PlmRequirement> plmRequirements) {
-        this.plmRequirements = plmRequirements;
     }
 }

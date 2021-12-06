@@ -1,21 +1,11 @@
 package com.mossle.internal.open.data;
 
-import java.io.BufferedReader;
-import java.io.InputStream;
-import java.io.InputStreamReader;
-
-import java.util.Date;
-import java.util.UUID;
-
 import javax.annotation.PostConstruct;
 import javax.annotation.Resource;
 
 import com.mossle.core.csv.CsvProcessor;
 
-import com.mossle.internal.open.persistence.domain.OpenApp;
 import com.mossle.internal.open.persistence.manager.OpenAppManager;
-
-import org.apache.commons.lang3.StringUtils;
 
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
@@ -37,6 +27,7 @@ public class OpenDeployer {
         }
 
         OpenAppCallback openAppCallback = new OpenAppCallback();
+        openAppCallback.setDefaultTenantId(defaultTenantId);
         openAppCallback.setOpenAppManager(openAppManager);
         new CsvProcessor().process(dataFilePath, dataFileEncoding,
                 openAppCallback);

@@ -30,10 +30,10 @@ public class PlmSprint implements java.io.Serializable {
     private Long id;
 
     /** null. */
-    private PlmProject plmProject;
+    private PlmConfig plmConfig;
 
     /** null. */
-    private PlmConfig plmConfig;
+    private PlmProject plmProject;
 
     /** null. */
     private String code;
@@ -63,12 +63,12 @@ public class PlmSprint implements java.io.Serializable {
         this.id = id;
     }
 
-    public PlmSprint(Long id, PlmProject plmProject, PlmConfig plmConfig,
+    public PlmSprint(Long id, PlmConfig plmConfig, PlmProject plmProject,
             String code, String name, Integer priority, Date startTime,
             Date endTime, String status, Set<PlmIssue> plmIssues) {
         this.id = id;
-        this.plmProject = plmProject;
         this.plmConfig = plmConfig;
+        this.plmProject = plmProject;
         this.code = code;
         this.name = name;
         this.priority = priority;
@@ -95,21 +95,6 @@ public class PlmSprint implements java.io.Serializable {
 
     /** @return null. */
     @ManyToOne(fetch = FetchType.LAZY)
-    @JoinColumn(name = "PROJECT_ID")
-    public PlmProject getPlmProject() {
-        return this.plmProject;
-    }
-
-    /**
-     * @param plmProject
-     *            null.
-     */
-    public void setPlmProject(PlmProject plmProject) {
-        this.plmProject = plmProject;
-    }
-
-    /** @return null. */
-    @ManyToOne(fetch = FetchType.LAZY)
     @JoinColumn(name = "CONFIG_ID")
     public PlmConfig getPlmConfig() {
         return this.plmConfig;
@@ -121,6 +106,21 @@ public class PlmSprint implements java.io.Serializable {
      */
     public void setPlmConfig(PlmConfig plmConfig) {
         this.plmConfig = plmConfig;
+    }
+
+    /** @return null. */
+    @ManyToOne(fetch = FetchType.LAZY)
+    @JoinColumn(name = "PROJECT_ID")
+    public PlmProject getPlmProject() {
+        return this.plmProject;
+    }
+
+    /**
+     * @param plmProject
+     *            null.
+     */
+    public void setPlmProject(PlmProject plmProject) {
+        this.plmProject = plmProject;
     }
 
     /** @return null. */

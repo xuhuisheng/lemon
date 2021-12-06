@@ -1,78 +1,58 @@
 <configuration debug="false">
-	<contextListener class="ch.qos.logback.classic.jul.LevelChangePropagator">
-		<resetJUL>true</resetJUL>
-	</contextListener>
+    <contextListener class="ch.qos.logback.classic.jul.LevelChangePropagator"/>
 
-   <define name="LOCAL_PROP_EXISTS" class="com.mossle.core.logback.ResourceExistsPropertyDefiner">
-      <path>application.local.properties</path>
-   </define>
+    <property resource="bootstrap.properties"/>
 
-   <define name="SERVER_PROP_EXISTS" class="com.mossle.core.logback.ResourceExistsPropertyDefiner">
-      <path>application.server.properties</path>
-   </define>
-
-	<property resource="application.properties"/>
-
-	<if condition="${LOCAL_PROP_EXISTS}">
-	    <then>
-			<property resource="application.local.properties"/>
-	    </then>
-	</if>
-
-	<if condition="${SERVER_PROP_EXISTS}">
-	    <then>
-			<property resource="application.server.properties"/>
-	    </then>
-	</if>
+    <property resource="${app.id}-${app.env}.properties"/>
 
     <jmxConfigurator />
 
-	<if condition='${log.console.enable}'>
-		<then>
-			<include resource="logback/console.xml"/>
-		</then>
-	</if>
+    <if condition='${log.console.enable}'>
+        <then>
+            <include resource="logback/console.xml"/>
+        </then>
+    </if>
 
-	<if condition='${log.file.enable}'>
-		<then>
-			<include resource="logback/file.xml" />
-		</then>
-	</if>
+    <if condition='${log.file.enable}'>
+        <then>
+            <include resource="logback/file.xml" />
+        </then>
+    </if>
 
-	<if condition='${log.mail.enable}'>
-		<then>
-			<include resource="logback/mail.xml" />
-		</then>
-	</if>
+    <if condition='${log.mail.enable}'>
+        <then>
+            <include resource="logback/mail.xml" />
+        </then>
+    </if>
 
-	<if condition='${log.inspektr.enable}'>
-		<then>
-			<include resource="logback/inspektr.xml" />
-		</then>
-	</if>
+    <if condition='${log.inspektr.enable}'>
+        <then>
+            <include resource="logback/inspektr.xml" />
+        </then>
+    </if>
 
-	<if condition='${log.log4jdbc.enable}'>
-		<then>
-			<include resource="logback/log4jdbc.xml" />
-		</then>
-	</if>
+    <if condition='${log.log4jdbc.enable}'>
+        <then>
+            <include resource="logback/log4jdbc.xml" />
+        </then>
+    </if>
 
     <root level="info">
-		<if condition='${log.console.enable}'>
-			<then>
-				<appender-ref ref="CONSOLE" />
-			</then>
-		</if>
-		<if condition='${log.file.enable}'>
-			<then>
-		        <appender-ref ref="FILE" />
-			</then>
-		</if>
-		<if condition='${log.mail.enable}'>
-			<then>
-		        <appender-ref ref="MAIL" />
-			</then>
-		</if>
+        <if condition='${log.console.enable}'>
+            <then>
+                <appender-ref ref="CONSOLE" />
+            </then>
+        </if>
+        <if condition='${log.file.enable}'>
+            <then>
+                <appender-ref ref="FILE" />
+            </then>
+        </if>
+        <if condition='${log.mail.enable}'>
+            <then>
+                <appender-ref ref="MAIL" />
+            </then>
+        </if>
     </root>
 
 <!--
@@ -80,15 +60,16 @@
     <logger name="org.hibernate.cache" level="debug"/>
 -->
 
-	<logger name="com.mossle" level="info"/>
-	<logger name="com.sun.jersey.core.spi.component.ProviderServices" level="warn"/>
-	<logger name="com.sun.jersey.server.impl.cdi.CDIComponentProviderFactoryInitializer" level="warn"/>
-	<logger name="com.sun.jersey.server.impl.ejb.EJBComponentProviderFactoryInitilizer" level="warn"/>
-	<logger name="com.sun.jersey.server.impl.managedbeans.ManagedBeanComponentProviderFactoryInitilizer" level="warn"/>
-	<logger name="org.hibernate.engine.internal.StatisticalLoggingSessionEventListener" level="warn"/>
-	<logger name="org.hibernate.hql.internal.ast.HqlSqlWalker" level="error"/>
-	<logger name="org.springframework.security.access.event.LoggerListener" level="error"/>
-	<logger name="org.springframework.security.authentication.event.LoggerListener" level="error"/>
-	<logger name="org.springframework.web.servlet.mvc.method.annotation.RequestMappingHandlerMapping" level="warn"/>
+    <logger name="com.mossle" level="info"/>
+    <logger name="com.sun.jersey.core.spi.component.ProviderServices" level="warn"/>
+    <logger name="com.sun.jersey.server.impl.cdi.CDIComponentProviderFactoryInitializer" level="warn"/>
+    <logger name="com.sun.jersey.server.impl.ejb.EJBComponentProviderFactoryInitilizer" level="warn"/>
+    <logger name="com.sun.jersey.server.impl.managedbeans.ManagedBeanComponentProviderFactoryInitilizer" level="warn"/>
+    <logger name="org.hibernate.engine.internal.StatisticalLoggingSessionEventListener" level="warn"/>
+    <logger name="org.hibernate.hql.internal.ast.HqlSqlWalker" level="error"/>
+    <logger name="org.springframework.context.support.ResourceBundleMessageSource" level="error"/>
+    <logger name="org.springframework.security.access.event.LoggerListener" level="error"/>
+    <logger name="org.springframework.security.authentication.event.LoggerListener" level="error"/>
+    <logger name="org.springframework.web.servlet.mvc.method.annotation.RequestMappingHandlerMapping" level="warn"/>
 
 </configuration>

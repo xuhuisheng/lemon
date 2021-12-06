@@ -30,10 +30,10 @@ public class CmsComment implements java.io.Serializable {
     private Long id;
 
     /** null. */
-    private CmsComment cmsComment;
+    private CmsArticle cmsArticle;
 
     /** null. */
-    private CmsArticle cmsArticle;
+    private CmsComment cmsComment;
 
     /** null. */
     private String title;
@@ -66,10 +66,10 @@ public class CmsComment implements java.io.Serializable {
     private String type;
 
     /** . */
-    private Set<CmsFavorite> cmsFavorites = new HashSet<CmsFavorite>(0);
+    private Set<CmsComment> cmsComments = new HashSet<CmsComment>(0);
 
     /** . */
-    private Set<CmsComment> cmsComments = new HashSet<CmsComment>(0);
+    private Set<CmsFavorite> cmsFavorites = new HashSet<CmsFavorite>(0);
 
     public CmsComment() {
     }
@@ -78,14 +78,14 @@ public class CmsComment implements java.io.Serializable {
         this.id = id;
     }
 
-    public CmsComment(Long id, CmsComment cmsComment, CmsArticle cmsArticle,
+    public CmsComment(Long id, CmsArticle cmsArticle, CmsComment cmsComment,
             String title, String content, Integer status, Date createTime,
             String userId, String tenantId, String ip, Integer priority,
-            Long conversation, String type, Set<CmsFavorite> cmsFavorites,
-            Set<CmsComment> cmsComments) {
+            Long conversation, String type, Set<CmsComment> cmsComments,
+            Set<CmsFavorite> cmsFavorites) {
         this.id = id;
-        this.cmsComment = cmsComment;
         this.cmsArticle = cmsArticle;
+        this.cmsComment = cmsComment;
         this.title = title;
         this.content = content;
         this.status = status;
@@ -96,8 +96,8 @@ public class CmsComment implements java.io.Serializable {
         this.priority = priority;
         this.conversation = conversation;
         this.type = type;
-        this.cmsFavorites = cmsFavorites;
         this.cmsComments = cmsComments;
+        this.cmsFavorites = cmsFavorites;
     }
 
     /** @return null. */
@@ -117,21 +117,6 @@ public class CmsComment implements java.io.Serializable {
 
     /** @return null. */
     @ManyToOne(fetch = FetchType.LAZY)
-    @JoinColumn(name = "PARENT_ID")
-    public CmsComment getCmsComment() {
-        return this.cmsComment;
-    }
-
-    /**
-     * @param cmsComment
-     *            null.
-     */
-    public void setCmsComment(CmsComment cmsComment) {
-        this.cmsComment = cmsComment;
-    }
-
-    /** @return null. */
-    @ManyToOne(fetch = FetchType.LAZY)
     @JoinColumn(name = "ARTICLE_ID")
     public CmsArticle getCmsArticle() {
         return this.cmsArticle;
@@ -143,6 +128,21 @@ public class CmsComment implements java.io.Serializable {
      */
     public void setCmsArticle(CmsArticle cmsArticle) {
         this.cmsArticle = cmsArticle;
+    }
+
+    /** @return null. */
+    @ManyToOne(fetch = FetchType.LAZY)
+    @JoinColumn(name = "PARENT_ID")
+    public CmsComment getCmsComment() {
+        return this.cmsComment;
+    }
+
+    /**
+     * @param cmsComment
+     *            null.
+     */
+    public void setCmsComment(CmsComment cmsComment) {
+        this.cmsComment = cmsComment;
     }
 
     /** @return null. */
@@ -288,20 +288,6 @@ public class CmsComment implements java.io.Serializable {
 
     /** @return . */
     @OneToMany(fetch = FetchType.LAZY, mappedBy = "cmsComment")
-    public Set<CmsFavorite> getCmsFavorites() {
-        return this.cmsFavorites;
-    }
-
-    /**
-     * @param cmsFavorites
-     *            .
-     */
-    public void setCmsFavorites(Set<CmsFavorite> cmsFavorites) {
-        this.cmsFavorites = cmsFavorites;
-    }
-
-    /** @return . */
-    @OneToMany(fetch = FetchType.LAZY, mappedBy = "cmsComment")
     public Set<CmsComment> getCmsComments() {
         return this.cmsComments;
     }
@@ -312,5 +298,19 @@ public class CmsComment implements java.io.Serializable {
      */
     public void setCmsComments(Set<CmsComment> cmsComments) {
         this.cmsComments = cmsComments;
+    }
+
+    /** @return . */
+    @OneToMany(fetch = FetchType.LAZY, mappedBy = "cmsComment")
+    public Set<CmsFavorite> getCmsFavorites() {
+        return this.cmsFavorites;
+    }
+
+    /**
+     * @param cmsFavorites
+     *            .
+     */
+    public void setCmsFavorites(Set<CmsFavorite> cmsFavorites) {
+        this.cmsFavorites = cmsFavorites;
     }
 }

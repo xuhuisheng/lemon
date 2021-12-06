@@ -53,6 +53,9 @@ public class CmsAttachment implements java.io.Serializable {
     /** null. */
     private String userId;
 
+    /** null. */
+    private String catalog;
+
     public CmsAttachment() {
     }
 
@@ -62,7 +65,7 @@ public class CmsAttachment implements java.io.Serializable {
 
     public CmsAttachment(Long id, CmsArticle cmsArticle, String type,
             String name, String path, Integer size, Integer height,
-            Integer width, Date createTime, String userId) {
+            Integer width, Date createTime, String userId, String catalog) {
         this.id = id;
         this.cmsArticle = cmsArticle;
         this.type = type;
@@ -73,6 +76,7 @@ public class CmsAttachment implements java.io.Serializable {
         this.width = width;
         this.createTime = createTime;
         this.userId = userId;
+        this.catalog = catalog;
     }
 
     /** @return null. */
@@ -216,5 +220,19 @@ public class CmsAttachment implements java.io.Serializable {
      */
     public void setUserId(String userId) {
         this.userId = userId;
+    }
+
+    /** @return null. */
+    @Column(name = "CATALOG", length = 50)
+    public String getCatalog() {
+        return this.catalog;
+    }
+
+    /**
+     * @param catalog
+     *            null.
+     */
+    public void setCatalog(String catalog) {
+        this.catalog = catalog;
     }
 }

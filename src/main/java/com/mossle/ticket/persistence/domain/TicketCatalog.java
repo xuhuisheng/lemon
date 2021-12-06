@@ -8,6 +8,8 @@ import javax.persistence.Column;
 import javax.persistence.Entity;
 import javax.persistence.FetchType;
 import javax.persistence.Id;
+import javax.persistence.JoinColumn;
+import javax.persistence.ManyToOne;
 import javax.persistence.OneToMany;
 import javax.persistence.Table;
 
@@ -25,10 +27,16 @@ public class TicketCatalog implements java.io.Serializable {
     private Long id;
 
     /** null. */
+    private TicketCatalog ticketCatalog;
+
+    /** null. */
     private String name;
 
     /** null. */
     private String description;
+
+    /** . */
+    private Set<TicketCatalog> ticketCatalogs = new HashSet<TicketCatalog>(0);
 
     /** . */
     private Set<TicketInfo> ticketInfos = new HashSet<TicketInfo>(0);
@@ -40,11 +48,14 @@ public class TicketCatalog implements java.io.Serializable {
         this.id = id;
     }
 
-    public TicketCatalog(Long id, String name, String description,
+    public TicketCatalog(Long id, TicketCatalog ticketCatalog, String name,
+            String description, Set<TicketCatalog> ticketCatalogs,
             Set<TicketInfo> ticketInfos) {
         this.id = id;
+        this.ticketCatalog = ticketCatalog;
         this.name = name;
         this.description = description;
+        this.ticketCatalogs = ticketCatalogs;
         this.ticketInfos = ticketInfos;
     }
 
@@ -61,6 +72,21 @@ public class TicketCatalog implements java.io.Serializable {
      */
     public void setId(Long id) {
         this.id = id;
+    }
+
+    /** @return null. */
+    @ManyToOne(fetch = FetchType.LAZY)
+    @JoinColumn(name = "PARENT_ID")
+    public TicketCatalog getTicketCatalog() {
+        return this.ticketCatalog;
+    }
+
+    /**
+     * @param ticketCatalog
+     *            null.
+     */
+    public void setTicketCatalog(TicketCatalog ticketCatalog) {
+        this.ticketCatalog = ticketCatalog;
     }
 
     /** @return null. */
@@ -89,6 +115,20 @@ public class TicketCatalog implements java.io.Serializable {
      */
     public void setDescription(String description) {
         this.description = description;
+    }
+
+    /** @return . */
+    @OneToMany(fetch = FetchType.LAZY, mappedBy = "ticketCatalog")
+    public Set<TicketCatalog> getTicketCatalogs() {
+        return this.ticketCatalogs;
+    }
+
+    /**
+     * @param ticketCatalogs
+     *            .
+     */
+    public void setTicketCatalogs(Set<TicketCatalog> ticketCatalogs) {
+        this.ticketCatalogs = ticketCatalogs;
     }
 
     /** @return . */

@@ -6,13 +6,8 @@ import com.mossle.api.user.AccountStatus;
 import com.mossle.api.user.AuthenticationHandler;
 import com.mossle.api.user.AuthenticationType;
 
-import com.mossle.user.persistence.manager.AccountCredentialManager;
-import com.mossle.user.persistence.manager.AccountInfoManager;
-
 public class SpecialOrNormalAuthenticationHandler implements
         AuthenticationHandler {
-    private AccountInfoManager accountInfoManager;
-    private AccountCredentialManager accountCredentialManager;
     private AuthenticationHandler specialAuthenticationHandler;
     private AuthenticationHandler normalAuthenticationHandler;
 

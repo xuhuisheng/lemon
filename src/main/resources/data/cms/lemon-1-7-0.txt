@@ -1,17 +1,17 @@
 <p>features:</p>
 
 <ul>
-	<li>½çÃæÈ«ÃæÉı¼¶Bootstrap3¡£ºÃ¿´¶àÁË</li>
-	<li>¿ÉÒÔÇĞ»»ÓïÑÔÁË¡£²»¹ıÃ»¾«Á¦·­Òë£¬ËùÒÔÃ»É¶×÷ÓÃ</li>
-	<li>Ê¹ÓÃsnowflakeÉú³Éid¡£Ä¿Ç°Ã»É¶ºÃ´¦£¬ÎªÒÔºó¼æÈİoracle´ò»ù´¡</li>
-	<li>Ê¹ÓÃjcacheÍ³Ò»»º´æ¡£</li>
-	<li>Æô¶¯androidÒÆ¶¯¶Ë¡£</li>
+	<li>ç•Œé¢å…¨é¢å‡çº§Bootstrap3ã€‚å¥½çœ‹å¤šäº†</li>
+	<li>å¯ä»¥åˆ‡æ¢è¯­è¨€äº†ã€‚ä¸è¿‡æ²¡ç²¾åŠ›ç¿»è¯‘ï¼Œæ‰€ä»¥æ²¡å•¥ä½œç”¨</li>
+	<li>ä½¿ç”¨snowflakeç”Ÿæˆidã€‚ç›®å‰æ²¡å•¥å¥½å¤„ï¼Œä¸ºä»¥åå…¼å®¹oracleæ‰“åŸºç¡€</li>
+	<li>ä½¿ç”¨jcacheç»Ÿä¸€ç¼“å­˜ã€‚</li>
+	<li>å¯åŠ¨androidç§»åŠ¨ç«¯ã€‚</li>
 </ul>
 
 <p>resources:</p>
 
 <ul>
-	<li>ÏêÏ¸ĞŞ¶©ÁĞ±í£º <a href="https://github.com/xuhuisheng/lemon/issues?q=milestone%3A1.7.0" target="_blank">https://github.com/xuhuisheng/lemon/issues?q=milestone%3A1.7.0</a></li>
-	<li>Ô´ÂëµØÖ·£º <a href="https://github.com/xuhuisheng/lemon/tree/lemon-1.7.0" target="_blank">https://github.com/xuhuisheng/lemon/tree/lemon-1.7.0</a></li>
-	<li>¶ÀÁ¢ÔËĞĞ°ü£º <a href="http://pan.baidu.com/s/1sj52GpR" target="_blank">http://pan.baidu.com/s/1sj52GpR</a></li>
+	<li>è¯¦ç»†ä¿®è®¢åˆ—è¡¨ï¼š <a href="https://github.com/xuhuisheng/lemon/issues?q=milestone%3A1.7.0" target="_blank">https://github.com/xuhuisheng/lemon/issues?q=milestone%3A1.7.0</a></li>
+	<li>æºç åœ°å€ï¼š <a href="https://github.com/xuhuisheng/lemon/tree/lemon-1.7.0" target="_blank">https://github.com/xuhuisheng/lemon/tree/lemon-1.7.0</a></li>
+	<li>ç‹¬ç«‹è¿è¡ŒåŒ…ï¼š <a href="http://pan.baidu.com/s/1sj52GpR" target="_blank">http://pan.baidu.com/s/1sj52GpR</a></li>
 </ul>

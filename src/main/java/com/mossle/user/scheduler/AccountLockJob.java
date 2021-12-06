@@ -17,7 +17,8 @@ import org.springframework.stereotype.Component;
 public class AccountLockJob {
     private static Logger logger = LoggerFactory
             .getLogger(AccountLockJob.class);
-    private boolean running;
+
+    // private boolean running;
     private boolean enabled = true;
     private AccountLockService accountLockService;
 

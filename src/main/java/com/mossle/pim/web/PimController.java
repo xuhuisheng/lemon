@@ -6,10 +6,7 @@ import java.util.List;
 
 import javax.annotation.Resource;
 
-import com.mossle.api.tenant.TenantHolder;
-
 import com.mossle.api.auth.CurrentUserHolder;
-import com.mossle.core.mapper.BeanMapper;
 
 import com.mossle.pim.persistence.domain.PimNote;
 import com.mossle.pim.persistence.domain.PimPlan;
@@ -25,15 +22,11 @@ import com.mossle.pim.persistence.manager.PimTaskManager;
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
 
-import org.springframework.jdbc.core.JdbcTemplate;
-
 import org.springframework.stereotype.Controller;
 
 import org.springframework.ui.Model;
 
-import org.springframework.web.bind.annotation.ModelAttribute;
 import org.springframework.web.bind.annotation.RequestMapping;
-import org.springframework.web.bind.annotation.RequestParam;
 
 @Controller
 @RequestMapping("pim")
@@ -44,9 +37,7 @@ public class PimController {
     private PimNoteManager pimNoteManager;
     private PimRemindManager pimRemindManager;
     private PimPlanManager pimPlanManager;
-    private TenantHolder tenantHolder;
     private CurrentUserHolder currentUserHolder;
-    private BeanMapper beanMapper = new BeanMapper();
 
     @RequestMapping("index")
     public String index(Model model) {
@@ -186,11 +177,6 @@ public class PimController {
     @Resource
     public void setPimPlanManager(PimPlanManager pimPlanManager) {
         this.pimPlanManager = pimPlanManager;
-    }
-
-    @Resource
-    public void setTenantHolder(TenantHolder tenantHolder) {
-        this.tenantHolder = tenantHolder;
     }
 
     @Resource

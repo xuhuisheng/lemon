@@ -1,7 +1,5 @@
 package com.mossle.cms.web.api;
 
-import java.text.SimpleDateFormat;
-
 import java.util.ArrayList;
 import java.util.Date;
 import java.util.HashMap;
@@ -11,16 +9,14 @@ import java.util.Map;
 import javax.annotation.Resource;
 
 import com.mossle.api.auth.CurrentUserHolder;
-import com.mossle.api.tenant.TenantHolder;
 import com.mossle.api.user.UserDTO;
 
 import com.mossle.client.user.UserClient;
 
-import com.mossle.cms.persistence.domain.*;
-import com.mossle.cms.persistence.domain.CmsCatalog;
-import com.mossle.cms.persistence.manager.*;
-import com.mossle.cms.persistence.manager.CmsCatalogManager;
-import com.mossle.cms.service.CmsService;
+import com.mossle.cms.persistence.domain.CommentInfo;
+import com.mossle.cms.persistence.domain.CommentThread;
+import com.mossle.cms.persistence.manager.CommentInfoManager;
+import com.mossle.cms.persistence.manager.CommentThreadManager;
 
 import com.mossle.core.page.Page;
 import com.mossle.core.util.BaseDTO;
@@ -30,9 +26,7 @@ import org.slf4j.LoggerFactory;
 
 import org.springframework.beans.factory.annotation.Value;
 
-import org.springframework.web.bind.annotation.PathVariable;
 import org.springframework.web.bind.annotation.RequestMapping;
-import org.springframework.web.bind.annotation.RequestMethod;
 import org.springframework.web.bind.annotation.RequestParam;
 import org.springframework.web.bind.annotation.RestController;
 
@@ -41,9 +35,6 @@ import org.springframework.web.bind.annotation.RestController;
 public class CmsCommentApiController {
     private static Logger logger = LoggerFactory
             .getLogger(CmsCommentApiController.class);
-    private CmsCatalogManager cmsCatalogManager;
-    private TenantHolder tenantHolder;
-    private CmsService cmsService;
     private CommentInfoManager commentInfoManager;
     private CommentThreadManager commentThreadManager;
     private CurrentUserHolder currentUserHolder;
@@ -55,6 +46,8 @@ public class CmsCommentApiController {
             @RequestParam("url") String url,
             @RequestParam(value = "pageNo", required = false, defaultValue = "1") int pageNo)
             throws Exception {
+        logger.debug("fetch : {} {}", url, pageNo);
+
         CommentThread commentThread = commentThreadManager.findUniqueBy("url",
                 url);
 
@@ -172,16 +165,6 @@ public class CmsCommentApiController {
     public void setCommentThreadManager(
             CommentThreadManager commentThreadManager) {
         this.commentThreadManager = commentThreadManager;
-    }
-
-    @Resource
-    public void setTenantHolder(TenantHolder tenantHolder) {
-        this.tenantHolder = tenantHolder;
-    }
-
-    @Resource
-    public void setCmsService(CmsService cmsService) {
-        this.cmsService = cmsService;
     }
 
     @Resource

@@ -2,11 +2,9 @@ package com.mossle.user.web;
 
 import javax.annotation.Resource;
 
-import com.mossle.api.auth.CustomPasswordEncoder;
 import com.mossle.api.user.UserCache;
 import com.mossle.api.user.UserDTO;
 
-import com.mossle.core.export.Exportor;
 import com.mossle.core.mapper.BeanMapper;
 import com.mossle.core.spring.MessageHelper;
 
@@ -14,7 +12,6 @@ import com.mossle.user.persistence.domain.AccountInfo;
 import com.mossle.user.persistence.domain.PersonInfo;
 import com.mossle.user.persistence.manager.AccountInfoManager;
 import com.mossle.user.persistence.manager.PersonInfoManager;
-import com.mossle.user.service.UserService;
 
 import org.springframework.stereotype.Controller;
 
@@ -32,10 +29,7 @@ public class PersonInfoController {
     private PersonInfoManager personInfoManager;
     private UserCache userCache;
     private MessageHelper messageHelper;
-    private Exportor exportor;
     private BeanMapper beanMapper = new BeanMapper();
-    private CustomPasswordEncoder customPasswordEncoder;
-    private UserService userService;
 
     @RequestMapping("person-info-account-input")
     public String accountInput(@RequestParam("code") String code) {
@@ -119,10 +113,5 @@ public class PersonInfoController {
     @Resource
     public void setMessageHelper(MessageHelper messageHelper) {
         this.messageHelper = messageHelper;
-    }
-
-    @Resource
-    public void setExportor(Exportor exportor) {
-        this.exportor = exportor;
     }
 }

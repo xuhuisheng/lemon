@@ -2,22 +2,15 @@ package com.mossle.user.support;
 
 import java.util.ArrayList;
 import java.util.Collections;
-import java.util.HashMap;
 import java.util.List;
-import java.util.Map;
 
 import javax.annotation.Resource;
 
 import com.mossle.api.auth.CustomPasswordEncoder;
-import com.mossle.api.user.LocalUserConnector;
 import com.mossle.api.user.RemoteUserConnector;
-import com.mossle.api.user.UserConnector;
 import com.mossle.api.user.UserDTO;
-import com.mossle.api.user.UserSyncConnector;
 
 import com.mossle.core.page.Page;
-import com.mossle.core.query.PropertyFilter;
-import com.mossle.core.query.PropertyFilterUtils;
 
 import com.mossle.user.persistence.domain.AccountCredential;
 import com.mossle.user.persistence.domain.AccountInfo;
@@ -30,10 +23,6 @@ import org.apache.commons.lang3.StringUtils;
 
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
-
-import org.springframework.dao.EmptyResultDataAccessException;
-
-import org.springframework.jdbc.core.JdbcTemplate;
 
 import org.springframework.util.Assert;
 

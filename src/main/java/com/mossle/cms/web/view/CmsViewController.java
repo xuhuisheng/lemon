@@ -1,26 +1,26 @@
 package com.mossle.cms.web.view;
 
-import java.util.List;
+import java.util.Map;
 
 import javax.annotation.Resource;
 
 import javax.servlet.http.HttpServletRequest;
 
 import com.mossle.api.auth.CurrentUserHolder;
-import com.mossle.api.tenant.TenantHolder;
 
 import com.mossle.cms.persistence.domain.CmsArticle;
 import com.mossle.cms.persistence.domain.CmsCatalog;
 import com.mossle.cms.persistence.domain.CmsSite;
+import com.mossle.cms.persistence.domain.CmsTag;
 import com.mossle.cms.persistence.manager.CmsArticleManager;
 import com.mossle.cms.persistence.manager.CmsCatalogManager;
-import com.mossle.cms.persistence.manager.CmsSiteManager;
 import com.mossle.cms.service.CmsService;
 import com.mossle.cms.service.RenderService;
 
-import com.mossle.core.export.Exportor;
-import com.mossle.core.mapper.BeanMapper;
-import com.mossle.core.spring.MessageHelper;
+import com.mossle.core.page.Page;
+
+import org.slf4j.Logger;
+import org.slf4j.LoggerFactory;
 
 import org.springframework.stereotype.Controller;
 
@@ -33,29 +33,35 @@ import org.springframework.web.bind.annotation.RequestParam;
 @Controller
 @RequestMapping("cms/view")
 public class CmsViewController {
-    private CmsSiteManager cmsSiteManager;
+    private static Logger logger = LoggerFactory
+            .getLogger(CmsViewController.class);
+    public static final String CMS_PREFIX = "cms/view/";
     private CmsArticleManager cmsArticleManager;
     private CmsCatalogManager cmsCatalogManager;
-    private Exportor exportor;
-    private BeanMapper beanMapper = new BeanMapper();
-    private MessageHelper messageHelper;
     private RenderService renderService;
-    private TenantHolder tenantHolder;
     private CurrentUserHolder currentUserHolder;
     private CmsService cmsService;
 
     /**
      * 模板，站点首页.
+     * 
+     * <p>
+     * 首页维度，可能显示分类树，标签，推荐文章。
+     * </p>
      */
     @RequestMapping("")
-    public String index(Model model, HttpServletRequest request) {
+    public String index(@RequestParam Map<String, Object> parameterMap,
+            Page page, Model model, HttpServletRequest request) {
+        String targetCmsPrefix = CMS_PREFIX;
         String currentUserId = this.currentUserHolder.getUserId();
         CmsSite cmsSite = cmsService.findDefaultSite();
         String templateCode = cmsSite.getTemplateCode();
         String ctx = request.getContextPath();
 
-        String html = renderService
-                .renderText(templateCode, ctx, currentUserId);
+        page.setDefaultOrder("publishTime", Page.DESC);
+
+        String html = renderService.renderText(templateCode, ctx,
+                targetCmsPrefix, cmsSite, page, parameterMap, currentUserId);
 
         model.addAttribute("html", html);
 
@@ -63,20 +69,57 @@ public class CmsViewController {
     }
 
     /**
-     * 模板，分类列表.
+     * 模板，分类文章列表.
+     * 
+     * <p>
+     * 分类维度，比首页多一个当前分类的实体。
+     * </p>
      */
-    @RequestMapping("{catalogCode}")
-    public String catalog(
+    @RequestMapping("catalog/{catalogCode}/articles")
+    public String catalogArticles(
             @PathVariable("catalogCode") String catalogCode,
-            @RequestParam(value = "pageNo", required = false, defaultValue = "1") int pageNo,
-            @RequestParam(value = "pageSize", required = false, defaultValue = "10") int pageSize,
+            @RequestParam Map<String, Object> parameterMap, Page page,
             Model model, HttpServletRequest request) {
-        CmsCatalog cmsCatalog = cmsCatalogManager.findUniqueBy("code",
-                catalogCode);
+        String targetCmsPrefix = CMS_PREFIX;
+        String currentUserId = this.currentUserHolder.getUserId();
+        CmsSite cmsSite = cmsService.findDefaultSite();
+        CmsCatalog cmsCatalog = cmsCatalogManager.findUnique(
+                "from CmsCatalog where cmsSite.id=? and code=?",
+                cmsSite.getId(), catalogCode);
         String templateCode = cmsCatalog.getTemplateList();
         String ctx = request.getContextPath();
-        String html = renderService.renderText(templateCode, ctx, cmsCatalog,
-                pageNo, pageSize);
+
+        page.setDefaultOrder("publishTime", Page.DESC);
+
+        String html = renderService.renderText(templateCode, ctx,
+                targetCmsPrefix, cmsCatalog, page, parameterMap, currentUserId);
+        model.addAttribute("html", html);
+
+        return "cms/view/index";
+    }
+
+    /**
+     * 模板，标签文章列表.
+     * 
+     * <p>
+     * 标签维度，比首页多一个当前标签的实体。
+     * </p>
+     */
+    @RequestMapping("tag/{tagCode}/articles")
+    public String tagArticles(@PathVariable("tagCode") String tagCode,
+            @RequestParam Map<String, Object> parameterMap, Page page,
+            Model model, HttpServletRequest request) {
+        String targetCmsPrefix = CMS_PREFIX;
+        String currentUserId = this.currentUserHolder.getUserId();
+        CmsSite cmsSite = cmsService.findDefaultSite();
+        CmsTag cmsTag = cmsService.findTagByCode(tagCode, cmsSite);
+        String templateCode = cmsSite.getTemplateTag();
+        String ctx = request.getContextPath();
+
+        page.setDefaultOrder("publishTime", Page.DESC);
+
+        String html = renderService.renderText(templateCode, ctx,
+                targetCmsPrefix, cmsTag, page, parameterMap, currentUserId);
         model.addAttribute("html", html);
 
         return "cms/view/index";
@@ -84,21 +127,33 @@ public class CmsViewController {
 
     /**
      * 模板，文章详情.
+     * 
+     * <p>
+     * 文章维度，比首页多一个当前文章的实体。
+     * </p>
      */
-    @RequestMapping("{catalogCode}/{articleId}")
-    public String article(
-            @PathVariable("catalogCode") String catalogCode,
-            @PathVariable("articleId") Long articleId,
-            @RequestParam(value = "pageNo", required = false, defaultValue = "1") int pageNo,
-            @RequestParam(value = "pageSize", required = false, defaultValue = "10") int pageSize,
+    @RequestMapping("article/{articleId}")
+    public String article(@PathVariable("articleId") Long articleId,
+            @RequestParam Map<String, Object> parameterMap, Page page,
             Model model, HttpServletRequest request) {
-        CmsCatalog cmsCatalog = cmsCatalogManager.findUniqueBy("code",
-                catalogCode);
+        String targetCmsPrefix = CMS_PREFIX;
+        String currentUserId = this.currentUserHolder.getUserId();
         CmsArticle cmsArticle = cmsArticleManager.get(articleId);
+
+        if (cmsArticle == null) {
+            logger.info("cannot find article : {}", articleId);
+
+            return "cms/view/404";
+        }
+
+        String userId = currentUserHolder.getUserId();
+        this.cmsService.recordClick(articleId, userId);
+
+        CmsCatalog cmsCatalog = cmsArticle.getCmsCatalog();
         String templateCode = cmsCatalog.getTemplateDetail();
         String ctx = request.getContextPath();
-        String html = renderService.renderText(templateCode, ctx, cmsArticle,
-                pageNo, pageSize);
+        String html = renderService.renderText(templateCode, ctx,
+                targetCmsPrefix, cmsArticle, page, parameterMap, currentUserId);
 
         model.addAttribute("html", html);
 
@@ -106,29 +161,9 @@ public class CmsViewController {
     }
 
     /**
-     * 预览.
+     * 根据aritcleCode转发至文章详情.
      */
-    @RequestMapping("preview/{catalogCode}/{articleId}")
-    public String previewArticle(
-            @PathVariable("catalogCode") String catalogCode,
-            @PathVariable("articleId") Long articleId, Model model,
-            HttpServletRequest request) {
-        CmsCatalog cmsCatalog = cmsCatalogManager.findUniqueBy("code",
-                catalogCode);
-        CmsArticle cmsArticle = cmsArticleManager.get(articleId);
-        String templateCode = cmsCatalog.getTemplateDetail();
-        String ctx = request.getContextPath();
-        int pageNo = 1;
-        int pageSize = 10;
-        String html = renderService.renderText(templateCode, ctx, cmsArticle,
-                pageNo, pageSize);
-
-        model.addAttribute("html", html);
-
-        return "cms/view/preview";
-    }
-
-    @RequestMapping("redirect/{articleCode}")
+    @RequestMapping("article/code/{articleCode}")
     public String redirectArticle(
             @PathVariable("articleCode") String articleCode) {
         CmsArticle cmsArticle = cmsArticleManager.findUniqueBy("code",
@@ -137,8 +172,41 @@ public class CmsViewController {
         String catalogCode = cmsCatalog.getCode();
         Long articleId = cmsArticle.getId();
 
-        return "redirect:/cms/view/" + catalogCode + "/" + articleId;
+        return "redirect:/cms/view/article/" + articleId;
     }
+
+    /**
+     * 模板，渲染固定模板.
+     */
+    @RequestMapping("template/{templateName}")
+    public String template(@PathVariable("templateName") String templateName,
+            @RequestParam Map<String, Object> parameterMap, Model model,
+            Page page, HttpServletRequest request) {
+        String targetCmsPrefix = CMS_PREFIX;
+        String currentUserId = this.currentUserHolder.getUserId();
+        CmsSite cmsSite = cmsService.findDefaultSite();
+
+        // CmsTemplateContent cmsTemplateContent = cmsTemplateContentManager
+        // .get(templateId);
+        String templateCode = templateName.replace("-0-", "/").replace("-1-",
+                ".");
+
+        // logger.info("template code : {}", templateCode);
+        String ctx = request.getContextPath();
+
+        page.setDefaultOrder("publishTime", Page.DESC);
+
+        // model.addAttribute("page", page);
+        String html = renderService.renderText(templateCode, ctx,
+                targetCmsPrefix, cmsSite, page, parameterMap, currentUserId);
+        model.addAttribute("html", html);
+
+        return "cms/view/index";
+    }
+
+    /**
+     * TODO: search
+     */
 
     // ~ ======================================================================
     @Resource
@@ -152,28 +220,8 @@ public class CmsViewController {
     }
 
     @Resource
-    public void setCmsSiteManager(CmsSiteManager cmsSiteManager) {
-        this.cmsSiteManager = cmsSiteManager;
-    }
-
-    @Resource
-    public void setExportor(Exportor exportor) {
-        this.exportor = exportor;
-    }
-
-    @Resource
-    public void setMessageHelper(MessageHelper messageHelper) {
-        this.messageHelper = messageHelper;
-    }
-
-    @Resource
     public void setRenderService(RenderService renderService) {
         this.renderService = renderService;
-    }
-
-    @Resource
-    public void setTenantHolder(TenantHolder tenantHolder) {
-        this.tenantHolder = tenantHolder;
     }
 
     @Resource

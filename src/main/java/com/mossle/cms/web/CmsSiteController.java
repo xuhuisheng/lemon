@@ -5,7 +5,7 @@ import java.util.Map;
 
 import javax.annotation.Resource;
 
-import javax.servlet.http.HttpServletRequest;
+import javax.servlet.http.Cookie;
 import javax.servlet.http.HttpServletResponse;
 
 import com.mossle.cms.persistence.domain.CmsCatalog;
@@ -14,8 +14,6 @@ import com.mossle.cms.persistence.manager.CmsCatalogManager;
 import com.mossle.cms.persistence.manager.CmsSiteManager;
 import com.mossle.cms.service.RenderService;
 
-import com.mossle.core.export.Exportor;
-import com.mossle.core.export.TableModel;
 import com.mossle.core.mapper.BeanMapper;
 import com.mossle.core.page.Page;
 import com.mossle.core.query.PropertyFilter;
@@ -28,7 +26,6 @@ import org.springframework.ui.Model;
 import org.springframework.web.bind.annotation.ModelAttribute;
 import org.springframework.web.bind.annotation.RequestMapping;
 import org.springframework.web.bind.annotation.RequestParam;
-import org.springframework.web.bind.annotation.ResponseBody;
 import org.springframework.web.servlet.mvc.support.RedirectAttributes;
 
 @Controller
@@ -36,7 +33,6 @@ import org.springframework.web.servlet.mvc.support.RedirectAttributes;
 public class CmsSiteController {
     private CmsSiteManager cmsSiteManager;
     private CmsCatalogManager cmsCatalogManager;
-    private Exportor exportor;
     private BeanMapper beanMapper = new BeanMapper();
     private MessageHelper messageHelper;
     private RenderService renderService;
@@ -101,11 +97,21 @@ public class CmsSiteController {
     public String remove(@RequestParam("selectedItem") List<Long> selectedItem,
             RedirectAttributes redirectAttributes) {
         List<CmsSite> cmsSites = cmsSiteManager.findByIds(selectedItem);
-        cmsCatalogManager.removeAll(cmsSites);
+        cmsSiteManager.removeAll(cmsSites);
         messageHelper.addFlashMessage(redirectAttributes,
                 "core.success.delete", "删除成功");
 
         return "redirect:/cms/cms-site-list.do";
+    }
+
+    @RequestMapping("cms-site-select")
+    public String selectSite(@RequestParam("id") Long id,
+            HttpServletResponse response) {
+        Cookie currentSiteId = new Cookie("currentSiteId", Long.toString(id));
+        currentSiteId.setMaxAge(60 * 60); // 1 hour
+        response.addCookie(currentSiteId);
+
+        return "redirect:/cms/cms-article-list.do";
     }
 
     // ~ ======================================================================
@@ -117,11 +123,6 @@ public class CmsSiteController {
     @Resource
     public void setCmsCatalogManager(CmsCatalogManager cmsCatalogManager) {
         this.cmsCatalogManager = cmsCatalogManager;
-    }
-
-    @Resource
-    public void setExportor(Exportor exportor) {
-        this.exportor = exportor;
     }
 
     @Resource

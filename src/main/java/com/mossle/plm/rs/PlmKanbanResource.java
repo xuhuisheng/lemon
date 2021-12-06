@@ -14,10 +14,10 @@ import javax.ws.rs.Produces;
 import javax.ws.rs.QueryParam;
 import javax.ws.rs.core.MediaType;
 
+import com.mossle.api.auth.CurrentUserHolder;
 import com.mossle.api.user.UserConnector;
 import com.mossle.api.user.UserDTO;
 
-import com.mossle.api.auth.CurrentUserHolder;
 import com.mossle.core.mapper.BeanMapper;
 import com.mossle.core.util.BaseDTO;
 
@@ -51,6 +51,8 @@ public class PlmKanbanResource {
     @Path("kanbanViewIssue")
     @Produces(MediaType.APPLICATION_JSON)
     public BaseDTO kanbanViewIssue(@QueryParam("issueId") Long issueId) {
+        logger.debug("kanban view issue : {}", issueId);
+
         PlmIssue plmIssue = plmIssueManager.get(issueId);
         Map<String, Object> data = new HashMap<String, Object>();
         data.put("id", plmIssue.getId());

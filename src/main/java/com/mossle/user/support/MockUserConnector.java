@@ -28,6 +28,8 @@ public class MockUserConnector implements UserConnector {
     }
 
     public UserDTO findById(String id) {
+        logger.debug("find by id : {}", id);
+
         return userDto;
     }
 

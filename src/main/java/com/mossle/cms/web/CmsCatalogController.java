@@ -10,10 +10,12 @@ import javax.servlet.http.HttpServletResponse;
 
 import com.mossle.api.tenant.TenantHolder;
 
-import com.mossle.cms.persistence.domain.CmsArticle;
 import com.mossle.cms.persistence.domain.CmsCatalog;
+import com.mossle.cms.persistence.domain.CmsSite;
 import com.mossle.cms.persistence.manager.CmsArticleManager;
 import com.mossle.cms.persistence.manager.CmsCatalogManager;
+import com.mossle.cms.persistence.manager.CmsSiteManager;
+import com.mossle.cms.service.CmsService;
 import com.mossle.cms.service.RenderService;
 
 import com.mossle.core.export.Exportor;
@@ -27,6 +29,7 @@ import org.springframework.stereotype.Controller;
 
 import org.springframework.ui.Model;
 
+import org.springframework.web.bind.annotation.CookieValue;
 import org.springframework.web.bind.annotation.ModelAttribute;
 import org.springframework.web.bind.annotation.RequestMapping;
 import org.springframework.web.bind.annotation.RequestParam;
@@ -38,19 +41,30 @@ import org.springframework.web.servlet.mvc.support.RedirectAttributes;
 public class CmsCatalogController {
     private CmsCatalogManager cmsCatalogManager;
     private CmsArticleManager cmsArticleManager;
+    private CmsSiteManager cmsSiteManager;
     private Exportor exportor;
     private BeanMapper beanMapper = new BeanMapper();
     private MessageHelper messageHelper;
     private TenantHolder tenantHolder;
     private RenderService renderService;
+    private CmsService cmsService;
 
     @RequestMapping("cms-catalog-list")
-    public String list(@ModelAttribute Page page,
-            @RequestParam Map<String, Object> parameterMap, Model model) {
+    public String list(
+            @ModelAttribute Page page,
+            @RequestParam Map<String, Object> parameterMap,
+            @CookieValue(value = "currentSiteId", required = false) Long currentSiteId,
+            Model model) {
+        model.addAttribute("cmsSites", cmsSiteManager.getAll("id", true));
+
+        CmsSite cmsSite = this.cmsService.findCurrentSite(currentSiteId);
+
         String tenantId = tenantHolder.getTenantId();
         List<PropertyFilter> propertyFilters = PropertyFilter
                 .buildFromMap(parameterMap);
-        propertyFilters.add(new PropertyFilter("EQS_tenantId", tenantId));
+        // propertyFilters.add(new PropertyFilter("EQS_tenantId", tenantId));
+        propertyFilters.add(new PropertyFilter("EQL_cmsSite.id", Long
+                .toString(cmsSite.getId())));
         page = cmsCatalogManager.pagedQuery(page, propertyFilters);
         model.addAttribute("page", page);
 
@@ -60,6 +74,8 @@ public class CmsCatalogController {
     @RequestMapping("cms-catalog-input")
     public String input(@RequestParam(value = "id", required = false) Long id,
             Model model) {
+        model.addAttribute("cmsSites", cmsSiteManager.getAll("id", true));
+
         if (id != null) {
             CmsCatalog cmsCatalog = cmsCatalogManager.get(id);
             model.addAttribute("model", cmsCatalog);
@@ -171,6 +187,11 @@ public class CmsCatalogController {
     }
 
     @Resource
+    public void setCmsSiteManager(CmsSiteManager cmsSiteManager) {
+        this.cmsSiteManager = cmsSiteManager;
+    }
+
+    @Resource
     public void setExportor(Exportor exportor) {
         this.exportor = exportor;
     }
@@ -188,5 +209,10 @@ public class CmsCatalogController {
     @Resource
     public void setRenderService(RenderService renderService) {
         this.renderService = renderService;
+    }
+
+    @Resource
+    public void setCmsService(CmsService cmsService) {
+        this.cmsService = cmsService;
     }
 }

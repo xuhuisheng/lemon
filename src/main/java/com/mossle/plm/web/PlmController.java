@@ -9,21 +9,22 @@ import java.util.Map;
 import javax.annotation.Resource;
 
 import com.mossle.api.auth.CurrentUserHolder;
+
 import com.mossle.core.mapper.BeanMapper;
 import com.mossle.core.page.Page;
 
-import com.mossle.plm.persistence.domain.*;
 import com.mossle.plm.persistence.domain.PlmCategory;
 import com.mossle.plm.persistence.domain.PlmComment;
+import com.mossle.plm.persistence.domain.PlmComponent;
 import com.mossle.plm.persistence.domain.PlmConfig;
 import com.mossle.plm.persistence.domain.PlmIssue;
 import com.mossle.plm.persistence.domain.PlmLog;
 import com.mossle.plm.persistence.domain.PlmProject;
 import com.mossle.plm.persistence.domain.PlmSprint;
 import com.mossle.plm.persistence.domain.PlmVersion;
-import com.mossle.plm.persistence.manager.*;
 import com.mossle.plm.persistence.manager.PlmCategoryManager;
 import com.mossle.plm.persistence.manager.PlmCommentManager;
+import com.mossle.plm.persistence.manager.PlmComponentManager;
 import com.mossle.plm.persistence.manager.PlmConfigManager;
 import com.mossle.plm.persistence.manager.PlmIssueManager;
 import com.mossle.plm.persistence.manager.PlmLogManager;
@@ -57,8 +58,7 @@ public class PlmController {
     private PlmLogManager plmLogManager;
     private PlmSprintManager plmSprintManager;
     private PlmConfigManager plmConfigManager;
-    private PlmRequirementManager plmRequirementManager;
-	private PlmComponentManager plmComponentManager;
+    private PlmComponentManager plmComponentManager;
     private PlmLogService plmLogService;
     private CurrentUserHolder currentUserHolder;
     private JdbcTemplate jdbcTemplate;
@@ -130,13 +130,13 @@ public class PlmController {
                 plmProject);
         model.addAttribute("plmVersions", plmVersions);
 
-		List<PlmComponent> plmComponents = plmComponentManager.findBy("plmProject",
-			plmProject);
-		model.addAttribute("plmComponents", plmComponents);
+        List<PlmComponent> plmComponents = plmComponentManager.findBy(
+                "plmProject", plmProject);
+        model.addAttribute("plmComponents", plmComponents);
 
-		List<PlmSprint> plmSprints = plmSprintManager.findBy("plmProject",
-			plmProject);
-		model.addAttribute("plmSprints", plmSprints);
+        List<PlmSprint> plmSprints = plmSprintManager.findBy("plmProject",
+                plmProject);
+        model.addAttribute("plmSprints", plmSprints);
 
         String hql = "from PlmIssue where plmProject=?";
         Page page = plmIssueManager.pagedQuery(hql, 1, 10, plmProject);
@@ -535,15 +535,9 @@ public class PlmController {
     }
 
     @Resource
-    public void setPlmRequirementManager(
-            PlmRequirementManager plmRequirementManager) {
-        this.plmRequirementManager = plmRequirementManager;
+    public void setPlmComponentManager(PlmComponentManager plmComponentManager) {
+        this.plmComponentManager = plmComponentManager;
     }
-
-	@Resource
-	public void setPlmComponentManager(PlmComponentManager plmComponentManager) {
-		this.plmComponentManager = plmComponentManager;
-	}
 
     @Resource
     public void setPlmLogService(PlmLogService plmLogService) {

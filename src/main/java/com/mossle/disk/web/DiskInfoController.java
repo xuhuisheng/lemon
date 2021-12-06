@@ -16,15 +16,15 @@ import com.mossle.api.tenant.TenantHolder;
 import com.mossle.client.store.StoreClient;
 
 import com.mossle.core.store.MultipartFileDataSource;
-import com.mossle.core.util.IoUtils;
 import com.mossle.core.util.ServletUtils;
 
 import com.mossle.disk.persistence.domain.DiskInfo;
 import com.mossle.disk.persistence.domain.DiskShare;
 import com.mossle.disk.persistence.manager.DiskInfoManager;
 import com.mossle.disk.persistence.manager.DiskShareManager;
-import com.mossle.disk.service.DiskInfoService;
 import com.mossle.disk.service.DiskService;
+
+import org.apache.commons.io.IOUtils;
 
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
@@ -49,7 +49,6 @@ public class DiskInfoController {
     private StoreClient storeClient;
     private DiskService diskService;
     private TenantHolder tenantHolder;
-    private DiskInfoService diskInfoService;
 
     /**
      * 列表显示.
@@ -58,6 +57,8 @@ public class DiskInfoController {
     public String list(
             @RequestParam(value = "path", required = false) String path,
             Model model) {
+        logger.info("list : {}", path);
+
         if (path == null) {
             path = "";
         }
@@ -92,32 +93,36 @@ public class DiskInfoController {
     /**
      * 上传文件.
      */
-    @RequestMapping("disk-info-upload")
-    @ResponseBody
-    public String upload(@RequestParam("file") MultipartFile file,
-            @RequestParam("path") String path,
-            @RequestParam("lastModified") long lastModified) throws Exception {
-        logger.info("lastModified : {}", lastModified);
 
-        String userId = currentUserHolder.getUserId();
-        String tenantId = tenantHolder.getTenantId();
-        diskInfoService.createFile(userId, new MultipartFileDataSource(file),
-                file.getOriginalFilename(), file.getSize(), path, tenantId);
+    // @RequestMapping("disk-info-upload")
+    // @ResponseBody
+    // public String upload(@RequestParam("file") MultipartFile file,
+    // @RequestParam("path") String path,
+    // @RequestParam("lastModified") long lastModified) throws Exception {
+    // logger.info("lastModified : {}", lastModified);
 
-        return "{\"success\":true}";
-    }
+    // String userId = currentUserHolder.getUserId();
+    // String tenantId = tenantHolder.getTenantId();
+    // long folderId = 0L;
+    // diskUploadService.uploadFile(folderId, userId,
+    // new MultipartFileDataSource(file), file.getOriginalFilename(),
+    // file.getSize(), tenantId);
+
+    // return "{\"success\":true}";
+    // }
 
     /**
      * 创建目录.
      */
-    @RequestMapping("disk-info-createDir")
-    public String createDir(@RequestParam("path") String path,
-            @RequestParam("name") String name) {
-        String userId = currentUserHolder.getUserId();
-        diskInfoService.createDir(userId, name, path);
 
-        return "redirect:/disk/disk-info-list.do?path=" + path;
-    }
+    // @RequestMapping("disk-info-createDir")
+    // public String createDir(@RequestParam("path") String path,
+    // @RequestParam("name") String name) {
+    // String userId = currentUserHolder.getUserId();
+    // diskInfoService.createDir(userId, name, path);
+
+    // return "redirect:/disk/disk-info-list.do?path=" + path;
+    // }
 
     /**
      * 删除文件.
@@ -165,7 +170,7 @@ public class DiskInfoController {
             is = storeClient
                     .getStore("disk/user/" + userId, diskInfo.getRef(),
                             tenantId).getDataSource().getInputStream();
-            IoUtils.copyStream(is, response.getOutputStream());
+            IOUtils.copy(is, response.getOutputStream());
         } finally {
             if (is != null) {
                 is.close();
@@ -245,7 +250,7 @@ public class DiskInfoController {
         buff.append("[");
 
         for (DiskInfo diskInfo : diskInfos) {
-            if (!"dir".equals(diskInfo.getType())) {
+            if (!"folder".equals(diskInfo.getType())) {
                 continue;
             }
 
@@ -262,7 +267,7 @@ public class DiskInfoController {
     }
 
     public String convertJson(DiskInfo diskInfo, String userId) {
-        if (!"dir".equals(diskInfo.getType())) {
+        if (!"folder".equals(diskInfo.getType())) {
             return null;
         }
 
@@ -271,7 +276,7 @@ public class DiskInfoController {
                 .append(diskInfo.getName())
                 .append("\",\"iconSkin\":\"ico_open\"");
 
-        String hql = "from DiskInfo where creator=? and type='dir' and parentPath=?";
+        String hql = "from DiskInfo where creator=? and type='folder' and parentPath=?";
         String parentPath = diskInfo.getParentPath() + "/" + diskInfo.getName();
         String children = this.convertJson(
                 diskInfoManager.find(hql, userId, parentPath), userId);
@@ -369,10 +374,5 @@ public class DiskInfoController {
     @Resource
     public void setTenantHolder(TenantHolder tenantHolder) {
         this.tenantHolder = tenantHolder;
-    }
-
-    @Resource
-    public void setDiskInfoService(DiskInfoService diskInfoService) {
-        this.diskInfoService = diskInfoService;
     }
 }

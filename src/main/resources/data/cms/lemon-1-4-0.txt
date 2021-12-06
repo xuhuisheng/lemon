@@ -1,15 +1,15 @@
 <p>features:</p>
 
 <ul>
-	<li>Ê¹ÓÃ½Ó¿Ú°ÑformÓëbpmÍêÈ«·ÖÀë</li>
-	<li>¼ò»¯dbmigrateµÄÅäÖÃ</li>
-	<li>Ìá¹©notification½Ó¿Ú£¬Ö§³Ö¶àÖÖÌáĞÑ·½Ê½</li>
+	<li>ä½¿ç”¨æ¥å£æŠŠformä¸bpmå®Œå…¨åˆ†ç¦»</li>
+	<li>ç®€åŒ–dbmigrateçš„é…ç½®</li>
+	<li>æä¾›notificationæ¥å£ï¼Œæ”¯æŒå¤šç§æé†’æ–¹å¼</li>
 </ul>
 
 <p>resources:</p>
 
 <ul>
-	<li>ÏêÏ¸ĞŞ¶©ÁĞ±í£º <a href="https://github.com/xuhuisheng/lemon/issues?q=milestone%3A1.4.0" target="_blank">https://github.com/xuhuisheng/lemon/issues?q=milestone%3A1.4.0</a></li>
-	<li>Ô´ÂëµØÖ·£º <a href="https://github.com/xuhuisheng/lemon/tree/lemon-1.4.0" target="_blank">https://github.com/xuhuisheng/lemon/tree/lemon-1.4.0</a></li>
-	<li>¶ÀÁ¢ÔËĞĞ°ü£º <a href="http://pan.baidu.com/s/1sjug013" target="_blank">http://pan.baidu.com/s/1sjug013</a></li>
+	<li>è¯¦ç»†ä¿®è®¢åˆ—è¡¨ï¼š <a href="https://github.com/xuhuisheng/lemon/issues?q=milestone%3A1.4.0" target="_blank">https://github.com/xuhuisheng/lemon/issues?q=milestone%3A1.4.0</a></li>
+	<li>æºç åœ°å€ï¼š <a href="https://github.com/xuhuisheng/lemon/tree/lemon-1.4.0" target="_blank">https://github.com/xuhuisheng/lemon/tree/lemon-1.4.0</a></li>
+	<li>ç‹¬ç«‹è¿è¡ŒåŒ…ï¼š <a href="http://pan.baidu.com/s/1sjug013" target="_blank">http://pan.baidu.com/s/1sjug013</a></li>
 </ul>

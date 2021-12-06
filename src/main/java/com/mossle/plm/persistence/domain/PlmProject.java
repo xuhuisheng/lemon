@@ -69,19 +69,19 @@ public class PlmProject implements java.io.Serializable {
     private String userId;
 
     /** . */
-    private Set<PlmVersion> plmVersions = new HashSet<PlmVersion>(0);
+    private Set<PlmIssue> plmIssues = new HashSet<PlmIssue>(0);
+
+    /** . */
+    private Set<PlmRequirement> plmRequirements = new HashSet<PlmRequirement>(0);
 
     /** . */
     private Set<PlmComponent> plmComponents = new HashSet<PlmComponent>(0);
 
     /** . */
-    private Set<PlmIssue> plmIssues = new HashSet<PlmIssue>(0);
+    private Set<PlmVersion> plmVersions = new HashSet<PlmVersion>(0);
 
     /** . */
     private Set<PlmSprint> plmSprints = new HashSet<PlmSprint>(0);
-
-    /** . */
-    private Set<PlmRequirement> plmRequirements = new HashSet<PlmRequirement>(0);
 
     public PlmProject() {
     }
@@ -94,9 +94,9 @@ public class PlmProject implements java.io.Serializable {
             String name, String logo, String summary, String wikiUrl,
             String sourceUrl, String url, String leaderId, Integer priority,
             String status, Date createTime, String userId,
-            Set<PlmVersion> plmVersions, Set<PlmComponent> plmComponents,
-            Set<PlmIssue> plmIssues, Set<PlmSprint> plmSprints,
-            Set<PlmRequirement> plmRequirements) {
+            Set<PlmIssue> plmIssues, Set<PlmRequirement> plmRequirements,
+            Set<PlmComponent> plmComponents, Set<PlmVersion> plmVersions,
+            Set<PlmSprint> plmSprints) {
         this.id = id;
         this.plmCategory = plmCategory;
         this.code = code;
@@ -111,11 +111,11 @@ public class PlmProject implements java.io.Serializable {
         this.status = status;
         this.createTime = createTime;
         this.userId = userId;
-        this.plmVersions = plmVersions;
-        this.plmComponents = plmComponents;
         this.plmIssues = plmIssues;
-        this.plmSprints = plmSprints;
         this.plmRequirements = plmRequirements;
+        this.plmComponents = plmComponents;
+        this.plmVersions = plmVersions;
+        this.plmSprints = plmSprints;
     }
 
     /** @return null. */
@@ -319,16 +319,30 @@ public class PlmProject implements java.io.Serializable {
 
     /** @return . */
     @OneToMany(fetch = FetchType.LAZY, mappedBy = "plmProject")
-    public Set<PlmVersion> getPlmVersions() {
-        return this.plmVersions;
+    public Set<PlmIssue> getPlmIssues() {
+        return this.plmIssues;
     }
 
     /**
-     * @param plmVersions
+     * @param plmIssues
      *            .
      */
-    public void setPlmVersions(Set<PlmVersion> plmVersions) {
-        this.plmVersions = plmVersions;
+    public void setPlmIssues(Set<PlmIssue> plmIssues) {
+        this.plmIssues = plmIssues;
+    }
+
+    /** @return . */
+    @OneToMany(fetch = FetchType.LAZY, mappedBy = "plmProject")
+    public Set<PlmRequirement> getPlmRequirements() {
+        return this.plmRequirements;
+    }
+
+    /**
+     * @param plmRequirements
+     *            .
+     */
+    public void setPlmRequirements(Set<PlmRequirement> plmRequirements) {
+        this.plmRequirements = plmRequirements;
     }
 
     /** @return . */
@@ -347,16 +361,16 @@ public class PlmProject implements java.io.Serializable {
 
     /** @return . */
     @OneToMany(fetch = FetchType.LAZY, mappedBy = "plmProject")
-    public Set<PlmIssue> getPlmIssues() {
-        return this.plmIssues;
+    public Set<PlmVersion> getPlmVersions() {
+        return this.plmVersions;
     }
 
     /**
-     * @param plmIssues
+     * @param plmVersions
      *            .
      */
-    public void setPlmIssues(Set<PlmIssue> plmIssues) {
-        this.plmIssues = plmIssues;
+    public void setPlmVersions(Set<PlmVersion> plmVersions) {
+        this.plmVersions = plmVersions;
     }
 
     /** @return . */
@@ -371,19 +385,5 @@ public class PlmProject implements java.io.Serializable {
      */
     public void setPlmSprints(Set<PlmSprint> plmSprints) {
         this.plmSprints = plmSprints;
-    }
-
-    /** @return . */
-    @OneToMany(fetch = FetchType.LAZY, mappedBy = "plmProject")
-    public Set<PlmRequirement> getPlmRequirements() {
-        return this.plmRequirements;
-    }
-
-    /**
-     * @param plmRequirements
-     *            .
-     */
-    public void setPlmRequirements(Set<PlmRequirement> plmRequirements) {
-        this.plmRequirements = plmRequirements;
     }
 }

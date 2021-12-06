@@ -1,0 +1,44 @@
+{
+    "code": "HO",
+    "name": "Mossle科技有限公司",
+    "type": "company",
+    "leader": "john",
+    "children": [{
+        "code": "AD",
+        "name": "行政部"
+    }, {
+        "code": "FD",
+        "name": "财务部"
+    }, {
+        "code": "HR",
+        "name": "人事部"
+    }, {
+        "code": "MD",
+        "name": "市场部",
+        "leader": "steven",
+        "children": [{
+            "code": "MD01",
+            "name": "销售一组"
+        }, {
+            "code": "MD02",
+            "name": "销售二组"
+        }]
+    }, {
+        "code": "RD",
+        "name": "研发部",
+        "leader": "king",
+        "children": [{
+            "code": "RD01",
+            "name": "研发项目一组",
+            "type": "group"
+        }, {
+            "code": "RD02",
+            "name": "研发项目二组",
+            "type": "group"
+        }, {
+            "code": "RD03",
+            "name": "研发产品组",
+            "type": "group"
+        }]
+    }]
+}

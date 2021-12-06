@@ -1,50 +1,32 @@
 package com.mossle.user.support;
 
-import java.util.ArrayList;
-import java.util.HashMap;
-import java.util.List;
-import java.util.Map;
-
 import javax.annotation.Resource;
 
 import com.mossle.api.auth.CustomPasswordEncoder;
 import com.mossle.api.user.AccountStatus;
-import com.mossle.api.user.LocalUserConnector;
-import com.mossle.api.user.RemoteUserConnector;
-import com.mossle.api.user.UserConnector;
-import com.mossle.api.user.UserDTO;
-import com.mossle.api.user.UserSyncConnector;
 
 import com.mossle.client.authn.AuthnClient;
-
-import com.mossle.core.page.Page;
-import com.mossle.core.query.PropertyFilter;
-import com.mossle.core.query.PropertyFilterUtils;
-import com.mossle.core.util.BaseDTO;
 
 import com.mossle.spi.device.DeviceDTO;
 
 import com.mossle.user.persistence.domain.AccountCredential;
+import com.mossle.user.persistence.domain.AccountDevice;
 import com.mossle.user.persistence.domain.AccountInfo;
-import com.mossle.user.persistence.domain.PersonInfo;
 import com.mossle.user.persistence.manager.AccountCredentialManager;
+import com.mossle.user.persistence.manager.AccountDeviceManager;
 import com.mossle.user.persistence.manager.AccountInfoManager;
-import com.mossle.user.persistence.manager.PersonInfoManager;
+
+import org.apache.commons.lang3.StringUtils;
 
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
-
-import org.springframework.dao.EmptyResultDataAccessException;
-
-import org.springframework.jdbc.core.JdbcTemplate;
-
-import org.springframework.util.Assert;
 
 public class AuthnClientImpl implements AuthnClient {
     private static Logger logger = LoggerFactory
             .getLogger(AuthnClientImpl.class);
     private AccountInfoManager accountInfoManager;
     private AccountCredentialManager accountCredentialManager;
+    private AccountDeviceManager accountDeviceManager;
     private CustomPasswordEncoder customPasswordEncoder;
 
     public String authenticate(String username, String password, String tenantId) {
@@ -73,12 +55,57 @@ public class AuthnClientImpl implements AuthnClient {
     }
 
     public DeviceDTO findDevice(String code) {
-        return null;
+        AccountDevice accountDevice = this.accountDeviceManager.findUniqueBy(
+                "code", code);
+
+        if (accountDevice == null) {
+            return null;
+        }
+
+        DeviceDTO deviceDto = new DeviceDTO();
+        deviceDto.setCode(code);
+        deviceDto.setType(accountDevice.getType());
+        deviceDto.setOs(accountDevice.getOs());
+        deviceDto.setClient(accountDevice.getClient());
+
+        return deviceDto;
     }
 
     public void saveDevice(DeviceDTO deviceDto) {
+        logger.debug("save device : {}", deviceDto.getCode());
+
+        if (deviceDto == null) {
+            return;
+        }
+
+        String code = deviceDto.getCode();
+
+        if (StringUtils.isBlank(code)) {
+            logger.info("code cannot blank");
+
+            return;
+        }
+
+        AccountDevice accountDevice = this.accountDeviceManager.findUniqueBy(
+                "code", code);
+
+        if (accountDevice == null) {
+            accountDevice = new AccountDevice();
+            accountDevice.setCode(code);
+        }
+
+        accountDevice.setOs(deviceDto.getOs());
+        accountDevice.setClient(deviceDto.getClient());
+
+        // TODO: mossle-lib-app-0.0.25
+        // String username = deviceDto.getUsername();
+        // AccountInfo accountInfo = accountInfoManager.findUniqueBy("username",
+        // username);
+        // accountDevice.setAccountInfo(accountInfo);
+        // this.accountDeviceManager.save(accountDevice);
     }
 
+    // ~
     @Resource
     public void setAccountInfoManager(AccountInfoManager accountInfoManager) {
         this.accountInfoManager = accountInfoManager;
@@ -88,6 +115,12 @@ public class AuthnClientImpl implements AuthnClient {
     public void setAccountCredentialManager(
             AccountCredentialManager accountCredentialManager) {
         this.accountCredentialManager = accountCredentialManager;
+    }
+
+    @Resource
+    public void setAccountDeviceManager(
+            AccountDeviceManager accountDeviceManager) {
+        this.accountDeviceManager = accountDeviceManager;
     }
 
     @Resource

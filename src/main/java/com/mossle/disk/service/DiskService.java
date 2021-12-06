@@ -3,13 +3,7 @@ package com.mossle.disk.service;
 import java.util.Date;
 import java.util.List;
 
-import javax.activation.DataSource;
-
 import javax.annotation.Resource;
-
-import com.mossle.api.store.StoreDTO;
-
-import com.mossle.client.store.StoreClient;
 
 import com.mossle.disk.persistence.domain.DiskInfo;
 import com.mossle.disk.persistence.domain.DiskMember;
@@ -18,7 +12,6 @@ import com.mossle.disk.persistence.domain.DiskSpace;
 import com.mossle.disk.persistence.manager.DiskInfoManager;
 import com.mossle.disk.persistence.manager.DiskMemberManager;
 import com.mossle.disk.persistence.manager.DiskShareManager;
-import com.mossle.disk.persistence.manager.DiskSpaceManager;
 import com.mossle.disk.util.FileUtils;
 
 import org.slf4j.Logger;
@@ -30,10 +23,8 @@ import org.springframework.stereotype.Service;
 public class DiskService {
     private static Logger logger = LoggerFactory.getLogger(DiskService.class);
     private DiskInfoManager diskInfoManager;
-    private DiskSpaceManager diskSpaceManager;
     private DiskMemberManager diskMemberManager;
     private DiskShareManager diskShareManager;
-    private StoreClient storeClient;
 
     /**
      * 显示对应用户，对应目录下的所有文件.
@@ -41,6 +32,7 @@ public class DiskService {
     public List<DiskInfo> listFiles(String userId, String parentPath) {
         String hql = "from DiskInfo where creator=? and parentPath=? and status='active' order by dirType";
 
+        // String hql = "from DiskInfo where creator=?0 and parentPath=?1 and status='active' order by dirType";
         return diskInfoManager.find(hql, userId, parentPath);
     }
 
@@ -66,6 +58,7 @@ public class DiskService {
     public boolean isDumplicated(String userId, String name, String path) {
         String hql = "from DiskInfo where creator=? and name=? and parentPath=?";
 
+        // String hql = "from DiskInfo where creator=?0 and name=?1 and parentPath=?2";
         return diskInfoManager.findUnique(hql, userId, name, path) != null;
     }
 
@@ -77,6 +70,8 @@ public class DiskService {
         String parentPath = diskInfo.getParentPath();
         String type = FileUtils.getSuffix(name);
         String hql = "select name from DiskInfo where creator=? and parentPath=? and id!=?";
+
+        // String hql = "select name from DiskInfo where creator=?0 and parentPath=?1 and id!=?2";
         List<String> currentNames = diskInfoManager.find(hql, userId,
                 parentPath, id);
         String targetName = FileUtils.calculateName(name, currentNames);
@@ -94,7 +89,7 @@ public class DiskService {
         DiskInfo diskInfo = diskInfoManager.get(id);
         String parentPath = diskInfo.getParentPath();
 
-        if (id == parentId) {
+        if (id.equals(parentId)) {
             logger.info("{} is equals {}", id, parentId);
 
             return diskInfo.getParentPath();
@@ -103,7 +98,7 @@ public class DiskService {
         if (parentId != 0) {
             DiskInfo parent = diskInfoManager.get(parentId);
 
-            if (!"dir".equals(parent.getType())) {
+            if (!"folder".equals(parent.getType())) {
                 logger.info("{}({}) is not directory", parent.getParentPath()
                         + "/" + parent.getName(), parentId);
 
@@ -114,7 +109,7 @@ public class DiskService {
                     + diskInfo.getName() + "/";
             String checkedParentPath = parent.getParentPath() + "/";
 
-            if ("dir".equals(diskInfo.getType())
+            if ("folder".equals(diskInfo.getType())
                     && checkedParentPath.startsWith(currentPath)) {
                 logger.info("{}({}) is sub directory of {}({})",
                         parent.getParentPath() + "/" + parent.getName(),
@@ -132,6 +127,8 @@ public class DiskService {
 
         String name = diskInfo.getName();
         String hql = "select name from DiskInfo where creator=? and parentPath=? and id!=?";
+
+        // String hql = "select name from DiskInfo where creator=?0 and parentPath=?1 and id!=?2";
         List<String> currentNames = diskInfoManager.find(hql, userId,
                 parentPath, id);
         String targetName = FileUtils.calculateName(name, currentNames);
@@ -154,6 +151,7 @@ public class DiskService {
 
         String hql = "from DiskInfo where diskSpace=? and parentPath=? and status='active' order by dirType";
 
+        // String hql = "from DiskInfo where diskSpace=?0 and parentPath=?1 and status='active' order by dirType";
         return diskInfoManager.find(hql, diskSpace, parentPath);
     }
 
@@ -177,8 +175,10 @@ public class DiskService {
      */
     public DiskShare findShare(Long infoId, String creator, String member) {
         DiskInfo diskInfo = diskInfoManager.get(infoId);
-        DiskShare diskShare = diskShareManager.findUnique(
-                "from DiskShare where diskInfo=? and creator=?", diskInfo,
+        String hql = "from DiskShare where diskInfo=? and creator=?";
+
+        // String hql = "from DiskShare where diskInfo=?0 and creator=?1";
+        DiskShare diskShare = diskShareManager.findUnique(hql, diskInfo,
                 creator);
 
         if (diskShare == null) {
@@ -197,9 +197,11 @@ public class DiskService {
     }
 
     public void addMember(DiskShare diskShare, String member) {
-        DiskMember diskMember = this.diskMemberManager.findUnique(
-                "from DiskMember where diskShare=? and userId=?", diskShare,
-                member);
+        String hql = "from DiskMember where diskShare=? and userId=?";
+
+        // String hql = "from DiskMember where diskShare=?0 and userId=?1";
+        DiskMember diskMember = this.diskMemberManager.findUnique(hql,
+                diskShare, member);
 
         if (diskMember != null) {
             return;
@@ -208,13 +210,16 @@ public class DiskService {
         diskMember = new DiskMember();
         diskMember.setDiskShare(diskShare);
         diskMember.setUserId(member);
+        diskMember.setCreateTime(new Date());
         diskMemberManager.save(diskMember);
     }
 
     public void addMember(DiskSpace diskSpace, String member) {
-        DiskMember diskMember = this.diskMemberManager.findUnique(
-                "from DiskMember where diskSpace=? and userId=?", diskSpace,
-                member);
+        String hql = "from DiskMember where diskShare=? and userId=?";
+
+        // String hql = "from DiskMember where diskShare=?0 and userId=?1";
+        DiskMember diskMember = this.diskMemberManager.findUnique(hql,
+                diskSpace, member);
 
         if (diskMember != null) {
             return;
@@ -223,6 +228,7 @@ public class DiskService {
         diskMember = new DiskMember();
         diskMember.setDiskSpace(diskSpace);
         diskMember.setUserId(member);
+        diskMember.setCreateTime(new Date());
         diskMemberManager.save(diskMember);
     }
 
@@ -233,11 +239,6 @@ public class DiskService {
     }
 
     @Resource
-    public void setDiskSpaceManager(DiskSpaceManager diskSpaceManager) {
-        this.diskSpaceManager = diskSpaceManager;
-    }
-
-    @Resource
     public void setDiskMemberManager(DiskMemberManager diskMemberManager) {
         this.diskMemberManager = diskMemberManager;
     }
@@ -245,10 +246,5 @@ public class DiskService {
     @Resource
     public void setDiskShareManager(DiskShareManager diskShareManager) {
         this.diskShareManager = diskShareManager;
-    }
-
-    @Resource
-    public void setStoreClient(StoreClient storeClient) {
-        this.storeClient = storeClient;
     }
 }

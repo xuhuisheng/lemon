@@ -7,8 +7,6 @@ import javax.annotation.Resource;
 import com.mossle.api.user.AccountStatus;
 import com.mossle.api.user.TemporaryPasswordAuthenticator;
 
-import com.mossle.core.util.RandomCode;
-
 import com.mossle.user.persistence.domain.AccountCredential;
 import com.mossle.user.persistence.domain.AccountInfo;
 import com.mossle.user.persistence.manager.AccountCredentialManager;

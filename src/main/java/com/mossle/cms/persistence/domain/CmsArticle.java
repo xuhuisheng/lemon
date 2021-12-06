@@ -30,6 +30,9 @@ public class CmsArticle implements java.io.Serializable {
     private Long id;
 
     /** null. */
+    private CmsSite cmsSite;
+
+    /** null. */
     private CmsCatalog cmsCatalog;
 
     /** null. */
@@ -108,19 +111,28 @@ public class CmsArticle implements java.io.Serializable {
     private String tenantId;
 
     /** . */
-    private Set<CmsAttachment> cmsAttachments = new HashSet<CmsAttachment>(0);
+    private Set<CmsClick> cmsClicks = new HashSet<CmsClick>(0);
+
+    /** . */
+    private Set<CmsAcl> cmsAcls = new HashSet<CmsAcl>(0);
 
     /** . */
     private Set<CmsFavorite> cmsFavorites = new HashSet<CmsFavorite>(0);
 
     /** . */
-    private Set<CmsTagArticle> cmsTagArticles = new HashSet<CmsTagArticle>(0);
+    private Set<CmsAttr> cmsAttrs = new HashSet<CmsAttr>(0);
 
     /** . */
     private Set<CmsComment> cmsComments = new HashSet<CmsComment>(0);
 
     /** . */
-    private Set<CmsClick> cmsClicks = new HashSet<CmsClick>(0);
+    private Set<CmsAttachment> cmsAttachments = new HashSet<CmsAttachment>(0);
+
+    /** . */
+    private Set<CmsTagArticle> cmsTagArticles = new HashSet<CmsTagArticle>(0);
+
+    /** . */
+    private Set<CmsCount> cmsCounts = new HashSet<CmsCount>(0);
 
     public CmsArticle() {
     }
@@ -129,18 +141,20 @@ public class CmsArticle implements java.io.Serializable {
         this.id = id;
     }
 
-    public CmsArticle(Long id, CmsCatalog cmsCatalog, String title,
-            String shortTitle, String subTitle, String content, String summary,
-            String logo, String keyword, String tags, String source,
-            Integer allowComment, Integer status, Date publishTime,
-            Date closeTime, Integer type, Integer top, Integer weight,
-            Date createTime, String template, Integer hitCount,
+    public CmsArticle(Long id, CmsSite cmsSite, CmsCatalog cmsCatalog,
+            String title, String shortTitle, String subTitle, String content,
+            String summary, String logo, String keyword, String tags,
+            String source, Integer allowComment, Integer status,
+            Date publishTime, Date closeTime, Integer type, Integer top,
+            Integer weight, Date createTime, String template, Integer hitCount,
             Long recommendId, Integer recommendStatus, String userId,
             Integer commentCount, String code, String tenantId,
-            Set<CmsAttachment> cmsAttachments, Set<CmsFavorite> cmsFavorites,
-            Set<CmsTagArticle> cmsTagArticles, Set<CmsComment> cmsComments,
-            Set<CmsClick> cmsClicks) {
+            Set<CmsClick> cmsClicks, Set<CmsAcl> cmsAcls,
+            Set<CmsFavorite> cmsFavorites, Set<CmsAttr> cmsAttrs,
+            Set<CmsComment> cmsComments, Set<CmsAttachment> cmsAttachments,
+            Set<CmsTagArticle> cmsTagArticles, Set<CmsCount> cmsCounts) {
         this.id = id;
+        this.cmsSite = cmsSite;
         this.cmsCatalog = cmsCatalog;
         this.title = title;
         this.shortTitle = shortTitle;
@@ -167,11 +181,14 @@ public class CmsArticle implements java.io.Serializable {
         this.commentCount = commentCount;
         this.code = code;
         this.tenantId = tenantId;
-        this.cmsAttachments = cmsAttachments;
-        this.cmsFavorites = cmsFavorites;
-        this.cmsTagArticles = cmsTagArticles;
-        this.cmsComments = cmsComments;
         this.cmsClicks = cmsClicks;
+        this.cmsAcls = cmsAcls;
+        this.cmsFavorites = cmsFavorites;
+        this.cmsAttrs = cmsAttrs;
+        this.cmsComments = cmsComments;
+        this.cmsAttachments = cmsAttachments;
+        this.cmsTagArticles = cmsTagArticles;
+        this.cmsCounts = cmsCounts;
     }
 
     /** @return null. */
@@ -187,6 +204,21 @@ public class CmsArticle implements java.io.Serializable {
      */
     public void setId(Long id) {
         this.id = id;
+    }
+
+    /** @return null. */
+    @ManyToOne(fetch = FetchType.LAZY)
+    @JoinColumn(name = "SITE_ID")
+    public CmsSite getCmsSite() {
+        return this.cmsSite;
+    }
+
+    /**
+     * @param cmsSite
+     *            null.
+     */
+    public void setCmsSite(CmsSite cmsSite) {
+        this.cmsSite = cmsSite;
     }
 
     /** @return null. */
@@ -559,16 +591,30 @@ public class CmsArticle implements java.io.Serializable {
 
     /** @return . */
     @OneToMany(fetch = FetchType.LAZY, mappedBy = "cmsArticle")
-    public Set<CmsAttachment> getCmsAttachments() {
-        return this.cmsAttachments;
+    public Set<CmsClick> getCmsClicks() {
+        return this.cmsClicks;
     }
 
     /**
-     * @param cmsAttachments
+     * @param cmsClicks
      *            .
      */
-    public void setCmsAttachments(Set<CmsAttachment> cmsAttachments) {
-        this.cmsAttachments = cmsAttachments;
+    public void setCmsClicks(Set<CmsClick> cmsClicks) {
+        this.cmsClicks = cmsClicks;
+    }
+
+    /** @return . */
+    @OneToMany(fetch = FetchType.LAZY, mappedBy = "cmsArticle")
+    public Set<CmsAcl> getCmsAcls() {
+        return this.cmsAcls;
+    }
+
+    /**
+     * @param cmsAcls
+     *            .
+     */
+    public void setCmsAcls(Set<CmsAcl> cmsAcls) {
+        this.cmsAcls = cmsAcls;
     }
 
     /** @return . */
@@ -587,16 +633,16 @@ public class CmsArticle implements java.io.Serializable {
 
     /** @return . */
     @OneToMany(fetch = FetchType.LAZY, mappedBy = "cmsArticle")
-    public Set<CmsTagArticle> getCmsTagArticles() {
-        return this.cmsTagArticles;
+    public Set<CmsAttr> getCmsAttrs() {
+        return this.cmsAttrs;
     }
 
     /**
-     * @param cmsTagArticles
+     * @param cmsAttrs
      *            .
      */
-    public void setCmsTagArticles(Set<CmsTagArticle> cmsTagArticles) {
-        this.cmsTagArticles = cmsTagArticles;
+    public void setCmsAttrs(Set<CmsAttr> cmsAttrs) {
+        this.cmsAttrs = cmsAttrs;
     }
 
     /** @return . */
@@ -615,15 +661,43 @@ public class CmsArticle implements java.io.Serializable {
 
     /** @return . */
     @OneToMany(fetch = FetchType.LAZY, mappedBy = "cmsArticle")
-    public Set<CmsClick> getCmsClicks() {
-        return this.cmsClicks;
+    public Set<CmsAttachment> getCmsAttachments() {
+        return this.cmsAttachments;
     }
 
     /**
-     * @param cmsClicks
+     * @param cmsAttachments
      *            .
      */
-    public void setCmsClicks(Set<CmsClick> cmsClicks) {
-        this.cmsClicks = cmsClicks;
+    public void setCmsAttachments(Set<CmsAttachment> cmsAttachments) {
+        this.cmsAttachments = cmsAttachments;
+    }
+
+    /** @return . */
+    @OneToMany(fetch = FetchType.LAZY, mappedBy = "cmsArticle")
+    public Set<CmsTagArticle> getCmsTagArticles() {
+        return this.cmsTagArticles;
+    }
+
+    /**
+     * @param cmsTagArticles
+     *            .
+     */
+    public void setCmsTagArticles(Set<CmsTagArticle> cmsTagArticles) {
+        this.cmsTagArticles = cmsTagArticles;
+    }
+
+    /** @return . */
+    @OneToMany(fetch = FetchType.LAZY, mappedBy = "cmsArticle")
+    public Set<CmsCount> getCmsCounts() {
+        return this.cmsCounts;
+    }
+
+    /**
+     * @param cmsCounts
+     *            .
+     */
+    public void setCmsCounts(Set<CmsCount> cmsCounts) {
+        this.cmsCounts = cmsCounts;
     }
 }

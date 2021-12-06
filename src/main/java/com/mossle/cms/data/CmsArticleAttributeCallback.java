@@ -2,25 +2,15 @@ package com.mossle.cms.data;
 
 import java.io.InputStream;
 
-import java.text.SimpleDateFormat;
-
-import java.util.Date;
-import java.util.HashMap;
 import java.util.List;
 import java.util.Map;
 
-import com.mossle.api.user.UserConnector;
-
 import com.mossle.cms.persistence.domain.CmsArticle;
-import com.mossle.cms.persistence.domain.CmsCatalog;
 import com.mossle.cms.persistence.manager.CmsArticleManager;
-import com.mossle.cms.persistence.manager.CmsCatalogManager;
 
-import com.mossle.core.csv.CsvCallback;
 import com.mossle.core.mapper.JsonMapper;
 
 import org.apache.commons.io.IOUtils;
-import org.apache.commons.lang3.StringUtils;
 
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
@@ -35,6 +25,8 @@ public class CmsArticleAttributeCallback {
     private JsonMapper jsonMapper = new JsonMapper();
 
     public void process() throws Exception {
+        logger.debug("default tenant id : {}", defaultTenantId);
+
         InputStream is = CmsArticleAttributeCallback.class.getClassLoader()
                 .getResourceAsStream(filePath);
 
@@ -71,11 +63,21 @@ public class CmsArticleAttributeCallback {
                 cmsArticle.setLogo(logo);
             }
 
+            String summary = map.get("summary");
+
+            if (summary != null) {
+                cmsArticle.setSummary(summary);
+            }
+
             cmsArticleManager.save(cmsArticle);
         }
     }
 
     public void setCmsArticleManager(CmsArticleManager cmsArticleManager) {
         this.cmsArticleManager = cmsArticleManager;
+    }
+
+    public void setDefaultTenantId(String defaultTenantId) {
+        this.defaultTenantId = defaultTenantId;
     }
 }

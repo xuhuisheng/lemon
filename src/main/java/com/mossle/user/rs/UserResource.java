@@ -13,7 +13,6 @@ import javax.ws.rs.Produces;
 import javax.ws.rs.QueryParam;
 import javax.ws.rs.core.MediaType;
 
-import com.mossle.core.mapper.JsonMapper;
 import com.mossle.core.page.Page;
 import com.mossle.core.util.BaseDTO;
 import com.mossle.core.util.StringUtils;
@@ -32,12 +31,13 @@ public class UserResource {
     private static Logger logger = LoggerFactory.getLogger(UserResource.class);
     private AccountInfoManager accountInfoManager;
     private Long defaultUserRepoId = 1L;
-    private JsonMapper jsonMapper = new JsonMapper();
 
     @GET
     @Path("exists")
     @Produces(MediaType.APPLICATION_JSON)
     public boolean exists(@QueryParam("username") String username) {
+        logger.debug("default user repo id : {}", defaultUserRepoId);
+
         AccountInfo accountInfo = accountInfoManager.findUniqueBy("username",
                 username);
 

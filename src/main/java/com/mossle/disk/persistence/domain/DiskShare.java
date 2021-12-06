@@ -17,7 +17,7 @@ import javax.persistence.Temporal;
 import javax.persistence.TemporalType;
 
 /**
- * DiskShare .
+ * DiskShare 分享.
  * 
  * @author Lingo
  */
@@ -26,46 +26,46 @@ import javax.persistence.TemporalType;
 public class DiskShare implements java.io.Serializable {
     private static final long serialVersionUID = 0L;
 
-    /** null. */
+    /** 主键. */
     private Long id;
 
-    /** null. */
+    /** 分享信息. */
     private DiskInfo diskInfo;
 
-    /** null. */
+    /** 分享类型. */
     private String shareType;
 
-    /** null. */
+    /** 分享时间. */
     private Date shareTime;
 
-    /** null. */
+    /** 名称. */
     private String name;
 
-    /** null. */
+    /** 创建人. */
     private String creator;
 
-    /** null. */
+    /** 类型. */
     private String type;
 
-    /** null. */
+    /** 是否文件夹. */
     private Integer dirType;
 
-    /** null. */
+    /** 浏览量. */
     private Integer countView;
 
-    /** null. */
+    /** 保存量. */
     private Integer countSave;
 
-    /** null. */
+    /** 下载量. */
     private Integer countDownload;
 
-    /** null. */
+    /** token. */
     private String shareCode;
 
-    /** null. */
+    /** 密码. */
     private String sharePassword;
 
-    /** null. */
+    /** 类型. */
     private String catalog;
 
     /** . */
@@ -104,7 +104,7 @@ public class DiskShare implements java.io.Serializable {
         this.diskMembers = diskMembers;
     }
 
-    /** @return null. */
+    /** @return 主键. */
     @Id
     @Column(name = "ID", unique = true, nullable = false)
     public Long getId() {
@@ -113,13 +113,13 @@ public class DiskShare implements java.io.Serializable {
 
     /**
      * @param id
-     *            null.
+     *            主键.
      */
     public void setId(Long id) {
         this.id = id;
     }
 
-    /** @return null. */
+    /** @return 分享信息. */
     @ManyToOne(fetch = FetchType.LAZY)
     @JoinColumn(name = "INFO_ID")
     public DiskInfo getDiskInfo() {
@@ -128,13 +128,13 @@ public class DiskShare implements java.io.Serializable {
 
     /**
      * @param diskInfo
-     *            null.
+     *            分享信息.
      */
     public void setDiskInfo(DiskInfo diskInfo) {
         this.diskInfo = diskInfo;
     }
 
-    /** @return null. */
+    /** @return 分享类型. */
     @Column(name = "SHARE_TYPE", length = 50)
     public String getShareType() {
         return this.shareType;
@@ -142,13 +142,13 @@ public class DiskShare implements java.io.Serializable {
 
     /**
      * @param shareType
-     *            null.
+     *            分享类型.
      */
     public void setShareType(String shareType) {
         this.shareType = shareType;
     }
 
-    /** @return null. */
+    /** @return 分享时间. */
     @Temporal(TemporalType.TIMESTAMP)
     @Column(name = "SHARE_TIME", length = 26)
     public Date getShareTime() {
@@ -157,13 +157,13 @@ public class DiskShare implements java.io.Serializable {
 
     /**
      * @param shareTime
-     *            null.
+     *            分享时间.
      */
     public void setShareTime(Date shareTime) {
         this.shareTime = shareTime;
     }
 
-    /** @return null. */
+    /** @return 名称. */
     @Column(name = "NAME", length = 200)
     public String getName() {
         return this.name;
@@ -171,13 +171,13 @@ public class DiskShare implements java.io.Serializable {
 
     /**
      * @param name
-     *            null.
+     *            名称.
      */
     public void setName(String name) {
         this.name = name;
     }
 
-    /** @return null. */
+    /** @return 创建人. */
     @Column(name = "CREATOR", length = 64)
     public String getCreator() {
         return this.creator;
@@ -185,13 +185,13 @@ public class DiskShare implements java.io.Serializable {
 
     /**
      * @param creator
-     *            null.
+     *            创建人.
      */
     public void setCreator(String creator) {
         this.creator = creator;
     }
 
-    /** @return null. */
+    /** @return 类型. */
     @Column(name = "TYPE", length = 64)
     public String getType() {
         return this.type;
@@ -199,13 +199,13 @@ public class DiskShare implements java.io.Serializable {
 
     /**
      * @param type
-     *            null.
+     *            类型.
      */
     public void setType(String type) {
         this.type = type;
     }
 
-    /** @return null. */
+    /** @return 是否文件夹. */
     @Column(name = "DIR_TYPE")
     public Integer getDirType() {
         return this.dirType;
@@ -213,13 +213,13 @@ public class DiskShare implements java.io.Serializable {
 
     /**
      * @param dirType
-     *            null.
+     *            是否文件夹.
      */
     public void setDirType(Integer dirType) {
         this.dirType = dirType;
     }
 
-    /** @return null. */
+    /** @return 浏览量. */
     @Column(name = "COUNT_VIEW")
     public Integer getCountView() {
         return this.countView;
@@ -227,13 +227,13 @@ public class DiskShare implements java.io.Serializable {
 
     /**
      * @param countView
-     *            null.
+     *            浏览量.
      */
     public void setCountView(Integer countView) {
         this.countView = countView;
     }
 
-    /** @return null. */
+    /** @return 保存量. */
     @Column(name = "COUNT_SAVE")
     public Integer getCountSave() {
         return this.countSave;
@@ -241,13 +241,13 @@ public class DiskShare implements java.io.Serializable {
 
     /**
      * @param countSave
-     *            null.
+     *            保存量.
      */
     public void setCountSave(Integer countSave) {
         this.countSave = countSave;
     }
 
-    /** @return null. */
+    /** @return 下载量. */
     @Column(name = "COUNT_DOWNLOAD")
     public Integer getCountDownload() {
         return this.countDownload;
@@ -255,13 +255,13 @@ public class DiskShare implements java.io.Serializable {
 
     /**
      * @param countDownload
-     *            null.
+     *            下载量.
      */
     public void setCountDownload(Integer countDownload) {
         this.countDownload = countDownload;
     }
 
-    /** @return null. */
+    /** @return token. */
     @Column(name = "SHARE_CODE", length = 50)
     public String getShareCode() {
         return this.shareCode;
@@ -269,13 +269,13 @@ public class DiskShare implements java.io.Serializable {
 
     /**
      * @param shareCode
-     *            null.
+     *            token.
      */
     public void setShareCode(String shareCode) {
         this.shareCode = shareCode;
     }
 
-    /** @return null. */
+    /** @return 密码. */
     @Column(name = "SHARE_PASSWORD", length = 50)
     public String getSharePassword() {
         return this.sharePassword;
@@ -283,13 +283,13 @@ public class DiskShare implements java.io.Serializable {
 
     /**
      * @param sharePassword
-     *            null.
+     *            密码.
      */
     public void setSharePassword(String sharePassword) {
         this.sharePassword = sharePassword;
     }
 
-    /** @return null. */
+    /** @return 类型. */
     @Column(name = "CATALOG", length = 50)
     public String getCatalog() {
         return this.catalog;
@@ -297,7 +297,7 @@ public class DiskShare implements java.io.Serializable {
 
     /**
      * @param catalog
-     *            null.
+     *            类型.
      */
     public void setCatalog(String catalog) {
         this.catalog = catalog;

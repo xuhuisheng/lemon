@@ -17,9 +17,7 @@ import com.mossle.core.page.Page;
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
 
-import org.springframework.web.bind.annotation.PathVariable;
 import org.springframework.web.bind.annotation.RequestMapping;
-import org.springframework.web.bind.annotation.RequestMethod;
 import org.springframework.web.bind.annotation.RestController;
 
 @RestController
@@ -32,6 +30,8 @@ public class CmsPortalController {
 
     @RequestMapping("articles")
     public String articles() throws Exception {
+        logger.debug("articles");
+
         String tenantId = tenantHolder.getTenantId();
         String hql = "from CmsArticle where tenantId=? order by publishTime desc";
         Page page = cmsArticleManager.pagedQuery(hql, 1, 7, tenantId);

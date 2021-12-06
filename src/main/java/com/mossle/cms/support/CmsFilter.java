@@ -1,5 +1,6 @@
 package com.mossle.cms.support;
 
+import java.io.FileInputStream;
 import java.io.IOException;
 
 import javax.annotation.Resource;
@@ -16,7 +17,7 @@ import javax.servlet.http.HttpServletResponse;
 import com.mossle.api.tenant.TenantDTO;
 import com.mossle.api.tenant.TenantHolder;
 
-import com.mossle.core.util.IoUtils;
+import org.apache.commons.io.IOUtils;
 
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
@@ -56,7 +57,8 @@ public class CmsFilter implements Filter {
                 String path = storeBaseDir + "/" + tenantDto.getId()
                         + cmsBaseDir + servletPath.substring("/cms".length());
                 logger.debug("path : {}", path);
-                IoUtils.copyFileToOutputStream(path, response.getOutputStream());
+                IOUtils.copy(new FileInputStream(path),
+                        response.getOutputStream());
             } else {
                 filterChain.doFilter(req, res);
             }
@@ -70,8 +72,8 @@ public class CmsFilter implements Filter {
             return;
         }
 
-        IoUtils.copyFileToOutputStream(storeBaseDir + "/" + tenantDto.getId()
-                + cmsBaseDir + servletPath, response.getOutputStream());
+        IOUtils.copy(new FileInputStream(storeBaseDir + "/" + tenantDto.getId()
+                + cmsBaseDir + servletPath), response.getOutputStream());
     }
 
     public void destroy() {

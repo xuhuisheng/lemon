@@ -15,8 +15,6 @@ import org.springframework.context.ApplicationContextAware;
 
 import org.springframework.core.io.Resource;
 
-import org.springframework.stereotype.Component;
-
 import org.springframework.util.FileCopyUtils;
 
 // @Component
