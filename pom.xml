@@ -109,9 +109,6 @@
       <groupId>com.fasterxml.jackson.jaxrs</groupId>
       <artifactId>jackson-jaxrs-json-provider</artifactId>
     </dependency><dependency>
-      <groupId>javax.mail</groupId>
-      <artifactId>mail</artifactId>
-    </dependency><dependency>
       <groupId>com.github.inspektr</groupId>
       <artifactId>inspektr-support-spring</artifactId>
     </dependency><dependency>
