@@ -39,7 +39,8 @@ import javax.ws.rs.core.MediaType;
 import com.mossle.core.mapper.JsonMapper;
 import com.mossle.core.spring.ApplicationContextHelper;
 import com.mossle.core.spring.DateConverter;
-import com.mossle.core.util.IoUtils;
+
+import org.apache.commons.io.IOUtils;
 
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
@@ -86,7 +87,7 @@ public class RestFilter implements Filter {
 
     public Map<String, String> parseBody(InputStream inputStream)
             throws IOException {
-        String body = IoUtils.readString(inputStream);
+        String body = IOUtils.toString(inputStream, "UTF-8");
         // body = URLDecoder.decode(body, "UTF-8");
         logger.debug("body : {}", body);
 
@@ -286,8 +287,7 @@ public class RestFilter implements Filter {
                 }
 
                 response.setContentType(contentType);
-                IoUtils.copyStream((InputStream) result,
-                        response.getOutputStream());
+                IOUtils.copy((InputStream) result, response.getOutputStream());
             } else {
                 response.setContentType(MediaType.APPLICATION_JSON);
                 response.getOutputStream().write(

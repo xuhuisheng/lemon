@@ -3,17 +3,12 @@ package com.mossle.client.open;
 import java.net.HttpURLConnection;
 import java.net.URL;
 
-import java.util.Collections;
 import java.util.List;
 
 import com.fasterxml.jackson.core.type.TypeReference;
 
-import com.mossle.api.user.AccountStatus;
-
 import com.mossle.core.mapper.JsonMapper;
 import com.mossle.core.util.BaseDTO;
-
-import com.mossle.spi.device.DeviceDTO;
 
 import org.apache.commons.io.IOUtils;
 
@@ -113,10 +108,12 @@ public class HttpOpenClient implements OpenClient {
 
     public SysDTO findSys(String code) {
         try {
-            String url = baseUrl + "/open/rs/remote/findSys.do?code" + code;
+            String url = baseUrl + "/open/rs/remote/findSys.do?code=" + code;
             HttpURLConnection conn = (HttpURLConnection) new URL(url)
                     .openConnection();
             String text = IOUtils.toString(conn.getInputStream(), "UTF-8");
+            logger.info("text : {}", text);
+
             BaseDTO baseDto = jsonMapper.fromJson(text, BaseDTO.class);
             Object result = baseDto.getData();
             SysDTO sysDto = jsonMapper.fromJson(jsonMapper.toJson(result),

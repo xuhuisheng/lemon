@@ -51,6 +51,11 @@ public class DatabaseAuthzResourceClient implements AuthzResourceClient {
         return resourceDtos;
     }
 
+
+    public List<ResourceDTO> findResourceByType(String sysCode, String type) {
+        return java.util.Collections.emptyList();
+    }
+
     @Resource
     public void setAccessManager(AccessManager accessManager) {
         this.accessManager = accessManager;

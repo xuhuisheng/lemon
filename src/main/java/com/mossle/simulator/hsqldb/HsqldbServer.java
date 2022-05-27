@@ -66,6 +66,7 @@ public class HsqldbServer {
             Thread.sleep(WAIT_TIME);
         } catch (InterruptedException ex) {
             logger.error(ex.getMessage(), ex);
+            Thread.currentThread().interrupt();
         }
     }
 

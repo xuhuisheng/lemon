@@ -97,7 +97,7 @@ public class MemoryMessageHandler extends DefaultMessageHandler {
         }
 
         if (consumerMap.containsKey(consumerName)) {
-            consumerMap.remove(consumerMap);
+            consumerMap.remove(consumerName);
         }
     }
 }

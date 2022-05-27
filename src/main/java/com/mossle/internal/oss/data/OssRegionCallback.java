@@ -1,9 +1,6 @@
 package com.mossle.internal.oss.data;
 
-import java.util.Date;
 import java.util.List;
-
-import com.mossle.api.auth.CustomPasswordEncoder;
 
 import com.mossle.core.csv.CsvCallback;
 
@@ -22,6 +19,9 @@ public class OssRegionCallback implements CsvCallback {
     private String defaultTenantId = "1";
 
     public void process(List<String> list, int lineNo) throws Exception {
+        logger.debug("process : {} {}", list, lineNo);
+        logger.debug("default tenant id : {}", defaultTenantId);
+
         String name = list.get(0);
 
         if (StringUtils.isBlank(name)) {
@@ -38,15 +38,20 @@ public class OssRegionCallback implements CsvCallback {
     public void createOrUpdateRegion(String name, int lineNo) {
         OssRegion ossRegion = ossRegionManager.findUniqueBy("name", name);
 
-        if (ossRegion == null) {
-            // insert
-            ossRegion = new OssRegion();
-            ossRegion.setName(name);
-            ossRegion.setStatus("active");
-            ossRegionManager.save(ossRegion);
-
+        if (ossRegion != null) {
             return;
         }
+
+        // insert
+        ossRegion = new OssRegion();
+        ossRegion.setName(name);
+        ossRegion.setStatus("active");
+        ossRegionManager.save(ossRegion);
+    }
+
+    // ~
+    public void setDefaultTenantId(String defaultTenantId) {
+        this.defaultTenantId = defaultTenantId;
     }
 
     public void setOssRegionManager(OssRegionManager ossRegionManager) {

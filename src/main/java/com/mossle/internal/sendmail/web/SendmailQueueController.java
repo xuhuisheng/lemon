@@ -20,6 +20,7 @@ import com.mossle.core.spring.MessageHelper;
 
 import com.mossle.internal.sendmail.persistence.domain.SendmailQueue;
 import com.mossle.internal.sendmail.persistence.domain.SendmailTemplate;
+import com.mossle.internal.sendmail.persistence.manager.SendmailAppManager;
 import com.mossle.internal.sendmail.persistence.manager.SendmailConfigManager;
 import com.mossle.internal.sendmail.persistence.manager.SendmailQueueManager;
 import com.mossle.internal.sendmail.persistence.manager.SendmailTemplateManager;
@@ -39,6 +40,7 @@ public class SendmailQueueController {
     private SendmailQueueManager sendmailQueueManager;
     private SendmailConfigManager sendmailConfigManager;
     private SendmailTemplateManager sendmailTemplateManager;
+    private SendmailAppManager sendmailAppManager;
     private MessageHelper messageHelper;
     private Exportor exportor;
     private BeanMapper beanMapper = new BeanMapper();
@@ -73,6 +75,7 @@ public class SendmailQueueController {
                 sendmailConfigManager.findBy("tenantId", tenantId));
         model.addAttribute("sendmailTemplates",
                 sendmailTemplateManager.findBy("tenantId", tenantId));
+        model.addAttribute("sendmailApps", sendmailAppManager.getAll());
 
         return "sendmail/sendmail-queue-input";
     }
@@ -81,6 +84,7 @@ public class SendmailQueueController {
     public String save(@ModelAttribute SendmailQueue sendmailQueue,
             @RequestParam("sendmailConfigId") Long sendmailConfigId,
             @RequestParam("sendmailTemplateId") Long sendmailTemplateId,
+            @RequestParam("sendmailAppId") Long sendmailAppId,
             RedirectAttributes redirectAttributes) {
         String tenantId = tenantHolder.getTenantId();
         Long id = sendmailQueue.getId();
@@ -99,7 +103,8 @@ public class SendmailQueueController {
                 .get(sendmailTemplateId);
         dest.setSendmailConfig(sendmailConfigManager.get(sendmailConfigId));
         dest.setSendmailTemplate(sendmailTemplate);
-
+        dest.setSendmailApp(sendmailAppManager.get(sendmailAppId));
+        dest.setCatalog(sendmailTemplate.getCatalog());
         sendmailQueueManager.save(dest);
         messageHelper.addFlashMessage(redirectAttributes, "core.success.save",
                 "保存成功");
@@ -157,6 +162,11 @@ public class SendmailQueueController {
     public void setSendmailTemplateManager(
             SendmailTemplateManager sendmailTemplateManager) {
         this.sendmailTemplateManager = sendmailTemplateManager;
+    }
+
+    @Resource
+    public void setSendmailAppManager(SendmailAppManager sendmailAppManager) {
+        this.sendmailAppManager = sendmailAppManager;
     }
 
     @Resource

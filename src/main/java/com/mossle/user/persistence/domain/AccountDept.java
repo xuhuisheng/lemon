@@ -14,7 +14,7 @@ import javax.persistence.OneToMany;
 import javax.persistence.Table;
 
 /**
- * AccountDept 标识.
+ * AccountDept 部门.
  * 
  * @author Lingo
  */

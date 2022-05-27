@@ -3,12 +3,6 @@ package com.mossle.client.authz;
 import java.net.HttpURLConnection;
 import java.net.URL;
 
-import java.util.List;
-
-import com.fasterxml.jackson.core.type.TypeReference;
-
-import com.mossle.api.sys.SysCategoryDTO;
-import com.mossle.api.sys.SysInfoDTO;
 import com.mossle.api.userauth.UserAuthDTO;
 
 import com.mossle.core.mapper.JsonMapper;

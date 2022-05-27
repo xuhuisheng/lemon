@@ -6,6 +6,7 @@ public class DeviceDTO {
     private String os;
     private String client;
     private String status;
+    private String username;
 
     public String getCode() {
         return code;
@@ -45,5 +46,13 @@ public class DeviceDTO {
 
     public void setStatus(String status) {
         this.status = status;
+    }
+
+    public String getUsername() {
+        return username;
+    }
+
+    public void setUsername(String username) {
+        this.username = username;
     }
 }

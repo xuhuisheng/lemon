@@ -18,7 +18,6 @@
 				<ref bean="springSecurityFilterChainProxy"/>
 				<ref bean="openSessionInViewFilter"/>
 				<ref bean="auditTrailFilter"/>
-				<ref bean="restFilter"/>
 				<ref bean="servletFilter"/>
 			</list>
 		</property>
@@ -181,14 +180,6 @@
 			<bean class="com.github.inspektr.common.web.ClientInfoThreadLocalFilter"/>
 		</property>
 		<property name="enable" value="${filter.inspektr.enable}"/>
-	</bean>
-
-	<bean id="restFilter" class="com.mossle.core.servlet.ProxyFilter">
-		<property name="name" value="rest"/>
-		<property name="filter">
-			<bean class="com.mossle.simulator.restful.RestFilter"/>
-		</property>
-		<property name="urlPattern" value="/rs/*"/>
 	</bean>
 
 	<!-- ====================================================================== -->

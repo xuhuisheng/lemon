@@ -16,15 +16,14 @@ import com.mossle.core.page.Page;
 import com.mossle.core.query.PropertyFilter;
 import com.mossle.core.spring.MessageHelper;
 
-import com.mossle.user.persistence.domain.AccountAvatar;
 import com.mossle.user.persistence.domain.AccountCredential;
 import com.mossle.user.persistence.domain.AccountInfo;
 import com.mossle.user.persistence.domain.PersonInfo;
-import com.mossle.user.persistence.manager.AccountAvatarManager;
 import com.mossle.user.persistence.manager.AccountCredentialManager;
 import com.mossle.user.persistence.manager.AccountInfoManager;
 import com.mossle.user.persistence.manager.PersonInfoManager;
 import com.mossle.user.publish.UserPublisher;
+import com.mossle.user.service.UserService;
 
 import org.apache.commons.lang3.StringUtils;
 
@@ -42,7 +41,6 @@ import org.springframework.web.servlet.mvc.support.RedirectAttributes;
 public class AccountInfoController {
     private AccountInfoManager accountInfoManager;
     private AccountCredentialManager accountCredentialManager;
-    private AccountAvatarManager accountAvatarManager;
     private PersonInfoManager personInfoManager;
     private UserCache userCache;
     private MessageHelper messageHelper;
@@ -50,6 +48,7 @@ public class AccountInfoController {
     private CustomPasswordEncoder customPasswordEncoder;
     private UserPublisher userPublisher;
     private TenantHolder tenantHolder;
+    private UserService userService;
 
     @RequestMapping("account-info-list")
     public String list(
@@ -200,16 +199,7 @@ public class AccountInfoController {
                 .findByIds(selectedItem);
 
         for (AccountInfo accountInfo : accountInfos) {
-            for (AccountCredential accountCredential : accountInfo
-                    .getAccountCredentials()) {
-                accountCredentialManager.remove(accountCredential);
-            }
-
-            for (AccountAvatar accountAvatar : accountInfo.getAccountAvatars()) {
-                accountAvatarManager.remove(accountAvatar);
-            }
-
-            accountInfoManager.remove(accountInfo);
+            this.userService.removeAccount(accountInfo.getId());
 
             UserDTO userDto = new UserDTO();
             userDto.setId(Long.toString(accountInfo.getId()));
@@ -287,12 +277,6 @@ public class AccountInfoController {
     }
 
     @Resource
-    public void setAccountAvatarManager(
-            AccountAvatarManager accountAvatarManager) {
-        this.accountAvatarManager = accountAvatarManager;
-    }
-
-    @Resource
     public void setPersonInfoManager(PersonInfoManager personInfoManager) {
         this.personInfoManager = personInfoManager;
     }
@@ -321,5 +305,10 @@ public class AccountInfoController {
     @Resource
     public void setTenantHolder(TenantHolder tenantHolder) {
         this.tenantHolder = tenantHolder;
+    }
+
+    @Resource
+    public void setUserService(UserService userService) {
+        this.userService = userService;
     }
 }

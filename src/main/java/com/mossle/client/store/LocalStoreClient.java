@@ -3,7 +3,6 @@ package com.mossle.client.store;
 import javax.activation.DataSource;
 
 import javax.annotation.PostConstruct;
-import javax.annotation.Resource;
 
 import com.mossle.api.store.StoreDTO;
 

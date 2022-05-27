@@ -12,7 +12,7 @@ import javax.ws.rs.Produces;
 import javax.ws.rs.core.MediaType;
 
 import com.mossle.api.tenant.TenantHolder;
-import com.mossle.api.user.UserConnector;
+import com.mossle.client.user.UserClient;
 import com.mossle.api.user.UserDTO;
 
 import com.mossle.core.mapper.JsonMapper;
@@ -36,7 +36,7 @@ public class AndroidUserResource {
     private JsonMapper jsonMapper = new JsonMapper();
     private TenantHolder tenantHolder;
     private MsgInfoManager msgInfoManager;
-    private UserConnector userConnector;
+    private UserClient userClient;
     private PimDeviceManager pimDeviceManager;
 
     @POST
@@ -58,7 +58,7 @@ public class AndroidUserResource {
         }
 
         String userId = pimDevice.getUserId();
-        UserDTO userDto = userConnector.findById(userId);
+        UserDTO userDto = userClient.findById(userId, tenantHolder.getUserRepoRef());
 
         Map<String, String> map = new HashMap<String, String>();
         map.put("username", userDto.getUsername());
@@ -87,8 +87,8 @@ public class AndroidUserResource {
     }
 
     @Resource
-    public void setUserConnector(UserConnector userConnector) {
-        this.userConnector = userConnector;
+    public void setUserClient(UserClient userClient) {
+        this.userClient = userClient;
     }
 
     @Resource

@@ -5,7 +5,6 @@ import java.util.List;
 import javax.annotation.Resource;
 
 import com.mossle.api.user.LocalUserConnector;
-import com.mossle.api.user.RemoteUserConnector;
 import com.mossle.api.user.UserDTO;
 
 /**

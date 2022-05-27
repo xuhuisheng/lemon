@@ -1,6 +1,6 @@
 package com.mossle.user.service;
 
-import java.io.ByteArrayOutputStream;
+// import java.io.ByteArrayOutputStream;
 
 import javax.activation.DataSource;
 
@@ -10,9 +10,9 @@ import com.mossle.api.store.StoreDTO;
 
 import com.mossle.client.store.StoreClient;
 
-import com.mossle.core.store.ByteArrayDataSource;
+// import com.mossle.core.store.ByteArrayDataSource;
 
-import com.mossle.user.ImageUtils;
+// import com.mossle.user.ImageUtils;
 import com.mossle.user.avatar.AvatarCache;
 import com.mossle.user.persistence.domain.AccountAvatar;
 import com.mossle.user.persistence.domain.AccountInfo;
@@ -101,6 +101,8 @@ public class UserAvatarService {
             key = "default.jpg";
         }
 
+        key += ("?x-oss-process=image/resize,w_" + width);
+
         StoreDTO storeDto = null;
 
         storeDto = storeClient.getStore("avatar", key, tenantId);
@@ -111,30 +113,31 @@ public class UserAvatarService {
             return storeDto.getDataSource();
         }
 
-        if (width == 0) {
-            return storeDto.getDataSource();
-        }
+        // if (width == 0) {
+        // return storeDto.getDataSource();
+        // }
 
-        StoreDTO originalStoreDto = storeDto;
-        int index = key.lastIndexOf(".");
-        String prefix = key.substring(0, index);
-        String suffix = key.substring(index);
-        String resizeKey = prefix + "-" + width + suffix;
+        // StoreDTO originalStoreDto = storeDto;
+        // int index = key.lastIndexOf(".");
+        // String prefix = key.substring(0, index);
+        // String suffix = key.substring(index);
+        // String resizeKey = prefix + "-" + width + suffix;
 
-        StoreDTO resizeStoreDto = storeClient.getStore("avatar", resizeKey,
-                tenantId);
+        // StoreDTO resizeStoreDto = storeClient.getStore("avatar", resizeKey,
+        // tenantId);
 
-        if (resizeStoreDto == null) {
-            ByteArrayOutputStream baos = new ByteArrayOutputStream();
-            ImageUtils.zoomImage(originalStoreDto.getDataSource()
-                    .getInputStream(), baos, width, width);
-            logger.info("resizeKey : {}", resizeKey);
-            resizeStoreDto = storeClient.saveStore("avatar", resizeKey,
-                    new ByteArrayDataSource(storeDto.getDataSource().getName(),
-                            baos.toByteArray()), tenantId);
-        }
+        // if (resizeStoreDto == null) {
+        // ByteArrayOutputStream baos = new ByteArrayOutputStream();
+        // ImageUtils.zoomImage(originalStoreDto.getDataSource()
+        // .getInputStream(), baos, width, width);
+        // logger.info("resizeKey : {}", resizeKey);
+        // resizeStoreDto = storeClient.saveStore("avatar", resizeKey,
+        // new ByteArrayDataSource(storeDto.getDataSource().getName(),
+        // baos.toByteArray()), tenantId);
+        // }
 
-        return resizeStoreDto.getDataSource();
+        // return resizeStoreDto.getDataSource();
+        return storeDto.getDataSource();
     }
 
     @Resource

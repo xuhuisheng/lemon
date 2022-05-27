@@ -5,6 +5,7 @@ import java.io.StringWriter;
 
 import java.util.List;
 import java.util.Map;
+import java.util.UUID;
 
 import javax.annotation.Resource;
 
@@ -28,10 +29,13 @@ import com.mossle.core.store.DataSourceInputStreamSource;
 
 import com.mossle.internal.sendmail.persistence.domain.SendmailAttachment;
 import com.mossle.internal.sendmail.persistence.domain.SendmailConfig;
+import com.mossle.internal.sendmail.persistence.domain.SendmailQueue;
 import com.mossle.internal.sendmail.persistence.domain.SendmailTemplate;
 import com.mossle.internal.sendmail.persistence.manager.SendmailAttachmentManager;
 import com.mossle.internal.sendmail.persistence.manager.SendmailConfigManager;
+import com.mossle.internal.sendmail.persistence.manager.SendmailQueueManager;
 import com.mossle.internal.sendmail.persistence.manager.SendmailTemplateManager;
+import com.mossle.internal.sendmail.service.SendmailDataService;
 
 import org.springframework.stereotype.Controller;
 
@@ -48,11 +52,13 @@ public class SendmailTemplateController {
     private SendmailTemplateManager sendmailTemplateManager;
     private SendmailConfigManager sendmailConfigManager;
     private SendmailAttachmentManager sendmailAttachmentManager;
+    private SendmailQueueManager sendmailQueueManager;
     private StoreClient storeClient;
     private MessageHelper messageHelper;
     private Exportor exportor;
     private BeanMapper beanMapper = new BeanMapper();
     private TenantHolder tenantHolder;
+    private SendmailDataService sendmailDataService;
 
     @RequestMapping("sendmail-template-list")
     public String list(@ModelAttribute Page page,
@@ -202,6 +208,46 @@ public class SendmailTemplateController {
         return "sendmail/sendmail-template-send";
     }
 
+    @RequestMapping("sendmail-template-queue-list")
+    public String queueList(@ModelAttribute Page page,
+            @RequestParam("templateId") Long templateId,
+            @RequestParam Map<String, Object> parameterMap, Model model) {
+        String tenantId = tenantHolder.getTenantId();
+        SendmailTemplate sendmailTemplate = sendmailTemplateManager
+                .get(templateId);
+
+        List<PropertyFilter> propertyFilters = PropertyFilter
+                .buildFromMap(parameterMap);
+        propertyFilters.add(new PropertyFilter("EQL_sendmailTemplate.id", Long
+                .toString(templateId)));
+        propertyFilters.add(new PropertyFilter("EQS_tenantId", tenantId));
+        propertyFilters.add(new PropertyFilter("EQS_catalog", sendmailTemplate
+                .getCatalog()));
+        page = sendmailQueueManager.pagedQuery(page, propertyFilters);
+        model.addAttribute("page", page);
+
+        return "sendmail/sendmail-template-queue-list";
+    }
+
+    @RequestMapping("sendmail-template-queue-send")
+    public String queueSend(@RequestParam("templateId") Long templateId,
+            @RequestParam("num") int num) throws Exception {
+        SendmailTemplate sendmailTemplate = this.sendmailTemplateManager
+                .get(templateId);
+        List<SendmailQueue> sendmailQueues = this.sendmailDataService
+                .findTopSendmailQueues(sendmailTemplate, num);
+        String batch = UUID.randomUUID().toString();
+
+        for (SendmailQueue sendmailQueue : sendmailQueues) {
+            sendmailQueue.setCatalog("");
+            sendmailQueue.setBatch(batch);
+            sendmailQueueManager.save(sendmailQueue);
+        }
+
+        return "redirect:/sendmail/sendmail-template-queue-list.do?templateId="
+                + templateId;
+    }
+
     // ~ ======================================================================
     @Resource
     public void setSendmailTemplateManager(
@@ -222,6 +268,12 @@ public class SendmailTemplateController {
     }
 
     @Resource
+    public void setSendmailQueueManager(
+            SendmailQueueManager sendmailQueueManager) {
+        this.sendmailQueueManager = sendmailQueueManager;
+    }
+
+    @Resource
     public void setStoreClient(StoreClient storeClient) {
         this.storeClient = storeClient;
     }
@@ -239,5 +291,10 @@ public class SendmailTemplateController {
     @Resource
     public void setTenantHolder(TenantHolder tenantHolder) {
         this.tenantHolder = tenantHolder;
+    }
+
+    @Resource
+    public void setSendmailDataService(SendmailDataService sendmailDataService) {
+        this.sendmailDataService = sendmailDataService;
     }
 }

@@ -1,31 +1,20 @@
 package com.mossle.internal.oss.web.rs;
 
-import java.io.InputStream;
-
 import java.util.HashMap;
 import java.util.Map;
-
-import javax.activation.DataSource;
 
 import javax.annotation.Resource;
 
 import javax.servlet.http.HttpServletRequest;
 import javax.servlet.http.HttpServletResponse;
 
-import com.mossle.api.tenant.TenantHolder;
-import com.mossle.api.user.UserCache;
-import com.mossle.api.user.UserDTO;
-
-import com.mossle.core.export.Exportor;
-import com.mossle.core.mapper.BeanMapper;
 import com.mossle.core.mapper.JsonMapper;
-import com.mossle.core.spring.MessageHelper;
-import com.mossle.core.store.InputStreamDataSource;
 import com.mossle.core.util.BaseDTO;
 
 import com.mossle.internal.oss.persistence.domain.OssAccess;
 import com.mossle.internal.oss.persistence.manager.OssAccessManager;
 import com.mossle.internal.oss.service.OssService;
+import com.mossle.internal.oss.support.ImageProcessor;
 import com.mossle.internal.oss.support.OssConfigDTO;
 import com.mossle.internal.oss.support.OssDTO;
 
@@ -38,23 +27,12 @@ import org.apache.commons.lang3.StringUtils;
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
 
-import org.springframework.http.MediaType;
-
-import org.springframework.stereotype.Controller;
-
-import org.springframework.ui.Model;
-
-import org.springframework.web.bind.annotation.ModelAttribute;
-import org.springframework.web.bind.annotation.PathVariable;
 import org.springframework.web.bind.annotation.RequestMapping;
 import org.springframework.web.bind.annotation.RequestMethod;
-import org.springframework.web.bind.annotation.RequestParam;
-import org.springframework.web.bind.annotation.ResponseBody;
 import org.springframework.web.bind.annotation.RestController;
 import org.springframework.web.multipart.MultipartFile;
 import org.springframework.web.multipart.MultipartHttpServletRequest;
 import org.springframework.web.multipart.MultipartResolver;
-import org.springframework.web.servlet.mvc.support.RedirectAttributes;
 
 @RestController
 @RequestMapping("oss/rs/**")
@@ -67,6 +45,7 @@ public class OssRestController {
     private RpcAuthHelper rpcAuthHelper;
     private OssService ossService;
     private MultipartResolver multipartResolver;
+    private ImageProcessor imageProcessor = new ImageProcessor();
 
     /**
      * 上传文件，指定文件名.
@@ -84,8 +63,8 @@ public class OssRestController {
 
         try {
             OssConfigDTO ossConfigDto = this.processConfig(request);
-            logger.info("ossConfigDto : {}", ossConfigDto);
-            logger.info("ossService : {}", ossService);
+            logger.debug("ossConfigDto : {}", ossConfigDto);
+            logger.debug("ossService : {}", ossService);
 
             // String objectName = ossConfigDto.getObjectName(request);
             OssDTO ossDto = ossService.putObject(request.getInputStream(),
@@ -151,14 +130,14 @@ public class OssRestController {
     public void postObjectMultipart(HttpServletRequest request,
             HttpServletResponse response) throws Exception {
         logger.info("post multipart");
-        logger.info("request : {}", request.getClass());
+        logger.debug("request : {}", request.getClass());
 
         MultipartHttpServletRequest req = (MultipartHttpServletRequest) request;
 
         try {
             // req = multipartResolver.resolveMultipart(request);
-            logger.info("file map : {}", req.getFileMap());
-            logger.info("param map : {}", req.getParameterMap());
+            logger.debug("file map : {}", req.getFileMap());
+            logger.debug("param map : {}", req.getParameterMap());
 
             OssAccess ossAccess = this.checkAuthorization(req, response);
 
@@ -167,7 +146,7 @@ public class OssRestController {
             }
 
             OssConfigDTO ossConfigDto = this.processBucket(req);
-            logger.info("file map : {}", req.getFileMap());
+            logger.debug("file map : {}", req.getFileMap());
 
             MultipartFile multipartFile = req.getFile("file");
 
@@ -219,13 +198,20 @@ public class OssRestController {
         OssDTO ossDto = ossService.getObject(bucketName, objectName);
 
         if (ossDto == null) {
-            logger.info("cannot find {}", bucketName, objectName);
+            logger.info("cannot find {} {}", bucketName, objectName);
             response.sendError(HttpServletResponse.SC_NOT_FOUND);
 
             return;
         }
 
-        IOUtils.copy(ossDto.getInputStream(), response.getOutputStream());
+        String xOssProcess = request.getParameter("x-oss-process");
+
+        if (StringUtils.isBlank(xOssProcess)) {
+            IOUtils.copy(ossDto.getInputStream(), response.getOutputStream());
+        } else {
+            imageProcessor.process(ossDto.getInputStream(),
+                    response.getOutputStream(), xOssProcess);
+        }
     }
 
     /**
@@ -306,8 +292,8 @@ public class OssRestController {
             return null;
         }
 
-        logger.info("prefix : {}", prefix);
-        logger.info("suffix : {}", suffix);
+        logger.debug("prefix : {}", prefix);
+        logger.debug("suffix : {}", suffix);
 
         int index = suffix.indexOf("/");
         String bucketName = suffix.substring(0, index);
@@ -345,8 +331,8 @@ public class OssRestController {
             return null;
         }
 
-        logger.info("prefix : {}", prefix);
-        logger.info("suffix : {}", suffix);
+        logger.debug("prefix : {}", prefix);
+        logger.debug("suffix : {}", suffix);
 
         int index = suffix.indexOf("/");
 
@@ -383,17 +369,17 @@ public class OssRestController {
     public OssAccess checkAuthorization(HttpServletRequest request,
             HttpServletResponse response) throws Exception {
         try {
-            logger.info("method : {}", request.getMethod());
-            logger.info("date : {}", request.getHeader("date"));
-            logger.info("path : {}", request.getRequestURL());
-            logger.info("path : {}", request.getRequestURI());
-            logger.info(
+            logger.debug("method : {}", request.getMethod());
+            logger.debug("date : {}", request.getHeader("date"));
+            logger.debug("path : {}", request.getRequestURL());
+            logger.debug("path : {}", request.getRequestURI());
+            logger.debug(
                     "path : {}",
                     request.getRequestURI().substring(
                             request.getContextPath().length()));
-            logger.info("x-request-id : {}", request.getHeader("x-request-id"));
-            logger.info("content-type : {}", request.getHeader("content-type"));
-            logger.info("content-md5 : {}", request.getHeader("content-md5"));
+            logger.debug("x-request-id : {}", request.getHeader("x-request-id"));
+            logger.debug("content-type : {}", request.getHeader("content-type"));
+            logger.debug("content-md5 : {}", request.getHeader("content-md5"));
 
             String authorization = request.getHeader("Authorization");
 

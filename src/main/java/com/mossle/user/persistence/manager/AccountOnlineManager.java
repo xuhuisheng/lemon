@@ -4,8 +4,8 @@ import com.mossle.core.hibernate.HibernateEntityDao;
 
 import com.mossle.user.persistence.domain.AccountOnline;
 
-import org.springframework.stereotype.Service;
+import org.springframework.stereotype.Repository;
 
-@Service
+@Repository
 public class AccountOnlineManager extends HibernateEntityDao<AccountOnline> {
 }

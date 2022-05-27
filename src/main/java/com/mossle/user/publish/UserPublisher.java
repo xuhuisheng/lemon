@@ -1,6 +1,6 @@
 package com.mossle.user.publish;
 
-import java.io.IOException;
+// import java.io.IOException;
 
 import java.util.HashMap;
 import java.util.Map;
@@ -13,10 +13,13 @@ import com.mossle.api.user.UserDTO;
 
 import com.mossle.core.mapper.JsonMapper;
 
+import com.mossle.user.component.UserProducer;
+import com.mossle.user.support.UserInfoDTO;
+
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
 
-import org.springframework.jms.core.JmsTemplate;
+// import org.springframework.jms.core.JmsTemplate;
 
 import org.springframework.stereotype.Component;
 
@@ -27,6 +30,7 @@ public class UserPublisher {
     private String notificationPrefix = "topic.user.notify.";
     private String synchronizationPrefix = "queue.user.sync.";
     private JsonMapper jsonMapper = new JsonMapper();
+    private UserProducer userProducer;
 
     public void notifyUserCreated(UserDTO userDto) {
         Map<String, Object> map = new HashMap<String, Object>();
@@ -39,6 +43,10 @@ public class UserPublisher {
 
         this.sendNotification(notificationPrefix + "created", map);
         this.sendSynchronization(synchronizationPrefix + "created", map);
+
+        UserInfoDTO userInfoDto = new UserInfoDTO();
+        userInfoDto.setCode(userDto.getId());
+        userProducer.sendCreate(userInfoDto);
     }
 
     public void notifyUserUpdated(UserDTO userDto) {
@@ -52,6 +60,10 @@ public class UserPublisher {
 
         this.sendNotification(notificationPrefix + "updated", map);
         this.sendSynchronization(synchronizationPrefix + "updated", map);
+
+        UserInfoDTO userInfoDto = new UserInfoDTO();
+        userInfoDto.setCode(userDto.getId());
+        userProducer.sendUpdate(userInfoDto);
     }
 
     public void notifyUserRemoved(UserDTO userDto) {
@@ -65,35 +77,39 @@ public class UserPublisher {
 
         this.sendNotification(notificationPrefix + "removed", map);
         this.sendSynchronization(synchronizationPrefix + "removed", map);
+
+        UserInfoDTO userInfoDto = new UserInfoDTO();
+        userInfoDto.setCode(userDto.getId());
+        userProducer.sendRemove(userInfoDto);
     }
 
     public void sendNotification(String destinationName, Object object) {
-        JmsTemplate jmsTemplate = new JmsTemplate();
-        jmsTemplate.setConnectionFactory(connectionFactory);
-        jmsTemplate.setPubSubDomain(true);
+        // JmsTemplate jmsTemplate = new JmsTemplate();
+        // jmsTemplate.setConnectionFactory(connectionFactory);
+        // jmsTemplate.setPubSubDomain(true);
 
-        try {
-            jmsTemplate.convertAndSend(destinationName,
-                    jsonMapper.toJson(object));
-        } catch (IOException ex) {
-            logger.error(ex.getMessage());
-        }
+        // try {
+        // jmsTemplate.convertAndSend(destinationName,
+        // jsonMapper.toJson(object));
+        // } catch (IOException ex) {
+        // logger.error(ex.getMessage());
+        // }
     }
 
     public void sendSynchronization(String destinationName, Object object) {
-        JmsTemplate jmsTemplate = new JmsTemplate();
-        jmsTemplate.setConnectionFactory(connectionFactory);
-        jmsTemplate.setPubSubDomain(false);
+        // JmsTemplate jmsTemplate = new JmsTemplate();
+        // jmsTemplate.setConnectionFactory(connectionFactory);
+        // jmsTemplate.setPubSubDomain(false);
 
-        try {
-            jmsTemplate.convertAndSend(destinationName,
-                    jsonMapper.toJson(object));
-        } catch (IOException ex) {
-            logger.error(ex.getMessage());
-        }
+        // try {
+        // jmsTemplate.convertAndSend(destinationName,
+        // jsonMapper.toJson(object));
+        // } catch (IOException ex) {
+        // logger.error(ex.getMessage());
+        // }
     }
 
-    @Resource
+    // @Resource
     public void setConnectionFactory(ConnectionFactory connectionFactory) {
         this.connectionFactory = connectionFactory;
     }
@@ -104,5 +120,10 @@ public class UserPublisher {
 
     public void setSynchronizationPrefix(String synchronizationPrefix) {
         this.synchronizationPrefix = synchronizationPrefix;
+    }
+
+    @Resource
+    public void setUserProducer(UserProducer userProducer) {
+        this.userProducer = userProducer;
     }
 }

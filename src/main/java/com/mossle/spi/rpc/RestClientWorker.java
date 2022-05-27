@@ -3,16 +3,10 @@ package com.mossle.spi.rpc;
 import java.io.InputStream;
 
 import java.lang.annotation.Annotation;
-import java.lang.reflect.InvocationHandler;
 import java.lang.reflect.Method;
-import java.lang.reflect.Proxy;
 
 import java.net.HttpURLConnection;
 import java.net.URL;
-
-import java.util.Collections;
-import java.util.concurrent.ExecutorService;
-import java.util.concurrent.Executors;
 
 import javax.ws.rs.FormParam;
 import javax.ws.rs.Path;
@@ -92,8 +86,6 @@ public class RestClientWorker implements Runnable {
             conn.getOutputStream().write(body.getBytes("UTF-8"));
 
             if (conn.getResponseCode() == HttpURLConnection.HTTP_OK) {
-                // InputStream is = conn.getInputStream();
-                // return IoUtils.readString(is, encoding);
                 InputStream is = conn.getInputStream();
                 String resultText = IOUtils.toString(is, "UTF-8");
                 logger.info("resultText : {}", resultText);
@@ -104,7 +96,6 @@ public class RestClientWorker implements Runnable {
             } else {
                 InputStream is = conn.getErrorStream();
 
-                // String text = IoUtils.readString(is, encoding);
                 String text = IOUtils.toString(is, "UTF-8");
                 logger.error("error : {} {}", conn.getResponseCode(), text);
 

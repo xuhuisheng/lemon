@@ -1,0 +1,41 @@
+
+
+-------------------------------------------------------------------------------
+--  notification provider
+-------------------------------------------------------------------------------
+CREATE TABLE NOTIFICATION_PROVIDER(
+    ID BIGINT AUTO_INCREMENT,
+    CODE VARCHAR(50),
+    NAME VARCHAR(50),
+    CONTENT TEXT,
+    USERNAME VARCHAR(50),
+    PASSWORD VARCHAR(50),
+
+    PRIORITY INT,
+    CREATE_TIME TIMESTAMP,
+    CREATOR VARCHAR(64),
+    UPDATE_TIME TIMESTAMP,
+    UPDATER VARCHAR(64),
+    STATUS VARCHAR(50),
+
+    CATALOG_ID BIGINT,
+
+    CONSTRAINT PK_NOTIFICATION_PROVIDER PRIMARY KEY(ID),
+    CONSTRAINT FK_NOTIFICATION_PROVIDER_CATALOG FOREIGN KEY (CATALOG_ID) REFERENCES NOTIFICATION_CATALOG(ID)
+) ENGINE=INNODB CHARSET=UTF8;
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+

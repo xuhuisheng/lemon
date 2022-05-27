@@ -3,15 +3,27 @@ package com.mossle.user.service;
 import java.text.ParseException;
 import java.text.SimpleDateFormat;
 
+import java.util.Calendar;
 import java.util.Map;
 
 import javax.annotation.Resource;
 
+import com.mossle.api.auth.CustomPasswordEncoder;
 import com.mossle.api.user.UserDTO;
 
+import com.mossle.user.persistence.domain.AccountAvatar;
+import com.mossle.user.persistence.domain.AccountCredential;
+import com.mossle.user.persistence.domain.AccountDevice;
+import com.mossle.user.persistence.domain.AccountInfo;
+import com.mossle.user.persistence.domain.PersonInfo;
 import com.mossle.user.persistence.domain.UserAttr;
 import com.mossle.user.persistence.domain.UserBase;
 import com.mossle.user.persistence.domain.UserSchema;
+import com.mossle.user.persistence.manager.AccountAvatarManager;
+import com.mossle.user.persistence.manager.AccountCredentialManager;
+import com.mossle.user.persistence.manager.AccountDeviceManager;
+import com.mossle.user.persistence.manager.AccountInfoManager;
+import com.mossle.user.persistence.manager.PersonInfoManager;
 import com.mossle.user.persistence.manager.UserAttrManager;
 import com.mossle.user.persistence.manager.UserBaseManager;
 import com.mossle.user.persistence.manager.UserRepoManager;
@@ -34,6 +46,12 @@ public class UserService {
     private UserAttrManager userAttrManager;
     private UserSchemaManager userSchemaManager;
     private UserPublisher userPublisher;
+    private AccountInfoManager accountInfoManager;
+    private PersonInfoManager personInfoManager;
+    private AccountCredentialManager accountCredentialManager;
+    private AccountAvatarManager accountAvatarManager;
+    private AccountDeviceManager accountDeviceManager;
+    private CustomPasswordEncoder customPasswordEncoder;
 
     /**
      * 添加用户.
@@ -183,6 +201,95 @@ public class UserService {
         userPublisher.notifyUserRemoved(this.convertUserDto(userBase));
     }
 
+    public AccountInfo removeAccount(long accountId) {
+        AccountInfo accountInfo = accountInfoManager.get(accountId);
+
+        if (accountInfo == null) {
+            logger.info("cannot find account : {}", accountId);
+
+            return null;
+        }
+
+        this.removeAccountInternal(accountInfo);
+
+        PersonInfo personInfo = personInfoManager.findUniqueBy("code",
+                accountInfo.getCode());
+        personInfoManager.remove(personInfo);
+
+        return accountInfo;
+    }
+
+    public AccountInfo removePerson(long personId) {
+        PersonInfo personInfo = personInfoManager.get(personId);
+
+        if (personInfo == null) {
+            logger.info("cannot find person : {}", personId);
+
+            return null;
+        }
+
+        AccountInfo accountInfo = accountInfoManager.findUniqueBy("code",
+                personInfo.getCode());
+        this.removeAccountInternal(accountInfo);
+        personInfoManager.remove(personInfo);
+
+        return accountInfo;
+    }
+
+    public void removeAccountInternal(AccountInfo accountInfo) {
+        for (AccountCredential accountCredential : accountInfo
+                .getAccountCredentials()) {
+            accountCredentialManager.remove(accountCredential);
+        }
+
+        for (AccountAvatar accountAvatar : accountInfo.getAccountAvatars()) {
+            accountAvatarManager.remove(accountAvatar);
+        }
+
+        for (AccountDevice accountDevice : accountInfo.getAccountDevices()) {
+            accountDeviceManager.remove(accountDevice);
+        }
+
+        accountInfoManager.remove(accountInfo);
+    }
+
+    public String generatePassword(Long credentialId) {
+        AccountCredential accountCredential = this.accountCredentialManager
+                .get(credentialId);
+        String password = this.generatePassword();
+        accountCredential.setPassword(customPasswordEncoder.encode(password));
+
+        Calendar calendar = Calendar.getInstance();
+        calendar.add(Calendar.DATE, 90);
+        accountCredential.setExpireTime(calendar.getTime());
+        accountCredentialManager.save(accountCredential);
+
+        return password;
+    }
+
+    public String generatePassword() {
+        String[] pa = { "a", "b", "c", "d", "e", "f", "g", "h", "i", "j", "k",
+                "l", "m", "n", "o", "p", "q", "r", "s", "t", "u", "v", "w",
+                "x", "y", "z", "A", "B", "C", "D", "E", "F", "G", "H", "I",
+                "J", "K", "L", "M", "N", "O", "P", "Q", "R", "S", "T", "U",
+                "V", "W", "X", "Y", "Z", "0", "1", "2", "3", "4", "5", "6",
+                "7", "8", "9" };
+        StringBuffer sb = new StringBuffer();
+
+        for (int i = 0; i < 8; i++) {
+            sb.append(pa[(Double.valueOf(Math.random() * pa.length).intValue())]);
+        }
+
+        String[] spe = { "`", "~", "!", "@", "#", "$", "%", "^", "&", "*", "(",
+                ")", "-", "_", "=", "+", "[", "]", "{", "}", "\\", "/", "?",
+                ",", ".", "<", ">" };
+        sb.append(spe[(Double.valueOf(Math.random() * spe.length).intValue())]);
+        sb.append((int) (Math.random() * 100));
+
+        return sb.toString();
+    }
+
+    // ~
     public String getStringValue(Object value) {
         if (value == null) {
             return null;
@@ -229,5 +336,39 @@ public class UserService {
     @Resource
     public void setUserPublisher(UserPublisher userPublisher) {
         this.userPublisher = userPublisher;
+    }
+
+    @Resource
+    public void setAccountInfoManager(AccountInfoManager accountInfoManager) {
+        this.accountInfoManager = accountInfoManager;
+    }
+
+    @Resource
+    public void setPersonInfoManager(PersonInfoManager personInfoManager) {
+        this.personInfoManager = personInfoManager;
+    }
+
+    @Resource
+    public void setAccountCredentialManager(
+            AccountCredentialManager accountCredentialManager) {
+        this.accountCredentialManager = accountCredentialManager;
+    }
+
+    @Resource
+    public void setAccountAvatarManager(
+            AccountAvatarManager accountAvatarManager) {
+        this.accountAvatarManager = accountAvatarManager;
+    }
+
+    @Resource
+    public void setAccountDeviceManager(
+            AccountDeviceManager accountDeviceManager) {
+        this.accountDeviceManager = accountDeviceManager;
+    }
+
+    @Resource
+    public void setCustomPasswordEncoder(
+            CustomPasswordEncoder customPasswordEncoder) {
+        this.customPasswordEncoder = customPasswordEncoder;
     }
 }

@@ -1,6 +1,5 @@
 package com.mossle.internal.oss.web;
 
-import java.util.Date;
 import java.util.HashMap;
 import java.util.List;
 import java.util.Map;
@@ -12,11 +11,8 @@ import com.mossle.api.tenant.TenantHolder;
 
 import com.mossle.client.oss.OssClient;
 
-import com.mossle.core.export.Exportor;
-import com.mossle.core.mapper.BeanMapper;
 import com.mossle.core.page.Page;
 import com.mossle.core.query.PropertyFilter;
-import com.mossle.core.spring.MessageHelper;
 
 import com.mossle.internal.oss.persistence.domain.OssBucket;
 import com.mossle.internal.oss.persistence.domain.OssObject;
@@ -32,16 +28,12 @@ import org.springframework.web.bind.annotation.RequestMapping;
 import org.springframework.web.bind.annotation.RequestParam;
 import org.springframework.web.bind.annotation.ResponseBody;
 import org.springframework.web.multipart.MultipartFile;
-import org.springframework.web.servlet.mvc.support.RedirectAttributes;
 
 @Controller
 @RequestMapping("oss")
 public class OssController {
     private OssBucketManager ossBucketManager;
     private OssObjectManager ossObjectManager;
-    private MessageHelper messageHelper;
-    private Exportor exportor;
-    private BeanMapper beanMapper = new BeanMapper();
     private TenantHolder tenantHolder;
     private OssClient ossClient;
 
@@ -136,16 +128,6 @@ public class OssController {
     @Resource
     public void setOssObjectManager(OssObjectManager ossObjectManager) {
         this.ossObjectManager = ossObjectManager;
-    }
-
-    @Resource
-    public void setMessageHelper(MessageHelper messageHelper) {
-        this.messageHelper = messageHelper;
-    }
-
-    @Resource
-    public void setExportor(Exportor exportor) {
-        this.exportor = exportor;
     }
 
     @Resource

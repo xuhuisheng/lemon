@@ -49,6 +49,8 @@ public class WhitelistFilter implements Filter {
     }
 
     public void checkAndReload() {
+        logger.debug("check and reload");
+
         if ((whitelistDto != null) && (System.currentTimeMillis() > timestamp)) {
             return;
         }

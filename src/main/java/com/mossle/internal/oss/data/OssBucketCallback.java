@@ -1,9 +1,6 @@
 package com.mossle.internal.oss.data;
 
-import java.util.Date;
 import java.util.List;
-
-import com.mossle.api.auth.CustomPasswordEncoder;
 
 import com.mossle.core.csv.CsvCallback;
 
@@ -28,6 +25,9 @@ public class OssBucketCallback implements CsvCallback {
     private String defaultTenantId = "1";
 
     public void process(List<String> list, int lineNo) throws Exception {
+        logger.debug("process : {} {}", list, lineNo);
+        logger.debug("default tenant id : {}", defaultTenantId);
+
         String name = list.get(0);
         String userId = list.get(1);
         String region = list.get(2);
@@ -99,6 +99,11 @@ public class OssBucketCallback implements CsvCallback {
         ossAccess.setStatus("active");
         ossAccess.setOssBucket(ossBucket);
         ossAccessManager.save(ossAccess);
+    }
+
+    // ~
+    public void setDefaultTenantId(String defaultTenantId) {
+        this.defaultTenantId = defaultTenantId;
     }
 
     public void setOssRegionManager(OssRegionManager ossRegionManager) {

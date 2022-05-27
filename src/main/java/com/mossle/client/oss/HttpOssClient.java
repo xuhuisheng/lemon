@@ -1,20 +1,11 @@
 package com.mossle.client.oss;
 
-import java.io.File;
 import java.io.InputStream;
 
 import java.net.HttpURLConnection;
-import java.net.URI;
 import java.net.URL;
 
 import java.util.Date;
-import java.util.HashMap;
-import java.util.Map;
-
-import javax.crypto.Mac;
-import javax.crypto.spec.SecretKeySpec;
-
-import com.mossle.core.mapper.JsonMapper;
 
 import org.apache.commons.codec.digest.DigestUtils;
 import org.apache.commons.io.IOUtils;
@@ -27,7 +18,6 @@ import org.springframework.beans.factory.annotation.Value;
 
 public class HttpOssClient implements OssClient {
     private static Logger logger = LoggerFactory.getLogger(HttpOssClient.class);
-    private JsonMapper jsonMapper = new JsonMapper();
     private String baseUrl;
 
     public InputStream getObject(String bucketName, String objectName)

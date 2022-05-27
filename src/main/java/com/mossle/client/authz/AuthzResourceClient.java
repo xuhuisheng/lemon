@@ -6,4 +6,6 @@ import com.mossle.api.userauth.ResourceDTO;
 
 public interface AuthzResourceClient {
     List<ResourceDTO> findResource(String sysCode);
+
+    List<ResourceDTO> findResourceByType(String type, String sysCode);
 }

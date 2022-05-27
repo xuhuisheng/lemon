@@ -4,8 +4,8 @@ import com.mossle.core.hibernate.HibernateEntityDao;
 
 import com.mossle.user.persistence.domain.UserSchema;
 
-import org.springframework.stereotype.Service;
+import org.springframework.stereotype.Repository;
 
-@Service
+@Repository
 public class UserSchemaManager extends HibernateEntityDao<UserSchema> {
 }

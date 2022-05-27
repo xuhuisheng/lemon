@@ -1,11 +1,11 @@
 package com.mossle.user.component;
 
-import java.io.IOException;
+// import java.io.IOException;
 
 import java.util.HashMap;
 import java.util.Map;
 
-import javax.annotation.Resource;
+// import javax.annotation.Resource;
 
 import javax.jms.ConnectionFactory;
 
@@ -16,7 +16,7 @@ import com.mossle.user.persistence.domain.UserRepo;
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
 
-import org.springframework.jms.core.JmsTemplate;
+// import org.springframework.jms.core.JmsTemplate;
 
 import org.springframework.stereotype.Component;
 
@@ -34,18 +34,18 @@ public class UserRepoPublisher {
         map.put("code", userRepo.getCode());
         map.put("name", userRepo.getName());
 
-        JmsTemplate jmsTemplate = new JmsTemplate();
-        jmsTemplate.setConnectionFactory(connectionFactory);
-        jmsTemplate.setPubSubDomain(true);
+        // JmsTemplate jmsTemplate = new JmsTemplate();
+        // jmsTemplate.setConnectionFactory(connectionFactory);
+        // jmsTemplate.setPubSubDomain(true);
 
-        try {
-            jmsTemplate.convertAndSend(destinationName, jsonMapper.toJson(map));
-        } catch (IOException ex) {
-            logger.error(ex.getMessage());
-        }
+        // try {
+        // //jmsTemplate.convertAndSend(destinationName, jsonMapper.toJson(map));
+        // } catch (IOException ex) {
+        // logger.error(ex.getMessage());
+        // }
     }
 
-    @Resource
+    // @Resource
     public void setConnectionFactory(ConnectionFactory connectionFactory) {
         this.connectionFactory = connectionFactory;
     }

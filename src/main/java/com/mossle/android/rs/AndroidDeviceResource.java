@@ -14,7 +14,7 @@ import javax.ws.rs.core.MediaType;
 
 import com.mossle.api.user.AccountStatus;
 import com.mossle.api.user.AuthenticationHandler;
-import com.mossle.api.user.UserConnector;
+import com.mossle.client.user.UserClient;
 import com.mossle.api.user.UserDTO;
 
 import com.mossle.core.mapper.JsonMapper;
@@ -35,7 +35,7 @@ public class AndroidDeviceResource {
             .getLogger(AndroidDeviceResource.class);
     private PimDeviceManager pimDeviceManager;
     private AuthenticationHandler authenticationHandler;
-    private UserConnector userConnector;
+    private UserClient userClient;
     private JsonMapper jsonMapper = new JsonMapper();
 
     @POST
@@ -87,7 +87,7 @@ public class AndroidDeviceResource {
             }
 
             if (pimDevice == null) {
-                UserDTO userDto = userConnector.findByUsername(username, "1");
+                UserDTO userDto = userClient.findByUsername(username, "1");
 
                 pimDevice = new PimDevice();
                 pimDevice.setName(name);
@@ -101,7 +101,7 @@ public class AndroidDeviceResource {
                 pimDevice.setSessionId(uuid.toString());
                 pimDeviceManager.save(pimDevice);
             } else {
-                UserDTO userDto = userConnector.findByUsername(username, "1");
+                UserDTO userDto = userClient.findByUsername(username, "1");
                 UUID uuid = UUID.randomUUID();
                 pimDevice.setSessionId(uuid.toString());
                 pimDevice.setUserId(userDto.getId());
@@ -178,7 +178,7 @@ public class AndroidDeviceResource {
     }
 
     @Resource
-    public void setUserConnector(UserConnector userConnector) {
-        this.userConnector = userConnector;
+    public void setUserClient(UserClient userClient) {
+        this.userClient = userClient;
     }
 }

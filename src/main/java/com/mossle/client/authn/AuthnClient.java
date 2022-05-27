@@ -1,7 +1,5 @@
 package com.mossle.client.authn;
 
-import com.mossle.core.util.BaseDTO;
-
 import com.mossle.spi.device.DeviceDTO;
 
 public interface AuthnClient {

@@ -1,0 +1,43 @@
+
+
+-------------------------------------------------------------------------------
+--  notification queue
+-------------------------------------------------------------------------------
+CREATE TABLE NOTIFICATION_QUEUE(
+    ID BIGINT AUTO_INCREMENT,
+    CODE VARCHAR(50),
+    NAME VARCHAR(50),
+    CONTENT TEXT,
+
+    PRIORITY INT,
+    CREATE_TIME TIMESTAMP,
+    CREATOR VARCHAR(64),
+    UPDATE_TIME TIMESTAMP,
+    UPDATER VARCHAR(64),
+    STATUS VARCHAR(50),
+
+    APP VARCHAR(50),
+
+    WEIGHT INT,
+
+    CONFIG_ID BIGINT,
+
+    CONSTRAINT PK_NOTIFICATION_QUEUE PRIMARY KEY(ID),
+    CONSTRAINT FK_NOTIFICATION_QUEUE_CONFIG FOREIGN KEY (CONFIG_ID) REFERENCES NOTIFICATION_CONFIG(ID)
+) ENGINE=INNODB CHARSET=UTF8;
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+

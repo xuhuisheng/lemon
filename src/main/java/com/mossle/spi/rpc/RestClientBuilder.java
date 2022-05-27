@@ -1,21 +1,11 @@
 package com.mossle.spi.rpc;
 
-import java.io.InputStream;
-
 import java.lang.reflect.InvocationHandler;
 import java.lang.reflect.Method;
 import java.lang.reflect.Proxy;
 
-import java.net.HttpURLConnection;
-import java.net.URL;
-
 import java.util.concurrent.ExecutorService;
 import java.util.concurrent.Executors;
-
-import com.mossle.core.mapper.JsonMapper;
-import com.mossle.core.util.BaseDTO;
-
-import org.apache.commons.io.IOUtils;
 
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
@@ -23,7 +13,6 @@ import org.slf4j.LoggerFactory;
 public class RestClientBuilder implements InvocationHandler {
     private static Logger logger = LoggerFactory
             .getLogger(RestClientBuilder.class);
-    private JsonMapper jsonMapper = new JsonMapper();
     private String baseUrl;
     private String accessKey;
     private String accessSecret;
@@ -55,6 +44,8 @@ public class RestClientBuilder implements InvocationHandler {
     }
 
     public <T> T build(Class<T> interfaceClass) {
+        logger.debug("debug : {}", interfaceClass);
+
         T instance = (T) Proxy.newProxyInstance(
                 interfaceClass.getClassLoader(),
                 new Class[] { interfaceClass }, this);

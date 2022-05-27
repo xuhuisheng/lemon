@@ -3,10 +3,6 @@ package com.mossle.client.authn;
 import java.net.HttpURLConnection;
 import java.net.URL;
 
-import java.util.List;
-
-import com.fasterxml.jackson.core.type.TypeReference;
-
 import com.mossle.api.user.AccountStatus;
 
 import com.mossle.core.mapper.JsonMapper;

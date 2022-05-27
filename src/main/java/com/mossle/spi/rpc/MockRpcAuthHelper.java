@@ -1,7 +1,6 @@
 package com.mossle.spi.rpc;
 
 import java.util.Date;
-import java.util.Map;
 
 import javax.servlet.http.HttpServletRequest;
 

@@ -10,6 +10,7 @@
     <bean id="userDeployer" class="com.mossle.user.data.UserDeployer"/>
 
     <!-- 组织 -->
+    <!--
     <bean class="com.mossle.party.data.PartyDeployer" depends-on="userDeployer">
         <property name="partyRuleDeployer">
             <bean class="com.mossle.party.data.PartyRuleDeployer"/>
@@ -18,11 +19,12 @@
             <bean class="com.mossle.party.data.PartyDataDeployer"/>
         </property>
     </bean>
+    -->
 
     <!-- 权限 -->
     <bean id="authDeployer" class="com.mossle.auth.data.AuthDeployer" depends-on="userDeployer"/>
 
-	<!-- 菜单 -->
+    <!-- 菜单 -->
     <bean class="com.mossle.auth.data.MenuDeployer" depends-on="authDeployer">
         <property name="enable" value="${menu.autoDeploy.enable}"/>
     </bean>
@@ -39,52 +41,54 @@
             </list>
         </property>
     </bean>
-	
-	<!-- 导入流程分类 -->
-	<bean id="processCategoryDeployer" class="com.mossle.bpm.data.ProcessCategoryDeployer"/>
+    
+    <!-- 导入流程分类 -->
+    <bean id="processCategoryDeployer" class="com.mossle.bpm.data.ProcessCategoryDeployer"/>
 
     <!-- 流程配置 -->
     <bean class="com.mossle.bpm.data.ProcessListenerDeployer" depends-on="bpmDeployer"/>
 
     <bean class="com.mossle.bpm.data.ProcessOperationDeployer" depends-on="bpmDeployer"/>
 
-	<!-- 自动部署form -->
-	<bean class="com.mossle.form.data.XFormDeployer">
-		<property name="autoDeploy" value="${form.autoDeploy}"/>
-	</bean>
+    <!-- 自动部署form -->
+    <bean class="com.mossle.form.data.XFormDeployer">
+        <property name="autoDeploy" value="${form.autoDeploy}"/>
+    </bean>
 
-	<!-- 自动解析model -->
-	<bean class="com.mossle.model.data.ModelDeployer">
-		<property name="autoDeploy" value="${model.autoDeploy}"/>
-		<property name="defaultTenantCode" value="${tenant.default.code}"/>
-		<property name="tenantConnector" ref="tenantConnector"/>
-	</bean>
+    <!-- 自动解析model -->
+    <bean class="com.mossle.model.data.ModelDeployer">
+        <property name="autoDeploy" value="${model.autoDeploy}"/>
+        <property name="defaultTenantCode" value="${tenant.default.code}"/>
+        <property name="tenantConnector" ref="tenantConnector"/>
+    </bean>
 
-	<!-- 字典 -->
+    <!-- 字典 -->
     <bean id="dictDeployer" class="com.mossle.dict.data.DictDeployer"/>
 
-	<!-- 模板 -->
+    <!-- 模板 -->
     <bean id="templateDeployer" class="com.mossle.internal.template.data.TemplateDeployer"/>
 
-	<!-- 邮件提醒 -->
+    <!-- 邮件提醒 -->
+    <!--
     <bean id="sendmailDeployer" class="com.mossle.internal.sendmail.data.SendmailDeployer"/>
+    -->
 
-	<!-- 门户 -->
+    <!-- 门户 -->
     <bean id="portalDeployer" class="com.mossle.portal.data.PortalDeployer"/>
 
-	<!-- 文章 -->
-	<bean id="cmsDeployer" class="com.mossle.cms.data.CmsDeployer"/>
+    <!-- 文章 -->
+    <bean id="cmsDeployer" class="com.mossle.cms.data.CmsDeployer"/>
 
-	<!-- 文章模板 -->
-	<bean id="cmsTemplateDeployer" class="com.mossle.cms.data.CmsTemplateDeployer"/>
+    <!-- 文章模板 -->
+    <bean id="cmsTemplateDeployer" class="com.mossle.cms.data.CmsTemplateDeployer"/>
 
-	<!-- 报表 -->
-	<bean id="reportDeployer" class="com.mossle.report.data.ReportDeployer"/>
+    <!-- 报表 -->
+    <bean id="reportDeployer" class="com.mossle.report.data.ReportDeployer"/>
 
-	<!-- 工作日历 -->
-	<bean id="workcalDeployer" class="com.mossle.workcal.data.WorkcalDeployer" init-method="init"/>
+    <!-- 工作日历 -->
+    <bean id="workcalDeployer" class="com.mossle.workcal.data.WorkcalDeployer" init-method="init"/>
 
-	<!-- 会议室 -->
-	<bean id="meetingDeployer" class="com.mossle.meeting.data.MeetingDeployer"/>
+    <!-- 会议室 -->
+    <bean id="meetingDeployer" class="com.mossle.meeting.data.MeetingDeployer"/>
 
 </beans>

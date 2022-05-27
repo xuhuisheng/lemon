@@ -2,7 +2,7 @@
   <modelVersion>4.0.0</modelVersion>
   <groupId>com.mossle</groupId>
   <artifactId>lemon</artifactId>
-  <version>1.12.0</version>
+  <version>1.13.0</version>
   <name>lemon</name>
   <packaging>war</packaging>
   <description>Lemon is an OA.</description>
@@ -109,6 +109,9 @@
       <groupId>com.fasterxml.jackson.jaxrs</groupId>
       <artifactId>jackson-jaxrs-json-provider</artifactId>
     </dependency><dependency>
+      <groupId>javax.mail</groupId>
+      <artifactId>mail</artifactId>
+    </dependency><dependency>
       <groupId>com.github.inspektr</groupId>
       <artifactId>inspektr-support-spring</artifactId>
     </dependency><dependency>
@@ -205,14 +208,11 @@
       <groupId>eu.bitwalker</groupId>
       <artifactId>UserAgentUtils</artifactId>
       <version>1.20</version>
-    </dependency>
-
-    <dependency>
+    </dependency><dependency>
       <groupId>io.swagger.core.v3</groupId>
       <artifactId>swagger-annotations</artifactId>
-      <version>2.1.11</version>
-    </dependency>
-  </dependencies>
+      <version>2.1.13</version>
+    </dependency></dependencies>
 
   <dependencyManagement>
     <dependencies>
@@ -571,14 +571,14 @@
         <version>${jackson-jaxrs-json-provider.version}</version>
       </dependency>
       <dependency>
-        <groupId>com.fasterxml.jackson.core</groupId>
-        <artifactId>jackson-bind</artifactId>
-        <version>${jackson-bind.version}</version>
-      </dependency>
-      <dependency>
         <groupId>com.fasterxml.jackson.datatype</groupId>
         <artifactId>jackson-datatype-hibernate4</artifactId>
         <version>${jackson-datatype-hibernate4.version}</version>
+      </dependency>
+      <dependency>
+        <groupId>com.fasterxml.jackson.core</groupId>
+        <artifactId>jackson-bind</artifactId>
+        <version>${jackson-bind.version}</version>
       </dependency>
 
       <dependency>

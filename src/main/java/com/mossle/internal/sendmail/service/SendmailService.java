@@ -75,6 +75,7 @@ public class SendmailService {
             SendmailQueue sendmailQueue = new SendmailQueue();
             sendmailQueue.setReceiver(to);
             sendmailQueue.setData(data);
+            sendmailQueue.setCatalog(sendmailTemplate.getCatalog());
             sendmailQueue.setSendmailTemplate(sendmailTemplate);
             sendmailQueue.setSendmailConfig(sendmailConfig);
             sendmailQueue.setSendmailApp(sendmailApp);

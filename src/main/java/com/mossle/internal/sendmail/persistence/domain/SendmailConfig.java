@@ -61,11 +61,11 @@ public class SendmailConfig implements java.io.Serializable {
     private Integer smtpSsl;
 
     /** . */
-    private Set<SendmailQueue> sendmailQueues = new HashSet<SendmailQueue>(0);
-
-    /** . */
     private Set<SendmailHistory> sendmailHistories = new HashSet<SendmailHistory>(
             0);
+
+    /** . */
+    private Set<SendmailQueue> sendmailQueues = new HashSet<SendmailQueue>(0);
 
     public SendmailConfig() {
     }
@@ -78,8 +78,8 @@ public class SendmailConfig implements java.io.Serializable {
             String password, Integer smtpAuth, Integer smtpStarttls,
             String status, String defaultFrom, String testMail,
             String tenantId, Integer port, Integer smtpSsl,
-            Set<SendmailQueue> sendmailQueues,
-            Set<SendmailHistory> sendmailHistories) {
+            Set<SendmailHistory> sendmailHistories,
+            Set<SendmailQueue> sendmailQueues) {
         this.id = id;
         this.name = name;
         this.host = host;
@@ -93,8 +93,8 @@ public class SendmailConfig implements java.io.Serializable {
         this.tenantId = tenantId;
         this.port = port;
         this.smtpSsl = smtpSsl;
-        this.sendmailQueues = sendmailQueues;
         this.sendmailHistories = sendmailHistories;
+        this.sendmailQueues = sendmailQueues;
     }
 
     /** @return null. */
@@ -282,20 +282,6 @@ public class SendmailConfig implements java.io.Serializable {
 
     /** @return . */
     @OneToMany(fetch = FetchType.LAZY, mappedBy = "sendmailConfig")
-    public Set<SendmailQueue> getSendmailQueues() {
-        return this.sendmailQueues;
-    }
-
-    /**
-     * @param sendmailQueues
-     *            .
-     */
-    public void setSendmailQueues(Set<SendmailQueue> sendmailQueues) {
-        this.sendmailQueues = sendmailQueues;
-    }
-
-    /** @return . */
-    @OneToMany(fetch = FetchType.LAZY, mappedBy = "sendmailConfig")
     public Set<SendmailHistory> getSendmailHistories() {
         return this.sendmailHistories;
     }
@@ -306,5 +292,19 @@ public class SendmailConfig implements java.io.Serializable {
      */
     public void setSendmailHistories(Set<SendmailHistory> sendmailHistories) {
         this.sendmailHistories = sendmailHistories;
+    }
+
+    /** @return . */
+    @OneToMany(fetch = FetchType.LAZY, mappedBy = "sendmailConfig")
+    public Set<SendmailQueue> getSendmailQueues() {
+        return this.sendmailQueues;
+    }
+
+    /**
+     * @param sendmailQueues
+     *            .
+     */
+    public void setSendmailQueues(Set<SendmailQueue> sendmailQueues) {
+        this.sendmailQueues = sendmailQueues;
     }
 }

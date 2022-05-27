@@ -32,4 +32,10 @@
 	<!-- open -->
 	<bean id="openClient" class="${client.open}" />
 
+    <!-- notification -->
+    <bean id="notificationClient" class="${client.notification}"/>
+
+    <!-- sendmsg -->
+    <bean id="sendMsgClient" class="${client.sendmsg}" />
+
 </beans>

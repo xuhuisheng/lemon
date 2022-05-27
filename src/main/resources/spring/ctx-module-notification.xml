@@ -7,9 +7,11 @@
 		<property name="templateConnector" ref="templateConnector"/>
 		<property name="templateService" ref="templateService"/>
 		<property name="map">
-			<map>  
+			<map>
 				<entry key="msg" value-ref="msgNotificationHandler"/>
+				<!--
 				<entry key="mail" value-ref="sendmailNotificationHandler"/>
+				-->
 			</map>
 		</property>
 	</bean>
@@ -18,6 +20,8 @@
 		<property name="defaultSender" value="${msg.default.sender}"/>
 	</bean>
 
+	<!--
 	<bean id="sendmailNotificationHandler" class="com.mossle.internal.sendmail.support.SendmailNotificationHandler"/>
+	-->
 
 </beans>

@@ -30,10 +30,10 @@ public class SendmailHistory implements java.io.Serializable {
     private SendmailTemplate sendmailTemplate;
 
     /** null. */
-    private SendmailConfig sendmailConfig;
+    private SendmailApp sendmailApp;
 
     /** null. */
-    private SendmailApp sendmailApp;
+    private SendmailConfig sendmailConfig;
 
     /** null. */
     private String subject;
@@ -74,6 +74,12 @@ public class SendmailHistory implements java.io.Serializable {
     /** null. */
     private String businessKey;
 
+    /** null. */
+    private String catalog;
+
+    /** null. */
+    private String batch;
+
     public SendmailHistory() {
     }
 
@@ -82,15 +88,15 @@ public class SendmailHistory implements java.io.Serializable {
     }
 
     public SendmailHistory(Long id, SendmailTemplate sendmailTemplate,
-            SendmailConfig sendmailConfig, SendmailApp sendmailApp,
+            SendmailApp sendmailApp, SendmailConfig sendmailConfig,
             String subject, String sender, String receiver, String cc,
             String bcc, String content, String attachment, String data,
             Date createTime, String status, String info, String tenantId,
-            String businessKey) {
+            String businessKey, String catalog, String batch) {
         this.id = id;
         this.sendmailTemplate = sendmailTemplate;
-        this.sendmailConfig = sendmailConfig;
         this.sendmailApp = sendmailApp;
+        this.sendmailConfig = sendmailConfig;
         this.subject = subject;
         this.sender = sender;
         this.receiver = receiver;
@@ -104,6 +110,8 @@ public class SendmailHistory implements java.io.Serializable {
         this.info = info;
         this.tenantId = tenantId;
         this.businessKey = businessKey;
+        this.catalog = catalog;
+        this.batch = batch;
     }
 
     /** @return null. */
@@ -138,21 +146,6 @@ public class SendmailHistory implements java.io.Serializable {
 
     /** @return null. */
     @ManyToOne(fetch = FetchType.LAZY)
-    @JoinColumn(name = "CONFIG_ID")
-    public SendmailConfig getSendmailConfig() {
-        return this.sendmailConfig;
-    }
-
-    /**
-     * @param sendmailConfig
-     *            null.
-     */
-    public void setSendmailConfig(SendmailConfig sendmailConfig) {
-        this.sendmailConfig = sendmailConfig;
-    }
-
-    /** @return null. */
-    @ManyToOne(fetch = FetchType.LAZY)
     @JoinColumn(name = "APP_ID")
     public SendmailApp getSendmailApp() {
         return this.sendmailApp;
@@ -164,6 +157,21 @@ public class SendmailHistory implements java.io.Serializable {
      */
     public void setSendmailApp(SendmailApp sendmailApp) {
         this.sendmailApp = sendmailApp;
+    }
+
+    /** @return null. */
+    @ManyToOne(fetch = FetchType.LAZY)
+    @JoinColumn(name = "CONFIG_ID")
+    public SendmailConfig getSendmailConfig() {
+        return this.sendmailConfig;
+    }
+
+    /**
+     * @param sendmailConfig
+     *            null.
+     */
+    public void setSendmailConfig(SendmailConfig sendmailConfig) {
+        this.sendmailConfig = sendmailConfig;
     }
 
     /** @return null. */
@@ -347,5 +355,33 @@ public class SendmailHistory implements java.io.Serializable {
      */
     public void setBusinessKey(String businessKey) {
         this.businessKey = businessKey;
+    }
+
+    /** @return null. */
+    @Column(name = "CATALOG", length = 50)
+    public String getCatalog() {
+        return this.catalog;
+    }
+
+    /**
+     * @param catalog
+     *            null.
+     */
+    public void setCatalog(String catalog) {
+        this.catalog = catalog;
+    }
+
+    /** @return null. */
+    @Column(name = "BATCH", length = 100)
+    public String getBatch() {
+        return this.batch;
+    }
+
+    /**
+     * @param batch
+     *            null.
+     */
+    public void setBatch(String batch) {
+        this.batch = batch;
     }
 }

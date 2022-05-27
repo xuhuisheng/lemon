@@ -20,11 +20,12 @@ import com.mossle.core.page.Page;
 import com.mossle.core.query.PropertyFilter;
 import com.mossle.core.spring.MessageHelper;
 import com.mossle.core.store.MultipartFileDataSource;
-import com.mossle.core.util.IoUtils;
 import com.mossle.core.util.ServletUtils;
 
 import com.mossle.internal.sendmail.persistence.domain.SendmailAttachment;
 import com.mossle.internal.sendmail.persistence.manager.SendmailAttachmentManager;
+
+import org.apache.commons.io.IOUtils;
 
 import org.springframework.stereotype.Controller;
 
@@ -165,7 +166,7 @@ public class SendmailAttachmentController {
 
         ServletUtils.setFileDownloadHeader(request, response,
                 sendmailAttachment.getName());
-        IoUtils.copyStream(storeDto.getDataSource().getInputStream(),
+        IOUtils.copy(storeDto.getDataSource().getInputStream(),
                 response.getOutputStream());
     }
 

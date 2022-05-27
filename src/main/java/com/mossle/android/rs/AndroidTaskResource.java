@@ -29,7 +29,7 @@ import com.mossle.api.model.ModelInfoDTO;
 import com.mossle.api.process.ProcessConnector;
 import com.mossle.api.store.StoreConnector;
 import com.mossle.api.tenant.TenantHolder;
-import com.mossle.api.user.UserConnector;
+import com.mossle.client.user.UserClient;
 
 import com.mossle.bpm.persistence.manager.BpmProcessManager;
 
@@ -74,7 +74,7 @@ public class AndroidTaskResource {
     private OperationService operationService;
     private ModelConnector modelConnector;
     private StoreClient storeClient;
-    private UserConnector userConnector;
+    private UserClient userClient;
     private ProcessConnector processConnector;
 
     @POST
@@ -114,7 +114,7 @@ public class AndroidTaskResource {
             map.put("createTime",
                     dateFormat.format(humanTaskDto.getCreateTime()));
             map.put("assignee", humanTaskDto.getAssignee());
-            map.put("assigneeDisplayName", userConnector.findById(userId)
+            map.put("assigneeDisplayName", userClient.findById(userId,tenantHolder.getUserRepoRef())
                     .getDisplayName());
             list.add(map);
         }
@@ -165,7 +165,7 @@ public class AndroidTaskResource {
             map.put("createTime",
                     dateFormat.format(humanTaskDto.getCreateTime()));
             map.put("assignee", humanTaskDto.getAssignee());
-            map.put("assigneeDisplayName", userConnector.findById(userId)
+            map.put("assigneeDisplayName", userClient.findById(userId,tenantHolder.getUserRepoRef())
                     .getDisplayName());
             list.add(map);
         }
@@ -215,7 +215,7 @@ public class AndroidTaskResource {
             map.put("createTime",
                     dateFormat.format(humanTaskDto.getCreateTime()));
             map.put("assignee", humanTaskDto.getAssignee());
-            map.put("assigneeDisplayName", userConnector.findById(userId)
+            map.put("assigneeDisplayName", userClient.findById(userId,tenantHolder.getUserRepoRef())
                     .getDisplayName());
             list.add(map);
         }
@@ -266,7 +266,7 @@ public class AndroidTaskResource {
             map.put("createTime",
                     dateFormat.format(humanTaskDto.getCreateTime()));
             map.put("assignee", humanTaskDto.getAssignee());
-            map.put("assigneeDisplayName", userConnector.findById(userId)
+            map.put("assigneeDisplayName", userClient.findById(userId,tenantHolder.getUserRepoRef())
                     .getDisplayName());
             list.add(map);
         }
@@ -317,7 +317,7 @@ public class AndroidTaskResource {
             map.put("createTime",
                     dateFormat.format(humanTaskDto.getCreateTime()));
             map.put("assignee", humanTaskDto.getAssignee());
-            map.put("assigneeDisplayName", userConnector.findById(userId)
+            map.put("assigneeDisplayName", userClient.findById(userId,tenantHolder.getUserRepoRef())
                     .getDisplayName());
             list.add(map);
         }
@@ -490,8 +490,8 @@ public class AndroidTaskResource {
     }
 
     @Resource
-    public void setUserConnector(UserConnector userConnector) {
-        this.userConnector = userConnector;
+    public void setUserClient(UserClient userClient) {
+        this.userClient = userClient;
     }
 
     @Resource

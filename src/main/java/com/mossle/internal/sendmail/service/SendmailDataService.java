@@ -122,9 +122,20 @@ public class SendmailDataService {
         int pageNo = 1;
         int pageSize = sendmailApp.getPriority();
 
-        return (List<SendmailQueue>) sendmailQueueManager.pagedQuery(
-                "from SendmailQueue where sendmailApp=?", pageNo, pageSize,
-                sendmailApp).getResult();
+        String hql = "from SendmailQueue where sendmailApp=? and (catalog='' or catalog=null) order by id";
+
+        return (List<SendmailQueue>) sendmailQueueManager.pagedQuery(hql,
+                pageNo, pageSize, sendmailApp).getResult();
+    }
+
+    public List<SendmailQueue> findTopSendmailQueues(
+            SendmailTemplate sendmailTemplate, int num) {
+        int pageNo = 1;
+        int pageSize = num;
+        String hql = "from SendmailQueue where sendmailTemplate=? order by id";
+
+        return (List<SendmailQueue>) sendmailQueueManager.pagedQuery(hql,
+                pageNo, pageSize, sendmailTemplate).getResult();
     }
 
     public void processSendmailQueue(SendmailQueue sendmailQueue)
@@ -291,6 +302,8 @@ public class SendmailDataService {
         sendmailHistory.setReceiver(mailDto.getTo());
         sendmailHistory.setStatus(mailDto.isSuccess() ? "success" : "error");
         sendmailHistory.setTenantId(sendmailQueue.getTenantId());
+        sendmailHistory.setCatalog(sendmailQueue.getCatalog());
+        sendmailHistory.setBatch(sendmailQueue.getBatch());
 
         if (mailDto.getException() != null) {
             sendmailHistory.setInfo(mailDto.getException().getMessage());

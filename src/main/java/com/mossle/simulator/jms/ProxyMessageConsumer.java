@@ -47,6 +47,7 @@ public class ProxyMessageConsumer implements MessageConsumer {
             Thread.sleep(timeout);
         } catch (InterruptedException ex) {
             logger.warn(ex.getMessage(), ex);
+            Thread.currentThread().interrupt();
 
             JMSException jmsException = new JMSException(ex.getMessage());
             jmsException.setLinkedException(ex);

@@ -97,12 +97,11 @@ public class AuthnClientImpl implements AuthnClient {
         accountDevice.setOs(deviceDto.getOs());
         accountDevice.setClient(deviceDto.getClient());
 
-        // TODO: mossle-lib-app-0.0.25
-        // String username = deviceDto.getUsername();
-        // AccountInfo accountInfo = accountInfoManager.findUniqueBy("username",
-        // username);
-        // accountDevice.setAccountInfo(accountInfo);
-        // this.accountDeviceManager.save(accountDevice);
+        String username = deviceDto.getUsername();
+        AccountInfo accountInfo = accountInfoManager.findUniqueBy("username",
+                username);
+        accountDevice.setAccountInfo(accountInfo);
+        this.accountDeviceManager.save(accountDevice);
     }
 
     // ~

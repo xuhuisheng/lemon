@@ -34,6 +34,7 @@ import com.mossle.user.persistence.manager.AccountLogManager;
 import com.mossle.user.persistence.manager.AccountOnlineManager;
 import com.mossle.user.persistence.manager.PersonInfoManager;
 import com.mossle.user.publish.UserPublisher;
+import com.mossle.user.service.UserService;
 
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
@@ -66,6 +67,7 @@ public class UserInfoController {
     private CustomPasswordEncoder customPasswordEncoder;
     private UserPublisher userPublisher;
     private TenantHolder tenantHolder;
+    private UserService userService;
 
     /**
      * 部门人员列表.
@@ -393,7 +395,7 @@ public class UserInfoController {
                         "user.user.input.passwordnotequals", "两次输入密码不符");
 
                 // TODO: 还要填充schema
-                return "user/account-info-input";
+                return "user/info/detail-index";
             }
         }
 
@@ -477,7 +479,20 @@ public class UserInfoController {
             userPublisher.notifyUserCreated(this.convertUserDto(dest));
         }
 
-        return "redirect:/user/info/detail-index.do?id=" + dest.getId();
+        PersonInfo personInfo = personInfoManager.findUniqueBy("code",
+                dest.getCode());
+
+        if (personInfo == null) {
+            personInfo = new PersonInfo();
+            personInfo.setCode(accountInfo.getCode());
+            personInfo.setUsername(accountInfo.getUsername());
+            personInfo.setDisplayName(accountInfo.getDisplayName());
+            personInfo.setType(accountInfo.getType());
+            personInfo.setStatus(accountInfo.getStatus());
+            personInfoManager.save(personInfo);
+        }
+
+        return "redirect:/user/info/detail-index.do?id=" + personInfo.getId();
     }
 
     /**
@@ -534,6 +549,84 @@ public class UserInfoController {
         }
 
         return "redirect:/user/info/search.do?" + buff.toString();
+    }
+
+    /**
+     * 删除.
+     */
+    @RequestMapping("remove")
+    public String remove(@RequestParam("selectedItem") List<Long> selectedItem,
+            RedirectAttributes redirectAttributes) {
+        String tenantId = tenantHolder.getTenantId();
+        List<PersonInfo> personInfos = personInfoManager
+                .findByIds(selectedItem);
+
+        for (PersonInfo personInfo : personInfos) {
+            AccountInfo accountInfo = this.userService.removePerson(personInfo
+                    .getId());
+
+            UserDTO userDto = new UserDTO();
+            userDto.setId(Long.toString(accountInfo.getId()));
+            userDto.setUsername(accountInfo.getUsername());
+            userDto.setRef(accountInfo.getCode());
+            userDto.setUserRepoRef(tenantId);
+            userCache.removeUser(userDto);
+            userPublisher.notifyUserRemoved(this.convertUserDto(accountInfo));
+        }
+
+        messageHelper.addFlashMessage(redirectAttributes,
+                "core.success.delete", "删除成功");
+
+        return "redirect:/user/info/index.do";
+    }
+
+    @RequestMapping("generate-password")
+    public String generatePassword(@RequestParam("id") Long id) {
+        AccountCredential accountCredential = this.accountCredentialManager
+                .get(id);
+        AccountInfo accountInfo = accountCredential.getAccountInfo();
+        PersonInfo personInfo = personInfoManager.findUniqueBy("code",
+                accountInfo.getCode());
+
+        String password = userService.generatePassword(id);
+
+        return "redirect:/user/info/detail-password.do?id="
+                + personInfo.getId() + "&credentialId="
+                + accountCredential.getId() + "&password=" + password;
+    }
+
+    @RequestMapping("person-info-save")
+    public String personInfoSave(@ModelAttribute PersonInfo personInfo,
+            RedirectAttributes redirectAttributes) throws Exception {
+        // 再进行数据复制
+        PersonInfo dest = null;
+        Long id = personInfo.getId();
+
+        if (id != null) {
+            dest = personInfoManager.get(id);
+            beanMapper.copy(personInfo, dest);
+        } else {
+            dest = personInfo;
+        }
+
+        personInfoManager.save(dest);
+
+        messageHelper.addFlashMessage(redirectAttributes, "core.success.save",
+                "保存成功");
+
+        AccountInfo accountInfo = accountInfoManager.findUniqueBy("code",
+                personInfo.getCode());
+
+        if (accountInfo != null) {
+            UserDTO userDto = new UserDTO();
+            userDto.setId(Long.toString(accountInfo.getId()));
+            userDto.setUsername(accountInfo.getUsername());
+            userDto.setRef(accountInfo.getCode());
+            userDto.setUserRepoRef("1");
+            userCache.removeUser(userDto);
+        }
+
+        return "redirect:/user/info/detail-person.do?id=" + personInfo.getId();
     }
 
     public UserDTO convertUserDto(AccountInfo accountInfo) {
@@ -625,5 +718,10 @@ public class UserInfoController {
     @Resource
     public void setTenantHolder(TenantHolder tenantHolder) {
         this.tenantHolder = tenantHolder;
+    }
+
+    @Resource
+    public void setUserService(UserService userService) {
+        this.userService = userService;
     }
 }

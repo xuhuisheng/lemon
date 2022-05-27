@@ -51,12 +51,15 @@ public class SendmailTemplate implements java.io.Serializable {
     /** null. */
     private String tenantId;
 
-    /** . */
-    private Set<SendmailAttachment> sendmailAttachments = new HashSet<SendmailAttachment>(
-            0);
+    /** null. */
+    private String catalog;
 
     /** . */
     private Set<SendmailHistory> sendmailHistories = new HashSet<SendmailHistory>(
+            0);
+
+    /** . */
+    private Set<SendmailAttachment> sendmailAttachments = new HashSet<SendmailAttachment>(
             0);
 
     /** . */
@@ -71,9 +74,9 @@ public class SendmailTemplate implements java.io.Serializable {
 
     public SendmailTemplate(Long id, String name, String receiver,
             String sender, String cc, String bcc, String subject,
-            String content, Integer manual, String tenantId,
-            Set<SendmailAttachment> sendmailAttachments,
+            String content, Integer manual, String tenantId, String catalog,
             Set<SendmailHistory> sendmailHistories,
+            Set<SendmailAttachment> sendmailAttachments,
             Set<SendmailQueue> sendmailQueues) {
         this.id = id;
         this.name = name;
@@ -85,8 +88,9 @@ public class SendmailTemplate implements java.io.Serializable {
         this.content = content;
         this.manual = manual;
         this.tenantId = tenantId;
-        this.sendmailAttachments = sendmailAttachments;
+        this.catalog = catalog;
         this.sendmailHistories = sendmailHistories;
+        this.sendmailAttachments = sendmailAttachments;
         this.sendmailQueues = sendmailQueues;
     }
 
@@ -231,19 +235,18 @@ public class SendmailTemplate implements java.io.Serializable {
         this.tenantId = tenantId;
     }
 
-    /** @return . */
-    @OneToMany(fetch = FetchType.LAZY, mappedBy = "sendmailTemplate")
-    public Set<SendmailAttachment> getSendmailAttachments() {
-        return this.sendmailAttachments;
+    /** @return null. */
+    @Column(name = "CATALOG", length = 50)
+    public String getCatalog() {
+        return this.catalog;
     }
 
     /**
-     * @param sendmailAttachments
-     *            .
+     * @param catalog
+     *            null.
      */
-    public void setSendmailAttachments(
-            Set<SendmailAttachment> sendmailAttachments) {
-        this.sendmailAttachments = sendmailAttachments;
+    public void setCatalog(String catalog) {
+        this.catalog = catalog;
     }
 
     /** @return . */
@@ -258,6 +261,21 @@ public class SendmailTemplate implements java.io.Serializable {
      */
     public void setSendmailHistories(Set<SendmailHistory> sendmailHistories) {
         this.sendmailHistories = sendmailHistories;
+    }
+
+    /** @return . */
+    @OneToMany(fetch = FetchType.LAZY, mappedBy = "sendmailTemplate")
+    public Set<SendmailAttachment> getSendmailAttachments() {
+        return this.sendmailAttachments;
+    }
+
+    /**
+     * @param sendmailAttachments
+     *            .
+     */
+    public void setSendmailAttachments(
+            Set<SendmailAttachment> sendmailAttachments) {
+        this.sendmailAttachments = sendmailAttachments;
     }
 
     /** @return . */

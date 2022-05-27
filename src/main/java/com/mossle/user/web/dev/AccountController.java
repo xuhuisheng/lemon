@@ -10,8 +10,9 @@ import javax.annotation.Resource;
 
 import com.mossle.api.tenant.TenantHolder;
 import com.mossle.api.user.UserCache;
-import com.mossle.api.user.UserConnector;
 import com.mossle.api.user.UserDTO;
+
+import com.mossle.client.user.UserClient;
 
 import com.mossle.core.page.Page;
 import com.mossle.core.query.PropertyFilter;
@@ -50,7 +51,7 @@ public class AccountController {
     private MessageHelper messageHelper;
     private UserPublisher userPublisher;
     private TenantHolder tenantHolder;
-    private UserConnector userConnector;
+    private UserClient userClient;
 
     @RequestMapping("list")
     public String list(@ModelAttribute Page page,
@@ -210,7 +211,8 @@ public class AccountController {
         List<UserDTO> userDtos = new ArrayList<UserDTO>();
 
         for (AccountInfo accountInfo : accountInfos) {
-            UserDTO userDto = userConnector.findById(accountInfo.getCode());
+            UserDTO userDto = userClient.findById(accountInfo.getCode(),
+                    tenantHolder.getUserRepoRef());
             userDtos.add(userDto);
         }
 
@@ -284,7 +286,7 @@ public class AccountController {
     }
 
     @Resource
-    public void setUserConnector(UserConnector userConnector) {
-        this.userConnector = userConnector;
+    public void setUserClient(UserClient userClient) {
+        this.userClient = userClient;
     }
 }

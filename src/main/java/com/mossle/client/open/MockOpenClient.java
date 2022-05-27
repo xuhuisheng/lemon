@@ -11,6 +11,8 @@ public class MockOpenClient implements OpenClient {
             .getLogger(MockOpenClient.class);
 
     public OpenAppDTO getApp(String clientId) {
+        logger.debug("get app : {}", clientId);
+
         OpenAppDTO openAppDto = new OpenAppDTO();
         openAppDto.setClientId(clientId);
         openAppDto.setClientSecret(clientId);

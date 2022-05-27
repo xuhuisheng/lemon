@@ -1,6 +1,7 @@
 package com.mossle.api.employee;
 
 import java.util.Date;
+import java.util.List;
 
 public class EmployeeDTO {
     private String code;
@@ -10,7 +11,9 @@ public class EmployeeDTO {
     private String companyName;
     private String departmentCode;
     private String departmentName;
-    private String departmentPath;
+    private List<DepartmentDTO> departmentPath;
+    private List<DepartmentDTO> allDepartments;
+    private List<List<DepartmentDTO>> allDepartmentPath;
     private String superiourCode;
     private String superiourUsername;
     private String costCenterCode;
@@ -24,7 +27,7 @@ public class EmployeeDTO {
     private String employeeType;
     private String gender;
     private Date birthday;
-    private String mobile;
+    private String cellphone;
     private String email;
     private String telephone;
     private String cardNumber;
@@ -95,12 +98,28 @@ public class EmployeeDTO {
         this.departmentName = departmentName;
     }
 
-    public String getDepartmentPath() {
-        return this.departmentPath;
+    public List<DepartmentDTO> getDepartmentPath() {
+        return departmentPath;
     }
 
-    public void setDepartmentPath(String departmentPath) {
+    public void setDepartmentPath(List<DepartmentDTO> departmentPath) {
         this.departmentPath = departmentPath;
+    }
+
+    public List<DepartmentDTO> getAllDepartments() {
+        return allDepartments;
+    }
+
+    public void setAllDepartments(List<DepartmentDTO> allDepartments) {
+        this.allDepartments = allDepartments;
+    }
+
+    public List<List<DepartmentDTO>> getAllDepartmentPath() {
+        return allDepartmentPath;
+    }
+
+    public void setAllDepartmentPath(List<List<DepartmentDTO>> allDepartmentPath) {
+        this.allDepartmentPath = allDepartmentPath;
     }
 
     public String getSuperiourCode() {
@@ -207,12 +226,12 @@ public class EmployeeDTO {
         this.birthday = birthday;
     }
 
-    public String getMobile() {
-        return this.mobile;
+    public String getCellphone() {
+        return this.cellphone;
     }
 
-    public void setMobile(String mobile) {
-        this.mobile = mobile;
+    public void setCellphone(String cellphone) {
+        this.cellphone = cellphone;
     }
 
     public String getEmail() {

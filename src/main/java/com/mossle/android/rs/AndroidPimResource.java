@@ -14,7 +14,7 @@ import javax.ws.rs.Produces;
 import javax.ws.rs.core.MediaType;
 
 import com.mossle.api.tenant.TenantHolder;
-import com.mossle.api.user.UserConnector;
+import com.mossle.client.user.UserClient;
 
 import com.mossle.core.mapper.JsonMapper;
 import com.mossle.core.util.BaseDTO;
@@ -37,7 +37,7 @@ public class AndroidPimResource {
     private JsonMapper jsonMapper = new JsonMapper();
     private TenantHolder tenantHolder;
     private PimInfoManager pimInfoManager;
-    private UserConnector userConnector;
+    private UserClient userClient;
     private PimDeviceManager pimDeviceManager;
 
     @POST
@@ -93,8 +93,8 @@ public class AndroidPimResource {
     }
 
     @Resource
-    public void setUserConnector(UserConnector userConnector) {
-        this.userConnector = userConnector;
+    public void setUserClient(UserClient userClient) {
+        this.userClient = userClient;
     }
 
     @Resource

@@ -30,17 +30,7 @@ public class OssService {
     private OssObjectManager ossObjectManager;
 
     public OssDTO putObject(InputStream is, String bucketName, String objectName) {
-        OssBucket ossBucket = ossBucketManager.findUniqueBy("name", bucketName);
-
-        if (ossBucket == null) {
-            logger.info("cannot find bucket : {}", bucketName);
-
-            return null;
-        }
-
-        OssObject ossObject = ossObjectManager.findUnique(
-                "from OssObject where ossBucket=? and name=?", ossBucket,
-                objectName);
+        OssObject ossObject = this.findOssObject(bucketName, objectName);
 
         try {
             StoreResult storeResult = storeHelper.saveStore(bucketName,
@@ -51,6 +41,8 @@ public class OssService {
                 ossObject.setPath(storeResult.getKey());
                 ossObject.setCreateTime(new Date());
             } else {
+                OssBucket ossBucket = ossBucketManager.findUniqueBy("name",
+                        bucketName);
                 ossObject = new OssObject();
                 ossObject.setOssBucket(ossBucket);
                 ossObject.setName(objectName);
@@ -79,17 +71,7 @@ public class OssService {
     }
 
     public OssDTO getObject(String bucketName, String objectName) {
-        OssBucket ossBucket = ossBucketManager.findUniqueBy("name", bucketName);
-
-        if (ossBucket == null) {
-            logger.info("cannot find bucket : {}", bucketName);
-
-            return null;
-        }
-
-        OssObject ossObject = ossObjectManager.findUnique(
-                "from OssObject where ossBucket=? and name=?", ossBucket,
-                objectName);
+        OssObject ossObject = this.findOssObject(bucketName, objectName);
 
         if (ossObject == null) {
             logger.info("cannot find object : {} {}", bucketName, objectName);
@@ -122,17 +104,7 @@ public class OssService {
     }
 
     public OssDTO deleteObject(String bucketName, String objectName) {
-        OssBucket ossBucket = ossBucketManager.findUniqueBy("name", bucketName);
-
-        if (ossBucket == null) {
-            logger.info("cannot find bucket : {}", bucketName);
-
-            return null;
-        }
-
-        OssObject ossObject = ossObjectManager.findUnique(
-                "from OssObject where ossBucket=? and name=?", ossBucket,
-                objectName);
+        OssObject ossObject = this.findOssObject(bucketName, objectName);
 
         if (ossObject == null) {
             logger.info("cannot find object : {} {}", bucketName, objectName);
@@ -159,17 +131,7 @@ public class OssService {
     }
 
     public OssDTO doesObjectExist(String bucketName, String objectName) {
-        OssBucket ossBucket = ossBucketManager.findUniqueBy("name", bucketName);
-
-        if (ossBucket == null) {
-            logger.info("cannot find bucket : {}", bucketName);
-
-            return null;
-        }
-
-        OssObject ossObject = ossObjectManager.findUnique(
-                "from OssObject where ossBucket=? and name=?", ossBucket,
-                objectName);
+        OssObject ossObject = this.findOssObject(bucketName, objectName);
 
         if (ossObject == null) {
             logger.info("cannot find object : {} {}", bucketName, objectName);
@@ -184,6 +146,23 @@ public class OssService {
         return ossDto;
     }
 
+    public OssObject findOssObject(String bucketName, String objectName) {
+        OssBucket ossBucket = ossBucketManager.findUniqueBy("name", bucketName);
+
+        if (ossBucket == null) {
+            logger.info("cannot find bucket : {}", bucketName);
+
+            return null;
+        }
+
+        OssObject ossObject = ossObjectManager.findUnique(
+                "from OssObject where ossBucket=? and name=?", ossBucket,
+                objectName);
+
+        return ossObject;
+    }
+
+    // ~
     @Resource
     public void setStoreHelper(StoreHelper storeHelper) {
         this.storeHelper = storeHelper;
