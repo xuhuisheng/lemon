@@ -26,9 +26,9 @@ import com.mossle.api.model.ModelItemDTO;
 import com.mossle.api.process.ProcessConnector;
 import com.mossle.api.process.ProcessDTO;
 import com.mossle.api.tenant.TenantHolder;
-import com.mossle.api.user.UserConnector;
 
 import com.mossle.client.store.StoreClient;
+import com.mossle.client.user.UserClient;
 
 import com.mossle.core.MultipartHandler;
 import com.mossle.core.export.Exportor;
@@ -75,7 +75,7 @@ public class FormDataController {
     private CurrentUserHolder currentUserHolder;
     private StoreClient storeClient;
     private FormConnector formConnector;
-    private UserConnector userConnector;
+    private UserClient userClient;
     private ModelConnector modelConnector;
     private ProcessConnector processConnector;
 
@@ -302,17 +302,16 @@ public class FormDataController {
 
         if (modelInfoDto != null) {
             // Xform xform = new XformBuilder().setStoreClient(storeClient)
-            // .setUserConnector(userConnector)
+            // .setUserClient(userClient)
             // .setContent(formDto.getContent()).setRecord(record).build();
             Xform xform = new XformBuilder().setStoreClient(storeClient)
-                    .setUserConnector(userConnector)
-                    .setContent(formDto.getContent())
+                    .setUserClient(userClient).setContent(formDto.getContent())
                     .setModelInfoDto(modelInfoDto).build();
             model.addAttribute("xform", xform);
         } else {
             Xform xform = new XformBuilder().setStoreClient(storeClient)
-                    .setUserConnector(userConnector)
-                    .setContent(formDto.getContent()).build();
+                    .setUserClient(userClient).setContent(formDto.getContent())
+                    .build();
             model.addAttribute("xform", xform);
         }
 
@@ -391,8 +390,8 @@ public class FormDataController {
     }
 
     @Resource
-    public void setUserConnector(UserConnector userConnector) {
-        this.userConnector = userConnector;
+    public void setUserClient(UserClient userClient) {
+        this.userClient = userClient;
     }
 
     @Resource

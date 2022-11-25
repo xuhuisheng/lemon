@@ -32,6 +32,7 @@ public class DatabaseAuthzResourceClient implements AuthzResourceClient {
     private static Logger logger = LoggerFactory
             .getLogger(DatabaseAuthzResourceClient.class);
     public static final String HQL_ACCESS = "from Access where tenantId=? order by priority";
+    public static final String HQL_ACCESS_TYPE = "from Access where tenantId=? and type=? order by priority";
     private AccessManager accessManager;
 
     @Transactional
@@ -51,9 +52,22 @@ public class DatabaseAuthzResourceClient implements AuthzResourceClient {
         return resourceDtos;
     }
 
+    @Transactional
+    public List<ResourceDTO> findResourceByType(String type, String sysCode) {
+        Assert.hasText(sysCode, "sysCode should not be null");
 
-    public List<ResourceDTO> findResourceByType(String sysCode, String type) {
-        return java.util.Collections.emptyList();
+        List<Access> accesses = accessManager.find(HQL_ACCESS, sysCode, type);
+        List<ResourceDTO> resourceDtos = new ArrayList<ResourceDTO>();
+
+        for (Access access : accesses) {
+            ResourceDTO dto = new ResourceDTO();
+            dto.setType(access.getType());
+            dto.setResource(access.getValue());
+            dto.setPermission(access.getPerm().getCode());
+            resourceDtos.add(dto);
+        }
+
+        return resourceDtos;
     }
 
     @Resource

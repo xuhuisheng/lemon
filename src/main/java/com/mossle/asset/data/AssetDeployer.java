@@ -26,6 +26,11 @@ import org.apache.commons.lang3.StringUtils;
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
 
+import org.springframework.beans.factory.annotation.Value;
+
+import org.springframework.stereotype.Component;
+
+@Component("com.mossle.asset.data.AssetDeployer")
 public class AssetDeployer {
     private static Logger logger = LoggerFactory.getLogger(AssetDeployer.class);
     private AssetInfoManager assetInfoManager;
@@ -34,11 +39,11 @@ public class AssetDeployer {
     private SkuCategoryManager skuCategoryManager;
     private StockInfoManager stockInfoManager;
     private StockItemManager stockItemManager;
-    private String dataFilePath = "data/asset.csv";
+    private String dataFilePath = "data/asset/asset.csv";
     private String dataFileEncoding = "GB2312";
-    private String skuDataFilePath = "data/sku.csv";
+    private String skuDataFilePath = "data/asset/sku.csv";
     private String skuDataFileEncoding = "GB2312";
-    private String stockDataFilePath = "data/stock.csv";
+    private String stockDataFilePath = "data/asset/stock.csv";
     private String stockDataFileEncoding = "GB2312";
     private String defaultTenantId = "1";
     private boolean enable = true;
@@ -46,10 +51,12 @@ public class AssetDeployer {
     @PostConstruct
     public void process() throws Exception {
         if (!enable) {
-            logger.info("skip init asset data");
+            logger.info("skip asset data init");
 
             return;
         }
+
+        logger.info("start asset data init");
 
         AssetInfoCallback assetInfoCallback = new AssetInfoCallback();
         assetInfoCallback.setAssetInfoManager(assetInfoManager);
@@ -69,6 +76,7 @@ public class AssetDeployer {
         stockCallback.setSkuInfoManager(skuInfoManager);
         new CsvProcessor().process(stockDataFilePath, stockDataFileEncoding,
                 stockCallback);
+        logger.info("end asset data init");
     }
 
     @Resource
@@ -100,5 +108,10 @@ public class AssetDeployer {
     @Resource
     public void setStockItemManager(StockItemManager stockItemManager) {
         this.stockItemManager = stockItemManager;
+    }
+
+    @Value("${asset.data.init.enable:false}")
+    public void setEnable(boolean enable) {
+        this.enable = enable;
     }
 }

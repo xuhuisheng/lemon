@@ -10,6 +10,7 @@ import javax.servlet.http.HttpServletResponse;
 
 import com.mossle.api.tenant.TenantHolder;
 
+import com.mossle.auth.component.AuthProducer;
 import com.mossle.auth.persistence.domain.Access;
 import com.mossle.auth.persistence.domain.Perm;
 import com.mossle.auth.persistence.manager.AccessManager;
@@ -22,8 +23,7 @@ import com.mossle.core.page.Page;
 import com.mossle.core.query.PropertyFilter;
 import com.mossle.core.spring.MessageHelper;
 
-import com.mossle.spi.auth.ResourcePublisher;
-
+// import com.mossle.spi.auth.ResourcePublisher;
 import org.springframework.stereotype.Controller;
 
 import org.springframework.ui.Model;
@@ -41,7 +41,9 @@ public class AccessController {
     private Exportor exportor;
     private BeanMapper beanMapper = new BeanMapper();
     private PermManager permManager;
-    private ResourcePublisher resourcePublisher;
+
+    // private ResourcePublisher resourcePublisher;
+    private AuthProducer authProducer;
     private TenantHolder tenantHolder;
 
     @RequestMapping("access-list")
@@ -101,7 +103,9 @@ public class AccessController {
 
         messageHelper.addFlashMessage(redirectAttributes, "core.success.save",
                 "保存成功");
-        resourcePublisher.publish();
+        // mq
+        // resourcePublisher.publish();
+        authProducer.sendUpdate();
 
         return "redirect:/auth/access-list.do";
     }
@@ -114,7 +118,8 @@ public class AccessController {
         messageHelper.addFlashMessage(redirectAttributes,
                 "core.success.delete", "删除成功");
 
-        resourcePublisher.publish();
+        // resourcePublisher.publish();
+        authProducer.sendUpdate();
 
         return "redirect:/auth/access-list.do";
     }
@@ -153,9 +158,13 @@ public class AccessController {
         this.messageHelper = messageHelper;
     }
 
+    // @Resource
+    // public void setResourcePublisher(ResourcePublisher resourcePublisher) {
+    // this.resourcePublisher = resourcePublisher;
+    // }
     @Resource
-    public void setResourcePublisher(ResourcePublisher resourcePublisher) {
-        this.resourcePublisher = resourcePublisher;
+    public void setAuthProducer(AuthProducer authProducer) {
+        this.authProducer = authProducer;
     }
 
     @Resource

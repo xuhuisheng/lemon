@@ -12,7 +12,6 @@ import org.activiti.engine.impl.persistence.entity.VariableScopeImpl;
 import org.activiti.engine.impl.variable.IntegerType;
 import org.activiti.engine.impl.variable.SerializableType;
 import org.activiti.engine.impl.variable.StringType;
-import org.activiti.engine.impl.variable.VariableType;
 
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;

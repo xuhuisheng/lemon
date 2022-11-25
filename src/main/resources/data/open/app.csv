@@ -1,0 +1,8 @@
+"GROUP_CODE","CODE"   ,"NAME"   ,"CLIENT_ID","CLIENT_SECRET","USER_ID","URL"
+"oa"        ,"oa"     ,"oa"     ,"oa"       ,"oa"           ,"80020"  ,"http://192.168.134.58/oa"
+"ga"        ,"ga"     ,"ga"     ,"ga"       ,"ga"           ,"80020"  ,"http://192.168.134.58/ga"
+"it"        ,"it"     ,"it"     ,"it"       ,"it"           ,"80020"  ,"http://192.168.134.58/it"
+"hr"        ,"hr"     ,"hr"     ,"hr"       ,"hr"           ,"80020"  ,"http://192.168.134.58/hr"
+"law"       ,"law"    ,"law"    ,"law"      ,"law"          ,"80020"  ,"http://192.168.134.58/law"
+"finance"   ,"finance","finance","finance"  ,"finance"      ,"80020"  ,"http://192.168.134.58/finance"
+"dev"       ,"dev"    ,"dev"    ,"dev"      ,"dev"          ,"80001"  ,"http://192.168.134.58/dev"

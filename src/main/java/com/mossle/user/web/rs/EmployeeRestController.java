@@ -1,24 +1,17 @@
 package com.mossle.user.web.rs;
 
-
 import javax.annotation.Resource;
 
 import com.mossle.api.employee.EmployeeDTO;
 
-
-
 import com.mossle.core.util.BaseDTO;
 
-
 import com.mossle.user.service.UserEmployeeService;
-
-
 
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
 
 import org.springframework.http.MediaType;
-
 
 import org.springframework.web.bind.annotation.RequestMapping;
 import org.springframework.web.bind.annotation.RequestParam;

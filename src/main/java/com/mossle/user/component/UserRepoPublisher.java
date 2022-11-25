@@ -1,12 +1,10 @@
 package com.mossle.user.component;
 
 // import java.io.IOException;
-
 import java.util.HashMap;
 import java.util.Map;
 
 // import javax.annotation.Resource;
-
 import javax.jms.ConnectionFactory;
 
 import com.mossle.core.mapper.JsonMapper;
@@ -17,7 +15,6 @@ import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
 
 // import org.springframework.jms.core.JmsTemplate;
-
 import org.springframework.stereotype.Component;
 
 @Component

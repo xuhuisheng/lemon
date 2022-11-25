@@ -3,9 +3,10 @@ package com.mossle.auth.support;
 import javax.annotation.PostConstruct;
 
 import com.mossle.api.tenant.TenantConnector;
-import com.mossle.api.user.UserConnector;
 import com.mossle.api.userauth.UserAuthCache;
 import com.mossle.api.userauth.UserAuthConnector;
+
+import com.mossle.client.user.UserClient;
 
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
@@ -21,7 +22,7 @@ public class UserAuthConnectorFactoryBean implements FactoryBean {
             .getLogger(UserAuthConnectorFactoryBean.class);
     private UserAuthConnector userAuthConnector;
     private TenantConnector tenantConnector;
-    private UserConnector userConnector;
+    private UserClient userClient;
     private String type = "database";
     private JdbcTemplate jdbcTemplate;
     private UserAuthCache userAuthCache;
@@ -31,7 +32,7 @@ public class UserAuthConnectorFactoryBean implements FactoryBean {
     @PostConstruct
     public void afterPropertiesSet() {
         Assert.notNull(type, "type cannot be null");
-        Assert.notNull(userConnector, "userConnector cannot be null");
+        Assert.notNull(userClient, "userClient cannot be null");
         Assert.notNull(tenantConnector, "tenantConnector cannot be null");
 
         if ("mock".equals(type)) {
@@ -53,7 +54,7 @@ public class UserAuthConnectorFactoryBean implements FactoryBean {
 
         DatabaseUserAuthConnector databaseUserAuthConnector = new DatabaseUserAuthConnector();
         databaseUserAuthConnector.setJdbcTemplate(jdbcTemplate);
-        databaseUserAuthConnector.setUserConnector(userConnector);
+        databaseUserAuthConnector.setUserClient(userClient);
         databaseUserAuthConnector.setTenantConnector(tenantConnector);
 
         if (sqlFindPermissions != null) {
@@ -102,8 +103,8 @@ public class UserAuthConnectorFactoryBean implements FactoryBean {
         this.tenantConnector = tenantConnector;
     }
 
-    public void setUserConnector(UserConnector userConnector) {
-        this.userConnector = userConnector;
+    public void setUserClient(UserClient userClient) {
+        this.userClient = userClient;
     }
 
     public void setUserAuthCache(UserAuthCache userAuthCache) {

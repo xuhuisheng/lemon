@@ -7,26 +7,26 @@
        http://www.springframework.org/schema/context http://www.springframework.org/schema/context/spring-context.xsd
        http://www.springframework.org/schema/tx http://www.springframework.org/schema/tx/spring-tx.xsd">
 
-	<!-- 扫描除了Controller以外的注解 -->
-	<context:component-scan base-package="com.mossle">
-		<context:exclude-filter type="annotation" expression="org.springframework.stereotype.Controller"/>
-	</context:component-scan>
-	
-	<!-- 把jul的日志导入给slf4j -->
-	<!--
-	在内嵌tomcat的环境，会导致tomcat-juli日志与jul, slf4j发生循环依赖，导致java.lang.ClassCircularityError
-	<bean class="com.mossle.core.logback.JulHandler"/>
-	-->
+    <!-- 扫描除了Controller以外的注解 -->
+    <context:component-scan base-package="com.mossle">
+        <context:exclude-filter type="annotation" expression="org.springframework.stereotype.Controller"/>
+    </context:component-scan>
+    
+    <!-- 把jul的日志导入给slf4j -->
+    <!--
+    在内嵌tomcat的环境，会导致tomcat-juli日志与jul, slf4j发生循环依赖，导致java.lang.ClassCircularityError
+    <bean class="com.mossle.core.logback.JulHandler"/>
+    -->
 
-	<!-- 无法IoC时，提供一个单例获得当前的ctx -->
-	<bean id="applicationContextHelper" class="com.mossle.core.spring.ApplicationContextHelper"/>
+    <!-- 无法IoC时，提供一个单例获得当前的ctx -->
+    <bean id="applicationContextHelper" class="com.mossle.core.spring.ApplicationContextHelper"/>
 
-	<!-- 简易的csv导出工具 -->
-	<bean id="exportor" class="com.mossle.core.export.CsvExportor"/>
+    <!-- 简易的csv导出工具 -->
+    <bean id="exportor" class="com.mossle.core.export.CsvExportor"/>
 
-	<!-- 模板 -->
-	<bean id="templateService" class="com.mossle.core.template.FreemarkerTemplateService">
-		<property name="baseDir" value="${store.baseDir}/cms/template"/>
-	</bean>
+    <!-- 模板 -->
+    <bean id="templateService" class="com.mossle.core.template.FreemarkerTemplateService">
+        <property name="baseDir" value="${store.baseDir}/cms/template"/>
+    </bean>
 
 </beans>

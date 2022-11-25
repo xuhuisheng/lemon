@@ -12,7 +12,7 @@ import javax.xml.datatype.Duration;
 
 import com.mossle.api.notification.NotificationConnector;
 import com.mossle.api.notification.NotificationDTO;
-import com.mossle.api.user.UserConnector;
+import com.mossle.client.user.UserClient;
 import com.mossle.api.user.UserDTO;
 
 import com.mossle.bpm.persistence.domain.BpmConfNotice;
@@ -67,8 +67,8 @@ public class TimeoutNotice {
 
             if ((now.getTime() < noticeDate.getTime())
                     && ((noticeDate.getTime() - now.getTime()) < (60 * 1000))) {
-                UserConnector userConnector = ApplicationContextHelper
-                        .getBean(UserConnector.class);
+                UserClient userClient = ApplicationContextHelper
+                        .getBean(UserClient.class);
                 NotificationConnector notificationConnector = ApplicationContextHelper
                         .getBean(NotificationConnector.class);
 
@@ -77,14 +77,14 @@ public class TimeoutNotice {
                 TaskEntity taskEntity = new TaskEntity();
                 taskEntity.setId(delegateTask.getId());
                 taskEntity.setName(delegateTask.getName());
-                taskEntity.setAssigneeWithoutCascade(userConnector.findById(
-                        delegateTask.getAssignee()).getDisplayName());
+                taskEntity.setAssigneeWithoutCascade(userClient.findById(
+                        delegateTask.getAssignee(), "1").getDisplayName());
                 taskEntity.setVariableLocal("initiator",
-                        getInitiator(userConnector, delegateTask));
+                        getInitiator(userClient, delegateTask));
                 //
                 data.put("task", taskEntity);
                 data.put("initiator",
-                        this.getInitiator(userConnector, delegateTask));
+                        this.getInitiator(userClient, delegateTask));
 
                 String receiver = bpmConfNotice.getReceiver();
 
@@ -95,20 +95,20 @@ public class TimeoutNotice {
                 UserDTO userDto = null;
 
                 if ("任务接收人".equals(receiver)) {
-                    userDto = userConnector
-                            .findById(delegateTask.getAssignee());
+                    userDto = userClient.findById(delegateTask.getAssignee(),
+                            "1");
                 } else if ("流程发起人".equals(receiver)) {
-                    userDto = userConnector.findById((String) delegateTask
-                            .getVariables().get("initiator"));
+                    userDto = userClient.findById((String) delegateTask
+                            .getVariables().get("initiator"), "1");
                 } else {
                     HistoricProcessInstanceEntity historicProcessInstanceEntity = Context
                             .getCommandContext()
                             .getHistoricProcessInstanceEntityManager()
                             .findHistoricProcessInstance(
                                     delegateTask.getProcessInstanceId());
-                    userDto = userConnector
+                    userDto = userClient
                             .findById(historicProcessInstanceEntity
-                                    .getStartUserId());
+                                    .getStartUserId(), "1");
                 }
 
                 /*
@@ -136,10 +136,9 @@ public class TimeoutNotice {
         }
     }
 
-    public String getInitiator(UserConnector userConnector,
-            DelegateTask delegateTask) {
-        return userConnector.findById(
-                (String) delegateTask.getVariables().get("initiator"))
+    public String getInitiator(UserClient userClient, DelegateTask delegateTask) {
+        return userClient.findById(
+                (String) delegateTask.getVariables().get("initiator"), "1")
                 .getDisplayName();
     }
 }

@@ -1,3 +1,0 @@
-classpath:/application.properties
-classpath:/application.local.properties
-classpath:/application.server.properties

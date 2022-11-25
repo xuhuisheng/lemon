@@ -3,11 +3,9 @@ package com.mossle.security.impl;
 import com.mossle.security.api.UserAuth;
 import com.mossle.security.api.UserRealm;
 
-import org.springframework.jdbc.core.JdbcTemplate;
-
+// import org.springframework.jdbc.core.JdbcTemplate;
 public class DatabaseUserRealm implements UserRealm {
-    private JdbcTemplate jdbcTemplate;
-
+    // private JdbcTemplate jdbcTemplate;
     public UserAuth login(String username, String password, String tenantId) {
         return null;
     }
@@ -24,7 +22,7 @@ public class DatabaseUserRealm implements UserRealm {
         return null;
     }
 
-    public void setJdbcTemplate(JdbcTemplate jdbcTemplate) {
-        this.jdbcTemplate = jdbcTemplate;
-    }
+    // public void setJdbcTemplate(JdbcTemplate jdbcTemplate) {
+    // this.jdbcTemplate = jdbcTemplate;
+    // }
 }

@@ -22,12 +22,17 @@ import org.apache.commons.lang3.StringUtils;
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
 
+import org.springframework.beans.factory.annotation.Value;
+
+import org.springframework.stereotype.Component;
+
+@Component("com.mossle.internal.template.data.TemplateDeployer")
 public class TemplateDeployer {
     private static Logger logger = LoggerFactory
             .getLogger(TemplateDeployer.class);
     private TemplateInfoManager templateInfoManager;
     private TemplateFieldManager templateFieldManager;
-    private String dataFilePath = "data/template.csv";
+    private String dataFilePath = "data/template/template.csv";
     private String dataFileEncoding = "GB2312";
     private String defaultTenantId = "1";
     private boolean enable = true;
@@ -35,16 +40,19 @@ public class TemplateDeployer {
     @PostConstruct
     public void process() throws Exception {
         if (!enable) {
-            logger.info("skip init template data");
+            logger.info("skip template init data");
 
             return;
         }
+
+        logger.info("start template init data");
 
         TemplateCallback templateCallback = new TemplateCallback();
         templateCallback.setTemplateInfoManager(templateInfoManager);
         templateCallback.setTemplateFieldManager(templateFieldManager);
         new CsvProcessor().process(dataFilePath, dataFileEncoding,
                 templateCallback);
+        logger.info("end template init data");
     }
 
     @Resource
@@ -56,5 +64,10 @@ public class TemplateDeployer {
     public void setTemplateFieldManager(
             TemplateFieldManager templateFieldManager) {
         this.templateFieldManager = templateFieldManager;
+    }
+
+    @Value("${template.data.init.enable:false}")
+    public void setEnable(boolean enable) {
+        this.enable = enable;
     }
 }

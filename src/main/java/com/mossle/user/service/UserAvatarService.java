@@ -1,7 +1,6 @@
 package com.mossle.user.service;
 
 // import java.io.ByteArrayOutputStream;
-
 import javax.activation.DataSource;
 
 import javax.annotation.Resource;

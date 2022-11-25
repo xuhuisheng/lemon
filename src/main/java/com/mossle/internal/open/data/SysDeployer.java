@@ -13,15 +13,20 @@ import com.mossle.internal.open.persistence.manager.SysInfoManager;
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
 
+import org.springframework.beans.factory.annotation.Value;
+
+import org.springframework.stereotype.Component;
+
+@Component("com.mossle.internal.open.data.SysDeployer")
 public class SysDeployer {
     private static Logger logger = LoggerFactory.getLogger(SysDeployer.class);
     private SysCategoryManager sysCategoryManager;
     private SysInfoManager sysInfoManager;
     private SysEntryManager sysEntryManager;
     private OpenAppManager openAppManager;
-    private String dataFilePath = "data/sys.csv";
+    private String dataFilePath = "data/open/sys.csv";
     private String dataFileEncoding = "GB2312";
-    private String entryDataFilePath = "data/sys-entry.csv";
+    private String entryDataFilePath = "data/open/sys-entry.csv";
     private String defaultTenantId = "1";
     private boolean enable = true;
     private SysInfoCallback sysInfoCallback;
@@ -44,10 +49,12 @@ public class SysDeployer {
     @PostConstruct
     public void process() throws Exception {
         if (!enable) {
-            logger.info("skip init {}", SysDeployer.class);
+            logger.info("skip sys init data");
 
             return;
         }
+
+        logger.info("start sys init data");
 
         this.init();
 
@@ -55,6 +62,7 @@ public class SysDeployer {
                 sysInfoCallback);
         new CsvProcessor().process(entryDataFilePath, dataFileEncoding,
                 sysEntryCallback);
+        logger.info("end sys init data");
     }
 
     @Resource
@@ -75,5 +83,10 @@ public class SysDeployer {
     @Resource
     public void setOpenAppManager(OpenAppManager openAppManager) {
         this.openAppManager = openAppManager;
+    }
+
+    @Value("${open.data.init.enable:false}")
+    public void setEnable(boolean enable) {
+        this.enable = enable;
     }
 }

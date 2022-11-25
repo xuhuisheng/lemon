@@ -1,9 +1,6 @@
 package com.mossle.security.client;
 
-import java.util.Collections;
-
 import com.mossle.api.tenant.TenantHolder;
-import com.mossle.api.userauth.UserAuthConnector;
 import com.mossle.api.userauth.UserAuthDTO;
 
 import com.mossle.client.authz.AuthzClient;
@@ -12,8 +9,6 @@ import com.mossle.client.user.UserClient;
 import com.mossle.core.mapper.BeanMapper;
 
 import com.mossle.security.impl.SpringSecurityUserAuth;
-
-import com.mossle.spi.user.InternalUserConnector;
 
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;

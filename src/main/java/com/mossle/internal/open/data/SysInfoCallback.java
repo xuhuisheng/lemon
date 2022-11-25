@@ -59,6 +59,8 @@ public class SysInfoCallback implements CsvCallback {
         sysInfo.setSysCategory(sysCategory);
         sysInfo.setOpenApp(openApp);
         sysInfo.setStatus("active");
+        sysInfo.setAppKey(code);
+        sysInfo.setAppSecret(code);
         sysInfoManager.save(sysInfo);
     }
 

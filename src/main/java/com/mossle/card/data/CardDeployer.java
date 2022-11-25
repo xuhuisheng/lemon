@@ -20,13 +20,18 @@ import org.apache.commons.lang3.StringUtils;
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
 
+import org.springframework.beans.factory.annotation.Value;
+
+import org.springframework.stereotype.Component;
+
+@Component("com.mossle.card.data.CardDeployer")
 public class CardDeployer {
     private static Logger logger = LoggerFactory.getLogger(CardDeployer.class);
     private DoorInfoManager doorInfoManager;
     private CardInfoManager cardInfoManager;
-    private String dataFilePath = "data/door.csv";
+    private String dataFilePath = "data/card/door.csv";
     private String dataFileEncoding = "GB2312";
-    private String cardDataFilePath = "data/card.csv";
+    private String cardDataFilePath = "data/card/card.csv";
     private String cardDataFileEncoding = "GB2312";
     private String defaultTenantId = "1";
     private boolean enable = true;
@@ -34,10 +39,12 @@ public class CardDeployer {
     @PostConstruct
     public void process() throws Exception {
         if (!enable) {
-            logger.info("skip init card data");
+            logger.info("skip card init data");
 
             return;
         }
+
+        logger.info("start card init data");
 
         DoorInfoCallback doorInfoCallback = new DoorInfoCallback();
         doorInfoCallback.setDoorInfoManager(doorInfoManager);
@@ -48,6 +55,7 @@ public class CardDeployer {
         cardInfoCallback.setCardInfoManager(cardInfoManager);
         new CsvProcessor().process(cardDataFilePath, cardDataFileEncoding,
                 cardInfoCallback);
+        logger.info("end card init data");
     }
 
     @Resource
@@ -58,5 +66,10 @@ public class CardDeployer {
     @Resource
     public void setCardInfoManager(CardInfoManager cardInfoManager) {
         this.cardInfoManager = cardInfoManager;
+    }
+
+    @Value("${card.data.init.enable:false}")
+    public void setEnable(boolean enable) {
+        this.enable = enable;
     }
 }

@@ -7,7 +7,6 @@ import javax.annotation.Resource;
 
 import com.mossle.api.tenant.TenantConnector;
 import com.mossle.api.tenant.TenantHolder;
-import com.mossle.api.user.UserConnector;
 import com.mossle.api.user.UserDTO;
 
 import com.mossle.auth.component.UserStatusChecker;
@@ -19,6 +18,8 @@ import com.mossle.auth.persistence.manager.UserStatusManager;
 import com.mossle.auth.service.AuthService;
 import com.mossle.auth.support.CheckUserStatusException;
 import com.mossle.auth.support.RoleDTO;
+
+import com.mossle.client.user.UserClient;
 
 import com.mossle.core.spring.MessageHelper;
 
@@ -43,7 +44,7 @@ public class UserConnectorBatchController {
     private UserStatusConverter userStatusConverter;
     private TenantConnector tenantConnector;
     private UserStatusChecker userStatusChecker;
-    private UserConnector userConnector;
+    private UserClient userClient;
     private RoleManager roleManager;
     private AuthService authService;
     private TenantHolder tenantHolder;
@@ -68,7 +69,7 @@ public class UserConnectorBatchController {
                 }
 
                 String username = str;
-                UserDTO userDto = userConnector.findByUsername(username,
+                UserDTO userDto = userClient.findByUsername(username,
                         tenantHolder.getUserRepoRef());
 
                 if (userDto == null) {
@@ -178,8 +179,8 @@ public class UserConnectorBatchController {
     }
 
     @Resource
-    public void setUserConnector(UserConnector userConnector) {
-        this.userConnector = userConnector;
+    public void setUserClient(UserClient userClient) {
+        this.userClient = userClient;
     }
 
     @Resource

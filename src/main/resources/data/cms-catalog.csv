@@ -1,3 +1,0 @@
-"NAME"    ,"CODE"   ,"PARENT","SITE"       ,"CATALOG"               ,"ARTICLE"
-"新闻"    ,"news"   ,""      ,"default"    ,"/default/list.html"    ,"/default/detail.html"
-"公告"    ,"notice" ,""      ,"default"    ,"/default/list.html"    ,"/default/detail.html"

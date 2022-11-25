@@ -1,8 +1,5 @@
 package com.mossle.bpm.support;
 
-import java.util.ArrayList;
-import java.util.List;
-
 import org.activiti.engine.delegate.event.ActivitiEvent;
 import org.activiti.engine.delegate.event.ActivitiEventListener;
 

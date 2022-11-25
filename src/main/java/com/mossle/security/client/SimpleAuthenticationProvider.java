@@ -2,11 +2,7 @@ package com.mossle.security.client;
 
 import javax.annotation.Resource;
 
-import com.mossle.api.auth.CustomPasswordEncoder;
-import com.mossle.api.tenant.TenantHolder;
 import com.mossle.api.user.RemoteUserConnector;
-
-import com.mossle.spi.user.InternalUserConnector;
 
 import org.springframework.security.authentication.BadCredentialsException;
 import org.springframework.security.authentication.UsernamePasswordAuthenticationToken;

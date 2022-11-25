@@ -7,7 +7,7 @@ import java.text.SimpleDateFormat;
 import java.util.Date;
 import java.util.List;
 
-import com.mossle.api.user.UserConnector;
+import com.mossle.client.user.UserClient;
 
 import com.mossle.cms.persistence.domain.CmsArticle;
 import com.mossle.cms.persistence.domain.CmsCatalog;
@@ -28,7 +28,7 @@ public class CmsArticleCallback implements CsvCallback {
             .getLogger(CmsArticleCallback.class);
     private CmsArticleManager cmsArticleManager;
     private CmsCatalogManager cmsCatalogManager;
-    private UserConnector userConnector;
+    private UserClient userClient;
     private String defaultTenantId = "1";
     private String dataFileEncoding = "UTF-8";
 
@@ -41,8 +41,13 @@ public class CmsArticleCallback implements CsvCallback {
         String author = list.get(5);
         String content = this.readText("data/cms/" + code + ".txt",
                 dataFileEncoding);
-        String userId = userConnector.findByUsername(author, defaultTenantId)
-                .getId();
+        String userId = author;
+        try {
+            userId = userClient.findByUsername(author, defaultTenantId)
+                    .getId();
+        } catch (Exception ex) {
+            logger.info(ex.getMessage(), ex);
+        }
 
         if (StringUtils.isBlank(code)) {
             logger.warn("code cannot be blank {} {}", lineNo, list);
@@ -126,7 +131,7 @@ public class CmsArticleCallback implements CsvCallback {
         this.cmsCatalogManager = cmsCatalogManager;
     }
 
-    public void setUserConnector(UserConnector userConnector) {
-        this.userConnector = userConnector;
+    public void setUserClient(UserClient userClient) {
+        this.userClient = userClient;
     }
 }

@@ -22,11 +22,16 @@ import com.mossle.spi.device.DeviceDTO;
 
 import eu.bitwalker.useragentutils.UserAgent;
 
+import org.slf4j.Logger;
+import org.slf4j.LoggerFactory;
+
 import org.springframework.security.core.Authentication;
 import org.springframework.security.web.authentication.SavedRequestAwareAuthenticationSuccessHandler;
 
 public class RememberLastUsernameAuthenticationSuccessHandler extends
         SavedRequestAwareAuthenticationSuccessHandler {
+    private Logger logger = LoggerFactory
+            .getLogger(RememberLastUsernameAuthenticationSuccessHandler.class);
     private TenantHolder tenantHolder;
     private AuthnClient authnClient;
 
@@ -34,9 +39,10 @@ public class RememberLastUsernameAuthenticationSuccessHandler extends
     public void onAuthenticationSuccess(HttpServletRequest request,
             HttpServletResponse response, Authentication authentication)
             throws ServletException, IOException {
+        logger.debug("on success");
         this.handleTenant(response);
         this.handleUsername(response, authentication);
-        this.handleDevice(request, response);
+        this.handleDevice(request, response, authentication);
         super.onAuthenticationSuccess(request, response, authentication);
     }
 
@@ -54,8 +60,9 @@ public class RememberLastUsernameAuthenticationSuccessHandler extends
     }
 
     public void handleDevice(HttpServletRequest request,
-            HttpServletResponse response) {
+            HttpServletResponse response, Authentication authentication) {
         String deviceId = getCookie(request, "SECURITY_DEVICE_ID");
+        String username = this.getUsername(authentication);
 
         if (deviceId == null) {
             deviceId = UUID.randomUUID().toString();
@@ -68,14 +75,16 @@ public class RememberLastUsernameAuthenticationSuccessHandler extends
         if (deviceDto == null) {
             deviceDto = new DeviceDTO();
             deviceDto.setCode(deviceId);
-
-            UserAgent userAgent = UserAgent.parseUserAgentString(request
-                    .getHeader("User-Agent"));
-            deviceDto.setType(userAgent.getOperatingSystem().getDeviceType()
-                    .toString());
-            deviceDto.setOs(userAgent.getOperatingSystem().toString());
-            deviceDto.setClient(userAgent.getBrowser().toString());
         }
+
+        UserAgent userAgent = UserAgent.parseUserAgentString(request
+                .getHeader("User-Agent"));
+        // logger.info("user agent : {}", userAgent);
+        deviceDto.setType(userAgent.getOperatingSystem().getDeviceType()
+                .toString());
+        deviceDto.setOs(userAgent.getOperatingSystem().toString());
+        deviceDto.setClient(userAgent.getBrowser().toString());
+        deviceDto.setUsername(username);
 
         authnClient.saveDevice(deviceDto);
     }

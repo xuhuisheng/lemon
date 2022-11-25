@@ -10,12 +10,13 @@ import javax.servlet.http.HttpServletRequest;
 import javax.servlet.http.HttpServletResponse;
 
 import com.mossle.api.tenant.TenantHolder;
-import com.mossle.api.user.UserConnector;
 
 import com.mossle.card.persistence.domain.CardInfo;
 import com.mossle.card.persistence.domain.DoorInfo;
 import com.mossle.card.persistence.manager.CardInfoManager;
 import com.mossle.card.persistence.manager.DoorInfoManager;
+
+import com.mossle.client.user.UserClient;
 
 import com.mossle.core.export.Exportor;
 import com.mossle.core.export.TableModel;
@@ -40,7 +41,7 @@ public class CardInfoController {
     private DoorInfoManager doorInfoManager;
     private Exportor exportor;
     private BeanMapper beanMapper = new BeanMapper();
-    private UserConnector userConnector;
+    private UserClient userClient;
     private MessageHelper messageHelper;
     private TenantHolder tenantHolder;
 
@@ -182,8 +183,8 @@ public class CardInfoController {
     }
 
     @Resource
-    public void setUserConnector(UserConnector userConnector) {
-        this.userConnector = userConnector;
+    public void setUserClient(UserClient userClient) {
+        this.userClient = userClient;
     }
 
     @Resource

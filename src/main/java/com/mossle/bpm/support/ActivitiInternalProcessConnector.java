@@ -28,7 +28,6 @@ import com.mossle.bpm.persistence.manager.BpmConfListenerManager;
 import com.mossle.bpm.persistence.manager.BpmConfOperationManager;
 import com.mossle.bpm.persistence.manager.BpmConfUserManager;
 import com.mossle.bpm.persistence.manager.BpmTaskConfManager;
-import com.mossle.bpm.support.MockVariableScope;
 
 import com.mossle.spi.process.InternalProcessConnector;
 import com.mossle.spi.process.ProcessTaskDefinition;
@@ -40,7 +39,6 @@ import org.activiti.engine.impl.cmd.GetDeploymentProcessDefinitionCmd;
 import org.activiti.engine.impl.context.Context;
 import org.activiti.engine.impl.el.ExpressionManager;
 import org.activiti.engine.impl.interceptor.Command;
-import org.activiti.engine.impl.persistence.entity.ExecutionEntity;
 import org.activiti.engine.impl.persistence.entity.ProcessDefinitionEntity;
 import org.activiti.engine.impl.persistence.entity.TaskEntity;
 import org.activiti.engine.impl.pvm.PvmActivity;
@@ -445,7 +443,8 @@ public class ActivitiInternalProcessConnector implements
         String processDefinitionId = modelInfo.getProcessId();
         logger.info("{} {} {}", processDefinitionId, activityId, eventCode);
 
-        if ((eventCode == 21) || (eventCode == 22) || (eventCode == 23) || (eventCode == 24)) {
+        if ((eventCode == 21) || (eventCode == 22) || (eventCode == 23)
+                || (eventCode == 24)) {
             activityId = "";
         }
 

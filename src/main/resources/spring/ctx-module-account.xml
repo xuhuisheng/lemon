@@ -1,105 +1,113 @@
 <?xml version="1.0" encoding="UTF-8"?>
 <beans xmlns="http://www.springframework.org/schema/beans"
-	    xmlns:xsi="http://www.w3.org/2001/XMLSchema-instance"
-	    xsi:schemaLocation="http://www.springframework.org/schema/beans http://www.springframework.org/schema/beans/spring-beans.xsd">
+        xmlns:xsi="http://www.w3.org/2001/XMLSchema-instance"
+        xsi:schemaLocation="http://www.springframework.org/schema/beans http://www.springframework.org/schema/beans/spring-beans.xsd">
 
-	<!--
-	  账号体系，是单独的部分，按理说是应该需要的，但是目前还不知道这么处理。
-	  userConnector保证所有的账号通用的部分，findById, findByUsername一类，查询选人一类。
-	  spi 头像
+    <!--
+      账号体系，是单独的部分，按理说是应该需要的，但是目前还不知道这么处理。
+      userConnector保证所有的账号通用的部分，findById, findByUsername一类，查询选人一类。
+      spi 头像
       spi 修改密码
-	  spi 认证，获取加密后的密码
-	  spi 设备
+      spi 认证，获取加密后的密码
+      spi 设备
 
-	  根据用户权限显示哪些menu，属于userauth
-	-->
+      根据用户权限显示哪些menu，属于userauth
+    -->
 
-	<!-- ================================================== -->
+    <!-- ================================================== -->
 
-	<alias name="defaultCacheManager" alias="userRepoCacheManager"/>
+    <alias name="defaultCacheManager" alias="userRepoCacheManager"/>
 
-	<bean id="userRepoCache" class="com.mossle.user.support.UserRepoCacheImpl">
-		<property name="cacheManager" ref="userRepoCacheManager"/>
-	</bean>
+    <bean id="userRepoCache" class="com.mossle.user.support.UserRepoCacheImpl">
+        <property name="cacheManager" ref="userRepoCacheManager"/>
+    </bean>
 
-	<bean id="userRepoConnector" class="com.mossle.user.support.UserRepoConnectorFactoryBean">
-		<property name="type" value="${userrepo.connector.type}"/>
-		<property name="userRepoCache" ref="userRepoCache"/>
-		<property name="jdbcTemplate" ref="jdbcTemplate"/>
-	</bean>
+    <bean id="userRepoConnector" class="com.mossle.user.support.UserRepoConnectorFactoryBean">
+        <property name="type" value="${userrepo.connector.type}"/>
+        <property name="userRepoCache" ref="userRepoCache"/>
+        <property name="jdbcTemplate" ref="jdbcTemplate"/>
+    </bean>
 
-	<bean class="com.mossle.user.support.UserRepoPopulator">
-		<property name="debug" value="${userrepo.connector.debug}"/>
-	</bean>
+    <bean class="com.mossle.user.support.UserRepoPopulator">
+        <property name="debug" value="${userrepo.connector.debug}"/>
+    </bean>
 
-	<!-- ================================================== -->
+    <!-- ================================================== -->
 
-	<alias name="defaultCacheManager" alias="userCacheManager"/>
+    <alias name="defaultCacheManager" alias="userCacheManager"/>
 
-	<bean id="userCache" class="com.mossle.user.support.UserCacheImpl">
-		<property name="cacheManager" ref="userCacheManager"/>
-	</bean>
+    <bean id="userCache" class="com.mossle.user.support.UserCacheImpl">
+        <property name="cacheManager" ref="userCacheManager"/>
+    </bean>
 
-	<bean id="userConnector" class="com.mossle.user.support.UserConnectorFactoryBean">
-		<property name="type" value="${user.connector.type}"/>
-		<property name="userCache" ref="userCache"/>
-		<property name="jdbcTemplate" ref="jdbcTemplate"/>
-	</bean>
+    <bean id="userConnector" class="com.mossle.user.support.UserConnectorFactoryBean">
+        <property name="type" value="${user.connector.type}"/>
+        <property name="userCache" ref="userCache"/>
+        <property name="jdbcTemplate" ref="jdbcTemplate"/>
+    </bean>
 
-	<!-- ================================================== -->
+    <!-- ================================================== -->
 
-	<!-- avatar -->
-	<alias name="defaultCacheManager" alias="avatarCacheManager"/>
+    <!-- avatar -->
+    <alias name="defaultCacheManager" alias="avatarCacheManager"/>
 
-	<bean id="avatarCache" class="com.mossle.user.avatar.AvatarCache">
-		<property name="cacheManager" ref="avatarCacheManager"/>
-	</bean>
+    <bean id="avatarCache" class="com.mossle.user.avatar.AvatarCache">
+        <property name="cacheManager" ref="avatarCacheManager"/>
+    </bean>
 
-	<bean id="internalUserConnector" class="${user.internalconnector}"/>
+    <bean id="internalUserConnector" class="${user.internalconnector}"/>
 
-	<!-- ================================================== -->
-
-	<alias name="defaultCacheManager" alias="userAuthCacheManager"/>
-
-	<bean id="userAuthCache" class="com.mossle.auth.support.UserAuthCacheImpl">
-		<property name="cacheManager" ref="userAuthCacheManager"/>
-	</bean>
+    <!-- ================================================== -->
 <!--
-	<bean id="userAuthConnector" class="com.mossle.auth.support.UserAuthConnectorFactoryBean">
-		<property name="type" value="${userauth.connector.type}"/>
-		<property name="userAuthCache" ref="userAuthCache"/>
-		<property name="jdbcTemplate" ref="jdbcTemplate"/>
-		<property name="userConnector" ref="userConnector"/>
-		<property name="tenantConnector" ref="tenantConnector"/>
-	</bean>
+    <alias name="defaultCacheManager" alias="userAuthCacheManager"/>
+
+    <bean id="userAuthCache" class="com.mossle.auth.support.UserAuthCacheImpl">
+        <property name="cacheManager" ref="userAuthCacheManager"/>
+    </bean>
+
+    <bean id="userAuthConnector" class="com.mossle.auth.support.UserAuthConnectorFactoryBean">
+        <property name="type" value="${userauth.connector.type}"/>
+        <property name="userAuthCache" ref="userAuthCache"/>
+        <property name="jdbcTemplate" ref="jdbcTemplate"/>
+        <property name="userConnector" ref="userConnector"/>
+        <property name="tenantConnector" ref="tenantConnector"/>
+    </bean>
 -->
+    <bean id="userAuthCache" class="com.mossle.api.userauth.MockUserAuthCache"/>
 
-	<!-- ================================================== -->
+    <!-- ================================================== -->
 
-	<!-- 管理用户时，同步party的工具（应该是人事模块吗？还没想明白） -->
-	<bean id="userNotification" class="com.mossle.user.notification.PartyUserNotification"/>
+    <!-- 管理用户时，同步party的工具（应该是人事模块吗？还没想明白） -->
+    <bean id="userNotification" class="com.mossle.user.notification.PartyUserNotification"/>
 
-	<!-- 菜单 -->
-	<bean id="menuConnector" class="${menu.connector}"/>
-
-	<alias name="defaultCacheManager" alias="menuCacheManager"/>
-
-	<bean id="menuCache" class="com.mossle.auth.support.MenuCache">
-		<property name="cacheManager" ref="menuCacheManager"/>
-	</bean>
-
-	<!-- 认证 -->
-	<bean id="authenticationHandler" class="com.mossle.user.authenticate.NormalAuthenticationHandler"/>
+    <!-- 获取账号状态的工具（应该是spi吗？还没想明白） -->
+    <!--
+    <bean id="accountStatusHelper" class="com.mossle.user.support.LocalAccountStatusHelper"/>
+    -->
 
 <!--
-	<bean class="com.mossle.auth.support.MenuDeployer">
-		<property name="enable" value="${menu.autoDeploy.enable}"/>
-	</bean>
+    <alias name="defaultCacheManager" alias="menuCacheManager"/>
+
+    <bean id="menuCache" class="com.mossle.auth.support.MenuCache">
+        <property name="cacheManager" ref="menuCacheManager"/>
+    </bean>
+-->
+
+<!--
+    <bean class="com.mossle.auth.support.MenuDeployer">
+        <property name="enable" value="${menu.autoDeploy.enable}"/>
+    </bean>
 -->
 <!--
-	<bean id="currentUserHolder" class="com.mossle.core.auth.MockCurrentUserHolder"/>
-	<bean id="internalUserAuthConnector" class="com.mossle.spi.userauth.MockInternalUserAuthConnector"/>
-	<bean id="customPasswordEncoder" class="com.mossle.core.auth.MockCustomPasswordEncoder"/>
+    <bean id="currentUserHolder" class="com.mossle.core.auth.MockCurrentUserHolder"/>
+    <bean id="internalUserAuthConnector" class="com.mossle.spi.userauth.MockInternalUserAuthConnector"/>
+    <bean id="customPasswordEncoder" class="com.mossle.core.auth.MockCustomPasswordEncoder"/>
 -->
+
+    <!-- 本地缓存的用户信息 -->
+    <bean id="localUserConnector" class="${user.localUserConnector}"/>
+
+    <!-- 远程用户信息接口 -->
+    <bean id="remoteUserConnector" class="${user.remoteUserConnector}"/>
 
 </beans>

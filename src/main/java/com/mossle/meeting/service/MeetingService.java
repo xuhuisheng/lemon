@@ -2,13 +2,17 @@ package com.mossle.meeting.service;
 
 import java.text.SimpleDateFormat;
 
+import java.util.Arrays;
 import java.util.Date;
 import java.util.List;
 
 import javax.annotation.Resource;
 
-import com.mossle.api.user.UserConnector;
 import com.mossle.api.user.UserDTO;
+
+import com.mossle.client.calendar.CalendarClient;
+import com.mossle.client.calendar.CalendarEventDTO;
+import com.mossle.client.user.UserClient;
 
 import com.mossle.core.util.TimeUtils;
 
@@ -31,7 +35,8 @@ public class MeetingService {
             .getLogger(MeetingService.class);
     private MeetingInfoManager meetingInfoManager;
     private MeetingRoomManager meetingRoomManager;
-    private UserConnector userConnector;
+    private UserClient userClient;
+    private CalendarClient calendarClient;
 
     public void makeOrder(String userId, String code, String subject,
             String startTimeText, String endTimeText, String attendees)
@@ -68,10 +73,11 @@ public class MeetingService {
 
         meetingInfoManager.removeAll(meetingInfo.getMeetingAttendees());
 
-        for (String attendee : attendees.split(",")) {
+        List<String> attendeeList = Arrays.asList(attendees.split(","));
+
+        for (String attendee : attendeeList) {
             MeetingAttendee meetingAttendee = new MeetingAttendee();
-            UserDTO userDto = userConnector
-                    .findByUsername(attendee.trim(), "1");
+            UserDTO userDto = userClient.findByUsername(attendee.trim(), "1");
 
             if (userDto == null) {
                 logger.info("cannot find attendee : {}", attendee.trim());
@@ -83,6 +89,17 @@ public class MeetingService {
             meetingAttendee.setMeetingInfo(meetingInfo);
             meetingInfoManager.save(meetingAttendee);
         }
+
+        // calendar
+        CalendarEventDTO calendarEventDto = new CalendarEventDTO();
+        calendarEventDto.setOrganizer(meetingInfo.getOrganizer());
+        calendarEventDto.setAttendees(attendeeList);
+        calendarEventDto.setSummary(meetingInfo.getSubject());
+        calendarEventDto.setStartTime(startTimeText);
+        calendarEventDto.setEndTime(endTimeText);
+        calendarEventDto.setLocation(meetingRoom.getName());
+        calendarEventDto.setCalendarId(userId);
+        calendarClient.create(calendarEventDto);
     }
 
     public boolean notValid(MeetingRoom meetingRoom, Date startTime,
@@ -115,7 +132,12 @@ public class MeetingService {
     }
 
     @Resource
-    public void setUserConnector(UserConnector userConnector) {
-        this.userConnector = userConnector;
+    public void setUserClient(UserClient userClient) {
+        this.userClient = userClient;
+    }
+
+    @Resource
+    public void setCalendarClient(CalendarClient calendarClient) {
+        this.calendarClient = calendarClient;
     }
 }

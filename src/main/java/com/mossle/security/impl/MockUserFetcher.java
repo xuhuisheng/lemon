@@ -21,7 +21,7 @@ public class MockUserFetcher implements UserFetcher {
         userInfo.setDisplayName(username);
         userInfo.setPassword("password");
         userInfo.setAuthorities(Collections.singletonList("*"));
-        userInfo.setAttributes(Collections.EMPTY_LIST);
+        userInfo.setAttributes(Collections.<String> emptyList());
         userInfo.putExtraItem("repoCode", repoCode);
         userInfo.putExtraItem("appId", appId);
 

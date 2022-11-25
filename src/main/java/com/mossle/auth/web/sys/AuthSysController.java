@@ -11,6 +11,9 @@ import com.mossle.api.tenant.TenantHolder;
 import com.mossle.api.user.UserDTO;
 
 import com.mossle.auth.component.AuthCache;
+
+// import com.mossle.spi.auth.ResourcePublisher;
+import com.mossle.auth.component.AuthProducer;
 import com.mossle.auth.component.RoleDefChecker;
 import com.mossle.auth.component.UserStatusConverter;
 import com.mossle.auth.persistence.domain.Perm;
@@ -34,8 +37,6 @@ import com.mossle.client.user.UserClient;
 import com.mossle.core.mapper.BeanMapper;
 import com.mossle.core.page.Page;
 import com.mossle.core.spring.MessageHelper;
-
-import com.mossle.spi.auth.ResourcePublisher;
 
 import org.apache.commons.lang3.StringUtils;
 
@@ -61,7 +62,9 @@ public class AuthSysController {
     private PermManager permManager;
     private RoleDefManager roleDefManager;
     private AuthService authService;
-    private ResourcePublisher resourcePublisher;
+
+    // private ResourcePublisher resourcePublisher;
+    private AuthProducer authProducer;
     private OpenClient openClient;
     private CurrentUserHolder currentUserHolder;
     private UserClient userClient;
@@ -281,7 +284,6 @@ public class AuthSysController {
         // SysDTO sysDto = openClient.findSys(sysCode);
         // model.addAttribute("sysCode", sysCode);
         // model.addAttribute("sysDto", sysDto);
-
         String tenantId = sysCode;
 
         // auth role
@@ -417,13 +419,15 @@ public class AuthSysController {
     }
 
     @RequestMapping("{sysCode}/resc-input")
-    public String rescInput(@PathVariable("sysCode") String sysCode,@RequestParam(value="id",required=false) Long id, Model model) {
+    public String rescInput(@PathVariable("sysCode") String sysCode,
+            @RequestParam(value = "id", required = false) Long id, Model model) {
         // open sys
         SysDTO sysDto = openClient.findSys(sysCode);
         model.addAttribute("sysCode", sysCode);
         model.addAttribute("sysDto", sysDto);
 
         String tenantId = sysCode;
+
         if (id != null) {
             model.addAttribute("model", permManager.get(id));
         }
@@ -440,7 +444,6 @@ public class AuthSysController {
         // SysDTO sysDto = openClient.findSys(sysCode);
         // model.addAttribute("sysCode", sysCode);
         // model.addAttribute("sysDto", sysDto);
-
         String tenantId = sysCode;
 
         // auth resc
@@ -473,13 +476,11 @@ public class AuthSysController {
 
     @RequestMapping("{sysCode}/resc-remove")
     public String rescRemove(@PathVariable("sysCode") String sysCode,
-            @RequestParam("id") Long id,
-            RedirectAttributes redirectAttributes) {
+            @RequestParam("id") Long id, RedirectAttributes redirectAttributes) {
         // open sys
         // SysDTO sysDto = openClient.findSys(sysCode);
         // model.addAttribute("sysCode", sysCode);
         // model.addAttribute("sysDto", sysDto);
-
         String tenantId = sysCode;
 
         // auth resc
@@ -496,9 +497,13 @@ public class AuthSysController {
         this.authService = authService;
     }
 
+    // @Resource
+    // public void setResourcePublisher(ResourcePublisher resourcePublisher) {
+    // this.resourcePublisher = resourcePublisher;
+    // }
     @Resource
-    public void setResourcePublisher(ResourcePublisher resourcePublisher) {
-        this.resourcePublisher = resourcePublisher;
+    public void setAuthProducer(AuthProducer authProducer) {
+        this.authProducer = authProducer;
     }
 
     @Resource

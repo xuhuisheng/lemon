@@ -1,0 +1,183 @@
+<!doctype html>
+<html>
+  <head>
+    <meta charset="utf-8" />
+    <meta http-equiv="X-UA-Compatible" content="IE=edge,chrome=1" />
+    <title>Index</title>
+    <!-- static start -->
+    <link rel="stylesheet" href="${cms.ctx}/cdn/public/bootstrap/3.3.7/css/bootstrap.min.css">
+    <script type="text/javascript" src="${cms.ctx}/cdn/public/jquery/1.12.4/jquery.min.js"></script>
+    <script type="text/javascript" src="${cms.ctx}/cdn/public/bootstrap/3.3.7/js/bootstrap.min.js"></script>
+    <!-- static end -->
+    <style type="text/css">
+* {
+    font-size: 16px;
+}
+    </style>
+    <style type="text/css">
+        .dropdown-submenu {
+            position: relative;
+        }
+        .dropdown-submenu > .dropdown-menu {
+            top: 0;
+            left: 100%;
+            margin-top: -6px;
+            margin-left: -1px;
+            -webkit-border-radius: 0 6px 6px 6px;
+            -moz-border-radius: 0 6px 6px;
+            border-radius: 0 6px 6px 6px;
+        }
+        .dropdown-submenu:hover > .dropdown-menu {
+            display: block;
+        }
+        .dropdown-submenu > a:after {
+            display: block;
+            content: " ";
+            float: right;
+            width: 0;
+            height: 0;
+            border-color: transparent;
+            border-style: solid;
+            border-width: 5px 0 5px 5px;
+            border-left-color: #ccc;
+            margin-top: 5px;
+            margin-right: -10px;
+        }
+        .dropdown-submenu:hover > a:after {
+            border-left-color: #fff;
+        }
+    </style>
+  </head>
+  <body>
+    <div class="container" style="font-size:12px;">
+      <div class="row">
+      <div class="col-md-6">
+        &nbsp;
+      </div>
+      <div class="col-md-6 text-right">
+        <a href='${cms.ctx}/portal/index.do' style="font-size:12px;">个人中心</a>
+      </div>
+      </div>
+    </div>
+
+    <div class="container" style="line-height:7rem;margin-bottom:10px;">
+      <div class="row">
+      <div class="col-md-2" style="font-size:3rem;">
+        Mossle
+      </div>
+      <div class="col-md-10">
+        <div class="text-center" style="background-color:#F8F8F8;color:white;">
+          &nbsp;
+        </div>
+      </div>
+      </div>
+    </div>
+
+    <!-- navbar start -->
+    <div class="container">
+      <div class="navbar navbar-default" role="navigation" style="margin-bottom:10px;">
+        <div class="navbar-header">
+          <a class="navbar-brand" href="${cms.ctx}/${cms.cmsPrefix}/">首页</a>
+        </div>
+        <div class="collapse navbar-collapse" id="bs-example-navbar-collapse-1">
+          <ul class="nav navbar-nav">
+            <#list cms.findTopCatalogs() as theCatalog>
+            <li class=""><a href="${cms.ctx}/${cms.cmsPrefix}/catalog/${theCatalog.code}/articles">${theCatalog.name}</a></li>
+            </#list>
+          </ul>
+        </div>
+    </div>
+    </div>
+    <!-- navbar end -->
+
+    <div class="container">
+
+      <div class="row" style="padding-bottom:20px;">
+        <div class="col-md-12">
+          <a class="btn btn-default" href="input.do">发布文档</a>
+        </div>
+      </div>
+
+      <div class="row">
+
+        <div class="col-md-2">
+
+          <div class="panel panel-default">
+            <div class="panel-heading">
+              <a href="${cms.ctx}/${cms.cmsPrefix}">全部分类</a>
+            </div>
+            <ul class="list-group">
+              <#list cms.findTopCatalogs() as theCatalog>
+              <li class="list-group-item <#if theCatalog.cmsCatalogs?size gt 0>dropdown-submenu</#if>">
+                <a href="${cms.ctx}/${cms.cmsPrefix}/catalog/${theCatalog.code}/articles">${theCatalog.name}</a>
+                <#if theCatalog.cmsCatalogs?size gt 0>
+                <ul class="dropdown-menu">
+                  <#list theCatalog.cmsCatalogs as theCatalog2>
+                  <li class="<#if theCatalog2.cmsCatalogs?size gt 0>dropdown-submenu</#if>">
+                    <a tabindex="-1" href="${cms.ctx}/${cms.cmsPrefix}/catalog/${theCatalog2.code}/articles">${theCatalog2.name}</a>
+                    <#if theCatalog2.cmsCatalogs?size gt 0>
+                    <ul class="dropdown-menu">
+                      <#list theCatalog2.cmsCatalogs as theCatalog3>
+                      <li class="<#if theCatalog3.cmsCatalogs?size gt 0>dropdown-submenu</#if>">
+                        <a tabindex="-1" href="${cms.ctx}/${cms.cmsPrefix}/catalog/${theCatalog3.code}/articles">${theCatalog3.name}</a>
+                      </li>
+                      </#list>
+                    </ul>
+                    </#if>
+                  </li>
+                  </#list>
+                </ul>
+                </#if>
+              </li>
+              </#list>
+            </ul>
+          </div>
+
+          <div class="panel panel-default">
+            <div class="panel-heading">
+              标签
+            </div>
+            <div class="panel-body">
+              <#list cms.findTags() as theTag>
+              <p><a href="${cms.ctx}/${cms.cmsPrefix}/tag/${theTag.code}/articles">${theTag.name}</a></p>
+              </#list>
+            </div>
+          </div>
+
+        </div>
+
+        <div class="col-md-10">
+          <div style="padding-bottom:20px;">
+            ${cms.findCatalogPathByCatalogId(cms.currentCatalog.id)}(共${cms.findArticlesByCatalogId(cms.currentCatalog.id).totalCount}篇文章)
+            <div class="pull-right">
+              <a class="btn btn-link" href="?orderBy=publishTime&order=DESC">按发布时间</a>
+              &nbsp;
+              <a class="btn btn-link" href="?orderBy=hitCount&order=DESC">按浏览量</a>
+            </div>
+          </div>
+
+          <#list cms.findArticlesByCatalogId(cms.currentCatalog.id).result as theArticle>
+          <div class="panel panel-default">
+            <div class="panel-body">
+              <h6><a href="${cms.ctx}/${cms.cmsPrefix}/article/${theArticle.id?c}">${theArticle.title}</a></h6>
+              <p>${cms.displayName(theArticle.userId)} 发表于${theArticle.publishTime?string("yyyy-MM-dd HH:mm")} 浏览(${theArticle.hitCount}) 下载(${cms.findCountByEvent(theArticle.id, 'download')})</p>
+            </div>
+          </div>
+          </#list>
+
+        </div>
+
+      </div>
+      
+    </div>
+
+    <hr>
+
+    <div class="container">
+      <div class="row" style="text-align:center;">
+        &copy; Mossle
+      </div>
+    </div>
+
+  </body>
+</html>

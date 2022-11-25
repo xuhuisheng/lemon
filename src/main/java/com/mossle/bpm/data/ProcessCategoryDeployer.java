@@ -18,6 +18,11 @@ import org.apache.commons.lang3.StringUtils;
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
 
+import org.springframework.beans.factory.annotation.Value;
+
+import org.springframework.stereotype.Component;
+
+@Component("com.mossle.bpm.data.ProcessCategoryDeployer")
 public class ProcessCategoryDeployer {
     private static Logger logger = LoggerFactory
             .getLogger(ProcessCategoryDeployer.class);
@@ -25,15 +30,25 @@ public class ProcessCategoryDeployer {
     private BpmProcessManager bpmProcessManager;
     private BpmConfBaseManager bpmConfBaseManager;
     private String defaultTenantId = "1";
+    private boolean enable = true;
 
     @PostConstruct
     public void init() throws Exception {
-        String processCategoryDataFilePath = "data/process-category.json";
+        if (!enable) {
+            logger.info("skip bpm processc category init data");
+
+            return;
+        }
+
+        logger.info("start bpm processc category init data");
+
+        String processCategoryDataFilePath = "data/bpm/process-category.json";
         String processCategoryDataEncoding = "UTF-8";
         List<Map<String, Object>> list = new JsonParser().parseList(
                 processCategoryDataFilePath, processCategoryDataEncoding);
         logger.debug("list : {}", list);
         this.processCategories(list, null);
+        logger.info("end bpm processc category init data");
     }
 
     public void processCategories(List<Map<String, Object>> list,
@@ -116,5 +131,10 @@ public class ProcessCategoryDeployer {
     @Resource
     public void setBpmConfBaseManager(BpmConfBaseManager bpmConfBaseManager) {
         this.bpmConfBaseManager = bpmConfBaseManager;
+    }
+
+    @Value("${bpm.data.init.enable:false}")
+    public void setEnable(boolean enable) {
+        this.enable = enable;
     }
 }

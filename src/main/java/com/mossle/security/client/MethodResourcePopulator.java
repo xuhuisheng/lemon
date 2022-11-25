@@ -5,6 +5,8 @@ import java.util.LinkedHashMap;
 import java.util.List;
 import java.util.Map;
 
+import com.mossle.api.userauth.ResourceDTO;
+
 import com.mossle.core.util.BeanUtils;
 
 import org.slf4j.Logger;
@@ -36,6 +38,38 @@ public class MethodResourcePopulator {
         for (Map.Entry<String, String> entry : resourceMap.entrySet()) {
             methodMap.put(entry.getKey(), SecurityConfig
                     .createListFromCommaDelimitedString(entry.getValue()));
+        }
+
+        MethodSecurityMetadataSource source = new MapBasedMethodSecurityMetadataSource(
+                methodMap);
+        List<MethodSecurityMetadataSource> sources = new ArrayList<MethodSecurityMetadataSource>();
+        sources.add(source);
+
+        List<MethodSecurityMetadataSource> methodSecurityMetadataSources = delegatingMethodSecurityMetadataSource
+                .getMethodSecurityMetadataSources();
+        methodSecurityMetadataSources.clear();
+        methodSecurityMetadataSources.addAll(sources);
+
+        Map attributeCache = (Map) BeanUtils.safeGetFieldValue(
+                delegatingMethodSecurityMetadataSource, "attributeCache");
+        attributeCache.clear();
+    }
+
+    public void execute(
+            DelegatingMethodSecurityMetadataSource delegatingMethodSecurityMetadataSource,
+            List<ResourceDTO> resourceDtos) {
+        Assert.notNull(delegatingMethodSecurityMetadataSource);
+        Assert.notNull(resourceDtos);
+
+        logger.info("refresh method resource");
+
+        Map<String, List<ConfigAttribute>> methodMap = null;
+        methodMap = new LinkedHashMap<String, List<ConfigAttribute>>();
+
+        for (ResourceDTO resourceDto : resourceDtos) {
+            methodMap.put(resourceDto.getResource(), SecurityConfig
+                    .createListFromCommaDelimitedString(resourceDto
+                            .getPermission()));
         }
 
         MethodSecurityMetadataSource source = new MapBasedMethodSecurityMetadataSource(

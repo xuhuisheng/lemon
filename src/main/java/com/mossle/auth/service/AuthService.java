@@ -7,7 +7,6 @@ import java.util.List;
 import javax.annotation.Resource;
 
 import com.mossle.api.tenant.TenantHolder;
-import com.mossle.api.user.UserConnector;
 import com.mossle.api.user.UserDTO;
 
 import com.mossle.auth.persistence.domain.Access;
@@ -20,6 +19,8 @@ import com.mossle.auth.persistence.manager.RoleManager;
 import com.mossle.auth.persistence.manager.UserStatusManager;
 import com.mossle.auth.support.Exporter;
 import com.mossle.auth.support.Importer;
+
+import com.mossle.client.user.UserClient;
 
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
@@ -43,7 +44,7 @@ public class AuthService {
     private AccessManager accessManager;
     private PermManager permManager;
     private TenantHolder tenantHolder;
-    private UserConnector userConnector;
+    private UserClient userClient;
 
     public UserStatus createOrGetUserStatus(String username, String ref,
             String userRepoRef, String tenantId) {
@@ -231,7 +232,7 @@ public class AuthService {
         for (String username : inserted) {
             logger.debug("insert : {}", username);
 
-            UserDTO userDto = userConnector.findByUsername(username,
+            UserDTO userDto = userClient.findByUsername(username,
                     tenantHolder.getTenantId());
             UserStatus userStatus = this.createOrGetUserStatus(username,
                     userDto.getId(), tenantHolder.getUserRepoRef(),
@@ -269,8 +270,8 @@ public class AuthService {
     }
 
     @Resource
-    public void setUserConnector(UserConnector userConnector) {
-        this.userConnector = userConnector;
+    public void setUserClient(UserClient userClient) {
+        this.userClient = userClient;
     }
 
     @Resource

@@ -1,7 +1,6 @@
 package com.mossle.user.publish;
 
 // import java.io.IOException;
-
 import java.util.HashMap;
 import java.util.Map;
 
@@ -13,14 +12,13 @@ import com.mossle.api.user.UserDTO;
 
 import com.mossle.core.mapper.JsonMapper;
 
-import com.mossle.user.component.UserProducer;
+import com.mossle.user.subscribe.UserProducer;
 import com.mossle.user.support.UserInfoDTO;
 
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
 
 // import org.springframework.jms.core.JmsTemplate;
-
 import org.springframework.stereotype.Component;
 
 @Component
@@ -34,6 +32,7 @@ public class UserPublisher {
 
     public void notifyUserCreated(UserDTO userDto) {
         Map<String, Object> map = new HashMap<String, Object>();
+        map.put("type", "create");
         map.put("id", userDto.getId());
         map.put("username", userDto.getUsername());
         map.put("displayName", userDto.getDisplayName());
@@ -51,6 +50,7 @@ public class UserPublisher {
 
     public void notifyUserUpdated(UserDTO userDto) {
         Map<String, Object> map = new HashMap<String, Object>();
+        map.put("type", "update");
         map.put("id", userDto.getId());
         map.put("username", userDto.getUsername());
         map.put("displayName", userDto.getDisplayName());
@@ -68,6 +68,7 @@ public class UserPublisher {
 
     public void notifyUserRemoved(UserDTO userDto) {
         Map<String, Object> map = new HashMap<String, Object>();
+        map.put("type", "remove");
         map.put("id", userDto.getId());
         map.put("username", userDto.getUsername());
         map.put("displayName", userDto.getDisplayName());

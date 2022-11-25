@@ -35,7 +35,7 @@ public class TestUrlResourcePopulator {
 
         Map<String, String> resourceMap = new LinkedHashMap<String, String>();
         resourceMap.put("/common/login.jsp", "IS_GUEST");
-        resourceMap.put("/**", "ROLE_USER");
+        resourceMap.put("/**", "IS_USER");
         this.execute(resourceMap);
     }
 

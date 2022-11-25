@@ -229,7 +229,7 @@ public class SpringSecurityUtils {
         Authentication authentication = getAuthentication();
 
         if (authentication == null) {
-            return Collections.EMPTY_LIST;
+            return Collections.emptyList();
         }
 
         Collection<? extends GrantedAuthority> grantedAuthorityList = authentication
@@ -336,7 +336,7 @@ public class SpringSecurityUtils {
         Authentication authentication = getAuthentication();
 
         if (authentication == null) {
-            return Collections.EMPTY_LIST;
+            return Collections.emptyList();
         }
 
         Object principal = authentication.getPrincipal();
@@ -345,7 +345,7 @@ public class SpringSecurityUtils {
             logger.debug("principal[{}] is not SpringSecurityUserAuth",
                     principal);
 
-            return Collections.EMPTY_LIST;
+            return Collections.emptyList();
         }
 
         SpringSecurityUserAuth springSecurityUserAuth = (SpringSecurityUserAuth) principal;

@@ -5,12 +5,6 @@ import com.mossle.api.tenant.TenantHolder;
 
 import com.mossle.spi.user.InternalUserConnector;
 
-import org.springframework.security.authentication.BadCredentialsException;
-import org.springframework.security.authentication.UsernamePasswordAuthenticationToken;
-import org.springframework.security.authentication.dao.DaoAuthenticationProvider;
-import org.springframework.security.core.AuthenticationException;
-import org.springframework.security.core.userdetails.UserDetails;
-
 public class LocalAuthenticationStrategy implements AuthenticationStrategy {
     private CustomPasswordEncoder customPasswordEncoder;
     private InternalUserConnector internalUserConnector;

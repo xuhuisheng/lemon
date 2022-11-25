@@ -6,13 +6,13 @@ import javax.annotation.Resource;
 
 import com.mossle.api.tenant.TenantHolder;
 
+// import com.mossle.spi.auth.ResourcePublisher;
+import com.mossle.auth.component.AuthProducer;
 import com.mossle.auth.persistence.domain.Access;
 import com.mossle.auth.persistence.manager.AccessManager;
 import com.mossle.auth.service.AuthService;
 
 import com.mossle.core.spring.MessageHelper;
-
-import com.mossle.spi.auth.ResourcePublisher;
 
 import org.springframework.stereotype.Controller;
 
@@ -28,7 +28,9 @@ public class AccessBatchController {
     private AccessManager accessManager;
     private AuthService authService;
     private MessageHelper messageHelper;
-    private ResourcePublisher resourcePublisher;
+
+    // private ResourcePublisher resourcePublisher;
+    private AuthProducer authProducer;
     private TenantHolder tenantHolder;
 
     // ~ ======================================================================
@@ -70,7 +72,8 @@ public class AccessBatchController {
         messageHelper.addFlashMessage(redirectAttributes, "core.success.save",
                 "保存成功");
 
-        resourcePublisher.publish();
+        // resourcePublisher.publish();
+        authProducer.sendUpdate();
 
         return "redirect:/auth/access-list.do";
     }
@@ -91,9 +94,13 @@ public class AccessBatchController {
         this.messageHelper = messageHelper;
     }
 
+    // @Resource
+    // public void setResourcePublisher(ResourcePublisher resourcePublisher) {
+    // this.resourcePublisher = resourcePublisher;
+    // }
     @Resource
-    public void setResourcePublisher(ResourcePublisher resourcePublisher) {
-        this.resourcePublisher = resourcePublisher;
+    public void setAuthProducer(AuthProducer authProducer) {
+        this.authProducer = authProducer;
     }
 
     @Resource

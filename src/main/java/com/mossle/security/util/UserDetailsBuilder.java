@@ -64,7 +64,7 @@ public class UserDetailsBuilder {
         if ((list == null) || list.isEmpty()) {
             logger.debug("no authorities");
 
-            return Collections.EMPTY_LIST;
+            return Collections.emptyList();
         }
 
         Set<GrantedAuthority> authsSet = new HashSet<GrantedAuthority>();

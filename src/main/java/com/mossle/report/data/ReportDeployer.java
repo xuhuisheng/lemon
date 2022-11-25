@@ -17,24 +17,45 @@ import com.mossle.report.persistence.manager.ReportInfoManager;
 import com.mossle.report.persistence.manager.ReportQueryManager;
 import com.mossle.report.persistence.manager.ReportSubjectManager;
 
+import org.slf4j.Logger;
+import org.slf4j.LoggerFactory;
+
+import org.springframework.beans.factory.annotation.Value;
+
+import org.springframework.stereotype.Component;
+
+@Component("com.mossle.report.data.ReportDeployer")
 public class ReportDeployer {
+    private static Logger logger = LoggerFactory
+            .getLogger(ReportDeployer.class);
     private JsonMapper jsonMapper = new JsonMapper();
     private String defaultTenantId = "1";
-    private String dataFilePath = "data/report.json";
+    private String dataFilePath = "data/report/report.json";
     private String dataEncoding = "UTF-8";
     private ReportSubjectManager reportSubjectManager;
     private ReportQueryManager reportQueryManager;
     private ReportDimManager reportDimManager;
     private ReportInfoManager reportInfoManager;
+    private boolean enable;
 
     @PostConstruct
     public void process() throws Exception {
+        if (!enable) {
+            logger.info("skip report init data");
+
+            return;
+        }
+
+        logger.info("start report init data");
+
         List<Map<String, Object>> list = new JsonParser().parseList(
                 dataFilePath, dataEncoding);
 
         for (Map<String, Object> map : list) {
             this.processQuery(map);
         }
+
+        logger.info("end report init data");
     }
 
     public void processQuery(Map<String, Object> map) throws Exception {
@@ -134,5 +155,10 @@ public class ReportDeployer {
     @Resource
     public void setReportInfoManager(ReportInfoManager reportInfoManager) {
         this.reportInfoManager = reportInfoManager;
+    }
+
+    @Value("${report.data.init.enable:false}")
+    public void setEnable(boolean enable) {
+        this.enable = enable;
     }
 }

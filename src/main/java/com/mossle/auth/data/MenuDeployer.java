@@ -19,22 +19,29 @@ import org.apache.commons.io.IOUtils;
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
 
+import org.springframework.beans.factory.annotation.Value;
+
+import org.springframework.stereotype.Component;
+
+@Component("com.mossle.auth.data.MenuDeployer")
 public class MenuDeployer {
     private static Logger logger = LoggerFactory.getLogger(MenuDeployer.class);
     private MenuManager menuManager;
     private PermManager permManager;
     private boolean enable;
     private JsonMapper jsonMapper = new JsonMapper();
-    private String menuFilePath = "data/auth-menu.json";
+    private String menuFilePath = "data/auth/auth-menu.json";
     private String menuEncoding = "UTF-8";
 
     @PostConstruct
     public void init() {
         if (!enable) {
-            logger.info("skip");
+            logger.info("skip auth init data menu");
 
             return;
         }
+
+        logger.info("start auth init data menu");
 
         try {
             String json = IOUtils.toString(MenuDeployer.class.getClassLoader()
@@ -46,6 +53,8 @@ public class MenuDeployer {
         } catch (IOException ex) {
             logger.error(ex.getMessage(), ex);
         }
+
+        logger.info("end auth init data menu");
     }
 
     public void processMenus(List<Map<String, Object>> list, String parentCode) {
@@ -91,6 +100,7 @@ public class MenuDeployer {
         this.permManager = permManager;
     }
 
+    @Value("${auth.data.init.enable:false}")
     public void setEnable(boolean enable) {
         this.enable = enable;
     }

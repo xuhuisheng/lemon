@@ -74,6 +74,21 @@ public class SysInfo implements java.io.Serializable {
     /** 租户. */
     private String tenantId;
 
+    /** app key. */
+    private String appKey;
+
+    /** app secret. */
+    private String appSecret;
+
+    /** 移动端网址. */
+    private String appUrl;
+
+    /** PC端网址. */
+    private String pcUrl;
+
+    /** 管理端网址. */
+    private String adminUrl;
+
     /** . */
     private Set<SysEntry> sysEntries = new HashSet<SysEntry>(0);
 
@@ -88,7 +103,8 @@ public class SysInfo implements java.io.Serializable {
             String logo, String type, String code, String name, String url,
             Integer priority, String status, String descn, String platform,
             Date createTime, String userId, String userRepoCode,
-            String tenantId, Set<SysEntry> sysEntries) {
+            String tenantId, String appKey, String appSecret, String appUrl,
+            String pcUrl, String adminUrl, Set<SysEntry> sysEntries) {
         this.id = id;
         this.openApp = openApp;
         this.sysCategory = sysCategory;
@@ -105,6 +121,11 @@ public class SysInfo implements java.io.Serializable {
         this.userId = userId;
         this.userRepoCode = userRepoCode;
         this.tenantId = tenantId;
+        this.appKey = appKey;
+        this.appSecret = appSecret;
+        this.appUrl = appUrl;
+        this.pcUrl = pcUrl;
+        this.adminUrl = adminUrl;
         this.sysEntries = sysEntries;
     }
 
@@ -334,6 +355,76 @@ public class SysInfo implements java.io.Serializable {
      */
     public void setTenantId(String tenantId) {
         this.tenantId = tenantId;
+    }
+
+    /** @return app key. */
+    @Column(name = "APP_KEY", length = 200)
+    public String getAppKey() {
+        return this.appKey;
+    }
+
+    /**
+     * @param appKey
+     *            app key.
+     */
+    public void setAppKey(String appKey) {
+        this.appKey = appKey;
+    }
+
+    /** @return app secret. */
+    @Column(name = "APP_SECRET", length = 200)
+    public String getAppSecret() {
+        return this.appSecret;
+    }
+
+    /**
+     * @param appSecret
+     *            app secret.
+     */
+    public void setAppSecret(String appSecret) {
+        this.appSecret = appSecret;
+    }
+
+    /** @return 移动端网址. */
+    @Column(name = "APP_URL", length = 200)
+    public String getAppUrl() {
+        return this.appUrl;
+    }
+
+    /**
+     * @param appUrl
+     *            移动端网址.
+     */
+    public void setAppUrl(String appUrl) {
+        this.appUrl = appUrl;
+    }
+
+    /** @return PC端网址. */
+    @Column(name = "PC_URL", length = 200)
+    public String getPcUrl() {
+        return this.pcUrl;
+    }
+
+    /**
+     * @param pcUrl
+     *            PC端网址.
+     */
+    public void setPcUrl(String pcUrl) {
+        this.pcUrl = pcUrl;
+    }
+
+    /** @return 管理端网址. */
+    @Column(name = "ADMIN_URL", length = 200)
+    public String getAdminUrl() {
+        return this.adminUrl;
+    }
+
+    /**
+     * @param adminUrl
+     *            管理端网址.
+     */
+    public void setAdminUrl(String adminUrl) {
+        this.adminUrl = adminUrl;
     }
 
     /** @return . */

@@ -35,7 +35,6 @@ import com.mossle.bpm.persistence.manager.BpmConfBaseManager;
 import com.mossle.bpm.persistence.manager.BpmProcessManager;
 
 import com.mossle.core.page.Page;
-import com.mossle.core.util.IoUtils;
 
 import org.activiti.engine.ProcessEngine;
 import org.activiti.engine.RepositoryService;
@@ -461,7 +460,7 @@ public class ConsoleController {
         InputStream is = processEngine.getRepositoryService()
                 .getResourceAsStream(processDefinition.getDeploymentId(),
                         processDefinition.getResourceName());
-        String xml = IoUtils.readString(is);
+        String xml = IOUtils.toString(is, "UTF-8");
 
         model.addAttribute("xml", xml);
 

@@ -11,13 +11,18 @@ import com.mossle.api.tenant.TenantHolder;
 import com.mossle.api.user.UserDTO;
 
 import com.mossle.auth.component.AuthCache;
+
+//import com.mossle.spi.auth.ResourcePublisher;
+import com.mossle.auth.component.AuthProducer;
 import com.mossle.auth.component.RoleDefChecker;
 import com.mossle.auth.component.UserStatusConverter;
 import com.mossle.auth.persistence.domain.Perm;
+import com.mossle.auth.persistence.domain.Resc;
 import com.mossle.auth.persistence.domain.Role;
 import com.mossle.auth.persistence.domain.RoleDef;
 import com.mossle.auth.persistence.domain.UserStatus;
 import com.mossle.auth.persistence.manager.PermManager;
+import com.mossle.auth.persistence.manager.RescManager;
 import com.mossle.auth.persistence.manager.RoleDefManager;
 import com.mossle.auth.persistence.manager.RoleManager;
 import com.mossle.auth.persistence.manager.UserStatusManager;
@@ -33,8 +38,6 @@ import com.mossle.client.user.UserClient;
 import com.mossle.core.mapper.BeanMapper;
 import com.mossle.core.page.Page;
 import com.mossle.core.spring.MessageHelper;
-
-import com.mossle.spi.auth.ResourcePublisher;
 
 import org.apache.commons.lang3.StringUtils;
 
@@ -59,8 +62,11 @@ public class AuthOpenController {
     private RoleManager roleManager;
     private PermManager permManager;
     private RoleDefManager roleDefManager;
+    private RescManager rescManager;
     private AuthService authService;
-    private ResourcePublisher resourcePublisher;
+
+    // private ResourcePublisher resourcePublisher;
+    private AuthProducer authProducer;
     private OpenClient openClient;
     private CurrentUserHolder currentUserHolder;
     private UserClient userClient;
@@ -88,24 +94,26 @@ public class AuthOpenController {
                 + "/user.do";
     }
 
-    @RequestMapping("{code}/user")
+    @RequestMapping("{openAppCode}/user")
     public String user(
             Page page,
             @RequestParam(value = "username", required = false) String username,
-            @PathVariable("code") String code, Model model) throws Exception {
+            @PathVariable("openAppCode") String openAppCode, Model model)
+            throws Exception {
         // open app
-        OpenAppDTO defaultOpenAppDto = openClient.getApp(code);
+        OpenAppDTO defaultOpenAppDto = openClient.getApp(openAppCode);
         String userId = currentUserHolder.getUserId();
         List<OpenAppDTO> openAppDtos = openClient.findUserApps(userId);
         model.addAttribute("defaultOpenAppDto", defaultOpenAppDto);
         model.addAttribute("openAppDtos", openAppDtos);
 
         // auth user
-        String tenantId = code;
+        String tenantId = openAppCode;
 
         // 缩小显示范围，把所有用户都显示出来也没什么用途
         if (StringUtils.isBlank(username)) {
             // 如果没有查询条件，就只返回配置了权限的用户
+            // TODO: 如果没有搜索条件，不应该显示数据，因为用户列表其实没有实际用途
             String hql = "from UserStatus where tenantId=?";
             page = userStatusManager.pagedQuery(hql, page.getPageNo(),
                     page.getPageSize(), tenantId);
@@ -124,7 +132,7 @@ public class AuthOpenController {
         } else {
             logger.debug("username : {}", username);
 
-            // page = userConnector.pagedQuery(tenantId, page, parameterMap);
+            // page = userClient.pagedQuery(tenantId, page, parameterMap);
 
             // List<UserDTO> userDtos = (List<UserDTO>) page.getResult();
             List<UserDTO> userDtos = this.userClient.search(username);
@@ -149,7 +157,7 @@ public class AuthOpenController {
                     userStatusDto.setRef(userDto.getId());
                     userStatusDtos.add(userStatusDto);
                 } else {
-                    String userRepoRef = code;
+                    String userRepoRef = openAppCode;
                     userStatusDtos.add(userStatusConverter.createUserStatusDto(
                             userStatus, userRepoRef, tenantId));
                 }
@@ -162,10 +170,12 @@ public class AuthOpenController {
         return "auth/open/user";
     }
 
-    @RequestMapping("{code}/user-role-config")
+    @RequestMapping("{openAppCode}/user-role-config")
     public String userRoleConfig(@RequestParam("ref") String ref,
-            @PathVariable("code") String code) {
+            @PathVariable("openAppCode") String openAppCode) {
         logger.debug("ref : {}", ref);
+
+        String tenantId = openAppCode;
 
         UserDTO userDto = userClient.findById(ref, "1");
         Long id = null;
@@ -174,19 +184,26 @@ public class AuthOpenController {
             String username = userDto.getUsername();
 
             UserStatus userStatus = authService.createOrGetUserStatus(username,
-                    userDto.getId(), tenantHolder.getUserRepoRef(),
-                    tenantHolder.getTenantId());
+                    userDto.getId(), tenantHolder.getUserRepoRef(), tenantId);
 
             id = userStatus.getId();
         }
 
-        return "redirect:/auth/open/" + code + "/user-role-input.do?id=" + id;
+        return "redirect:/auth/open/" + openAppCode + "/user-role-input.do?id="
+                + id;
     }
 
-    @RequestMapping("{code}/user-role-input")
+    @RequestMapping("{openAppCode}/user-role-input")
     public String userRoleInput(@RequestParam("id") Long id,
-            @PathVariable("code") String code, Model model) {
-        String tenantId = code;
+            @PathVariable("openAppCode") String openAppCode, Model model) {
+        // open app
+        OpenAppDTO defaultOpenAppDto = openClient.getApp(openAppCode);
+        String userId = currentUserHolder.getUserId();
+        List<OpenAppDTO> openAppDtos = openClient.findUserApps(userId);
+        model.addAttribute("defaultOpenAppDto", defaultOpenAppDto);
+        model.addAttribute("openAppDtos", openAppDtos);
+
+        String tenantId = openAppCode;
 
         // local roles
         List<Role> roles = authService.findRoles(tenantId);
@@ -199,40 +216,41 @@ public class AuthOpenController {
         return "auth/open/user-role-input";
     }
 
-    @RequestMapping("{code}/user-role-save")
+    @RequestMapping("{openAppCode}/user-role-save")
     public String userRoleSave(
             @RequestParam("id") Long id,
             @RequestParam(value = "selectedItem", required = false) List<Long> selectedItem,
-            @PathVariable("code") String code, Model model,
+            @PathVariable("openAppCode") String openAppCode, Model model,
             RedirectAttributes redirectAttributes) {
         try {
             authService.configUserRole(id, selectedItem,
-                    tenantHolder.getUserRepoRef(), tenantHolder.getTenantId(),
-                    true);
+                    tenantHolder.getUserRepoRef(), openAppCode, true);
             messageHelper.addFlashMessage(redirectAttributes,
                     "core.success.save", "保存成功");
         } catch (CheckUserStatusException ex) {
             logger.warn(ex.getMessage(), ex);
             messageHelper.addFlashMessage(redirectAttributes, ex.getMessage());
 
-            return userRoleInput(id, code, model);
+            return userRoleInput(id, openAppCode, model);
         }
 
-        return "redirect:/auth/open/" + code + "/user-role-input.do?id=" + id;
+        return "redirect:/auth/open/" + openAppCode + "/user-role-input.do?id="
+                + id;
     }
 
-    @RequestMapping("{code}/role")
-    public String role(Page page, @PathVariable("code") String code, Model model)
+    @RequestMapping("{openAppCode}/role")
+    public String role(Page page,
+            @PathVariable("openAppCode") String openAppCode, Model model)
             throws Exception {
         // open app
-        OpenAppDTO defaultOpenAppDto = openClient.getApp(code);
+        OpenAppDTO defaultOpenAppDto = openClient.getApp(openAppCode);
         String userId = currentUserHolder.getUserId();
         List<OpenAppDTO> openAppDtos = openClient.findUserApps(userId);
         model.addAttribute("defaultOpenAppDto", defaultOpenAppDto);
         model.addAttribute("openAppDtos", openAppDtos);
 
         // auth role
-        String tenantId = code;
+        String tenantId = openAppCode;
         String hql = "from Role where tenantId=?";
         page = roleManager.pagedQuery(hql, page.getPageNo(),
                 page.getPageSize(), tenantId);
@@ -241,10 +259,11 @@ public class AuthOpenController {
         return "auth/open/role";
     }
 
-    @RequestMapping("{code}/role-input")
-    public String roleInput(@PathVariable("code") String code, Model model) {
+    @RequestMapping("{openAppCode}/role-input")
+    public String roleInput(@PathVariable("openAppCode") String openAppCode,
+            Model model) {
         // open app
-        OpenAppDTO defaultOpenAppDto = openClient.getApp(code);
+        OpenAppDTO defaultOpenAppDto = openClient.getApp(openAppCode);
         String userId = currentUserHolder.getUserId();
         List<OpenAppDTO> openAppDtos = openClient.findUserApps(userId);
         model.addAttribute("defaultOpenAppDto", defaultOpenAppDto);
@@ -368,28 +387,49 @@ public class AuthOpenController {
                 + "/role-perm-config.do?id=" + id;
     }
 
-    @RequestMapping("{code}/resc")
-    public String resc(@PathVariable("code") String code, Model model) {
+    @RequestMapping("{openAppCode}/perm")
+    public String perm(@PathVariable("openAppCode") String openAppCode,
+            Model model) {
         // open app
-        OpenAppDTO defaultOpenAppDto = openClient.getApp(code);
+        OpenAppDTO defaultOpenAppDto = openClient.getApp(openAppCode);
         String userId = currentUserHolder.getUserId();
         List<OpenAppDTO> openAppDtos = openClient.findUserApps(userId);
         model.addAttribute("defaultOpenAppDto", defaultOpenAppDto);
         model.addAttribute("openAppDtos", openAppDtos);
 
         // auth resc
-        String tenantId = code;
+        String tenantId = openAppCode;
         String hql = "from Perm where perm is null and tenantId=? order by priority";
-        List<Perm> perms = permManager.find(hql, code);
+        List<Perm> perms = permManager.find(hql, openAppCode);
         model.addAttribute("perms", perms);
+
+        return "auth/open/perm";
+    }
+
+    @RequestMapping("{openAppCode}/resc")
+    public String resc(@PathVariable("openAppCode") String openAppCode,
+            Model model) {
+        // open app
+        OpenAppDTO defaultOpenAppDto = openClient.getApp(openAppCode);
+        String userId = currentUserHolder.getUserId();
+        List<OpenAppDTO> openAppDtos = openClient.findUserApps(userId);
+        model.addAttribute("defaultOpenAppDto", defaultOpenAppDto);
+        model.addAttribute("openAppDtos", openAppDtos);
+
+        // auth resc
+        String tenantId = openAppCode;
+        String hql = "from Resc where resc is null and tenantId=? order by priority";
+        List<Resc> rescs = rescManager.find(hql, openAppCode);
+        model.addAttribute("rescs", rescs);
 
         return "auth/open/resc";
     }
 
-    @RequestMapping("{code}/resc-input")
-    public String rescInput(@PathVariable("code") String code, Model model) {
+    @RequestMapping("{openAppCode}/resc-input")
+    public String rescInput(@PathVariable("openAppCode") String openAppCode,
+            Model model) {
         // open app
-        OpenAppDTO defaultOpenAppDto = openClient.getApp(code);
+        OpenAppDTO defaultOpenAppDto = openClient.getApp(openAppCode);
         String userId = currentUserHolder.getUserId();
         List<OpenAppDTO> openAppDtos = openClient.findUserApps(userId);
         model.addAttribute("defaultOpenAppDto", defaultOpenAppDto);
@@ -440,15 +480,37 @@ public class AuthOpenController {
         return "redirect:/auth/open/" + openAppCode + "/resc.do";
     }
 
+    @RequestMapping("{code}/menu")
+    public String menu(@PathVariable("code") String code, Model model) {
+        // open app
+        OpenAppDTO defaultOpenAppDto = openClient.getApp(code);
+        String userId = currentUserHolder.getUserId();
+        List<OpenAppDTO> openAppDtos = openClient.findUserApps(userId);
+        model.addAttribute("defaultOpenAppDto", defaultOpenAppDto);
+        model.addAttribute("openAppDtos", openAppDtos);
+
+        // auth resc
+        String tenantId = code;
+        String hql = "from Perm where perm is null and tenantId=? order by priority";
+        List<Perm> perms = permManager.find(hql, code);
+        model.addAttribute("perms", perms);
+
+        return "auth/open/menu";
+    }
+
     // ~ ======================================================================
     @Resource
     public void setAuthService(AuthService authService) {
         this.authService = authService;
     }
 
+    // @Resource
+    // public void setResourcePublisher(ResourcePublisher resourcePublisher) {
+    // this.resourcePublisher = resourcePublisher;
+    // }
     @Resource
-    public void setResourcePublisher(ResourcePublisher resourcePublisher) {
-        this.resourcePublisher = resourcePublisher;
+    public void setAuthProducer(AuthProducer authProducer) {
+        this.authProducer = authProducer;
     }
 
     @Resource
@@ -464,6 +526,11 @@ public class AuthOpenController {
     @Resource
     public void setRoleManager(RoleManager roleManager) {
         this.roleManager = roleManager;
+    }
+
+    @Resource
+    public void setRescManager(RescManager rescManager) {
+        this.rescManager = rescManager;
     }
 
     @Resource

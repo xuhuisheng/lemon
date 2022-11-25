@@ -32,9 +32,14 @@ import org.activiti.engine.repository.ProcessDefinition;
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
 
+import org.springframework.beans.factory.annotation.Value;
+
+import org.springframework.stereotype.Component;
+
+@Component("com.mossle.model.data.ModelDeployer")
 public class ModelDeployer {
     private Logger logger = LoggerFactory.getLogger(ModelDeployer.class);
-    private boolean autoDeploy;
+    private boolean enable;
     private ProcessConnector processConnector;
     private HumanTaskConnector humanTaskConnector;
     private TaskDefinitionConnector taskDefinitionConnector;
@@ -47,9 +52,13 @@ public class ModelDeployer {
 
     @PostConstruct
     public void init() {
-        if (!autoDeploy) {
+        if (!enable) {
+            logger.info("skip model init data");
+
             return;
         }
+
+        logger.info("start model init data");
 
         try {
             TenantDTO tenantDto = tenantConnector.findByCode(defaultTenantCode);
@@ -64,6 +73,8 @@ public class ModelDeployer {
         } catch (Exception ex) {
             logger.error(ex.getMessage(), ex);
         }
+
+        logger.info("end model init data");
     }
 
     public void processBusiness(ProcessDefinition processDefinition) {
@@ -174,10 +185,6 @@ public class ModelDeployer {
         }
     }
 
-    public void setAutoDeploy(boolean autoDeploy) {
-        this.autoDeploy = autoDeploy;
-    }
-
     @Resource
     public void setProcessConnector(ProcessConnector processConnector) {
         this.processConnector = processConnector;
@@ -216,5 +223,10 @@ public class ModelDeployer {
     @Resource
     public void setTenantConnector(TenantConnector tenantConnector) {
         this.tenantConnector = tenantConnector;
+    }
+
+    @Value("${model.data.init.enable:false}")
+    public void setEnable(boolean enable) {
+        this.enable = enable;
     }
 }

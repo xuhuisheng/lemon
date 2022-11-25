@@ -9,7 +9,6 @@ import javax.servlet.http.HttpServletRequest;
 import javax.servlet.http.HttpServletResponse;
 
 import com.mossle.api.auth.CurrentUserHolder;
-import com.mossle.api.user.UserConnector;
 
 import com.mossle.asset.persistence.domain.AssetInfo;
 import com.mossle.asset.persistence.domain.AssetLend;
@@ -17,6 +16,8 @@ import com.mossle.asset.persistence.domain.AssetRequest;
 import com.mossle.asset.persistence.manager.AssetInfoManager;
 import com.mossle.asset.persistence.manager.AssetLendManager;
 import com.mossle.asset.persistence.manager.AssetRequestManager;
+
+import com.mossle.client.user.UserClient;
 
 import com.mossle.core.export.Exportor;
 import com.mossle.core.export.TableModel;
@@ -42,7 +43,7 @@ public class AssetController {
     private AssetRequestManager assetRequestManager;
     private Exportor exportor;
     private BeanMapper beanMapper = new BeanMapper();
-    private UserConnector userConnector;
+    private UserClient userClient;
     private MessageHelper messageHelper;
     private CurrentUserHolder currentUserHolder;
 
@@ -85,8 +86,8 @@ public class AssetController {
     }
 
     @Resource
-    public void setUserConnector(UserConnector userConnector) {
-        this.userConnector = userConnector;
+    public void setUserClient(UserClient userClient) {
+        this.userClient = userClient;
     }
 
     @Resource

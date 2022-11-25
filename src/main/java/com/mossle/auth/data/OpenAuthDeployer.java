@@ -22,11 +22,8 @@ import com.mossle.auth.persistence.manager.RoleManager;
 import com.mossle.auth.persistence.manager.UserStatusManager;
 
 import com.mossle.client.open.OpenAppDTO;
-import com.mossle.client.user.UserClient;
 
 import com.mossle.core.csv.CsvProcessor;
-
-import com.mossle.spi.security.ResourceDetailsRefresher;
 
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
@@ -37,15 +34,15 @@ import org.springframework.transaction.TransactionStatus;
 public class OpenAuthDeployer {
     private static Logger logger = LoggerFactory
             .getLogger(OpenAuthDeployer.class);
-    private String permissionFilePath = "data/auth-permission.csv";
+    private String permissionFilePath = "data/auth/auth-permission.csv";
     private String permissionEncoding = "GB2312";
-    private String resourceFilePath = "data/auth-resource.csv";
+    private String resourceFilePath = "data/auth/auth-resource.csv";
     private String resourceEncoding = "GB2312";
-    private String roleFilePath = "data/auth-role.csv";
+    private String roleFilePath = "data/auth/auth-role.csv";
     private String roleEncoding = "GB2312";
-    private String userFilePath = "data/auth-user.csv";
+    private String userFilePath = "data/auth/auth-user.csv";
     private String userEncoding = "GB2312";
-    private String openDataFilePath = "data/open-app.csv";
+    private String openDataFilePath = "data/open/open-app.csv";
     private String openDataEncoding = "GB2312";
     private String defaultTenantId = "1";
     private PermTypeManager permTypeManager;
@@ -55,8 +52,6 @@ public class OpenAuthDeployer {
     private RoleManager roleManager;
     private UserStatusManager userStatusManager;
     private PlatformTransactionManager platformTransactionManager;
-    private ResourceDetailsRefresher resourceDetailsRefresher;
-    private UserClient userClient;
 
     @PostConstruct
     public void init() throws Exception {
@@ -80,7 +75,7 @@ public class OpenAuthDeployer {
         platformTransactionManager.commit(transactionStatus);
 
         // TODO: refresh role cache, resource cache
-        resourceDetailsRefresher.refresh();
+        // resourceDetailsRefresher.refresh();
     }
 
     public void initPermission(String openAppCode) throws Exception {
@@ -121,7 +116,6 @@ public class OpenAuthDeployer {
         openUserCallback.setOpenAppCode(openAppCode);
         openUserCallback.setUserStatusManager(userStatusManager);
         openUserCallback.setRoleManager(roleManager);
-        openUserCallback.setUserClient(userClient);
 
         String fileName = "data/open/" + openAppCode + "/auth-user.csv";
         new CsvProcessor().process(fileName, userEncoding, openUserCallback);
@@ -161,16 +155,5 @@ public class OpenAuthDeployer {
     public void setPlatformTransactionManager(
             PlatformTransactionManager platformTransactionManager) {
         this.platformTransactionManager = platformTransactionManager;
-    }
-
-    @Resource
-    public void setResourceDetailsRefresher(
-            ResourceDetailsRefresher resourceDetailsRefresher) {
-        this.resourceDetailsRefresher = resourceDetailsRefresher;
-    }
-
-    @Resource
-    public void setUserClient(UserClient userClient) {
-        this.userClient = userClient;
     }
 }

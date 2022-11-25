@@ -1,6 +1,9 @@
 package com.mossle.security.client;
 
+import java.util.List;
 import java.util.Map;
+
+import com.mossle.api.userauth.ResourceDTO;
 
 import com.mossle.security.api.MethodSourceFetcher;
 import com.mossle.security.api.UrlSourceFetcher;
@@ -17,8 +20,7 @@ import org.springframework.security.web.access.intercept.FilterSecurityIntercept
 
 import org.springframework.util.Assert;
 
-public class ResourceDetailsMonitor implements InitializingBean,
-        ResourceDetailsRefresher {
+public class ResourceDetailsMonitor {
     private static Logger logger = LoggerFactory
             .getLogger(ResourceDetailsMonitor.class);
     private UrlSourceFetcher urlSourceFetcher;
@@ -54,6 +56,15 @@ public class ResourceDetailsMonitor implements InitializingBean,
                 .getSource(null);
         methodResourcePopulator.execute(delegatingMethodSecurityMetadataSource,
                 methodResourceMap);
+    }
+
+    public void updateUrlSource(List<ResourceDTO> resourceDtos) {
+        urlResourcePopulator.execute(filterSecurityInterceptor, resourceDtos);
+    }
+
+    public void updateMethodSource(List<ResourceDTO> resourceDtos) {
+        methodResourcePopulator.execute(delegatingMethodSecurityMetadataSource,
+                resourceDtos);
     }
 
     // ~ ======================================================================

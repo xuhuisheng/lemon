@@ -9,10 +9,11 @@ import javax.annotation.Resource;
 
 import com.mossle.api.tenant.TenantConnector;
 import com.mossle.api.tenant.TenantDTO;
-import com.mossle.api.user.UserConnector;
 import com.mossle.api.user.UserDTO;
 import com.mossle.api.userauth.UserAuthConnector;
 import com.mossle.api.userauth.UserAuthDTO;
+
+import com.mossle.client.user.UserClient;
 
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
@@ -24,7 +25,7 @@ public class DatabaseUserAuthConnector implements UserAuthConnector {
             .getLogger(DatabaseUserAuthConnector.class);
     private JdbcTemplate jdbcTemplate;
     private TenantConnector tenantConnector;
-    private UserConnector userConnector;
+    private UserClient userClient;
     private boolean checkAccountStatus = false;
 
     // ~
@@ -42,7 +43,7 @@ public class DatabaseUserAuthConnector implements UserAuthConnector {
 
     public UserAuthDTO findByUsername(String username, String tenantId) {
         TenantDTO tenantDto = tenantConnector.findById(tenantId);
-        UserDTO userDto = userConnector.findByUsername(username,
+        UserDTO userDto = userClient.findByUsername(username,
                 tenantDto.getUserRepoRef());
 
         if (userDto == null) {
@@ -57,15 +58,16 @@ public class DatabaseUserAuthConnector implements UserAuthConnector {
 
     public UserAuthDTO findByRef(String ref, String tenantId) {
         TenantDTO tenantDto = tenantConnector.findById(tenantId);
-        UserDTO userDto = userConnector.findByRef(ref,
-                tenantDto.getUserRepoRef());
+
+        // TODO: there is only findById, no findByRef now
+        UserDTO userDto = userClient.findById(ref, tenantDto.getUserRepoRef());
 
         return process(userDto, tenantId);
     }
 
     public UserAuthDTO findById(String id, String tenantId) {
         TenantDTO tenantDto = tenantConnector.findById(tenantId);
-        UserDTO userDto = userConnector.findById(id);
+        UserDTO userDto = userClient.findById(id, tenantDto.getUserRepoRef());
 
         return process(userDto, tenantId);
     }
@@ -163,8 +165,8 @@ public class DatabaseUserAuthConnector implements UserAuthConnector {
     }
 
     @Resource
-    public void setUserConnector(UserConnector userConnector) {
-        this.userConnector = userConnector;
+    public void setUserClient(UserClient userClient) {
+        this.userClient = userClient;
     }
 
     @Resource

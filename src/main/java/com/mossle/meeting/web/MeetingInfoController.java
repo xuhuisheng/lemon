@@ -11,8 +11,9 @@ import javax.servlet.http.HttpServletResponse;
 
 import com.mossle.api.tenant.TenantConnector;
 import com.mossle.api.tenant.TenantHolder;
-import com.mossle.api.user.UserConnector;
 import com.mossle.api.user.UserDTO;
+
+import com.mossle.client.user.UserClient;
 
 import com.mossle.core.export.Exportor;
 import com.mossle.core.export.TableModel;
@@ -55,7 +56,7 @@ public class MeetingInfoController {
     private MeetingAttendeeManager meetingAttendeeManager;
     private Exportor exportor;
     private BeanMapper beanMapper = new BeanMapper();
-    private UserConnector userConnector;
+    private UserClient userClient;
     private TenantConnector tenantConnector;
     private MessageHelper messageHelper;
     private TenantHolder tenantHolder;
@@ -83,8 +84,9 @@ public class MeetingInfoController {
 
             // organizerName
             if (meetingInfo.getOrganizer() != null) {
-                UserDTO userDto = userConnector.findById(meetingInfo
-                        .getOrganizer());
+                UserDTO userDto = userClient.findById(
+                        meetingInfo.getOrganizer(),
+                        tenantHolder.getUserRepoRef());
 
                 if (userDto != null) {
                     model.addAttribute("organizerName",
@@ -98,8 +100,9 @@ public class MeetingInfoController {
             for (MeetingAttendee meetingAttendee : meetingInfo
                     .getMeetingAttendees()) {
                 if (meetingAttendee.getUserId() != null) {
-                    UserDTO user = userConnector.findById(meetingAttendee
-                            .getUserId());
+                    UserDTO user = userClient.findById(
+                            meetingAttendee.getUserId(),
+                            tenantHolder.getUserRepoRef());
                     attendees.add(user.getUsername());
                 }
             }
@@ -150,8 +153,7 @@ public class MeetingInfoController {
 
         for (String attendee : attendees.split(",")) {
             MeetingAttendee meetingAttendee = new MeetingAttendee();
-            UserDTO userDto = userConnector
-                    .findByUsername(attendee.trim(), "1");
+            UserDTO userDto = userClient.findByUsername(attendee.trim(), "1");
 
             if (userDto == null) {
                 logger.info("cannot find attendee : {}", attendee.trim());
@@ -251,8 +253,8 @@ public class MeetingInfoController {
     }
 
     @Resource
-    public void setUserConnector(UserConnector userConnector) {
-        this.userConnector = userConnector;
+    public void setUserClient(UserClient userClient) {
+        this.userClient = userClient;
     }
 
     @Resource

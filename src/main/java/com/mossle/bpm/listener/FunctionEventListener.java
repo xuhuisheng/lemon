@@ -1,28 +1,20 @@
 package com.mossle.bpm.listener;
 
-import java.util.List;
-
 import javax.annotation.Resource;
-
-import com.mossle.bpm.persistence.domain.BpmConfListener;
-import com.mossle.bpm.persistence.manager.BpmConfListenerManager;
 
 import com.mossle.spi.process.InternalProcessConnector;
 
 import org.activiti.engine.delegate.event.ActivitiActivityEvent;
+import org.activiti.engine.delegate.event.ActivitiCancelledEvent;
 import org.activiti.engine.delegate.event.ActivitiEntityEvent;
 import org.activiti.engine.delegate.event.ActivitiEvent;
 import org.activiti.engine.delegate.event.ActivitiEventListener;
 import org.activiti.engine.impl.cmd.GetDeploymentProcessDefinitionCmd;
 import org.activiti.engine.impl.context.Context;
-import org.activiti.engine.impl.context.Context;
-import org.activiti.engine.impl.el.ExpressionManager;
 import org.activiti.engine.impl.identity.Authentication;
 import org.activiti.engine.impl.persistence.entity.ExecutionEntity;
 import org.activiti.engine.impl.persistence.entity.ProcessDefinitionEntity;
-import org.activiti.engine.repository.ProcessDefinition;
 import org.activiti.engine.task.Task;
-import org.activiti.engine.delegate.event.ActivitiCancelledEvent;
 
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;

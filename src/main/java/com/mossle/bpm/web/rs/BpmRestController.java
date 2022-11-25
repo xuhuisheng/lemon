@@ -1,32 +1,23 @@
 package com.mossle.bpm.web.rs;
 
-import java.text.DateFormat;
-import java.text.SimpleDateFormat;
-
 import java.util.HashMap;
-import java.util.List;
 import java.util.Map;
 
 import javax.annotation.Resource;
 
 import com.mossle.api.auth.CurrentUserHolder;
 import com.mossle.api.humantask.HumanTaskConnector;
-import com.mossle.api.humantask.HumanTaskDTO;
 import com.mossle.api.model.ModelConnector;
 import com.mossle.api.tenant.TenantHolder;
 
-import com.mossle.core.page.Page;
 import com.mossle.core.util.BaseDTO;
 
 import org.activiti.engine.ProcessEngine;
-import org.activiti.engine.history.HistoricProcessInstance;
 
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
 
-import org.springframework.web.bind.annotation.PathVariable;
 import org.springframework.web.bind.annotation.RequestMapping;
-import org.springframework.web.bind.annotation.RequestMethod;
 import org.springframework.web.bind.annotation.RestController;
 
 @RestController

@@ -1,6 +1,5 @@
 package com.mossle.security.impl;
 
-import java.util.HashMap;
 import java.util.LinkedHashMap;
 import java.util.List;
 import java.util.Map;
@@ -10,10 +9,6 @@ import javax.annotation.Resource;
 import com.mossle.api.userauth.ResourceDTO;
 
 import com.mossle.client.authz.AuthzResourceClient;
-
-import com.mossle.core.http.HttpHandler;
-import com.mossle.core.http.HttpHandlerImpl;
-import com.mossle.core.mapper.JsonMapper;
 
 import com.mossle.security.api.UrlSourceFetcher;
 

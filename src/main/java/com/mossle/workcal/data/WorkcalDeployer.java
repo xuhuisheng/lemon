@@ -8,6 +8,7 @@ import java.util.Date;
 import java.util.List;
 import java.util.Map;
 
+import javax.annotation.PostConstruct;
 import javax.annotation.Resource;
 
 import com.mossle.workcal.persistence.domain.WorkcalPart;
@@ -20,21 +21,36 @@ import com.mossle.workcal.persistence.manager.WorkcalTypeManager;
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
 
+import org.springframework.beans.factory.annotation.Value;
+
+import org.springframework.stereotype.Component;
+
+@Component("com.mossle.workcal.data.WorkcalDeployer")
 public class WorkcalDeployer {
     private static Logger logger = LoggerFactory
             .getLogger(WorkcalDeployer.class);
     private String defaultTenantId = "1";
-    private String dataFilePath = "data/workcal.json";
+    private String dataFilePath = "data/workcal/workcal.json";
     private String dataEncoding = "UTF-8";
     private WorkcalDTO workcal = new WorkcalDTO();
     private DateFormat dateFormat = new SimpleDateFormat("yyyy-MM-dd");
     private WorkcalTypeManager workcalTypeManager;
     private WorkcalRuleManager workcalRuleManager;
     private WorkcalPartManager workcalPartManager;
+    private boolean enable;
 
+    @PostConstruct
     public void init() throws Exception {
+        if (!enable) {
+            logger.info("skip workcal init data");
+
+            return;
+        }
+
+        logger.info("start workcal init data");
         this.parseJson();
         this.processDatabase();
+        logger.info("end workcal init data");
     }
 
     // ~
@@ -240,5 +256,10 @@ public class WorkcalDeployer {
     @Resource
     public void setWorkcalPartManager(WorkcalPartManager workcalPartManager) {
         this.workcalPartManager = workcalPartManager;
+    }
+
+    @Value("${workcal.data.init.enable:false}")
+    public void setEnable(boolean enable) {
+        this.enable = enable;
     }
 }

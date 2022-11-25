@@ -1,41 +1,56 @@
 <?xml version="1.0" encoding="UTF-8"?>
 <beans xmlns="http://www.springframework.org/schema/beans"
-	    xmlns:xsi="http://www.w3.org/2001/XMLSchema-instance"
-	    xsi:schemaLocation="http://www.springframework.org/schema/beans http://www.springframework.org/schema/beans/spring-beans.xsd">
+        xmlns:xsi="http://www.w3.org/2001/XMLSchema-instance"
+        xsi:schemaLocation="http://www.springframework.org/schema/beans http://www.springframework.org/schema/beans/spring-beans.xsd">
 
-	<!-- 用户信息 -->
-	<bean id="userClient" class="${client.user}" />
-	<bean id="employeeClient" class="${client.employee}" />
+    <bean id="rpcAuthHelper" class="${rpc.auth.helper}" />
 
-	<!-- 认证 -->
-	<bean id="authnClient" class="${client.authn}" />
-	
-	<!-- 授权 -->
-	<bean id="authzClient" class="${client.authz}" />
+    <!-- user -->
+    <bean id="userClient" class="${client.user}" />
 
-	<bean id="authzResourceClient" class="${client.authzresource}" />
+    <bean id="employeeClient" class="${client.employee}" />
 
-	<!-- 存储 -->
-	<bean id="storeClient" class="${client.store}" />
+    <!-- authn -->
+    <bean id="authnClient" class="${client.authn}" />
+    
+    <!-- authz -->
+    <bean id="authzClient" class="${client.authz}" />
 
-	<!-- oss -->
-	<bean id="ossClient" class="${client.oss}" />
+    <bean id="authzResourceClient" class="${client.authzresource}" />
 
-	<!-- sendmail -->
-	<bean id="sendmailClient" class="${client.sendmail}" />
+    <!-- store -->
+    <bean id="storeClient" class="${client.store}" />
 
-	<!-- sys -->
-	<bean id="sysClient" class="${client.sys}" />
+    <!-- oss -->
+    <bean id="ossClient" class="${client.oss}" />
 
-	<bean id="rpcAuthHelper" class="${rpc.auth.helper}" />
+    <!-- sys -->
+    <bean id="sysClient" class="${client.sys}" />
 
-	<!-- open -->
-	<bean id="openClient" class="${client.open}" />
+    <!-- open -->
+    <bean id="openClient" class="${client.open}" />
+
+    <!-- audit -->
+    <bean id="auditClient" class="${client.audit}" />
 
     <!-- notification -->
     <bean id="notificationClient" class="${client.notification}"/>
 
     <!-- sendmsg -->
     <bean id="sendMsgClient" class="${client.sendmsg}" />
+
+    <!-- sendmail -->
+    <bean id="sendmailClient" class="${client.sendmail}" />
+
+    <!-- calendar -->
+    <bean id="calendarClient" class="${client.calendar}" />
+
+    <!-- tenant -->
+    <bean id="tenantHolder" class="${tenant.holder}" />
+
+    <bean id="tenantConnector" class="com.mossle.api.tenant.MockTenantConnector" />
+
+    <!-- menu -->
+    <bean id="menuConnector" class="${menu.connector}" />
 
 </beans>

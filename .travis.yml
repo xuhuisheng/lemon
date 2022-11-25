@@ -1,6 +1,0 @@
-language: java
-jdk:
-  - openjdk6
-script:
-- mvn test
-env: MAVEN_OPTS="-XX:MaxPermSize=128m"

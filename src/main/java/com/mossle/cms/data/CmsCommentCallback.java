@@ -5,7 +5,7 @@ import java.text.SimpleDateFormat;
 import java.util.Date;
 import java.util.List;
 
-import com.mossle.api.user.UserConnector;
+import com.mossle.client.user.UserClient;
 
 import com.mossle.cms.persistence.domain.CmsArticle;
 import com.mossle.cms.persistence.domain.CmsComment;
@@ -24,7 +24,7 @@ public class CmsCommentCallback implements CsvCallback {
             .getLogger(CmsCommentCallback.class);
     private CmsCommentManager cmsCommentManager;
     private CmsArticleManager cmsArticleManager;
-    private UserConnector userConnector;
+    private UserClient userClient;
     private String defaultTenantId = "1";
 
     public void process(List<String> list, int lineNo) throws Exception {
@@ -33,7 +33,7 @@ public class CmsCommentCallback implements CsvCallback {
         String author = list.get(2);
         String content = list.get(3);
 
-        String userId = userConnector.findByUsername(author, defaultTenantId)
+        String userId = userClient.findByUsername(author, defaultTenantId)
                 .getId();
 
         if (StringUtils.isBlank(code)) {
@@ -86,8 +86,8 @@ public class CmsCommentCallback implements CsvCallback {
         this.cmsCommentManager = cmsCommentManager;
     }
 
-    public void setUserConnector(UserConnector userConnector) {
-        this.userConnector = userConnector;
+    public void setUserClient(UserClient userClient) {
+        this.userClient = userClient;
     }
 
     public void setCmsArticleManager(CmsArticleManager cmsArticleManager) {

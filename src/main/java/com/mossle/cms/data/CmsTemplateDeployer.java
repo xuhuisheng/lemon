@@ -20,16 +20,21 @@ import org.apache.commons.io.IOUtils;
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
 
+import org.springframework.beans.factory.annotation.Value;
+
 import org.springframework.context.ApplicationContext;
 import org.springframework.context.ApplicationContextAware;
 
+import org.springframework.stereotype.Component;
+
 // import org.springframework.core.io.Resource;
+@Component("com.mossle.cms.data.CmsTemplateDeployer")
 public class CmsTemplateDeployer implements ApplicationContextAware {
     private static Logger logger = LoggerFactory
             .getLogger(CmsTemplateDeployer.class);
     private CmsTemplateCatalogManager cmsTemplateCatalogManager;
     private CmsTemplateContentManager cmsTemplateContentManager;
-    private String dataFilePath = "classpath:/data/cms-template";
+    private String dataFilePath = "classpath:/data/cms/cms-template";
     private String dataFileEncoding = "UTF-8";
     private String defaultTenantId = "1";
     private boolean enable = true;
@@ -38,10 +43,12 @@ public class CmsTemplateDeployer implements ApplicationContextAware {
     @PostConstruct
     public void process() throws Exception {
         if (!enable) {
-            logger.info("skip init {}", CmsTemplateDeployer.class);
+            logger.info("skip cms data init template");
 
             return;
         }
+
+        logger.info("start cms data init template");
 
         logger.debug("default tenant id : {}", defaultTenantId);
 
@@ -67,8 +74,8 @@ public class CmsTemplateDeployer implements ApplicationContextAware {
             logger.debug("getURL : {}", resource.getURL());
 
             String url = resource.getURL().toString();
-            prefix = url.substring(0, url.lastIndexOf("data/cms-template")
-                    + "data/cms-template".length() + 1);
+            prefix = url.substring(0, url.lastIndexOf("data/cms/cms-template")
+                    + "data/cms/cms-template".length() + 1);
             logger.debug("prefix : {}", prefix);
 
             String path = url.substring(prefix.length());
@@ -176,6 +183,8 @@ public class CmsTemplateDeployer implements ApplicationContextAware {
                 cmsTemplateCatalogManager.save(child);
             }
         }
+
+        logger.info("end cms data init template");
     }
 
     @Resource
@@ -192,5 +201,10 @@ public class CmsTemplateDeployer implements ApplicationContextAware {
 
     public void setApplicationContext(ApplicationContext applicationContext) {
         this.applicationContext = applicationContext;
+    }
+
+    @Value("${cms.data.init.enable:false}")
+    public void setEnable(boolean enable) {
+        this.enable = enable;
     }
 }

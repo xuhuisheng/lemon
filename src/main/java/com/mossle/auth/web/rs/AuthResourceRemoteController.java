@@ -60,6 +60,7 @@ public class AuthResourceRemoteController {
     private static Logger logger = LoggerFactory
             .getLogger(AuthResourceRemoteController.class);
     public static final String HQL_ACCESS = "from Access where tenantId=? order by priority";
+    public static final String HQL_ACCESS_TYPE = "from Access where tenantId=? and type=? order by priority";
     private AccessManager accessManager;
 
     @RequestMapping(value = "findResources", produces = MediaType.APPLICATION_JSON_VALUE)
@@ -67,6 +68,29 @@ public class AuthResourceRemoteController {
         Assert.hasText(sysCode, "sysCode should not be null");
 
         List<Access> accesses = accessManager.find(HQL_ACCESS, sysCode);
+        List<ResourceDTO> resourceDtos = new ArrayList<ResourceDTO>();
+
+        for (Access access : accesses) {
+            ResourceDTO dto = new ResourceDTO();
+            dto.setResource(access.getValue());
+            dto.setPermission(access.getPerm().getCode());
+            resourceDtos.add(dto);
+        }
+
+        BaseDTO baseDto = new BaseDTO();
+        baseDto.setCode(200);
+        baseDto.setData(resourceDtos);
+
+        return baseDto;
+    }
+
+    @RequestMapping(value = "findResourcesByType", produces = MediaType.APPLICATION_JSON_VALUE)
+    public BaseDTO findResourcesByType(@RequestParam("type") String type,
+            @RequestParam("sysCode") String sysCode) {
+        Assert.hasText(sysCode, "sysCode should not be null");
+
+        List<Access> accesses = accessManager.find(HQL_ACCESS_TYPE, sysCode,
+                type);
         List<ResourceDTO> resourceDtos = new ArrayList<ResourceDTO>();
 
         for (Access access : accesses) {

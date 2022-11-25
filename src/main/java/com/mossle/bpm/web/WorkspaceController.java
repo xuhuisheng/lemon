@@ -16,14 +16,13 @@ import com.mossle.api.form.FormDTO;
 import com.mossle.api.humantask.HumanTaskConnector;
 import com.mossle.api.humantask.HumanTaskConstants;
 import com.mossle.api.humantask.HumanTaskDTO;
-import com.mossle.api.keyvalue.Record;
 import com.mossle.api.model.ModelConnector;
 import com.mossle.api.model.ModelInfoDTO;
 import com.mossle.api.notification.NotificationConnector;
 import com.mossle.api.notification.NotificationDTO;
 import com.mossle.api.process.ProcessConnector;
 import com.mossle.api.tenant.TenantHolder;
-import com.mossle.api.user.UserConnector;
+import com.mossle.client.user.UserClient;
 
 import com.mossle.bpm.cmd.CounterSignCmd;
 import com.mossle.bpm.cmd.FindHistoryGraphCmd;
@@ -82,7 +81,7 @@ public class WorkspaceController {
     private BpmCategoryManager bpmCategoryManager;
     private BpmProcessManager bpmProcessManager;
     private ProcessEngine processEngine;
-    private UserConnector userConnector;
+    private UserClient userClient;
     private ProcessConnector processConnector;
     private CurrentUserHolder currentUserHolder;
     private TraceService traceService;
@@ -745,8 +744,8 @@ public class WorkspaceController {
     }
 
     @Resource
-    public void setUserConnector(UserConnector userConnector) {
-        this.userConnector = userConnector;
+    public void setUserClient(UserClient userClient) {
+        this.userClient = userClient;
     }
 
     @Resource

@@ -1,6 +1,5 @@
 package com.mossle.user.client;
 
-
 import javax.annotation.Resource;
 
 import com.mossle.api.employee.EmployeeDTO;

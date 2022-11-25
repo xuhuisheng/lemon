@@ -9,7 +9,6 @@ import com.mossle.api.form.FormConnector;
 import com.mossle.api.form.FormDTO;
 import com.mossle.api.process.ProcessConnector;
 import com.mossle.api.process.ProcessDTO;
-import com.mossle.api.user.UserConnector;
 
 import com.mossle.bpm.cmd.FindFirstTaskFormCmd;
 import com.mossle.bpm.persistence.domain.BpmConfBase;
@@ -18,6 +17,8 @@ import com.mossle.bpm.persistence.domain.BpmProcess;
 import com.mossle.bpm.persistence.manager.BpmConfBaseManager;
 import com.mossle.bpm.persistence.manager.BpmConfFormManager;
 import com.mossle.bpm.persistence.manager.BpmProcessManager;
+
+import com.mossle.client.user.UserClient;
 
 import com.mossle.core.page.Page;
 
@@ -53,7 +54,7 @@ public class ProcessConnectorImpl implements ProcessConnector {
     private BpmConfFormManager bpmConfFormManager;
     private BpmProcessManager bpmProcessManager;
     private BpmConfBaseManager bpmConfBaseManager;
-    private UserConnector userConnector;
+    private UserClient userClient;
     private FormConnector formConnector;
     private TaskDefinitionConnector taskDefinitionConnector;
 
@@ -106,6 +107,13 @@ public class ProcessConnectorImpl implements ProcessConnector {
     public ProcessDTO convertProcess(BpmProcess bpmProcess) {
         ProcessDTO processDto = new ProcessDTO();
         BpmConfBase bpmConfBase = bpmProcess.getBpmConfBase();
+
+        if (bpmConfBase == null) {
+            logger.info("cannot find bpmConfBase : {}", bpmProcess.getId());
+
+            return processDto;
+        }
+
         String processDefinitionId = bpmConfBase.getProcessDefinitionId();
         ProcessDefinition processDefinition = processEngine
                 .getRepositoryService().createProcessDefinitionQuery()
@@ -626,8 +634,8 @@ public class ProcessConnectorImpl implements ProcessConnector {
     }
 
     @Resource
-    public void setUserConnector(UserConnector userConnector) {
-        this.userConnector = userConnector;
+    public void setUserClient(UserClient userClient) {
+        this.userClient = userClient;
     }
 
     @Resource

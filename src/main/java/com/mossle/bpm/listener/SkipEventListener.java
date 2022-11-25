@@ -1,74 +1,38 @@
 package com.mossle.bpm.listener;
 
-import java.text.SimpleDateFormat;
-
-import java.util.Collections;
-import java.util.Date;
-import java.util.List;
 import java.util.List;
 
 import javax.annotation.Resource;
 
 import com.mossle.api.humantask.HumanTaskConnector;
-import com.mossle.api.humantask.HumanTaskConstants;
-import com.mossle.api.humantask.HumanTaskDTO;
-import com.mossle.api.humantask.ParticipantDTO;
 import com.mossle.api.org.OrgConnector;
-import com.mossle.api.user.UserConnector;
-import com.mossle.api.user.UserConnector;
 
-import com.mossle.bpm.cmd.CompleteTaskWithCommentCmd;
-import com.mossle.bpm.cmd.CompleteTaskWithCommentCmd;
 import com.mossle.bpm.persistence.domain.BpmConfRule;
-import com.mossle.bpm.persistence.domain.BpmConfUser;
 import com.mossle.bpm.persistence.manager.BpmConfRuleManager;
-import com.mossle.bpm.persistence.manager.BpmConfUserManager;
-import com.mossle.bpm.support.DefaultTaskListener;
-import com.mossle.bpm.support.DefaultTaskListener;
-import com.mossle.bpm.support.DelegateTaskHolder;
-import com.mossle.bpm.support.HumanTaskBuilder;
 import com.mossle.bpm.support.MapVariableScope;
 
-import com.mossle.core.mapper.BeanMapper;
+import com.mossle.client.user.UserClient;
+
 import com.mossle.core.spring.ApplicationContextHelper;
 
-import org.activiti.engine.delegate.DelegateTask;
 import org.activiti.engine.delegate.DelegateTask;
 import org.activiti.engine.delegate.Expression;
 import org.activiti.engine.delegate.event.ActivitiEvent;
 import org.activiti.engine.delegate.event.ActivitiEventListener;
-import org.activiti.engine.delegate.event.ActivitiEventType;
-import org.activiti.engine.delegate.event.BaseEntityEventListener;
 import org.activiti.engine.delegate.event.impl.ActivitiEntityEventImpl;
-import org.activiti.engine.impl.cmd.GetDeploymentProcessDefinitionCmd;
-import org.activiti.engine.impl.context.Context;
 import org.activiti.engine.impl.context.Context;
 import org.activiti.engine.impl.el.ExpressionManager;
-import org.activiti.engine.impl.el.ExpressionManager;
-import org.activiti.engine.impl.identity.Authentication;
-import org.activiti.engine.impl.interceptor.CommandContext;
-import org.activiti.engine.impl.persistence.entity.ExecutionEntity;
-import org.activiti.engine.impl.persistence.entity.HistoricProcessInstanceEntity;
 import org.activiti.engine.impl.persistence.entity.HistoricProcessInstanceEntity;
 import org.activiti.engine.impl.persistence.entity.HistoricTaskInstanceEntity;
 import org.activiti.engine.impl.persistence.entity.ProcessDefinitionEntity;
-import org.activiti.engine.impl.persistence.entity.ProcessDefinitionEntity;
 import org.activiti.engine.impl.persistence.entity.TaskEntity;
 import org.activiti.engine.impl.pvm.PvmActivity;
-import org.activiti.engine.impl.pvm.PvmActivity;
 import org.activiti.engine.impl.pvm.PvmTransition;
-import org.activiti.engine.impl.pvm.PvmTransition;
-import org.activiti.engine.impl.pvm.process.ActivityImpl;
 import org.activiti.engine.impl.pvm.process.ActivityImpl;
 import org.activiti.engine.impl.task.TaskDefinition;
-import org.activiti.engine.task.IdentityLink;
 
 import org.slf4j.Logger;
-import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
-import org.slf4j.LoggerFactory;
-
-import org.springframework.jdbc.core.JdbcTemplate;
 
 public class SkipEventListener implements ActivitiEventListener {
     public static final int TYPE_COPY = 3;
@@ -225,8 +189,8 @@ public class SkipEventListener implements ActivitiEventListener {
     }
 
     public void processExpression(DelegateTask delegateTask, String value) {
-        UserConnector userConnector = ApplicationContextHelper
-                .getBean(UserConnector.class);
+        UserClient userClient = ApplicationContextHelper
+                .getBean(UserClient.class);
         ExpressionManager expressionManager = Context
                 .getProcessEngineConfiguration().getExpressionManager();
         String processInstanceId = delegateTask.getProcessInstanceId();
@@ -236,7 +200,7 @@ public class SkipEventListener implements ActivitiEventListener {
         String initiator = historicProcessInstanceEntity.getStartUserId();
         MapVariableScope mapVariableScope = new MapVariableScope();
         mapVariableScope.setVariable("initiator",
-                userConnector.findById(initiator));
+                userClient.findById(initiator, "1"));
 
         Object objectResult = expressionManager.createExpression(value)
                 .getValue(mapVariableScope);

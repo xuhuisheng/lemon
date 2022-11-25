@@ -214,7 +214,10 @@ public class UserService {
 
         PersonInfo personInfo = personInfoManager.findUniqueBy("code",
                 accountInfo.getCode());
-        personInfoManager.remove(personInfo);
+
+        if (personInfo != null) {
+            personInfoManager.remove(personInfo);
+        }
 
         return accountInfo;
     }

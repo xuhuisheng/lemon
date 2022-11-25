@@ -3,7 +3,7 @@ package com.mossle.cms.data;
 import javax.annotation.PostConstruct;
 import javax.annotation.Resource;
 
-import com.mossle.api.user.UserConnector;
+import com.mossle.client.user.UserClient;
 
 import com.mossle.cms.persistence.manager.CmsArticleManager;
 import com.mossle.cms.persistence.manager.CmsAttrManager;
@@ -18,6 +18,11 @@ import com.mossle.core.csv.CsvProcessor;
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
 
+import org.springframework.beans.factory.annotation.Value;
+
+import org.springframework.stereotype.Component;
+
+@Component("com.mossle.cms.data.CmsDeployer")
 public class CmsDeployer {
     private static Logger logger = LoggerFactory.getLogger(CmsDeployer.class);
     private CmsSiteManager cmsSiteManager;
@@ -27,13 +32,13 @@ public class CmsDeployer {
     private CmsTagManager cmsTagManager;
     private CmsTagArticleManager cmsTagArticleManager;
     private CmsAttrManager cmsAttrManager;
-    private UserConnector userConnector;
-    private String siteDataFilePath = "data/cms-site.csv";
-    private String catalogDataFilePath = "data/cms-catalog.csv";
-    private String articleDataFilePath = "data/cms-article.csv";
-    private String commentDataFilePath = "data/cms-comment.csv";
-    private String tagDataFilePath = "data/cms-tag.csv";
-    private String attrDataFilePath = "data/cms-attr.csv";
+    private UserClient userClient;
+    private String siteDataFilePath = "data/cms/cms-site.csv";
+    private String catalogDataFilePath = "data/cms/cms-catalog.csv";
+    private String articleDataFilePath = "data/cms/cms-article.csv";
+    private String commentDataFilePath = "data/cms/cms-comment.csv";
+    private String tagDataFilePath = "data/cms/cms-tag.csv";
+    private String attrDataFilePath = "data/cms/cms-attr.csv";
     private String dataFileEncoding = "GB2312";
     private String defaultTenantId = "1";
     private boolean enable = true;
@@ -41,10 +46,12 @@ public class CmsDeployer {
     @PostConstruct
     public void process() throws Exception {
         if (!enable) {
-            logger.info("skip init {}", CmsDeployer.class);
+            logger.info("skip cms data init");
 
             return;
         }
+
+        logger.info("start cms data init");
 
         // site
         CmsSiteCallback cmsSiteCallback = new CmsSiteCallback();
@@ -63,7 +70,7 @@ public class CmsDeployer {
         CmsArticleCallback cmsArticleCallback = new CmsArticleCallback();
         cmsArticleCallback.setCmsArticleManager(cmsArticleManager);
         cmsArticleCallback.setCmsCatalogManager(cmsCatalogManager);
-        cmsArticleCallback.setUserConnector(userConnector);
+        cmsArticleCallback.setUserClient(userClient);
         new CsvProcessor().process(articleDataFilePath, dataFileEncoding,
                 cmsArticleCallback);
 
@@ -92,9 +99,10 @@ public class CmsDeployer {
         CmsCommentCallback cmsCommentCallback = new CmsCommentCallback();
         cmsCommentCallback.setCmsCommentManager(cmsCommentManager);
         cmsCommentCallback.setCmsArticleManager(cmsArticleManager);
-        cmsCommentCallback.setUserConnector(userConnector);
+        cmsCommentCallback.setUserClient(userClient);
         new CsvProcessor().process(commentDataFilePath, dataFileEncoding,
                 cmsCommentCallback);
+        logger.info("end cms data init");
     }
 
     @Resource
@@ -134,7 +142,12 @@ public class CmsDeployer {
     }
 
     @Resource
-    public void setUserConnector(UserConnector userConnector) {
-        this.userConnector = userConnector;
+    public void setUserClient(UserClient userClient) {
+        this.userClient = userClient;
+    }
+
+    @Value("${cms.data.init.enable:false}")
+    public void setEnable(boolean enable) {
+        this.enable = enable;
     }
 }

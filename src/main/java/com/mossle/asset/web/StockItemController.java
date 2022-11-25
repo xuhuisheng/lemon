@@ -10,14 +10,14 @@ import javax.annotation.Resource;
 import javax.servlet.http.HttpServletRequest;
 import javax.servlet.http.HttpServletResponse;
 
-import com.mossle.api.user.UserConnector;
-
 import com.mossle.asset.persistence.domain.SkuInfo;
 import com.mossle.asset.persistence.domain.StockInfo;
 import com.mossle.asset.persistence.domain.StockItem;
 import com.mossle.asset.persistence.manager.SkuInfoManager;
 import com.mossle.asset.persistence.manager.StockInfoManager;
 import com.mossle.asset.persistence.manager.StockItemManager;
+
+import com.mossle.client.user.UserClient;
 
 import com.mossle.core.export.Exportor;
 import com.mossle.core.export.TableModel;
@@ -50,7 +50,7 @@ public class StockItemController {
     private StockItemManager stockItemManager;
     private Exportor exportor;
     private BeanMapper beanMapper = new BeanMapper();
-    private UserConnector userConnector;
+    private UserClient userClient;
     private MessageHelper messageHelper;
 
     @RequestMapping("stock-item-list")
@@ -157,8 +157,8 @@ public class StockItemController {
     }
 
     @Resource
-    public void setUserConnector(UserConnector userConnector) {
-        this.userConnector = userConnector;
+    public void setUserClient(UserClient userClient) {
+        this.userClient = userClient;
     }
 
     @Resource

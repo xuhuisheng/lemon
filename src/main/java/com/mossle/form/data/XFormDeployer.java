@@ -18,14 +18,19 @@ import com.mossle.form.persistence.manager.FormTemplateManager;
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
 
+import org.springframework.beans.factory.annotation.Value;
+
 import org.springframework.context.ApplicationContext;
 import org.springframework.context.ApplicationContextAware;
 
 import org.springframework.core.io.Resource;
 
+import org.springframework.stereotype.Component;
+
+@Component("com.mossle.form.data.XFormDeployer")
 public class XFormDeployer implements ApplicationContextAware {
     private Logger logger = LoggerFactory.getLogger(XFormDeployer.class);
-    private boolean autoDeploy;
+    private boolean enable = true;
     private String deployPath = "classpath:data/xform/*.json";
     private ApplicationContext applicationContext;
     private JsonMapper jsonMapper = new JsonMapper();
@@ -35,9 +40,13 @@ public class XFormDeployer implements ApplicationContextAware {
 
     @PostConstruct
     public void init() {
-        if (!autoDeploy) {
+        if (!enable) {
+            logger.info("skip form init data");
+
             return;
         }
+
+        logger.info("start form init data");
 
         TenantDTO tenantDto = tenantConnector.findByCode(defaultTenantCode);
         String tenantId = tenantDto.getId();
@@ -70,6 +79,8 @@ public class XFormDeployer implements ApplicationContextAware {
         } catch (Exception ex) {
             logger.error(ex.getMessage(), ex);
         }
+
+        logger.info("end form init data");
     }
 
     public String readText(Resource resource) throws Exception {
@@ -91,10 +102,6 @@ public class XFormDeployer implements ApplicationContextAware {
         this.deployPath = deployPath;
     }
 
-    public void setAutoDeploy(boolean autoDeploy) {
-        this.autoDeploy = autoDeploy;
-    }
-
     public void setApplicationContext(ApplicationContext applicationContext) {
         this.applicationContext = applicationContext;
     }
@@ -111,5 +118,10 @@ public class XFormDeployer implements ApplicationContextAware {
     @javax.annotation.Resource
     public void setTenantConnector(TenantConnector tenantConnector) {
         this.tenantConnector = tenantConnector;
+    }
+
+    @Value("${form.data.init.enable:false}")
+    public void setEnable(boolean enable) {
+        this.enable = enable;
     }
 }

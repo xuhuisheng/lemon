@@ -7,7 +7,6 @@ import java.util.Map;
 import javax.annotation.Resource;
 
 import com.mossle.api.tenant.TenantHolder;
-import com.mossle.api.user.UserConnector;
 import com.mossle.api.user.UserDTO;
 
 import com.mossle.auth.component.UserStatusConverter;
@@ -39,10 +38,9 @@ public class UserConnectorController {
             .getLogger(UserConnectorController.class);
     private UserStatusManager userStatusManager;
     private UserStatusConverter userStatusConverter;
-    private UserConnector userConnector;
+    private UserClient userClient;
     private AuthService authService;
     private TenantHolder tenantHolder;
-    private UserClient userClient;
 
     @RequestMapping("user-connector-list")
     public String list(@ModelAttribute Page page,
@@ -77,7 +75,7 @@ public class UserConnectorController {
                     .get("filter_LIKES_username");
             logger.debug("username : {}", username);
 
-            // page = userConnector.pagedQuery(tenantId, page, parameterMap);
+            // page = userClient.pagedQuery(tenantId, page, parameterMap);
 
             // List<UserDTO> userDtos = (List<UserDTO>) page.getResult();
             List<UserDTO> userDtos = this.userClient.search(username);
@@ -119,7 +117,8 @@ public class UserConnectorController {
     public String configRole(@RequestParam("ref") String ref) {
         logger.debug("ref : {}", ref);
 
-        UserDTO userDto = userConnector.findById(ref);
+        UserDTO userDto = userClient.findById(ref,
+                tenantHolder.getUserRepoRef());
         Long id = null;
 
         if (userDto != null) {
@@ -147,8 +146,8 @@ public class UserConnectorController {
     }
 
     @Resource
-    public void setUserConnector(UserConnector userConnector) {
-        this.userConnector = userConnector;
+    public void setUserClient(UserClient userClient) {
+        this.userClient = userClient;
     }
 
     @Resource
@@ -159,10 +158,5 @@ public class UserConnectorController {
     @Resource
     public void setTenantHolder(TenantHolder tenantHolder) {
         this.tenantHolder = tenantHolder;
-    }
-
-    @Resource
-    public void setUserClient(UserClient userClient) {
-        this.userClient = userClient;
     }
 }

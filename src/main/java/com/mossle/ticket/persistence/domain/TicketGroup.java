@@ -30,6 +30,12 @@ public class TicketGroup implements java.io.Serializable {
     /** null. */
     private String description;
 
+    /** 编码. */
+    private String code;
+
+    /** 优先级. */
+    private Integer priority;
+
     /** . */
     private Set<TicketMember> ticketMembers = new HashSet<TicketMember>(0);
 
@@ -43,11 +49,14 @@ public class TicketGroup implements java.io.Serializable {
         this.id = id;
     }
 
-    public TicketGroup(Long id, String name, String description,
-            Set<TicketMember> ticketMembers, Set<TicketInfo> ticketInfos) {
+    public TicketGroup(Long id, String name, String description, String code,
+            Integer priority, Set<TicketMember> ticketMembers,
+            Set<TicketInfo> ticketInfos) {
         this.id = id;
         this.name = name;
         this.description = description;
+        this.code = code;
+        this.priority = priority;
         this.ticketMembers = ticketMembers;
         this.ticketInfos = ticketInfos;
     }
@@ -93,6 +102,34 @@ public class TicketGroup implements java.io.Serializable {
      */
     public void setDescription(String description) {
         this.description = description;
+    }
+
+    /** @return 编码. */
+    @Column(name = "CODE", length = 50)
+    public String getCode() {
+        return this.code;
+    }
+
+    /**
+     * @param code
+     *            编码.
+     */
+    public void setCode(String code) {
+        this.code = code;
+    }
+
+    /** @return 优先级. */
+    @Column(name = "PRIORITY")
+    public Integer getPriority() {
+        return this.priority;
+    }
+
+    /**
+     * @param priority
+     *            优先级.
+     */
+    public void setPriority(Integer priority) {
+        this.priority = priority;
     }
 
     /** @return . */

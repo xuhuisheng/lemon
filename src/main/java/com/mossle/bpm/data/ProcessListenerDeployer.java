@@ -1,8 +1,5 @@
 package com.mossle.bpm.data;
 
-import java.util.List;
-import java.util.Map;
-
 import javax.annotation.PostConstruct;
 import javax.annotation.Resource;
 
@@ -11,8 +8,6 @@ import com.mossle.bpm.persistence.manager.BpmConfListenerManager;
 import com.mossle.bpm.persistence.manager.BpmConfNodeManager;
 
 import com.mossle.core.csv.CsvProcessor;
-
-import org.apache.commons.lang3.StringUtils;
 
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
@@ -27,7 +22,7 @@ public class ProcessListenerDeployer {
 
     @PostConstruct
     public void init() throws Exception {
-        String processListenerDataFilePath = "data/process-listener.csv";
+        String processListenerDataFilePath = "data/bpm/process-listener.csv";
         String processListenerDataEncoding = "UTF-8";
 
         ProcessListenerCallback processListenerCallback = new ProcessListenerCallback();

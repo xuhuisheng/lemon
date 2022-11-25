@@ -216,8 +216,7 @@ public class CounterSignCmd implements Command<Object> {
     }
 
     /**
-     * 获取活动的执行 , 子流程的活动执行是其孩子执行(并行多实例情况下) 
-     * 串行情况下获取的结果数量为1
+     * 获取活动的执行 , 子流程的活动执行是其孩子执行(并行多实例情况下) 串行情况下获取的结果数量为1
      */
     protected List<ExecutionEntity> getActivieExecutions() {
         List<ExecutionEntity> activeExecutions = new ArrayList<ExecutionEntity>();

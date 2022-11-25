@@ -247,6 +247,47 @@ public class TicketMyController {
         return "redirect:/ticket/my/view.do?id=" + id;
     }
 
+    @RequestMapping("markClose")
+    public String markClose(@RequestParam("type") String type,
+            @RequestParam("id") Long id, @RequestParam("message") String message) {
+        String userId = currentUserHolder.getUserId();
+        TicketInfo ticketInfo = ticketInfoManager.get(id);
+        ticketInfo.setStatus("closed");
+
+        Date now = new Date();
+        ticketInfo.setUpdateTime(now);
+        ticketInfoManager.save(ticketInfo);
+
+        // return "redirect:/ticket/index.do?type=" + ticketInfo.getStatus()
+        // + "&id=" + id;
+        return "redirect:/ticket/my/view.do?id=" + id;
+    }
+
+    @RequestMapping("survey")
+    public String survey(@RequestParam("id") Long id, Model model) {
+        model.addAttribute("id", id);
+
+        return "ticket/my/survey";
+    }
+
+    @RequestMapping("doSurvey")
+    public String doSurvey(@RequestParam("id") Long id,
+            @RequestParam("survey") String survey,
+            @RequestParam("surveyMessage") String surveyMessage) {
+        TicketInfo ticketInfo = this.ticketInfoManager.get(id);
+        ticketInfo.setStatus("closed");
+        ticketInfo.setSurvey(survey);
+        ticketInfo.setSurveyMessage(surveyMessage);
+        ticketInfoManager.save(ticketInfo);
+
+        return "redirect:/ticket/my/doSurveyResult.do?id=" + id;
+    }
+
+    @RequestMapping("doSurveyResult")
+    public String doSurveyResult() {
+        return "ticket/my/doSurveyResult";
+    }
+
     // ~ ======================================================================
     @Resource
     public void setTicketInfoManager(TicketInfoManager ticketInfoManager) {

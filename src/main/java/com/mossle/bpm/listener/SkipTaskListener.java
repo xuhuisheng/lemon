@@ -4,7 +4,7 @@ import java.util.Collections;
 import java.util.List;
 
 import com.mossle.api.org.OrgConnector;
-import com.mossle.api.user.UserConnector;
+import com.mossle.client.user.UserClient;
 
 import com.mossle.bpm.cmd.CompleteTaskWithCommentCmd;
 import com.mossle.bpm.persistence.domain.BpmConfRule;
@@ -26,8 +26,6 @@ import org.activiti.engine.impl.pvm.process.ActivityImpl;
 
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
-
-import org.springframework.jdbc.core.JdbcTemplate;
 
 public class SkipTaskListener extends DefaultTaskListener {
     private static Logger logger = LoggerFactory
@@ -154,8 +152,8 @@ public class SkipTaskListener extends DefaultTaskListener {
     }
 
     public void processExpression(DelegateTask delegateTask, String value) {
-        UserConnector userConnector = ApplicationContextHelper
-                .getBean(UserConnector.class);
+        UserClient userClient = ApplicationContextHelper
+                .getBean(UserClient.class);
         ExpressionManager expressionManager = Context
                 .getProcessEngineConfiguration().getExpressionManager();
         String processInstanceId = delegateTask.getProcessInstanceId();
@@ -165,7 +163,7 @@ public class SkipTaskListener extends DefaultTaskListener {
         String initiator = historicProcessInstanceEntity.getStartUserId();
         MapVariableScope mapVariableScope = new MapVariableScope();
         mapVariableScope.setVariable("initiator",
-                userConnector.findById(initiator));
+                userClient.findById(initiator, "1"));
 
         Object objectResult = expressionManager.createExpression(value)
                 .getValue(mapVariableScope);

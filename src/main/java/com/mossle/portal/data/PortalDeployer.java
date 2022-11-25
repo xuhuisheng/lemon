@@ -21,13 +21,18 @@ import org.apache.commons.lang3.StringUtils;
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
 
+import org.springframework.beans.factory.annotation.Value;
+
+import org.springframework.stereotype.Component;
+
+@Component("com.mossle.portal.data.PortalDeployer")
 public class PortalDeployer {
     private static Logger logger = LoggerFactory
             .getLogger(PortalDeployer.class);
     private PortalWidgetManager portalWidgetManager;
-    private String dataFilePath = "data/portal-widget.csv";
+    private String dataFilePath = "data/portal/widget.csv";
     private String dataFileEncoding = "GB2312";
-    private String dataItemFilePath = "data/portal-item.csv";
+    private String dataItemFilePath = "data/portal/item.csv";
     private String defaultTenantId = "1";
     private boolean enable = true;
     private PortalWidgetCallback portalWidgetCallback;
@@ -47,10 +52,12 @@ public class PortalDeployer {
     @PostConstruct
     public void process() throws Exception {
         if (!enable) {
-            logger.info("skip init {}", PortalDeployer.class);
+            logger.info("skip portal init data");
 
             return;
         }
+
+        logger.info("start portal init data");
 
         this.init();
 
@@ -59,6 +66,7 @@ public class PortalDeployer {
 
         new CsvProcessor().process(dataItemFilePath, dataFileEncoding,
                 portalItemCallback);
+        logger.info("end portal init data");
     }
 
     @Resource
@@ -74,5 +82,10 @@ public class PortalDeployer {
     @Resource
     public void setPortalItemManager(PortalItemManager portalItemManager) {
         this.portalItemManager = portalItemManager;
+    }
+
+    @Value("${portal.data.init.enable:false}")
+    public void setEnable(boolean enable) {
+        this.enable = enable;
     }
 }

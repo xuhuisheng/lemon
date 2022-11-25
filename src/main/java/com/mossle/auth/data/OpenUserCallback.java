@@ -12,8 +12,6 @@ import com.mossle.auth.persistence.manager.RoleDefManager;
 import com.mossle.auth.persistence.manager.RoleManager;
 import com.mossle.auth.persistence.manager.UserStatusManager;
 
-import com.mossle.client.user.UserClient;
-
 import com.mossle.core.csv.CsvCallback;
 
 import org.slf4j.Logger;
@@ -24,22 +22,19 @@ public class OpenUserCallback implements CsvCallback {
             .getLogger(OpenUserCallback.class);
     private String openAppCode;
     private RoleManager roleManager;
-    private UserClient userClient;
     private UserStatusManager userStatusManager;
     private String defaultTenantId = "1";
 
     public void process(List<String> list, int lineNo) throws Exception {
-        String username = list.get(0);
-        String role = list.get(1);
+        String userId = list.get(0);
+        String username = list.get(1);
+        String role = list.get(2);
         UserStatus userStatus = this.findUser(username);
 
         if (userStatus == null) {
-            UserDTO userDto = userClient.findByUsername(username,
-                    defaultTenantId);
-
             userStatus = new UserStatus();
             userStatus.setUsername(username);
-            userStatus.setRef(userDto.getId());
+            userStatus.setRef(userId);
             userStatus.setStatus(1);
             userStatus.setTenantId(openAppCode);
             userStatusManager.save(userStatus);
@@ -84,10 +79,6 @@ public class OpenUserCallback implements CsvCallback {
 
     public void setRoleManager(RoleManager roleManager) {
         this.roleManager = roleManager;
-    }
-
-    public void setUserClient(UserClient userClient) {
-        this.userClient = userClient;
     }
 
     public void setUserStatusManager(UserStatusManager userStatusManager) {

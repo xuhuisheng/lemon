@@ -11,8 +11,6 @@ import java.util.Properties;
 
 import javax.annotation.Resource;
 
-import com.mossle.api.user.UserConnector;
-
 import com.mossle.client.mdm.SysClient;
 import com.mossle.client.user.UserClient;
 
@@ -42,11 +40,10 @@ import org.springframework.util.Assert;
 public class RenderService {
     private static Logger logger = LoggerFactory.getLogger(RenderService.class);
     private TemplateService templateService;
-    private UserConnector userConnector;
+    private UserClient userClient;
     private String baseDir;
     private CmsTemplateContentManager cmsTemplateContentManager;
     private CmsService cmsService;
-    private UserClient userClient;
     private SysClient sysClient;
     private String cdnPrefix;
     private Properties applicationProperties;
@@ -115,7 +112,7 @@ public class RenderService {
         CmsCatalog cmsCatalog = cmsArticle.getCmsCatalog();
         data.put("article", cmsArticle);
         data.put("catalog", cmsCatalog);
-        data.put("userConnector", userConnector);
+        data.put("userClient", userClient);
         data.put("userClient", userClient);
         data.put("catalogs", cmsCatalogs);
         data.put("page", page);
@@ -137,7 +134,7 @@ public class RenderService {
             List<CmsCatalog> cmsCatalogs) {
         Map<String, Object> data = new HashMap<String, Object>();
         data.put("catalog", cmsCatalog);
-        data.put("userConnector", userConnector);
+        data.put("userClient", userClient);
         data.put("userClient", userClient);
         data.put("page", page);
         data.put("catalogs", cmsCatalogs);
@@ -153,7 +150,7 @@ public class RenderService {
         CmsCatalog cmsCatalog = cmsArticle.getCmsCatalog();
         data.put("article", cmsArticle);
         data.put("catalog", cmsCatalog);
-        data.put("userConnector", userConnector);
+        data.put("userClient", userClient);
         data.put("userClient", userClient);
 
         return templateService.render(cmsCatalog.getTemplateDetail(), data);
@@ -162,7 +159,7 @@ public class RenderService {
     public String viewSite(List<CmsCatalog> cmsCatalogs) {
         Map<String, Object> data = new HashMap<String, Object>();
         data.put("catalogs", cmsCatalogs);
-        data.put("userConnector", userConnector);
+        data.put("userClient", userClient);
         data.put("userClient", userClient);
 
         // data.put("cmsHelper", cmsHelper);
@@ -403,11 +400,6 @@ public class RenderService {
     @Resource
     public void setTemplateService(TemplateService templateService) {
         this.templateService = templateService;
-    }
-
-    @Resource
-    public void setUserConnector(UserConnector userConnector) {
-        this.userConnector = userConnector;
     }
 
     @Value("${store.baseDir}")

@@ -47,6 +47,9 @@ public class TicketAttachment implements java.io.Serializable {
     /** null. */
     private Date createTime;
 
+    /** 排序. */
+    private Integer priority;
+
     public TicketAttachment() {
     }
 
@@ -56,7 +59,7 @@ public class TicketAttachment implements java.io.Serializable {
 
     public TicketAttachment(Long id, TicketInfo ticketInfo, String code,
             String name, Long fileSize, String type, String userId,
-            Date createTime) {
+            Date createTime, Integer priority) {
         this.id = id;
         this.ticketInfo = ticketInfo;
         this.code = code;
@@ -65,6 +68,7 @@ public class TicketAttachment implements java.io.Serializable {
         this.type = type;
         this.userId = userId;
         this.createTime = createTime;
+        this.priority = priority;
     }
 
     /** @return null. */
@@ -180,5 +184,19 @@ public class TicketAttachment implements java.io.Serializable {
      */
     public void setCreateTime(Date createTime) {
         this.createTime = createTime;
+    }
+
+    /** @return 排序. */
+    @Column(name = "PRIORITY")
+    public Integer getPriority() {
+        return this.priority;
+    }
+
+    /**
+     * @param priority
+     *            排序.
+     */
+    public void setPriority(Integer priority) {
+        this.priority = priority;
     }
 }

@@ -8,7 +8,6 @@ import javax.annotation.Resource;
 import javax.servlet.http.HttpServletRequest;
 import javax.servlet.http.HttpServletResponse;
 
-import com.mossle.api.dict.DictConnector;
 import com.mossle.api.dict.DictDTO;
 import com.mossle.api.tenant.TenantHolder;
 
@@ -27,6 +26,7 @@ import com.mossle.dict.persistence.manager.DictDataManager;
 import com.mossle.dict.persistence.manager.DictInfoManager;
 import com.mossle.dict.persistence.manager.DictSchemaManager;
 import com.mossle.dict.persistence.manager.DictTypeManager;
+import com.mossle.dict.service.DictService;
 
 import org.springframework.stereotype.Controller;
 
@@ -47,7 +47,7 @@ public class DictInfoController {
     private BeanMapper beanMapper = new BeanMapper();
     private MessageHelper messageHelper;
     private Exportor exportor;
-    private DictConnector dictConnector;
+    private DictService dictService;
     private TenantHolder tenantHolder;
 
     @RequestMapping("dict-info-list")
@@ -69,12 +69,12 @@ public class DictInfoController {
             DictInfo dictInfo = dictInfoManager.get(id);
             model.addAttribute("model", dictInfo);
 
-            DictDTO dictDto = dictConnector.findDictByName(dictInfo.getName(),
+            DictDTO dictDto = dictService.findDictByName(dictInfo.getName(),
                     dictInfo.getDictType().getName(), tenantId);
             model.addAttribute("dictDto", dictDto);
         } else {
             DictType dictType = dictTypeManager.get(typeId);
-            DictDTO dictDto = dictConnector.findDictByType(dictType.getName(),
+            DictDTO dictDto = dictService.findDictByType(dictType.getName(),
                     tenantId);
             model.addAttribute("dictDto", dictDto);
         }
@@ -198,8 +198,8 @@ public class DictInfoController {
     }
 
     @Resource
-    public void setDictConnector(DictConnector dictConnector) {
-        this.dictConnector = dictConnector;
+    public void setDictService(DictService dictService) {
+        this.dictService = dictService;
     }
 
     @Resource

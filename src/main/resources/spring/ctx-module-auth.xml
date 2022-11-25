@@ -1,0 +1,31 @@
+<?xml version="1.0" encoding="UTF-8"?>
+<beans xmlns="http://www.springframework.org/schema/beans"
+        xmlns:xsi="http://www.w3.org/2001/XMLSchema-instance"
+        xsi:schemaLocation="http://www.springframework.org/schema/beans http://www.springframework.org/schema/beans/spring-beans.xsd">
+
+    <alias name="defaultCacheManager" alias="userAuthCacheManager"/>
+
+    <bean id="userAuthCache" class="com.mossle.auth.support.UserAuthCacheImpl">
+        <property name="cacheManager" ref="userAuthCacheManager"/>
+    </bean>
+<!--
+    <bean id="userAuthConnector" class="com.mossle.auth.support.UserAuthConnectorFactoryBean">
+        <property name="type" value="${userauth.connector.type}"/>
+        <property name="userAuthCache" ref="userAuthCache"/>
+        <property name="jdbcTemplate" ref="jdbcTemplate"/>
+        <property name="userConnector" ref="userConnector"/>
+        <property name="tenantConnector" ref="tenantConnector"/>
+    </bean>
+-->
+
+    <!-- authCache依赖 -->
+    <bean id="userAuthConnector" class="${user.userAuthConnector}"/>
+
+    <!-- menu -->
+    <alias name="defaultCacheManager" alias="menuCacheManager"/>
+
+    <bean id="menuCache" class="com.mossle.auth.support.MenuCache">
+        <property name="cacheManager" ref="menuCacheManager"/>
+    </bean>
+
+</beans>

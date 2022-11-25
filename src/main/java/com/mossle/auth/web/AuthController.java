@@ -2,9 +2,9 @@ package com.mossle.auth.web;
 
 import javax.annotation.Resource;
 
+// import com.mossle.spi.auth.ResourcePublisher;
+import com.mossle.auth.component.AuthProducer;
 import com.mossle.auth.service.AuthService;
-
-import com.mossle.spi.auth.ResourcePublisher;
 
 import org.springframework.stereotype.Controller;
 
@@ -17,7 +17,9 @@ import org.springframework.web.bind.annotation.RequestParam;
 @RequestMapping("auth")
 public class AuthController {
     private AuthService authService;
-    private ResourcePublisher resourcePublisher;
+
+    // private ResourcePublisher resourcePublisher;
+    private AuthProducer authProducer;
 
     @RequestMapping("index")
     public String index() throws Exception {
@@ -35,7 +37,8 @@ public class AuthController {
     @RequestMapping("auth-save")
     public String save(@RequestParam("text") String text) {
         authService.doImport(text);
-        resourcePublisher.publish();
+        // resourcePublisher.publish();
+        authProducer.sendUpdate();
 
         return "redirect:/auth/auth-list.do";
     }
@@ -46,8 +49,12 @@ public class AuthController {
         this.authService = authService;
     }
 
+    // @Resource
+    // public void setResourcePublisher(ResourcePublisher resourcePublisher) {
+    // this.resourcePublisher = resourcePublisher;
+    // }
     @Resource
-    public void setResourcePublisher(ResourcePublisher resourcePublisher) {
-        this.resourcePublisher = resourcePublisher;
+    public void setAuthProducer(AuthProducer authProducer) {
+        this.authProducer = authProducer;
     }
 }

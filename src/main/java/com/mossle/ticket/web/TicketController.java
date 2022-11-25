@@ -13,10 +13,10 @@ import javax.servlet.http.HttpServletResponse;
 
 import com.mossle.api.auth.CurrentUserHolder;
 import com.mossle.api.store.StoreDTO;
-import com.mossle.api.user.UserConnector;
 import com.mossle.api.user.UserDTO;
 
 import com.mossle.client.store.StoreClient;
+import com.mossle.client.user.UserClient;
 
 import com.mossle.core.mapper.BeanMapper;
 import com.mossle.core.mapper.JsonMapper;
@@ -26,9 +26,11 @@ import com.mossle.core.store.MultipartFileDataSource;
 
 import com.mossle.ticket.persistence.domain.TicketAttachment;
 import com.mossle.ticket.persistence.domain.TicketComment;
+import com.mossle.ticket.persistence.domain.TicketGroup;
 import com.mossle.ticket.persistence.domain.TicketInfo;
 import com.mossle.ticket.persistence.manager.TicketAttachmentManager;
 import com.mossle.ticket.persistence.manager.TicketCommentManager;
+import com.mossle.ticket.persistence.manager.TicketGroupManager;
 import com.mossle.ticket.persistence.manager.TicketInfoManager;
 
 import org.apache.commons.io.IOUtils;
@@ -55,16 +57,18 @@ public class TicketController {
     private TicketInfoManager ticketInfoManager;
     private TicketCommentManager ticketCommentManager;
     private TicketAttachmentManager ticketAttachmentManager;
+    private TicketGroupManager ticketGroupManager;
     private BeanMapper beanMapper = new BeanMapper();
     private JsonMapper jsonMapper = new JsonMapper();
     private CurrentUserHolder currentUserHolder;
-    private UserConnector userConnector;
+    private UserClient userClient;
     private StoreClient storeClient;
 
     @RequestMapping("index")
     public String index(
             @RequestParam(value = "type", required = false) String type,
-            @RequestParam(value = "id", required = false) Long id, Model model) {
+            @RequestParam(value = "id", required = false) Long id,
+            @RequestParam Map<String, Object> parameterMap, Model model) {
         this.calculateTotal(model);
         this.calculateList(type, model);
         this.calculateTicketInfo(id, model);
@@ -85,6 +89,11 @@ public class TicketController {
     @RequestMapping("create")
     public String create(Model model) {
         return "ticket/create";
+    }
+
+    @RequestMapping("create-admin")
+    public String createAdmin(Model model) {
+        return "ticket/create-admin";
     }
 
     @RequestMapping("list")
@@ -174,7 +183,8 @@ public class TicketController {
         ticketInfo.setUpdateTime(now);
         ticketInfoManager.save(ticketInfo);
 
-        return "redirect:/ticket/index.do?type=open&id=" + id;
+        // return "redirect:/ticket/index.do?type=open&id=" + id;
+        return "redirect:/ticket/view.do?id=" + id;
     }
 
     @RequestMapping("replyMessage")
@@ -200,8 +210,9 @@ public class TicketController {
 
         ticketInfoManager.save(ticketInfo);
 
-        return "redirect:/ticket/index.do?type=" + ticketInfo.getStatus()
-                + "&id=" + id;
+        // return "redirect:/ticket/index.do?type=" + ticketInfo.getStatus()
+        // + "&id=" + id;
+        return "redirect:/ticket/view.do?id=" + id;
     }
 
     @RequestMapping("markResolve")
@@ -215,8 +226,9 @@ public class TicketController {
         ticketInfo.setUpdateTime(now);
         ticketInfoManager.save(ticketInfo);
 
-        return "redirect:/ticket/index.do?type=" + ticketInfo.getStatus()
-                + "&id=" + id;
+        // return "redirect:/ticket/index.do?type=" + ticketInfo.getStatus()
+        // + "&id=" + id;
+        return "redirect:/ticket/view.do?id=" + id;
     }
 
     @RequestMapping("markClose")
@@ -230,8 +242,9 @@ public class TicketController {
         ticketInfo.setUpdateTime(now);
         ticketInfoManager.save(ticketInfo);
 
-        return "redirect:/ticket/index.do?type=" + ticketInfo.getStatus()
-                + "&id=" + id;
+        // return "redirect:/ticket/index.do?type=" + ticketInfo.getStatus()
+        // + "&id=" + id;
+        return "redirect:/ticket/view.do?id=" + id;
     }
 
     @RequestMapping("edit")
@@ -259,11 +272,11 @@ public class TicketController {
     @RequestMapping("doAssign")
     public String doAssign(@RequestParam("id") Long id,
             @RequestParam("username") String username, Model model) {
-        UserDTO userDto = userConnector.findByUsername(username, "1");
+        UserDTO userDto = userClient.findByUsername(username, "1");
 
         if (userDto != null) {
             TicketInfo ticketInfo = ticketInfoManager.get(id);
-            ticketInfo.setCreator(userDto.getId());
+            ticketInfo.setAssignee(userDto.getId());
 
             if ("pending".equals(ticketInfo.getStatus())) {
                 ticketInfo.setStatus("open");
@@ -377,81 +390,172 @@ public class TicketController {
     // ~
     public void calculateTotal(Model model) {
         String userId = currentUserHolder.getUserId();
-        int total = ticketInfoManager.getCount(
-                "select count(*) from TicketInfo where assignee=?", userId);
-        model.addAttribute("total", total);
+        // int total = ticketInfoManager.getCount(
+        // "select count(*) from TicketInfo where assignee=?", userId);
+        // model.addAttribute("total", total);
 
-        int totalOpen = ticketInfoManager
-                .getCount(
-                        "select count(*) from TicketInfo where assignee=? and status='open'",
-                        userId);
-        model.addAttribute("totalOpen", totalOpen);
+        // int totalOpen = ticketInfoManager
+        // .getCount(
+        // "select count(*) from TicketInfo where assignee=? and status='open'",
+        // userId);
+        // model.addAttribute("totalOpen", totalOpen);
 
-        int totalNew = ticketInfoManager
-                .getCount("select count(*) from TicketInfo where status='new'");
-        model.addAttribute("totalNew", totalNew);
+        // int totalNew = ticketInfoManager
+        // .getCount("select count(*) from TicketInfo where status='new'");
+        // model.addAttribute("totalNew", totalNew);
 
-        int totalPending = ticketInfoManager
-                .getCount(
-                        "select count(*) from TicketInfo where assignee=? and status='pending'",
-                        userId);
-        model.addAttribute("totalPending", totalPending);
+        // int totalPending = ticketInfoManager
+        // .getCount(
+        // "select count(*) from TicketInfo where assignee=? and status='pending'",
+        // userId);
+        // model.addAttribute("totalPending", totalPending);
 
-        int totalResolved = ticketInfoManager
-                .getCount(
-                        "select count(*) from TicketInfo where assignee=? and status='resolved'",
-                        userId);
-        model.addAttribute("totalResolved", totalResolved);
+        // int totalResolved = ticketInfoManager
+        // .getCount(
+        // "select count(*) from TicketInfo where assignee=? and status='resolved'",
+        // userId);
+        // model.addAttribute("totalResolved", totalResolved);
 
-        int totalClosed = ticketInfoManager
-                .getCount(
-                        "select count(*) from TicketInfo where assignee=? and status='closed'",
-                        userId);
-        model.addAttribute("totalClosed", totalClosed);
+        // int totalClosed = ticketInfoManager
+        // .getCount(
+        // "select count(*) from TicketInfo where assignee=? and status='closed'",
+        // userId);
+        // model.addAttribute("totalClosed", totalClosed);
+        {
+            String hql = "select count(*) from TicketInfo where creator=?";
+            int count = ticketInfoManager.getCount(hql, userId);
+            model.addAttribute("userCreatedCount", count);
+        }
+
+        {
+            String hql = "select count(*) from TicketInfo where creator=? and status in ('new', 'open', 'pending')";
+            int count = ticketInfoManager.getCount(hql, userId);
+            model.addAttribute("userUnresolvedCount", count);
+        }
+
+        {
+            String hql = "select count(*) from TicketInfo where creator=? and status in ('resolved', 'closed')";
+            int count = ticketInfoManager.getCount(hql, userId);
+            model.addAttribute("userResolvedCount", count);
+        }
+
+        List<TicketGroup> ticketGroups = ticketGroupManager.find(
+                "select m.ticketGroup from TicketMember m where m.userId=?",
+                userId);
+        List<Long> groupIds = new ArrayList<Long>();
+
+        for (TicketGroup ticketGroup : ticketGroups) {
+            groupIds.add(ticketGroup.getId());
+        }
+
+        if (groupIds.isEmpty()) {
+            groupIds.add(0L);
+        }
+
+        Map<String, Object> params = new HashMap<String, Object>();
+        params.put("groupIds", groupIds);
+
+        {
+            String hql = "select count(*) from TicketInfo where ticketGroup.id in (:groupIds) and status in ('new', 'open', 'pending')";
+            int count = ticketInfoManager.getCount(hql, params);
+            model.addAttribute("groupUnresolvedCount", count);
+        }
+
+        {
+            String hql = "select count(*) from TicketInfo where ticketGroup.id in (:groupIds) and status in ('resolved', 'closed')";
+            int count = ticketInfoManager.getCount(hql, params);
+            model.addAttribute("groupResolvedCount", count);
+        }
+
+        {
+            String hql = "select count(*) from TicketInfo where ticketGroup.id in (:groupIds) and assignee=null and status in ('new', 'open', 'pending')";
+            int count = ticketInfoManager.getCount(hql, params);
+            model.addAttribute("groupUnassignedCount", count);
+        }
+
+        {
+            String hql = "select count(*) from TicketInfo where status in ('new', 'open', 'pending')";
+            int count = ticketInfoManager.getCount(hql);
+            model.addAttribute("unresolvedCount", count);
+        }
+
+        {
+            String hql = "select count(*) from TicketInfo where status in ('resolved', 'closed')";
+            int count = ticketInfoManager.getCount(hql);
+            model.addAttribute("resolvedCount", count);
+        }
+
+        {
+            String hql = "select count(*) from TicketInfo where assignee=null and status in ('new', 'open', 'pending')";
+            int count = ticketInfoManager.getCount(hql);
+            model.addAttribute("unassignedCount", count);
+        }
     }
 
     public void calculateList(String type, Model model) {
         if (StringUtils.isBlank(type)) {
-            return;
+            type = "user-unresolved";
         }
 
         String userId = currentUserHolder.getUserId();
 
-        if ("all".equals(type)) {
-            Page page = ticketInfoManager
-                    .pagedQuery(
-                            "from TicketInfo where assignee=? order by createTime desc",
-                            1, 10, userId);
+        /*
+         * if ("all".equals(type)) { String hql = "from TicketInfo where assignee=? order by createTime desc"; Page page
+         * = ticketInfoManager.pagedQuery(hql, 1, 10, userId); model.addAttribute("page", page); } else if
+         * ("open".equals(type)) { String hql =
+         * "from TicketInfo where assignee=? and status='open' order by createTime desc"; Page page =
+         * ticketInfoManager.pagedQuery(hql, 1, 10, userId); model.addAttribute("page", page); } else if
+         * ("new".equals(type)) { String hql = "from TicketInfo where status='new' order by createTime desc"; Page page
+         * = ticketInfoManager.pagedQuery(hql, 1, 10); model.addAttribute("page", page); } else if
+         * ("pending".equals(type)) { String hql =
+         * "from TicketInfo where assignee=? and status='pending' order by createTime desc"; Page page =
+         * ticketInfoManager.pagedQuery(hql, 1, 10, userId); model.addAttribute("page", page); } else if
+         * ("resolved".equals(type)) { String hql =
+         * "from TicketInfo where assignee=? and status='resolved' order by createTime desc"; Page page =
+         * ticketInfoManager.pagedQuery(hql, 1, 10, userId); model.addAttribute("page", page); } else if
+         * ("closed".equals(type)) { String hql =
+         * "from TicketInfo where assignee=? and status='closed' order by createTime desc"; Page page =
+         * ticketInfoManager.pagedQuery(hql, 1, 10, userId); model.addAttribute("page", page); } else
+         */
+        if ("user-created".equals(type)) {
+            String hql = "from TicketInfo where creator=? order by createTime desc";
+            Page page = ticketInfoManager.pagedQuery(hql, 1, 10, userId);
             model.addAttribute("page", page);
-        } else if ("open".equals(type)) {
-            Page page = ticketInfoManager
-                    .pagedQuery(
-                            "from TicketInfo where assignee=? and status='open' order by createTime desc",
-                            1, 10, userId);
+        } else if ("user-unresolved".equals(type)) {
+            String hql = "from TicketInfo where assignee=? and (status='new' or status='open' or status='pending') order by createTime desc";
+            Page page = ticketInfoManager.pagedQuery(hql, 1, 10, userId);
             model.addAttribute("page", page);
-        } else if ("new".equals(type)) {
-            Page page = ticketInfoManager
-                    .pagedQuery(
-                            "from TicketInfo where status='new' order by createTime desc",
-                            1, 10);
+        } else if ("user-resolved".equals(type)) {
+            String hql = "from TicketInfo where assignee=? and (status='resolved' or status='closed') order by createTime desc";
+            Page page = ticketInfoManager.pagedQuery(hql, 1, 10, userId);
             model.addAttribute("page", page);
-        } else if ("pending".equals(type)) {
-            Page page = ticketInfoManager
-                    .pagedQuery(
-                            "from TicketInfo where assignee=? and status='pending' order by createTime desc",
-                            1, 10, userId);
+        } else if ("group-unresolved".equals(type)) {
+            String hql = "from TicketInfo where assignee=? and (status='new' or status='open' or status='pending') order by createTime desc";
+            Page page = ticketInfoManager.pagedQuery(hql, 1, 10, userId);
+            model.addAttribute("page", page);
+        } else if ("group-resolved".equals(type)) {
+            String hql = "from TicketInfo where assignee=? and (status='resolved' or status='closed') order by createTime desc";
+            Page page = ticketInfoManager.pagedQuery(hql, 1, 10, userId);
+            model.addAttribute("page", page);
+        } else if ("group-unassigned".equals(type)) {
+            String hql = "from TicketInfo where assignee=null order by createTime desc";
+            Page page = ticketInfoManager.pagedQuery(hql, 1, 10);
+            model.addAttribute("page", page);
+        } else if ("unresolved".equals(type)) {
+            String hql = "from TicketInfo where status='new' or status='open' or status='pending' order by createTime desc";
+            Page page = ticketInfoManager.pagedQuery(hql, 1, 10);
             model.addAttribute("page", page);
         } else if ("resolved".equals(type)) {
-            Page page = ticketInfoManager
-                    .pagedQuery(
-                            "from TicketInfo where assignee=? and status='resolved' order by createTime desc",
-                            1, 10, userId);
+            String hql = "from TicketInfo where status='resolved' order by createTime desc";
+            Page page = ticketInfoManager.pagedQuery(hql, 1, 10);
+            model.addAttribute("page", page);
+        } else if ("unassigned".equals(type)) {
+            String hql = "from TicketInfo where assignee=null order by createTime desc";
+            Page page = ticketInfoManager.pagedQuery(hql, 1, 10);
             model.addAttribute("page", page);
         } else if ("closed".equals(type)) {
-            Page page = ticketInfoManager
-                    .pagedQuery(
-                            "from TicketInfo where assignee=? and status='closed' order by createTime desc",
-                            1, 10, userId);
+            String hql = "from TicketInfo where status='closed' order by createTime desc";
+            Page page = ticketInfoManager.pagedQuery(hql, 1, 10);
             model.addAttribute("page", page);
         } else {
             logger.info("unsupport : {}", type);
@@ -489,13 +593,18 @@ public class TicketController {
     }
 
     @Resource
+    public void setTicketGroupManger(TicketGroupManager ticketGroupManager) {
+        this.ticketGroupManager = ticketGroupManager;
+    }
+
+    @Resource
     public void setCurrentUserHolder(CurrentUserHolder currentUserHolder) {
         this.currentUserHolder = currentUserHolder;
     }
 
     @Resource
-    public void setUserConnector(UserConnector userConnector) {
-        this.userConnector = userConnector;
+    public void setUserClient(UserClient userClient) {
+        this.userClient = userClient;
     }
 
     @Resource

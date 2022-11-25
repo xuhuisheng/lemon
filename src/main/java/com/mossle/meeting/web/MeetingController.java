@@ -2,6 +2,7 @@ package com.mossle.meeting.web;
 
 import java.text.SimpleDateFormat;
 
+import java.util.Arrays;
 import java.util.Date;
 import java.util.List;
 import java.util.Map;
@@ -10,6 +11,9 @@ import javax.annotation.Resource;
 
 import com.mossle.api.auth.CurrentUserHolder;
 import com.mossle.api.tenant.TenantHolder;
+
+import com.mossle.client.calendar.CalendarClient;
+import com.mossle.client.calendar.CalendarEventDTO;
 
 import com.mossle.core.page.Page;
 import com.mossle.core.query.PropertyFilter;
@@ -43,6 +47,7 @@ public class MeetingController {
     private MeetingAttendeeManager meetingAttendeeManager;
     private CurrentUserHolder currentUserHolder;
     private TenantHolder tenantHolder;
+    private CalendarClient calendarClient;
 
     @RequestMapping("index")
     public String index(
@@ -92,6 +97,8 @@ public class MeetingController {
             @RequestParam("attendees") String attendees) throws Exception {
         logger.info("calendarDate : {}", meetingInfo.getCalendarDate());
 
+        String userId = currentUserHolder.getUserId();
+
         String calendarDateText = new SimpleDateFormat("yyyy-MM-dd")
                 .format(meetingInfo.getCalendarDate());
 
@@ -106,7 +113,9 @@ public class MeetingController {
 
         MeetingInfo dest = meetingInfo;
 
-        for (String attendee : attendees.split(",")) {
+        List<String> attendeeList = Arrays.asList(attendees.split(","));
+
+        for (String attendee : attendeeList) {
             MeetingAttendee meetingAttendee = new MeetingAttendee();
             /*
              * UserDTO userDto = userConnector .findByUsername(attendee.trim(), "1");
@@ -121,6 +130,20 @@ public class MeetingController {
             meetingAttendee.setMeetingInfo(dest);
             meetingInfoManager.save(meetingAttendee);
         }
+
+        String startTimeText = calendarDateText + " " + startTime + ":00";
+        String endTimeText = calendarDateText + " " + endTime + ":00";
+
+        // calendar
+        CalendarEventDTO calendarEventDto = new CalendarEventDTO();
+        calendarEventDto.setOrganizer(meetingInfo.getOrganizer());
+        calendarEventDto.setAttendees(attendeeList);
+        calendarEventDto.setSummary(meetingInfo.getSubject());
+        calendarEventDto.setStartTime(startTimeText);
+        calendarEventDto.setEndTime(endTimeText);
+        calendarEventDto.setLocation(meetingRoom.getName());
+        calendarEventDto.setCalendarId(userId);
+        calendarClient.create(calendarEventDto);
 
         return "redirect:/meeting/index.do?calendarDate=" + calendarDateText;
     }
@@ -165,5 +188,10 @@ public class MeetingController {
     @Resource
     public void setTenantHolder(TenantHolder tenantHolder) {
         this.tenantHolder = tenantHolder;
+    }
+
+    @Resource
+    public void setCalendarClient(CalendarClient calendarClient) {
+        this.calendarClient = calendarClient;
     }
 }

@@ -9,10 +9,10 @@ import com.mossle.api.keyvalue.Record;
 import com.mossle.api.model.ModelInfoDTO;
 import com.mossle.api.model.ModelItemDTO;
 import com.mossle.api.store.StoreDTO;
-import com.mossle.api.user.UserConnector;
 import com.mossle.api.user.UserDTO;
 
 import com.mossle.client.store.StoreClient;
+import com.mossle.client.user.UserClient;
 
 import com.mossle.core.mapper.JsonMapper;
 
@@ -26,7 +26,7 @@ public class XformBuilder {
     private Xform xform = new Xform();
     private JsonMapper jsonMapper = new JsonMapper();
     private StoreClient storeClient;
-    private UserConnector userConnector;
+    private UserClient userClient;
 
     public XformBuilder setStoreClient(StoreClient storeClient) {
         this.storeClient = storeClient;
@@ -34,8 +34,8 @@ public class XformBuilder {
         return this;
     }
 
-    public XformBuilder setUserConnector(UserConnector userConnector) {
-        this.userConnector = userConnector;
+    public XformBuilder setUserClient(UserClient userClient) {
+        this.userClient = userClient;
 
         return this;
     }
@@ -177,7 +177,7 @@ public class XformBuilder {
                 continue;
             }
 
-            UserDTO userDto = userConnector.findById(userId);
+            UserDTO userDto = userClient.findById(userId, "1");
 
             if (userDto == null) {
                 continue;

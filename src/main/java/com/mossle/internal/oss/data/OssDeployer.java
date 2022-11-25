@@ -18,17 +18,20 @@ import org.springframework.beans.factory.annotation.Value;
 import org.springframework.context.ApplicationContext;
 import org.springframework.context.ApplicationContextAware;
 
+import org.springframework.stereotype.Component;
+
+@Component("com.mossle.internal.oss.data.OssDeployer")
 public class OssDeployer implements ApplicationContextAware {
     private static Logger logger = LoggerFactory.getLogger(OssDeployer.class);
     private OssRegionManager ossRegionManager;
     private OssBucketManager ossBucketManager;
     private OssAccessManager ossAccessManager;
     private OssObjectManager ossObjectManager;
-    private String dataFilePath = "data/oss-region.csv";
+    private String dataFilePath = "data/oss/region.csv";
     private String dataFileEncoding = "GB2312";
-    private String bucketDataFilePath = "data/oss-bucket.csv";
+    private String bucketDataFilePath = "data/oss/bucket.csv";
     private String bucketDataFileEncoding = "GB2312";
-    private String objectDataFilePath = "data/oss-object.csv";
+    private String objectDataFilePath = "data/oss/object.csv";
     private String objectDataFileEncoding = "GB2312";
     private String defaultTenantId = "1";
     private AvatarInitiator avatarInitiator;
@@ -39,10 +42,12 @@ public class OssDeployer implements ApplicationContextAware {
     @PostConstruct
     public void process() throws Exception {
         if (!enable) {
-            logger.info("skip");
+            logger.info("skip oss init data");
 
             return;
         }
+
+        logger.info("start oss init data");
 
         logger.debug("default tenant id : {}", defaultTenantId);
 
@@ -71,6 +76,7 @@ public class OssDeployer implements ApplicationContextAware {
         avatarInitiator.setApplicationContext(applicationContext);
         avatarInitiator.setBaseDir(baseDir);
         avatarInitiator.init();
+        logger.info("end oss init data");
     }
 
     // ~
@@ -105,5 +111,10 @@ public class OssDeployer implements ApplicationContextAware {
 
     public void setApplicationContext(ApplicationContext applicationContext) {
         this.applicationContext = applicationContext;
+    }
+
+    @Value("${oss.data.init.enable:false}")
+    public void setEnable(boolean enable) {
+        this.enable = enable;
     }
 }

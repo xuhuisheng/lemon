@@ -340,8 +340,8 @@ public class CustomProcessDiagramGenerator {
      */
     protected static void drawSubProcess(int x, int y, int width, int height,
             Graphics2D graphics) {
-        RoundRectangle2D rect = new RoundRectangle2D.Double(x + 1, y + 1,
-                width - 2, height - 2, OFFSET_SUBPROCESS, OFFSET_SUBPROCESS);
+        RoundRectangle2D rect = new RoundRectangle2D.Double(x + 1D, y + 1D,
+                width - 2D, height - 2D, OFFSET_SUBPROCESS, OFFSET_SUBPROCESS);
         graphics.draw(rect);
     }
 
@@ -615,10 +615,10 @@ public class CustomProcessDiagramGenerator {
                     Integer cy = anchorY;
 
                     // pivot point of prev line
-                    double lineLengthY = yPoints[i] - yPoints[i - 1];
+                    double lineLengthY = yPoints[i] - yPoints[i - 1] + 0D;
 
                     // pivot point of prev line
-                    double lineLengthX = xPoints[i] - xPoints[i - 1];
+                    double lineLengthX = xPoints[i] - xPoints[i - 1] + 0D;
                     double lineLength = Math.sqrt(Math.pow(lineLengthY, 2)
                             + Math.pow(lineLengthX, 2));
                     double dx = (lineLengthX * radius) / lineLength;
@@ -633,8 +633,8 @@ public class CustomProcessDiagramGenerator {
                     }
 
                     // pivot point of next line
-                    lineLengthY = yPoints[i + 1] - yPoints[i];
-                    lineLengthX = xPoints[i + 1] - xPoints[i];
+                    lineLengthY = yPoints[i + 1] - yPoints[i] + 0D;
+                    lineLengthX = xPoints[i + 1] - xPoints[i] + 0D;
                     lineLength = Math.sqrt(Math.pow(lineLengthY, 2)
                             + Math.pow(lineLengthX, 2));
 

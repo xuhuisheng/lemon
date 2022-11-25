@@ -2,7 +2,10 @@ package com.mossle.security.client;
 
 import java.util.Collection;
 import java.util.LinkedHashMap;
+import java.util.List;
 import java.util.Map;
+
+import com.mossle.api.userauth.ResourceDTO;
 
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
@@ -34,6 +37,28 @@ public class UrlResourcePopulator {
         for (Map.Entry<String, String> entry : resourceMap.entrySet()) {
             String key = entry.getKey();
             String value = entry.getValue();
+            requestMap.put(new AntPathRequestMatcher(key),
+                    SecurityConfig.createListFromCommaDelimitedString(value));
+        }
+
+        FilterInvocationSecurityMetadataSource source = new DefaultFilterInvocationSecurityMetadataSource(
+                requestMap);
+        filterSecurityInterceptor.setSecurityMetadataSource(source);
+    }
+
+    public void execute(FilterSecurityInterceptor filterSecurityInterceptor,
+            List<ResourceDTO> resourceDtos) {
+        Assert.notNull(filterSecurityInterceptor);
+        Assert.notNull(resourceDtos);
+
+        logger.info("refresh url resource");
+
+        LinkedHashMap<RequestMatcher, Collection<ConfigAttribute>> requestMap = null;
+        requestMap = new LinkedHashMap<RequestMatcher, Collection<ConfigAttribute>>();
+
+        for (ResourceDTO resourceDto : resourceDtos) {
+            String key = resourceDto.getResource();
+            String value = resourceDto.getPermission();
             requestMap.put(new AntPathRequestMatcher(key),
                     SecurityConfig.createListFromCommaDelimitedString(value));
         }

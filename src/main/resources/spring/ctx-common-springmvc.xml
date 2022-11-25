@@ -1,55 +1,55 @@
 <?xml version="1.0" encoding="UTF-8"?>
 <beans xmlns="http://www.springframework.org/schema/beans"
-	xmlns:xsi="http://www.w3.org/2001/XMLSchema-instance"
-	xmlns:context="http://www.springframework.org/schema/context"
-	xmlns:mvc="http://www.springframework.org/schema/mvc"
-	xsi:schemaLocation="http://www.springframework.org/schema/mvc http://www.springframework.org/schema/mvc/spring-mvc.xsd
-		http://www.springframework.org/schema/beans http://www.springframework.org/schema/beans/spring-beans.xsd
-		http://www.springframework.org/schema/context http://www.springframework.org/schema/context/spring-context.xsd">
+    xmlns:xsi="http://www.w3.org/2001/XMLSchema-instance"
+    xmlns:context="http://www.springframework.org/schema/context"
+    xmlns:mvc="http://www.springframework.org/schema/mvc"
+    xsi:schemaLocation="http://www.springframework.org/schema/mvc http://www.springframework.org/schema/mvc/spring-mvc.xsd
+        http://www.springframework.org/schema/beans http://www.springframework.org/schema/beans/spring-beans.xsd
+        http://www.springframework.org/schema/context http://www.springframework.org/schema/context/spring-context.xsd">
 
-	<!-- 自动扫描且只扫描@Controller -->
-	<context:component-scan base-package="com.mossle" use-default-filters="false">
-		<context:include-filter type="annotation" expression="org.springframework.stereotype.Controller"/>
-		<context:include-filter type="annotation" expression="org.springframework.web.bind.annotation.RestController"/>
-	</context:component-scan>
+    <!-- 自动扫描且只扫描@Controller -->
+    <context:component-scan base-package="com.mossle" use-default-filters="false">
+        <context:include-filter type="annotation" expression="org.springframework.stereotype.Controller"/>
+        <context:include-filter type="annotation" expression="org.springframework.web.bind.annotation.RestController"/>
+    </context:component-scan>
 
-	<mvc:annotation-driven conversion-service="conversionService" >
-		<mvc:message-converters register-defaults="true">
-			<!-- 将StringHttpMessageConverter的默认编码设为UTF-8 -->
-			<bean class="org.springframework.http.converter.StringHttpMessageConverter">
-		    	<constructor-arg value="UTF-8" />
-			</bean>
-  		</mvc:message-converters>
-	</mvc:annotation-driven>
+    <mvc:annotation-driven conversion-service="conversionService" >
+        <mvc:message-converters register-defaults="true">
+            <!-- 将StringHttpMessageConverter的默认编码设为UTF-8 -->
+            <bean class="org.springframework.http.converter.StringHttpMessageConverter">
+                <constructor-arg value="UTF-8" />
+            </bean>
+        </mvc:message-converters>
+    </mvc:annotation-driven>
 
-	<!-- 定义JSP文件的位置 -->
-	<bean class="org.springframework.web.servlet.view.InternalResourceViewResolver">
-		<property name="prefix" value="/content/"/>
-		<property name="suffix" value=".jsp"/>
-	</bean>
+    <!-- 定义JSP文件的位置 -->
+    <bean class="org.springframework.web.servlet.view.InternalResourceViewResolver">
+        <property name="prefix" value="/content/"/>
+        <property name="suffix" value=".jsp"/>
+    </bean>
 
-	<!-- 容器默认的DefaultServletHandler处理 所有静态内容与无RequestMapping处理的URL-->
-	<mvc:default-servlet-handler/>
+    <!-- 容器默认的DefaultServletHandler处理 所有静态内容与无RequestMapping处理的URL-->
+    <mvc:default-servlet-handler/>
 
-	<!-- 定义无需Controller的url<->view直接映射 -->
-	<!--
-	<mvc:view-controller path="/" view-name="index"/>
-	-->
+    <!-- 定义无需Controller的url<->view直接映射 -->
+    <!--
+    <mvc:view-controller path="/" view-name="index"/>
+    -->
 
-	<bean id="multipartResolver" class="org.springframework.web.multipart.commons.CommonsMultipartResolver">
-		<property name="defaultEncoding" value="utf-8"/>
-		<property name="maxUploadSize" value="${upload.maxsize}"/>
-	</bean>
+    <bean id="multipartResolver" class="org.springframework.web.multipart.commons.CommonsMultipartResolver">
+        <property name="defaultEncoding" value="utf-8"/>
+        <property name="maxUploadSize" value="${upload.maxsize}"/>
+    </bean>
 
     <bean id="conversionService" class="org.springframework.format.support.FormattingConversionServiceFactoryBean">
-		<property name="converters">
-			<list>
-				<bean class="com.mossle.core.spring.DateConverter" />
-			</list>
-		</property>
-	</bean>
+        <property name="converters">
+            <list>
+                <bean class="com.mossle.core.spring.DateConverter" />
+            </list>
+        </property>
+    </bean>
 
-	<!-- 处理springmvc的RedirectAttributes的工具类 -->
-	<bean id="messageHelper" class="com.mossle.core.spring.MessageHelper"/>
+    <!-- 处理springmvc的RedirectAttributes的工具类 -->
+    <bean id="messageHelper" class="com.mossle.core.spring.MessageHelper"/>
 
 </beans>

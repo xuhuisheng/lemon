@@ -6,7 +6,7 @@ import java.util.Date;
 
 import javax.annotation.Resource;
 
-import com.mossle.api.user.UserConnector;
+import com.mossle.client.user.UserClient;
 
 import org.activiti.engine.delegate.event.ActivitiEvent;
 import org.activiti.engine.delegate.event.ActivitiEventType;
@@ -22,7 +22,7 @@ import org.activiti.engine.impl.persistence.entity.ProcessDefinitionEntity;
 
 public class UpdateProcessInstanceNameEventListener extends
         BaseEntityEventListener {
-    private UserConnector userConnector;
+    private UserClient userClient;
 
     protected void onInitialized(ActivitiEvent event) {
         if (!(event instanceof ActivitiEntityEventImpl)) {
@@ -62,7 +62,7 @@ public class UpdateProcessInstanceNameEventListener extends
         }
 
         String userId = Authentication.getAuthenticatedUserId();
-        String displayName = userConnector.findById(userId).getDisplayName();
+        String displayName = userClient.findById(userId, "1").getDisplayName();
         String processInstanceName = processDefinitionName + "-" + displayName
                 + "-"
                 + new SimpleDateFormat("yyyy-MM-dd HH:mm").format(new Date());
@@ -77,7 +77,7 @@ public class UpdateProcessInstanceNameEventListener extends
     }
 
     @Resource
-    public void setUserConnector(UserConnector userConnector) {
-        this.userConnector = userConnector;
+    public void setUserClient(UserClient userClient) {
+        this.userClient = userClient;
     }
 }

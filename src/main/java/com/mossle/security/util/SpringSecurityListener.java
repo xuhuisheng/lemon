@@ -6,8 +6,9 @@ import java.util.Date;
 
 import javax.annotation.Resource;
 
-import com.mossle.api.audit.AuditConnector;
 import com.mossle.api.audit.AuditDTO;
+
+import com.mossle.client.log.AuditClient;
 
 import com.mossle.core.auth.LoginEvent;
 
@@ -34,7 +35,7 @@ public class SpringSecurityListener implements ApplicationListener,
         ApplicationContextAware {
     private static Logger logger = LoggerFactory
             .getLogger(SpringSecurityListener.class);
-    private AuditConnector auditConnector;
+    private AuditClient auditClient;
     private ApplicationContext ctx;
 
     public void onApplicationEvent(ApplicationEvent event) {
@@ -91,7 +92,7 @@ public class SpringSecurityListener implements ApplicationListener,
         auditDto.setClient(getUserIp(authentication));
         auditDto.setServer(InetAddress.getLocalHost().getHostAddress());
         auditDto.setTenantId(tenantId);
-        auditConnector.log(auditDto);
+        auditClient.log(auditDto);
 
         // 登录成功，再发送一个消息，以后这里的功能都要改成listener，不用直接写接口了。解耦更好一些。
         ctx.publishEvent(new LoginEvent(authentication, userId, this
@@ -125,7 +126,7 @@ public class SpringSecurityListener implements ApplicationListener,
         auditDto.setDescription(authenticationFailureBadCredentialsEvent
                 .getException().getMessage());
         auditDto.setTenantId(tenantId);
-        auditConnector.log(auditDto);
+        auditClient.log(auditDto);
 
         ctx.publishEvent(new LoginEvent(authentication, userId, this
                 .getSessionId(authentication), "badCredentials", "default",
@@ -160,7 +161,7 @@ public class SpringSecurityListener implements ApplicationListener,
         auditDto.setDescription(authenticationFailureLockedEvent.getException()
                 .getMessage());
         auditDto.setTenantId(tenantId);
-        auditConnector.log(auditDto);
+        auditClient.log(auditDto);
 
         ctx.publishEvent(new LoginEvent(authentication, userId, this
                 .getSessionId(authentication), "locked", "default", tenantId));
@@ -194,7 +195,7 @@ public class SpringSecurityListener implements ApplicationListener,
         auditDto.setDescription(authenticationFailureDisabledEvent
                 .getException().getMessage());
         auditDto.setTenantId(tenantId);
-        auditConnector.log(auditDto);
+        auditClient.log(auditDto);
 
         ctx.publishEvent(new LoginEvent(authentication, userId, this
                 .getSessionId(authentication), "disabled", "default", tenantId));
@@ -228,7 +229,7 @@ public class SpringSecurityListener implements ApplicationListener,
         auditDto.setDescription(authenticationFailureCredentialsExpiredEvent
                 .getException().getMessage());
         auditDto.setTenantId(tenantId);
-        auditConnector.log(auditDto);
+        auditClient.log(auditDto);
 
         ctx.publishEvent(new LoginEvent(authentication, userId, this
                 .getSessionId(authentication), "credentialExpired", "default",
@@ -263,7 +264,7 @@ public class SpringSecurityListener implements ApplicationListener,
         auditDto.setDescription(authenticationFailureExpiredEvent
                 .getException().getMessage());
         auditDto.setTenantId(tenantId);
-        auditConnector.log(auditDto);
+        auditClient.log(auditDto);
 
         ctx.publishEvent(new LoginEvent(authentication, userId, this
                 .getSessionId(authentication), "accountExpired", "default",
@@ -318,8 +319,8 @@ public class SpringSecurityListener implements ApplicationListener,
     }
 
     @Resource
-    public void setAuditConnector(AuditConnector auditConnector) {
-        this.auditConnector = auditConnector;
+    public void setAuditClient(AuditClient auditClient) {
+        this.auditClient = auditClient;
     }
 
     public void setApplicationContext(ApplicationContext applicationContext) {

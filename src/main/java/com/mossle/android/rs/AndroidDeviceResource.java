@@ -171,11 +171,11 @@ public class AndroidDeviceResource {
         this.pimDeviceManager = pimDeviceManager;
     }
 
-    @Resource
-    public void setAuthenticationHandler(
-            AuthenticationHandler authenticationHandler) {
-        this.authenticationHandler = authenticationHandler;
-    }
+    // @Resource
+    // public void setAuthenticationHandler(
+    //         AuthenticationHandler authenticationHandler) {
+    //     this.authenticationHandler = authenticationHandler;
+    // }
 
     @Resource
     public void setUserClient(UserClient userClient) {

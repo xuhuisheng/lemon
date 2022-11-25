@@ -83,6 +83,9 @@ public class TicketInfo implements java.io.Serializable {
     /** 关闭状态. */
     private String closeStatus;
 
+    /** 分类. */
+    private String category;
+
     /** . */
     private Set<TicketComment> ticketComments = new HashSet<TicketComment>(0);
 
@@ -103,7 +106,8 @@ public class TicketInfo implements java.io.Serializable {
             String assignee, Date updateTime, String survey,
             String surveyMessage, Integer priority, String source,
             Date resolveTime, String resolveStatus, Date closeTime,
-            String closeStatus, Set<TicketComment> ticketComments,
+            String closeStatus, String category,
+            Set<TicketComment> ticketComments,
             Set<TicketAttachment> ticketAttachments) {
         this.id = id;
         this.ticketGroup = ticketGroup;
@@ -124,6 +128,7 @@ public class TicketInfo implements java.io.Serializable {
         this.resolveStatus = resolveStatus;
         this.closeTime = closeTime;
         this.closeStatus = closeStatus;
+        this.category = category;
         this.ticketComments = ticketComments;
         this.ticketAttachments = ticketAttachments;
     }
@@ -399,6 +404,20 @@ public class TicketInfo implements java.io.Serializable {
      */
     public void setCloseStatus(String closeStatus) {
         this.closeStatus = closeStatus;
+    }
+
+    /** @return 分类. */
+    @Column(name = "CATEGORY", length = 50)
+    public String getCategory() {
+        return this.category;
+    }
+
+    /**
+     * @param category
+     *            分类.
+     */
+    public void setCategory(String category) {
+        this.category = category;
     }
 
     /** @return . */

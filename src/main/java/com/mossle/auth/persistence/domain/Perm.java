@@ -59,6 +59,9 @@ public class Perm implements java.io.Serializable {
     /** null. */
     private String icon;
 
+    /** null. */
+    private String catalog;
+
     /** . */
     private Set<Menu> menus = new HashSet<Menu>(0);
 
@@ -71,6 +74,9 @@ public class Perm implements java.io.Serializable {
     /** . */
     private Set<RoleDef> roleDefs = new HashSet<RoleDef>(0);
 
+    /** . */
+    private Set<Resc> rescs = new HashSet<Resc>(0);
+
     public Perm() {
     }
 
@@ -80,8 +86,9 @@ public class Perm implements java.io.Serializable {
 
     public Perm(Long id, PermType permType, Perm perm, String code,
             String name, String tenantId, Integer priority, String type,
-            String title, String url, String icon, Set<Menu> menus,
-            Set<Access> accesses, Set<Perm> perms, Set<RoleDef> roleDefs) {
+            String title, String url, String icon, String catalog,
+            Set<Menu> menus, Set<Access> accesses, Set<Perm> perms,
+            Set<RoleDef> roleDefs, Set<Resc> rescs) {
         this.id = id;
         this.permType = permType;
         this.perm = perm;
@@ -93,10 +100,12 @@ public class Perm implements java.io.Serializable {
         this.title = title;
         this.url = url;
         this.icon = icon;
+        this.catalog = catalog;
         this.menus = menus;
         this.accesses = accesses;
         this.perms = perms;
         this.roleDefs = roleDefs;
+        this.rescs = rescs;
     }
 
     /** @return 主键. */
@@ -256,6 +265,20 @@ public class Perm implements java.io.Serializable {
         this.icon = icon;
     }
 
+    /** @return null. */
+    @Column(name = "CATALOG", length = 50)
+    public String getCatalog() {
+        return this.catalog;
+    }
+
+    /**
+     * @param catalog
+     *            null.
+     */
+    public void setCatalog(String catalog) {
+        this.catalog = catalog;
+    }
+
     /** @return . */
     @OneToMany(fetch = FetchType.LAZY, mappedBy = "perm")
     public Set<Menu> getMenus() {
@@ -312,5 +335,19 @@ public class Perm implements java.io.Serializable {
      */
     public void setRoleDefs(Set<RoleDef> roleDefs) {
         this.roleDefs = roleDefs;
+    }
+
+    /** @return . */
+    @OneToMany(fetch = FetchType.LAZY, mappedBy = "perm")
+    public Set<Resc> getRescs() {
+        return this.rescs;
+    }
+
+    /**
+     * @param rescs
+     *            .
+     */
+    public void setRescs(Set<Resc> rescs) {
+        this.rescs = rescs;
     }
 }

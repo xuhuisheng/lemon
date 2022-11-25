@@ -15,6 +15,11 @@ import com.mossle.user.persistence.manager.PersonInfoManager;
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
 
+import org.springframework.beans.factory.annotation.Value;
+
+import org.springframework.stereotype.Component;
+
+@Component("com.mossle.user.data.UserDeployer")
 public class UserDeployer {
     private static Logger logger = LoggerFactory.getLogger(UserDeployer.class);
     public static final int PREFIX = 80000;
@@ -36,10 +41,12 @@ public class UserDeployer {
     @PostConstruct
     public void process() throws Exception {
         if (!enable) {
-            logger.info("skip init user data");
+            logger.info("skip user init data");
 
             return;
         }
+
+        logger.info("start user init data");
 
         // user
         UserCallback userCallback = new UserCallback();
@@ -61,6 +68,7 @@ public class UserDeployer {
         userPersonCallback.setAccountDeptManager(accountDeptManager);
         new CsvProcessor().process(userPersonDataFilePath,
                 userPersonDataEncoding, userPersonCallback);
+        logger.info("end user init data");
     }
 
     @Resource
@@ -88,5 +96,10 @@ public class UserDeployer {
     @Resource
     public void setAccountDeptManager(AccountDeptManager accountDeptManager) {
         this.accountDeptManager = accountDeptManager;
+    }
+
+    @Value("${user.data.init.enable:false}")
+    public void setEnable(boolean enable) {
+        this.enable = enable;
     }
 }
